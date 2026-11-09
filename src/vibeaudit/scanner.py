@@ -1,0 +1,191 @@
+"""Run every check over a project and return a cleaned-up, prioritised result."""
+from __future__ import annotations
+
+import json
+import re
+import time
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Callable, List, Optional, Set
+
+from . import external
+from .deps import DepScanner
+from .files import Project
+from .jsscan import JsScanner
+from .model import SEVERITY_RANK, Finding, at_least
+from .projectscan import ProjectScanner
+from .pyscan import PyScanner
+from .report import Result
+from .rules import RULES
+from .secretscan import SecretScanner
+
+SUPPRESS = re.compile(r"vibeaudit\s*:\s*ignore(?:\[([A-Za-z0-9_:,\s-]+)\])?", re.I)
+TEST_FILE_RULES = {"SEC001", "SEC002", "SEC009"}  # real credentials matter even in tests
+STACK_MARKERS = {
+    "flask": "Flask", "fastapi": "FastAPI", "django": "Django", "streamlit": "Streamlit", "gradio": "Gradio",
+    "openai": "OpenAI SDK", "anthropic": "Anthropic SDK", "google-genai": "Google GenAI SDK",
+    "google-generativeai": "Google GenAI SDK", "langchain": "LangChain", "llama-index": "LlamaIndex",
+    "litellm": "LiteLLM", "crewai": "CrewAI", "next": "Next.js", "react": "React", "vue": "Vue",
+    "svelte": "Svelte", "@sveltejs/kit": "SvelteKit", "express": "Express", "fastify": "Fastify", "hono": "Hono",
+    "@supabase/supabase-js": "Supabase", "supabase": "Supabase", "firebase": "Firebase", "@prisma/client": "Prisma",
+    "mongoose": "MongoDB", "drizzle-orm": "Drizzle", "stripe": "Stripe", "ai": "Vercel AI SDK",
+    "@anthropic-ai/sdk": "Anthropic SDK", "@google/generative-ai": "Google GenAI SDK", "@google/genai": "Google GenAI SDK",
+    "@langchain/core": "LangChain", "@modelcontextprotocol/sdk": "MCP",
+}
+
+
+@dataclass
+class Options:
+    offline: bool = False
+    excludes: List[str] = field(default_factory=list)
+    disabled: Set[str] = field(default_factory=set)
+    min_severity: str = "info"
+    external: str = "auto"  # auto | none | comma list
+    baseline: Optional[str] = None
+    max_file_bytes: int = 1_000_000
+    llm: Optional[str] = None
+    llm_model: Optional[str] = None
+    llm_review: bool = False
+    llm_max_requests: int = 10
+    log: Callable[[str], None] = lambda s: None
+
+
+def _stack(project: Project) -> List[str]:
+    found = []
+    names = set(project.all_js_deps())
+    for f in project.files:
+        if re.search(r"(?:^|/)(?:requirements[\w.-]*\.txt|pyproject\.toml)$", f.rel) and f.text:
+            names |= {m.lower() for m in re.findall(r"(?m)^\s*\"?([A-Za-z0-9][A-Za-z0-9._-]*)", f.text)}
+    for key, label in STACK_MARKERS.items():
+        if key in names and label not in found:
+            found.append(label)
+    return found
+
+
+def suppressed(project: Project, f: Finding) -> bool:
+    sf = project.get(f.file)
+    if not sf or not f.line:
+        return False
+    for ln in (f.line, f.line - 1):
+        m = SUPPRESS.search(sf.line(ln))
+        if m and (not m.group(1) or f.rule_id in {x.strip() for x in m.group(1).split(",")}):
+            return True
+    return False
+
+
+def scan(root: str, opts: Optional[Options] = None) -> Result:
+    opts = opts or Options()
+    start = time.time()
+    project = Project(Path(root), opts.excludes, opts.max_file_bytes)
+    raw: List[Finding] = []
+    emit = raw.append
+    notes: List[str] = []
+
+    js_routes = JsScanner(project, emit).run()
+    py_routes = PyScanner(project, emit).run()
+    SecretScanner(project, emit).run()
+    ProjectScanner(project, emit, js_routes + py_routes).run()
+    deps = DepScanner(project, emit, opts.offline)
+    deps.run()
+    notes += deps.notes
+
+    ran = []
+    if opts.external != "none":
+        wanted = external.TOOLS if opts.external == "auto" else [t.strip() for t in opts.external.split(",") if t.strip()]
+        for tool in wanted:
+            if tool not in external.TOOLS:
+                notes.append(f"Unknown external tool {tool!r} ignored.")
+                continue
+            if opts.offline and tool in external.NEEDS_NETWORK:
+                continue
+            if not external.available(tool):
+                if opts.external != "auto":
+                    notes.append(f"{tool} is not installed; skipped.")
+                continue
+            opts.log(f"running {tool} ...")
+            res = external.run_tool(tool, project.root)
+            if res is None:
+                notes.append(f"{tool} failed to run or produced no readable output.")
+                continue
+            ran.append(tool)
+            raw.extend(res)
+
+    findings = finalize(project, raw, opts)
+
+    if opts.llm:
+        from . import llm
+        try:
+            provider = llm.Provider(opts.llm, opts.llm_model)
+            llm.triage(project, findings, provider, opts.llm_max_requests, notes.append)
+            if opts.llm_review:
+                risky = _risky_files(project, findings, js_routes + py_routes)
+                extra = llm.review(project, findings, risky, provider, opts.llm_max_requests, notes.append)
+                findings = finalize(project, findings + extra, opts, already=True)
+            notes.append(f"LLM ({provider.name}/{provider.model}) used {provider.requests} requests.")
+        except llm.LLMError as e:
+            notes.append(f"LLM checks skipped: {e}")
+
+    meta = {
+        "files_scanned": len(project.files), "duration_seconds": round(time.time() - start, 2),
+        "stack": _stack(project), "external_tools": ran, "offline": opts.offline, "notes": notes,
+        "routes_found": len(js_routes) + len(py_routes), "git": project.is_git,
+    }
+    return Result(str(project.root), findings, meta)
+
+
+def _risky_files(project: Project, findings: List[Finding], routes) -> List[str]:
+    score = {}
+    for r in routes:
+        score[r.file] = score.get(r.file, 0) + 2 + (3 if r.calls_llm else 0)
+    for f in findings:
+        score[f.file] = score.get(f.file, 0) + 1
+    return [f for f, _ in sorted(score.items(), key=lambda kv: -kv[1]) if project.get(f)][:5]
+
+
+def finalize(project: Project, raw: List[Finding], opts: Options, already: bool = False) -> List[Finding]:
+    out: List[Finding] = []
+    seen = set()
+    builtin_locs = set()
+    baseline: Set[str] = set()
+    if opts.baseline:
+        try:
+            data = json.loads(Path(opts.baseline).read_text(encoding="utf-8"))
+            baseline = {f["fingerprint"] for f in data.get("findings", []) if "fingerprint" in f}
+        except (OSError, ValueError, AttributeError, TypeError):
+            opts.log(f"could not read baseline {opts.baseline}")
+    # built-in findings first so that duplicates from external tools are the ones dropped
+    for f in sorted(raw, key=lambda x: x.source != "vibeaudit"):
+        meta = RULES.get(f.rule_id)
+        if meta and not already:
+            f.title = f.title or meta.title
+            f.category = f.category or meta.category
+            f.severity = f.severity or meta.severity
+            f.why = f.why or meta.why
+            f.fix = f.fix or meta.fix
+            f.cwe = f.cwe or meta.cwe
+            f.owasp = f.owasp or meta.owasp
+        f.severity = f.severity or "medium"
+        f.category = f.category or "backend"
+        if f.rule_id in opts.disabled or (meta and meta.category in opts.disabled) or f.category in opts.disabled:
+            continue
+        sf = project.get(f.file)
+        if sf is not None and sf.is_test and f.rule_id not in TEST_FILE_RULES and f.source == "vibeaudit":
+            continue
+        if not at_least(f.severity, opts.min_severity) or suppressed(project, f):
+            continue
+        key = (f.rule_id, f.file, f.line, f.message)
+        if key in seen:
+            continue
+        loc = (f.file, f.line)
+        if f.source not in ("vibeaudit", "llm-review") and loc in builtin_locs:
+            continue
+        seen.add(key)
+        if f.source == "vibeaudit":
+            builtin_locs.add(loc)
+        if not f.fingerprint:
+            f.compute_fingerprint()
+        if f.fingerprint in baseline:
+            continue
+        out.append(f)
+    out.sort(key=lambda f: (SEVERITY_RANK[f.severity], f.category, f.file, f.line, f.rule_id))
+    return out
