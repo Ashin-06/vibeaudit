@@ -4,6 +4,21 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.1.1] - 2026-11-09
+
+### Fixed
+
+- BE001 (SQL injection) no longer reports queries whose only formatted part is a list of bind markers,
+  the standard pattern for a variable-length `IN (...)` list, for example
+  `f"... IN ({','.join('?' * len(ids))})"`. Recognised forms: `"?" * n`, `["?"] * n`,
+  `"?" for _ in ids`, `%s` placeholders via `%` or `.format()`, string concatenation, named or numbered
+  markers built from a `range()` or `enumerate()` index (`f":p{i}"`, `f"${i + 1}"`), and the marker
+  string or the query built in a separate variable first. Formatting values, identifiers or a join over
+  data (`",".join(ids)`) is still reported.
+- With `--external auto`, bandit checks that a built-in rule already covers with data flow (B102, B307,
+  B201, B301, B506, B501, B602, B605, B608) are left to the built-in rule, so a line vibeaudit judged
+  safe is not reported again by bandit. B101 (assert) was already ignored.
+
 ## [0.1.0] - 2026-11-09
 
 First release.
