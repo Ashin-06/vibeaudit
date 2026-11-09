@@ -39,7 +39,13 @@ class ProjectScanner:
         self.p = project
         self.emit = emit
         self.routes = routes
-        texts = [f.text or "" for f in project.files if f.kind in ("py", "js") or f.rel.endswith(("package.json", "requirements.txt", "pyproject.toml"))]
+        texts = []
+        for f in project.files:
+            if f.kind in ("py", "js", "html"):
+                views = f.cache.get("views")
+                texts.append(views.code if views is not None else (f.text or ""))  # type: ignore[attr-defined]
+            elif f.rel.endswith(("package.json", "requirements.txt", "pyproject.toml")):
+                texts.append(f.text or "")
         self.all_code = "\n".join(texts)
 
     def add(self, sf_or_rel, line: int, rule: str, msg: str, sev: str = "") -> None:

@@ -20,7 +20,8 @@ from typing import Callable, Dict, List, Optional
 
 from .files import Project
 from .model import Finding
-from .secretscan import DB_URL, JWT, PRIVATE_KEY, PROVIDER_KEYS
+from .secretscan import (DB_URL, GENERIC_ASSIGN, JWT, PASSWORD_ASSIGN, PRIVATE_KEY, PROVIDER_KEYS, SIGNING_FALLBACK,
+                         SIGNING_LITERAL)
 
 PROVIDERS = {
     "gemini": {"env": ("GEMINI_API_KEY", "GOOGLE_API_KEY"), "model": "gemini-3.5-flash"},
@@ -47,6 +48,9 @@ def redact(text: str) -> str:
     text = DB_URL.sub(lambda m: m.group(0).replace(m.group(2), "<REDACTED>"), text)
     text = re.sub(PRIVATE_KEY.pattern + r"[\s\S]*?-----END[^-]*-----", "<REDACTED_PRIVATE_KEY>", text)
     text = re.sub(r"(?im)^(\s*(?:export\s+)?[A-Z0-9_]*(?:KEY|SECRET|TOKEN|PASSWORD)[A-Z0-9_]*\s*=\s*).+$", r"\1<REDACTED>", text)
+    # values captured by the secret rules: generic assignments, passwords, signing secrets and fallbacks
+    for rx, group in [(GENERIC_ASSIGN, 2), (PASSWORD_ASSIGN, 2)] + [(r, 1) for r in SIGNING_LITERAL + SIGNING_FALLBACK]:
+        text = rx.sub(lambda m, g=group: m.group(0).replace(m.group(g), "<REDACTED>") if m.group(g) else m.group(0), text)
     return text
 
 

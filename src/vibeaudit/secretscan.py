@@ -27,7 +27,7 @@ PROVIDER_KEYS: List[Tuple[str, Pattern[str]]] = [
     ("Hugging Face token", re.compile(r"\bhf_[A-Za-z0-9]{34,}\b")),
     ("Replicate API token", re.compile(r"\br8_[A-Za-z0-9]{37,}\b")),
     ("AWS access key id", re.compile(r"\b(?:AKIA|ASIA)[0-9A-Z]{16}\b")),
-    ("AWS secret access key", re.compile(r"(?i)aws_?secret_?access_?key['\"]?\s*[:=]\s*['\"]?([A-Za-z0-9/+=]{40})\b")),
+    ("AWS secret access key", re.compile(r"(?i)aws_?secret_?access_?key['\"]?\s*[:=]\s*['\"]?([A-Za-z0-9/+=]{40})(?![A-Za-z0-9/+=])")),
     ("GitHub token", re.compile(r"\bgh[pousr]_[A-Za-z0-9]{36,}\b")),
     ("GitHub fine-grained token", re.compile(r"\bgithub_pat_[A-Za-z0-9_]{60,}\b")),
     ("Stripe live secret key", re.compile(r"\b(?:sk|rk)_live_[A-Za-z0-9]{20,}\b")),
@@ -77,7 +77,7 @@ SIGNING_FALLBACK = [
     re.compile(r"""(?:getenv|environ\s*\.\s*get)\s*\(\s*["']\w*(?:SECRET|SIGNING)\w*["']\s*,\s*["']([^"']+)["']"""),
     re.compile(r"""process\s*\.\s*env\s*\.\s*\w*(?:SECRET|SIGNING)\w*\s*(?:\|\||\?\?)\s*["'`]([^"'`]+)["'`]"""),
 ]
-FIREBASE_CONTEXT = re.compile(r"authDomain|projectId|messagingSenderId|storageBucket|firebase|appId|measurementId|maps\.googleapis|google\.maps|GOOGLE_MAPS|MAPS_API|places", re.I)
+FIREBASE_CONTEXT = re.compile(r"authDomain|projectId|messagingSenderId|storageBucket|firebase|appId|measurementId|maps\.googleapis|google\.maps|GOOGLE_MAPS|MAPS_API|places\.googleapis|placesLibrary|libraries=places", re.I)
 DOC_EXTS = (".md", ".mdx", ".rst", ".txt", ".adoc", ".ipynb")
 
 
