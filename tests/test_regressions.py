@@ -223,3 +223,124 @@ def test_supabase_edge_function_behind_the_jwt_gateway(tmp_path):
             "  return r;\n});\n")
     (tmp_path / "supabase" / "config.toml").write_text("[functions.open]\nverify_jwt = false\n")
     assert [f for f, _, r in _rules(_scan(tmp_path)) if r == "AUTH001"] == ["supabase/functions/open/index.ts"]
+
+
+# ------------------------------------------- 0.2.1: issues from the external code audit
+def test_jsx_self_closing_tag_after_an_expression_is_not_a_regex(tmp_path):
+    (tmp_path / "page.tsx").write_text("const a = <C p={1} /> <D q={eval(x)} />;\n")
+    assert [r for _, _, r in _rules(_scan(tmp_path))] == ["BE003"]
+
+
+def test_lambda_bodies_are_analysed(tmp_path):
+    (tmp_path / "a.py").write_text(
+        "import subprocess\nfrom flask import request\nfrom langchain.tools import Tool\n\n@app.get('/a')\ndef a():\n"
+        "    f = lambda: eval(request.args['x'])\n    return f()\n\n"
+        "shell = Tool(name='bash', func=lambda cmd: subprocess.run(cmd, shell=True), description='d')\n")
+    assert [(ln, r) for _, ln, r in _rules(_scan(tmp_path))] == [(7, "BE003"), (10, "LLM005")]
+
+
+def test_env_folders_are_source_unless_they_are_virtualenvs(tmp_path):
+    (tmp_path / "src" / "env").mkdir(parents=True)
+    (tmp_path / "src" / "env" / "server.ts").write_text("eval(code);\n")
+    (tmp_path / "env" / "lib").mkdir(parents=True)
+    (tmp_path / "env" / "pyvenv.cfg").write_text("home = /usr/bin\n")
+    (tmp_path / "env" / "lib" / "site.py").write_text("eval(x)\n")
+    assert [f for f, _, _ in _rules(_scan(tmp_path))] == ["src/env/server.ts"]
+
+
+def test_llm_redaction_covers_signing_secrets_and_passwords():
+    from vibeaudit.llm import redact
+
+    out = redact('app.secret_key = "dev-secret-change-me"\nADMIN_PASSWORD = "hunter2-admin"\n'
+                 'jwt.sign(payload, "s3cr3t-signing-value")\nconfig = {"api_secret": "q8Zr2LmX9vB4tN7pK3sD"}\n')
+    for value in ("dev-secret-change-me", "hunter2-admin", "s3cr3t-signing-value", "q8Zr2LmX9vB4tN7pK3sD"):
+        assert value not in out
+
+
+def test_extra_index_url_keeps_dependency_checks(tmp_path):
+    (tmp_path / "requirements.txt").write_text("--extra-index-url https://download.pytorch.org/whl/cu121\nreqeusts==1.0\n")
+    assert [r for _, _, r in _rules(_scan(tmp_path))] == ["DEP002"]
+    (tmp_path / "requirements.txt").write_text("--index-url https://pypi.internal.example/simple\nreqeusts==1.0\n")
+    assert _scan(tmp_path).findings == []
+
+
+def test_the_word_places_does_not_hide_a_gemini_key(tmp_path):
+    (tmp_path / "ai.py").write_text("# replaces the old client\nGEMINI_KEY = '" + fake_values()["FAKE_GOOGLE_KEY"] + "'\n")
+    assert [(r, f.severity) for f in _scan(tmp_path).findings for r in [f.rule_id]] == [("SEC001", "critical")]
+
+
+def test_aws_secret_ending_in_base64_padding(tmp_path):
+    secret = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYzz9QnP4m+="
+    (tmp_path / "aws.py").write_text(f"aws_secret_access_key = '{secret}'\n")
+    assert [(f.rule_id, f.severity) for f in _scan(tmp_path).findings] == [("SEC001", "critical")]
+
+
+def test_a_comment_mentioning_rate_limits_is_not_rate_limiting(tmp_path):
+    (tmp_path / "app.py").write_text("# TODO: add rate limit\n@app.post('/chat')\ndef chat():\n"
+                                     "    return client.chat.completions.create(model='m', max_tokens=5, messages=[])\n")
+    assert ("app.py", 3, "LLM004") in _rules(_scan(tmp_path))
+
+
+def test_disable_accepts_ai001_and_external_ids_and_ignore_is_case_insensitive(tmp_path):
+    from vibeaudit.cli import main
+
+    (tmp_path / "a.py").write_text("eval(x)  # vibeaudit: ignore[be003]\n")
+    assert _scan(tmp_path).findings == []
+    assert main(["scan", str(tmp_path), "--offline", "--external", "none", "-q", "--disable", "AI001,bandit:B608"]) == 0
+
+
+def test_identical_lines_get_distinct_fingerprints(tmp_path):
+    (tmp_path / "a.py").write_text("def verify_token(t):\n    return True\n\n\ndef verify_token(t):\n    return True\n")
+    fps = [f.fingerprint for f in _scan(tmp_path).findings if f.rule_id == "AUTH008"]
+    assert len(fps) == 2 and len(set(fps)) == 2
+
+
+def test_js_taint_is_scoped_to_the_function(tmp_path):
+    (tmp_path / "server.js").write_text(
+        "const express = require('express');\nconst app = express();\n"
+        "function a(req, res) {\n  const data = req.query.q;\n  res.send(`<p>${data}</p>`);\n}\n"
+        "function b(req, res) {\n  const data = 'static';\n  res.send(`<p>${data}</p>`);\n}\n")
+    assert [(ln, r) for _, ln, r in _rules(_scan(tmp_path)) if r == "FE001"] == [(5, "FE001")]
+
+
+def test_server_action_parameters_are_request_data(tmp_path):
+    (tmp_path / "actions.ts").write_text(
+        '"use server";\nexport async function search(term: string) {\n'
+        "  return db.$queryRawUnsafe(`SELECT * FROM t WHERE name = '${term}'`);\n}\n"
+        "async function helper(x: string) {\n  return db.$queryRawUnsafe(`SELECT * FROM t WHERE name = '${x}'`);\n}\n")
+    assert [(f.line, f.severity) for f in _scan(tmp_path).findings if f.rule_id == "BE001"] == [(3, "high"), (6, "medium")]
+
+
+@pytest.mark.parametrize("lock,manifest,text,name,version", [
+    ("poetry.lock", ("pyproject.toml", '[tool.poetry.dependencies]\npython = "^3.11"\njinja2 = "^2.4"\n'),
+     '[[package]]\nname = "Jinja2"\nversion = "2.4.1"\n', "jinja2", "2.4.1"),
+    ("uv.lock", ("pyproject.toml", '[project]\nname = "x"\ndependencies = ["requests>=2"]\n'),
+     'version = 1\n[[package]]\nname = "requests"\nversion = "2.19.0"\n', "requests", "2.19.0"),
+    ("Pipfile.lock", ("requirements.txt", "flask\n"), '{"default": {"flask": {"version": "==0.12"}}}', "flask", "0.12"),
+    ("pnpm-lock.yaml", ("package.json", '{"dependencies": {"@scope/x": "^1.0.0"}}'),
+     "importers:\n  .:\n    dependencies:\n      '@scope/x':\n        specifier: ^1.0.0\n        version: 1.2.3\n", "@scope/x", "1.2.3"),
+    ("yarn.lock", ("package.json", '{"dependencies": {"minimist": "^1.2.0"}}'),
+     '"minimist@^1.2.0":\n  version "1.2.0"\n', "minimist", "1.2.0"),
+    ("bun.lock", ("package.json", '{"dependencies": {"axios": "^0.21.0"}}'),
+     '{\n  "packages": {\n    "axios": ["axios@0.21.0", "", {}],\n  }\n}', "axios", "0.21.0"),
+])
+def test_versions_come_from_every_supported_lockfile(tmp_path, lock, manifest, text, name, version):
+    (tmp_path / manifest[0]).write_text(manifest[1])
+    (tmp_path / lock).write_text(text)
+    assert [(d.name, d.version) for d in deps.collect(Project(tmp_path))] == [(name, version)]
+
+
+@pytest.mark.skipif(shutil.which("git") is None, reason="git not installed")
+def test_committed_virtualenv_is_skipped_in_git_mode(tmp_path):
+    def git(*a):
+        subprocess.run(["git", *a], cwd=tmp_path, check=True, capture_output=True)
+
+    git("init", "-q")
+    (tmp_path / "env" / "lib").mkdir(parents=True)
+    (tmp_path / "env" / "pyvenv.cfg").write_text("home = /usr/bin\n")
+    (tmp_path / "env" / "lib" / "site.py").write_text("eval(x)\n")
+    (tmp_path / "src" / "env").mkdir(parents=True)
+    (tmp_path / "src" / "env" / "client.ts").write_text("eval(code);\n")
+    git("add", ".")
+    res = _scan(tmp_path)
+    assert res.meta["git"] and [f for f, _, _ in _rules(res)] == ["src/env/client.ts"]
