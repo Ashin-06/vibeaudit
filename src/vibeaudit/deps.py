@@ -3,8 +3,11 @@ from __future__ import annotations
 
 import datetime as dt
 import gzip
+import http.client
 import json
 import re
+import threading
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -136,17 +139,22 @@ def collect(project: Project) -> List[Dep]:
                 data = tomllib.loads(f.text)
             except (ValueError, TypeError):
                 continue
-            specs: List[str] = list(data.get("project", {}).get("dependencies", []) or [])
-            for group in (data.get("project", {}).get("optional-dependencies", {}) or {}).values():
-                specs += list(group or [])
-            for group in (data.get("dependency-groups", {}) or {}).values():
-                specs += [s for s in group or [] if isinstance(s, str)]
-            poetry = data.get("tool", {}).get("poetry", {})
-            pnames = list((poetry.get("dependencies") or {}).keys())
-            for grp in (poetry.get("group") or {}).values():
-                pnames += list((grp.get("dependencies") or {}).keys())
+            # Every level is checked for its type: a hand-edited or broken pyproject must not stop the scan.
+            def strings(value) -> List[str]:
+                return [s for s in value if isinstance(s, str)] if isinstance(value, list) else []
+
+            table = _dict(data.get("project"))
+            specs: List[str] = strings(table.get("dependencies"))
+            for group in _dict(table.get("optional-dependencies")).values():
+                specs += strings(group)
+            for group in _dict(data.get("dependency-groups")).values():
+                specs += strings(group)
+            poetry = _dict(_dict(data.get("tool")).get("poetry"))
+            pnames = list(_dict(poetry.get("dependencies")).keys())
+            for grp in _dict(poetry.get("group")).values():
+                pnames += list(_dict(_dict(grp).get("dependencies")).keys())
             specs += [n for n in pnames if n.lower() != "python"]
-            own = pep503(str(data.get("project", {}).get("name", "") or poetry.get("name", "")))
+            own = pep503(str(table.get("name", "") or poetry.get("name", "")))
             for spec in specs:
                 parsed = parse_requirement(str(spec))
                 if parsed and pep503(parsed[0]) != own:
@@ -185,32 +193,96 @@ def _npm_lock_versions(project: Project, pkg: SourceFile) -> Dict[str, str]:
     except (OSError, ValueError):
         return {}
     out: Dict[str, str] = {}
-    for key, val in (data.get("packages") or {}).items():
+    if not isinstance(data, dict):
+        return out
+    for key, val in _dict(data.get("packages")).items():
         if key.startswith("node_modules/") and key.count("node_modules/") == 1 and isinstance(val, dict) and "version" in val:
             out[key[len("node_modules/"):]] = str(val["version"])
-    for key, val in (data.get("dependencies") or {}).items():
+    for key, val in _dict(data.get("dependencies")).items():
         if isinstance(val, dict) and "version" in val:
             out.setdefault(key, str(val["version"]))
     return out
 
 
 # ------------------------------------------------------------------ network
+RETRY_STATUS = {408, 425, 429, 500, 502, 503, 504}
+MAX_ATTEMPTS = 3
+MAX_RETRY_AFTER = 10.0
+BREAKER_THRESHOLD = 5  # consecutive transport failures before a host is considered down for this run
+
+
+class _Breaker:
+    """Stops hammering a host that is down, so an outage costs seconds, not minutes."""
+
+    def __init__(self) -> None:
+        self.lock = threading.Lock()
+        self.failures: Dict[str, int] = {}
+
+    def open(self, host: str) -> bool:
+        with self.lock:
+            return self.failures.get(host, 0) >= BREAKER_THRESHOLD
+
+    def record(self, host: str, ok: bool) -> None:
+        with self.lock:
+            self.failures[host] = 0 if ok else self.failures.get(host, 0) + 1
+
+    def reset(self) -> None:
+        with self.lock:
+            self.failures.clear()
+
+
+BREAKER = _Breaker()
+
+
+def _retry_after(err: urllib.error.HTTPError, attempt: int) -> float:
+    try:
+        value = float(err.headers.get("Retry-After", "")) if err.headers else -1.0
+    except (TypeError, ValueError):
+        value = -1.0
+    if value < 0:
+        value = 0.5 * (2 ** attempt)
+    return min(value, MAX_RETRY_AFTER)
+
+
 def _get_json(url: str, data: Optional[bytes] = None) -> Tuple[int, Optional[dict]]:
+    """GET (or POST when `data` is given) a JSON document.
+
+    Returns (status, document). status is the HTTP status, or 0 when the request could not be completed
+    (timeout, DNS, connection reset, rate limited after retries, invalid JSON). The document is None
+    unless a JSON object came back with status 200. Only a definite 404/410 means "does not exist".
+    """
+    host = urllib.parse.urlsplit(url).netloc
+    if BREAKER.open(host):
+        return 0, None
     req = urllib.request.Request(url, data=data, headers={"User-Agent": USER_AGENT, "Accept": "application/json",
                                                           **({"Content-Type": "application/json"} if data else {})})
-    for attempt in range(2):
+    for attempt in range(MAX_ATTEMPTS):
         try:
             with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:  # noqa: S310 - fixed https hosts
-                return resp.status, json.loads(resp.read().decode("utf-8"))
+                status = getattr(resp, "status", 200)
+                doc = json.loads(resp.read().decode("utf-8"))
+            BREAKER.record(host, True)
+            if status == 200 and isinstance(doc, dict):
+                return status, doc
+            return 0, None
         except urllib.error.HTTPError as e:
             if e.code in (404, 410):
+                BREAKER.record(host, True)
                 return e.code, None
-            if attempt:
-                return e.code, None
-        except (urllib.error.URLError, OSError, ValueError):
-            if attempt:
+            if e.code not in RETRY_STATUS or attempt == MAX_ATTEMPTS - 1:
+                BREAKER.record(host, e.code not in RETRY_STATUS)
                 return 0, None
+            time.sleep(_retry_after(e, attempt))
+        except (urllib.error.URLError, OSError, ValueError, http.client.HTTPException):
+            if attempt == MAX_ATTEMPTS - 1 or BREAKER.open(host):
+                BREAKER.record(host, False)
+                return 0, None
+            time.sleep(0.5 * (2 ** attempt))
     return 0, None
+
+
+def _dict(value) -> dict:
+    return value if isinstance(value, dict) else {}
 
 
 def registry_info(dep: Dep) -> Tuple[str, Optional[dt.datetime], str]:
@@ -221,19 +293,22 @@ def registry_info(dep: Dep) -> Tuple[str, Optional[dt.datetime], str]:
             return "missing", None, ""
         if not data:
             return "error", None, ""
-        times = [f.get("upload_time_iso_8601") for files in (data.get("releases") or {}).values() for f in files]
-        times = [t for t in times if t]
-        first = min(times) if times else None
-        return "ok", _parse_time(first), ""
-    code, data = _get_json("https://registry.npmjs.org/" + dep.name.replace("/", "%2F"))
+        times = []
+        for files in _dict(data.get("releases")).values():
+            for f in files if isinstance(files, list) else []:
+                if isinstance(f, dict) and isinstance(f.get("upload_time_iso_8601"), str):
+                    times.append(f["upload_time_iso_8601"])
+        return "ok", _parse_time(min(times) if times else None), ""
+    code, data = _get_json("https://registry.npmjs.org/" + urllib.parse.quote(dep.name, safe="@"))
     if code in (404, 410):
         return "missing", None, ""
     if not data:
         return "error", None, ""
-    latest = (data.get("dist-tags") or {}).get("latest", "")
+    latest = str(_dict(data.get("dist-tags")).get("latest", ""))
     if latest == "0.0.1-security" or "security holding" in str(data.get("description", "")).lower():
         return "malware", None, "removed from npm for security reasons (malware)"
-    return "ok", _parse_time((data.get("time") or {}).get("created")), ""
+    created = _dict(data.get("time")).get("created")
+    return "ok", _parse_time(created if isinstance(created, str) else None), ""
 
 
 def _parse_time(s: Optional[str]) -> Optional[dt.datetime]:
@@ -259,16 +334,18 @@ def osv_lookup(deps: List[Dep]) -> Dict[Tuple[str, str, str], List[dict]]:
     for i in range(0, len(uniq), 500):
         chunk = uniq[i:i + 500]
         body = json.dumps({"queries": [{"package": {"name": n, "ecosystem": e}, "version": v} for e, n, v in chunk]}).encode()
-        code, data = _get_json("https://api.osv.dev/v1/querybatch", body)
-        if not data:
+        _code, data = _get_json("https://api.osv.dev/v1/querybatch", body)
+        results = data.get("results") if data else None
+        if not isinstance(results, list) or len(results) != len(chunk):
             raise ConnectionError("OSV query failed")
-        for key, res in zip(chunk, data.get("results", [])):
-            ids = [v["id"] for v in (res or {}).get("vulns", []) if "id" in v]
+        for key, res in zip(chunk, results):
+            vulns = _dict(res).get("vulns")
+            ids = [str(v["id"]) for v in vulns if isinstance(v, dict) and "id" in v] if isinstance(vulns, list) else []
             if ids:
                 ids_for[key] = ids
     all_ids = sorted({i for ids in ids_for.values() for i in ids})[:200]
     with ThreadPoolExecutor(8) as ex:
-        details = dict(zip(all_ids, ex.map(lambda i: _get_json(f"https://api.osv.dev/v1/vulns/{i}")[1], all_ids)))
+        details = dict(zip(all_ids, ex.map(lambda i: _get_json(f"https://api.osv.dev/v1/vulns/{urllib.parse.quote(i)}")[1], all_ids)))
     for key, ids in ids_for.items():
         out[key] = [details.get(i) or {"id": i} for i in ids]
     return out
@@ -320,6 +397,7 @@ class DepScanner:
         to_check = sorted({(d.ecosystem, d.name) for d in deps if d.checkable and not (
             (d.ecosystem == "PyPI" and pep503(d.name) in known_pypi) or (d.ecosystem == "npm" and d.name.lower() in known_npm))})
         by_key = {(d.ecosystem, d.name): d for d in deps}
+        BREAKER.reset()
         with ThreadPoolExecutor(8) as ex:
             infos = dict(zip(to_check, ex.map(lambda k: registry_info(by_key[k]), to_check)))
         errors = sum(1 for s, _t, _n in infos.values() if s == "error")
