@@ -4,6 +4,53 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.2.0] - 2026-11-09
+
+Production-hardening release: fuzzing, property tests, a 15-repository false-positive sweep, network
+failure tests and a scale test. Every bug below has a regression test that fails when the fix is
+reverted.
+
+### Added
+
+- Per-file isolation: a file that triggers a bug no longer stops the scan; it is reported under
+  `meta.internal_errors` while every other file is still analysed.
+- `--file-timeout` (default 30 s): a cooperative per-file time budget. Files that exceed it, or are nested
+  too deeply to parse, are listed under `meta.skipped`.
+- Network resilience: retries with backoff for timeouts, resets and 408/425/429/5xx, honouring
+  `Retry-After` (capped at 10 s), and a circuit breaker that stops calling a host after five
+  consecutive failures. Only a 404 or 410 counts as "package does not exist".
+- Test suites: fuzzing (`VIBEAUDIT_FUZZ_ROUNDS`), regular-expression timing, property tests with neutral
+  mutations and safe rewrites, stubbed-transport network tests, a scale test (`VIBEAUDIT_PERF_FILES`),
+  and a CI stress job.
+
+### Fixed
+
+- Hangs on hostile input: the Python lexer was quadratic on long single-line files (it now uses its own
+  linear scanner instead of `tokenize`), and five regular expressions backtracked catastrophically on long
+  runs of word characters or blank lines (generic secret assignments, `.env` lines, JS method
+  definitions, auth stubs, statement continuation).
+- Crashes on malformed `pyproject.toml`, `package-lock.json` and MCP configs, and on registry answers
+  with unexpected JSON types.
+- HTML reports are plain ASCII whatever the scanned code contains; report files tolerate file names that
+  are not valid UTF-8.
+- UTF-16 source files are decoded instead of being treated as binary.
+- Symbolic links that point outside the project are not followed.
+- Non-git folders: `.gitignore` files in subdirectories are honoured (monorepos).
+- BE002 no longer flags `subprocess.run([...])` / `execFile(prog, [...])` argument lists; it fires when
+  the program itself is controlled (or a shell is used), matching the rule's own fix advice.
+- AUTH003 (IDOR) no longer treats the id path parameter itself (for example `user_id`) as proof of an
+  ownership check.
+- False positives found on real repositories: an AWS access key id alone is medium, not critical;
+  database-image default passwords and enum values equal to their key are not hard-coded passwords;
+  comparing two submitted passwords is not plaintext storage; `HTMLResponse` of a rendered template is
+  not XSS; FastAPI auth through an `Annotated[..., Depends(...)]` alias is recognised; a browser OpenAI
+  client pointed at the app's own backend is not a key leak; spreading request data into a model call is
+  not mass assignment; `if x in ALLOWED` sanitises; dotted scope names are not secrets; committed `.env`
+  templates with only placeholders are not reported; Supabase edge functions that require a bearer token
+  (with gateway JWT verification on) count as authenticated.
+- A regression introduced during this pass (a local variable shadowing the project in dependency
+  collection) was caught by the sweep and fixed before release.
+
 ## [0.1.1] - 2026-11-09
 
 ### Fixed

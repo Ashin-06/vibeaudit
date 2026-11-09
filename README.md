@@ -91,6 +91,7 @@ vibeaudit scan path/to/project --report html --report sarif:results.sarif
 | `--baseline FILE` / `--write-baseline FILE` | Report only findings that are new since the baseline. |
 | `--external auto\|none\|LIST` | Run installed gitleaks, bandit, osv-scanner, semgrep and merge results. |
 | `--llm gemini\|openai\|anthropic` | Model triage of findings; `--llm-review` adds a review of the riskiest files. |
+| `--file-timeout SECONDS` | Time each analysis step may spend on one file before it is stopped (default 30). |
 
 With `--external auto` (the default), gitleaks, bandit, osv-scanner and semgrep are run when they are
 installed, and their findings are merged and de-duplicated. Bandit checks that a built-in rule covers
@@ -102,6 +103,13 @@ ignored files are not scanned (a local ignored `.env` is where secrets belong). 
 output and minified bundles are skipped. In test files only real credentials are reported.
 
 `vibeaudit rules` lists every rule (`--format json` includes the full why and fix text).
+
+A repository is untrusted input, so the scan is built to finish whatever it contains. Each file is
+analysed in isolation: a file that triggers a bug is listed under `meta.internal_errors` (and in a note)
+while every other file is still scanned, and a file that exceeds `--file-timeout` or is nested too deeply
+to parse is listed under `meta.skipped`. Symbolic links that point outside the project are not followed.
+Registry and OSV lookups retry timeouts and rate limits (honouring `Retry-After`), stop calling a host that
+is down, and never report a package as missing unless the registry answered 404 or 410.
 
 ## What it checks
 
@@ -157,11 +165,34 @@ existing debt. An empty `except`/`catch` with an explanatory comment is treated 
   finding is marked with an `expect: RULE` comment; tests compare the exact set of
   `(file, line, rule)`, so a missed finding or a false alarm fails. The clean app must produce zero
   findings. Fake credentials are generated at test time.
-- **Real projects.** Run on mckaywrigley/chatbot-ui, langchain-ai/chat-langchain and a public Lovable +
-  Supabase AI app, with every finding checked by hand. Confirmed issues included an unauthenticated
-  `/api/chat/custom` route in chatbot-ui that loads any user's custom model (and its API key) by id with
-  the service-role key, model routes without rate limits, and edge functions that call a paid AI API
-  with JWT verification disabled. False alarms found on the first runs were fixed at the root.
+- **Property tests.** Every vulnerable fixture is mutated in ways that keep it vulnerable (lines shifted,
+  variables renamed, imports reordered, CRLF, tabs and trailing whitespace, the app moved into a monorepo
+  subfolder, routes wrapped in a function or moved into a blueprint module) and every finding must stay.
+  33 safe rewrites (parameterise the query, add the auth check, set a token limit, use an argument list,
+  ...) must each remove exactly the targeted finding and add nothing.
+- **Fuzzing.** Thousands of random and malformed inputs with fixed seeds: garbage and truncated
+  Python/JS/TS, binary files with code extensions, non-UTF-8, UTF-16 and mixed encodings, empty files,
+  3,000-level nesting, 700 KB single-line files, malformed `package.json`, lockfiles, `pyproject.toml`,
+  requirements, Supabase SQL, Firebase rules and MCP configs, symlink loops, links out of the project and
+  unreadable files. The scan must not crash, hang or produce invalid JSON/SARIF. `VIBEAUDIT_FUZZ_ROUNDS`
+  sets the depth (CI runs 6 rounds per platform and 60 on Linux; 300 rounds were run before 0.2.0).
+- **Regular expressions.** Every compiled pattern is timed against long runs of the characters that
+  cause catastrophic backtracking.
+- **Network.** Registry and OSV lookups are tested against timeouts, DNS failures, resets, 403/429/5xx,
+  `Retry-After`, HTML error pages, truncated and wrongly typed JSON, and a full outage.
+- **Scale.** A generated 10,000-file repository scans in under a minute with about 120 MB peak traced
+  memory (CI runs 2,000 files on every platform and 10,000 on Linux).
+- **Real projects.** 15 public repositories: mckaywrigley/chatbot-ui, langchain-ai/chat-langchain,
+  fastapi/full-stack-fastapi-template, miguelgrinberg/microblog, HackSoftware/Django-Styleguide-Example,
+  vercel/ai-chatbot, vercel/nextjs-subscription-payments, hagopj13/node-express-boilerplate,
+  gothinkster/node-express-realworld-example-app, run-llama/sec-insights, langchain-ai/opengpts,
+  streamlit/llm-examples, supabase-community/chatgpt-your-files, wandb/openui and a public Lovable +
+  Supabase AI app. Every high and critical finding outside dependency advisories was checked by hand;
+  each false alarm was fixed at the root with a regression test. Confirmed issues included an
+  unauthenticated `/api/chat/custom` route in chatbot-ui that loads any user's custom model (and its API
+  key) by id with the service-role key, unauthenticated delete endpoints, and edge functions that call a
+  paid AI API with JWT verification disabled. High and critical dependency advisories (DEP004) come from
+  OSV for the pinned versions and were spot-checked, not reviewed one by one.
 - **LLM providers.** Gemini was tested live (triage and review). OpenAI and Anthropic are implemented
   against their documented HTTP APIs and unit-tested with a stubbed transport, not called live.
 
@@ -172,6 +203,10 @@ existing debt. An empty `except`/`catch` with an explanatory comment is treated 
 - Django URLconf views, NestJS and Remix routes are only partly covered.
 - "Authenticated" means an auth check is visible, not that it is correct.
 - Rate limiting and validation are detected project-wide, so one limiter anywhere counts.
+- The per-file time budget is cooperative: it is checked between regex matches and statements. A single
+  regex step cannot be interrupted, which is why every module-level pattern is tested for linear time.
+- Memory grows with the size of the repository (file text and lexer views are kept for cross-file
+  analysis); about 12 KB per source file in the scale test.
 
 ## Development
 
@@ -186,6 +221,9 @@ python -m pytest -q
 ```bash
 python tools/check_ascii.py
 ```
+
+Deeper runs: `VIBEAUDIT_FUZZ_ROUNDS=300` for the fuzzer and `VIBEAUDIT_PERF_FILES=10000` for the scale
+test.
 
 ## License and data sources
 
