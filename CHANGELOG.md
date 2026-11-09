@@ -4,6 +4,43 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.2.1] - 2026-11-09
+
+Fixes for issues raised by an external review of the code. Each has a regression test that fails when the
+fix is reverted.
+
+### Added
+
+- Pinned versions from `pnpm-lock.yaml`, `yarn.lock`, `bun.lock`, `poetry.lock`, `uv.lock`, `pdm.lock` and
+  `Pipfile.lock` are checked against OSV (previously only `package-lock.json` and `==` pins).
+- AI001 is a registered rule, so it is listed by `vibeaudit rules` and can be disabled.
+
+### Fixed
+
+- JS lexer: `/>` after an expression (`<C p={1} />`) was read as the start of a regular expression, which
+  could hide code on the rest of the line.
+- Python: code inside `lambda` bodies was never analysed; lambdas passed to agent tools
+  (`Tool(func=lambda cmd: ...)`) now get model-controlled parameters (LLM005).
+- Folders named `env/` or `.env/` (for example `src/env/` in T3 and Next.js apps) were skipped as if they
+  were virtual environments; only folders containing `pyvenv.cfg` are skipped now.
+- JS data flow was per file: a variable tainted in one function was treated as tainted in every function
+  of the file. It is now scoped to the function. Parameters of Next.js server actions (exported from a
+  `"use server"` file or with an inline directive) are treated as request data.
+- `--extra-index-url` (for example PyTorch wheels) no longer switches off the dependency checks for the
+  whole requirements file; only `--index-url` / `-i`, which replace PyPI, do.
+- The words "places", "replaces" or "workplaces" near a Google API key no longer hide the finding.
+- An AWS secret access key ending in `+`, `/` or `=` inside quotes was missed by the AWS pattern.
+- A comment mentioning rate limiting (`# TODO: add rate limit`) counted as rate limiting for the whole
+  project; comments are now ignored for project-wide evidence.
+- Secrets sent to an LLM are redacted more thoroughly: generic secret assignments, hard-coded passwords and
+  signing secrets, in addition to provider keys, JWTs, private keys and env assignments.
+- `--disable` accepts AI001 and external rule ids such as `bandit:B608`; inline
+  `vibeaudit: ignore[...]` rule ids are case-insensitive.
+- Two findings of the same rule on identical lines of one file now get distinct fingerprints, so a
+  baseline entry cannot hide the other one.
+- Documentation stated 73 rules; there are 75 static rules plus AI001. The SEC008 description lists
+  NUXT_PUBLIC_ like the check does.
+
 ## [0.2.0] - 2026-11-09
 
 Production-hardening release: fuzzing, property tests, a 15-repository false-positive sweep, network
@@ -76,7 +113,7 @@ First release.
   `--fail-on`, `--min-severity`, `--offline`, `--exclude`, `--disable`, baselines and inline
   `vibeaudit: ignore[RULE]` suppressions.
 - `vibeaudit rules` command (text, JSON, Markdown).
-- 73 rules in 8 categories: secrets, dependencies and supply chain, backend, frontend,
+- 75 rules in 8 categories: secrets, dependencies and supply chain, backend, frontend,
   authentication and authorization, configuration and deployment, LLM and AI-specific risks, and code
   quality and tests. Mapped to CWE, OWASP Top 10 (2021) and OWASP Top 10 for LLM Applications (2025).
 - Python analysis on the AST with taint tracking for request data, model output and agent-tool

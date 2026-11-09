@@ -32,7 +32,8 @@ Summary
   lookups (`--offline` turns that off); an LLM is used only if you ask for it (`--llm`).
 - One `pip install`, pure Python, 3.9 to 3.13 on Linux, macOS and Windows.
 - Terminal summary plus JSON, SARIF 2.1.0 (GitHub code scanning), Markdown and self-contained HTML.
-- 73 rules in 8 categories, mapped to CWE, OWASP Top 10 and the OWASP Top 10 for LLM Applications 2025.
+- 75 static rules in 8 categories (plus AI001 for the optional LLM review), mapped to CWE, OWASP Top 10
+  and the OWASP Top 10 for LLM Applications 2025.
 
 ## Why another scanner
 
@@ -104,6 +105,11 @@ output and minified bundles are skipped. In test files only real credentials are
 
 `vibeaudit rules` lists every rule (`--format json` includes the full why and fix text).
 
+Pinned versions for the vulnerability check come from `requirements.txt` pins and from lockfiles next to
+the manifest: `package-lock.json`, `pnpm-lock.yaml`, `yarn.lock`, `bun.lock`, `poetry.lock`, `uv.lock`,
+`pdm.lock` and `Pipfile.lock`. A requirements file that uses `--index-url` (replacing PyPI) is not checked
+against PyPI; `--extra-index-url` (for example PyTorch wheels) keeps every check.
+
 A repository is untrusted input, so the scan is built to finish whatever it contains. Each file is
 analysed in isolation: a file that triggers a bug is listed under `meta.internal_errors` (and in a note)
 while every other file is still scanned, and a file that exceeds `--file-timeout` or is nested too deeply
@@ -123,6 +129,7 @@ is down, and never report a package as missing unless the registry answered 404 
 | Config | CFG001 root container, CFG002 unpinned base image, CFG003 secret in image, CFG004 Actions script injection, CFG005 pull_request_target checkout, CFG006 any Host accepted, CFG007 default DB password, CFG008 no security headers, CFG009 `.env` copied into image |
 | LLM | LLM001 untrusted input in system prompt, LLM002 model output in a dangerous sink, LLM003 no token limit, LLM004 LLM endpoint without rate limiting, LLM005 agent tool with dangerous capability, LLM006 dangerous agent option, LLM007 system prompt in the browser, LLM008 unsafe model loading, LLM009 unbounded agent loop |
 | Quality | QA001 no tests, QA002 no CI, QA003 swallowed exception, QA004 security TODO left in code |
+| LLM review | AI001 issue reported by the optional `--llm-review` (model-generated, unverified) |
 
 OWASP LLM Top 10 coverage: LLM01, LLM02, LLM03, LLM05, LLM06, LLM07, LLM10. LLM04 (poisoning), LLM08
 (vector stores) and LLM09 (misinformation) are runtime properties; test them with promptfoo or garak.
