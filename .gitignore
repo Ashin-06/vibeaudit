@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local secrets (fixtures under tests/ carry their own, generated at test time)
+/.env
+/.env.*
+
+# Reports
+vibeaudit-report.*
