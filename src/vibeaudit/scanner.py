@@ -1,6 +1,7 @@
 """Run every check over a project and return a cleaned-up, prioritised result."""
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import time
@@ -70,7 +71,7 @@ def suppressed(project: Project, f: Finding) -> bool:
         return False
     for ln in (f.line, f.line - 1):
         m = SUPPRESS.search(sf.line(ln))
-        if m and (not m.group(1) or f.rule_id in {x.strip() for x in m.group(1).split(",")}):
+        if m and (not m.group(1) or f.rule_id.upper() in {x.strip().upper() for x in m.group(1).split(",")}):
             return True
     return False
 
@@ -152,6 +153,7 @@ def _risky_files(project: Project, findings: List[Finding], routes) -> List[str]
 
 def finalize(project: Project, raw: List[Finding], opts: Options, already: bool = False) -> List[Finding]:
     out: List[Finding] = []
+    occurrences: dict = {}
     seen = set()
     builtin_locs = set()
     baseline: Set[str] = set()
@@ -192,6 +194,12 @@ def finalize(project: Project, raw: List[Finding], opts: Options, already: bool 
             builtin_locs.add(loc)
         if not f.fingerprint:
             f.compute_fingerprint()
+            # the same rule on two identical lines of one file (two `return True` stubs) must not share a
+            # fingerprint, or baselining one would hide the other
+            n = occurrences.get(f.fingerprint, 0)
+            occurrences[f.fingerprint] = n + 1
+            if n:
+                f.fingerprint = hashlib.sha256(f"{f.fingerprint}#{n}".encode()).hexdigest()[:32]
         if f.fingerprint in baseline:
             continue
         out.append(f)

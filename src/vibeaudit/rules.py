@@ -67,7 +67,7 @@ _R = [
          "A .env file exists but .gitignore does not cover it, so the next `git add .` publishes every secret.",
          "Add `.env*` and `!.env.example` to .gitignore.", "CWE-538", "A05:2021"),
     Rule("SEC008", "Secret exposed to the browser through a public env var", "secrets", "critical",
-         "Variables prefixed NEXT_PUBLIC_, VITE_, REACT_APP_, EXPO_PUBLIC_, PUBLIC_ or GATSBY_ are copied "
+         "Variables prefixed NEXT_PUBLIC_, VITE_, REACT_APP_, EXPO_PUBLIC_, NUXT_PUBLIC_, PUBLIC_ or GATSBY_ are copied "
          "into the JavaScript bundle that every visitor downloads. A secret here is public.",
          "Rename the variable without the public prefix, use it only in server code (API route, server "
          "action, edge function), and rotate the key because it has already shipped.",
@@ -383,6 +383,10 @@ _R = [
          "An empty except/catch hides failures, including failed auth or payment calls, and makes incidents "
          "very hard to debug.",
          "Log the error and handle it explicitly, or let it propagate.", "CWE-390", "A09:2021"),
+    Rule("AI001", "Issue reported by the LLM review (unverified)", "llm-review", "medium",
+         "With --llm-review a model reads the riskiest files and reports issues the rules did not cover. These are "
+         "suggestions from a model and can be wrong.",
+         "Check the issue by hand before acting on it; suppress or disable AI001 if it is a false alarm.", "", ""),
     Rule("QA004", "Security placeholder or TODO left in code", "quality", "medium",
          "Comments like \"TODO: add auth\" or \"in production, use...\" are where assistants leave "
          "unfinished security work that then ships.",

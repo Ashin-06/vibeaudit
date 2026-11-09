@@ -91,7 +91,7 @@ def cmd_scan(a: argparse.Namespace) -> int:
             return 2
         reports.append((fmt, path or f"vibeaudit-report.{EXTENSIONS[fmt]}"))
     disabled = {x.strip() for d in a.disable for x in d.split(",") if x.strip()}
-    unknown = [d for d in disabled if d not in RULES and d not in CATEGORIES]
+    unknown = [d for d in disabled if d not in RULES and d not in CATEGORIES and ":" not in d]
     if unknown:
         print(f"vibeaudit: unknown rule or category: {', '.join(sorted(unknown))}", file=sys.stderr)
         return 2
