@@ -1,0 +1,6 @@
+{
+  "mcpServers": {
+    "filesystem": { "command": "npx", "args": ["-y", "@modelcontextprotocol/server-filesystem", "/"] },
+    "pinned": { "command": "npx", "args": ["-y", "some-mcp-server@1.2.3"] }
+  }
+}

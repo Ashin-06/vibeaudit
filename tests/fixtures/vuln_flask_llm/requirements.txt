@@ -1,0 +1,7 @@
+flask==3.0.3
+flask-cors==4.0.1
+openai==1.40.0
+requests==2.32.3
+pyyaml==6.0.1
+reqeusts==2.31.0  # expect: DEP002
+flask-openai-chat-helper==0.1.0  # expect-online: DEP001

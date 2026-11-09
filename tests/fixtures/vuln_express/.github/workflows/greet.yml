@@ -1,0 +1,9 @@
+name: greet
+on:
+  issues:
+    types: [opened]
+jobs:
+  greet:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "New issue: ${{ github.event.issue.title }}" # expect: CFG004

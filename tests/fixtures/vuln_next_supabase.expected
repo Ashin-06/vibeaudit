@@ -1,0 +1,6 @@
+.env.local:0:SEC007
+package.json:6:DEP006
+package.json:15:DEP002
+package.json:1:DEP005
+package.json:1:QA001
+package.json:1:QA002

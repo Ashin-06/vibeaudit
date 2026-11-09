@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+<body>
+<div id="out"></div>
+<script>
+  const params = new URLSearchParams(location.search);
+  document.getElementById("out").innerHTML = params.get("msg"); // expect: FE001
+  window.addEventListener("message", (event) => { // expect: FE004
+    document.title = event.data;
+  });
+  localStorage.setItem("authToken", "abc"); // expect: FE005
+  fetch("http://localhost:4000/api/notes"); // expect: FE007
+</script>
+</body>
+</html>

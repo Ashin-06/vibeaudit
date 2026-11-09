@@ -1,0 +1,6 @@
+# path:line:RULE for findings that cannot carry an inline marker
+.env:0:SEC007
+Dockerfile:1:CFG002
+Dockerfile:1:CFG001
+Dockerfile:2:CFG003
+Dockerfile:4:CFG009
