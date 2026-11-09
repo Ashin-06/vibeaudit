@@ -116,14 +116,43 @@ class FileState:
     def __init__(self, sf: SourceFile, views: Views):
         self.sf = sf
         self.v = views
-        self.taint: Dict[str, Set[str]] = {}
-        self.whole_body: Set[str] = set()
-        self.sql_names: Set[str] = set()
+        # Taint is scoped: a name tainted inside one function is not tainted in another function of the
+        # same file. Scopes are function spans; (0, 10 ** 12) is top-level code, visible everywhere.
+        self.scopes: List[Tuple[int, int]] = []
+        self.taint: Dict[str, Dict[Tuple[int, int], Set[str]]] = {}
+        self.whole_body: Dict[str, Set[Tuple[int, int]]] = {}
+        self.sql_names: Dict[str, Set[Tuple[int, int]]] = {}
         self.decl_rhs: Dict[str, str] = {}
         self.handled: Set[int] = set()  # sink offsets already reported
         self.is_framework = bool(FRAMEWORK_FILE.search(views.code))
 
-    def kinds(self, code: str, bare: str) -> Set[str]:
+    def scope_of(self, at: int) -> Tuple[int, int]:
+        best = (0, 10 ** 12)
+        for a, b in self.scopes:
+            if a <= at < b and (b - a) < (best[1] - best[0]):
+                best = (a, b)
+        return best
+
+    @staticmethod
+    def visible(spans, at: Optional[int]) -> bool:
+        return bool(spans) and (at is None or any(a <= at < b for a, b in spans))
+
+    def taint_at(self, at: Optional[int]) -> Dict[str, Set[str]]:
+        out: Dict[str, Set[str]] = {}
+        for name, by_scope in self.taint.items():
+            for (a, b), kinds in by_scope.items():
+                if at is None or a <= at < b:
+                    out[name] = out.get(name, set()) | kinds
+        return out
+
+    def add_taint(self, name: str, scope: Tuple[int, int], kinds: Set[str]) -> bool:
+        current = self.taint.setdefault(name, {}).setdefault(scope, set())
+        if kinds <= current:
+            return False
+        current |= kinds
+        return True
+
+    def kinds(self, code: str, bare: str, at: Optional[int] = None) -> Set[str]:
         if SANITIZER.search(code):
             return set()
         k: Set[str] = set()
@@ -131,7 +160,7 @@ class FileState:
             k.add("user")
         if LLM_SRC.search(code):
             k.add("llm")
-        for name, kinds in self.taint.items():
+        for name, kinds in self.taint_at(at).items():
             if kinds - k and ident_re(name).search(bare):
                 k |= kinds
         return k
@@ -290,6 +319,7 @@ class JsScanner:
                     end = stmt_end(bare, k)
                 if end > m.start():
                     self.func_index.setdefault(name, []).append((fs, m.start(), end + 1))
+                    fs.scopes.append((m.start(), end + 1))
 
     def body_of(self, name: str, near: Optional[FileState] = None) -> Optional[str]:
         defs = self.func_index.get(name.split(".")[-1])
@@ -340,27 +370,52 @@ class JsScanner:
         for m in finditer(ASSIGN, bare):
             end = stmt_end(bare, m.end())
             assigns.append(([m.group(1)], m.end(), end, True))
-        for names, a, b, plain in assigns:
+        scoped = [(names, a, b, plain, fs.scope_of(a)) for names, a, b, plain in assigns]
+        for names, a, b, plain, scope in scoped:
             rhs = code[a:b]
             if plain and len(names) == 1:
                 fs.decl_rhs.setdefault(names[0], rhs)
                 if WHOLE_BODY.match(rhs):
-                    fs.whole_body.add(names[0])
+                    fs.whole_body.setdefault(names[0], set()).add(scope)
                 if SQL_KW.search(rhs) and ("${" in rhs or re.search(r"['\"`]\s*\+|\+\s*['\"`]", rhs)):
-                    fs.sql_names.add(names[0])
+                    fs.sql_names.setdefault(names[0], set()).add(scope)
+        self._taint_server_action_params(fs)
         for _ in range(6):
             changed = False
-            for names, a, b, _plain in assigns:
+            for names, a, b, _plain, scope in scoped:
                 GUARD.tick()
-                k = fs.kinds(code[a:b], bare[a:b])
+                k = fs.kinds(code[a:b], bare[a:b], a)
                 if not k:
                     continue
                 for n in names:
-                    if not k <= fs.taint.get(n, set()):
-                        fs.taint[n] = fs.taint.get(n, set()) | k
-                        changed = True
+                    changed |= fs.add_taint(n, scope, k)
             if not changed:
                 break
+
+    def _taint_server_action_params(self, fs: FileState) -> None:
+        """Server action arguments come straight from the client: `export async function save(id)` in a
+        "use server" file, or a function whose body starts with the "use server" directive."""
+        code, bare = fs.v.code, fs.v.bare
+        file_level = bool(re.search(r"^\s*['\"]use server['\"]", code[:600], re.M))
+        for a, b in fs.scopes:
+            brace = bare.find("{", a, b)
+            inline = brace >= 0 and re.match(r"\{\s*['\"]use server['\"]", code[brace:brace + 40])
+            exported = file_level and re.search(r"\bexport\s+(?:default\s+)?(?:async\s+)?$", code[max(0, a - 40):a])
+            if not (inline or exported):
+                continue
+            p_open = bare.find("(", a, b)
+            p_close = match_close(bare, p_open) if p_open >= 0 else -1
+            if p_close < 0:
+                continue
+            for x, y in split_args(bare, p_open + 1, p_close):
+                piece = code[x:y].strip()
+                if piece.startswith("{"):
+                    names = _decl_names(piece[:match_close(bare[x:y].strip(), 0) + 1])
+                else:
+                    m = re.match(r"(?:\.\.\.)?\s*([A-Za-z_$][\w$]*)", piece)
+                    names = [m.group(1)] if m else []
+                for name in names:
+                    fs.add_taint(name, (a, b), {"user"})
 
     def compute_mount_auth(self) -> None:
         """Express-style `app.use(requireAuth)` and `app.use('/x', requireAuth, router)` protection."""
@@ -442,7 +497,7 @@ class JsScanner:
             for m in finditer(r"(?<![\w$.])(?:exec|execSync)\s*\(|\b(?:child_process|cp|childProcess)\s*\.\s*(?:exec|execSync)\s*\(", bare):
                 args = self.call_args(fs, m.end() - 1)
                 if args and not is_static_string(args[0][0]):
-                    report("BE002", m.start(), fs.kinds(args[0][0], args[0][1]), "a shell command", "critical",
+                    report("BE002", m.start(), fs.kinds(args[0][0], args[0][1], m.start()), "a shell command", "critical",
                            "Shell command built from a variable; if any part comes from users or a model this is command injection.",
                            "medium")
             for m in finditer(r"(?<![\w$])(?:spawn|spawnSync|execFile|execFileSync)\s*\(", bare):
@@ -451,11 +506,11 @@ class JsScanner:
                     continue
                 joined = " ".join(a[0] for a in args)
                 if re.search(r"\bshell\s*:\s*true", joined):
-                    k = fs.kinds(joined, " ".join(a[1] for a in args))
+                    k = fs.kinds(joined, " ".join(a[1] for a in args), m.start())
                     report("BE002", m.start(), k, "a spawned process", "high",
                            "Process spawned with shell: true and a dynamic command.", "medium")
                 else:
-                    k = fs.kinds(args[0][0], args[0][1])  # without a shell only the program name is dangerous
+                    k = fs.kinds(args[0][0], args[0][1], m.start())  # without a shell only the program name is dangerous
                     if k & {"user", "llm"}:
                         report("BE002", m.start(), k, "the program a process runs", "high")
         # dynamic code
@@ -463,7 +518,7 @@ class JsScanner:
             args = self.call_args(fs, m.end() - 1)
             if args and not all(is_static_string(a[0]) for a in args):
                 joined = " ".join(a[0] for a in args)
-                report("BE003", m.start(), fs.kinds(joined, " ".join(a[1] for a in args)), "eval / new Function",
+                report("BE003", m.start(), fs.kinds(joined, " ".join(a[1] for a in args), m.start()), "eval / new Function",
                        "critical", "Code is evaluated from a dynamic string.", "medium")
         # SQL
         for m in finditer(r"\.\s*(?:query|execute|raw|\$queryRawUnsafe|\$executeRawUnsafe|unsafe|exec|run|all|get|prepare)\s*\(", bare):
@@ -475,11 +530,11 @@ class JsScanner:
             dynamic = False
             if SQL_KW.search(a_code) and ("${" in a_code or re.search(r"['\"`]\s*\+|\+\s*['\"`]", a_code)):
                 dynamic = True
-            elif re.fullmatch(r"[A-Za-z_$][\w$]*", name) and name in fs.sql_names:
+            elif re.fullmatch(r"[A-Za-z_$][\w$]*", name) and fs.visible(fs.sql_names.get(name), m.start()):
                 dynamic = True
                 a_code = fs.decl_rhs.get(name, a_code)
             if dynamic:
-                report("BE001", m.start(), fs.kinds(a_code, a_code), "a SQL query built with string formatting", "high",
+                report("BE001", m.start(), fs.kinds(a_code, a_code, m.start()), "a SQL query built with string formatting", "high",
                        "SQL query built with string interpolation; use parameters even for values you think are safe.",
                        "medium")
         # NoSQL
@@ -492,25 +547,24 @@ class JsScanner:
                 direct = re.fullmatch(r"\s*(?:req|request)\s*\.\s*(?:body|query)\s*", a_code) or re.search(
                     r":\s*(?:req|request)\s*\.\s*(?:body|query|params)\s*\.\s*[\w$]+\s*(?=[,}])", a_code)
                 if not direct and a_code.strip().startswith("{"):
-                    for name, kinds in fs.taint.items():
-                        if "user" in kinds and name not in fs.whole_body and re.search(
+                    for name, kinds in fs.taint_at(m.start()).items():
+                        if "user" in kinds and not fs.visible(fs.whole_body.get(name), m.start()) and re.search(
                                 r"[{,:]\s*" + re.escape(name) + r"\s*(?=[,}])", a_bare):
                             direct = True
                             break
                 if direct:
                     report("BE010", m.start(), {"user"}, "a MongoDB query filter without type checks", "high")
         # mass assignment
-        whole = [re.escape(n) for n in fs.whole_body]
-        whole_rx = re.compile(
-            r"(?<![\w$.])(?:req|request)\s*\.\s*body\b(?!\s*\.)"
-            + (r"|(?:\.\.\.\s*|data\s*:\s*)(?:" + "|".join(whole) + r")\b(?!\s*[.\[])" if whole else "")
-        )
         for m in finditer(r"\.\s*(?:create|insert|insertOne|insertMany|update|updateOne|updateMany|upsert|findByIdAndUpdate|findOneAndUpdate|build|bulkCreate)\s*\(|\bnew\s+[A-Z][\w$]*\s*\(|\bObject\s*\.\s*assign\s*\(", bare):
             args = self.call_args(fs, m.end() - 1)
             if not args:
                 continue
-            hit = any(whole_rx.search(a[0]) for a in args) or any(
-                a[1].strip() in fs.whole_body for a in args)
+            whole = [n for n, spans in fs.whole_body.items() if fs.visible(spans, m.start())]
+            whole_rx = re.compile(
+                r"(?<![\w$.])(?:req|request)\s*\.\s*body\b(?!\s*\.)"
+                + (r"|(?:\.\.\.\s*|data\s*:\s*)(?:" + "|".join(map(re.escape, whole)) + r")\b(?!\s*[.\[])" if whole else "")
+            )
+            hit = any(whole_rx.search(a[0]) for a in args) or any(a[1].strip() in whole for a in args)
             if hit and not re.match(r"\bnew\s+(?:Error|URL|Response|NextResponse|Map|Set|Date|Request|Headers|Promise)\b", bare[m.start():m.end()]):
                 report("BE009", m.start(), {"user"}, "a database write of the whole request body", "high")
         if not server:
@@ -523,7 +577,7 @@ class JsScanner:
             a_code = code[arg[0]:arg[1]].strip()
             if re.match(r"""['"`](?:https?://[^'"`$/]+/|/(?!/))""", a_code):
                 continue  # fixed host or relative path
-            k = fs.kinds(a_code, bare[arg[0]:arg[1]])
+            k = fs.kinds(a_code, bare[arg[0]:arg[1]], m.start())
             if k & {"user", "llm"}:
                 report("BE005", m.start(), k, "an outbound HTTP request URL", "high")
         # path traversal
@@ -531,7 +585,7 @@ class JsScanner:
         for m in finditer(r"\b(?:res|reply|response)\s*\.\s*(?:sendFile|download)\s*\(|\bfs(?:\s*\.\s*promises)?\s*\.\s*(?:readFile|readFileSync|writeFile|writeFileSync|createReadStream|createWriteStream|unlink|unlinkSync|rm|rmSync|appendFile|appendFileSync)\s*\(" + (r"|(?<![\w$.])(?:readFile|writeFile|unlink|rm|appendFile)\s*\(" if fs_import else ""), bare):
             arg = first_arg(bare, m.end() - 1)
             if arg:
-                k = fs.kinds(code[arg[0]:arg[1]], bare[arg[0]:arg[1]])
+                k = fs.kinds(code[arg[0]:arg[1]], bare[arg[0]:arg[1]], m.start())
                 if k & {"user", "llm"} and "basename" not in code[arg[0]:arg[1]]:
                     report("BE006", m.start(), k, "a file system path", "high")
         # open redirect
@@ -543,7 +597,7 @@ class JsScanner:
             t_code = target[0].strip()
             if re.match(r"""['"`]/(?!/)""", t_code) or re.match(r"""new\s+URL\s*\(\s*['"`]/(?!/)""", t_code):
                 continue
-            k = fs.kinds(t_code, target[1])
+            k = fs.kinds(t_code, target[1], m.start())
             if k & {"user", "llm"}:
                 report("BE008", m.start(), k, "a redirect target", "medium")
 
@@ -554,7 +608,7 @@ class JsScanner:
             if off in fs.handled or is_static_string(expr_code) or SANITIZER.search(expr_code):
                 return
             fs.handled.add(off)
-            k = fs.kinds(expr_code, expr_bare)
+            k = fs.kinds(expr_code, expr_bare, off)
             if "llm" in k:
                 self.add(fs, "LLM002", off, f"Model output is rendered as raw HTML ({where}); prompt injection becomes XSS.", "high")
             elif "user" in k:
@@ -586,7 +640,7 @@ class JsScanner:
             for m in finditer(r"\b(?:res|reply)\s*\.\s*send\s*\(", bare):
                 arg = first_arg(bare, m.end() - 1)
                 if arg and re.search(r"<\w", code[arg[0]:arg[1]]):
-                    k = fs.kinds(code[arg[0]:arg[1]], bare[arg[0]:arg[1]])
+                    k = fs.kinds(code[arg[0]:arg[1]], bare[arg[0]:arg[1]], m.start())
                     if k & {"user", "llm"}:
                         judge(m.start(), code[arg[0]:arg[1]], bare[arg[0]:arg[1]], "HTML response")
         if fs.sf.kind == "html":
@@ -692,7 +746,7 @@ class JsScanner:
         if not parts:
             return
         joined = " ".join(parts)
-        k = fs.kinds(joined, joined)
+        k = fs.kinds(joined, joined, off)
         if "user" in k:
             self.add(fs, "LLM001", off, "Request data is interpolated into the system prompt.", "high")
             return
