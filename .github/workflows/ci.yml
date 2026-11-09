@@ -55,6 +55,21 @@ jobs:
           cd /tmp && /tmp/clean/bin/vibeaudit scan "$GITHUB_WORKSPACE/src" --offline --external none -q --fail-on none --report sarif:/tmp/out.sarif
           python -c "import json; json.load(open('/tmp/out.sarif'))"
 
+  stress:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Deep fuzzing and the 10,000-file scale test
+        env:
+          VIBEAUDIT_FUZZ_ROUNDS: "60"
+          VIBEAUDIT_PERF_FILES: "10000"
+        run: |
+          python -m pip install -e ".[dev]"
+          python -m pytest -q -s tests/test_fuzz.py tests/test_performance.py
+
   bandit-integration:
     runs-on: ubuntu-latest
     steps:
