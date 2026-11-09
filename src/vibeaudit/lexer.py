@@ -9,9 +9,7 @@ plain depth count.
 """
 from __future__ import annotations
 
-import io
 import re
-import tokenize
 from typing import List, Optional, Tuple
 
 REGEX_PREV = set("(,=:[!&|?{};+-*%<>~^")
@@ -147,40 +145,45 @@ def _regex_allowed(bare: list, i: int) -> bool:
 
 
 def py_views(src: str) -> Views:
+    """Linear scan for Python comments and string literals.
+
+    The standard tokenize module is avoided on purpose: on Python 3.12+ every token carries its whole
+    physical line, which makes a large single-line file quadratic. Unterminated strings end at the end of
+    the line (single quotes) or of the file (triple quotes), so broken code still gets usable views.
+    """
+    n = len(src)
     code = list(src)
     bare = list(src)
     comments: List[Tuple[int, int]] = []
-    starts = [0]
-    for m in re.finditer("\n", src):
-        starts.append(m.end())
-
-    def off(row: int, col: int) -> int:
-        return starts[row - 1] + col if row - 1 < len(starts) else len(src)
-
-    try:
-        for tok in tokenize.generate_tokens(io.StringIO(src).readline):
-            a = off(*tok.start)
-            b = off(*tok.end)
-            if tok.type == tokenize.COMMENT:
-                _blank(code, a, b)
-                _blank(bare, a, b)
-                comments.append((a, b))
-            elif tok.type == tokenize.STRING:
-                s = tok.string
-                q = min((s.find(ch) for ch in "'\"" if s.find(ch) >= 0), default=-1)
-                if q < 0:
+    i = 0
+    while i < n:
+        c = src[i]
+        if c == "#":
+            j = src.find("\n", i)
+            j = n if j == -1 else j
+            _blank(code, i, j)
+            _blank(bare, i, j)
+            comments.append((i, j))
+            i = j
+        elif c in "'\"":
+            triple = src[i:i + 3] == c * 3
+            q = c * 3 if triple else c
+            j = i + len(q)
+            while j < n:
+                ch = src[j]
+                if ch == "\\":
+                    j += 2
                     continue
-                ql = 3 if s[q:q + 3] in ('"""', "'''") else 1
-                _blank(bare, a + q + ql, max(a + q + ql, b - ql))
-            elif tokenize.tok_name.get(tok.type) == "FSTRING_MIDDLE":
-                _blank(bare, a, b)
-    except (tokenize.TokenError, IndentationError, SyntaxError):
-        for m in re.finditer(r"#[^\n]*", src):
-            if m.start() >= len(code) or code[m.start()] != "#":
-                continue
-            _blank(code, m.start(), m.end())
-            _blank(bare, m.start(), m.end())
-            comments.append((m.start(), m.end()))
+                if not triple and ch == "\n":
+                    break
+                if src.startswith(q, j):
+                    break
+                j += 1
+            end = min(j, n)
+            _blank(bare, i + len(q), end)
+            i = end + len(q) if end < n and src.startswith(q, end) else end
+        else:
+            i += 1
     return Views("".join(code), "".join(bare), comments)
 
 
@@ -224,7 +227,7 @@ def split_args(bare: str, a: int, b: int) -> List[Tuple[int, int]]:
     return spans
 
 
-_CONT_START = re.compile(r"\s*(?:\.|\?|:|&&|\|\||\+|-|\*|/|\?\?|=>)")
+_CONT_START = re.compile(r"(?<![ \t])[ \t]*(?:\.|\?|:|&&|\|\||\+|-|\*|/|\?\?|=>)")
 
 
 def stmt_end(bare: str, i: int) -> int:

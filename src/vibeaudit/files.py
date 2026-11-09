@@ -101,6 +101,11 @@ class SourceFile:
                 data = self.path.read_bytes()
             except OSError:
                 return None
+            if data[:2] in (b"\xff\xfe", b"\xfe\xff"):
+                try:
+                    data = data.decode("utf-16").encode("utf-8")
+                except UnicodeDecodeError:
+                    return None
             if b"\x00" in data[:8192]:
                 return None
             text = data.decode("utf-8-sig", errors="replace")
@@ -154,6 +159,14 @@ def _matches(rel: str, patterns: Iterable[str]) -> bool:
     return False
 
 
+def _inside(path: Path, root: Path) -> bool:
+    try:
+        path.resolve().relative_to(root)
+        return True
+    except (ValueError, OSError, RuntimeError):
+        return False
+
+
 def read_ignore_file(path: Path) -> List[str]:
     try:
         lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
@@ -163,10 +176,23 @@ def read_ignore_file(path: Path) -> List[str]:
 
 
 def gitignore_covers(root: Path, rel: str) -> bool:
-    """Rough .gitignore check used when the folder is not a git checkout."""
-    pats = [p for p in read_ignore_file(root / ".gitignore") if not p.startswith("!")]
-    negs = [p[1:] for p in read_ignore_file(root / ".gitignore") if p.startswith("!")]
-    return _matches(rel, pats) and not _matches(rel, negs)
+    """Rough .gitignore check used when the folder is not a git checkout.
+
+    Like git, every .gitignore between the root and the file applies, with patterns relative to the
+    directory that holds it; a deeper file can re-include with `!`.
+    """
+    parts = rel.split("/")
+    ignored = False
+    for depth in range(len(parts)):
+        base = "/".join(parts[:depth])
+        sub = "/".join(parts[depth:])
+        for pat in read_ignore_file(root / base / ".gitignore" if base else root / ".gitignore"):
+            if pat.startswith("!"):
+                if _matches(sub, [pat[1:]]):
+                    ignored = False
+            elif _matches(sub, [pat]):
+                ignored = True
+    return ignored
 
 
 class Project:
@@ -211,8 +237,11 @@ class Project:
                 continue
             if not self.is_git and ENV_FILE_RE.search(rel) and gitignore_covers(self.root, rel):
                 continue  # a local, ignored .env is how secrets are supposed to live
-            if not (self.root / rel).is_file():
+            path = self.root / rel
+            if not path.is_file():
                 continue
+            if path.is_symlink() and not _inside(path, self.root):
+                continue  # a link out of the repository (for example to ~/.ssh) is not part of the project
             sf = SourceFile(self.root, rel, self.max_bytes)
             self.files.append(sf)
             self._by_rel[rel] = sf

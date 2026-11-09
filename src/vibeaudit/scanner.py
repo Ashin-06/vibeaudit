@@ -11,6 +11,7 @@ from typing import Callable, List, Optional, Set
 from . import external
 from .deps import DepScanner
 from .files import Project
+from .guard import GUARD
 from .jsscan import JsScanner
 from .model import SEVERITY_RANK, Finding, at_least
 from .projectscan import ProjectScanner
@@ -47,6 +48,7 @@ class Options:
     llm_model: Optional[str] = None
     llm_review: bool = False
     llm_max_requests: int = 10
+    file_timeout: float = 30.0
     log: Callable[[str], None] = lambda s: None
 
 
@@ -76,6 +78,7 @@ def suppressed(project: Project, f: Finding) -> bool:
 def scan(root: str, opts: Optional[Options] = None) -> Result:
     opts = opts or Options()
     start = time.time()
+    GUARD.reset(opts.file_timeout)
     project = Project(Path(root), opts.excludes, opts.max_file_bytes)
     raw: List[Finding] = []
     emit = raw.append
@@ -86,7 +89,7 @@ def scan(root: str, opts: Optional[Options] = None) -> Result:
     SecretScanner(project, emit).run()
     ProjectScanner(project, emit, js_routes + py_routes).run()
     deps = DepScanner(project, emit, opts.offline)
-    deps.run()
+    GUARD.run("<project>", "dependency checks", deps.run)
     notes += deps.notes
 
     ran = []
@@ -103,7 +106,7 @@ def scan(root: str, opts: Optional[Options] = None) -> Result:
                     notes.append(f"{tool} is not installed; skipped.")
                 continue
             opts.log(f"running {tool} ...")
-            res = external.run_tool(tool, project.root)
+            res = GUARD.run("<project>", tool, external.run_tool, tool, project.root)
             if res is None:
                 notes.append(f"{tool} failed to run or produced no readable output.")
                 continue
@@ -111,6 +114,10 @@ def scan(root: str, opts: Optional[Options] = None) -> Result:
             raw.extend(res)
 
     findings = finalize(project, raw, opts)
+    if GUARD.skipped:
+        notes.append(f"{len(GUARD.skipped)} file checks were skipped (time budget or nesting); see meta.skipped.")
+    if GUARD.internal_errors:
+        notes.append(f"{len(GUARD.internal_errors)} internal errors; results may be incomplete. Please report them.")
 
     if opts.llm:
         from . import llm
@@ -129,6 +136,7 @@ def scan(root: str, opts: Optional[Options] = None) -> Result:
         "files_scanned": len(project.files), "duration_seconds": round(time.time() - start, 2),
         "stack": _stack(project), "external_tools": ran, "offline": opts.offline, "notes": notes,
         "routes_found": len(js_routes) + len(py_routes), "git": project.is_git,
+        "skipped": list(GUARD.skipped), "internal_errors": list(GUARD.internal_errors),
     }
     return Result(str(project.root), findings, meta)
 

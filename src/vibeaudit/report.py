@@ -235,7 +235,8 @@ def render_html(res: Result) -> str:
             parts.append(f"<dt>LLM triage</dt><dd>{e(f.llm_verdict)} - {e(f.llm_reason or '')}</dd>")
         parts.append("</dl></section>")
     parts.append(f"</main><script>{JS}</script></body></html>")
-    return "\n".join(parts) + "\n"
+    # Character references keep the page plain ASCII whatever the scanned code contains.
+    return ("\n".join(parts) + "\n").encode("ascii", "xmlcharrefreplace").decode("ascii")
 
 
 RENDERERS = {"json": render_json, "sarif": render_sarif, "md": render_markdown, "markdown": render_markdown,
@@ -249,5 +250,6 @@ def write_report(res: Result, fmt: str, path: str) -> None:
         sys.stdout.write(text)
         return
     os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
-    with open(path, "w", encoding="utf-8", newline="\n") as fh:
+    # errors="replace": file names that are not valid UTF-8 must not abort the report.
+    with open(path, "w", encoding="utf-8", errors="replace", newline="\n") as fh:
         fh.write(text)

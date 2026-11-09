@@ -44,6 +44,8 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--baseline", metavar="FILE", help="hide findings already present in this JSON report")
     s.add_argument("--write-baseline", metavar="FILE", help="save all current findings as a baseline and exit 0")
     s.add_argument("--max-file-size", type=int, default=1_000_000, help="skip files larger than this many bytes")
+    s.add_argument("--file-timeout", type=float, default=30.0,
+                   help="seconds each analysis step may spend on one file before it is stopped (default: 30)")
     s.add_argument("--llm", choices=["gemini", "openai", "anthropic"],
                    help="use an LLM to triage findings (needs GEMINI_API_KEY / OPENAI_API_KEY / ANTHROPIC_API_KEY)")
     s.add_argument("--llm-model", help="model name for the LLM provider")
@@ -102,7 +104,8 @@ def cmd_scan(a: argparse.Namespace) -> int:
 
     opts = Options(offline=a.offline, excludes=a.exclude, disabled=disabled, min_severity=a.min_severity,
                    external=a.external, baseline=a.baseline, max_file_bytes=a.max_file_size, llm=a.llm,
-                   llm_model=a.llm_model, llm_review=a.llm_review, llm_max_requests=max(0, a.llm_max_requests), log=log)
+                   llm_model=a.llm_model, llm_review=a.llm_review, llm_max_requests=max(0, a.llm_max_requests),
+                   file_timeout=max(0.1, a.file_timeout), log=log)
     try:
         res: Result = scan(a.path, opts)
     except KeyboardInterrupt:
