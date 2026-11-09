@@ -12,7 +12,7 @@ from typing import Dict, Iterable, List, Optional, Set
 
 SKIP_DIRS = {
     ".git", ".hg", ".svn", "node_modules", "bower_components", "jspm_packages", "vendor",
-    "venv", ".venv", "env", ".env", "virtualenv", "__pycache__", ".tox", ".nox", ".mypy_cache",
+    "venv", ".venv", "virtualenv", "__pycache__", ".tox", ".nox", ".mypy_cache",
     ".pytest_cache", ".ruff_cache", "site-packages", "dist", "build", "out", ".next", ".nuxt",
     ".output", ".svelte-kit", ".vercel", ".netlify", ".turbo", ".parcel-cache", ".cache",
     "coverage", "htmlcov", ".idea", ".vscode", "target", ".gradle", "Pods", ".expo",
@@ -207,6 +207,7 @@ class Project:
         self.files: List[SourceFile] = []
         self._by_rel: Dict[str, SourceFile] = {}
         self._pkg_cache: Dict[str, Optional[dict]] = {}
+        self._venv_cache: Dict[str, bool] = {}
         self._discover()
 
     def _discover(self) -> None:
@@ -222,14 +223,15 @@ class Project:
                 rels = sorted(self.tracked | self.untracked)
         if not self.is_git:
             for dirpath, dirnames, filenames in os.walk(self.root):
-                dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS and not d.endswith(".egg-info")]
+                dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS and not d.endswith(".egg-info")
+                               and not (Path(dirpath) / d / "pyvenv.cfg").exists()]
                 base = Path(dirpath).relative_to(self.root).as_posix()
                 for fn in filenames:
                     rels.append(fn if base == "." else base + "/" + fn)
             rels.sort()
         for rel in rels:
             parts = rel.split("/")
-            if any(p in SKIP_DIRS for p in parts[:-1]):
+            if any(p in SKIP_DIRS for p in parts[:-1]) or self._in_venv(parts):
                 continue
             if os.path.splitext(rel)[1].lower() in BINARY_EXTS:
                 continue
@@ -245,6 +247,16 @@ class Project:
             sf = SourceFile(self.root, rel, self.max_bytes)
             self.files.append(sf)
             self._by_rel[rel] = sf
+
+    def _in_venv(self, parts: List[str]) -> bool:
+        """True when a parent folder is a Python virtual environment (it has pyvenv.cfg)."""
+        for depth in range(1, len(parts)):
+            d = "/".join(parts[:depth])
+            if d not in self._venv_cache:
+                self._venv_cache[d] = (self.root / d / "pyvenv.cfg").is_file()
+            if self._venv_cache[d]:
+                return True
+        return False
 
     def get(self, rel: str) -> Optional[SourceFile]:
         return self._by_rel.get(rel)

@@ -220,13 +220,16 @@ def string_parts(node: ast.AST) -> str:
 
 
 def walk_shallow(node: ast.AST) -> Iterator[ast.AST]:
-    """ast.walk that does not enter nested functions, classes or lambdas."""
+    """ast.walk that does not enter nested functions or classes (they are analysed on their own).
+
+    Lambda bodies are entered: they run with the enclosing function's variables.
+    """
     todo = [node]
     while todo:
         n = todo.pop()
         yield n
         for child in ast.iter_child_nodes(n):
-            if not isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef, ast.Lambda)):
+            if not isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
                 todo.append(child)
 
 
@@ -274,6 +277,7 @@ class PyScanner:
         self.reported: Set[Tuple[str, int, str]] = set()
         self.tool_methods: Set[int] = set()
         self.auth_aliases: Set[str] = set()
+        self.tool_lambda_nodes: Set[int] = set()
 
     def add(self, rule: str, node: ast.AST, msg: str, sev: str = "") -> None:
         line = getattr(node, "lineno", 1)
@@ -535,6 +539,8 @@ class PyScanner:
             GUARD.tick()
             for expr in header_exprs(st):
                 for n in walk_shallow(expr):
+                    if id(n) in self.tool_lambda_nodes:
+                        continue  # already analysed as an agent tool, with model-controlled parameters
                     if isinstance(n, ast.Call):
                         self.check_call(n, ctx)
                     elif isinstance(n, ast.Dict):
@@ -726,6 +732,18 @@ class PyScanner:
             self.add("BE009", call, "setattr() with a request-controlled attribute name.")
         if name == "update" and is_attr and isinstance(call.func.value, ast.Attribute) and call.func.value.attr == "__dict__" and arg0 is not None and self.taint(arg0, ctx):
             self.add("BE009", call, "Object __dict__ updated from request data.")
+        # agent tools defined inline: Tool(name=..., func=lambda cmd: ...)
+        if name in ("Tool", "StructuredTool", "DynamicTool", "FunctionTool", "from_function"):
+            fn = kws.get("func") or kws.get("coroutine") or next((a for a in call.args if isinstance(a, ast.Lambda)), None)
+            if isinstance(fn, ast.Lambda) and id(fn) not in self.tool_lambda_nodes:
+                sub = Ctx("tool", {a.arg for a in fn.args.args})
+                sub.env = dict(ctx.env)
+                for a in fn.args.args:
+                    sub.env[a.arg] = {"tool": fn.lineno}
+                self.tool_lambda_nodes.update(id(n) for n in ast.walk(fn))
+                for n in walk_shallow(fn.body):
+                    if isinstance(n, ast.Call):
+                        self.check_call(n, sub)
         # LLM-specific
         self.check_llm_call(call, ctx, d, kws)
         self.check_log_secret(call, d)

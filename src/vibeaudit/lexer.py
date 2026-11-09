@@ -12,7 +12,7 @@ from __future__ import annotations
 import re
 from typing import List, Optional, Tuple
 
-REGEX_PREV = set("(,=:[!&|?{};+-*%<>~^")
+REGEX_PREV = set("(,=:[!&|?{};+-*%>~^")
 REGEX_KEYWORDS = {"return", "typeof", "case", "do", "else", "in", "of", "new", "delete", "void", "throw", "yield",
                   "await", "instanceof"}
 
@@ -100,7 +100,7 @@ def js_views(src: str) -> Views:
             _blank(bare, i + 1, end)
             i = end + 1 if end < n and src[end] == c else end
             continue
-        elif c == "/" and _regex_allowed(bare, i):
+        elif c == "/" and not (i + 1 < n and src[i + 1] == ">") and _regex_allowed(bare, i):
             j = i + 1
             in_class = False
             while j < n and src[j] != "\n":
