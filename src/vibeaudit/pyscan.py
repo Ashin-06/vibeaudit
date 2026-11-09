@@ -13,6 +13,7 @@ from typing import Callable, Dict, Iterator, List, Optional, Set, Tuple
 
 from . import heuristics as H
 from .files import Project, SourceFile
+from .guard import GUARD
 from .lexer import py_views
 from .model import Finding, Route
 
@@ -55,6 +56,7 @@ SECRET_VAR = re.compile(
     r"(?i)^(?:api_?key|secret|secret_key|password|passwd|token|access_token|auth_token|private_key|client_secret"
     r"|service_role_key|\w+_api_key|\w+_secret|\w+_token|\w+_password)$"
 )
+AUTH_ANNOTATION = re.compile(r"(?i)^(?:Authed|Authenticated|Current|Verified|LoggedIn|Logged_in|Admin)\w*$|Depends\(\s*[\w.]*(?:auth|user|token|current|admin|verify)")
 BOUND_NAME = re.compile(r"(?i)(max|limit|step|iter|turn|count|attempt|round|budget|tries|retries|n_)")
 
 
@@ -271,6 +273,7 @@ class PyScanner:
         self.sf: SourceFile = None  # type: ignore[assignment]
         self.reported: Set[Tuple[str, int, str]] = set()
         self.tool_methods: Set[int] = set()
+        self.auth_aliases: Set[str] = set()
 
     def add(self, rule: str, node: ast.AST, msg: str, sev: str = "") -> None:
         line = getattr(node, "lineno", 1)
@@ -283,25 +286,30 @@ class PyScanner:
     # --------------------------------------------------------------- phases
     def run(self) -> List[Route]:
         for sf in self.p.of_kind("py"):
-            if sf.text is None:
-                continue
-            try:
-                tree = ast.parse(sf.text, filename=sf.rel)
-            except (SyntaxError, ValueError, RecursionError):
-                continue
-            self.trees.append((sf, tree))
-        self.index()
+            if sf.text is not None:
+                GUARD.run(sf.rel, "Python parsing", self._parse, sf)
+        GUARD.run("<project>", "Python call graph", self.index)
         for sf, tree in self.trees:
             self.sf = sf
-            self.check_comments(sf)
-            if sf.is_test:
-                continue
-            self.scan_module(tree)
+            GUARD.run(sf.rel, "Python checks", self._check_file, sf, tree)
         return self.routes
+
+    def _parse(self, sf: SourceFile) -> None:
+        try:
+            tree = ast.parse(sf.text or "", filename=sf.rel)
+        except (SyntaxError, ValueError):
+            return  # not valid Python (templates, Python 2, partial files): nothing to analyse
+        self.trees.append((sf, tree))
+
+    def _check_file(self, sf: SourceFile, tree: ast.Module) -> None:
+        self.check_comments(sf)
+        if not sf.is_test:
+            self.scan_module(tree)
 
     def index(self) -> None:
         bodies: Dict[str, List[ast.AST]] = {}
         for sf, tree in self.trees:
+            GUARD.tick()
             for node in ast.walk(tree):
                 if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                     bodies.setdefault(node.name, []).append(node)
@@ -320,6 +328,11 @@ class PyScanner:
                         seg = ast.get_source_segment(sf.text, node) or ""
                         if H.AUTH_EVIDENCE.search(seg) or re.search(r"abort\s*\(\s*40[13]|redirect\s*\(", seg):
                             self.global_auth = True
+            for node in tree.body:
+                # AuthedUser = Annotated[User, Depends(get_current_user)]
+                if isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):
+                    if re.search(r"Depends\(\s*[\w.]*(?:auth|user|token|current|admin|verify|session)", ast.unparse(node.value), re.I):
+                        self.auth_aliases.add(node.targets[0].id)
             if re.search(r"DEFAULT_PERMISSION_CLASSES[\s\S]{0,200}IsAuthenticated", sf.text or ""):
                 self.drf_default_auth = True
         direct = set()
@@ -434,6 +447,10 @@ class PyScanner:
         body = "\n".join(lines)
         calls_llm = any(isinstance(n, ast.Call) and is_llm_call(n, self.llm_funcs) for n in walk_shallow(fn))
         auth = bool(H.AUTH_EVIDENCE.search(body)) or self.global_auth or self.sf.rel in self.file_auth
+        for a in fn.args.args + fn.args.kwonlyargs:  # type: ignore[attr-defined]
+            ann = ast.unparse(a.annotation) if a.annotation is not None else ""
+            if ann and (ann.split("[")[0].split(".")[-1] in self.auth_aliases or AUTH_ANNOTATION.search(ann)):
+                auth = True
         if framework == "drf" and self.drf_default_auth and "AllowAny" not in body:
             auth = True
         params = re.findall(r"<(?:\w+:)?(\w+)>|\{(\w+)\}", path)
@@ -515,6 +532,7 @@ class PyScanner:
 
     def walk_block(self, stmts: List[ast.stmt], ctx: Ctx) -> None:
         for st in stmts:
+            GUARD.tick()
             for expr in header_exprs(st):
                 for n in walk_shallow(expr):
                     if isinstance(n, ast.Call):
@@ -542,8 +560,17 @@ class PyScanner:
                 self.walk_block(st.body, ctx)
                 self.walk_block(st.orelse, ctx)
             elif isinstance(st, ast.If):
-                self.walk_block(st.body, ctx)
+                checked = self._allowlisted(st.test)
+                if checked and not isinstance(st.test.ops[0], ast.NotIn):  # type: ignore[attr-defined]
+                    saved = {n: ctx.env.pop(n) for n in checked if n in ctx.env}
+                    self.walk_block(st.body, ctx)
+                    ctx.env.update(saved)
+                else:
+                    self.walk_block(st.body, ctx)
                 self.walk_block(st.orelse, ctx)
+                if checked and isinstance(st.test.ops[0], ast.NotIn) and st.body and isinstance(st.body[-1], (ast.Raise, ast.Return)):  # type: ignore[attr-defined]
+                    for n in checked:
+                        ctx.env.pop(n, None)  # rejected unless it is in the allow-list
             elif isinstance(st, (ast.With, ast.AsyncWith)):
                 for item in st.items:
                     if item.optional_vars is not None:
@@ -611,8 +638,12 @@ class PyScanner:
                 if shell_on and const_str(arg0) is None:
                     if not self.sink(call, t0, "BE002", "a shell command", "critical", True):
                         self.add("BE002", call, "subprocess with shell=True and a dynamic command.", "medium")
+                elif isinstance(arg0, (ast.List, ast.Tuple)) and arg0.elts:
+                    program = self.taint(arg0.elts[0], ctx)
+                    if program:
+                        self.sink(call, program, "BE002", "the program a subprocess runs", "high", True)
                 elif t0:
-                    self.sink(call, t0, "BE002", "a subprocess argument list", "high", True)
+                    self.sink(call, t0, "BE002", "a subprocess command", "high", True)
         # dynamic code
         elif isinstance(call.func, ast.Name) and name in ("eval", "exec", "compile") and arg0 is not None and const_str(arg0) is None:
             if not self.sink(call, t0, "BE003", f"{name}()", "critical", True):
@@ -638,7 +669,8 @@ class PyScanner:
             if not self.sink(call, t0, "BE007", "render_template_string()", "high", False) and is_formatted(arg0):
                 self.add("BE007", call, "Template string built with formatting; user data in it becomes template code.", "medium")
         elif name in ("Markup", "mark_safe", "HTMLResponse") and (arg0 is not None or "content" in kws):
-            tt = t0 or self.taint(kws.get("content"), ctx)
+            value = arg0 if arg0 is not None else kws.get("content")
+            tt = {} if self._rendered(value, ctx) else (t0 or self.taint(kws.get("content"), ctx))
             if not self.sink(call, tt, "FE001", f"{name}() (raw HTML)", "high", False) and arg0 is not None and is_formatted(arg0):
                 self.add("FE001", call, f"{name}() marks a formatted string as safe HTML.", "medium")
         elif name in ("redirect", "RedirectResponse", "HttpResponseRedirect") and arg0 is not None:
@@ -687,7 +719,8 @@ class PyScanner:
         for k in call.keywords:
             if k.arg is None and not (isinstance(k.value, ast.Call) and last_name(k.value.func) in ("dict", "model_dump", "dump", "validated_data")):
                 tk = self.taint(k.value, ctx)
-                if ("user" in tk or "llm" in tk) and (name[:1].isupper() or name in ("create", "update", "insert", "update_or_create", "get_or_create", "filter_by")):
+                if ("user" in tk or "llm" in tk) and not is_llm_call(call, self.llm_funcs) and (
+                        name[:1].isupper() or name in ("create", "update", "insert", "update_or_create", "get_or_create", "filter_by")):
                     self.add("BE009", call, "The whole request body is unpacked into a model write.")
         if name == "setattr" and len(call.args) >= 2 and "user" in self.taint(call.args[1], ctx):
             self.add("BE009", call, "setattr() with a request-controlled attribute name.")
@@ -696,6 +729,23 @@ class PyScanner:
         # LLM-specific
         self.check_llm_call(call, ctx, d, kws)
         self.check_log_secret(call, d)
+
+    @staticmethod
+    def _allowlisted(test: ast.AST) -> List[str]:
+        """Names checked against a fixed collection: `x in ALLOWED` or `x not in ALLOWED`."""
+        if isinstance(test, ast.Compare) and len(test.ops) == 1 and isinstance(test.ops[0], (ast.In, ast.NotIn)) \
+                and isinstance(test.left, ast.Name) and not isinstance(test.comparators[0], ast.Constant):
+            return [test.left.id]
+        return []
+
+    def _rendered(self, node: Optional[ast.AST], ctx: Ctx) -> bool:
+        """True when the value comes from a function call (a template render, an email builder) rather than
+        straight from the request; such output is that function's responsibility to escape."""
+        while isinstance(node, (ast.Attribute, ast.Subscript)):
+            node = node.value
+        if isinstance(node, ast.Name):
+            node = ctx.assigned.get(node.id, node)
+        return isinstance(node, ast.Call) and last_name(node.func) not in ("str", "format", "join", "get", "json", "get_json")
 
     def check_cors_flask(self, call: ast.Call, kws: Dict[str, ast.AST]) -> None:
         origins = kws.get("origins") or kws.get("resources")
@@ -780,7 +830,9 @@ class PyScanner:
                 return bool(re.search(r"(?i)passw", const_str(n.slice) or ""))  # type: ignore[arg-type]
             return bool(re.search(r"(?i)^(?:password|passwd|pwd)$|password$", last_name(n)))
 
-        if all(pw(s) for s in sides) and not any(re.search(r"(?i)hash|digest|confirm", ast.unparse(s)) for s in sides):
+        same_source = root_name(sides[0]) and root_name(sides[0]) == root_name(sides[1])
+        if all(pw(s) for s in sides) and not same_source and not any(
+                re.search(r"(?i)hash|digest|confirm|repeat|again|new_?pass|old_?pass", ast.unparse(s)) for s in sides):
             self.add("BE014", node, "Password compared in plaintext; passwords appear to be stored unhashed.")
 
     def check_assign_random(self, st: ast.Assign) -> None:

@@ -12,6 +12,7 @@ import re
 from typing import Callable, Dict, List, Optional, Set, Tuple
 
 from . import heuristics as H
+from .guard import GUARD, finditer
 from .files import Project, SourceFile
 from .lexer import Views, first_arg, js_views, match_close, split_args, stmt_end
 from .model import Finding, Route
@@ -70,7 +71,7 @@ FUNC_DEFS = [
     re.compile(r"\b(?:async\s+)?function\s*\*?\s*([A-Za-z_$][\w$]*)\s*\("),
     re.compile(r"\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*(?::[^=\n]+)?=\s*(?:async\s+)?(?:\([^)]*\)|[A-Za-z_$][\w$]*)\s*(?::\s*[^=\n]+?)?=>"),
     re.compile(r"\bexports\s*\.\s*([A-Za-z_$][\w$]*)\s*=\s*(?:async\s+)?(?:function\b[^{]*|\([^)]*\)\s*=>|[A-Za-z_$][\w$]*\s*=>)"),
-    re.compile(r"(?:^|[,{])\s*(?:async\s+)?([A-Za-z_$][\w$]*)\s*(?::\s*(?:async\s+)?(?:function\b\s*\w*\s*)?)?\([^()]*\)\s*(?::\s*[\w<>\[\]|, ]+)?\s*(?:=>\s*)?\{", re.M),
+    re.compile(r"(?:^|[,{])[ \t]*(?:async[ \t]+)?([A-Za-z_$][\w$]*)[ \t]*(?::[ \t]*(?:async[ \t]+)?(?:function\b[ \t]*\w*[ \t]*)?)?\([^()]*\)[ \t]*(?::[ \t]*[\w<>\[\]|, ]+)?[ \t]*(?:=>[ \t]*)?\{", re.M),
 ]
 NOT_FUNC = {"if", "for", "while", "switch", "catch", "function", "return", "with", "else", "do", "try", "constructor"}
 MAXTOK = re.compile(r"max_tokens|max_completion_tokens|max_output_tokens|maxTokens|maxOutputTokens|maxCompletionTokens|max_new_tokens")
@@ -89,7 +90,7 @@ SECURITY_TODO = re.compile(
 )
 AUTH_STUB = re.compile(
     r"(?:\bfunction\s+|\b(?:const|let|var)\s+)((?:is|verify|check|validate|authenticate|authorize|has|require|ensure|can)"
-    r"[\w$]*?(?:auth|token|admin|permission|signature|password|login|jwt|credential|apikey|api_key|role|access|webhook)[\w$]*)"
+    r"[\w$]{0,40}?(?:auth|token|admin|permission|signature|password|login|jwt|credential|apikey|api_key|role|access|webhook)[\w$]{0,40})(?![\w$])"
     r"\s*(?:=\s*(?:async\s*)?(?:\([^)]*\)|[A-Za-z_$][\w$]*)\s*(?::\s*[\w<>\[\]| ]+)?\s*=>\s*(?:\{\s*return\s+true\s*;?\s*\}|true\b)"
     r"|\([^)]*\)\s*(?::\s*[\w<>\[\]| ]+)?\s*\{\s*return\s+true\s*;?\s*\})",
     re.I,
@@ -210,11 +211,11 @@ class JsScanner:
 
     def imports(self, fs: FileState) -> Dict[str, str]:
         out: Dict[str, str] = {}
-        for m in IMPORT_DEFAULT.finditer(fs.v.code):
+        for m in finditer(IMPORT_DEFAULT, fs.v.code):
             out[m.group(1)] = m.group(2)
-        for m in REQUIRE.finditer(fs.v.code):
+        for m in finditer(REQUIRE, fs.v.code):
             out[m.group(1)] = m.group(2)
-        for m in IMPORT_NAMED.finditer(fs.v.code):
+        for m in finditer(IMPORT_NAMED, fs.v.code):
             for part in m.group(1).split(","):
                 name = part.split(" as ")[-1].strip()
                 if name:
@@ -230,35 +231,39 @@ class JsScanner:
     # --------------------------------------------------------------------- run
     def run(self) -> List[Route]:
         for sf in self.p.files:
-            if sf.kind not in ("js", "html") or sf.text is None:
-                continue
-            v = js_views(sf.text)
-            sf.cache["views"] = v
-            sf.is_client = self.is_client(sf, v)
-            self.files.append(FileState(sf, v))
+            if sf.kind in ("js", "html") and sf.text is not None:
+                GUARD.run(sf.rel, "JavaScript lexing", self._load, sf)
         for fs in self.files:
-            self.index_functions(fs)
-        self.compute_llm_funcs()
+            GUARD.run(fs.sf.rel, "function index", self.index_functions, fs)
+        GUARD.run("<project>", "JavaScript call graph", self.compute_llm_funcs)
         for fs in self.files:
-            self.compute_taint(fs)
-        self.compute_mount_auth()
+            GUARD.run(fs.sf.rel, "data flow", self.compute_taint, fs)
+        GUARD.run("<project>", "middleware and router mounts", self.compute_mount_auth)
         for fs in self.files:
-            if fs.sf.is_test:
-                continue
-            self.check_tools(fs)
-            self.check_sinks(fs)
-            self.check_html_sinks(fs)
-            self.check_llm(fs)
-            self.check_misc(fs)
-            self.check_comments(fs)
-            self.extract_routes(fs)
+            if not fs.sf.is_test:
+                GUARD.run(fs.sf.rel, "JavaScript checks", self._check_file, fs)
         return self.routes
+
+    def _load(self, sf: SourceFile) -> None:
+        v = js_views(sf.text or "")
+        sf.cache["views"] = v
+        sf.is_client = self.is_client(sf, v)
+        self.files.append(FileState(sf, v))
+
+    def _check_file(self, fs: FileState) -> None:
+        self.check_tools(fs)
+        self.check_sinks(fs)
+        self.check_html_sinks(fs)
+        self.check_llm(fs)
+        self.check_misc(fs)
+        self.check_comments(fs)
+        self.extract_routes(fs)
 
     # ------------------------------------------------------------- indexing
     def index_functions(self, fs: FileState) -> None:
         bare = fs.v.bare
         for rx in FUNC_DEFS:
-            for m in rx.finditer(bare):
+            for m in finditer(rx, bare):
                 name = m.group(1)
                 if name in NOT_FUNC:
                     continue
@@ -329,10 +334,10 @@ class JsScanner:
     def compute_taint(self, fs: FileState) -> None:
         code, bare = fs.v.code, fs.v.bare
         assigns: List[Tuple[List[str], int, int, bool]] = []
-        for m in DECL.finditer(bare):
+        for m in finditer(DECL, bare):
             end = stmt_end(bare, m.end())
             assigns.append((_decl_names(m.group(1)), m.end(), end, m.group(1).strip()[:1] not in "{["))
-        for m in ASSIGN.finditer(bare):
+        for m in finditer(ASSIGN, bare):
             end = stmt_end(bare, m.end())
             assigns.append(([m.group(1)], m.end(), end, True))
         for names, a, b, plain in assigns:
@@ -346,6 +351,7 @@ class JsScanner:
         for _ in range(6):
             changed = False
             for names, a, b, _plain in assigns:
+                GUARD.tick()
                 k = fs.kinds(code[a:b], bare[a:b])
                 if not k:
                     continue
@@ -368,7 +374,7 @@ class JsScanner:
                 continue
             imports = self.imports(fs)
             global_auth = False
-            for m in USE_CALL.finditer(fs.v.bare):
+            for m in finditer(USE_CALL, fs.v.bare):
                 args = self.call_args(fs, m.end() - 1)
                 mw = [c.strip() for c, _b, _o in args if not is_static_string(c)]
                 if not mw:
@@ -398,14 +404,14 @@ class JsScanner:
         ]
         if "child_process" not in fs.v.code and not re.search(r"\beval\s*\(|new\s+Function|\bfs\b|Unsafe\s*\(", fs.v.bare):
             return
-        for m in rx.finditer(fs.v.bare):
+        for m in finditer(rx, fs.v.bare):
             open_paren = m.end() - 1 if fs.v.bare[m.end() - 1] == "(" else fs.v.bare.rfind("(", m.start(), m.end())
             close = match_close(fs.v.bare, open_paren)
             if close < 0:
                 continue
             seg = fs.v.bare[open_paren:close]
             for drx, what, sev in danger:
-                for d in drx.finditer(seg):
+                for d in finditer(drx, seg):
                     off = open_paren + d.start()
                     if what == "a shell command" and "child_process" not in fs.v.code:
                         continue
@@ -433,30 +439,34 @@ class JsScanner:
 
         # command execution
         if has_cp:
-            for m in re.finditer(r"(?<![\w$.])(?:exec|execSync)\s*\(|\b(?:child_process|cp|childProcess)\s*\.\s*(?:exec|execSync)\s*\(", bare):
+            for m in finditer(r"(?<![\w$.])(?:exec|execSync)\s*\(|\b(?:child_process|cp|childProcess)\s*\.\s*(?:exec|execSync)\s*\(", bare):
                 args = self.call_args(fs, m.end() - 1)
                 if args and not is_static_string(args[0][0]):
                     report("BE002", m.start(), fs.kinds(args[0][0], args[0][1]), "a shell command", "critical",
                            "Shell command built from a variable; if any part comes from users or a model this is command injection.",
                            "medium")
-            for m in re.finditer(r"(?<![\w$])(?:spawn|spawnSync|execFile|execFileSync)\s*\(", bare):
+            for m in finditer(r"(?<![\w$])(?:spawn|spawnSync|execFile|execFileSync)\s*\(", bare):
                 args = self.call_args(fs, m.end() - 1)
                 if not args:
                     continue
                 joined = " ".join(a[0] for a in args)
-                k = fs.kinds(joined, " ".join(a[1] for a in args))
-                if re.search(r"\bshell\s*:\s*true", joined) or "user" in k or "llm" in k:
+                if re.search(r"\bshell\s*:\s*true", joined):
+                    k = fs.kinds(joined, " ".join(a[1] for a in args))
                     report("BE002", m.start(), k, "a spawned process", "high",
                            "Process spawned with shell: true and a dynamic command.", "medium")
+                else:
+                    k = fs.kinds(args[0][0], args[0][1])  # without a shell only the program name is dangerous
+                    if k & {"user", "llm"}:
+                        report("BE002", m.start(), k, "the program a process runs", "high")
         # dynamic code
-        for m in re.finditer(r"(?<![\w$.])eval\s*\(|\bnew\s+Function\s*\(|\bvm\s*\.\s*(?:runInNewContext|runInThisContext|runInContext|compileFunction)\s*\(", bare):
+        for m in finditer(r"(?<![\w$.])eval\s*\(|\bnew\s+Function\s*\(|\bvm\s*\.\s*(?:runInNewContext|runInThisContext|runInContext|compileFunction)\s*\(", bare):
             args = self.call_args(fs, m.end() - 1)
             if args and not all(is_static_string(a[0]) for a in args):
                 joined = " ".join(a[0] for a in args)
                 report("BE003", m.start(), fs.kinds(joined, " ".join(a[1] for a in args)), "eval / new Function",
                        "critical", "Code is evaluated from a dynamic string.", "medium")
         # SQL
-        for m in re.finditer(r"\.\s*(?:query|execute|raw|\$queryRawUnsafe|\$executeRawUnsafe|unsafe|exec|run|all|get|prepare)\s*\(", bare):
+        for m in finditer(r"\.\s*(?:query|execute|raw|\$queryRawUnsafe|\$executeRawUnsafe|unsafe|exec|run|all|get|prepare)\s*\(", bare):
             args = self.call_args(fs, m.end() - 1)
             if not args:
                 continue
@@ -474,7 +484,7 @@ class JsScanner:
                        "medium")
         # NoSQL
         if self.mongo and not self.mongo_sanitized:
-            for m in re.finditer(r"\.\s*(?:find|findOne|findOneAndUpdate|findOneAndDelete|findOneAndReplace|updateOne|updateMany|deleteOne|deleteMany|countDocuments|exists)\s*\(", bare):
+            for m in finditer(r"\.\s*(?:find|findOne|findOneAndUpdate|findOneAndDelete|findOneAndReplace|updateOne|updateMany|deleteOne|deleteMany|countDocuments|exists)\s*\(", bare):
                 args = self.call_args(fs, m.end() - 1)
                 if not args:
                     continue
@@ -495,7 +505,7 @@ class JsScanner:
             r"(?<![\w$.])(?:req|request)\s*\.\s*body\b(?!\s*\.)"
             + (r"|(?:\.\.\.\s*|data\s*:\s*)(?:" + "|".join(whole) + r")\b(?!\s*[.\[])" if whole else "")
         )
-        for m in re.finditer(r"\.\s*(?:create|insert|insertOne|insertMany|update|updateOne|updateMany|upsert|findByIdAndUpdate|findOneAndUpdate|build|bulkCreate)\s*\(|\bnew\s+[A-Z][\w$]*\s*\(|\bObject\s*\.\s*assign\s*\(", bare):
+        for m in finditer(r"\.\s*(?:create|insert|insertOne|insertMany|update|updateOne|updateMany|upsert|findByIdAndUpdate|findOneAndUpdate|build|bulkCreate)\s*\(|\bnew\s+[A-Z][\w$]*\s*\(|\bObject\s*\.\s*assign\s*\(", bare):
             args = self.call_args(fs, m.end() - 1)
             if not args:
                 continue
@@ -506,7 +516,7 @@ class JsScanner:
         if not server:
             return
         # SSRF
-        for m in re.finditer(r"(?<![\w$.])fetch\s*\(|\baxios(?:\s*\.\s*(?:get|post|put|delete|patch|request|head))?\s*\(|(?<![\w$.])got(?:\s*\.\s*(?:get|post))?\s*\(|\bhttps?\s*\.\s*(?:get|request)\s*\(", bare):
+        for m in finditer(r"(?<![\w$.])fetch\s*\(|\baxios(?:\s*\.\s*(?:get|post|put|delete|patch|request|head))?\s*\(|(?<![\w$.])got(?:\s*\.\s*(?:get|post))?\s*\(|\bhttps?\s*\.\s*(?:get|request)\s*\(", bare):
             arg = first_arg(bare, m.end() - 1)
             if not arg:
                 continue
@@ -518,14 +528,14 @@ class JsScanner:
                 report("BE005", m.start(), k, "an outbound HTTP request URL", "high")
         # path traversal
         fs_import = re.search(r"""['"](?:node:)?fs(?:/promises)?['"]""", code)
-        for m in re.finditer(r"\b(?:res|reply|response)\s*\.\s*(?:sendFile|download)\s*\(|\bfs(?:\s*\.\s*promises)?\s*\.\s*(?:readFile|readFileSync|writeFile|writeFileSync|createReadStream|createWriteStream|unlink|unlinkSync|rm|rmSync|appendFile|appendFileSync)\s*\(" + (r"|(?<![\w$.])(?:readFile|writeFile|unlink|rm|appendFile)\s*\(" if fs_import else ""), bare):
+        for m in finditer(r"\b(?:res|reply|response)\s*\.\s*(?:sendFile|download)\s*\(|\bfs(?:\s*\.\s*promises)?\s*\.\s*(?:readFile|readFileSync|writeFile|writeFileSync|createReadStream|createWriteStream|unlink|unlinkSync|rm|rmSync|appendFile|appendFileSync)\s*\(" + (r"|(?<![\w$.])(?:readFile|writeFile|unlink|rm|appendFile)\s*\(" if fs_import else ""), bare):
             arg = first_arg(bare, m.end() - 1)
             if arg:
                 k = fs.kinds(code[arg[0]:arg[1]], bare[arg[0]:arg[1]])
                 if k & {"user", "llm"} and "basename" not in code[arg[0]:arg[1]]:
                     report("BE006", m.start(), k, "a file system path", "high")
         # open redirect
-        for m in re.finditer(r"\b(?:res|reply)\s*\.\s*redirect\s*\(|(?<![\w$.])redirect\s*\(|\b(?:NextResponse|Response)\s*\.\s*redirect\s*\(", bare):
+        for m in finditer(r"\b(?:res|reply)\s*\.\s*redirect\s*\(|(?<![\w$.])redirect\s*\(|\b(?:NextResponse|Response)\s*\.\s*redirect\s*\(", bare):
             args = self.call_args(fs, m.end() - 1)
             if not args:
                 continue
@@ -554,33 +564,33 @@ class JsScanner:
             else:
                 self.add(fs, "FE001", off, f"Unsanitized value rendered as raw HTML ({where}).", "medium")
 
-        for m in re.finditer(r"\.\s*(?:innerHTML|outerHTML)\s*\+?=(?!=)", bare):
+        for m in finditer(r"\.\s*(?:innerHTML|outerHTML)\s*\+?=(?!=)", bare):
             end = stmt_end(bare, m.end())
             judge(m.start(), code[m.end():end], bare[m.end():end], "innerHTML")
-        for m in re.finditer(r"dangerouslySetInnerHTML\s*=\s*\{\s*\{\s*__html\s*:", bare):
+        for m in finditer(r"dangerouslySetInnerHTML\s*=\s*\{\s*\{\s*__html\s*:", bare):
             tag = re.findall(r"<\s*([A-Za-z][\w.]*)", bare[max(0, m.start() - 400):m.start()])
             if tag and tag[-1].lower() == "style":
                 continue  # generated CSS (for example the shadcn/ui chart component)
             end = stmt_end(bare, m.end())
             judge(m.start(), code[m.end():end], bare[m.end():end], "dangerouslySetInnerHTML")
-        for m in re.finditer(r"\.\s*insertAdjacentHTML\s*\(|\bdocument\s*\.\s*(?:write|writeln)\s*\(|\bbypassSecurityTrust(?:Html|Script|Url|ResourceUrl|Style)\s*\(", bare):
+        for m in finditer(r"\.\s*insertAdjacentHTML\s*\(|\bdocument\s*\.\s*(?:write|writeln)\s*\(|\bbypassSecurityTrust(?:Html|Script|Url|ResourceUrl|Style)\s*\(", bare):
             args = self.call_args(fs, m.end() - 1)
             if args:
                 a = args[1] if "insertAdjacent" in m.group(0) and len(args) > 1 else args[0]
                 judge(m.start(), a[0], a[1], m.group(0).strip(" .(").split(".")[-1].strip())
-        for m in re.finditer(r"\bv-html\s*=\s*\"([^\"]*)\"", code):
+        for m in finditer(r"\bv-html\s*=\s*\"([^\"]*)\"", code):
             judge(m.start(), m.group(1), m.group(1), "v-html")
-        for m in re.finditer(r"\{@html\s+([^}]*)\}", code):
+        for m in finditer(r"\{@html\s+([^}]*)\}", code):
             judge(m.start(), m.group(1), m.group(1), "{@html}")
         if not fs.sf.is_client:
-            for m in re.finditer(r"\b(?:res|reply)\s*\.\s*send\s*\(", bare):
+            for m in finditer(r"\b(?:res|reply)\s*\.\s*send\s*\(", bare):
                 arg = first_arg(bare, m.end() - 1)
                 if arg and re.search(r"<\w", code[arg[0]:arg[1]]):
                     k = fs.kinds(code[arg[0]:arg[1]], bare[arg[0]:arg[1]])
                     if k & {"user", "llm"}:
                         judge(m.start(), code[arg[0]:arg[1]], bare[arg[0]:arg[1]], "HTML response")
         if fs.sf.kind == "html":
-            for m in re.finditer(r"\{\{[^}\n]*\|\s*safe\b[^}\n]*\}\}|\{%\s*autoescape\s+(?:false|off)\s*%\}", code):
+            for m in finditer(r"\{\{[^}\n]*\|\s*safe\b[^}\n]*\}\}|\{%\s*autoescape\s+(?:false|off)\s*%\}", code):
                 self.add(fs, "FE001", m.start(), "Template output marked safe, so it is not HTML-escaped.", "medium")
 
     # ------------------------------------------------------------------ llm
@@ -588,11 +598,13 @@ class JsScanner:
         code, bare = fs.v.code, fs.v.bare
         has_llm = bool(H.LLM_CALL_JS.search(code))
         # direct provider calls from the browser
-        for m in re.finditer(r"\bdangerouslyAllowBrowser\s*:\s*true", code):
+        for m in finditer(r"\bdangerouslyAllowBrowser\s*:\s*true", code):
+            if self._own_backend(fs, m.start()):
+                continue
             self.add(fs, "FE002", m.start(), "dangerouslyAllowBrowser: true ships the API key to the browser.")
         if fs.sf.is_client:
             seen_lines = set()
-            for m in re.finditer(H.LLM_HOSTS.pattern + r"|\bnew\s+(?:OpenAI|Anthropic|GoogleGenerativeAI|GoogleGenAI|Groq|Mistral|CohereClient|ChatOpenAI|ChatAnthropic)\s*\(", code):
+            for m in finditer(H.LLM_HOSTS.pattern + r"|\bnew\s+(?:OpenAI|Anthropic|GoogleGenerativeAI|GoogleGenAI|Groq|Mistral|CohereClient|ChatOpenAI|ChatAnthropic)\s*\(", code):
                 line = fs.sf.line_at(m.start())
                 if line in seen_lines or "dangerouslyAllowBrowser" in fs.sf.line(line):
                     continue
@@ -605,7 +617,7 @@ class JsScanner:
                 self.add(fs, "LLM007", m.start(), "A system prompt is defined in code that ships to the browser.")
         # untrusted text in the system prompt
         if has_llm:
-            for m in re.finditer(r"\brole\s*:\s*['\"]system['\"]", code):
+            for m in finditer(r"\brole\s*:\s*['\"]system['\"]", code):
                 start = self._enclosing_brace(bare, m.start())
                 if start < 0:
                     continue
@@ -615,12 +627,12 @@ class JsScanner:
                 if cm:
                     a = start + cm.end()
                     self._system_prompt(fs, m.start(), code[a:stmt_end(bare, a)], bare[a:stmt_end(bare, a)])
-            for m in re.finditer(r"(?<![\w$.])(?:system|systemInstruction|instructions)\s*:\s*", bare):
+            for m in finditer(r"(?<![\w$.])(?:system|systemInstruction|instructions)\s*:\s*", bare):
                 a = m.end()
                 b = stmt_end(bare, a)
                 self._system_prompt(fs, m.start(), code[a:b], bare[a:b])
         # token limits
-        for m in re.finditer(r"\.\s*(?:chat\s*\.\s*completions\s*\.\s*(?:create|parse)|completions\s*\.\s*create|responses\s*\.\s*create)\s*\(|\b(?:generateText|streamText|generateObject|streamObject)\s*\(", bare):
+        for m in finditer(r"\.\s*(?:chat\s*\.\s*completions\s*\.\s*(?:create|parse)|completions\s*\.\s*create|responses\s*\.\s*create)\s*\(|\b(?:generateText|streamText|generateObject|streamObject)\s*\(", bare):
             arg = first_arg(bare, m.end() - 1)
             if not arg:
                 continue
@@ -637,17 +649,26 @@ class JsScanner:
             if m:
                 self.add(fs, "LLM003", m.start(), "Model call has no output token limit (maxOutputTokens / max_tokens).")
         # unbounded agent loops
-        for m in re.finditer(r"\bwhile\s*\(\s*true\s*\)|\bfor\s*\(\s*;\s*;\s*\)", bare):
+        for m in finditer(r"\bwhile\s*\(\s*true\s*\)|\bfor\s*\(\s*;\s*;\s*\)", bare):
             brace = bare.find("{", m.end())
             if brace < 0:
                 continue
             body = code[brace:match_close(bare, brace)]
             if self.calls_llm(body) and not BOUND.search(body):
                 self.add(fs, "LLM009", m.start(), "Loop calls a model with no step or budget limit.")
-        for m in H.DANGEROUS_AGENT_OPTIONS.finditer(code):
+        for m in finditer(H.DANGEROUS_AGENT_OPTIONS, code):
             if bare[m.start()] != code[m.start()]:
                 continue  # inside a string literal
             self.add(fs, "LLM006", m.start(), f"Dangerous agent option: {m.group(0).strip()[:60]}")
+
+    def _own_backend(self, fs: FileState, off: int) -> bool:
+        """The client options object sets baseURL to something other than an AI provider (a proxy)."""
+        start = self._enclosing_brace(fs.v.bare, off)
+        if start < 0:
+            return False
+        obj = fs.v.code[start:match_close(fs.v.bare, start) + 1]
+        m = re.search(r"\bbase_?ur[li]\s*:\s*([^,}\n]+)", obj, re.I)
+        return bool(m) and not H.LLM_HOSTS.search(m.group(1))
 
     @staticmethod
     def _enclosing_brace(bare: str, pos: int) -> int:
@@ -684,18 +705,18 @@ class JsScanner:
         code, bare, sf = fs.v.code, fs.v.bare, fs.sf
         rel = sf.rel
         if sf.is_client:
-            for m in re.finditer(r"\b(?:local|session)Storage\s*\.\s*(?:getItem|setItem)\s*\(\s*['\"`](?:is_?admin|admin|role|user_?role|roles|permissions?|is_?premium|is_?pro|plan|tier|credits|subscription|is_?paid|access_?level|is_?verified)['\"`]", code, re.I):
+            for m in finditer(r"\b(?:local|session)Storage\s*\.\s*(?:getItem|setItem)\s*\(\s*['\"`](?:is_?admin|admin|role|user_?role|roles|permissions?|is_?premium|is_?pro|plan|tier|credits|subscription|is_?paid|access_?level|is_?verified)['\"`]", code, re.I):
                 self.add(fs, "FE003", m.start(), "Authorization state is read from or written to browser storage.")
-            for m in re.finditer(r"\blocalStorage\s*\.\s*setItem\s*\(\s*['\"`](?:[^'\"`]*(?:token|jwt|bearer|session_?id|credential)[^'\"`]*|(?:[^'\"`]*[._-])?(?:auth|session))['\"`]", code, re.I):
+            for m in finditer(r"\blocalStorage\s*\.\s*setItem\s*\(\s*['\"`](?:[^'\"`]*(?:token|jwt|bearer|session_?id|credential)[^'\"`]*|(?:[^'\"`]*[._-])?(?:auth|session))['\"`]", code, re.I):
                 self.add(fs, "FE005", m.start(), "Auth token stored in localStorage.")
-            for m in re.finditer(r"""['"`]https?://(?:localhost|127\.0\.0\.1)(?::\d+)?[/'"`]""", code):
+            for m in finditer(r"""['"`]https?://(?:localhost|127\.0\.0\.1)(?::\d+)?[/'"`]""", code):
                 line = sf.line(sf.line_at(m.start()))
                 if not re.search(r"process\.env|import\.meta\.env|NODE_ENV|\bdev\b|__DEV__|isDev|development", line, re.I):
                     self.add(fs, "FE007", m.start(), "Hardcoded localhost URL in frontend code.")
-            for m in re.finditer(r"\b(?:SUPABASE_)?SERVICE_ROLE(?:_KEY)?\b|\bserviceRoleKey\b", code):
+            for m in finditer(r"\b(?:SUPABASE_)?SERVICE_ROLE(?:_KEY)?\b|\bserviceRoleKey\b", code):
                 self.add(fs, "SEC009", m.start(), "Supabase service_role key referenced in browser code.")
                 break
-        for m in re.finditer(r"addEventListener\s*\(\s*['\"]message['\"]\s*,", code):
+        for m in finditer(r"addEventListener\s*\(\s*['\"]message['\"]\s*,", code):
             close = match_close(bare, bare.find("(", m.start()))
             seg = code[m.start():close]
             handler = re.search(r",\s*([A-Za-z_$][\w$]*)\s*\)?\s*$", seg)
@@ -704,13 +725,13 @@ class JsScanner:
             if ".origin" not in seg:
                 self.add(fs, "FE004", m.start(), "message event handler does not check event.origin.")
         if re.search(r"(?:^|/)next\.config\.[cm]?[jt]s$", rel):
-            for m in re.finditer(r"\bproductionBrowserSourceMaps\s*:\s*true", code):
+            for m in finditer(r"\bproductionBrowserSourceMaps\s*:\s*true", code):
                 self.add(fs, "FE006", m.start(), "productionBrowserSourceMaps is enabled.")
         if re.search(r"(?:^|/)vite\.config\.[cm]?[jt]s$", rel):
-            for m in re.finditer(r"\bsourcemap\s*:\s*true", code):
+            for m in finditer(r"\bsourcemap\s*:\s*true", code):
                 self.add(fs, "FE006", m.start(), "Vite build emits public source maps.")
         # CORS
-        for m in re.finditer(r"\bcors\s*\(", bare):
+        for m in finditer(r"\bcors\s*\(", bare):
             args = self.call_args(fs, m.end() - 1)
             if not args:
                 if not sf.is_client:
@@ -723,7 +744,7 @@ class JsScanner:
                 self.add(fs, "BE012", m.start(), "CORS allows any origin together with credentials.", "high")
             elif wild:
                 self.add(fs, "BE012", m.start(), "CORS allows any origin.", "low")
-        for m in re.finditer(r"Access-Control-Allow-Origin['\"`]\s*[,:]\s*(?:['\"`]\*['\"`]|(?:req|request)\s*\.\s*headers\s*(?:\.\s*origin|\[\s*['\"]origin['\"]\s*\]|\.get\s*\(\s*['\"]origin['\"]\s*\)))", code, re.I):
+        for m in finditer(r"Access-Control-Allow-Origin['\"`]\s*[,:]\s*(?:['\"`]\*['\"`]|(?:req|request)\s*\.\s*headers\s*(?:\.\s*origin|\[\s*['\"]origin['\"]\s*\]|\.get\s*\(\s*['\"]origin['\"]\s*\)))", code, re.I):
             reflected = "*" not in m.group(0)
             creds = re.search(r"Access-Control-Allow-Credentials['\"`]\s*[,:]\s*['\"`]?true", code, re.I)
             if creds:
@@ -731,35 +752,35 @@ class JsScanner:
             else:
                 self.add(fs, "BE012", m.start(), "CORS header reflects the request origin." if reflected else "CORS header allows any origin.",
                          "medium" if reflected else "low")
-        for m in re.finditer(r"\brejectUnauthorized\s*:\s*false|\bNODE_TLS_REJECT_UNAUTHORIZED\s*=\s*['\"]?0", code):
+        for m in finditer(r"\brejectUnauthorized\s*:\s*false|\bNODE_TLS_REJECT_UNAUTHORIZED\s*=\s*['\"]?0", code):
             self.add(fs, "BE013", m.start(), "TLS certificate verification is disabled.")
-        for m in re.finditer(r"createHash\s*\(\s*['\"](?:md5|sha1|sha256|sha512)['\"]\s*\)\s*\.\s*update\s*\(\s*[^)]*pass", code, re.I):
+        for m in finditer(r"createHash\s*\(\s*['\"](?:md5|sha1|sha256|sha512)['\"]\s*\)\s*\.\s*update\s*\(\s*[^)]*pass", code, re.I):
             self.add(fs, "BE014", m.start(), "Password hashed with a fast hash instead of bcrypt/argon2.")
-        for m in re.finditer(r"\.\s*password\s*(?:===?|!==?)\s*(?:(?:req|request)\s*\.\s*body\s*\.\s*password|password|body\s*\.\s*password|input\s*\.\s*password|credentials\s*\.\s*password|data\s*\.\s*password)\b|(?<![\w$.])password\s*(?:===?|!==?)\s*[\w$]+\s*\.\s*password\b", bare):
+        for m in finditer(r"\.\s*password\s*(?:===?|!==?)\s*(?:(?:req|request)\s*\.\s*body\s*\.\s*password|password|body\s*\.\s*password|input\s*\.\s*password|credentials\s*\.\s*password|data\s*\.\s*password)\b|(?<![\w$.])password\s*(?:===?|!==?)\s*[\w$]+\s*\.\s*password\b", bare):
             self.add(fs, "BE014", m.start(), "Password compared in plaintext; passwords appear to be stored unhashed.")
-        for m in re.finditer(r"Math\s*\.\s*random\s*\(\s*\)", bare):
+        for m in finditer(r"Math\s*\.\s*random\s*\(\s*\)", bare):
             line = bare[bare.rfind("\n", 0, m.start()) + 1: bare.find("\n", m.start()) if bare.find("\n", m.start()) != -1 else len(bare)]
             if re.search(r"(?i)token|secret|passw|otp|api_?key|reset|verif|nonce|salt|session|invite|magic", line):
                 self.add(fs, "BE015", m.start(), "Math.random() used to generate a secret value.")
-        for m in re.finditer(r"\balgorithms\s*:\s*\[[^\]]*['\"]none['\"]", code, re.I):
+        for m in finditer(r"\balgorithms\s*:\s*\[[^\]]*['\"]none['\"]", code, re.I):
             self.add(fs, "BE016", m.start(), "JWT verification accepts the 'none' algorithm.")
-        for m in re.finditer(r"\bignoreExpiration\s*:\s*true", code):
+        for m in finditer(r"\bignoreExpiration\s*:\s*true", code):
             self.add(fs, "BE016", m.start(), "JWT expiry is ignored.", "medium")
         if not sf.is_client and re.search(r"\bjwt\s*\.\s*decode\s*\(", bare) and not re.search(r"\b(?:jwt\s*\.\s*verify|jwtVerify)\s*\(", bare):
             m = re.search(r"\bjwt\s*\.\s*decode\s*\(", bare)
             self.add(fs, "BE016", m.start(), "jwt.decode() does not verify the signature, and jwt.verify() is not used in this file.", "medium")
-        for m in re.finditer(r"\b(?:res|reply)\s*(?:\.\s*status\s*\([^)]*\))?\s*\.\s*(?:json|send)\s*\([^;]*?\b(?:err|error|e|ex)\s*\.\s*stack\b", bare):
+        for m in finditer(r"\b(?:res|reply)\s*(?:\.\s*status\s*\([^)]*\))?\s*\.\s*(?:json|send)\s*\([^;]*?\b(?:err|error|e|ex)\s*\.\s*stack\b", bare):
             self.add(fs, "BE017", m.start(), "Stack trace returned to the client.")
         # auth stubs
-        for m in AUTH_STUB.finditer(code):
+        for m in finditer(AUTH_STUB, code):
             self.add(fs, "AUTH008", m.start(), f"`{m.group(1)}` always returns true.")
         # swallowed errors
-        for m in re.finditer(r"\bcatch\s*(?:\(\s*[\w$]*\s*(?::\s*\w+)?\s*\))?\s*\{\s*\}|\.\s*catch\s*\(\s*(?:\(\s*[\w$]*\s*\)|[\w$]+)\s*=>\s*\{\s*\}\s*\)", code):
+        for m in finditer(r"\bcatch\s*(?:\(\s*[\w$]*\s*(?::\s*\w+)?\s*\))?\s*\{\s*\}|\.\s*catch\s*\(\s*(?:\(\s*[\w$]*\s*\)|[\w$]+)\s*=>\s*\{\s*\}\s*\)", code):
             if re.search(r"//|/\*", sf.text[m.start():m.end()]):
                 continue  # an explanatory comment means the empty handler is deliberate
             self.add(fs, "QA003", m.start(), "Error is caught and ignored.")
         # secrets printed to logs
-        for m in re.finditer(r"\bconsole\s*\.\s*(?:log|info|debug|warn|error)\s*\(", bare):
+        for m in finditer(r"\bconsole\s*\.\s*(?:log|info|debug|warn|error)\s*\(", bare):
             close = match_close(bare, m.end() - 1)
             seg_code = code[m.end():close]
             seg_bare = bare[m.end():close]
@@ -781,6 +802,9 @@ class JsScanner:
         auth = bool(H.AUTH_EVIDENCE.search(body) or H.AUTH_MIDDLEWARE.search(middleware))
         if sf.rel in self.authed_files or off > sf.cache.get("auth_from", 10 ** 12):
             auth = True
+        if framework == "supabase-edge" and re.search(r"""headers\s*\.\s*get\s*\(\s*['"]authorization['"]""", body, re.I) \
+                and not self._jwt_check_disabled(path.rsplit("/", 1)[-1]):
+            auth = True  # requires a bearer token and the platform verifies it before the function runs
         if not known:
             auth = True  # handler body not found; do not guess
         params = re.findall(r"(?:<(?:\w+:)?(\w+)>|\{(\w+)\}|:(\w+)|\[(?:\.\.\.)?(\w+)\])", path)
@@ -795,7 +819,7 @@ class JsScanner:
         sf, code, bare = fs.sf, fs.v.code, fs.v.bare
         rel = sf.rel
         if fs.is_framework:
-            for m in ROUTE_CALL.finditer(code):
+            for m in finditer(ROUTE_CALL, code):
                 if not ROUTER_NAME.match(m.group(1)) or bare[m.start():m.end()].count("(") != 1:
                     continue
                 open_paren = code.index("(", m.end(2))
@@ -817,7 +841,7 @@ class JsScanner:
         if app_route or kit_route:
             segs = (app_route or kit_route).group(1)
             path = "/" + "/".join(s for s in segs.split("/") if s and not (s.startswith("(") and s.endswith(")")))
-            for m in re.finditer(r"\bexport\s+(?:async\s+)?function\s+(GET|POST|PUT|PATCH|DELETE)\b|\bexport\s+const\s+(GET|POST|PUT|PATCH|DELETE)\s*(?::[^=]+)?=", bare):
+            for m in finditer(r"\bexport\s+(?:async\s+)?function\s+(GET|POST|PUT|PATCH|DELETE)\b|\bexport\s+const\s+(GET|POST|PUT|PATCH|DELETE)\s*(?::[^=]+)?=", bare):
                 method = m.group(1) or m.group(2)
                 if m.group(1):
                     p_open = bare.find("(", m.end())
@@ -836,7 +860,7 @@ class JsScanner:
             m = re.search(r"\bexport\s+default\b", bare)
             self._route(fs, m.start() if m else 0, path, methods, code, "next-pages")
         if re.search(r"^\s*['\"]use server['\"]", code[:600], re.M):
-            for m in re.finditer(r"\bexport\s+(?:async\s+)?function\s+([A-Za-z_$][\w$]*)|\bexport\s+const\s+([A-Za-z_$][\w$]*)\s*=\s*async\b", bare):
+            for m in finditer(r"\bexport\s+(?:async\s+)?function\s+([A-Za-z_$][\w$]*)|\bexport\s+const\s+([A-Za-z_$][\w$]*)\s*=\s*async\b", bare):
                 name = m.group(1) or m.group(2)
                 brace = bare.find("{", m.end())
                 end = match_close(bare, brace) if brace >= 0 else -1
@@ -847,9 +871,17 @@ class JsScanner:
         if edge:
             m = re.search(r"\b(?:Deno\s*\.\s*)?serve\s*\(", bare)
             self._route(fs, m.start() if m else 0, "/functions/v1/" + edge.group(1), ["ALL"], code, "supabase-edge")
-        for m in re.finditer(r"\bonRequest\s*\(", bare):
+        for m in finditer(r"\bonRequest\s*\(", bare):
             close = match_close(bare, m.end() - 1)
             self._route(fs, m.start(), "firebase function", ["ALL"], code[m.start():close], "firebase-functions")
+
+    def _jwt_check_disabled(self, function: str) -> bool:
+        for f in self.p.files:
+            if f.rel.endswith("supabase/config.toml") and f.text:
+                block = re.search(r"\[functions\." + re.escape(function) + r"\]([^\[]*)", f.text)
+                if block and re.search(r"verify_jwt\s*=\s*false", block.group(1)):
+                    return True
+        return False
 
     def _local_helpers(self, fs: FileState, body: str) -> str:
         """Bodies of helpers the handler calls (same file, or imported from the project), one level deep,

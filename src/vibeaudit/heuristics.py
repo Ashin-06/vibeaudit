@@ -130,7 +130,7 @@ SECRET_NAME = re.compile(
 PLACEHOLDER = re.compile(
     r"(?i)your|example|xxx|\*\*\*|placeholder|changeme|change_me|replace|dummy|fake|sample|redacted|insert|todo"
     r"|<[^>]*>|\$\{|\{\{|%\(|^\$|process\.env|import\.meta|os\.environ|getenv|0000000000|1234567890|abcdef"
-    r"|lorem|test_?key|mock|not.?real|my_?(?:api|secret)|_here\b|\.\.\.|^sk-\.+$|^none$|^null$|^env\(|^\$\(|^vault:"
+    r"|lorem|test_?key|mock|not.?real|my_?(?:api|secret)|_here\b|\.\.\.|^sk-\.+$|^none$|^null$|^env\(|^\$\(|^vault:|changethis"
 )
 
 
@@ -152,6 +152,9 @@ def looks_random(value: str) -> bool:
         return False
     if re.fullmatch(r"[A-Z0-9_]+", value) and "_" in value:
         return False  # an env var name, not a value
+    if re.fullmatch(r"[a-z0-9]+(?:[._-][a-z0-9]+){2,}", value) and \
+            sum(1 for seg in re.split(r"[._-]", value) if seg.isalpha() and len(seg) >= 3) >= 2:
+        return False  # support.constant.color.w3c-standard-name
     if re.fullmatch(r"[a-z]+(?:[._-][a-z]+)+", value):
         return False  # dotted.or-dashed words
     if re.fullmatch(r"\d+(?:\.\d+)*", value):

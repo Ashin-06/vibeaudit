@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Callable, Dict, List, Optional
 
 from . import heuristics as H
+from .guard import GUARD, finditer
 from .files import ENV_EXAMPLE_RE, ENV_FILE_RE, TEST_PATH_RE, Project, SourceFile, read_ignore_file, _matches
 from .lexer import py_views
 from .model import Finding, Route
@@ -49,36 +50,34 @@ class ProjectScanner:
 
     def run(self) -> None:
         for sf in self.p.files:
-            if sf.text is None:
-                continue
-            k = sf.kind
-            name = sf.rel.rsplit("/", 1)[-1]
-            if k == "docker":
-                self.dockerfile(sf)
-            elif k == "compose":
-                self.compose(sf)
-            elif k == "workflow":
-                self.workflow(sf)
-            elif k == "sql":
-                pass  # handled together below
-            elif k == "rules" or name == "database.rules.json":
-                self.firebase(sf)
-            if name in (".mcp.json", "mcp.json", "claude_desktop_config.json", "mcp_config.json") or sf.rel.endswith((".cursor/mcp.json", ".vscode/mcp.json")):
-                self.mcp(sf)
-            if name == "package.json":
-                self.package_json(sf)
-            if k == "py" and not sf.is_test:
-                code = sf.cache.get("views") or py_views(sf.text)
-                for m in H.DANGEROUS_AGENT_OPTIONS.finditer(code.code):  # type: ignore[attr-defined]
-                    if code.bare[m.start()] != code.code[m.start()]:  # type: ignore[attr-defined]
-                        continue  # inside a string literal
-                    self.add(sf, sf.line_at(m.start()), "LLM006", f"Dangerous agent option: {m.group(0).strip()[:60]}")
-        self.supabase_sql()
-        self.env_files()
-        self.lockfiles()
-        self.tests_and_ci()
-        self.express_headers()
-        self.route_checks()
+            if sf.text is not None:
+                GUARD.run(sf.rel, "configuration checks", self._file, sf)
+        for step in (self.supabase_sql, self.env_files, self.lockfiles, self.tests_and_ci, self.express_headers, self.route_checks):
+            GUARD.run("<project>", step.__name__.replace("_", " "), step)
+
+    def _file(self, sf: SourceFile) -> None:
+        k = sf.kind
+        name = sf.rel.rsplit("/", 1)[-1]
+        if k == "docker":
+            self.dockerfile(sf)
+        elif k == "compose":
+            self.compose(sf)
+        elif k == "workflow":
+            self.workflow(sf)
+        elif k == "sql":
+            pass  # handled together below
+        elif k == "rules" or name == "database.rules.json":
+            self.firebase(sf)
+        if name in (".mcp.json", "mcp.json", "claude_desktop_config.json", "mcp_config.json") or sf.rel.endswith((".cursor/mcp.json", ".vscode/mcp.json")):
+            self.mcp(sf)
+        if name == "package.json":
+            self.package_json(sf)
+        if k == "py" and not sf.is_test:
+            code = sf.cache.get("views") or py_views(sf.text)
+            for m in finditer(H.DANGEROUS_AGENT_OPTIONS, code.code):  # type: ignore[attr-defined]
+                if code.bare[m.start()] != code.code[m.start()]:  # type: ignore[attr-defined]
+                    continue  # inside a string literal
+                self.add(sf, sf.line_at(m.start()), "LLM006", f"Dangerous agent option: {m.group(0).strip()[:60]}")
 
     # ------------------------------------------------------------- docker
     def dockerfile(self, sf: SourceFile) -> None:
@@ -145,23 +144,23 @@ class ProjectScanner:
                 self.add(sf, i, "CFG004", "Untrusted event data is expanded directly inside a script.")
         text = sf.text or ""
         if re.search(r"(?m)^\s*(?:on:\s*.*\bpull_request_target\b|pull_request_target\s*:|-\s*pull_request_target\b)", text) or re.search(r"(?m)^on:\s*\[?[^\n]*pull_request_target", text):
-            for m in re.finditer(r"ref:\s*\$\{\{\s*github\.event\.pull_request\.head\.(?:sha|ref)|github\.head_ref|refs/pull/", text):
+            for m in finditer(r"ref:\s*\$\{\{\s*github\.event\.pull_request\.head\.(?:sha|ref)|github\.head_ref|refs/pull/", text):
                 self.add(sf, sf.line_at(m.start()), "CFG005", "pull_request_target workflow checks out the pull request's code.")
 
     # ---------------------------------------------------------- firebase
     def firebase(self, sf: SourceFile) -> None:
         text = sf.text or ""
         if sf.rel.endswith(".json"):
-            for m in re.finditer(r"\"\.(read|write)\"\s*:\s*(?:true|\"true\")", text):
+            for m in finditer(r"\"\.(read|write)\"\s*:\s*(?:true|\"true\")", text):
                 self.add(sf, sf.line_at(m.start()), "AUTH007", f"Realtime Database rule allows {m.group(1)} for everyone.",
                          "critical" if m.group(1) == "write" else "high")
             return
         clean = re.sub(r"//[^\n]*", lambda m: " " * len(m.group(0)), text)
-        for m in re.finditer(r"\ballow\s+([\w,\s]+?)\s*(?::\s*if\s+true\s*;|;)", clean):
+        for m in finditer(r"\ballow\s+([\w,\s]+?)\s*(?::\s*if\s+true\s*;|;)", clean):
             ops = m.group(1)
             sev = "critical" if re.search(r"write|create|update|delete", ops) else "high"
             self.add(sf, sf.line_at(m.start()), "AUTH007", f"Rule `allow {ops.strip()}` applies to everyone.", sev)
-        for m in re.finditer(r"request\.time\s*<\s*timestamp\.date\s*\(", clean):
+        for m in finditer(r"request\.time\s*<\s*timestamp\.date\s*\(", clean):
             self.add(sf, sf.line_at(m.start()), "AUTH007", "Test-mode rule: the database is open to everyone until the date passes.", "critical")
 
     # ---------------------------------------------------------- supabase
@@ -184,14 +183,14 @@ class ProjectScanner:
         for sf in sql_files:
             text = sf.text or ""
             clean = re.sub(r"--[^\n]*|/\*[\s\S]*?\*/", lambda m: re.sub(r"[^\n]", " ", m.group(0)), text)
-            for m in re.finditer(r"(?i)\bcreate\s+table\s+(?:if\s+not\s+exists\s+)?((?:\"?\w+\"?\.)?\"?\w+\"?)", clean):
+            for m in finditer(r"(?i)\bcreate\s+table\s+(?:if\s+not\s+exists\s+)?((?:\"?\w+\"?\.)?\"?\w+\"?)", clean):
                 created.setdefault(norm(m.group(1)), (sf, sf.line_at(m.start())))
-            for m in re.finditer(r"(?i)\balter\s+table\s+(?:if\s+exists\s+)?(?:only\s+)?((?:\"?\w+\"?\.)?\"?\w+\"?)\s+(enable|disable|force)\s+row\s+level\s+security", clean):
+            for m in finditer(r"(?i)\balter\s+table\s+(?:if\s+exists\s+)?(?:only\s+)?((?:\"?\w+\"?\.)?\"?\w+\"?)\s+(enable|disable|force)\s+row\s+level\s+security", clean):
                 if m.group(2).lower() == "disable":
                     self.add(sf, sf.line_at(m.start()), "AUTH005", f"Row Level Security is disabled on {norm(m.group(1))}.")
                 else:
                     rls.add(norm(m.group(1)))
-            for m in re.finditer(r"(?is)\bcreate\s+policy\s+(?:\"[^\"]*\"|\w+)\s+on\s+((?:\"?\w+\"?\.)?\"?\w+\"?)(.*?);", clean):
+            for m in finditer(r"(?is)\bcreate\s+policy\s+(?:\"[^\"]*\"|\w+)\s+on\s+((?:\"?\w+\"?\.)?\"?\w+\"?)(.*?);", clean):
                 body = m.group(2)
                 cmd = re.search(r"(?i)\bfor\s+(all|select|insert|update|delete)\b", body)
                 cmd_name = cmd.group(1).lower() if cmd else "all"
@@ -207,14 +206,18 @@ class ProjectScanner:
             data = json.loads(sf.text or "")
         except ValueError:
             return
-        servers = data.get("mcpServers") or data.get("servers") or (data.get("mcp") or {}).get("servers") if isinstance(data, dict) else None
+        if not isinstance(data, dict):
+            return
+        nested = data.get("mcp")
+        servers = data.get("mcpServers") or data.get("servers") or (nested.get("servers") if isinstance(nested, dict) else None)
         if not isinstance(servers, dict):
             return
         for name, cfg in servers.items():
             if not isinstance(cfg, dict):
                 continue
             cmd = str(cfg.get("command", ""))
-            args = [str(a) for a in cfg.get("args", []) if isinstance(a, (str, int))]
+            raw_args = cfg.get("args")
+            args = [str(a) for a in raw_args if isinstance(a, (str, int))] if isinstance(raw_args, list) else []
             if cmd.rsplit("/", 1)[-1] not in ("npx", "bunx", "pnpx", "uvx", "pipx", "dlx") and not (cmd in ("pnpm", "yarn") and "dlx" in args):
                 continue
             pkgs = [a for a in args if not a.startswith("-") and a not in ("dlx", "run")]
@@ -257,14 +260,27 @@ class ProjectScanner:
                     candidates.add(rel)
         for rel in sorted(candidates):
             if self.p.is_git:
-                if rel in self.p.tracked:
-                    self.add(rel, 0, "SEC006", f"{rel} is tracked by git.")
+                if rel in self.p.tracked and self._has_secret_value(rel):
+                    self.add(rel, 0, "SEC006", f"{rel} is tracked by git and contains secret values.")
                 elif rel in self.p.untracked:
                     self.add(rel, 0, "SEC007", f"{rel} is not covered by .gitignore.")
             else:
                 from .files import gitignore_covers
                 if not gitignore_covers(root, rel):
                     self.add(rel, 0, "SEC007", f"{rel} is not covered by .gitignore.")
+
+    def _has_secret_value(self, rel: str) -> bool:
+        """Committed .env templates with empty or placeholder values are fine; real values are not."""
+        sf = self.p.get(rel)
+        for line in (sf.text if sf and sf.text else "").splitlines():
+            m = re.match(r"\s*(?:export\s+)?([A-Za-z0-9_]+)\s*=\s*(.*)", line)
+            if not m:
+                continue
+            value = m.group(2).split(" #")[0].strip().strip("'\"")
+            if value and not H.PLACEHOLDER.search(value) and (H.SECRET_NAME.search(m.group(1)) or H.looks_random(value)):
+                if value.lower() not in ("true", "false", "localhost", "postgres", "password", "admin", "root"):
+                    return True
+        return False
 
     def lockfiles(self) -> None:
         for f in self.p.files:
@@ -331,7 +347,10 @@ class ProjectScanner:
                 self.add(r.file, r.line, "AUTH001", f"{'/'.join(r.methods)} {path} {what}.")
             elif mutating and r.has_auth and r.params and r.methods != ["POST"]:
                 id_params = [p for p in r.params if re.search(r"(?i)id$|^pk$|^slug$", p)]
-                if id_params and any(re.search(r"\b" + re.escape(p) + r"\b", r.body.split("\n", 1)[-1]) for p in id_params) and not H.OWNERSHIP_EVIDENCE.search(r.body):
+                handler = r.body.split("\n", 1)[-1]
+                without_params = re.sub(r"\b(?:" + "|".join(map(re.escape, r.params)) + r")\b", "_", r.body)
+                if id_params and any(re.search(r"\b" + re.escape(p) + r"\b", handler) for p in id_params) \
+                        and not H.OWNERSHIP_EVIDENCE.search(without_params):
                     self.add(r.file, r.line, "AUTH003", f"{'/'.join(r.methods)} {path} changes a record by id without checking that it belongs to the caller.")
             if r.calls_llm and not rate_limited:
                 self.add(r.file, r.line, "LLM004", f"{path} calls a model and the project has no rate limiting.",

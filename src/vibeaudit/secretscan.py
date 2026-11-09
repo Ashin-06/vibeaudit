@@ -7,6 +7,7 @@ import re
 from typing import Callable, List, Optional, Pattern, Tuple
 
 from . import heuristics as H
+from .guard import GUARD, finditer
 from .files import ENV_EXAMPLE_RE, Project, SourceFile
 from .lexer import js_views, py_views
 from .model import Finding
@@ -44,17 +45,24 @@ PROVIDER_KEYS: List[Tuple[str, Pattern[str]]] = [
     ("Supabase secret key", re.compile(r"\bsb_secret_[A-Za-z0-9_-]{20,}\b")),
     ("Clerk secret key", re.compile(r"\bsk_live_[A-Za-z0-9]{40,}\b")),
 ]
+# A secret key value (not just the setting name), used to rate a lone access key id.
+AWS_SECRET = next(rx for label, rx in PROVIDER_KEYS if label == "AWS secret access key")
 PRIVATE_KEY = re.compile(r"-----BEGIN (?:RSA |EC |DSA |OPENSSH |PGP |ENCRYPTED )?PRIVATE KEY(?: BLOCK)?-----")
 JWT = re.compile(r"\beyJ[A-Za-z0-9_-]{10,}\.(eyJ[A-Za-z0-9_-]{10,})\.[A-Za-z0-9_-]{10,}")
 DB_URL = re.compile(
     r"\b(?:postgres(?:ql)?|mysql|mariadb|mongodb(?:\+srv)?|rediss?|amqps?|mssql)://([^:/\s'\"@]+):([^@\s'\"/]+)@([^/\s'\":?]+)"
 )
 GENERIC_ASSIGN = re.compile(
-    r"""(?i)["']?([\w.-]*(?:api[_-]?key|apikey|secret|token|passwd|password|private[_-]?key|access[_-]?key|client[_-]?secret|auth[_-]?key|credentials?)[\w.-]*)["']?\s*(?:[:=]|:=|=>)\s*["'`]([^"'`\s]{12,})["'`]"""
+    r"""(?i)["']?(?<![\w.-])([\w.-]{0,40}?(?:api[_-]?key|apikey|secret|token|passwd|password|private[_-]?key|access[_-]?key|client[_-]?secret|auth[_-]?key|credentials?)[\w.-]{0,40})(?![\w.-])["']?[ \t]*(?:[:=]|:=|=>)[ \t]*["'`]([^"'`\s]{12,})["'`]"""
 )
 ENV_LINE = re.compile(
-    r"^\s*(?:export\s+)?([A-Za-z0-9_]*(?:KEY|SECRET|TOKEN|PASSWORD|PASS|CREDENTIALS?|PRIVATE)[A-Za-z0-9_]*)\s*=\s*['\"]?([^\s'\"#]{12,})", re.M
+    r"^[ \t]*(?:export[ \t]+)?(?<![A-Za-z0-9_])([A-Za-z0-9_]{0,60}?(?:KEY|SECRET|TOKEN|PASSWORD|PASS|CREDENTIALS?|PRIVATE)[A-Za-z0-9_]{0,60})(?![A-Za-z0-9_])[ \t]*=[ \t]*['\"]?([^\s'\"#]{12,})", re.M
 )
+# Values that are labels, input types or the stock local-development defaults of database images.
+DEFAULT_PASSWORD_VALUES = {
+    "password", "passwd", "pwd", "pass", "required", "text", "string", "hidden", "new-password", "current-password",
+    "postgres", "mysql", "root", "test", "user", "dev", "local", "example", "guest",
+}
 PASSWORD_ASSIGN = re.compile(
     r"""(?i)\b((?:[a-z_]*_)?(?:password|passwd|pwd|pass)|(?:admin|db|root|master|default)_?pass(?:word)?)["']?\s*(?:[:=]|=>)\s*["'`]([^"'`\n]{4,64})["'`]"""
 )
@@ -100,7 +108,7 @@ class SecretScanner:
             text = sf.text
             if text is None or sf.is_lockfile or sf.rel.endswith((".map", ".min.js", ".svg")):
                 continue
-            self.scan_file(sf, text)
+            GUARD.run(sf.rel, "secret scan", self.scan_file, sf, text)
 
     def scan_file(self, sf: SourceFile, text: str) -> None:
         seen_lines = set()
@@ -113,7 +121,7 @@ class SecretScanner:
             return True
 
         for label, rx in PROVIDER_KEYS:
-            for m in rx.finditer(text):
+            for m in finditer(rx, text):
                 secret = m.group(1) if m.groups() else m.group(0)
                 if H.PLACEHOLDER.search(secret) or re.search(r"(?i)example|xxxx", secret):
                     continue
@@ -126,17 +134,20 @@ class SecretScanner:
                 if label == "Mailgun API key" and not re.search(r"(?i)mailgun", text):
                     continue
                 if once(m.start()):
-                    self.add(sf, "SEC001", m.start(), f"{label} committed in source.", secret)
-        for m in PRIVATE_KEY.finditer(text):
+                    sev = ""
+                    if label == "AWS access key id" and not AWS_SECRET.search(text):
+                        sev = "medium"  # the id alone cannot sign requests; still worth removing
+                    self.add(sf, "SEC001", m.start(), f"{label} committed in source.", secret, sev)
+        for m in finditer(PRIVATE_KEY, text):
             window = text[m.end(): m.end() + 200]
             if re.search(r"(?i)\.\.\.|example|your|redacted", window[:60]) or len(window.strip()) < 40:
                 continue
             if once(m.start()):
                 self.add(sf, "SEC002", m.start(), "Private key committed in source.")
-        for m in JWT.finditer(text):
+        for m in finditer(JWT, text):
             if _jwt_role(m.group(1)) == "service_role" and once(m.start()):
                 self.add(sf, "SEC009", m.start(), "Supabase service_role JWT committed in source.", m.group(0))
-        for m in DB_URL.finditer(text):
+        for m in finditer(DB_URL, text):
             user, pw, host = m.group(1), m.group(2), m.group(3)
             if "." not in host or host.startswith(("127.", "0.0.0.0")) or host == "localhost":
                 continue
@@ -148,7 +159,7 @@ class SecretScanner:
         if sf.is_test or is_doc:
             return
         public_lines = set()
-        for m in PUBLIC_ENV.finditer(text):
+        for m in finditer(PUBLIC_ENV, text):
             if re.search(r"PUBLISHABLE|ANON|PUBLIC_KEY|SITE_KEY|MEASUREMENT|_PK_|PK_LIVE|PK_TEST", m.group(0)):
                 continue
             line = sf.line_at(m.start())
@@ -157,18 +168,18 @@ class SecretScanner:
                 self.add(sf, "SEC008", m.start(), f"{m.group(0)} is a public (browser-exposed) variable but holds a secret.")
         code = self._code(sf, text)
         for rx in SIGNING_LITERAL:
-            for m in rx.finditer(code):
+            for m in finditer(rx, code):
                 val = m.group(1)
                 if H.PLACEHOLDER.search(val) and not re.search(r"(?i)changeme|change_me|secret|dev|insecure", val):
                     continue
                 if once(m.start()):
                     self.add(sf, "SEC004", m.start(), "Session/JWT signing secret is hard-coded.", val if len(val) > 8 else "")
         for rx in SIGNING_FALLBACK:
-            for m in rx.finditer(code):
+            for m in finditer(rx, code):
                 if once(m.start()):
                     self.add(sf, "SEC004", m.start(), "Signing secret falls back to a hard-coded default when the env var is missing.", "", "medium")
         if sf.kind == "env":
-            for m in ENV_LINE.finditer(text):
+            for m in finditer(ENV_LINE, text):
                 if re.search(r"PUBLISHABLE|ANON|PUBLIC_KEY|SITE_KEY|_PK\b|MEASUREMENT", m.group(1)):
                     continue  # keys that are designed to be public
                 jwt = JWT.match(m.group(2))
@@ -178,15 +189,16 @@ class SecretScanner:
                     self.add(sf, "SEC003", m.start(), f"{m.group(1)} has a real-looking value.", m.group(2))
         elif sf.kind in ("py", "js", "html", "json", "yaml", "compose", "docker", "other", "workflow") and not ENV_EXAMPLE_RE.search(sf.rel):
             if sf.kind in ("py", "js"):
-                for m in PASSWORD_ASSIGN.finditer(code):
+                for m in finditer(PASSWORD_ASSIGN, code):
                     name, val = m.group(1), m.group(2)
                     low = val.lower()
-                    if (" " in val or low == name.lower() or low in ("password", "passwd", "pwd", "pass", "required", "text", "string", "hidden", "new-password", "current-password")
+                    same = re.sub(r"[\W_]", "", low) == re.sub(r"[\W_]", "", name.lower())
+                    if (" " in val or same or low in DEFAULT_PASSWORD_VALUES
                             or H.PLACEHOLDER.search(val) or re.match(r"^[\w.]+\(|^\$|^%|^\{", val)):
                         continue
                     if once(m.start()):
                         self.add(sf, "SEC011", m.start(), f"`{name}` is a hard-coded password.", val)
-            for m in GENERIC_ASSIGN.finditer(code if sf.kind in ("py", "js") else text):
+            for m in finditer(GENERIC_ASSIGN, code if sf.kind in ("py", "js") else text):
                 name, val = m.group(1), m.group(2)
                 if re.search(r"(?i)tokens?_?(?:count|limit|url|endpoint|type|name|usage)|max_?tokens?|tokenizer|csrf|_url$|_path$|_file$|_id$|_ids$|placeholder|label|hint", name):
                     continue
