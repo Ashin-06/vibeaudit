@@ -188,11 +188,11 @@ def test_external_parsers(tmp_path):
                                   "Secret": secret, "Line": f"key = '{secret}'", "Description": "Generic API Key"}], root)
     assert g[0].file == "a.py" and g[0].line == 3 and secret not in g[0].snippet
     b = external.parse_bandit({"results": [
-        {"test_id": "B602", "test_name": "subprocess_popen_with_shell_equals_true", "issue_text": "shell=True",
+        {"test_id": "B324", "test_name": "hashlib", "issue_text": "Use of weak MD5 hash",
          "issue_severity": "HIGH", "issue_confidence": "HIGH", "filename": str(root / "x.py"), "line_number": 7,
-         "code": "subprocess.call(cmd, shell=True)", "issue_cwe": {"id": 78}},
+         "code": "hashlib.md5(data)", "issue_cwe": {"id": 327}},
         {"test_id": "B101", "issue_severity": "LOW", "issue_confidence": "HIGH", "filename": "y.py", "line_number": 1}]}, root)
-    assert len(b) == 1 and b[0].rule_id == "bandit:B602" and b[0].cwe == "CWE-78"
+    assert len(b) == 1 and b[0].rule_id == "bandit:B324" and b[0].cwe == "CWE-327"
     s = external.parse_semgrep({"results": [{"check_id": "python.lang.security.audit.eval-detected", "path": "z.py",
                                              "start": {"line": 4}, "extra": {"message": "eval", "severity": "ERROR",
                                                                              "metadata": {"cwe": ["CWE-95: Eval"]}, "lines": "eval(x)"}}]}, root)
@@ -204,7 +204,7 @@ def test_external_parsers(tmp_path):
 
 def test_external_duplicates_of_builtin_findings_are_dropped(tmp_path, monkeypatch):
     (tmp_path / "a.py").write_text("eval(x)\n")
-    dup = external.parse_bandit({"results": [{"test_id": "B307", "test_name": "eval", "issue_text": "eval",
+    dup = external.parse_bandit({"results": [{"test_id": "B999", "test_name": "eval", "issue_text": "eval",
                                               "issue_severity": "MEDIUM", "issue_confidence": "HIGH",
                                               "filename": "a.py", "line_number": 1, "code": "eval(x)"}]}, tmp_path)
     monkeypatch.setattr(external, "available", lambda name: name == "bandit")

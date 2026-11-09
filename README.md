@@ -92,6 +92,11 @@ vibeaudit scan path/to/project --report html --report sarif:results.sarif
 | `--external auto\|none\|LIST` | Run installed gitleaks, bandit, osv-scanner, semgrep and merge results. |
 | `--llm gemini\|openai\|anthropic` | Model triage of findings; `--llm-review` adds a review of the riskiest files. |
 
+With `--external auto` (the default), gitleaks, bandit, osv-scanner and semgrep are run when they are
+installed, and their findings are merged and de-duplicated. Bandit checks that a built-in rule covers
+with data flow (exec/eval, shell, SQL strings, pickle/yaml, debug mode, `verify=False`) are left to the
+built-in rule, so a line vibeaudit has judged safe is not reported again.
+
 Exit codes: `0` clean at the `--fail-on` level, `1` findings, `2` usage error. In a git checkout,
 ignored files are not scanned (a local ignored `.env` is where secrets belong). Vendor folders, build
 output and minified bundles are skipped. In test files only real credentials are reported.

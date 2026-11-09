@@ -55,11 +55,24 @@ def parse_gitleaks(data: list, root: Path) -> List[Finding]:
     return out
 
 
+# Bandit checks that a built-in rule already covers with data flow (and therefore with fewer false
+# alarms). When vibeaudit decides such a line is safe, bandit must not bring the alarm back.
+BANDIT_COVERED = {
+    "B101",  # assert: not a security issue in application code
+    "B102", "B307",  # exec / eval -> BE003, LLM002
+    "B201",  # flask debug=True -> BE011
+    "B301", "B506",  # pickle / yaml.load -> BE004
+    "B501",  # requests verify=False -> BE013
+    "B602", "B605",  # shell=True / os.system -> BE002
+    "B608",  # SQL built from strings -> BE001 (knows placeholder-only formatting is safe)
+}
+
+
 def parse_bandit(data: dict, root: Path) -> List[Finding]:
     out = []
     sev_map = {"HIGH": "high", "MEDIUM": "medium", "LOW": "low"}
     for r in (data or {}).get("results", []):
-        if r.get("test_id") in ("B101",) or r.get("issue_confidence") == "LOW" or r.get("issue_severity") == "LOW":
+        if r.get("test_id") in BANDIT_COVERED or r.get("issue_confidence") == "LOW" or r.get("issue_severity") == "LOW":
             continue
         cwe = (r.get("issue_cwe") or {}).get("id")
         out.append(Finding(
