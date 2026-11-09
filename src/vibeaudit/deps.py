@@ -129,7 +129,7 @@ def collect(project: Project) -> List[Dep]:
             continue
         name = f.rel.rsplit("/", 1)[-1]
         if re.fullmatch(r"requirements[\w.-]*\.(?:txt|in)", name) or re.search(r"(?:^|/)requirements/[^/]+\.txt$", f.rel):
-            private = bool(re.search(r"^\s*--(?:index-url|extra-index-url)|^\s*-i\s", f.text, re.M))
+            private = bool(re.search(r"^\s*(?:--index-url\b|-i\s)", f.text, re.M))  # PyPI replaced by another index
             for i, line in enumerate(f.lines, 1):
                 parsed = parse_requirement(line)
                 if parsed:
@@ -182,7 +182,73 @@ def collect(project: Project) -> List[Dep]:
                         ok = False
                     exact = locked.get(dep) or (ver if re.fullmatch(r"\d+\.\d+\.\d+(?:[-+][\w.]+)?", ver) else None)
                     deps.append(Dep(real, "npm", f.rel, _line_of(f, '"' + dep + '"'), exact, ok))
+    _fill_from_lockfiles(project, deps)
     return deps
+
+
+PY_LOCKS = ("poetry.lock", "uv.lock", "pdm.lock", "Pipfile.lock")
+JS_LOCKS = ("pnpm-lock.yaml", "yarn.lock", "bun.lock")
+
+
+def _fill_from_lockfiles(project: Project, deps: List[Dep]) -> None:
+    """Resolve exact versions from the lockfile next to each manifest, so OSV can check them."""
+    cache: Dict[Tuple[str, str], Tuple[str, str]] = {}
+    for d in deps:
+        if d.version or not d.checkable:
+            continue
+        folder = d.file.rsplit("/", 1)[0] if "/" in d.file else ""
+        for lock in (PY_LOCKS if d.ecosystem == "PyPI" else JS_LOCKS):
+            key = (folder, lock)
+            if key not in cache:
+                path = project.root / folder / lock if folder else project.root / lock
+                try:
+                    cache[key] = (lock, path.read_text(encoding="utf-8", errors="replace") if path.is_file() else "")
+                except OSError:
+                    cache[key] = (lock, "")
+            version = _locked_version(*cache[key], d)
+            if version:
+                d.version = version
+                break
+
+
+def _locked_version(lock: str, text: str, d: Dep) -> Optional[str]:
+    if not text:
+        return None
+    name = re.escape(d.name)
+    if lock in ("poetry.lock", "uv.lock", "pdm.lock"):
+        try:
+            data = tomllib.loads(text)
+        except (ValueError, TypeError):
+            return None
+        for pkg in data.get("package", []) if isinstance(data.get("package"), list) else []:
+            if isinstance(pkg, dict) and pep503(str(pkg.get("name", ""))) == pep503(d.name) and isinstance(pkg.get("version"), str):
+                return pkg["version"]
+        return None
+    if lock == "Pipfile.lock":
+        try:
+            data = json.loads(text)
+        except ValueError:
+            return None
+        for section in ("default", "develop"):
+            for pkg, info in _dict(_dict(data).get(section)).items():
+                if pep503(pkg) == pep503(d.name) and isinstance(_dict(info).get("version"), str):
+                    return info["version"].lstrip("=")
+        return None
+    if lock == "pnpm-lock.yaml":
+        for rx in (r"^\s+'?" + name + r"'?:\n\s+specifier: [^\n]*\n\s+version: '?([0-9][^\s('\n]*)",  # v6 / v9 importers
+                   r"^\s+'?" + name + r"'?: '?([0-9][^\s('\n]*)",  # v5 importers
+                   r"^\s+'?/?" + name + r"@([0-9][^:(\s']*)'?:"):  # packages section
+            m = re.search(rx, text, re.M)
+            if m:
+                return m.group(1)
+        return None
+    if lock == "yarn.lock":
+        m = re.search(r'^"?' + name + r'@[^\n]*:\n\s+version:? "?([0-9][^"\s]*)', text, re.M)
+        return m.group(1) if m else None
+    if lock == "bun.lock":
+        m = re.search(r'"' + name + r'": \["' + name + r'@([0-9][^"]*)"', text)
+        return m.group(1) if m else None
+    return None
 
 
 def _npm_lock_versions(project: Project, pkg: SourceFile) -> Dict[str, str]:
