@@ -118,6 +118,101 @@ def is_formatted(node: ast.AST) -> bool:
     return False
 
 
+# Placeholder-only SQL formatting: `f"... IN ({','.join('?' * len(ids))})"` and friends only ever insert
+# bind markers into the query text; the values themselves travel as parameters.
+PLACEHOLDER_TOKEN = re.compile(r"^\s*(?:\?|%s|\$\d+|:\w+|@\w+)\s*$")
+PLACEHOLDER_RUN = re.compile(r"^[\s,]*(?:(?:\?|%s|\$\d+|:\w+|@\w+)[\s,]*)+$")
+JOIN_SEPARATOR = re.compile(r"^[\s,]*$")
+NUMERIC_CALLS = {"len", "int", "min", "max", "sum"}
+
+
+def interpolated(node: ast.AST) -> List[ast.AST]:
+    """The non-constant pieces that a formatted string expression inserts into its text."""
+    def operand(n: ast.AST) -> List[ast.AST]:
+        if isinstance(n, ast.Constant):
+            return []
+        if is_formatted(n):
+            return interpolated(n)
+        return [n]
+
+    if isinstance(node, ast.JoinedStr):
+        return [v.value for v in node.values if isinstance(v, ast.FormattedValue)]
+    if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Add):
+        return operand(node.left) + operand(node.right)
+    if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Mod):
+        right = node.right.elts if isinstance(node.right, ast.Tuple) else [node.right]
+        return operand(node.left) + [r for r in right if not isinstance(r, ast.Constant)]
+    if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) and node.func.attr == "format":
+        return operand(node.func.value) + list(node.args) + [k.value for k in node.keywords]
+    return [node]
+
+
+def _placeholder_str(node: ast.AST) -> bool:
+    s = const_str(node)
+    return s is not None and bool(PLACEHOLDER_RUN.match(s))
+
+
+def placeholder_safe(node: ast.AST, assigned: Dict[str, ast.AST], bound: Set[str] = frozenset(), depth: int = 0) -> bool:
+    """True when `node` can only evaluate to SQL bind markers such as "?, ?, ?" or ":p0, :p1"."""
+    if depth > 6:
+        return False
+    if isinstance(node, ast.Name):
+        if node.id in bound:
+            return True
+        if node.id in assigned:
+            return placeholder_safe(assigned[node.id], assigned, bound, depth + 1)
+        return False
+    if isinstance(node, ast.Constant):
+        return _placeholder_str(node) or (isinstance(node.value, int) and not isinstance(node.value, bool))
+    if isinstance(node, ast.Call):
+        name = last_name(node.func)
+        if name in NUMERIC_CALLS and isinstance(node.func, ast.Name):
+            return True  # numbers cannot carry SQL
+        if name == "join" and isinstance(node.func, ast.Attribute) and len(node.args) == 1 and not node.keywords:
+            sep = const_str(node.func.value)
+            return sep is not None and bool(JOIN_SEPARATOR.match(sep)) and _sequence_safe(node.args[0], assigned, bound, depth + 1)
+        return False
+    if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Mult):
+        return any(_placeholder_str(side) for side in (node.left, node.right))
+    if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Add):
+        return all(placeholder_safe(s, assigned, bound, depth + 1) or const_str(s) is not None and JOIN_SEPARATOR.match(const_str(s) or "")
+                   for s in (node.left, node.right))
+    if isinstance(node, ast.JoinedStr):
+        # f":p{i}" where i is a loop index: substitute a digit and check the result is one marker
+        sample = "".join(str(v.value) if isinstance(v, ast.Constant) else "0" for v in node.values)
+        values = [v.value for v in node.values if isinstance(v, ast.FormattedValue)]
+        return bool(PLACEHOLDER_RUN.match(sample)) and all(placeholder_safe(v, assigned, bound, depth + 1) for v in values)
+    return False
+
+
+def _sequence_safe(node: ast.AST, assigned: Dict[str, ast.AST], bound: Set[str], depth: int) -> bool:
+    """True when every element of the iterable passed to str.join is a bind marker."""
+    if isinstance(node, ast.Name) and node.id in assigned and depth <= 6:
+        return _sequence_safe(assigned[node.id], assigned, bound, depth + 1)
+    if isinstance(node, ast.Constant):
+        return _placeholder_str(node)
+    if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Mult):
+        for seq, _count in ((node.left, node.right), (node.right, node.left)):
+            if _placeholder_str(seq):
+                return True
+            if isinstance(seq, (ast.List, ast.Tuple)) and seq.elts and all(placeholder_safe(e, assigned, bound, depth) for e in seq.elts):
+                return True
+        return False
+    if isinstance(node, (ast.List, ast.Tuple)):
+        return bool(node.elts) and all(placeholder_safe(e, assigned, bound, depth) for e in node.elts)
+    if isinstance(node, (ast.GeneratorExp, ast.ListComp)):
+        inner = set(bound)
+        for gen in node.generators:
+            it = gen.iter
+            fn = last_name(it.func) if isinstance(it, ast.Call) else ""
+            if fn == "range" and isinstance(gen.target, ast.Name):
+                inner.add(gen.target.id)  # an integer index
+            elif fn == "enumerate" and isinstance(gen.target, ast.Tuple) and gen.target.elts and isinstance(gen.target.elts[0], ast.Name):
+                inner.add(gen.target.elts[0].id)  # only the index, never the element
+        return placeholder_safe(node.elt, assigned, inner, depth)
+    return False
+
+
 def string_parts(node: ast.AST) -> str:
     return " ".join(n.value for n in ast.walk(node) if isinstance(n, ast.Constant) and isinstance(n.value, str))
 
@@ -498,7 +593,9 @@ class PyScanner:
             if arg0 is not None:
                 src = self.resolve(arg0, ctx)
                 formatted = is_formatted(src) and re.search(r"(?i)\b(select|insert|update|delete|drop|create|alter|where)\b", string_parts(src))
-                if t0 and (formatted or ctx.kind == "tool" or not isinstance(src, (ast.Constant, ast.JoinedStr, ast.BinOp))):
+                if formatted and all(placeholder_safe(p, ctx.assigned) for p in interpolated(src)):
+                    pass  # only bind markers are formatted in; the values are passed as parameters
+                elif t0 and (formatted or ctx.kind == "tool" or not isinstance(src, (ast.Constant, ast.JoinedStr, ast.BinOp))):
                     self.sink(call, t0, "BE001", "a SQL query", "high", True)
                 elif formatted:
                     self.add("BE001", call, "SQL query built with string formatting; use parameters even for values you think are safe.", "medium")
