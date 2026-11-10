@@ -351,7 +351,11 @@ class DataScanner:
 
     @property
     def atomic_requests(self) -> bool:
-        return any(f.kind == "py" and re.search(r"ATOMIC_REQUESTS['\"]?\s*[:=]\s*True", f.text or "") for f in self.p.files)
+        """Django ATOMIC_REQUESTS anywhere in the project; computed once (it was once per route: quadratic)."""
+        if not hasattr(self, "_atomic"):
+            self._atomic = any(f.kind == "py" and "ATOMIC_REQUESTS" in (f.text or "")
+                               and re.search(r"ATOMIC_REQUESTS['\"]?\s*[:=]\s*True", f.text or "") for f in self.p.files)
+        return self._atomic
 
     @staticmethod
     def _js_write_models(body: str) -> List[str]:

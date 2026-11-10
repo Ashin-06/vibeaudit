@@ -149,3 +149,28 @@ def test_concurrent_scans_do_not_share_settings(tmp_path):
         for t in threads:
             t.join()
         assert results == {"a": 0, "b": 40}
+
+
+def test_project_wide_checks_read_each_file_once_not_once_per_route(tmp_path, monkeypatch):
+    """Found by the 10,000-file scale run: the ATOMIC_REQUESTS check re-read every file for every route,
+    so scan time grew with routes x files (98 s instead of 59 s at 10,000 files)."""
+    from vibeaudit import datascan
+    from vibeaudit.files import SourceFile
+    from vibeaudit.scanner import Options, scan
+
+    for i in range(60):
+        write(tmp_path, f"app/r{i}.py", f"@app.post('/r{i}')\ndef r{i}():\n    Order.objects.create(a=1)\n    return ''\n")
+    reads = {"n": 0}
+    real_text = SourceFile.text
+    real_tx = datascan.DataScanner._transactions
+
+    def counting_tx(self):
+        monkeypatch.setattr(SourceFile, "text", property(lambda sf: reads.__setitem__("n", reads["n"] + 1) or real_text.fget(sf)))
+        try:
+            return real_tx(self)
+        finally:
+            monkeypatch.setattr(SourceFile, "text", real_text)
+
+    monkeypatch.setattr(datascan.DataScanner, "_transactions", counting_tx)
+    scan(str(tmp_path), Options(offline=True, external="none"))
+    assert reads["n"] <= 3 * 60, reads  # about one read per file; 0.5.1 made 60 routes x 60 files
