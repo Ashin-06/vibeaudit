@@ -99,3 +99,36 @@ def test_cli_rules_listing(capsys):
 
 def test_version_string():
     assert __version__.count(".") == 2
+
+
+def test_prompt_report_groups_by_file_with_fixes(tmp_path, capsys):
+    from vibeaudit.report import render_prompt
+
+    root = materialize("vuln_flask_llm", tmp_path)
+    assert main(["scan", str(root), "--offline", "--external", "none", "-q", "--report", "prompt:-"]) == 1
+    out = capsys.readouterr().out
+    assert out.startswith("Fix the security and quality issues below")
+    assert "## app.py" in out and "- [CRITICAL] LLM002 line 49:" in out and "  Fix: " in out
+    assert "vibeaudit scan ." in out.splitlines()[-1]
+    out.encode("ascii")
+    assert render_prompt(Result("/p", [], {})) == "vibeaudit found no issues in this repository.\n"
+
+
+def test_badge_is_valid_svg_with_score_and_grade(tmp_path):
+    import xml.dom.minidom
+
+    from vibeaudit.report import render_badge
+
+    root = materialize("clean_app", tmp_path)
+    out = tmp_path / "badge.svg"
+    assert main(["scan", str(root), "--offline", "--external", "none", "-q", "--report", f"badge:{out}"]) == 0
+    svg = out.read_text()
+    doc = xml.dom.minidom.parseString(svg)
+    assert doc.documentElement.tagName == "svg" and "vibeaudit: 100 A" in svg
+    assert "#c62828" in render_badge(_result_with_critical())
+
+
+def _result_with_critical():
+    f = Finding("BE003", "a.py", 1, "m", "critical", title="t", category="backend")
+    f.compute_fingerprint()
+    return Result("/p", [f], {})

@@ -35,7 +35,7 @@ def build_parser() -> argparse.ArgumentParser:
     s = sub.add_parser("scan", help="scan a project directory")
     s.add_argument("path", nargs="?", default=".", help="project directory (default: current directory)")
     s.add_argument("-r", "--report", action="append", default=[], metavar="FORMAT[:PATH]",
-                   help="write a report: json, sarif, md or html, optionally with a path ('-' for stdout). Repeatable.")
+                   help="write a report: json, sarif, md, html, prompt (a fix brief for AI assistants) or badge (SVG), optionally with a path ('-' for stdout). Repeatable.")
     s.add_argument("--fail-on", default=None, choices=SEVERITIES[:4] + ["none"],
                    help="exit with code 1 if any finding is at least this severe (default: high)")
     s.add_argument("--min-severity", default=None, choices=SEVERITIES, help="hide findings below this severity (default: low)")
@@ -165,7 +165,7 @@ def cmd_scan(a: argparse.Namespace) -> int:
             fmt, path = "", spec
         fmt = fmt.lower()
         if fmt not in RENDERERS:
-            print(f"vibeaudit: unknown report format {fmt!r} (use json, sarif, md, html)", file=sys.stderr)
+            print(f"vibeaudit: unknown report format {fmt!r} (use json, sarif, md, html, prompt, badge)", file=sys.stderr)
             return 2
         reports.append((fmt, path or f"vibeaudit-report.{EXTENSIONS[fmt]}"))
     disabled = {x.strip() for d in list(a.disable) + list(cfg.get("disable", [])) for x in d.split(",") if x.strip()}
