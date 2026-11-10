@@ -8,5 +8,5 @@ export default function Chat() {
     const data = await res.json();
     setReply(data.reply);
   }
-  return <div onClick={() => send("hi")}>{reply}</div>;
+  return <button type="button" onClick={() => send("hi")}>{reply}</button>;
 }

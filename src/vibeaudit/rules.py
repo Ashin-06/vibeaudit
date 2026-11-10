@@ -16,6 +16,7 @@ CATEGORIES = {
     "llm-review": "LLM review (model-generated, unverified)",
     "data": "Data and database",
     "reliability": "Reliability and performance",
+    "ui": "UI, UX and accessibility",
     "custom": "Custom rules (plugins)",
 }
 
@@ -495,6 +496,56 @@ _R = [
          "can be steered by instructions hidden in that content (indirect prompt injection).",
          "Split reading and acting into separate agents, require human approval for actions, and never give an "
          "agent that reads untrusted content access to secrets or destructive tools.", "CWE-77", "LLM01:2025"),
+    # ------------------------------------------------------- UI, UX and a11y
+    Rule("UI001", "Image without alt text", "ui", "low",
+         "Screen-reader users get the file name or nothing, and the image is invisible to search engines.",
+         "Add alt text that says what the image shows, or alt=\"\" for purely decorative images.", "CWE-1078"),
+    Rule("UI002", "Click handler on a non-interactive element", "ui", "low",
+         "A div or span with onClick cannot be focused or triggered with the keyboard, so keyboard and "
+         "screen-reader users cannot use it.",
+         "Use a <button> (or <a> for navigation); otherwise add role, tabIndex and an onKeyDown handler.", "CWE-1078"),
+    Rule("UI003", "Form field without a label", "ui", "low",
+         "Without a label, screen readers announce only \"edit text\", and placeholder text disappears as soon as "
+         "the user types.",
+         "Wrap the field in a <label>, point a <label htmlFor> at its id, or add aria-label.", "CWE-1078"),
+    Rule("UI004", "Control that does nothing", "ui", "medium",
+         "A button whose handler is empty or only logs, or a link to \"#\", looks finished but does nothing: a "
+         "typical sign of generated UI that was never wired up.",
+         "Wire the control to its action, or remove it until the feature exists."),
+    Rule("UI005", "Array index used as key for a changing list", "ui", "low",
+         "When items are added, removed or reordered, React reuses the wrong component state (inputs keep the old "
+         "text, the wrong row stays checked).",
+         "Use a stable id from the item as the key."),
+    Rule("UI006", "Destructive action without confirmation", "ui", "low",
+         "A delete or remove that runs on a single click, with no confirmation or undo, loses user data on a "
+         "misclick.",
+         "Ask for confirmation (a dialog), or offer undo for a few seconds before deleting for good."),
+    Rule("UI007", "Hydration mismatch", "ui", "medium",
+         "Random numbers or the current time rendered on the server differ on the client, so React reports a "
+         "hydration error and re-renders the page.",
+         "Compute the value in useEffect after mount, or pass it from the server as a prop."),
+    Rule("UI008", "Effect without cleanup", "ui", "medium",
+         "An effect that starts a timer, listener or subscription without returning a cleanup function leaks it "
+         "on every remount (twice in development), causing duplicate events and memory growth.",
+         "Return a function from the effect that clears the timer, removes the listener or unsubscribes.", "CWE-401"),
+    Rule("UI009", "Data loaded without loading or error state", "ui", "low",
+         "If the request is slow the user sees an empty screen; if it fails the error is swallowed and the screen "
+         "stays empty with no explanation.",
+         "Track loading and error state (or use a data library such as SWR or React Query) and render both."),
+    Rule("UI010", "Placeholder content left in the UI", "ui", "low",
+         "Lorem ipsum in shipped pages makes the product look unfinished.",
+         "Replace it with real copy, or hide the section until it has content."),
+    Rule("UI011", "No error page", "ui", "low",
+         "Without app/error.tsx a thrown error replaces the page with the generic Next.js \"Application error\" "
+         "screen, with no way back.",
+         "Add app/error.tsx (and app/global-error.tsx) with a friendly message and a retry button."),
+    Rule("UI012", "Missing page metadata or viewport", "ui", "low",
+         "Pages without a title and description look broken in tabs, bookmarks and search results; without a "
+         "viewport tag phones show a tiny zoomed-out page.",
+         "Export metadata (title, description) from the root layout and include the viewport meta tag."),
+    Rule("UI013", "Link to a page that does not exist", "ui", "medium",
+         "The link points to a path with no matching page or route, so users land on a 404.",
+         "Fix the path, or create the page."),
     Rule("AI001", "Issue reported by the LLM review (unverified)", "llm-review", "medium",
          "With --llm-review a model reads the riskiest files and reports issues the rules did not cover. These are "
          "suggestions from a model and can be wrong.",

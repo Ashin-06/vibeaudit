@@ -19,5 +19,5 @@ export default function Chat() {
     setHtml(res.choices[0].message.content ?? "");
     localStorage.setItem("isAdmin", "false"); // expect: FE003
   }
-  return <div dangerouslySetInnerHTML={{ __html: html }} onClick={() => send("hi")} />; // expect: FE001
+  return <div dangerouslySetInnerHTML={{ __html: html }} onClick={() => send("hi")} />; // expect: FE001, UI002
 }

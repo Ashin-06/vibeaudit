@@ -22,6 +22,7 @@ from .qualityscan import QualityScanner
 from .datascan import DataScanner
 from .relscan import ReliabilityScanner
 from .aiscan import AiScanner
+from .uiscan import UiScanner
 from .report import Result
 from .rules import RULES
 from .secretscan import SecretScanner
@@ -103,6 +104,7 @@ def scan(root: str, opts: Optional[Options] = None) -> Result:
     DataScanner(project, emit, js_routes + py_routes).run()
     ReliabilityScanner(project, emit, js_routes + py_routes).run()
     AiScanner(project, emit, js_routes + py_routes).run()
+    UiScanner(project, emit).run()
     plugins.run(project, js_routes + py_routes, emit)
     deps = DepScanner(project, emit, opts.offline)
     GUARD.run("<project>", "dependency checks", deps.run)
