@@ -174,3 +174,20 @@ def test_project_wide_checks_read_each_file_once_not_once_per_route(tmp_path, mo
     monkeypatch.setattr(datascan.DataScanner, "_transactions", counting_tx)
     scan(str(tmp_path), Options(offline=True, external="none"))
     assert reads["n"] <= 3 * 60, reads  # about one read per file; 0.5.1 made 60 routes x 60 files
+
+
+# found on Rubicon (the peer project) while preparing 0.5.2 ----------------------
+def test_sql_fragment_of_constants_and_placeholders_is_not_injection(tmp_path):
+    write(tmp_path, "store.py",
+          "def drop(db, ids, last=None):\n    for i in range(0, len(ids), 500):\n        chunk = ids[i:i + 500]\n"
+          "        where = f\"tx IN ({','.join('?' * len(chunk))})\" + (\"\" if last is None else \" AND id <= ?\")\n"
+          "        db.execute(f\"DELETE FROM journal WHERE {where}\", chunk)\n\n"
+          "def find(db, column, value):\n    where = f\"{column} = ?\"\n    db.execute(f\"SELECT * FROM t WHERE {where}\", (value,))\n")
+    assert [(ln, r) for _f, ln, r in _found(tmp_path, "BE001")] == [(9, "BE001")]  # column comes from the caller
+
+
+def test_expected_exception_check_is_not_a_swallowed_error(tmp_path):
+    write(tmp_path, "checks.py",
+          "def check(fn):\n    try:\n        fn('positional')\n        raise AssertionError('must be refused')\n    except TypeError:\n        pass\n"
+          "    try:\n        fn(1)\n    except ValueError:\n        pass\n")
+    assert [(ln, r) for _f, ln, r in _found(tmp_path, "QA003")] == [(9, "QA003")]

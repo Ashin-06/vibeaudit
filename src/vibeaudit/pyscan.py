@@ -189,6 +189,26 @@ def placeholder_safe(node: ast.AST, assigned: Dict[str, ast.AST], bound: Set[str
     return False
 
 
+def fragment_safe(node: ast.AST, assigned: Dict[str, ast.AST], depth: int = 0) -> bool:
+    """True when `node` can only evaluate to fixed SQL text and bind markers, such as
+    where = f"tx IN ({','.join('?' * len(chunk))})" + ("" if last is None else " AND id <= ?")."""
+    if depth > 6:
+        return False
+    if placeholder_safe(node, assigned, depth=depth):
+        return True
+    if isinstance(node, ast.Constant):
+        return isinstance(node.value, str)  # fixed SQL text written in the code
+    if isinstance(node, ast.Name):
+        return node.id in assigned and fragment_safe(assigned[node.id], assigned, depth + 1)
+    if isinstance(node, ast.JoinedStr):
+        return all(fragment_safe(v.value, assigned, depth + 1) for v in node.values if isinstance(v, ast.FormattedValue))
+    if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Add):
+        return fragment_safe(node.left, assigned, depth + 1) and fragment_safe(node.right, assigned, depth + 1)
+    if isinstance(node, ast.IfExp):
+        return fragment_safe(node.body, assigned, depth + 1) and fragment_safe(node.orelse, assigned, depth + 1)
+    return False
+
+
 def _sequence_safe(node: ast.AST, assigned: Dict[str, ast.AST], bound: Set[str], depth: int) -> bool:
     """True when every element of the iterable passed to str.join is a bind marker."""
     if isinstance(node, ast.Name) and node.id in assigned and depth <= 6:
@@ -387,8 +407,9 @@ class PyScanner:
         for node in ast.walk(tree):
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 self.scan_function(node)
-            elif isinstance(node, ast.ExceptHandler):
-                self.check_except(node)
+            elif isinstance(node, ast.Try) or type(node).__name__ == "TryStar":
+                for handler in node.handlers:  # type: ignore[attr-defined]
+                    self.check_except(handler, node)
             elif isinstance(node, ast.While):
                 self.check_loop(node)
         self.check_module_text(tree)
@@ -632,7 +653,7 @@ class PyScanner:
             if arg0 is not None:
                 src = self.resolve(arg0, ctx)
                 formatted = is_formatted(src) and re.search(r"(?i)\b(select|insert|update|delete|drop|create|alter|where)\b", string_parts(src))
-                if formatted and all(placeholder_safe(p, ctx.assigned) for p in interpolated(src)):
+                if formatted and all(fragment_safe(p, ctx.assigned) for p in interpolated(src)):
                     pass  # only bind markers are formatted in; the values are passed as parameters
                 elif t0 and (formatted or ctx.kind == "tool" or not isinstance(src, (ast.Constant, ast.JoinedStr, ast.BinOp))):
                     self.sink(call, t0, "BE001", "a SQL query", "high", True)
@@ -890,9 +911,15 @@ class PyScanner:
         if len(body) == 1 and isinstance(body[0], ast.Return) and isinstance(body[0].value, ast.Constant) and body[0].value.value is True:
             self.add("AUTH008", fn, f"`{fn.name}()` always returns True.")  # type: ignore[attr-defined]
 
-    def check_except(self, h: ast.ExceptHandler) -> None:
+    def check_except(self, h: ast.ExceptHandler, owner: Optional[ast.AST] = None) -> None:
         if not all(isinstance(s, ast.Pass) or (isinstance(s, ast.Expr) and isinstance(s.value, ast.Constant)) for s in h.body):
             return
+        last = owner.body[-1] if owner is not None and owner.body else None  # type: ignore[attr-defined]
+        if last is not None and (
+                (isinstance(last, ast.Raise) and last.exc is not None and "AssertionError" in ast.unparse(last.exc))
+                or (isinstance(last, ast.Assert) and isinstance(last.test, ast.Constant) and not last.test.value)
+                or (isinstance(last, ast.Expr) and isinstance(last.value, ast.Call) and last_name(last.value.func) == "fail")):
+            return  # "this must raise" check: the exception is the expected outcome, not a swallowed error
         typ = ast.unparse(h.type) if h.type is not None else ""
         block = "\n".join(self.sf.lines[h.body[0].lineno - 1:getattr(h, "end_lineno", h.lineno)])
         if "#" in block:
