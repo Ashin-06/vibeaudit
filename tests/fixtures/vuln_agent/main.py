@@ -1,3 +1,4 @@
+import json
 import subprocess
 
 import torch
@@ -5,6 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from langchain_core.tools import tool
 from langchain_experimental.agents import create_pandas_dataframe_agent
+from langgraph.prebuilt import create_react_agent
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 from transformers import AutoModel
@@ -47,3 +49,12 @@ async def ask(body: Ask):  # expect: AUTH001, LLM004
         result = agent.invoke(body.question)
         if "FINAL" in str(result):
             return {"answer": result}
+
+
+LEGACY_MODEL = "text-davinci-003"  # expect: LLM012
+executor = create_react_agent(llm, [run_shell, read_file])  # expect: LLM015
+
+
+def parse_plan(question: str):
+    reply = llm.invoke(question).content
+    return json.loads(reply)  # expect: LLM011

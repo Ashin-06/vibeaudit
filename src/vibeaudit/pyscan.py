@@ -261,6 +261,7 @@ class Ctx:
         self.assigned: Dict[str, ast.AST] = {}
         self.params = params
         self.except_names: Set[str] = set()
+        self.try_depth = 0
 
 
 class PyScanner:
@@ -584,7 +585,9 @@ class PyScanner:
                         self.assign(item.optional_vars, self.taint(item.context_expr, ctx), ctx)
                 self.walk_block(st.body, ctx)
             elif isinstance(st, ast.Try) or type(st).__name__ == "TryStar":
+                ctx.try_depth += 1
                 self.walk_block(st.body, ctx)  # type: ignore[attr-defined]
+                ctx.try_depth -= 1
                 for h in st.handlers:  # type: ignore[attr-defined]
                     if h.name:
                         ctx.except_names.add(h.name)
@@ -687,6 +690,9 @@ class PyScanner:
         elif d in ("pickle.loads", "pickle.load", "cPickle.loads", "cPickle.load", "dill.loads", "dill.load", "marshal.loads", "marshal.load", "jsonpickle.decode", "shelve.open", "yaml.unsafe_load"):
             if not self.sink(call, t0, "BE004", d + "()", "high", True):
                 self.add("BE004", call, f"{d}() can execute code if the data is ever attacker-controlled.", "medium")
+        elif (d in ("json.loads", "json.load") and arg0 is not None and "llm" in t0 and ctx.try_depth == 0
+              and not H.JSON_MODE.search("\n".join(self.sf.lines[max(t0["llm"] - 1, 0):call.lineno]))):
+            self.add("LLM011", call, f"Model output (line {t0['llm']}) is parsed with {d}() without handling invalid JSON.")
         elif d == "yaml.load":
             loader = ast.unparse(kws["Loader"]) if "Loader" in kws else (ast.unparse(call.args[1]) if len(call.args) > 1 else "")
             if "Safe" not in loader and "BaseLoader" not in loader:

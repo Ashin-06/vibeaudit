@@ -685,6 +685,13 @@ class JsScanner:
                 a = m.end()
                 b = stmt_end(bare, a)
                 self._system_prompt(fs, m.start(), code[a:b], bare[a:b])
+        # JSON.parse of model output outside a try block
+        for m in finditer(r"\bJSON\s*\.\s*parse\s*\(", bare):
+            arg = first_arg(bare, m.end() - 1)
+            # ponytail: JSON mode is looked for earlier in the enclosing function, not traced to the call
+            if (arg and "llm" in fs.kinds(code[arg[0]:arg[1]], bare[arg[0]:arg[1]], m.start()) and not self._inside_try(bare, m.start())
+                    and not H.JSON_MODE.search(code, max(fs.scope_of(m.start())[0], m.start() - 3000), m.start())):
+                self.add(fs, "LLM011", m.start(), "Model output is parsed with JSON.parse() without handling invalid JSON.")
         # token limits
         for m in finditer(r"\.\s*(?:chat\s*\.\s*completions\s*\.\s*(?:create|parse)|completions\s*\.\s*create|responses\s*\.\s*create)\s*\(|\b(?:generateText|streamText|generateObject|streamObject)\s*\(", bare):
             arg = first_arg(bare, m.end() - 1)
@@ -723,6 +730,21 @@ class JsScanner:
         obj = fs.v.code[start:match_close(fs.v.bare, start) + 1]
         m = re.search(r"\bbase_?ur[li]\s*:\s*([^,}\n]+)", obj, re.I)
         return bool(m) and not H.LLM_HOSTS.search(m.group(1))
+
+    @staticmethod
+    def _inside_try(bare: str, pos: int) -> bool:
+        depth = 0
+        for k in range(pos, -1, -1):
+            ch = bare[k]
+            if ch == "}":
+                depth += 1
+            elif ch == "{":
+                if depth == 0:
+                    if re.search(r"\btry\s*$", bare[max(0, k - 20):k]):
+                        return True
+                else:
+                    depth -= 1
+        return False
 
     @staticmethod
     def _enclosing_brace(bare: str, pos: int) -> int:

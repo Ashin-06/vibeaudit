@@ -180,7 +180,7 @@ SAFE_REWRITES = [
      '            {"role": "system", "content": "You are a helpful assistant."},'),
     ("vuln_flask_llm", "app.py", '    completion = client.chat.completions.create(  # expect: LLM003',
      '    completion = client.chat.completions.create(\n        max_tokens=300,'),
-    ("vuln_flask_llm", "app.py", '    exec(script)  # expect: LLM002', '    result = json.loads(script)'),
+    ("vuln_flask_llm", "app.py", '    exec(script)  # expect: LLM002', '    result = script.strip()'),
     ("vuln_flask_llm", "app.py", 'app.secret_key = "dev-secret-change-me"  # expect: SEC004', 'app.secret_key = os.environ["SECRET_KEY"]'),
     ("vuln_flask_llm", "app.py", 'CORS(app, supports_credentials=True)  # expect: BE012',
      'CORS(app, origins=["https://app.example.com"], supports_credentials=True)'),

@@ -467,6 +467,34 @@ _R = [
     Rule("REL006", "No health-check endpoint", "reliability", "low",
          "Load balancers, containers and uptime monitors need a cheap endpoint to tell a dead instance from a live one.",
          "Add GET /health (or /healthz) that returns 200 when the app and its database are reachable.", "", ""),
+    Rule("LLM010", "Vector search without a user or tenant filter", "llm", "medium",
+         "In a multi-user app, a similarity search over one shared index returns the closest documents from every "
+         "user, so one user's question can surface another user's private files in the answer.",
+         "Store an owner or tenant id with every embedding and filter on it in every query (metadata filter, "
+         "namespace, or a WHERE clause).", "CWE-639", "LLM08:2025"),
+    Rule("LLM011", "Model output parsed as JSON without error handling", "llm", "medium",
+         "Models regularly return almost-JSON (markdown fences, a trailing sentence, a cut-off answer). Parsing it "
+         "without handling the error crashes the request.",
+         "Use structured output (response_format / tool calls / generateObject), validate with a schema, and catch "
+         "parse errors with a retry or a fallback.", "CWE-20", "LLM05:2025"),
+    Rule("LLM012", "Retired or deprecated model hardcoded", "llm", "medium",
+         "The provider has retired (or announced the retirement of) this model id, so requests fail or will fail "
+         "without warning.",
+         "Move to a current model and keep the model id in configuration rather than in code.", "", ""),
+    Rule("LLM013", "MCP server with broad access", "llm", "high",
+         "An MCP filesystem server rooted at / or the home folder lets the agent (and any prompt injection it reads) "
+         "read or change every file, including SSH keys and credentials; a remote server over plain HTTP exposes the "
+         "conversation and tokens.",
+         "Limit filesystem servers to the project folder and use https for remote servers.", "CWE-250", "LLM06:2025"),
+    Rule("LLM014", "Secret in an MCP configuration", "llm", "high",
+         "MCP config files are often committed or shared; a key written into `env` or `headers` leaks with them.",
+         "Reference an environment variable instead (for example \"${GITHUB_TOKEN}\") and rotate the key.",
+         "CWE-798", "LLM02:2025"),
+    Rule("LLM015", "Agent combines untrusted input with dangerous tools", "llm", "high",
+         "An agent that reads web pages, emails or files and can also run commands, send messages or change data "
+         "can be steered by instructions hidden in that content (indirect prompt injection).",
+         "Split reading and acting into separate agents, require human approval for actions, and never give an "
+         "agent that reads untrusted content access to secrets or destructive tools.", "CWE-77", "LLM01:2025"),
     Rule("AI001", "Issue reported by the LLM review (unverified)", "llm-review", "medium",
          "With --llm-review a model reads the riskiest files and reports issues the rules did not cover. These are "
          "suggestions from a model and can be wrong.",

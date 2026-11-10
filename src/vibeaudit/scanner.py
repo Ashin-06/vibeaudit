@@ -21,6 +21,7 @@ from .pyscan import PyScanner
 from .qualityscan import QualityScanner
 from .datascan import DataScanner
 from .relscan import ReliabilityScanner
+from .aiscan import AiScanner
 from .report import Result
 from .rules import RULES
 from .secretscan import SecretScanner
@@ -101,6 +102,7 @@ def scan(root: str, opts: Optional[Options] = None) -> Result:
     QualityScanner(project, emit).run()
     DataScanner(project, emit, js_routes + py_routes).run()
     ReliabilityScanner(project, emit, js_routes + py_routes).run()
+    AiScanner(project, emit, js_routes + py_routes).run()
     plugins.run(project, js_routes + py_routes, emit)
     deps = DepScanner(project, emit, opts.offline)
     GUARD.run("<project>", "dependency checks", deps.run)
@@ -182,8 +184,12 @@ def finalize(project: Project, raw: List[Finding], opts: Options, already: bool 
             baseline = {f["fingerprint"] for f in data.get("findings", []) if "fingerprint" in f}
         except (OSError, ValueError, AttributeError, TypeError):
             opts.log(f"could not read baseline {opts.baseline}")
+    # a secret in an MCP config is reported once, by the more specific LLM014
+    mcp_secrets = {(f.file, f.line) for f in raw if f.rule_id == "LLM014"}
     # built-in findings first so that duplicates from external tools are the ones dropped
     for f in sorted(raw, key=lambda x: x.source != "vibeaudit"):
+        if f.rule_id.startswith("SEC") and (f.file, f.line) in mcp_secrets:
+            continue
         meta = RULES.get(f.rule_id)
         if meta and not already:
             f.title = f.title or meta.title

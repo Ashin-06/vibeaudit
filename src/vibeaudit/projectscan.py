@@ -224,6 +224,7 @@ class ProjectScanner:
             cmd = str(cfg.get("command", ""))
             raw_args = cfg.get("args")
             args = [str(a) for a in raw_args if isinstance(a, (str, int))] if isinstance(raw_args, list) else []
+            self._mcp_exposure(sf, str(name), cfg, args)
             if cmd.rsplit("/", 1)[-1] not in ("npx", "bunx", "pnpx", "uvx", "pipx", "dlx") and not (cmd in ("pnpm", "yarn") and "dlx" in args):
                 continue
             pkgs = [a for a in args if not a.startswith("-") and a not in ("dlx", "run")]
@@ -237,6 +238,28 @@ class ProjectScanner:
             if not pinned:
                 line = next((i for i, ln in enumerate(sf.lines, 1) if f'"{pkg}"' in ln), 1)
                 self.add(sf, line, "DEP007", f"MCP server `{name}` runs `{pkg}` without a pinned version.")
+
+    def _mcp_exposure(self, sf: SourceFile, name: str, cfg: dict, args: List[str]) -> None:
+        """Whole-disk filesystem servers, plain-HTTP remote servers and secrets written into the config."""
+        def line_of(text: str) -> int:
+            return next((i for i, ln in enumerate(sf.lines, 1) if text in ln), 1)
+
+        if any("server-filesystem" in a or "mcp-server-filesystem" in a for a in args):
+            for a in args:
+                if re.fullmatch(r"/|~/?|\$HOME/?|%USERPROFILE%\\?|[A-Za-z]:[\\/]?|/(?:Users|home|root)/?", a.strip()):
+                    self.add(sf, line_of(f'"{a}"'), "LLM013", f"MCP server `{name}` gives the agent the whole file system (`{a}`).", "high")
+        url = cfg.get("url") or cfg.get("serverUrl")
+        if isinstance(url, str) and url.startswith("http://") and not re.match(r"http://(?:localhost|127\.0\.0\.1|\[::1\])(?::|/|$)", url):
+            self.add(sf, line_of(url), "LLM013", f"MCP server `{name}` is reached over plain HTTP; its traffic and tokens can be intercepted.", "medium")
+        for section in ("env", "headers"):
+            values = cfg.get(section)
+            if not isinstance(values, dict):
+                continue
+            for key, value in values.items():
+                if not isinstance(value, str) or len(value) < 8 or H.PLACEHOLDER.search(value):
+                    continue
+                if H.SECRET_NAME.search(str(key)) or str(key).lower() == "authorization":
+                    self.add(sf, line_of(value), "LLM014", f"MCP server `{name}` has `{key}` written into the config file.")
 
     def package_json(self, sf: SourceFile) -> None:
         try:

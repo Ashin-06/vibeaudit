@@ -1,6 +1,8 @@
 {
   "mcpServers": {
     "filesystem": { "command": "npx", "args": ["-y", "@modelcontextprotocol/server-filesystem", "/"] },
-    "pinned": { "command": "npx", "args": ["-y", "some-mcp-server@1.2.3"] }
+    "pinned": { "command": "npx", "args": ["-y", "some-mcp-server@1.2.3"] },
+    "tracker": { "command": "node", "args": ["tracker.js"], "env": { "TRACKER_API_KEY": "trk_live_q8Zr2LmW4vNp" } },
+    "remote": { "url": "http://mcp.internal.example.org/sse" }
   }
 }

@@ -127,6 +127,12 @@ SECRET_NAME = re.compile(
     r"|credential|service_?role)"
 )
 
+# the model call asked for JSON mode or a schema, so the output parses (LLM011)
+JSON_MODE = re.compile(
+    r"response_format|json_object|json_schema|response_mime_type|responseMimeType|with_structured_output"
+    r"|generateObject|streamObject|\bformat\s*[=:]\s*['\"]json['\"]"
+)
+
 PLACEHOLDER = re.compile(
     r"(?i)your|example|xxx|\*\*\*|placeholder|changeme|change_me|replace|dummy|fake|sample|redacted|insert|todo"
     r"|<[^>]*>|\$\{|\{\{|%\(|^\$|process\.env|import\.meta|os\.environ|getenv|0000000000|1234567890|abcdef"

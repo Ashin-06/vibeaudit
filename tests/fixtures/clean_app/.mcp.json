@@ -1,5 +1,7 @@
 {
   "mcpServers": {
-    "filesystem": { "command": "npx", "args": ["-y", "@modelcontextprotocol/server-filesystem@2025.7.1", "./docs"] }
+    "filesystem": { "command": "npx", "args": ["-y", "@modelcontextprotocol/server-filesystem@2025.7.1", "./docs"] },
+    "tracker": { "command": "node", "args": ["tracker.js"], "env": { "TRACKER_API_KEY": "${TRACKER_API_KEY}" } },
+    "remote": { "url": "https://mcp.example.com/sse", "headers": { "Authorization": "Bearer ${MCP_TOKEN}" } }
   }
 }
