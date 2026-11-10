@@ -120,6 +120,14 @@ def parse_requirement(spec: str) -> Optional[Tuple[str, Optional[str]]]:
 
 
 def collect(project: Project) -> List[Dep]:
+    """Every declared dependency. Computed once per project: the quality and dependency scanners both need it."""
+    cached = getattr(project, "_deps", None)
+    if cached is None:
+        cached = project._deps = _collect(project)  # type: ignore[attr-defined]
+    return list(cached)
+
+
+def _collect(project: Project) -> List[Dep]:
     deps: List[Dep] = []
     npm_private_scopes: Set[str] = set()
     for f in project.files:

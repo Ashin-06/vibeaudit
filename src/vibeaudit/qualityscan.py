@@ -33,7 +33,7 @@ IMPORT_TO_DIST: Dict[str, Tuple[str, ...]] = {
     "win32api": ("pywin32",), "win32com": ("pywin32",), "lxml": ("lxml",), "Levenshtein": ("python-levenshtein", "levenshtein"),
     "slugify": ("python-slugify",), "jinja2": ("jinja2",), "speech_recognition": ("speechrecognition",),
     "tiktoken": ("tiktoken",), "llama_index": ("llama-index", "llama-index-core"), "ruamel": ("ruamel.yaml",),
-    "azure": ("azure-*",), "mpl_toolkits": ("matplotlib",), "pydantic_core": ("pydantic",), "typing_extensions": ("typing-extensions",),
+    "azure": ("azure-*",), "mpl_toolkits": ("matplotlib",), "pydantic_core": ("pydantic",),
     "sentry_sdk": ("sentry-sdk",), "flask_sqlalchemy": ("flask-sqlalchemy",), "rest_framework": ("djangorestframework",),
     "corsheaders": ("django-cors-headers",), "environ": ("django-environ", "environs"), "storages": ("django-storages",),
     "debug_toolbar": ("django-debug-toolbar",), "crispy_forms": ("django-crispy-forms",), "allauth": ("django-allauth",),
@@ -76,12 +76,73 @@ def _strip_jsonc(text: str) -> str:
     return "".join(code)
 
 
+def _module_names(tree: ast.Module) -> Optional[Set[str]]:
+    """Names a module defines at module level (also inside module-level if/try/with/for), names declared
+    `global` inside functions, and names listed in __all__. Parameters and locals are not module names.
+    None when a star import makes the set unknowable."""
+    names: Set[str] = set()
+
+    def targets(node: ast.AST) -> None:
+        for n in ast.walk(node):
+            if isinstance(n, ast.Name) and isinstance(n.ctx, ast.Store):
+                names.add(n.id)
+
+    def block(stmts) -> bool:
+        for st in stmts:
+            if isinstance(st, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                names.add(st.name)
+                if not isinstance(st, ast.ClassDef):
+                    for n in ast.walk(st):
+                        if isinstance(n, ast.Global):
+                            names.update(n.names)
+            elif isinstance(st, (ast.Import, ast.ImportFrom)):
+                for a in st.names:
+                    if a.name == "*":
+                        return False
+                    names.add((a.asname or a.name).split(".")[0])
+            elif isinstance(st, (ast.Assign, ast.AnnAssign, ast.AugAssign)):
+                for t in (st.targets if isinstance(st, ast.Assign) else [st.target]):
+                    targets(t)
+                    if isinstance(t, ast.Name) and t.id == "__all__" and isinstance(st.value, (ast.List, ast.Tuple)):
+                        names.update(e.value for e in st.value.elts if isinstance(e, ast.Constant) and isinstance(e.value, str))
+            elif isinstance(st, (ast.For, ast.AsyncFor)):
+                targets(st.target)
+                if not (block(st.body) and block(st.orelse)):
+                    return False
+            elif isinstance(st, (ast.If, ast.While)):
+                if not (block(st.body) and block(st.orelse)):
+                    return False
+            elif isinstance(st, (ast.With, ast.AsyncWith)):
+                for item in st.items:
+                    if item.optional_vars is not None:
+                        targets(item.optional_vars)
+                if not block(st.body):
+                    return False
+            elif isinstance(st, ast.Try) or type(st).__name__ == "TryStar":
+                for h in st.handlers:  # type: ignore[attr-defined]
+                    if h.name:
+                        names.add(h.name)
+                    if not block(h.body):
+                        return False
+                if not (block(st.body) and block(st.orelse) and block(st.finalbody)):  # type: ignore[attr-defined]
+                    return False
+            elif isinstance(st, ast.Expr):
+                for n in ast.walk(st):
+                    if isinstance(n, ast.NamedExpr):
+                        targets(n.target)
+        return True
+
+    return names if block(tree.body) else None
+
+
 class QualityScanner:
     def __init__(self, project: Project, emit: Emit):
         self.p = project
         self.emit = emit
         self.declared_py: Set[str] = set()
         self.py_manifest = False
+        self.reported_py: Set[str] = set()
+        self.reported_js: Dict[str, Set[str]] = {}
 
     def add(self, sf: SourceFile, rule: str, line: int, msg: str, sev: str = "") -> None:
         self.emit(Finding(rule, sf.rel, line, msg, sev, sf.line(line).strip()[:200]))
@@ -145,8 +206,9 @@ class QualityScanner:
                 tree = ast.parse(sf.text or "")
             except (SyntaxError, ValueError, RecursionError):
                 return
+            sf.cache["ast"] = tree
         guarded = self._optional_import_nodes(tree)
-        reported: Set[str] = set()
+        reported = self.reported_py  # one finding per undeclared package per project, not one per file
         for node in ast.walk(tree):
             GUARD.tick()
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
@@ -242,20 +304,8 @@ class QualityScanner:
             except (SyntaxError, ValueError, RecursionError):
                 return None
             sf.cache["ast"] = tree
-        names: Set[str] = set()
-        for node in ast.walk(tree):
-            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
-                names.add(node.name)
-            elif isinstance(node, (ast.Import, ast.ImportFrom)):
-                for a in node.names:
-                    if a.name == "*":
-                        return None  # star import: cannot know what is defined
-                    names.add((a.asname or a.name).split(".")[0])
-            elif isinstance(node, ast.Name) and isinstance(node.ctx, ast.Store):
-                names.add(node.id)
-            elif isinstance(node, ast.arg):
-                names.add(node.arg)
-        if "__getattr__" in names or "globals" in (sf.text or "") and re.search(r"globals\(\)\s*\[", sf.text or ""):
+        names = _module_names(tree)
+        if names is None or "__getattr__" in names or re.search(r"globals\(\)\s*\[", sf.text or ""):
             return None
         return names
 
@@ -336,7 +386,6 @@ class QualityScanner:
                 else:
                     return None, True
             base = posixpath.normpath(alias[1] + spec[len(alias[0]):])
-        base = base.lstrip("./") if base.startswith("./") else base
         if ASSET_EXT.search(base):
             return None, True  # styles, images and other assets: the bundler's territory
         candidates = [base]
@@ -357,13 +406,18 @@ class QualityScanner:
         rel = sf.rel
         if rel.endswith(".d.ts"):
             return
-        if rel.endswith((".ts", ".tsx")) and re.match(r"\s*(?://[^\n]*\n\s*)*//\s*@ts-nocheck", sf.text or ""):
-            self.add(sf, "QA008", 1, "TypeScript type checking is disabled for this whole file.")
+        # @ts-nocheck counts only before the first statement (after any header comments); report its own line
+        generated = re.search(r"\.gen(?:erated)?\.|(?:^|/)(?:generated|__generated__)/", rel) or re.search(
+            r"(?i)auto-?generated|do not (?:edit|modify)|@generated|generated by", (sf.text or "")[:1000])
+        nocheck = re.match(r"(?:\s|//[^\n]*\n|/\*(?:[^*]|\*(?!/)){0,5000}\*/)*?//[ \t]*@ts-nocheck\b", sf.text or "") \
+            if rel.endswith((".ts", ".tsx")) and not generated else None  # generated code may skip type checks
+        if nocheck:
+            self.add(sf, "QA008", sf.line_at(nocheck.end() - 1), "TypeScript type checking is disabled for this whole file.")
         for m in finditer(NOT_IMPLEMENTED_JS, code):
             self.add(sf, "QA005", sf.line_at(m.start()), "Code throws a 'not implemented' error; this path is unfinished.")
         deno = "/supabase/functions/" in "/" + rel or self._near(rel, ("deno.json", "deno.jsonc", "import_map.json"))
         declared = None if deno else self._js_declared(rel)
-        reported: Set[str] = set()
+        reported = self.reported_js.setdefault(self._package_dir(rel), set())  # once per package.json, not per file
         for m in finditer(JS_IMPORT, code):
             spec = m.group(3) or m.group(4) or m.group(5) or m.group(6)
             if not spec or "?" in spec or "!" in spec or "*" in spec or ":" in spec.split("/")[0] or spec.startswith("/"):
@@ -392,6 +446,13 @@ class QualityScanner:
                 continue  # a sibling of a declared package from the same scope (installed together)
             reported.add(pkg)
             self.add(sf, "QA007", line, f"`{pkg}` is imported but not listed in package.json.")
+
+    def _package_dir(self, rel: str) -> str:
+        """Folder of the nearest package.json above `rel` ("" when there is none)."""
+        parts = rel.split("/")[:-1]
+        while parts and self.p.package_json("/".join(parts)) is None:
+            parts.pop()
+        return "/".join(parts)
 
     def _near(self, rel: str, names: Tuple[str, ...]) -> bool:
         parts = rel.split("/")[:-1]
@@ -437,19 +498,28 @@ class QualityScanner:
         tf = self.p.get(target)
         if tf is None or not tf.text or target.endswith((".vue", ".svelte", ".astro", ".json")):
             return
-        text = tf.text
+        views = tf.cache.get("views")
+        if views is None:
+            from .lexer import js_views
+
+            views = js_views(tf.text)
+        text = views.code  # type: ignore[attr-defined]  # comments blanked: a commented-out export is not an export
         if re.search(r"\bexport\s*\*\s*from|module\.exports|\bexports\.\w+\s*=", text):
             return  # re-exports or CommonJS: too dynamic to check by name
         m = re.search(r"\{([^}]*)\}", clause)
         if not m:
             return
+        # `export { a as b, c }` exports b and c (not a); `export { x as default }` exports only default
+        listed = {item.strip().split(" as ")[-1].strip() for lst in re.findall(r"\bexport\s*(?:type\s*)?\{([^}]{0,5000})\}", text)
+                  for item in lst.split(",")}
+        listed = {re.sub(r"^type\s+", "", n) for n in listed}
         for part in m.group(1).split(","):
             name = part.strip().split(" as ")[0].strip()
             if not name or name.startswith("type ") or name == "default":
                 continue
-            exported = re.search(
+            exported = name in listed or re.search(
                 r"\bexport\s+(?:declare\s+)?(?:default\s+)?(?:async\s+)?(?:function\*?|class|const|let|var|type|interface|enum|abstract\s+class|namespace)\s+"
-                + re.escape(name) + r"\b", text) or re.search(r"\bexport\s*(?:type\s*)?\{[^}]*\b" + re.escape(name) + r"\b[^}]*\}", text) \
+                + re.escape(name) + r"\b", text) \
                 or re.search(r"\bexport\s+(?:const|let|var)\s*[{\[](?:[^{}\[\]]|[{\[][^{}\[\]]*[}\]])*?\b" + re.escape(name) + r"\b", text)
             if not exported:
                 self.add(sf, "QA006", line, f"`{name}` is imported from `{spec}` but that file does not export it.")
