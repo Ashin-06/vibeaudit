@@ -1,28 +1,68 @@
 # vibeaudit
 
-**A security and quality audit for apps built with AI coding assistants and for apps that use LLMs.**
+[![CI](https://github.com/Ashin-06/vibeaudit/actions/workflows/ci.yml/badge.svg)](https://github.com/Ashin-06/vibeaudit/actions/workflows/ci.yml)
+![Python 3.9 to 3.13](https://img.shields.io/badge/python-3.9%20to%203.13-blue)
+![License: MIT](https://img.shields.io/badge/license-MIT-green)
 
-vibeaudit scans a repository from the frontend to the database rules to the AI parts and gives a
-prioritised list of what is actually dangerous, with file and line, why it matters and how to fix it.
-It targets the failure modes that AI-generated ("vibe-coded") apps keep shipping: keys in the browser
-bundle, API routes with no auth check, Supabase tables without Row Level Security, packages the
-assistant invented, model output piped into `exec`, unbounded token spend, and placeholder security
-that was never finished. Beyond security it checks what makes generated apps break in production:
-unfinished stubs and missing imports, N+1 queries and money stored as floats, requests without
-timeouts, buttons that do nothing, inaccessible forms, and frontend calls to API routes that do not
-exist.
+**A security and quality audit for apps built with AI coding assistants, and for apps that use LLMs.**
+
+vibeaudit reads a whole repository (frontend, backend, database rules, CI config and the AI parts) and
+gives you a prioritised list of what is actually dangerous or broken, each with file and line, why it
+matters and how to fix it.
+
+It targets the mistakes that AI-generated ("vibe-coded") apps keep shipping: API keys in the browser
+bundle, API routes with no auth check, Supabase tables without Row Level Security, packages the assistant
+invented, model output piped into `exec`, unbounded token spend and security placeholders that were never
+finished. Beyond security it catches what makes generated apps break in production: unfinished stubs and
+missing imports, N+1 queries and money stored as floats, requests without timeouts, buttons that do
+nothing, inaccessible forms and frontend calls to API routes that do not exist.
+
+- Works offline with no API key. The network is used only for package-registry and vulnerability
+  lookups (`--offline` turns that off); an LLM is used only if you ask for it.
+- Pure Python, no dependencies on 3.11+ (`tomli` on 3.9 and 3.10). Linux, macOS and Windows.
+- 116 rules in 12 categories, mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
+- Terminal output plus JSON, SARIF 2.1.0 (GitHub code scanning), Markdown, HTML, an SVG badge and a fix
+  brief you can paste into an AI assistant.
+- Fits into CI (GitHub Action, `--diff`), pre-commit (`--staged`) and coding agents (an MCP server).
+
+Contents: [Quickstart](#quickstart) - [Example output](#example-output) - [What it checks](#what-it-checks) -
+[Install](#install) - [Commands](#commands) - [Configuration](#configuration) - [CI and pre-commit](#ci-and-pre-commit) -
+[MCP server](#mcp-server-for-coding-agents) - [Scoring](#scoring) - [False positives](#false-positives-and-suppressing-findings) -
+[Limits](#limits-and-what-is-not-covered) - [Contributing](#contributing-security-and-license)
+
+## Quickstart
+
+```bash
+pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.5.2"
+```
+
+```bash
+vibeaudit scan path/to/your/project
+```
+
+```bash
+vibeaudit scan path/to/your/project --report html
+```
+
+The first command installs it, the second prints findings in the terminal, the third also writes
+`vibeaudit-report.html`, a self-contained page you can open in a browser. The exit code is 1 when there is
+a finding at `high` or above, so the same command works as a CI gate.
+
+## Example output
 
 ```
-$ vibeaudit scan .
+$ vibeaudit scan tests/fixtures/vuln_flask_llm
 Stack: Flask, OpenAI SDK
 
 [CRITICAL] AUTH008 Auth check stub always succeeds
   app.py:24  `verify_token()` always returns True.
+    > def verify_token(token):
   Why: A function that is supposed to verify a token, password or permission just returns true...
   Fix: Implement the real check (verify signature, expiry, user and role) or use a maintained auth library.
 
 [CRITICAL] BE002 Command injection
   app.py:50  Request data flows into a shell command.
+    > os.system("echo " + request.args.get("name", ""))
 ...
 Summary
   critical: 3  high: 20  medium: 15  low: 7   total: 45
@@ -31,151 +71,135 @@ Summary
   Domains: Security 0  AI 42  Quality 66  Data 93  Reliability 99  UI 100
 ```
 
-(Output from the `vuln_flask_llm` test fixture.)
-
-- Works fully offline with no API key. Network is used only for package registry and vulnerability
-  lookups (`--offline` turns that off); an LLM is used only if you ask for it (`--llm`).
-- One `pip install`, pure Python, 3.9 to 3.13 on Linux, macOS and Windows.
-- Terminal summary plus JSON, SARIF 2.1.0 (GitHub code scanning), Markdown and self-contained HTML.
-- 116 static rules in 12 categories (plus AI001 for the optional LLM review), mapped to CWE, OWASP Top 10
-  and the OWASP Top 10 for LLM Applications 2025, with an overall score and a 0-100 score per domain
-  (security, AI, quality, data, reliability, UI).
-
-## Why another scanner
-
-Excellent tools exist and vibeaudit runs them when installed instead of competing with them:
-
-| Tool | Great at | Misses for AI-built apps |
-| --- | --- | --- |
-| gitleaks, trufflehog | Secrets in files and history | Secrets exposed by design: `NEXT_PUBLIC_OPENAI_API_KEY`, a Supabase `service_role` key in a client component, `dangerouslyAllowBrowser: true` |
-| npm audit, pip-audit, OSV-Scanner | Known CVEs in real packages | Packages that do not exist (hallucinated names) or appeared last week (slopsquatting) |
-| Bandit, Semgrep, CodeQL | Classic injection patterns | Whether a route has any auth, whether a server action is callable by anyone, whether model output reaches `exec`/SQL/HTML, RLS policies, Firebase rules |
-| garak, promptfoo | Red-teaming a running model | Static code: user input in the system prompt, agent tools with shell access, missing `max_tokens`, no rate limit in front of a paid model |
-
-What vibeaudit adds:
-
-1. **Route-level reasoning.** Finds HTTP entry points (Flask, FastAPI, Django REST, Express, Fastify,
-   Hono, Next.js app and pages routers, server actions, SvelteKit, Supabase edge functions, Firebase
-   functions), follows middleware, router mounts and imported helpers, and reports endpoints that write
-   data or spend money without auth, admin routes without role checks, IDOR-shaped handlers and webhooks
-   without signature verification.
-2. **LLM data flow.** Python is analysed on the AST with taint tracking: request data, model output and
-   agent-tool arguments are followed into SQL, shell, `eval`, file paths, URLs, templates, redirects and
-   HTML. JS/TS gets the same treatment on offset-preserving lexer views.
-3. **Supply chain for invented packages.** Unknown dependencies are checked on PyPI/npm: missing
-   packages, npm security-holding (removed malware) packages, packages younger than 30 days, names one
-   keystroke from a top package, and OSV advisories for pinned versions.
-4. **Backend-as-a-service config.** Supabase migrations, Firebase rules, MCP server configs, GitHub
-   Actions script injection, Dockerfiles that bake in `.env`.
-5. **Unfinished work.** Auth functions that `return true`, `TODO: add auth` comments, stubs, imports of
-   files that were never written, packages that are imported but not declared, no tests, no CI.
-6. **Whole-app checks.** Data (N+1 queries, destructive migrations, money as float, missing env
-   documentation), reliability (timeouts, blocking calls in async handlers, idempotent webhooks),
-   accessibility and UX (labels, alt text, keyboard access, dead controls, hydration traps) and whether
-   the frontend calls routes that exist with methods they accept.
-
-## Install
-
-The repository is private, so install from a clone:
-
-```bash
-git clone https://github.com/Ashin-06/vibeaudit.git
-```
-
-```bash
-pip install ./vibeaudit
-```
-
-## Usage
-
-```bash
-vibeaudit scan path/to/project --report html --report sarif:results.sarif
-```
-
-| Option | Meaning |
-| --- | --- |
-| `--report FORMAT[:PATH]` | `json`, `sarif`, `md`, `html`, `prompt` (a fix brief to paste into an AI assistant) or `badge` (SVG). Repeatable; `json:-` writes to stdout. |
-| `--fail-on SEVERITY` | Exit 1 when a finding is at least this severe (default `high`; `none` never fails). |
-| `--min-severity SEVERITY` | Hide findings below this severity (default `low`). |
-| `--offline` | No network: skip registry, new-package and CVE lookups (typosquat check still runs). |
-| `--exclude GLOB` | Skip paths (repeatable); `.vibeauditignore` is read too. |
-| `--disable RULE_OR_CATEGORY` | For example `--disable QA002` or `--disable quality`. |
-| `--baseline FILE` / `--write-baseline FILE` | Report only findings that are new since the baseline. |
-| `--external auto\|none\|LIST` | Run installed gitleaks, bandit, osv-scanner, semgrep and merge results. |
-| `--llm gemini\|openai\|anthropic` | Model triage of findings; `--llm-review` adds a review of the riskiest files. |
-| `--file-timeout SECONDS` | Time each analysis step may spend on one file before it is stopped (default 30). |
-| `--staged` / `--diff REV` | Report only findings on staged lines (pre-commit) or lines changed since `REV` (pull requests). |
-| `--plugin FILE_OR_MODULE` | Load custom rules (see below). |
-| `--config FILE` / `--no-config` | Use another settings file, or ignore the scanned project's settings and feedback file. |
-| `--no-cache` | Do not read or write cached registry and vulnerability answers. |
-
-With `--external auto` (the default), gitleaks, bandit, osv-scanner and semgrep are run when they are
-installed, and their findings are merged and de-duplicated. Bandit checks that a built-in rule covers
-with data flow (exec/eval, shell, SQL strings, pickle/yaml, debug mode, `verify=False`) are left to the
-built-in rule, so a line vibeaudit has judged safe is not reported again.
-
-Exit codes: `0` clean at the `--fail-on` level, `1` findings, `2` usage error. In a git checkout,
-ignored files are not scanned (a local ignored `.env` is where secrets belong). Vendor folders, build
-output and minified bundles are skipped. In test files only real credentials are reported.
-
-`vibeaudit rules` lists every rule (`--format json` includes the full why and fix text).
-
-Pinned versions for the vulnerability check come from `requirements.txt` pins and from lockfiles next to
-the manifest: `package-lock.json`, `pnpm-lock.yaml`, `yarn.lock`, `bun.lock`, `poetry.lock`, `uv.lock`,
-`pdm.lock` and `Pipfile.lock`. A requirements file that uses `--index-url` (replacing PyPI) is not checked
-against PyPI; `--extra-index-url` (for example PyTorch wheels) keeps every check.
-
-A repository is untrusted input, so the scan is built to finish whatever it contains. Each file is
-analysed in isolation: a file that triggers a bug is listed under `meta.internal_errors` (and in a note)
-while every other file is still scanned, and a file that exceeds `--file-timeout` or is nested too deeply
-to parse is listed under `meta.skipped`. Symbolic links that point outside the project are not followed.
-Registry and OSV lookups retry timeouts and rate limits (honouring `Retry-After`), stop calling a host that
-is down, and never report a package as missing unless the registry answered 404 or 410.
+That project is one of the deliberately vulnerable sample apps in `tests/fixtures/`.
 
 ## What it checks
 
-| Category | Rules |
+| Category | What it finds |
 | --- | --- |
-| Secrets | SEC001 provider keys, SEC002 private keys, SEC003 high-entropy secrets, SEC004 hardcoded or default signing secrets, SEC005 DB URLs with passwords, SEC006 `.env` committed, SEC007 `.env` not ignored, SEC008 secrets in `NEXT_PUBLIC_`/`VITE_`/... vars, SEC009 Supabase service_role outside the server, SEC010 secrets in logs, SEC011 hardcoded passwords |
-| Supply chain | DEP001 package does not exist, DEP002 typosquat, DEP003 very new package, DEP004 known vulnerabilities, DEP005 no lockfile, DEP006 install script runs remote code, DEP007 unpinned MCP server |
-| Backend | BE001 SQL injection, BE002 command injection, BE003 eval/exec, BE004 unsafe deserialization, BE005 SSRF, BE006 path traversal, BE007 SSTI, BE008 open redirect, BE009 mass assignment, BE010 NoSQL injection, BE011 debug mode, BE012 insecure CORS, BE013 TLS verification off, BE014 plaintext or fast-hash passwords, BE015 insecure randomness, BE016 unverified JWT, BE017 error details leaked, BE018 no server-side validation |
-| Frontend | FE001 XSS through raw HTML sinks, FE002 LLM API called from the browser, FE003 authorization in browser storage, FE004 postMessage without origin check, FE005 token in localStorage, FE006 production source maps, FE007 hardcoded localhost URL |
-| Auth | AUTH001 unauthenticated state-changing or paid-API endpoint, AUTH002 admin route without role check, AUTH003 IDOR, AUTH004 unverified webhook, AUTH005 table without RLS, AUTH006 permissive policy, AUTH007 open Firebase rules, AUTH008 auth stub returns true, AUTH009 CSRF disabled, AUTH010 login without rate limit |
-| Config | CFG001 root container, CFG002 unpinned base image, CFG003 secret in image, CFG004 Actions script injection, CFG005 pull_request_target checkout, CFG006 any Host accepted, CFG007 default DB password, CFG008 no security headers, CFG009 `.env` copied into image |
-| LLM | LLM001 untrusted input in system prompt, LLM002 model output in a dangerous sink, LLM003 no token limit, LLM004 LLM endpoint without rate limiting, LLM005 agent tool with dangerous capability, LLM006 dangerous agent option, LLM007 system prompt in the browser, LLM008 unsafe model loading, LLM009 unbounded agent loop, LLM010 vector search without a user or tenant filter, LLM011 model output parsed as JSON without error handling, LLM012 retired model hardcoded, LLM013 MCP server with whole-disk access or plain HTTP, LLM014 secret in an MCP config, LLM015 agent that reads untrusted content and has dangerous tools |
-| Quality | QA001 no tests, QA002 no CI, QA003 swallowed exception, QA004 security TODO left in code, QA005 unfinished stub, QA006 import of a file or name that does not exist, QA007 package imported but not declared, QA008 TypeScript checking disabled for a file |
-| Data | DATA001 query in a loop (N+1), DATA002 whole user record returned, DATA003 destructive migration, DATA004 money as float, DATA005 private table readable by everyone, DATA006 timestamp without time zone, DATA007 env var missing from the example env file, DATA008 DB client per request, DATA009 SQLite on a serverless host, DATA010 several writes without a transaction |
-| Reliability | REL001 HTTP request without timeout, REL002 blocking call in an async handler, REL003 webhook not idempotent, REL004 upload without size limit, REL005 in-memory state on serverless, REL006 no health-check endpoint |
-| UI, UX and accessibility | UI001 image without alt, UI002 click handler on a non-interactive element, UI003 form field without label, UI004 control that does nothing, UI005 index key on a list whose items hold input state, UI006 delete without confirmation, UI007 hydration mismatch, UI008 effect without cleanup, UI009 no loading or error state, UI010 lorem ipsum, UI011 no error page, UI012 missing metadata or viewport, UI013 link to a page that does not exist |
-| Frontend-backend contracts | API001 call to an API path no route handles, API002 call with a method the route does not accept |
-| LLM review | AI001 issue reported by the optional `--llm-review` (model-generated, unverified) |
+| Secrets (SEC) | provider keys and tokens, private keys, high-entropy secrets, hard-coded or default signing secrets, database URLs with passwords, committed or un-ignored `.env` files, secrets in `NEXT_PUBLIC_`/`VITE_` variables, a Supabase `service_role` key outside the server, secrets in logs, hard-coded passwords, keys baked into committed bundles |
+| Supply chain (DEP) | packages that do not exist (hallucinated names), typosquats of popular packages, packages first published in the last 30 days, known vulnerabilities (OSV) for pinned versions, missing lockfiles, install scripts that run remote code, unpinned MCP servers |
+| Backend (BE) | SQL, NoSQL and command injection, `eval`/`exec`, unsafe deserialization, SSRF, path traversal, server-side template injection, open redirects, mass assignment, debug mode, permissive CORS, disabled TLS verification, weak password hashing, insecure randomness, unverified JWTs, leaked error details, no server-side validation |
+| Frontend (FE) | XSS through raw HTML sinks, LLM APIs called from the browser, authorization decisions in browser storage, `postMessage` without origin checks, tokens in `localStorage`, production source maps, hard-coded localhost URLs |
+| Auth (AUTH) | endpoints that change data or spend money without authentication, admin routes without a role check, IDOR-shaped handlers, unverified webhooks, tables without Row Level Security, permissive policies, open Firebase rules, auth functions that always return true, CSRF disabled, login without rate limiting |
+| Config (CFG) | containers running as root, unpinned base images, secrets in images, GitHub Actions script injection, unsafe `pull_request_target`, any Host header accepted, default database passwords, missing security headers, `.env` copied into an image |
+| LLM and agents (LLM) | untrusted input in the system prompt, model output in a dangerous sink, no token limit, LLM endpoints without rate limiting, agent tools with dangerous capabilities, dangerous agent options, system prompts shipped to the browser, unsafe model loading, unbounded agent loops, vector search without a tenant filter, model output parsed as JSON without error handling, retired model ids, MCP servers with whole-disk access or plain HTTP, secrets in MCP configs, agents that read untrusted content and also have dangerous tools |
+| Code completeness (QA) | no tests, no CI, swallowed exceptions, security TODOs, unfinished stubs, imports of files or names that do not exist, packages imported but not declared, TypeScript checking disabled |
+| Data (DATA) | N+1 queries, whole user records returned to the client, destructive migrations, money as float, private tables readable by everyone, timestamps without time zone, env vars missing from the example env file, a database client per request, SQLite on a serverless host, several writes without a transaction |
+| Reliability (REL) | HTTP requests without a timeout, blocking calls in async handlers, webhooks that are not idempotent, uploads without a size limit, in-memory state on serverless hosts, no health-check endpoint |
+| UI, UX and accessibility (UI) | images without alt text, click handlers the keyboard cannot reach, unlabeled form fields, controls that do nothing, index keys on changing lists, deletes without confirmation, hydration mismatches, effects without cleanup, no loading or error state, lorem ipsum, no error page, missing metadata or viewport, links to pages that do not exist |
+| Frontend-backend contracts (API) | frontend calls to API paths no route handles, and calls with a method the route does not accept |
 
-OWASP LLM Top 10 coverage: LLM01, LLM02, LLM03, LLM05, LLM06, LLM07, LLM08, LLM10. LLM04 (poisoning) and
-LLM09 (misinformation) are runtime properties; test them with promptfoo or garak.
+Every rule, with its severity, why it matters and how to fix it, is in the
+**[rule catalogue (docs/RULES.md)](docs/RULES.md)**; `vibeaudit rules` prints the same list.
 
-Categories roll up into six domains for the per-domain scores: Security (secrets, supply chain, backend,
-frontend, auth, config), AI (LLM, LLM review), Quality (quality, contracts, custom rules), Data,
-Reliability and UI. Every score uses the same weights: 100 minus 25 per critical, 10 per high, 3 per
-medium and 1 per low finding, floored at 0. The JSON report has them under `summary.domains`.
+Routes are found for Flask, FastAPI, Django REST framework, Express, Fastify, Hono, Next.js (app and pages
+routers, server actions), SvelteKit, Supabase edge functions and Firebase functions. Python is analysed on
+its syntax tree with taint tracking (request data, model output and agent-tool arguments are followed into
+SQL, shell, `eval`, file paths, URLs, templates, redirects and HTML); JavaScript and TypeScript get the same
+checks on a lexer that keeps exact offsets.
 
-## LLM-assisted checks (optional)
+### Why another scanner
+
+Good tools exist, and vibeaudit runs them when they are installed instead of replacing them:
+
+| Tool | Great at | Misses in AI-built apps |
+| --- | --- | --- |
+| gitleaks, trufflehog | secrets in files and history | secrets exposed by design: `NEXT_PUBLIC_OPENAI_API_KEY`, a `service_role` key in a client component, `dangerouslyAllowBrowser: true` |
+| npm audit, pip-audit, OSV-Scanner | known CVEs in real packages | packages that do not exist (hallucinated) or appeared last week (slopsquatting) |
+| Bandit, Semgrep, CodeQL | classic injection patterns | whether a route has any auth, whether model output reaches `exec`/SQL/HTML, RLS policies, Firebase rules |
+| garak, promptfoo | red-teaming a running model | static code: user input in the system prompt, agent tools with shell access, missing `max_tokens` |
+
+## Install
+
+vibeaudit is installed from this repository (it is not on PyPI yet). Python 3.9 or newer:
+
+```bash
+pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.5.2"
+```
+
+or, to keep it in its own environment:
+
+```bash
+pipx install "git+https://github.com/Ashin-06/vibeaudit.git@v0.5.2"
+```
+
+Optional: if [gitleaks](https://github.com/gitleaks/gitleaks), [bandit](https://github.com/PyCQA/bandit),
+[osv-scanner](https://github.com/google/osv-scanner) or [semgrep](https://github.com/semgrep/semgrep) are on
+your `PATH`, their findings are merged into the report and de-duplicated.
+
+## Commands
+
+| Command | What it does |
+| --- | --- |
+| `vibeaudit scan [PATH]` | Audit a project (default: the current directory). |
+| `vibeaudit routes [PATH]` | List every HTTP entry point with method, path, location and whether it has a visible auth check, writes data or calls a paid AI API (`--format text\|json\|md`). |
+| `vibeaudit rules` | List every rule (`--format text\|json\|md`; JSON includes the why and fix text). |
+| `vibeaudit feedback` | Record that a finding is a false positive or confirmed, or list recorded feedback (see [False positives](#false-positives-and-suppressing-findings)). |
+| `vibeaudit update` | Refresh the popular-package lists and the retired-model list; `--self` upgrades vibeaudit with pip. |
+| `vibeaudit mcp` | Run the MCP server for coding agents (see [MCP server](#mcp-server-for-coding-agents)). |
+
+Every command has `--help`.
+
+### `vibeaudit scan` options
+
+| Option | Meaning |
+| --- | --- |
+| `-r`, `--report FORMAT[:PATH]` | Also write a report: `json`, `sarif`, `md`, `html`, `prompt` (a fix brief for AI assistants) or `badge` (SVG). Repeatable; `-` as the path writes to stdout, as in `-r json:-`. Default path `vibeaudit-report.<ext>`. |
+| `--fail-on SEVERITY` | Exit 1 when a finding is at least `critical`, `high` (default), `medium` or `low`; `none` never fails. |
+| `--min-severity SEVERITY` | Hide findings below this severity (default `low`). |
+| `--offline` | No network: skip registry, new-package and vulnerability lookups (the typosquat check still runs). |
+| `--exclude GLOB` | Skip matching paths (repeatable). A `.vibeauditignore` file with one glob per line works too. |
+| `--disable RULE_OR_CATEGORY` | Switch off a rule (`QA002`) or a category (`quality`); repeatable, comma lists allowed. |
+| `--baseline FILE` | Hide findings already present in an earlier JSON report. |
+| `--write-baseline FILE` | Save all current findings as a baseline and exit 0. |
+| `--external auto\|none\|LIST` | Third-party scanners to run: those installed (default), none, or a list such as `gitleaks,bandit`. |
+| `--staged` | Report only findings on lines staged for commit (pre-commit hooks). |
+| `--diff REV` | Report only findings on lines changed since `REV`, for example `origin/main` (pull requests). |
+| `--config FILE` | Read settings from this file instead of `.vibeaudit.toml` / `pyproject.toml`. |
+| `--no-config` | Ignore the scanned project's settings and feedback files (use this for code you do not trust). |
+| `--plugin FILE_OR_MODULE` | Load custom rules (repeatable; this runs that Python code). |
+| `--llm gemini\|openai\|anthropic` | Ask an LLM to triage findings (see [LLM-assisted checks](#llm-assisted-checks-optional)). |
+| `--llm-model NAME`, `--llm-review`, `--llm-max-requests N` | Model name; also review the riskiest files for missed issues; hard cap on requests (default 10). |
+| `--max-file-size BYTES` | Skip larger files (default 1,000,000). |
+| `--file-timeout SECONDS` | Time each analysis step may spend on one file before it is stopped (default 30). |
+| `--no-cache` | Do not read or write cached registry, vulnerability and LLM answers for this scan. |
+| `-q`, `--quiet` / `--no-color` | Print only the summary / plain text. |
+
+Exit codes: `0` nothing at the `--fail-on` level, `1` findings at that level, `2` usage error.
+
+What is scanned: in a git checkout, tracked and untracked files that are not git-ignored (a local, ignored
+`.env` is where secrets belong). Dependency and build folders (`node_modules`, `.venv`, `dist`, `build`,
+`.next`, ...) are skipped, except that committed bundles under `dist/`, `build/` and `out/` and minified
+files are still checked for secrets. In test files only real credentials are reported. Pinned versions
+for the vulnerability check come from `requirements*.txt` and from lockfiles next to each manifest
+(`package-lock.json`, `pnpm-lock.yaml`, `yarn.lock`, `bun.lock`, `poetry.lock`, `uv.lock`, `pdm.lock`,
+`Pipfile.lock`).
+
+A repository is untrusted input, so the scan is built to finish whatever it contains. A file that triggers
+a bug is listed under `meta.internal_errors` in the JSON report while every other file is still scanned;
+a file that exceeds `--file-timeout` or is nested too deeply to parse is listed under `meta.skipped`.
+Symbolic links out of the project are not followed. Registry lookups retry timeouts and rate limits, stop
+calling a host that is down, and never report a package as missing unless the registry said 404 or 410.
+
+### LLM-assisted checks (optional)
 
 ```bash
 GEMINI_API_KEY=... vibeaudit scan . --llm gemini --llm-review --llm-max-requests 10
 ```
 
-- **Triage** annotates medium and higher findings with a verdict and reason. Findings are never removed
-  or downgraded by the model, because the audited code is untrusted and could contain text aimed at the
-  model. Secrets are redacted before sending and are not triaged.
-- **Review** adds extra issues as `AI001`, labelled `[model-generated, unverified]`.
-- Providers: `gemini` (`GEMINI_API_KEY`/`GOOGLE_API_KEY`), `openai` (`OPENAI_API_KEY`, `OPENAI_BASE_URL`
-  for any compatible server such as Ollama), `anthropic` (`ANTHROPIC_API_KEY`). `--llm-model` picks the
-  model; `--llm-max-requests` is a hard cap.
+- **Triage** adds a verdict and a reason to medium and higher findings. The model can never remove or
+  downgrade a finding, because the audited code is untrusted and may contain text aimed at the model.
+  Secrets are redacted before anything is sent.
+- **Review** adds issues the rules did not cover as `AI001`, labelled model-generated and unverified.
+- Providers: `gemini` (`GEMINI_API_KEY` or `GOOGLE_API_KEY`), `openai` (`OPENAI_API_KEY`; `OPENAI_BASE_URL`
+  for any compatible server such as Ollama) and `anthropic` (`ANTHROPIC_API_KEY`). Verdicts are cached, so
+  an unchanged finding costs no request the next time.
 
-## Configuration file
+## Configuration
 
-Settings can live in `.vibeaudit.toml` or in a `[tool.vibeaudit]` table of `pyproject.toml`. Flags on the
-command line win. Unknown keys and wrong types are errors, so a typo cannot quietly weaken a scan.
+Settings live in `.vibeaudit.toml` or in a `[tool.vibeaudit]` table of `pyproject.toml`. Command-line flags
+win over the file. Unknown keys and wrong types are errors, so a typo cannot quietly weaken a scan.
 
 ```toml
 # .vibeaudit.toml
@@ -193,28 +217,17 @@ sanitizers = ["clean_sql_input"]                               # their output is
 public-paths = ["/api/public/*", "/api/survey-*"]              # intentionally unauthenticated routes
 ```
 
-The file is part of the scanned repository, so it can switch rules off. When you audit code you do not
-trust, run with `--no-config`.
+Other keys: `llm`, `llm-model`, `llm-max-requests`, `max-file-size`, `file-timeout`. The same settings apply
+to `vibeaudit scan`, `vibeaudit routes`, `vibeaudit feedback`, the MCP server and the Python API. The file is
+part of the scanned repository and can switch rules off: when you audit code you do not trust, use
+`--no-config`.
 
-## Pre-commit and pull requests
+## CI and pre-commit
 
-`--staged` and `--diff REV` still analyse the whole project (auth middleware and helpers in unchanged
-files count) but report only findings on added or changed lines.
+`--diff` and `--staged` still analyse the whole project (auth middleware and helpers in unchanged files
+count) but report only findings on added or changed lines.
 
-```yaml
-# .pre-commit-config.yaml
-repos:
-  - repo: https://github.com/Ashin-06/vibeaudit
-    rev: v0.5.1
-    hooks:
-      - id: vibeaudit
-```
-
-```bash
-vibeaudit scan . --diff origin/main --fail-on high
-```
-
-## GitHub Action
+**GitHub Action**, with results in the code scanning tab:
 
 ```yaml
 name: vibeaudit
@@ -227,25 +240,47 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Ashin-06/vibeaudit@v0.5.1
+        with:
+          fetch-depth: 0                  # needed for --diff
+      - uses: Ashin-06/vibeaudit@v0.5.2
         with:
           fail-on: high
-          args: --diff origin/main   # optional: only changed lines
+          args: --diff origin/main        # optional: only changed lines
       - uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
           sarif_file: vibeaudit.sarif
 ```
 
-Inputs: `path`, `fail-on`, `sarif`, `args`, `setup-python`, `python-version`. While the repository is
-private, other repositories need access to it (or vendor the action).
+Inputs: `path` (default `.`), `fail-on` (default `high`), `sarif` (default `vibeaudit.sarif`), `args` (extra
+flags, split on spaces), `setup-python` (`true`/`false`) and `python-version`.
+
+**Any other CI**: run `vibeaudit scan . --fail-on high -r sarif:results.sarif` and keep the exit code.
+
+**pre-commit**:
+
+```yaml
+# .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/Ashin-06/vibeaudit
+    rev: v0.5.2
+    hooks:
+      - id: vibeaudit
+```
 
 ## MCP server for coding agents
 
-`vibeaudit mcp` runs a Model Context Protocol server on stdio, so Claude Code, Cursor and other agents can
-audit their own changes before handing them back. Tools: `scan_project` (optionally only changed lines),
-`scan_file`, `list_routes`, `check_package` (does it exist, is it brand new, is it a typosquat, known CVEs)
-and `explain_rule`. All tools are read-only.
+`vibeaudit mcp` runs a [Model Context Protocol](https://modelcontextprotocol.io) server on stdio, so Claude
+Code, Cursor and other agents can audit their own changes before handing them back. All tools are
+read-only:
+
+| Tool | What it does |
+| --- | --- |
+| `scan_project` | Audit a directory (optionally only changed lines: `changes: "staged"` or a git revision). |
+| `scan_file` | Audit one file in the context of its project. |
+| `list_routes` | The routes inventory. |
+| `check_package` | Before adding a dependency: does it exist, is it brand new, is it a typosquat, known vulnerabilities. |
+| `explain_rule` | What a rule means and how to fix it. |
 
 ```json
 { "mcpServers": { "vibeaudit": { "command": "vibeaudit", "args": ["mcp"] } } }
@@ -254,12 +289,6 @@ and `explain_rule`. All tools are read-only.
 ```bash
 claude mcp add vibeaudit -- vibeaudit mcp
 ```
-
-## Routes inventory
-
-`vibeaudit routes [PATH] [--format text|json|md]` lists every HTTP entry point the scanners found, with
-method, path, location, framework and whether it has a visible auth check, writes data or calls a paid AI
-API. The JSON report has the same `routes` section.
 
 ## Custom rules and the Python API
 
@@ -283,12 +312,9 @@ def no_print(source_file):
 vibeaudit scan . --plugin org_rules.py
 ```
 
-`rule(...)` registers a project-wide check that receives the project and route table. Custom findings show
-up in every report format, can be suppressed and baselined like built-in ones, and a failing custom rule
-is isolated like any other check. Plugins run your Python code, so they are only loaded from `--plugin` or
-your own imports, never from the scanned repository.
-
-Library use:
+`rule(...)` registers a project-wide check that receives the project and the route table. Custom findings
+appear in every report format and can be suppressed and baselined like built-in ones. Plugins run Python
+code, so they are loaded only from `--plugin` or your own imports, never from the scanned repository.
 
 ```python
 from vibeaudit import scan, project_options
@@ -301,140 +327,126 @@ for r in result.routes:
     print(r.methods, r.path, r.has_auth)
 ```
 
-`scan(path)` without options and `project_options(path, **overrides)` apply the project's
-`.vibeaudit.toml` / `[tool.vibeaudit]`, like the CLI, the MCP tools and `vibeaudit routes` do. An explicit
-`Options(...)` is used exactly as given.
+`scan(path)` without options, and `project_options(path, **overrides)`, apply the project's configuration;
+an explicit `Options(...)` is used exactly as given. `scan()` may be called from several threads; scans
+then run one at a time.
 
-## Suppressing findings
+## Scoring
 
-Inline `# vibeaudit: ignore[AUTH001]` (or `// vibeaudit: ignore`) on the line or the line above;
-`--exclude` or `.vibeauditignore` for paths; `--disable` for rules or categories; baselines for
-existing debt. An empty `except`/`catch` with an explanatory comment is treated as deliberate.
+Each finding has a severity. The overall score is 100 minus 25 per critical, 10 per high, 3 per medium and
+1 per low finding, floored at 0. The grade is F if there is any critical finding, otherwise A (90 and up),
+B (75), C (60), D (40) or F.
 
-## Feedback on findings
+The same formula gives a score per domain, so you can see where the problems are:
 
-```bash
-vibeaudit feedback false-positive AUTH001 app/api/internal.py:12 --note "only reachable from the VPN"
-```
+| Domain | Categories |
+| --- | --- |
+| Security | secrets, supply chain, backend, frontend, auth, config |
+| AI | LLM and agents, LLM review |
+| Quality | code completeness, frontend-backend contracts, custom rules |
+| Data, Reliability, UI | one category each |
 
-```bash
-vibeaudit feedback list
-```
+The terminal, JSON (`summary.domains`), Markdown and HTML reports all show them. A score is a summary for
+tracking progress, not a security guarantee: read the findings.
 
-Verdicts (`false-positive` or `confirmed`) are stored in `.vibeaudit/feedback.json`, meant to be committed
-so the team shares them. Later scans hide findings marked as false positives (the report notes how many);
-entries match by rule, file and line text, so they follow the code when lines move. `list` prints the
-entries and a per-rule count. Like the configuration file, the feedback file is ignored with `--no-config`.
-Dependency findings are looked up online (through the cache) when you mark them; pass `--config` and
-`--plugin` as for `scan` to mark findings that depend on another settings file or on plugin rules.
+## False positives and suppressing findings
+
+Static analysis guesses, and some findings will be wrong for your project. In order of preference:
+
+- **Teach it your conventions** in the configuration file: `auth-helpers` for your own auth checks,
+  `sanitizers` for your own cleaning functions, `public-paths` for routes that are meant to be open.
+- **Record a verdict**, shared with your team through git:
+
+  ```bash
+  vibeaudit feedback false-positive AUTH001 app/api/internal.py:12 --note "only reachable from the VPN"
+  ```
+
+  ```bash
+  vibeaudit feedback list
+  ```
+
+  Verdicts live in `.vibeaudit/feedback.json`. Later scans hide findings marked as false positives (the
+  report says how many); entries follow the code when lines move. Absolute paths and paths copied from an
+  editor work; `--config` and `--plugin` work as for `scan`.
+- **Inline**: `# vibeaudit: ignore[AUTH001]` (or `// vibeaudit: ignore[AUTH001]`, or without the bracket
+  for every rule) on the line or the line above.
+- **Paths, rules, existing debt**: `--exclude` or `.vibeauditignore`, `--disable`, and `--baseline` to see
+  only new findings.
+
+An empty `except`/`catch` with an explanatory comment is treated as deliberate. If a rule is wrong in a way
+that is not specific to your code, please open an issue with a minimal example.
 
 ## Caching and updates
 
-Registry answers and OSV advisories are cached in the user cache folder (`%LOCALAPPDATA%\vibeaudit`,
-`~/Library/Caches/vibeaudit` or `~/.cache/vibeaudit`; `VIBEAUDIT_CACHE_DIR` overrides it) for a day, and
-"package does not exist" for an hour, because a name can be registered at any time. Failed lookups are
-never cached. LLM triage verdicts are cached for 30 days per model, finding and surrounding code, so an
-unchanged finding costs no request. `--no-cache` (or `VIBEAUDIT_NO_CACHE=1`) turns caching off.
+Registry answers and vulnerability advisories are cached for a day ("package does not exist" for an hour,
+because a name can be registered at any time); failed lookups are never cached. The cache is in
+`%LOCALAPPDATA%\vibeaudit`, `~/Library/Caches/vibeaudit` or `~/.cache/vibeaudit` (`VIBEAUDIT_CACHE_DIR`
+overrides it). `--no-cache` or `VIBEAUDIT_NO_CACHE=1` turns it off.
 
-```bash
-vibeaudit update
-```
+`vibeaudit update` downloads the latest popular-package lists (used for typosquat checks) and retired-model
+list (LLM012) from this repository; a file is used only if it passes validation. Set `GITHUB_TOKEN` if you
+hit GitHub's rate limit.
 
-refreshes the popular-package lists (typosquat checks) and the retired-model list (LLM012) from this
-repository into the cache folder. A downloaded file replaces the shipped one only if it passes
-validation. While the repository is private, set `GITHUB_TOKEN` (or `GH_TOKEN`) to a token that can read
-it. `vibeaudit update --self` upgrades the installed package with pip.
+## Limits and what is not covered
+
+How it reads code:
+
+- Data flow is followed inside a function (plus one level of helper functions for auth checks), not across
+  the whole program.
+- JavaScript and TypeScript are read with a lexer and patterns, not a full parser.
+- "Authenticated" means an auth check is visible in the route or its helpers, not that the check is correct.
+- Rate limiting and input validation are detected project-wide, so one limiter anywhere counts.
+- Router prefixes (FastAPI `include_router`, Express `app.use("/api", router)`, Flask blueprints, Django
+  URLconfs) are not resolved yet, so the frontend-backend contract rules only run when routes are
+  file-based (Next.js, SvelteKit) or the project has no prefixes. Django URLconf views, NestJS and Remix
+  routes are only partly covered.
+- UI rules cover React, Next.js and HTML templates; Vue, Svelte and Astro files get only the alt-text and
+  placeholder checks.
+- The per-file time budget is checked between regex matches and statements; a single regex step cannot be
+  interrupted, which is why every pattern is tested for linear time.
+
+Not covered (roadmap, contributions welcome):
+
+- Languages other than Python and JavaScript/TypeScript: Go, Java, Kotlin, Rust, Ruby, PHP, C#.
+- Infrastructure as code: Terraform, CloudFormation, Kubernetes manifests, Helm.
+- XML external entities (XXE) and other XML parser settings.
+- Automatic fixes (a fix command that edits code) and a gate on score drift between commits.
+- Runtime testing: vibeaudit reads code, it does not attack a running app or a model. For prompt injection
+  and jailbreaks against a live model, use promptfoo or garak.
 
 ## How it was validated
 
-- **Fixtures.** Five deliberately vulnerable apps (Flask + OpenAI, Next.js + Supabase, Express +
-  MongoDB, FastAPI + LangChain agent with MCP config, config-only) and one clean app. Every expected
-  finding is marked with an `expect: RULE` comment; tests compare the exact set of
-  `(file, line, rule)`, so a missed finding or a false alarm fails. The clean app must produce zero
-  findings. Fake credentials are generated at test time.
-- **Property tests.** Every vulnerable fixture is mutated in ways that keep it vulnerable (lines shifted,
-  variables renamed, imports reordered, CRLF, tabs and trailing whitespace, the app moved into a monorepo
-  subfolder, routes wrapped in a function or moved into a blueprint module) and every finding must stay.
-  33 safe rewrites (parameterise the query, add the auth check, set a token limit, use an argument list,
-  ...) must each remove exactly the targeted finding and add nothing.
-- **Fuzzing.** Thousands of random and malformed inputs with fixed seeds: garbage and truncated
-  Python/JS/TS, binary files with code extensions, non-UTF-8, UTF-16 and mixed encodings, empty files,
-  3,000-level nesting, 700 KB single-line files, malformed `package.json`, lockfiles, `pyproject.toml`,
-  requirements, Supabase SQL, Firebase rules and MCP configs, symlink loops, links out of the project and
-  unreadable files. The scan must not crash, hang or produce invalid JSON/SARIF. `VIBEAUDIT_FUZZ_ROUNDS`
-  sets the depth (CI runs 6 rounds per platform and 60 on Linux; 300 rounds were run before 0.2.0).
-- **Regular expressions.** Every compiled pattern is timed against long runs of the characters that
-  cause catastrophic backtracking.
-- **Network.** Registry and OSV lookups are tested against timeouts, DNS failures, resets, 403/429/5xx,
-  `Retry-After`, HTML error pages, truncated and wrongly typed JSON, and a full outage.
-- **Scale.** A generated 10,000-file repository scans in under a minute (53 s with every 0.4.0 rule) with
-  about 130 MB peak traced memory (CI runs 2,000 files on every platform and 10,000 on Linux).
-- **Real projects.** 15 public repositories: mckaywrigley/chatbot-ui, langchain-ai/chat-langchain,
-  fastapi/full-stack-fastapi-template, miguelgrinberg/microblog, HackSoftware/Django-Styleguide-Example,
-  vercel/ai-chatbot, vercel/nextjs-subscription-payments, hagopj13/node-express-boilerplate,
-  gothinkster/node-express-realworld-example-app, run-llama/sec-insights, langchain-ai/opengpts,
-  streamlit/llm-examples, supabase-community/chatgpt-your-files, wandb/openui and a public Lovable +
-  Supabase AI app. Every high and critical finding outside dependency advisories was checked by hand;
-  each false alarm was fixed at the root with a regression test. Confirmed issues included an
-  unauthenticated `/api/chat/custom` route in chatbot-ui that loads any user's custom model (and its API
-  key) by id with the service-role key, unauthenticated delete endpoints, and edge functions that call a
-  paid AI API with JWT verification disabled. High and critical dependency advisories (DEP004) come from
-  OSV for the pinned versions and were spot-checked, not reviewed one by one.
-- **New domains (0.4.0).** Every quality, data, reliability, AI, UI and contract rule was run over the
-  same 15 repositories and each finding was read. False alarms were fixed at the root with a test (for
-  example: a retry loop or a chunked batch delete counted as N+1, a Supabase `rpc` with the user's JWT counted as an unfiltered
-  vector search, JSON mode output counted as unsafe JSON parsing, `src/pages` of a react-router app
-  mapped as Next.js routes, removing an item from a local list counted as a destructive action), and
-  every fix was reverted once to confirm its test fails. Examples of confirmed findings: chatbot-ui's
-  retrieval route searches embeddings with the service-role client using file ids taken from the request
-  body (LLM010); retired model ids (`claude-2.1`, `gemini-pro`, `gpt-4-32k`) still offered in model
-  lists (LLM012); a login form whose `<label htmlFor="email">` points at an input with no `id` (UI003);
-  Next.js apps with no `error.tsx` (UI011). The contract checker found no broken calls in these
-  repositories; on chatbot-ui and vercel/ai-chatbot it resolved every relative API call to the right
-  route and method, which was checked by hand.
-- **LLM providers.** Gemini was tested live (triage and review). OpenAI and Anthropic are implemented
-  against their documented HTTP APIs and unit-tested with a stubbed transport, not called live.
+- **Sample apps.** Five deliberately vulnerable apps (Flask + OpenAI, Next.js + Supabase, Express + MongoDB,
+  FastAPI + LangChain agent with an MCP config, config files only) and one clean app. Every expected
+  finding is marked in the code; the tests compare the exact set of (file, line, rule), so a missed finding
+  or a false alarm fails, and the clean app must produce nothing. Fake credentials are generated at test
+  time.
+- **Property tests.** Each vulnerable app is changed in ways that keep it vulnerable (lines shifted,
+  variables renamed, CRLF, moved into a monorepo, routes moved into a blueprint) and every finding must
+  stay; 33 safe rewrites (parameterise the query, add the auth check, ...) must each remove exactly the
+  targeted finding.
+- **Fuzzing and hostile input.** Random and malformed files with fixed seeds (garbage code, binary files,
+  odd encodings, 3,000-level nesting, 1 MB single lines, broken manifests and lockfiles, symlink loops,
+  unreadable files): the scan must not crash, hang or write invalid JSON or SARIF. Every regular expression
+  is timed against input designed to make it backtrack.
+- **Scale.** A generated 10,000-file repository scans in about a minute (59 s on a Windows laptop, 130 MB
+  peak traced memory); CI runs 2,000 files on every platform and 10,000 on Linux.
+- **Real projects.** The rules were run on 19 public repositories, from AI chat apps and Next.js SaaS
+  templates to Flask and Werkzeug themselves and a deliberately vulnerable Flask app, and every finding was
+  read. False alarms were fixed at the root with a regression test; confirmed problems included an
+  unauthenticated route in a popular chat UI that loads any user's API key by id with the service-role key.
+- **Four external audits.** Each finding was reproduced with a failing test before it was fixed; see the
+  [CHANGELOG](CHANGELOG.md).
+- **Packaging.** The built wheel was installed in fresh environments on Python 3.9, 3.11, 3.12 and 3.13 and
+  every command was run; CI runs the tests on 3.9 to 3.13 on Linux, macOS and Windows, and also from a plain
+  checkout without installing.
 
-## Limitations
+## Contributing, security and license
 
-- Data flow is intra-procedural (plus one level of helper resolution for auth).
-- JS/TS analysis is lexer-based, not a full parser.
-- Django URLconf views, NestJS and Remix routes are only partly covered.
-- "Authenticated" means an auth check is visible, not that it is correct.
-- Rate limiting and validation are detected project-wide, so one limiter anywhere counts.
-- The per-file time budget is cooperative: it is checked between regex matches and statements. A single
-  regex step cannot be interrupted, which is why every module-level pattern is tested for linear time.
-- Memory grows with the size of the repository (file text and lexer views are kept for cross-file
-  analysis); about 12 KB per source file in the scale test.
-- Router prefixes (FastAPI `include_router`, Express `app.use("/api", router)`, Flask blueprints, Django
-  URLconfs) are not resolved yet, so the frontend-backend contract rules only run when routes are
-  file-based (Next.js, SvelteKit) or the project has no prefixes.
-- UI rules read JSX and HTML with the lexer and pattern checks; they cover React/Next.js and plain HTML
-  templates, and only image alt text and placeholder text in Vue, Svelte and Astro files.
-- The retired-model list (LLM012) is maintained by hand; `vibeaudit update` fetches the latest copy.
-
-## Development
-
-```bash
-pip install -e ".[dev]"
-```
-
-```bash
-python -m pytest -q
-```
-
-```bash
-python tools/check_ascii.py
-```
-
-The tests also run from a plain checkout with only pytest installed (CI checks both ways).
-
-Deeper runs: `VIBEAUDIT_FUZZ_ROUNDS=300` for the fuzzer and `VIBEAUDIT_PERF_FILES=10000` for the scale
-test.
-
-## License and data sources
-
-MIT, see [LICENSE](LICENSE). Popular-package lists derive from
-[top-pypi-packages](https://github.com/hugovk/top-pypi-packages) and
-[npm-high-impact](https://github.com/wooorm/npm-high-impact); vulnerability data comes from
-[OSV.dev](https://osv.dev).
+- Contributing: see [CONTRIBUTING.md](CONTRIBUTING.md). Bug reports with a minimal example are the most
+  useful contribution, especially false positives and missed findings.
+- Security issues in vibeaudit itself: see [SECURITY.md](SECURITY.md); please do not open a public issue.
+- License: MIT, see [LICENSE](LICENSE). Popular-package lists derive from
+  [top-pypi-packages](https://github.com/hugovk/top-pypi-packages) and
+  [npm-high-impact](https://github.com/wooorm/npm-high-impact); vulnerability data comes from
+  [OSV.dev](https://osv.dev).
