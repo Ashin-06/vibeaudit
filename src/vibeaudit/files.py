@@ -39,10 +39,20 @@ DEFAULT_MAX_BYTES = 1_000_000
 
 TEST_PATH_RE = re.compile(
     r"(^|/)(tests?|__tests__|__mocks__|spec|specs|e2e|cypress|playwright|fixtures?|testdata|mocks?)/"
-    r"|(^|/)test_[^/]*\.py$|_test\.py$|(^|/)conftest\.py$"
+    r"|(^|/)test_[^/]*\.py$|_test\.py$|(^|/)(conftest|tests?)\.py$"
     r"|\.(test|spec|stories|story|cy)\.[cm]?[jt]sx?$",
     re.I,
 )
+# demo code shipped beside a library (flask/examples, express/examples): not the deployed application
+EXAMPLE_PATH_RE = re.compile(r"(^|/)examples?/", re.I)
+# one-off jobs run by a developer (migrations, management commands, seed and setup scripts): a query per loop
+# iteration or an f-string of constant identifiers there is not a request-time N+1 or an injection
+ONE_OFF_PATH_RE = re.compile(
+    r"(^|/)(migrations|alembic|management/commands|scripts?|seeds?|seeders|bin)/"
+    r"|(^|/)(seed|seeds|create[-_]tables?|setup[-_]db|migrate[\w-]*|(?:placeholder|sample|seed|mock|dummy)[-_]?data)"
+    r"\.(?:py|[cm]?[jt]s)$", re.I)
+# a vendored copy of a built library kept readable: "// Original source: .../dist/x-min.js"
+VENDORED_HEADER_RE = re.compile(r"(?im)^[ \t]*(?://|/\*|\*)[^\n]*(?:original source:|\bdist/[\w.-]+\.js\b|\w[.-]min\.js\b)")
 ENV_FILE_RE = re.compile(r"(^|/)\.env(\.[\w.-]+)?$")
 ENV_EXAMPLE_RE = re.compile(r"\.(example|sample|template|dist|defaults?|tmpl|tpl)$", re.I)
 
@@ -76,6 +86,33 @@ def kind_of(rel: str) -> str:
     return "other"
 
 
+DEV_SETTINGS_RE = re.compile(r"(?:^|/)(?:settings/(?:dev|development|local|test|testing)|settings_(?:dev|local|test))\.py$")
+
+
+def production_overrides(project: "Project", rel: str, name: str) -> bool:
+    """Django-style split settings: a value in base.py or dev.py that production.py (prod.py) sets again, or a
+    development-only settings file. Such a DEBUG = True or SECRET_KEY literal never reaches production."""
+    if DEV_SETTINGS_RE.search(rel):
+        return True
+    folder = rel.rsplit("/", 1)[0] if "/" in rel else ""
+    assign = re.compile(r"(?m)^[ \t]*%s\s*=" % re.escape(name))
+    return any(f.rel != rel and f.kind == "py" and (f.rel.rsplit("/", 1)[0] if "/" in f.rel else "") == folder
+               and re.search(r"(?:^|/)(?:production|prod|live)\.py$", f.rel) and assign.search(f.text or "")
+               for f in project.files)
+
+
+def _generated(text: str, kind: str) -> bool:
+    """Minified (long lines on average and some very long ones) or a vendored build kept readable. HTML pages
+    keep the stricter test: an inline SVG or data URI makes long lines in a hand-written page."""
+    lines = text.split("\n")
+    average = len(text) / len(lines)
+    if kind == "html":
+        return average > 500
+    if average > 200 and max(map(len, lines)) > 500:
+        return True
+    return bool(VENDORED_HEADER_RE.search(text[:1000]))
+
+
 class SourceFile:
     def __init__(self, root: Path, rel: str, max_bytes: int = DEFAULT_MAX_BYTES):
         self.root = root
@@ -83,6 +120,8 @@ class SourceFile:
         self.path = root / rel
         self.kind = kind_of(rel)
         self.is_test = bool(TEST_PATH_RE.search(rel))
+        self.is_example = bool(EXAMPLE_PATH_RE.search(rel))
+        self.is_one_off = bool(ONE_OFF_PATH_RE.search(rel))
         self.is_lockfile = rel.rsplit("/", 1)[-1] in LOCKFILES
         self.max_bytes = max_bytes
         self._text: Optional[str] = None
@@ -115,8 +154,7 @@ class SourceFile:
             text = data.decode("utf-8-sig", errors="replace").replace("\r\n", "\n").replace("\r", "\n")
             # Minified bundles and committed build output are generated code: code findings there are noise,
             # but a key baked into a bundle is still a leak, so the text stays available as `raw_text`.
-            nl = text.count("\n") + 1
-            if self.secrets_only or (self.kind in ("js", "html") and len(text) > 5000 and len(text) / nl > 500):
+            if self.secrets_only or (self.kind in ("js", "html") and len(text) > 5000 and _generated(text, self.kind)):
                 self._raw = text
                 return None
             self._text = text

@@ -36,6 +36,7 @@ class Finding:
     cwe: str = ""
     owasp: str = ""
     fingerprint: str = ""
+    preview: bool = False  # from a preview rule: reported, but not counted in --fail-on or the score by default
     llm_verdict: Optional[str] = None
     llm_reason: Optional[str] = None
 
@@ -64,6 +65,8 @@ class Finding:
             "source": self.source,
             "fingerprint": self.fingerprint,
         }
+        if self.preview:
+            d["preview"] = True
         if self.llm_verdict:
             d["llm_verdict"] = self.llm_verdict
             d["llm_reason"] = self.llm_reason or ""

@@ -97,12 +97,18 @@ AUTH_STUB = re.compile(
 )
 
 
+# template values that come from users or a model: {{ user.bio|safe }}, {{ comment.text|safe }}, {{ answer|safe }}
+USER_TEMPLATE_VALUE = re.compile(
+    r"(?i)\b(?:user|profile|comment|bio|message|msg|input|request|query|params|args|form|review|reply|feedback|"
+    r"chat|answer|response|completion|output|llm|prompt|content)\w*")
+
+
 def is_static_string(code: str) -> bool:
     s = code.strip()
     if not s:
         return True
-    if re.fullmatch(r"'(?:[^'\\\n]|\\.)*'|\"(?:[^\"\\\n]|\\.)*\"", s):
-        return True
+    if re.fullmatch(r"(?:'(?:[^'\\\n]|\\.)*'|\"(?:[^\"\\\n]|\\.)*\")(?:\s*\+\s*(?:'(?:[^'\\\n]|\\.)*'|\"(?:[^\"\\\n]|\\.)*\"))*", s):
+        return True  # a literal, or literals joined with +
     if re.fullmatch(r"`[^`]*`", s) and "${" not in s:
         return True
     return bool(re.fullmatch(r"-?\d+(?:\.\d+)?", s))
@@ -527,6 +533,9 @@ class JsScanner:
                 continue
             a_code, a_bare, _ = args[0]
             name = a_bare.strip()
+            if re.match(r"(?:async\b|function\b|\(?\s*[\w$]*\s*\)?\s*=>|\(\s*[\w$.]+\s*\|\|)", name) or re.search(r"=>\s*\{", name[:200]) \
+                    or re.search(r"\bPromise\s*$", bare[max(0, m.start() - 20):m.start()]):
+                continue  # Promise.all(rows.map(async (r) => ...)): a callback, not a query string
             dynamic = False
             if SQL_KW.search(a_code) and ("${" in a_code or re.search(r"['\"`]\s*\+|\+\s*['\"`]", a_code)):
                 dynamic = True
@@ -597,6 +606,8 @@ class JsScanner:
             t_code = target[0].strip()
             if re.match(r"""['"`]/(?!/)""", t_code) or re.match(r"""new\s+URL\s*\(\s*['"`]/(?!/)""", t_code):
                 continue
+            if re.match(r"(?:[\w$.]+\s*\(\s*)?`\$\{\s*[\w$.]*\borigin\s*\}/", t_code):
+                continue  # `${url.origin}/signin`: the app's own origin and a fixed path
             k = fs.kinds(t_code, target[1], m.start())
             if k & {"user", "llm"}:
                 report("BE008", m.start(), k, "a redirect target", "medium")
@@ -644,8 +655,14 @@ class JsScanner:
                     if k & {"user", "llm"}:
                         judge(m.start(), code[arg[0]:arg[1]], bare[arg[0]:arg[1]], "HTML response")
         if fs.sf.kind == "html":
-            for m in finditer(r"\{\{[^}\n]*\|\s*safe\b[^}\n]*\}\}|\{%\s*autoescape\s+(?:false|off)\s*%\}", code):
-                self.add(fs, "FE001", m.start(), "Template output marked safe, so it is not HTML-escaped.", "medium")
+            # |safe on staff-authored CMS fields or generated docs is the intent (benchmark: 26 of 26 such findings
+            # on djangoproject.com and others were false), so only values named like user or model input are reported
+            for m in finditer(r"\{\{([^}\n]*)\|\s*safe\b[^}\n]*\}\}", code):
+                if USER_TEMPLATE_VALUE.search(m.group(1)):
+                    self.add(fs, "FE001", m.start(), "Template output marked safe, so it is not HTML-escaped.", "medium")
+            if not re.search(r"(?i)e-?mail|\.txt$", fs.sf.rel):  # plain-text email templates turn escaping off on purpose
+                for m in finditer(r"\{%\s*autoescape\s+(?:false|off)\s*%\}", code):
+                    self.add(fs, "FE001", m.start(), "Template autoescaping is turned off.", "medium")
 
     # ------------------------------------------------------------------ llm
     def check_llm(self, fs: FileState) -> None:
@@ -784,6 +801,8 @@ class JsScanner:
             for m in finditer(r"\b(?:local|session)Storage\s*\.\s*(?:getItem|setItem)\s*\(\s*['\"`](?:is_?admin|admin|role|user_?role|roles|permissions?|is_?premium|is_?pro|plan|tier|credits|subscription|is_?paid|access_?level|is_?verified)['\"`]", code, re.I):
                 self.add(fs, "FE003", m.start(), "Authorization state is read from or written to browser storage.")
             for m in finditer(r"\blocalStorage\s*\.\s*setItem\s*\(\s*['\"`](?:[^'\"`]*(?:token|jwt|bearer|session_?id|credential)[^'\"`]*|(?:[^'\"`]*[._-])?(?:auth|session))['\"`]", code, re.I):
+                if re.search(r"(?i)credential_?(?:id|public_?key)\b", m.group(0)):
+                    continue  # a WebAuthn credential id or public key is not a secret
                 self.add(fs, "FE005", m.start(), "Auth token stored in localStorage.")
             for m in finditer(r"""['"`]https?://(?:localhost|127\.0\.0\.1)(?::\d+)?[/'"`]""", code):
                 line = sf.line(sf.line_at(m.start()))
@@ -793,6 +812,10 @@ class JsScanner:
                 self.add(fs, "SEC009", m.start(), "Supabase service_role key referenced in browser code.")
                 break
         for m in finditer(r"addEventListener\s*\(\s*['\"]message['\"]\s*,", code):
+            before = code[max(0, m.start() - 40):m.start()]
+            if re.search(r"(?i)(?:worker\w*|self|port\d*)\s*(?:\.\s*current)?\s*\.\s*$", before) or (
+                    re.search(r"(?i)(?:^|/)workers?/|worker\.[cm]?[jt]s$", sf.rel) and not re.search(r"\bwindow\s*\.\s*$", before)):
+                continue  # a Web Worker channel talks only to its own page: there is no foreign origin to check
             close = match_close(bare, bare.find("(", m.start()))
             seg = code[m.start():close]
             handler = re.search(r",\s*([A-Za-z_$][\w$]*)\s*\)?\s*$", seg)
@@ -806,28 +829,16 @@ class JsScanner:
         if re.search(r"(?:^|/)vite\.config\.[cm]?[jt]s$", rel):
             for m in finditer(r"\bsourcemap\s*:\s*true", code):
                 self.add(fs, "FE006", m.start(), "Vite build emits public source maps.")
-        # CORS
+        # CORS: an open origin only matters together with credentials; without them the browser sends no
+        # cookies, so another site cannot act as the logged-in user (benchmark: 34 of 35 were wildcard-only)
         for m in finditer(r"\bcors\s*\(", bare):
             args = self.call_args(fs, m.end() - 1)
-            if not args:
-                if not sf.is_client:
-                    self.add(fs, "BE012", m.start(), "cors() with no options allows every origin.", "low")
-                continue
-            a = args[0][0]
-            creds = re.search(r"\bcredentials\s*:\s*true", a)
-            wild = re.search(r"\borigin\s*:\s*(?:['\"]\*['\"]|true\b)", a)
-            if wild and creds:
+            a = args[0][0] if args else ""
+            if re.search(r"\borigin\s*:\s*(?:['\"]\*['\"]|true\b)", a) and re.search(r"\bcredentials\s*:\s*true", a):
                 self.add(fs, "BE012", m.start(), "CORS allows any origin together with credentials.", "high")
-            elif wild:
-                self.add(fs, "BE012", m.start(), "CORS allows any origin.", "low")
-        for m in finditer(r"Access-Control-Allow-Origin['\"`]\s*[,:]\s*(?:['\"`]\*['\"`]|(?:req|request)\s*\.\s*headers\s*(?:\.\s*origin|\[\s*['\"]origin['\"]\s*\]|\.get\s*\(\s*['\"]origin['\"]\s*\)))", code, re.I):
-            reflected = "*" not in m.group(0)
-            creds = re.search(r"Access-Control-Allow-Credentials['\"`]\s*[,:]\s*['\"`]?true", code, re.I)
-            if creds:
+        if re.search(r"Access-Control-Allow-Credentials['\"`]\s*[,:]\s*['\"`]?true", code, re.I):
+            for m in finditer(r"Access-Control-Allow-Origin['\"`]\s*[,:]\s*(?:['\"`]\*['\"`]|(?:req|request)\s*\.\s*headers\s*(?:\.\s*origin|\[\s*['\"]origin['\"]\s*\]|\.get\s*\(\s*['\"]origin['\"]\s*\)))", code, re.I):
                 self.add(fs, "BE012", m.start(), "CORS header allows any (or a reflected) origin together with credentials.", "high")
-            else:
-                self.add(fs, "BE012", m.start(), "CORS header reflects the request origin." if reflected else "CORS header allows any origin.",
-                         "medium" if reflected else "low")
         for m in finditer(r"\brejectUnauthorized\s*:\s*false|\bNODE_TLS_REJECT_UNAUTHORIZED\s*=\s*['\"]?0", code):
             self.add(fs, "BE013", m.start(), "TLS certificate verification is disabled.")
         for m in finditer(r"createHash\s*\(\s*['\"](?:md5|sha1|sha256|sha512)['\"]\s*\)\s*\.\s*update\s*\(\s*[^)]*pass", code, re.I):

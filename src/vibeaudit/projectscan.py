@@ -185,7 +185,9 @@ class ProjectScanner:
             return name if "." in name else "public." + name
 
         created: Dict[str, tuple] = {}
-        rls = set()
+        enable = r"(?i)\balter\s+table\s+(?:if\s+exists\s+)?(?:only\s+)?((?:\"?\w+\"?\.)?\"?\w+\"?)\s+enable\s+row\s+level\s+security"
+        # RLS can also be switched on by a setup script that runs the SQL (scripts/implement-rls-security.js)
+        rls = {norm(m.group(1)) for m in finditer(enable, self.all_code)}
         for sf in sql_files:
             text = sf.text or ""
             clean = re.sub(r"--[^\n]*|/\*[\s\S]*?\*/", lambda m: re.sub(r"[^\n]", " ", m.group(0)), text)
@@ -200,7 +202,8 @@ class ProjectScanner:
                 body = m.group(2)
                 cmd = re.search(r"(?i)\bfor\s+(all|select|insert|update|delete)\b", body)
                 cmd_name = cmd.group(1).lower() if cmd else "all"
-                if cmd_name != "select" and re.search(r"(?i)\b(?:using|with\s+check)\s*\(\s*true\s*\)", body):
+                only_service = re.search(r"(?i)\bto\s+service_role\b(?!\s*,)", body)  # service_role bypasses RLS anyway
+                if cmd_name != "select" and not only_service and re.search(r"(?i)\b(?:using|with\s+check)\s*\(\s*true\s*\)", body):
                     self.add(sf, sf.line_at(m.start()), "AUTH006", f"Policy on {norm(m.group(1))} allows {cmd_name.upper()} for every row (true).")
         for table, (sf, line) in created.items():
             if table.startswith("public.") and table not in rls:
@@ -379,12 +382,15 @@ class ProjectScanner:
                 handler = r.body.split("\n", 1)[-1]
                 without_params = re.sub(r"\b(?:" + "|".join(map(re.escape, r.params)) + r")\b", "_", r.body)
                 if id_params and any(re.search(r"\b" + re.escape(p) + r"\b", handler) for p in id_params) \
-                        and not H.OWNERSHIP_EVIDENCE.search(without_params):
+                        and not H.OWNERSHIP_EVIDENCE.search(without_params) and not H.ADMIN_ROLE_EVIDENCE.search(r.body):
                     self.add(r.file, r.line, "AUTH003", f"{'/'.join(r.methods)} {path} changes a record by id without checking that it belongs to the caller.")
             if r.calls_llm and not rate_limited:
                 self.add(r.file, r.line, "LLM004", f"{path} calls a model and the project has no rate limiting.",
                          "medium" if r.has_auth else "high")
-            if H.LOGIN_PATH.search(path) and r.mutating and not rate_limited and not H.WEBHOOK_PATH.search(path):
+            if H.LOGIN_PATH.search(path) and r.mutating and not rate_limited and not H.WEBHOOK_PATH.search(path) \
+                    and (H.CREDENTIAL_PATH.search("/" + path.rstrip("/").rsplit("/", 1)[-1]) or H.CREDENTIAL_INPUT.search(r.body)) \
+                    and not H.TOKEN_RESET.search(path + "\n" + r.body) \
+                    and not H.ADMIN_ROLE_EVIDENCE.search(r.body):
                 self.add(r.file, r.line, "AUTH010", f"{path} has no rate limiting.")
             if r.reads_body and reads_body is None:
                 reads_body = r

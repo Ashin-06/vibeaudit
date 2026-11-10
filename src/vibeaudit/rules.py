@@ -32,6 +32,10 @@ class Rule:
     fix: str
     cwe: str = ""
     owasp: str = ""
+    # A preview rule is reported but does not count toward --fail-on or the score (unless --include-preview).
+    # See STABILITY.md: new rules start as preview, and a rule can be moved back to preview with a reason.
+    preview: bool = False
+    preview_reason: str = ""
 
 
 _R = [
@@ -50,7 +54,10 @@ _R = [
          "A variable named like a secret holds a random-looking literal. This is usually a real token "
          "pasted in while prototyping.",
          "Move the value to an environment variable or secret manager and rotate it if it was ever pushed.",
-         "CWE-798", "A07:2021"),
+         "CWE-798", "A07:2021",
+         preview=True,
+         preview_reason="Benchmark precision 82% (9 of 11): public client keys and documented demo tokens look "
+                       "like secrets."),
     Rule("SEC004", "Hardcoded or default signing secret", "secrets", "high",
          "Session cookies and JWTs are signed with this secret. If it is in the code, or falls back to a "
          "default when the env var is missing, anyone can forge a login as any user, including admins.",
@@ -177,8 +184,8 @@ _R = [
          "Drive debug from an environment variable that is off by default, and never deploy with it on.",
          "CWE-489", "A05:2021"),
     Rule("BE012", "Insecure CORS policy", "backend", "high",
-         "Allowing any origin (especially together with credentials) lets any website call your API as the "
-         "logged-in user.",
+         "Allowing any or a reflected origin together with credentials lets any website call your API as the "
+         "logged-in user. (An open origin without credentials is not reported: no cookies are sent.)",
          "List the exact origins you trust. Never combine a wildcard or reflected origin with "
          "credentials.", "CWE-942", "A05:2021"),
     Rule("BE013", "TLS certificate verification disabled", "backend", "medium",
@@ -209,13 +216,19 @@ _R = [
          "The backend reads request bodies but no validation library is used on the server. Validation done "
          "only in the browser is bypassed by calling the API directly.",
          "Validate every request body on the server with a schema (zod, valibot, joi, pydantic, "
-         "marshmallow): types, lengths, ranges and allowed fields.", "CWE-602", "A04:2021"),
+         "marshmallow): types, lengths, ranges and allowed fields.", "CWE-602", "A04:2021",
+         preview=True,
+         preview_reason="Benchmark precision 67% (6 of 9): hand-written validation (type checks, 422 responses) is "
+                       "not recognised, only known validation libraries."),
     # --------------------------------------------------------------- frontend
     Rule("FE001", "Cross-site scripting through a raw HTML sink", "frontend", "high",
          "Inserting unsanitized data as HTML (innerHTML, dangerouslySetInnerHTML, v-html, {@html}, |safe) "
          "lets an attacker run JavaScript in other users' browsers and steal their sessions.",
          "Render as text, or sanitize with DOMPurify (or bleach on the server) before inserting HTML.",
-         "CWE-79", "A03:2021"),
+         "CWE-79", "A03:2021",
+         preview=True,
+         preview_reason="Benchmark precision 67% (20 of 30): the source of the HTML is often not visible in the "
+                       "file (markdown from the repo, CMS content, constants), so trusted content is reported too."),
     Rule("FE002", "LLM or secret API called directly from the browser", "frontend", "critical",
          "Calling OpenAI, Anthropic, Gemini and similar APIs from client code ships the API key to every "
          "visitor, who can then run up your bill or abuse the account.",
@@ -387,7 +400,10 @@ _R = [
     Rule("QA003", "Exception silently swallowed", "quality", "low",
          "An empty except/catch hides failures, including failed auth or payment calls, and makes incidents "
          "very hard to debug.",
-         "Log the error and handle it explicitly, or let it propagate.", "CWE-390", "A09:2021"),
+         "Log the error and handle it explicitly, or let it propagate.", "CWE-390", "A09:2021",
+         preview=True,
+         preview_reason="Benchmark precision 33% (2 of 6): a broad except in a library's best-effort cleanup path "
+                       "is often deliberate."),
     Rule("QA004", "Security placeholder or TODO left in code", "quality", "medium",
          "Comments like \"TODO: add auth\" or \"in production, use...\" are where assistants leave "
          "unfinished security work that then ships.",
@@ -411,7 +427,10 @@ _R = [
          "One query per item turns a page with 100 rows into 101 round trips: slow pages, timeouts and database "
          "load that grows with your data.",
          "Fetch everything in one query (IN / join / include / select_related / prefetch_related) or batch the "
-         "writes (createMany, bulk_create, executemany).", "CWE-1050", ""),
+         "writes (createMany, bulk_create, executemany).", "CWE-1050", "",
+         preview=True,
+         preview_reason="Benchmark precision 20% (1 of 5): a loop over a few fixed items, a deliberate per-row "
+                       "transaction or an offline job looks the same as a request-time N+1."),
     Rule("DATA002", "Whole user record returned to the client", "data", "high",
          "Returning the full user or account row sends every column to the browser, including password hashes, "
          "reset tokens, Stripe ids and other private fields.",
@@ -436,7 +455,10 @@ _R = [
     Rule("DATA007", "Environment variable missing from the example env file", "data", "low",
          "The code reads a variable that .env.example does not document, so the next deploy or teammate setup "
          "crashes or silently runs with a missing setting.",
-         "Add the variable (with a placeholder value) to .env.example.", "", ""),
+         "Add the variable (with a placeholder value) to .env.example.", "", "",
+         preview=True,
+         preview_reason="Benchmark precision 50% (6 of 12): a setting that is optional by design (an SDK default, "
+                       "a feature that is simply off) looks the same as a required one."),
     Rule("DATA008", "Database client created per request", "data", "medium",
          "Creating a client, pool or engine inside a handler opens new connections on every request and exhausts "
          "the database's connection limit under load.",
@@ -448,7 +470,10 @@ _R = [
     Rule("DATA010", "Several writes without a transaction", "data", "low",
          "When one of several related writes fails halfway (for example charge recorded but order not created), "
          "the data is left inconsistent.",
-         "Wrap related writes in a transaction (prisma.$transaction, db.transaction, BEGIN/COMMIT).", "CWE-662", ""),
+         "Wrap related writes in a transaction (prisma.$transaction, db.transaction, BEGIN/COMMIT).", "CWE-662", "",
+         preview=True,
+         preview_reason="Benchmark precision 89% (8 of 9): writes in separate webhook event branches or helpers "
+                       "are counted as one handler's writes."),
     Rule("REL001", "Outbound HTTP request without a timeout", "reliability", "medium",
          "`requests` and `urlopen` wait forever by default. One slow or dead upstream API ties up a worker per "
          "request until the whole service stops responding.",
@@ -524,7 +549,10 @@ _R = [
     Rule("UI006", "Destructive action without confirmation", "ui", "low",
          "A delete or remove that runs on a single click, with no confirmation or undo, loses user data on a "
          "misclick.",
-         "Ask for confirmation (a dialog), or offer undo for a few seconds before deleting for good."),
+         "Ask for confirmation (a dialog), or offer undo for a few seconds before deleting for good.",
+         preview=True,
+         preview_reason="Benchmark precision 71% (5 of 7): a confirmation dialog in a parent component, or a "
+                       "removal from local state only, is not seen."),
     Rule("UI007", "Hydration mismatch", "ui", "medium",
          "Random numbers or the current time rendered on the server differ on the client, so React reports a "
          "hydration error and re-renders the page.",

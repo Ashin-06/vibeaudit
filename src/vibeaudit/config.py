@@ -23,7 +23,7 @@ KEYS: Dict[str, str] = {
     "exclude": LIST, "disable": LIST, "auth_helpers": LIST, "sanitizers": LIST, "public_paths": LIST,
     "fail_on": "severity or none", "min_severity": "severity", "external": "string", "baseline": "string",
     "llm": "string", "llm_model": "string", "offline": "boolean", "max_file_size": "integer",
-    "llm_max_requests": "integer", "file_timeout": "number",
+    "llm_max_requests": "integer", "file_timeout": "number", "include_preview": "boolean",
 }
 
 
@@ -110,6 +110,7 @@ def project_options(root: str, config: Optional[str] = None, **overrides):
         "file_timeout": float(cfg.get("file_timeout", 30.0)),  # type: ignore[arg-type]
         "auth_helpers": list(cfg.get("auth_helpers", [])), "sanitizers": list(cfg.get("sanitizers", [])),  # type: ignore[call-overload]
         "public_paths": list(cfg.get("public_paths", [])),  # type: ignore[call-overload]
+        "include_preview": bool(cfg.get("include_preview", False)),
     }
     values.update(overrides)
     return Options(**values)

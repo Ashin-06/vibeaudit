@@ -63,6 +63,8 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--no-config", action="store_true",
                    help="ignore configuration and feedback files in the scanned project")
     s.add_argument("--no-cache", action="store_true", help="do not read or write cached registry, vulnerability and LLM answers")
+    s.add_argument("--include-preview", action="store_true", default=None,
+                   help="count findings of preview rules toward --fail-on and the score (they are always reported)")
     s.add_argument("-q", "--quiet", action="store_true", help="print only the summary")
     s.add_argument("--no-color", action="store_true", help="disable colored output")
 
@@ -151,10 +153,10 @@ def cmd_rules(fmt: str) -> int:
         print("| ID | Severity | Category | Rule | References |\n| --- | --- | --- | --- | --- |")
         for r in rules:
             refs = ", ".join(x for x in (r.cwe, r.owasp) if x)
-            print(f"| {r.id} | {r.severity} | {CATEGORIES[r.category]} | {r.title} | {refs} |")
+            print(f"| {r.id} | {r.severity} | {CATEGORIES[r.category]} | {r.title}{' (preview)' if r.preview else ''} | {refs} |")
     else:
         for r in rules:
-            print(f"{r.id:8} {r.severity:9} {r.category:13} {r.title}")
+            print(f"{r.id:8} {r.severity:9} {r.category:13} {r.title}{' (preview)' if r.preview else ''}")
     return 0
 
 
@@ -268,7 +270,7 @@ def cmd_scan(a: argparse.Namespace) -> int:
                    auth_helpers=list(cfg.get("auth_helpers", [])), sanitizers=list(cfg.get("sanitizers", [])),
                    public_paths=list(cfg.get("public_paths", [])), changes=changes, log=log,
                    feedback=not a.no_config,  # the feedback file lives in the repository, like the config
-                   cache=not a.no_cache)
+                   cache=not a.no_cache, include_preview=bool(pick(a.include_preview, "include_preview", False)))
     if cfg_path:
         log(f"using settings from {cfg_path}")
     try:
@@ -287,7 +289,7 @@ def cmd_scan(a: argparse.Namespace) -> int:
     for fmt, path in reports:
         if path != "-":
             print(f"vibeaudit: wrote {fmt} report to {path}", file=sys.stderr)
-    if fail_on != "none" and any(at_least(f.severity, fail_on) for f in res.findings):
+    if fail_on != "none" and any(at_least(f.severity, fail_on) for f in res.gating):  # preview rules excluded
         return 1
     return 0
 

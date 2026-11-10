@@ -188,6 +188,13 @@ def test_sql_fragment_of_constants_and_placeholders_is_not_injection(tmp_path):
 
 def test_expected_exception_check_is_not_a_swallowed_error(tmp_path):
     write(tmp_path, "checks.py",
-          "def check(fn):\n    try:\n        fn('positional')\n        raise AssertionError('must be refused')\n    except TypeError:\n        pass\n"
-          "    try:\n        fn(1)\n    except ValueError:\n        pass\n")
+          "def check(fn):\n    try:\n        fn('positional')\n        raise AssertionError('must be refused')\n    except Exception:\n        pass\n"
+          "    try:\n        fn(1)\n    except Exception:\n        pass\n")
     assert [(ln, r) for _f, ln, r in _found(tmp_path, "QA003")] == [(9, "QA003")]
+
+
+def test_specific_exception_ignored_on_purpose_is_not_swallowed(tmp_path):
+    # benchmark: werkzeug and starlette ignore KeyError or NoMatchFound as a deliberate fallback
+    write(tmp_path, "m.py", "def f(d, k):\n    try:\n        return d[k]\n    except KeyError:\n        pass\n"
+          "    try:\n        g()\n    except (OSError, Exception):\n        pass\n    try:\n        g()\n    except:\n        pass\n")
+    assert [ln for _f, ln, _r in _found(tmp_path, "QA003")] == [8, 12]

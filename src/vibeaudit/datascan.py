@@ -134,7 +134,8 @@ class DataScanner:
             GUARD.tick()
             # range(start, stop, step) walks a list in chunks: one batched query per chunk is the fix, not N+1
             chunked = isinstance(getattr(node, "iter", None), ast.Call) and dotted(node.iter.func) == "range" and len(node.iter.args) == 3  # type: ignore[attr-defined]
-            if isinstance(node, (ast.For, ast.AsyncFor)) and not isinstance(node.iter, (ast.Tuple, ast.List, ast.Set, ast.Constant)) \
+            if isinstance(node, (ast.For, ast.AsyncFor)) and not sf.is_one_off \
+                    and not isinstance(node.iter, (ast.Tuple, ast.List, ast.Set, ast.Constant)) \
                     and not chunked and not any(isinstance(n, ast.Call) and dotted(n.func).endswith("sleep") for n in self._walk_body(node.body)):
                 for inner in self._walk_body(node.body):
                     if isinstance(inner, ast.Call):
@@ -215,7 +216,7 @@ class DataScanner:
             if span[1] < 0:
                 continue
             q = JS_QUERY.search(code, span[0], span[1])
-            if q and sf.line_at(q.start()) not in reported:
+            if q and not sf.is_one_off and sf.line_at(q.start()) not in reported:
                 reported.add(sf.line_at(q.start()))
                 self.add(sf, "DATA001", sf.line_at(q.start()), "Database call runs once per loop iteration.")
         # a full user record fetched without a field selection and sent to the client
@@ -265,6 +266,9 @@ class DataScanner:
         clean = re.sub(r"--[^\n]*|/\*[\s\S]*?\*/", lambda m: re.sub(r"[^\n]", " ", m.group(0)), text)
         migration = bool(re.search(r"(?i)(?:^|/)(?:migrations?|migrate|db/migrate|alembic|versions)(?:/|$)", sf.rel))
         for m in finditer(r"(?i)\b(drop\s+table|drop\s+column|truncate(?:\s+table)?|alter\s+column\s+\S+\s+(?:set\s+data\s+)?type)\b", clean):
+            statement = clean[m.start():m.start() + 2000].split(";", 1)[0]  # bounded window: linear per file
+            if m.group(1).lower().startswith("alter") and re.search(r"(?i)\busing\b", statement):
+                continue  # ALTER COLUMN ... TYPE uuid USING id::uuid converts the values in place
             if migration and not re.search(r"(?i)\bdown\b|rollback|revert", sf.rel):
                 self.add(sf, "DATA003", sf.line_at(m.start()), f"Migration runs `{m.group(1).upper()}`, which destroys data irreversibly.")
         for m in finditer(r"(?i)\b(" + MONEY + r")\b\s+(float4?|float8|real|double\s+precision|double)\b", clean):
@@ -318,11 +322,15 @@ class DataScanner:
                 continue
             v = sf.cache.get("views")
             code = v.code if v is not None else sf.text  # type: ignore[attr-defined]
-            for m in finditer(pattern, code):
-                name = next(g for g in m.groups() if g)
-                after = code[m.end():m.end() + 40]
-                if re.match(r"\s*,", after) or re.match(r"\s*[)\]]?\s*(?:==|!=|===|!==|\bor\b|\bin\b)", after):
-                    continue  # a default, a fallback or a comparison: a missing value cannot crash the app
+            bare = v.bare if v is not None else code  # type: ignore[attr-defined]
+            reads = [(m, next(g for g in m.groups() if g)) for m in finditer(pattern, code)]
+            reads = [(m, name) for m, name in reads if not self._in_plain_string(bare, m.start(), sf.kind == "py")]
+            # one guarded read makes the variable optional in this file: `process.env.X ? { url: process.env.X } : {}`
+            present = set(re.findall(r"""['"]([A-Z][A-Z0-9_]+)['"]\s+in\s+os\.environ\b""", code)) if reads else set()
+            optional = {name for m, name in reads if self._guarded_env(code, m, name, present)}
+            for m, name in reads:
+                if name in optional:
+                    continue
                 bare_name = re.sub(r"^(?:NEXT_PUBLIC_|VITE_|REACT_APP_|EXPO_PUBLIC_|NUXT_PUBLIC_|PUBLIC_)", "", name)
                 folder = example_for(sf.rel)
                 if folder is None or name in by_dir[folder] or name in seen or PLATFORM_ENV.match(bare_name) or OPTIONAL_FLAG.search(bare_name):
@@ -330,6 +338,55 @@ class DataScanner:
                 seen.add(name)
                 self.add(sf, "DATA007", sf.line_at(m.start()),
                          f"`{name}` is read from the environment but is not in {names[folder]}.")
+
+    @classmethod
+    def _guarded_env(cls, code: str, m: "re.Match[str]", name: str, present: Set[str]) -> bool:
+        after = code[m.end():m.end() + 40]
+        if re.match(r"\s*,", after) or re.match(r"\s*[)\]]?\s*(?:==|!=|===|!==|\bor\b|\bin\b|\|\||\?\?|\?(?!\.))", after):
+            return True  # a default, a fallback, a comparison or a ternary: a missing value cannot crash the app
+        return cls._optional_env(code, m.start(), name, present)
+
+    @staticmethod
+    def _in_plain_string(bare: str, i: int, py: bool) -> bool:
+        """The read is inside a string literal (an example in a prompt), not a Python f-string interpolation.
+        The bare view blanks string contents; JS keeps `${...}` as code, Python blanks whole f-strings."""
+        if i >= len(bare) or bare[i].strip():
+            return False
+        if not py:
+            return True
+        j, floor = i, max(0, i - 4000)  # bounded: a huge literal full of reads must not make this quadratic
+        while j > floor and bare[j] not in "\"'":
+            j -= 1
+        if bare[j] not in "\"'":
+            return True
+        while j >= 0 and bare[j] in "\"'":
+            j -= 1
+        return not (j >= 0 and (bare[j] in "fF" or (bare[j] in "rR" and j >= 1 and bare[j - 1] in "fF")))
+
+    @staticmethod
+    def _optional_env(code: str, start: int, name: str, present: Set[str]) -> bool:
+        """Optional by design where it is read: tested for presence (`"X" in os.environ`, `if (process.env.X)`),
+        the second choice of a fallback chain (`A or os.environ.get("X")`), or read into a variable that is then
+        used only when set (`if x:`) or given a default (`if not x: x = "llama2"`). A test that returns or throws
+        (`if (!secret) return 503`) silently disables or stops the feature, so that read is still reported."""
+        if name in present:
+            return True
+        # the end of the line before the read only: an anchored search over a megabyte line would be quadratic
+        line_start = max(code.rfind("\n", 0, start) + 1, start - 200)
+        before = code[line_start:start]
+        if re.search(r"(?:\bif\s*\(?\s*|\bor\s+|\|\|\s*|\?\?\s*|\.\.\.\s*\()$", before):
+            return True
+        assigned = re.search(r"(?:\b(?:const|let|var)\s+)?([A-Za-z_$][\w$]*)\s*(?::\s*[\w\[\]|, ]+)?=\s*$", before)
+        if not assigned:
+            return False
+        var = re.escape(assigned.group(1))
+        test = re.search(r"\bif\s*\(?\s*(!\s*|not\s+)?%s\b(?!\s*\.)" % var, code[start:start + 600])
+        if test is None:
+            return False
+        if not test.group(1):
+            return True
+        branch = code[start + test.end():start + test.end() + 120]
+        return bool(re.match(r"[\s):{]*%s\s*=(?!=)" % var, branch))
 
     # ------------------------------------------------------- transactions
     def _transactions(self) -> None:

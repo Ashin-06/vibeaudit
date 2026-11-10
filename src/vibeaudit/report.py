@@ -34,24 +34,32 @@ class Result:
         self.routes = routes or []
 
     @property
+    def gating(self) -> List[Finding]:
+        """Findings that count for --fail-on, the score and the grade: preview rules are left out unless
+        the scan was run with --include-preview."""
+        if self.meta.get("include_preview"):
+            return list(self.findings)
+        return [f for f in self.findings if not f.preview]
+
+    @property
     def counts(self) -> Dict[str, int]:
         c = Counter(f.severity for f in self.findings)
         return {s: c.get(s, 0) for s in SEVERITIES}
 
     @property
     def score(self) -> int:
-        return max(0, 100 - sum(WEIGHTS[f.severity] for f in self.findings))
+        return max(0, 100 - sum(WEIGHTS[f.severity] for f in self.gating))
 
     @property
     def domain_scores(self) -> Dict[str, int]:
         """The same score, computed separately for each domain (security, AI, quality, ...)."""
-        return {name: max(0, 100 - sum(WEIGHTS[f.severity] for f in self.findings if f.category in cats))
+        gating = self.gating
+        return {name: max(0, 100 - sum(WEIGHTS[f.severity] for f in gating if f.category in cats))
                 for name, cats in DOMAINS.items()}
 
     @property
     def grade(self) -> str:
-        c = self.counts
-        if c["critical"]:
+        if any(f.severity == "critical" for f in self.gating):
             return "F"
         s = self.score
         return "A" if s >= 90 else "B" if s >= 75 else "C" if s >= 60 else "D" if s >= 40 else "F"
@@ -76,7 +84,7 @@ def render_text(res: Result, color: bool, verbose: bool = True) -> str:
     for f in res.findings:
         tag = paint(f"[{f.severity.upper()}]", colors[f.severity])
         loc = f"{f.file}:{f.line}" if f.line else f.file
-        out.append(f"{tag} {f.rule_id} {f.title}")
+        out.append(f"{tag} {f.rule_id} {f.title}" + (" (preview)" if f.preview else ""))
         out.append(f"  {loc}  {f.message}")
         if verbose:
             if f.snippet:
@@ -96,6 +104,10 @@ def render_text(res: Result, color: bool, verbose: bool = True) -> str:
         out.append(f"  {_cat(cat)}: {n}")
     out.append(f"  Score: {res.score}/100  Grade: {res.grade}")
     out.append("  Domains: " + "  ".join(f"{k} {v}" for k, v in res.domain_scores.items()))
+    previews = len(res.findings) - len(res.gating)
+    if previews:
+        out.append(f"  {previews} findings come from preview rules and do not count toward --fail-on or the score "
+                   "(use --include-preview to count them).")
     for note in res.meta.get("notes", []):
         out.append(f"  Note: {note}")
     return "\n".join(out) + "\n"

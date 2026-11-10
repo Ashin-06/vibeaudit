@@ -24,6 +24,10 @@ EMPTY_HANDLER = re.compile(r"""\bonClick\s*=\s*\{\s*(?:\(\s*\w*\s*\)|\w+)\s*=>\s
 DESTRUCTIVE = re.compile(r"""\bon(?:Click|Select|Press)\s*=\s*\{\s*(?:\(\s*\w*\s*\)\s*=>\s*)?(?:void\s+)?(?:await\s+)?((?:handle|on)?(?:[Dd]elete|[Dd]estroy|[Pp]urge|[Ww]ipe)\w*)\b""")
 # a handler that only stops the event from reaching a parent is not a control
 SWALLOW_ONLY = re.compile(r"""\bonClick\s*=\s*\{\s*\(?\s*(\w+)\s*\)?\s*=>\s*\{?\s*(?:\1\s*\.\s*(?:stopPropagation|preventDefault)\s*\(\s*\)\s*;?\s*){1,2}\}?\s*\}""")
+# a full-screen overlay behind a modal or drawer that closes it on click: the dialog has its own close control
+BACKDROP = re.compile(r"\binset-0\b|\b(?:fixed|absolute)\b[^\"'`]{0,300}?\bh-full\s+w-full\b"
+                      r"|\bh-full\s+w-full\b[^\"'`]{0,300}?\b(?:fixed|absolute)\b")  # bounded: linear on long class lists
+CLOSE_HANDLER = re.compile(r"(?i)\bonClick\s*=\s*\{\s*(?:\(\s*\w*\s*\)\s*=>\s*\{?\s*)?(?:set\w*\(\s*(?:false|null)\s*\)|\w*(?:close|toggle|dismiss|hide)\w*)")
 CONFIRMATION = re.compile(r"(?i)\bconfirm\s*\(|AlertDialog|Dialog|Modal|Popconfirm|useConfirm|Confirm\w*|\bundo\b|DropdownMenu|ContextMenu")
 INDEX_KEY = re.compile(r"\.map\(\s*\(\s*\w+\s*,\s*(\w+)\s*\)\s*=>")
 CLOCK_IN_JSX = re.compile(r"<[A-Za-z][^<>]{0,300}>[^<>{}]{0,200}\{[^{}]{0,200}\b(Math\.random\(\)|Date\.now\(\)|new Date\(\)\.(?:toLocale\w*|get(?!FullYear)\w+)\()")
@@ -89,6 +93,7 @@ class UiScanner:
             if (name == "img" or (name == "Image" and next_image)) and not re.search(r"\balt\s*=", battrs):
                 self.add(sf, "UI001", line, f"<{name}> has no alt text; screen readers announce the file name or nothing.")
             if (name in NON_INTERACTIVE and re.search(r"\bonClick\s*=", battrs) and not SWALLOW_ONLY.search(attrs)
+                    and not (BACKDROP.search(attrs) and CLOSE_HANDLER.search(attrs))
                     and not re.search(r"\brole\s*=|\bonKey(?:Down|Up|Press)\s*=", battrs)):
                 self.add(sf, "UI002", line, f"<{name} onClick> cannot be reached or used with the keyboard.")
             if name in ("input", "select", "textarea") and self._unlabeled(attrs, battrs, bare, m.start()):
@@ -163,7 +168,9 @@ class UiScanner:
 
     # -------------------------------------------------------------- markup
     def _markup(self, sf: SourceFile) -> None:
-        text = sf.text or ""
+        # HTML and template comments are never rendered; blank them keeping offsets (and so line numbers)
+        text = re.sub(r"(?s)<!--.*?-->|\{%-?\s*comment\b.*?\{%-?\s*endcomment\s*-?%\}|\{#.*?#\}",
+                      lambda m: re.sub(r"[^\n]", " ", m.group(0)), sf.text or "")
         for m in finditer(r"<img\b[^<>]{0,2000}>", text):
             if not re.search(r"\balt\s*=|:alt\s*=|\{\.\.\.|v-bind", m.group(0)):
                 self.add(sf, "UI001", sf.line_at(m.start()), "<img> has no alt text; screen readers announce the file name or nothing.")

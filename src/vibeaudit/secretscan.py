@@ -9,7 +9,7 @@ from typing import Callable, List, Optional, Pattern, Tuple
 
 from . import heuristics as H
 from .guard import GUARD, finditer
-from .files import ENV_EXAMPLE_RE, Project, SourceFile
+from .files import ENV_EXAMPLE_RE, Project, SourceFile, production_overrides
 from .lexer import js_views, py_views
 from .model import Finding
 
@@ -189,10 +189,17 @@ class SecretScanner:
                 public_lines.add(line)
                 self.add(sf, "SEC008", m.start(), f"{m.group(0)} is a public (browser-exposed) variable but holds a secret.")
         code = self._code(sf, text)
+        views = sf.cache.get("views")
+        bare = getattr(views, "bare", None) if sf.kind in ("py", "js", "html") else None
         for rx in SIGNING_LITERAL:
             for m in finditer(rx, code):
+                if bare is not None and len(bare) == len(code) and not bare[m.start()].strip():
+                    continue  # inside a string: an error message naming cookieParser("secret"), not a call
                 val = m.group(1)
                 if H.PLACEHOLDER.search(val) and not re.search(r"(?i)changeme|change_me|secret|dev|insecure", val):
+                    continue
+                if sf.kind == "py" and m.group(0).startswith("SECRET_KEY") and production_overrides(self.p, sf.rel, "SECRET_KEY"):
+                    once(m.start())  # base.py / dev.py key that production.py replaces: no other secret rule either
                     continue
                 if once(m.start()):
                     self.add(sf, "SEC004", m.start(), "Session/JWT signing secret is hard-coded.", val if len(val) > 8 else "")
@@ -202,15 +209,16 @@ class SecretScanner:
                     self.add(sf, "SEC004", m.start(), "Signing secret falls back to a hard-coded default when the env var is missing.", "", "medium")
         if sf.kind == "env":
             for m in finditer(ENV_LINE, text):
-                if re.search(r"PUBLISHABLE|ANON|PUBLIC_KEY|SITE_KEY|_PK\b|MEASUREMENT", m.group(1)):
-                    continue  # keys that are designed to be public
+                if re.search(r"PUBLISHABLE|ANON|PUBLIC_KEY|SITE_KEY|_PK\b|MEASUREMENT", m.group(1)) \
+                        or re.match(r"(?:[a-z]+_)?pub_|pk_(?:live|test)_", m.group(2)):
+                    continue  # keys that are designed to be public (ck_pub_..., pk_live_...)
                 jwt = JWT.match(m.group(2))
                 if jwt and _jwt_role(jwt.group(1)) in ("anon", None):
                     continue
                 if H.looks_random(m.group(2)) and once(m.start()):
                     self.add(sf, "SEC003", m.start(), f"{m.group(1)} has a real-looking value.", m.group(2))
         elif sf.kind in ("py", "js", "html", "json", "yaml", "compose", "docker", "other", "workflow") and not ENV_EXAMPLE_RE.search(sf.rel):
-            if sf.kind in ("py", "js"):
+            if sf.kind in ("py", "js") and not sf.is_one_off:  # seed scripts create demo users on purpose
                 for m in finditer(PASSWORD_ASSIGN, code):
                     name, val = m.group(1), m.group(2)
                     low = val.lower()

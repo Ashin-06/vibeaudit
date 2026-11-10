@@ -12,7 +12,7 @@ import re
 from typing import Callable, Dict, Iterator, List, Optional, Set, Tuple
 
 from . import heuristics as H
-from .files import Project, SourceFile
+from .files import Project, SourceFile, production_overrides
 from .guard import GUARD
 from .lexer import py_views
 from .model import Finding, Route
@@ -635,6 +635,13 @@ class PyScanner:
             return False
         return True
 
+    def _own_functions(self) -> Set[str]:
+        """Names of functions defined in the current file, computed once per file."""
+        names = self.sf.cache.get("own_functions")
+        if names is None:
+            names = self.sf.cache["own_functions"] = set(re.findall(r"(?m)^[ \t]*(?:async[ \t]+)?def[ \t]+(\w+)", self.sf.text or ""))
+        return names  # type: ignore[return-value]
+
     def resolve(self, node: ast.AST, ctx: Ctx) -> ast.AST:
         if isinstance(node, ast.Name) and node.id in ctx.assigned:
             return ctx.assigned[node.id]
@@ -657,7 +664,7 @@ class PyScanner:
                     pass  # only bind markers are formatted in; the values are passed as parameters
                 elif t0 and (formatted or ctx.kind == "tool" or not isinstance(src, (ast.Constant, ast.JoinedStr, ast.BinOp))):
                     self.sink(call, t0, "BE001", "a SQL query", "high", True)
-                elif formatted:
+                elif formatted and not self.sf.is_one_off:  # a migration formats in its own constant identifiers
                     self.add("BE001", call, "SQL query built with string formatting; use parameters even for values you think are safe.", "medium")
         # shell
         elif d in ("os.system", "os.popen", "subprocess.getoutput", "subprocess.getstatusoutput", "commands.getoutput") or d.endswith("create_subprocess_shell"):
@@ -678,7 +685,8 @@ class PyScanner:
                 elif t0:
                     self.sink(call, t0, "BE002", "a subprocess command", "high", True)
         # dynamic code
-        elif isinstance(call.func, ast.Name) and name in ("eval", "exec", "compile") and arg0 is not None and const_str(arg0) is None:
+        elif isinstance(call.func, ast.Name) and name in ("eval", "exec", "compile") and arg0 is not None and const_str(arg0) is None \
+                and name not in self._own_functions():  # not the module's own eval()
             if not self.sink(call, t0, "BE003", f"{name}()", "critical", True):
                 self.add("BE003", call, f"{name}() on a dynamic string.", "medium")
         # files
@@ -708,8 +716,12 @@ class PyScanner:
                 self.add("FE001", call, f"{name}() marks a formatted string as safe HTML.", "medium")
         elif name in ("redirect", "RedirectResponse", "HttpResponseRedirect") and arg0 is not None:
             # redirecting to the request's own URL (http -> https, trailing slash) goes back to the same site
-            same_site = bool(re.fullmatch(r"request\.(?:url|base_url|url_root|host_url|full_path|path)(?:\.\w+\(.*\))?",
-                                          ast.unparse(self.resolve(arg0, ctx)), re.S))
+            target = self.resolve(arg0, ctx)
+            same_site = bool(re.fullmatch(r"request\.(?:url|base_url|url_root|host_url|full_path|path)(?:\.\w+\(.*\)|\[[^\]]*\])?",
+                                          ast.unparse(target), re.S))
+            # url_for() / reverse() build a path of this app; redirect(obj) uses the model's get_absolute_url()
+            same_site = same_site or (isinstance(target, ast.Call) and last_name(target.func) in (
+                "url_for", "reverse", "reverse_lazy", "resolve_url", "url_path_for", "first", "get_object_or_404"))
             if not same_site and not (isinstance(arg0, ast.JoinedStr) and arg0.values and isinstance(arg0.values[0], ast.Constant)
                                       and str(arg0.values[0].value).startswith("/")):
                 self.sink(call, t0, "BE008", "a redirect target", "medium", False)
@@ -749,8 +761,8 @@ class PyScanner:
         elif name == "add_middleware" and call.args and last_name(call.args[0]) == "CORSMiddleware":
             origins = ast.unparse(kws.get("allow_origins", ast.Constant(""))) + ast.unparse(kws.get("allow_origin_regex", ast.Constant("")))
             creds = isinstance(kws.get("allow_credentials"), ast.Constant) and kws["allow_credentials"].value is True
-            if re.search(r"['\"]\*['\"]|['\"]\.\*['\"]", origins):
-                self.add("BE012", call, "CORS allows any origin" + (" together with credentials." if creds else "."), "high" if creds else "low")
+            if creds and re.search(r"['\"]\*['\"]|['\"]\.\*['\"]", origins):  # without credentials no cookies are sent
+                self.add("BE012", call, "CORS allows any origin together with credentials.", "high")
         # CSRF
         # trust_remote_code
         if isinstance(kws.get("trust_remote_code"), ast.Constant) and kws["trust_remote_code"].value is True:
@@ -803,8 +815,8 @@ class PyScanner:
         origins = kws.get("origins") or kws.get("resources")
         creds = isinstance(kws.get("supports_credentials"), ast.Constant) and kws["supports_credentials"].value is True
         wildcard = origins is None or re.search(r"['\"]\*['\"]", ast.unparse(origins))
-        if wildcard:
-            self.add("BE012", call, "Flask-CORS allows any origin" + (" together with credentials." if creds else "."), "high" if creds else "low")
+        if wildcard and creds:  # without credentials no cookies are sent
+            self.add("BE012", call, "Flask-CORS allows any origin together with credentials.", "high")
 
     def check_llm_call(self, call: ast.Call, ctx: Ctx, d: str, kws: Dict[str, ast.AST]) -> None:
         name = last_name(call.func)
@@ -892,7 +904,8 @@ class PyScanner:
         if not SECRETISH.search(names):
             return
         for n in ast.walk(st.value):
-            if isinstance(n, ast.Call) and dotted(n.func).startswith("random.") and last_name(n.func) in ("choice", "choices", "randint", "random", "randrange", "sample", "getrandbits"):
+            if isinstance(n, ast.Call) and dotted(n.func).startswith("random.") and "SystemRandom" not in ast.unparse(n.func) \
+                    and last_name(n.func) in ("choice", "choices", "randint", "random", "randrange", "sample", "getrandbits"):
                 self.add("BE015", st, "random module used to generate a secret value; use the secrets module.")
                 return
 
@@ -921,11 +934,12 @@ class PyScanner:
                 or (isinstance(last, ast.Expr) and isinstance(last.value, ast.Call) and last_name(last.value.func) == "fail")):
             return  # "this must raise" check: the exception is the expected outcome, not a swallowed error
         typ = ast.unparse(h.type) if h.type is not None else ""
-        block = "\n".join(self.sf.lines[h.body[0].lineno - 1:getattr(h, "end_lineno", h.lineno)])
+        # from the line after `except ...:` (a comment may sit above `pass`) to the end of the handler
+        block = "\n".join(self.sf.lines[h.lineno:getattr(h, "end_lineno", h.lineno)])
         if "#" in block:
             return  # an explanatory comment means ignoring the error is deliberate
-        if re.search(r"ImportError|ModuleNotFoundError|KeyboardInterrupt|StopIteration|StopAsyncIteration|CancelledError", typ):
-            return
+        if typ and not re.search(r"\b(?:Base)?Exception\b", typ):
+            return  # naming a specific exception (KeyError, OSError) means this failure was expected
         self.add("QA003", h, f"`except {typ or ''}` silently ignores the error.".replace("except :", "except:"))
 
     def check_loop(self, node: ast.While) -> None:
@@ -954,7 +968,8 @@ class PyScanner:
                 if re.search(r"(?:^|\.|\[['\"])WTF_CSRF_ENABLED", tgt) and isinstance(val, ast.Constant) and val.value is False:
                     self.add("AUTH009", node, "Flask-WTF CSRF protection disabled.")
                 if re.search(r"(?:^|\.)(?:debug|DEBUG)$|\[['\"]DEBUG['\"]\]", tgt) and isinstance(val, ast.Constant) and val.value is True:
-                    if re.search(r"(?:^|/)settings(?:/(?!dev|local|test)[^/]*)?\.py$|(?:^|/)(?:app|main|config|wsgi|server)\.py$", sf.rel):
+                    if re.search(r"(?:^|/)settings(?:/(?!dev|local|test)[^/]*)?\.py$|(?:^|/)(?:app|main|config|wsgi|server)\.py$", sf.rel) \
+                            and not production_overrides(self.p, sf.rel, "DEBUG"):
                         self.add("BE011", node, "DEBUG is hard-coded to True.")
-                if tgt == "ALLOWED_HOSTS" and "'*'" in ast.unparse(val).replace('"', "'"):
+                if tgt == "ALLOWED_HOSTS" and "'*'" in ast.unparse(val).replace('"', "'") and not production_overrides(self.p, sf.rel, tgt):
                     self.add("CFG006", node, "ALLOWED_HOSTS accepts any host.")

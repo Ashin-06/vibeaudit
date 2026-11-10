@@ -6,6 +6,7 @@ import json
 import re
 import threading
 import time
+import warnings
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable, List, Optional, Set
@@ -30,7 +31,7 @@ from .rules import RULES
 from .secretscan import SecretScanner
 
 SUPPRESS = re.compile(r"vibeaudit\s*:\s*ignore(?:\[([A-Za-z0-9_:,\s-]+)\])?", re.I)
-TEST_FILE_RULES = {"SEC001", "SEC002", "SEC009"}  # real credentials matter even in tests
+TEST_FILE_RULES = {"SEC001", "SEC002", "SEC009"}  # real credentials matter even in tests and examples
 STACK_MARKERS = {
     "flask": "Flask", "fastapi": "FastAPI", "django": "Django", "streamlit": "Streamlit", "gradio": "Gradio",
     "openai": "OpenAI SDK", "anthropic": "Anthropic SDK", "google-genai": "Google GenAI SDK",
@@ -64,6 +65,7 @@ class Options:
     changes: Optional[dict] = None  # from gitdiff.changed(): report only findings on changed lines
     feedback: bool = True  # hide findings marked false positive in .vibeaudit/feedback.json
     cache: bool = True  # read and write the user cache (registry, OSV, LLM verdicts) during this scan
+    include_preview: bool = False  # count findings of preview rules toward --fail-on and the score
     log: Callable[[str], None] = lambda s: None
 
 
@@ -107,7 +109,10 @@ def scan(root: str, opts: Optional[Options] = None) -> Result:
         from .config import project_options
 
         opts = project_options(root)
-    with _SCAN_LOCK:
+    with _SCAN_LOCK, warnings.catch_warnings():
+        # ast.parse() warns about the scanned code (invalid escape sequences); that is not vibeaudit's output
+        warnings.simplefilter("ignore", SyntaxWarning)
+        warnings.filterwarnings("ignore", "invalid escape sequence", DeprecationWarning)  # the same before 3.12
         if opts.cache:
             return _scan(root, opts)
         from . import store
@@ -203,7 +208,7 @@ def _scan(root: str, opts: Options) -> Result:
         "stack": _stack(project), "external_tools": ran, "offline": opts.offline, "notes": notes,
         "routes_found": len(js_routes) + len(py_routes), "git": project.is_git,
         "skipped": list(GUARD.skipped), "internal_errors": list(GUARD.internal_errors),
-        "feedback_hidden": hidden,
+        "feedback_hidden": hidden, "include_preview": opts.include_preview,
     }
     if opts.changes is not None:
         meta["changed_files"] = len(opts.changes)
@@ -246,12 +251,15 @@ def finalize(project: Project, raw: List[Finding], opts: Options, already: bool 
             f.fix = f.fix or meta.fix
             f.cwe = f.cwe or meta.cwe
             f.owasp = f.owasp or meta.owasp
+        if meta is not None:
+            f.preview = meta.preview
         f.severity = f.severity or "medium"
         f.category = f.category or "backend"
         if f.rule_id in opts.disabled or (meta and meta.category in opts.disabled) or f.category in opts.disabled:
             continue
         sf = project.get(f.file)
-        if sf is not None and sf.is_test and f.rule_id not in TEST_FILE_RULES and f.source == "vibeaudit":
+        if sf is not None and (sf.is_test or sf.is_example) and f.rule_id not in TEST_FILE_RULES \
+                and f.source == "vibeaudit":
             continue
         if not at_least(f.severity, opts.min_severity) or suppressed(project, f):
             continue

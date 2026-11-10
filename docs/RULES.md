@@ -5,21 +5,23 @@ Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do n
 
 117 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
+8 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+
 ## Secrets
 
-| ID | Severity | Rule |
-| --- | --- | --- |
-| [SEC001](#sec001) | critical | Hardcoded API key or access token |
-| [SEC002](#sec002) | critical | Private key committed |
-| [SEC003](#sec003) | high | High-entropy secret assigned in code |
-| [SEC004](#sec004) | high | Hardcoded or default signing secret |
-| [SEC005](#sec005) | high | Database URL with embedded password |
-| [SEC006](#sec006) | high | Environment file committed to git |
-| [SEC007](#sec007) | medium | Environment file not git-ignored |
-| [SEC008](#sec008) | critical | Secret exposed to the browser through a public env var |
-| [SEC009](#sec009) | critical | Supabase service_role key outside the server |
-| [SEC010](#sec010) | medium | Secret written to logs |
-| [SEC011](#sec011) | high | Hardcoded password |
+| ID | Severity | Status | Rule |
+| --- | --- | --- | --- |
+| [SEC001](#sec001) | critical | stable | Hardcoded API key or access token |
+| [SEC002](#sec002) | critical | stable | Private key committed |
+| [SEC003](#sec003) | high | preview | High-entropy secret assigned in code |
+| [SEC004](#sec004) | high | stable | Hardcoded or default signing secret |
+| [SEC005](#sec005) | high | stable | Database URL with embedded password |
+| [SEC006](#sec006) | high | stable | Environment file committed to git |
+| [SEC007](#sec007) | medium | stable | Environment file not git-ignored |
+| [SEC008](#sec008) | critical | stable | Secret exposed to the browser through a public env var |
+| [SEC009](#sec009) | critical | stable | Supabase service_role key outside the server |
+| [SEC010](#sec010) | medium | stable | Secret written to logs |
+| [SEC011](#sec011) | high | stable | Hardcoded password |
 
 ### SEC001
 
@@ -43,7 +45,9 @@ References: CWE-321, A02:2021
 
 ### SEC003
 
-**High-entropy secret assigned in code** (high)
+**High-entropy secret assigned in code** (high, preview)
+
+Preview: Benchmark precision 82% (9 of 11): public client keys and documented demo tokens look like secrets.
 
 Why it matters: A variable named like a secret holds a random-looking literal. This is usually a real token pasted in while prototyping.
 
@@ -133,15 +137,15 @@ References: CWE-259, A07:2021
 
 ## Dependencies and supply chain
 
-| ID | Severity | Rule |
-| --- | --- | --- |
-| [DEP001](#dep001) | critical | Dependency does not exist on the registry |
-| [DEP002](#dep002) | high | Package name looks like a typo of a popular package |
-| [DEP003](#dep003) | medium | Very new package |
-| [DEP004](#dep004) | high | Dependency with known vulnerabilities |
-| [DEP005](#dep005) | low | Dependencies are not locked |
-| [DEP006](#dep006) | high | Install script downloads and runs remote code |
-| [DEP007](#dep007) | medium | MCP server launched from an unpinned package |
+| ID | Severity | Status | Rule |
+| --- | --- | --- | --- |
+| [DEP001](#dep001) | critical | stable | Dependency does not exist on the registry |
+| [DEP002](#dep002) | high | stable | Package name looks like a typo of a popular package |
+| [DEP003](#dep003) | medium | stable | Very new package |
+| [DEP004](#dep004) | high | stable | Dependency with known vulnerabilities |
+| [DEP005](#dep005) | low | stable | Dependencies are not locked |
+| [DEP006](#dep006) | high | stable | Install script downloads and runs remote code |
+| [DEP007](#dep007) | medium | stable | MCP server launched from an unpinned package |
 
 ### DEP001
 
@@ -215,26 +219,26 @@ References: CWE-1357, LLM03:2025
 
 ## Backend security
 
-| ID | Severity | Rule |
-| --- | --- | --- |
-| [BE001](#be001) | high | SQL injection |
-| [BE002](#be002) | critical | Command injection |
-| [BE003](#be003) | critical | Dynamic code execution |
-| [BE004](#be004) | high | Unsafe deserialization |
-| [BE005](#be005) | high | Server-side request forgery (SSRF) |
-| [BE006](#be006) | high | Path traversal |
-| [BE007](#be007) | high | Server-side template injection |
-| [BE008](#be008) | medium | Open redirect |
-| [BE009](#be009) | high | Mass assignment |
-| [BE010](#be010) | high | NoSQL injection |
-| [BE011](#be011) | medium | Debug mode enabled |
-| [BE012](#be012) | high | Insecure CORS policy |
-| [BE013](#be013) | medium | TLS certificate verification disabled |
-| [BE014](#be014) | high | Weak or plaintext password storage |
-| [BE015](#be015) | medium | Insecure randomness for secrets |
-| [BE016](#be016) | high | JWT signature not verified |
-| [BE017](#be017) | low | Internal error details sent to the client |
-| [BE018](#be018) | medium | No server-side input validation |
+| ID | Severity | Status | Rule |
+| --- | --- | --- | --- |
+| [BE001](#be001) | high | stable | SQL injection |
+| [BE002](#be002) | critical | stable | Command injection |
+| [BE003](#be003) | critical | stable | Dynamic code execution |
+| [BE004](#be004) | high | stable | Unsafe deserialization |
+| [BE005](#be005) | high | stable | Server-side request forgery (SSRF) |
+| [BE006](#be006) | high | stable | Path traversal |
+| [BE007](#be007) | high | stable | Server-side template injection |
+| [BE008](#be008) | medium | stable | Open redirect |
+| [BE009](#be009) | high | stable | Mass assignment |
+| [BE010](#be010) | high | stable | NoSQL injection |
+| [BE011](#be011) | medium | stable | Debug mode enabled |
+| [BE012](#be012) | high | stable | Insecure CORS policy |
+| [BE013](#be013) | medium | stable | TLS certificate verification disabled |
+| [BE014](#be014) | high | stable | Weak or plaintext password storage |
+| [BE015](#be015) | medium | stable | Insecure randomness for secrets |
+| [BE016](#be016) | high | stable | JWT signature not verified |
+| [BE017](#be017) | low | stable | Internal error details sent to the client |
+| [BE018](#be018) | medium | preview | No server-side input validation |
 
 ### BE001
 
@@ -350,7 +354,7 @@ References: CWE-489, A05:2021
 
 **Insecure CORS policy** (high)
 
-Why it matters: Allowing any origin (especially together with credentials) lets any website call your API as the logged-in user.
+Why it matters: Allowing any or a reflected origin together with credentials lets any website call your API as the logged-in user. (An open origin without credentials is not reported: no cookies are sent.)
 
 How to fix: List the exact origins you trust. Never combine a wildcard or reflected origin with credentials.
 
@@ -408,7 +412,9 @@ References: CWE-209, A05:2021
 
 ### BE018
 
-**No server-side input validation** (medium)
+**No server-side input validation** (medium, preview)
+
+Preview: Benchmark precision 67% (6 of 9): hand-written validation (type checks, 422 responses) is not recognised, only known validation libraries.
 
 Why it matters: The backend reads request bodies but no validation library is used on the server. Validation done only in the browser is bypassed by calling the API directly.
 
@@ -418,19 +424,21 @@ References: CWE-602, A04:2021
 
 ## Frontend security
 
-| ID | Severity | Rule |
-| --- | --- | --- |
-| [FE001](#fe001) | high | Cross-site scripting through a raw HTML sink |
-| [FE002](#fe002) | critical | LLM or secret API called directly from the browser |
-| [FE003](#fe003) | high | Authorization state kept in browser storage |
-| [FE004](#fe004) | medium | postMessage handler without origin check |
-| [FE005](#fe005) | low | Auth token stored in localStorage |
-| [FE006](#fe006) | low | Production source maps enabled |
-| [FE007](#fe007) | low | Hardcoded localhost URL in frontend code |
+| ID | Severity | Status | Rule |
+| --- | --- | --- | --- |
+| [FE001](#fe001) | high | preview | Cross-site scripting through a raw HTML sink |
+| [FE002](#fe002) | critical | stable | LLM or secret API called directly from the browser |
+| [FE003](#fe003) | high | stable | Authorization state kept in browser storage |
+| [FE004](#fe004) | medium | stable | postMessage handler without origin check |
+| [FE005](#fe005) | low | stable | Auth token stored in localStorage |
+| [FE006](#fe006) | low | stable | Production source maps enabled |
+| [FE007](#fe007) | low | stable | Hardcoded localhost URL in frontend code |
 
 ### FE001
 
-**Cross-site scripting through a raw HTML sink** (high)
+**Cross-site scripting through a raw HTML sink** (high, preview)
+
+Preview: Benchmark precision 67% (20 of 30): the source of the HTML is often not visible in the file (markdown from the repo, CMS content, constants), so trusted content is reported too.
 
 Why it matters: Inserting unsanitized data as HTML (innerHTML, dangerouslySetInnerHTML, v-html, {@html}, |safe) lets an attacker run JavaScript in other users' browsers and steal their sessions.
 
@@ -500,18 +508,18 @@ References: CWE-1188
 
 ## Authentication and authorization
 
-| ID | Severity | Rule |
-| --- | --- | --- |
-| [AUTH001](#auth001) | high | State-changing endpoint without authentication |
-| [AUTH002](#auth002) | high | Admin endpoint without a role check |
-| [AUTH003](#auth003) | medium | Possible insecure direct object reference (IDOR) |
-| [AUTH004](#auth004) | high | Webhook without signature verification |
-| [AUTH005](#auth005) | high | Supabase table without Row Level Security |
-| [AUTH006](#auth006) | high | Permissive Supabase policy |
-| [AUTH007](#auth007) | critical | Open Firebase security rules |
-| [AUTH008](#auth008) | critical | Auth check stub always succeeds |
-| [AUTH009](#auth009) | medium | CSRF protection disabled |
-| [AUTH010](#auth010) | medium | Login endpoint without rate limiting |
+| ID | Severity | Status | Rule |
+| --- | --- | --- | --- |
+| [AUTH001](#auth001) | high | stable | State-changing endpoint without authentication |
+| [AUTH002](#auth002) | high | stable | Admin endpoint without a role check |
+| [AUTH003](#auth003) | medium | stable | Possible insecure direct object reference (IDOR) |
+| [AUTH004](#auth004) | high | stable | Webhook without signature verification |
+| [AUTH005](#auth005) | high | stable | Supabase table without Row Level Security |
+| [AUTH006](#auth006) | high | stable | Permissive Supabase policy |
+| [AUTH007](#auth007) | critical | stable | Open Firebase security rules |
+| [AUTH008](#auth008) | critical | stable | Auth check stub always succeeds |
+| [AUTH009](#auth009) | medium | stable | CSRF protection disabled |
+| [AUTH010](#auth010) | medium | stable | Login endpoint without rate limiting |
 
 ### AUTH001
 
@@ -615,17 +623,17 @@ References: CWE-307, A07:2021
 
 ## Configuration and deployment
 
-| ID | Severity | Rule |
-| --- | --- | --- |
-| [CFG001](#cfg001) | low | Container runs as root |
-| [CFG002](#cfg002) | low | Unpinned container base image |
-| [CFG003](#cfg003) | high | Secret baked into the container image |
-| [CFG004](#cfg004) | high | GitHub Actions script injection |
-| [CFG005](#cfg005) | high | pull_request_target checks out untrusted code |
-| [CFG006](#cfg006) | medium | Any Host header accepted |
-| [CFG007](#cfg007) | medium | Default database credentials |
-| [CFG008](#cfg008) | low | Express app without security headers |
-| [CFG009](#cfg009) | medium | .env file copied into the container image |
+| ID | Severity | Status | Rule |
+| --- | --- | --- | --- |
+| [CFG001](#cfg001) | low | stable | Container runs as root |
+| [CFG002](#cfg002) | low | stable | Unpinned container base image |
+| [CFG003](#cfg003) | high | stable | Secret baked into the container image |
+| [CFG004](#cfg004) | high | stable | GitHub Actions script injection |
+| [CFG005](#cfg005) | high | stable | pull_request_target checks out untrusted code |
+| [CFG006](#cfg006) | medium | stable | Any Host header accepted |
+| [CFG007](#cfg007) | medium | stable | Default database credentials |
+| [CFG008](#cfg008) | low | stable | Express app without security headers |
+| [CFG009](#cfg009) | medium | stable | .env file copied into the container image |
 
 ### CFG001
 
@@ -719,23 +727,23 @@ References: CWE-538, A05:2021
 
 ## LLM and AI-specific risks
 
-| ID | Severity | Rule |
-| --- | --- | --- |
-| [LLM001](#llm001) | high | Untrusted input placed in the system prompt |
-| [LLM002](#llm002) | critical | LLM output used in a dangerous operation |
-| [LLM003](#llm003) | medium | LLM call without an output token limit |
-| [LLM004](#llm004) | high | LLM endpoint without rate limiting |
-| [LLM005](#llm005) | high | Agent tool with dangerous capability |
-| [LLM006](#llm006) | high | Dangerous agent or framework option enabled |
-| [LLM007](#llm007) | medium | System prompt shipped to the browser |
-| [LLM008](#llm008) | high | Unsafe model loading |
-| [LLM009](#llm009) | medium | Unbounded agent loop |
-| [LLM010](#llm010) | medium | Vector search without a user or tenant filter |
-| [LLM011](#llm011) | medium | Model output parsed as JSON without error handling |
-| [LLM012](#llm012) | medium | Retired or deprecated model hardcoded |
-| [LLM013](#llm013) | high | MCP server with broad access |
-| [LLM014](#llm014) | high | Secret in an MCP configuration |
-| [LLM015](#llm015) | high | Agent combines untrusted input with dangerous tools |
+| ID | Severity | Status | Rule |
+| --- | --- | --- | --- |
+| [LLM001](#llm001) | high | stable | Untrusted input placed in the system prompt |
+| [LLM002](#llm002) | critical | stable | LLM output used in a dangerous operation |
+| [LLM003](#llm003) | medium | stable | LLM call without an output token limit |
+| [LLM004](#llm004) | high | stable | LLM endpoint without rate limiting |
+| [LLM005](#llm005) | high | stable | Agent tool with dangerous capability |
+| [LLM006](#llm006) | high | stable | Dangerous agent or framework option enabled |
+| [LLM007](#llm007) | medium | stable | System prompt shipped to the browser |
+| [LLM008](#llm008) | high | stable | Unsafe model loading |
+| [LLM009](#llm009) | medium | stable | Unbounded agent loop |
+| [LLM010](#llm010) | medium | stable | Vector search without a user or tenant filter |
+| [LLM011](#llm011) | medium | stable | Model output parsed as JSON without error handling |
+| [LLM012](#llm012) | medium | stable | Retired or deprecated model hardcoded |
+| [LLM013](#llm013) | high | stable | MCP server with broad access |
+| [LLM014](#llm014) | high | stable | Secret in an MCP configuration |
+| [LLM015](#llm015) | high | stable | Agent combines untrusted input with dangerous tools |
 
 ### LLM001
 
@@ -887,16 +895,16 @@ References: CWE-77, LLM01:2025
 
 ## Code quality and tests
 
-| ID | Severity | Rule |
-| --- | --- | --- |
-| [QA001](#qa001) | medium | No automated tests |
-| [QA002](#qa002) | low | No continuous integration |
-| [QA003](#qa003) | low | Exception silently swallowed |
-| [QA004](#qa004) | medium | Security placeholder or TODO left in code |
-| [QA005](#qa005) | medium | Unfinished stub left in code |
-| [QA006](#qa006) | high | Import of a file or name that does not exist |
-| [QA007](#qa007) | medium | Package imported but not declared as a dependency |
-| [QA008](#qa008) | low | TypeScript checking disabled for a whole file |
+| ID | Severity | Status | Rule |
+| --- | --- | --- | --- |
+| [QA001](#qa001) | medium | stable | No automated tests |
+| [QA002](#qa002) | low | stable | No continuous integration |
+| [QA003](#qa003) | low | preview | Exception silently swallowed |
+| [QA004](#qa004) | medium | stable | Security placeholder or TODO left in code |
+| [QA005](#qa005) | medium | stable | Unfinished stub left in code |
+| [QA006](#qa006) | high | stable | Import of a file or name that does not exist |
+| [QA007](#qa007) | medium | stable | Package imported but not declared as a dependency |
+| [QA008](#qa008) | low | stable | TypeScript checking disabled for a whole file |
 
 ### QA001
 
@@ -916,7 +924,9 @@ How to fix: Add a CI workflow (for example GitHub Actions) that runs tests and `
 
 ### QA003
 
-**Exception silently swallowed** (low)
+**Exception silently swallowed** (low, preview)
+
+Preview: Benchmark precision 33% (2 of 6): a broad except in a library's best-effort cleanup path is often deliberate.
 
 Why it matters: An empty except/catch hides failures, including failed auth or payment calls, and makes incidents very hard to debug.
 
@@ -974,9 +984,9 @@ How to fix: Remove @ts-nocheck and fix or narrowly suppress the individual error
 
 ## LLM review (model-generated, unverified)
 
-| ID | Severity | Rule |
-| --- | --- | --- |
-| [AI001](#ai001) | medium | Issue reported by the LLM review (unverified) |
+| ID | Severity | Status | Rule |
+| --- | --- | --- | --- |
+| [AI001](#ai001) | medium | stable | Issue reported by the LLM review (unverified) |
 
 ### AI001
 
@@ -988,22 +998,24 @@ How to fix: Check the issue by hand before acting on it; suppress or disable AI0
 
 ## Data and database
 
-| ID | Severity | Rule |
-| --- | --- | --- |
-| [DATA001](#data001) | medium | Database query inside a loop (N+1) |
-| [DATA002](#data002) | high | Whole user record returned to the client |
-| [DATA003](#data003) | low | Destructive database migration |
-| [DATA004](#data004) | medium | Money stored as a floating-point number |
-| [DATA005](#data005) | high | Private table readable by everyone |
-| [DATA006](#data006) | low | Timestamp without time zone |
-| [DATA007](#data007) | low | Environment variable missing from the example env file |
-| [DATA008](#data008) | medium | Database client created per request |
-| [DATA009](#data009) | medium | SQLite file database on a serverless host |
-| [DATA010](#data010) | low | Several writes without a transaction |
+| ID | Severity | Status | Rule |
+| --- | --- | --- | --- |
+| [DATA001](#data001) | medium | preview | Database query inside a loop (N+1) |
+| [DATA002](#data002) | high | stable | Whole user record returned to the client |
+| [DATA003](#data003) | low | stable | Destructive database migration |
+| [DATA004](#data004) | medium | stable | Money stored as a floating-point number |
+| [DATA005](#data005) | high | stable | Private table readable by everyone |
+| [DATA006](#data006) | low | stable | Timestamp without time zone |
+| [DATA007](#data007) | low | preview | Environment variable missing from the example env file |
+| [DATA008](#data008) | medium | stable | Database client created per request |
+| [DATA009](#data009) | medium | stable | SQLite file database on a serverless host |
+| [DATA010](#data010) | low | preview | Several writes without a transaction |
 
 ### DATA001
 
-**Database query inside a loop (N+1)** (medium)
+**Database query inside a loop (N+1)** (medium, preview)
+
+Preview: Benchmark precision 20% (1 of 5): a loop over a few fixed items, a deliberate per-row transaction or an offline job looks the same as a request-time N+1.
 
 Why it matters: One query per item turns a page with 100 rows into 101 round trips: slow pages, timeouts and database load that grows with your data.
 
@@ -1059,7 +1071,9 @@ How to fix: Use timezone-aware values: `datetime.now(timezone.utc)` and `timesta
 
 ### DATA007
 
-**Environment variable missing from the example env file** (low)
+**Environment variable missing from the example env file** (low, preview)
+
+Preview: Benchmark precision 50% (6 of 12): a setting that is optional by design (an SDK default, a feature that is simply off) looks the same as a required one.
 
 Why it matters: The code reads a variable that .env.example does not document, so the next deploy or teammate setup crashes or silently runs with a missing setting.
 
@@ -1085,7 +1099,9 @@ How to fix: Use a hosted database (Postgres, MySQL, Turso, D1) or a mounted pers
 
 ### DATA010
 
-**Several writes without a transaction** (low)
+**Several writes without a transaction** (low, preview)
+
+Preview: Benchmark precision 89% (8 of 9): writes in separate webhook event branches or helpers are counted as one handler's writes.
 
 Why it matters: When one of several related writes fails halfway (for example charge recorded but order not created), the data is left inconsistent.
 
@@ -1095,14 +1111,14 @@ References: CWE-662
 
 ## Reliability and performance
 
-| ID | Severity | Rule |
-| --- | --- | --- |
-| [REL001](#rel001) | medium | Outbound HTTP request without a timeout |
-| [REL002](#rel002) | medium | Blocking call inside an async handler |
-| [REL003](#rel003) | medium | Webhook handler is not idempotent |
-| [REL004](#rel004) | medium | Upload accepted without a size limit |
-| [REL005](#rel005) | medium | In-memory state on a serverless host |
-| [REL006](#rel006) | low | No health-check endpoint |
+| ID | Severity | Status | Rule |
+| --- | --- | --- | --- |
+| [REL001](#rel001) | medium | stable | Outbound HTTP request without a timeout |
+| [REL002](#rel002) | medium | stable | Blocking call inside an async handler |
+| [REL003](#rel003) | medium | stable | Webhook handler is not idempotent |
+| [REL004](#rel004) | medium | stable | Upload accepted without a size limit |
+| [REL005](#rel005) | medium | stable | In-memory state on a serverless host |
+| [REL006](#rel006) | low | stable | No health-check endpoint |
 
 ### REL001
 
@@ -1162,21 +1178,21 @@ How to fix: Add GET /health (or /healthz) that returns 200 when the app and its 
 
 ## UI, UX and accessibility
 
-| ID | Severity | Rule |
-| --- | --- | --- |
-| [UI001](#ui001) | low | Image without alt text |
-| [UI002](#ui002) | low | Click handler on a non-interactive element |
-| [UI003](#ui003) | low | Form field without a label |
-| [UI004](#ui004) | medium | Control that does nothing |
-| [UI005](#ui005) | low | Array index used as key for a changing list |
-| [UI006](#ui006) | low | Destructive action without confirmation |
-| [UI007](#ui007) | medium | Hydration mismatch |
-| [UI008](#ui008) | medium | Effect without cleanup |
-| [UI009](#ui009) | low | Data loaded without loading or error state |
-| [UI010](#ui010) | low | Placeholder content left in the UI |
-| [UI011](#ui011) | low | No error page |
-| [UI012](#ui012) | low | Missing page metadata or viewport |
-| [UI013](#ui013) | medium | Link to a page that does not exist |
+| ID | Severity | Status | Rule |
+| --- | --- | --- | --- |
+| [UI001](#ui001) | low | stable | Image without alt text |
+| [UI002](#ui002) | low | stable | Click handler on a non-interactive element |
+| [UI003](#ui003) | low | stable | Form field without a label |
+| [UI004](#ui004) | medium | stable | Control that does nothing |
+| [UI005](#ui005) | low | stable | Array index used as key for a changing list |
+| [UI006](#ui006) | low | preview | Destructive action without confirmation |
+| [UI007](#ui007) | medium | stable | Hydration mismatch |
+| [UI008](#ui008) | medium | stable | Effect without cleanup |
+| [UI009](#ui009) | low | stable | Data loaded without loading or error state |
+| [UI010](#ui010) | low | stable | Placeholder content left in the UI |
+| [UI011](#ui011) | low | stable | No error page |
+| [UI012](#ui012) | low | stable | Missing page metadata or viewport |
+| [UI013](#ui013) | medium | stable | Link to a page that does not exist |
 
 ### UI001
 
@@ -1226,7 +1242,9 @@ How to fix: Use a stable id from the item as the key.
 
 ### UI006
 
-**Destructive action without confirmation** (low)
+**Destructive action without confirmation** (low, preview)
+
+Preview: Benchmark precision 71% (5 of 7): a confirmation dialog in a parent component, or a removal from local state only, is not seen.
 
 Why it matters: A delete or remove that runs on a single click, with no confirmation or undo, loses user data on a misclick.
 
@@ -1292,10 +1310,10 @@ How to fix: Fix the path, or create the page.
 
 ## Frontend-backend contracts
 
-| ID | Severity | Rule |
-| --- | --- | --- |
-| [API001](#api001) | medium | Frontend calls an API path that no route handles |
-| [API002](#api002) | medium | Frontend calls an API route with the wrong method |
+| ID | Severity | Status | Rule |
+| --- | --- | --- | --- |
+| [API001](#api001) | medium | stable | Frontend calls an API path that no route handles |
+| [API002](#api002) | medium | stable | Frontend calls an API route with the wrong method |
 
 ### API001
 

@@ -49,6 +49,7 @@ IMPORT_TO_DIST: Dict[str, Tuple[str, ...]] = {
     "typing_extensions": ("typing-extensions", "pydantic", "fastapi", "sqlalchemy", "anyio"), "google_auth_oauthlib": ("google-auth-oauthlib",),
     "django_filters": ("django-filter",), "rest_framework_jwt": ("drf-jwt", "djangorestframework-jwt"),
     "rest_framework_simplejwt": ("djangorestframework-simplejwt",), "knox": ("django-rest-knox",),
+    "djmoney": ("django-money",),
 }
 JS_EXTS = (".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".mts", ".cts", ".vue", ".svelte", ".astro", ".json", ".d.ts")
 ASSET_EXT = re.compile(r"\.(css|scss|sass|less|styl|svg|png|jpe?g|gif|webp|avif|ico|bmp|woff2?|ttf|otf|eot|mp3|mp4|webm|wav|txt|md|mdx|html|wasm|graphql|gql|yaml|yml|toml|csv)$", re.I)
@@ -169,8 +170,12 @@ class QualityScanner:
                 self.declared_py.add(pep503(d.name))
         for f in self.p.files:
             name = f.rel.rsplit("/", 1)[-1]
-            if re.fullmatch(r"requirements[\w.-]*\.(?:txt|in)|pyproject\.toml|Pipfile|setup\.py|setup\.cfg", name):
+            if re.fullmatch(r"requirements[\w.-]*\.(?:txt|in)|pyproject\.toml|Pipfile|setup\.py|setup\.cfg", name) \
+                    or re.search(r"(?:^|/)requirements/[^/]+\.(?:txt|in)$", f.rel):
                 self.py_manifest = True
+                # PEP 508 direct references (`django-push @ git+https://...`) are declared too, just not on PyPI
+                for m in re.finditer(r"""(?m)^[ \t]*['"]?([A-Za-z0-9][\w.-]*)(?:[ \t]*\[[^\]\n]*\])?[ \t]+@[ \t]+\S""", f.text or ""):
+                    self.declared_py.add(pep503(m.group(1)))
                 if name in ("setup.py", "setup.cfg", "Pipfile") and f.text:
                     # install_requires / Pipfile entries: take every quoted or bare requirement-looking name
                     for m in re.finditer(r"""['"]?([A-Za-z0-9][A-Za-z0-9._-]*)\s*(?:[<>=!~;\[]|['"]\s*[,\]])""", f.text):
@@ -342,6 +347,8 @@ class QualityScanner:
         decorators = " ".join(ast.unparse(d) for d in fn.decorator_list)  # type: ignore[attr-defined]
         if re.search(r"abstract|overload|override|setter|deleter|property|staticmethod\b.*abstract", decorators):
             return
+        if re.fullmatch(r"__\w+__", fn.name):  # type: ignore[attr-defined]
+            return  # __setitem__ raising NotImplementedError is a deliberately read-only container
         owner = next((c for c in ast.walk(tree) if isinstance(c, ast.ClassDef) and fn in c.body), None)
         if owner is not None:
             bases = " ".join(ast.unparse(b) for b in owner.bases) + " " + " ".join(ast.unparse(k.value) for k in owner.keywords)

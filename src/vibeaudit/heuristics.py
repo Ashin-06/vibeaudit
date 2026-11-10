@@ -18,7 +18,7 @@ AUTH_EVIDENCE = re.compile(
         |validateSession|getCurrentUser|get_current_user|get_current_active_user|get_jwt_identity
         |verify_jwt_in_request|verify_token|decode_token|verify_id_token|authenticate_user|get_user_from_token
         |getKindeServerSession|getUserFromRequest|lucia\.validateSession)\s*\(
-    | \bget_?(?:current_?|logged_?in_?|authenticated_?)?(?:user|session|auth)(?:_?or_?\w+)?\s*\(
+    | \bget_?(?:current_?|logged_?in_?|authenticated_?|authed_?)?(?:user|session|auth)(?:_?or_?\w+)?\s*\(
     | \b(?:require|ensure|check|verify|validate|assert|authenticate|authorize|with|has)_?\w*?(?:user|auth|session|admin|token|role|permission)\w*\s*\(
     | \bjwt\s*\.\s*(?:verify|decode)\s*\(
     | \bauth\s*\.\s*(?:getUser|getSession|uid|currentUser|verifyIdToken)\b
@@ -44,15 +44,19 @@ AUTH_MIDDLEWARE = re.compile(
 )
 
 ADMIN_ROLE_EVIDENCE = re.compile(
-    r"(?i)\b(?:is_?admin|is_staff|is_superuser|superuser|roles?\b|permissions?|has_?role|require_?role|require_?admin"
+    r"(?i)(?:get_current_active_superuser|require_superuser)|\b(?:is_?admin|is_staff|is_superuser|superuser|roles?\b|permissions?|has_?role|require_?role|require_?admin"
     r"|admin_required|check_?role|authorize\s*\(|ability|can\s*\(|isStaff|staff_member_required|scopes?\b)"
 )
 
 OWNERSHIP_EVIDENCE = re.compile(
-    r"(?i)(?:\buser_?id\b|\bowner(?:_?id)?\b|\bauthor(?:_?id)?\b|\bcreated_?by\b|current_user\s*\.\s*id"
-    r"|\.user\s*\.\s*(?:id|_id|sub)\b|session\s*\.\s*user|auth\s*\.\s*uid|\buid\b|\btenant|\borg_?id\b"
+    r"(?i)(?:\buser_?id\b|\bowner(?:_?id)?\b|\bauthor(?:_?id)?\b|\bcreated_?by\b|current_user\s*(?:\(\s*\))?\s*\.\s*id"
+    r"|\.user\s*[?!]?\s*\.\s*(?:id|_id|sub)\b|session\s*\.\s*user|auth\s*\.\s*uid|\buid\b|\btenant|\borg_?id\b"
     r"|\baccount_?id\b|\bsub\b)"
 )
+# a reset that needs a signed, emailed token, or a route that takes no credential: nothing to guess or rate-limit
+TOKEN_RESET = re.compile(r"(?i)verify\w*token\w*\s*\(|[<{:]token\b")
+CREDENTIAL_PATH = re.compile(r"(?i)(?:^|[/_.\-])(?:login|signin|sign-in|sign_in|password|forgot|otp|magic-link)(?:$|[/_.\-])")
+CREDENTIAL_INPUT = re.compile(r"(?i)password|passwd|\botp\b|\bcode\b|e-?mail|username|credential|form_data|sign_?in")
 
 PUBLIC_PATH = re.compile(
     r"(?i)(?:^|[/_.\-\s])(?:login|logout|signin|sign-in|sign_in|signup|sign-up|sign_up|register|auth|oauth|token|refresh"
@@ -70,6 +74,7 @@ WEBHOOK_VERIFY = re.compile(
     r"(?i)constructEvent|construct_event|webhooks\s*\.\s*verify|verifyWebhook|verify_webhook|validateWebhook"
     r"|Webhook\s*\(|svix|hmac|compare_digest|timingSafeEqual|verify_?signature|validate_?signature"
     r"|x-hub-signature|stripe-signature|x-signature|svix-signature|WebhookSignature|verify_header|verifyHeader"
+    r"|constant_?time_?(?:equals?|compare)|safe_?compare|secure_?compare"
 )
 
 RATE_LIMIT_EVIDENCE = re.compile(
@@ -79,8 +84,8 @@ RATE_LIMIT_EVIDENCE = re.compile(
 
 SERVER_VALIDATION_EVIDENCE = re.compile(
     r"""(?x)
-    (?:from|require\s*\(|import)\s*['"](?:zod|joi|yup|valibot|express-validator|class-validator|ajv|superstruct
-        |@sinclair/typebox|@hapi/joi|arktype|io-ts|typia|@vinejs/vine|celebrate|fastest-validator)['"/]
+    (?:from|require\s*\(|import)\s*['"](?:npm:|jsr:)?(?:zod|joi|yup|valibot|express-validator|class-validator|ajv|superstruct
+        |@sinclair/typebox|@hapi/joi|arktype|io-ts|typia|@vinejs/vine|celebrate|fastest-validator)['"/@]
     | \bfrom\s+(?:pydantic|marshmallow|wtforms|flask_wtf|cerberus|voluptuous|jsonschema|rest_framework|django\s+import\s+forms|msgspec|attrs)\b
     | \bimport\s+(?:pydantic|marshmallow|cerberus|voluptuous|jsonschema)\b
     | \bforms\s*\.\s*(?:Form|ModelForm)\b | \bserializers\s*\.\s*\w*Serializer\b
