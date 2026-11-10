@@ -1,7 +1,7 @@
 """Frontend-to-backend contract checks: calls from the browser code to API paths that no route handles, or with
 an HTTP method the route does not accept.
 
-ponytail: router prefixes (FastAPI include_router, Express app.use, Flask blueprints, Django urls) are not
+Router prefixes (FastAPI include_router, Express app.use, Flask blueprints, Django urls) are not
 resolved, so routes count as full paths only when they are file-based (Next.js, SvelteKit) or when the project
 has no prefix machinery at all. Resolve prefixes to cover the rest."""
 from __future__ import annotations
@@ -16,11 +16,17 @@ from .model import Finding, Route
 
 Emit = Callable[[Finding], None]
 
+def _string(n: str, base_path: bool = False) -> str:
+    """A quoted path, or a template literal path whose `${...}` parts may contain quotes (`${id || 'new'}`)."""
+    prefix = r"(?:\$\{[^{}\n]{0,120}(?i:base_?path)[^{}\n]{0,60}\})?" if base_path else ""
+    return (rf"""(?:(?P<q{n}>["'])(?P<s{n}>/[^"'\n]{{0,300}})(?P=q{n})"""
+            rf"""|`{prefix}(?P<t{n}>/(?:[^`\n$]|\$\{{[^{{}}`\n]{{0,120}}\}}|\$(?!\{{)){{0,300}})`)""")
+
+
 CALL = re.compile(
     # an optional generic (useSWR<Doc[]>) and an optional `${...BASE_PATH...}` prefix are allowed before the path
-    r"""\b(?:fetch|useSWR|useSWRImmutable|\$fetch|ofetch)\s*(?:<[^<>()\n]{0,200}>)?\s*\(\s*"""
-    r"""(["'`])(?:\$\{[^{}\n]{0,120}(?i:base_?path)[^{}\n]{0,60}\})?(/[^"'`\n]{0,300})\1"""
-    r"""|\b(?:axios|ky)\s*\.\s*(get|post|put|patch|delete)\s*\(\s*(["'`])(/[^"'`\n]{0,300})\4""")
+    r"\b(?:fetch|useSWR|useSWRImmutable|\$fetch|ofetch)\s*(?:<[^<>()\n]{0,200}>)?\s*\(\s*" + _string("1", base_path=True)
+    + r"|\b(?:axios|ky)\s*\.\s*(?P<verb>get|post|put|patch|delete)\s*\(\s*" + _string("2"))
 METHOD_OPT = re.compile(r"""\bmethod\s*:\s*(["'`])(\w+)\1|\bmethod\s*:""")
 FILE_BASED = {"next-app", "next-pages", "sveltekit"}
 PREFIXES = re.compile(
@@ -48,7 +54,7 @@ def matches(route: List[str], call: List[str]) -> bool:
     if not route:
         return not call
     if route[0] == "**":
-        return True  # ponytail: [[...x]] (zero or more) and [...x] (one or more) are treated alike
+        return True  # [[...x]] (zero or more) and [...x] (one or more) are treated alike
     return bool(call) and (route[0] == "*" or call[0] == "*" or route[0] == call[0]) and matches(route[1:], call[1:])
 
 
@@ -82,15 +88,20 @@ class ContractScanner:
             return
         code, bare = v.code, v.bare  # type: ignore[attr-defined]
         for m in finditer(CALL, code):
-            path = m.group(2) or m.group(5)
+            path = m.group("s1") or m.group("t1") or m.group("s2") or m.group("t2")
             call = segments(path)
-            if not call or call[0] not in self.owned:
+            if not call:
+                continue
+            # `/api/users` called while the backend serves `/users`: a missing or extra prefix
+            unprefixed = [r for segs, r in self.routes if len(call) > 1 and matches(segs, call[1:])]
+            if call[0] not in self.owned and not unprefixed:
                 continue  # served by something outside this repository
             method = self._method(m, code, bare)
             hits = [r for segs, r in self.routes if matches(segs, call)]
             if not hits:
                 if not self.rewritten:
-                    self.add(sf, "API001", m.start(), f"`{path}` is called here, but no route in the project handles it.")
+                    hint = f" The backend serves `{unprefixed[0].path}` without the `/{call[0]}` prefix." if unprefixed else ""
+                    self.add(sf, "API001", m.start(), f"`{path}` is called here, but no route in the project handles it.{hint}")
                 continue
             allowed = {x.upper() for r in hits for x in r.methods}
             if method and not allowed & {method, "ALL", "*"} and not (method == "HEAD" and "GET" in allowed):
@@ -101,8 +112,8 @@ class ContractScanner:
     @staticmethod
     def _method(m: "re.Match[str]", code: str, bare: str) -> Optional[str]:
         """The HTTP method of the call, or None when it is computed at run time."""
-        if m.group(3):
-            return m.group(3).upper()
+        if m.group("verb"):
+            return m.group("verb").upper()
         open_paren = code.index("(", m.start())
         close = match_close(bare, open_paren)
         opt = METHOD_OPT.search(code, m.end(), close if close > 0 else m.end() + 400)

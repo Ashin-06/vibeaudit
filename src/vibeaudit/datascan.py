@@ -323,7 +323,10 @@ class DataScanner:
     def _transactions(self) -> None:
         for r in self.routes:
             body = r.body
-            if re.search(r"\$transaction|\.transaction\s*\(|\btransaction\.atomic\b|@atomic\b|\bBEGIN\b|\bbatch\s*\(|\.begin\s*\(", body):
+            # writes through a transaction client (`tx.order.create`, `trx(...)`) are inside a transaction
+            # even when the code that opened it is not visible here
+            if re.search(r"\$transaction|\.transaction\s*\(|\btransaction\.atomic\b|@atomic\b|\bBEGIN\b|\bbatch\s*\(|\.begin\s*\("
+                         r"|\bawait\s+(?:tx|trx|transaction)\s*[.(]", body):
                 continue
             if r.lang == "py" and self.atomic_requests:
                 continue  # Django ATOMIC_REQUESTS wraps every view in a transaction

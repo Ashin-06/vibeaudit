@@ -688,7 +688,7 @@ class JsScanner:
         # JSON.parse of model output outside a try block
         for m in finditer(r"\bJSON\s*\.\s*parse\s*\(", bare):
             arg = first_arg(bare, m.end() - 1)
-            # ponytail: JSON mode is looked for earlier in the enclosing function, not traced to the call
+            # JSON mode is looked for earlier in the enclosing function; it is not traced back to the call itself
             if (arg and "llm" in fs.kinds(code[arg[0]:arg[1]], bare[arg[0]:arg[1]], m.start()) and not self._inside_try(bare, m.start())
                     and not H.JSON_MODE.search(code, max(fs.scope_of(m.start())[0], m.start() - 3000), m.start())):
                 self.add(fs, "LLM011", m.start(), "Model output is parsed with JSON.parse() without handling invalid JSON.")

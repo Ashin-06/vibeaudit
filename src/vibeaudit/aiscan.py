@@ -61,12 +61,27 @@ class AiScanner:
             for m in finditer(VECTOR_QUERY, r.body):
                 if ".rpc" in m.group(0) and not SERVICE_ROLE.search(r.body):
                     continue  # a Supabase client carrying the user's JWT is filtered by row-level security
-                window = r.body[m.start():m.start() + 400]
+                # the filter is often built on the lines before the call (`scoped = {...}; search(q, **scoped)`)
+                window = r.body[max(0, m.start() - 300):m.start() + 400]
                 if not TENANT_FILTER.search(window):
                     sf = self.p.get(r.file)
                     if sf is not None:
-                        self.add(sf, "LLM010", r.line, f"{r.path} searches the vector store without a user or tenant filter.")
+                        self.add(sf, "LLM010", self._call_line(sf, r, m),
+                                 f"{r.path} searches the vector store without a user or tenant filter.")
                     break
+
+    @staticmethod
+    def _call_line(sf: SourceFile, r: Route, m: "re.Match[str]") -> int:
+        """The line of the search call itself (stable when the route above it grows), else the route line."""
+        text = sf.text or ""
+        nth = r.body.count(m.group(0), 0, m.start())  # earlier calls of the same kind in this route
+        pos = len("\n".join(sf.lines[:max(0, r.line - 4)]))  # from just above the route (decorators)
+        for _ in range(nth + 1):
+            pos = text.find(m.group(0), pos)
+            if pos < 0:
+                return r.line
+            pos += 1
+        return sf.line_at(pos - 1)
 
     def _file(self, sf: SourceFile) -> None:
         v = sf.cache.get("views")
