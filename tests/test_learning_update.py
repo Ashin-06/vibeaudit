@@ -49,7 +49,7 @@ def test_registry_answers_are_cached_but_errors_are_not(tmp_path, monkeypatch):
             deps.registry_info(deps.Dep(name, "PyPI", "requirements.txt", 1))
     assert sorted(calls) == ["flaky-pkg", "flaky-pkg", "gone-pkg", "good-pkg"]
     # "missing" is trusted for an hour only: a name can be registered at any time
-    data = deps.REGISTRY_CACHE._load()
+    data = deps.REGISTRY_CACHE._loaded()
     for key in data:
         data[key][0] -= 2 * 3600
     calls.clear()
@@ -111,7 +111,6 @@ def test_update_validates_before_replacing(tmp_path, monkeypatch):
     assert failed == 1 and any("npm_top.txt.gz: downloaded file failed validation" in m for m in logs)
     assert updater.data_bytes("pypi_top.txt.gz") == files["pypi_top.txt.gz"]
     assert len(gzip.decompress(updater.data_bytes("npm_top.txt.gz")).split()) > 1000  # packaged copy kept
-    monkeypatch.setattr(aiscan, "_RETIRED", [])
     assert aiscan.retired_models().search('"legacy-v2"') and not aiscan.retired_models().search('"claude-2.1"')
 
 
