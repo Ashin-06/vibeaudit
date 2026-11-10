@@ -22,6 +22,14 @@ def test_python_n_plus_one_but_not_retry_loops_or_fixed_lists(tmp_path):
     assert _rules(tmp_path) == [("a.py", 5, "DATA001")]
 
 
+def test_chunked_batches_are_not_n_plus_one(tmp_path):
+    write(tmp_path, "a.py",
+          "def drop(db, ids):\n    for i in range(0, len(ids), 500):\n        chunk = ids[i:i + 500]\n"
+          "        db.execute('DELETE FROM t WHERE id IN (%s)' % ','.join('?' * len(chunk)), chunk)\n\n"
+          "def each(db, ids):\n    for i in range(len(ids)):\n        db.execute('DELETE FROM t WHERE id = ?', (ids[i],))\n")
+    assert _rules(tmp_path) == [("a.py", 8, "DATA001")]
+
+
 def test_js_n_plus_one_in_loops_and_async_map(tmp_path):
     write(tmp_path, "a.ts",
           "export async function f(ids: string[]) {\n  for (const id of ids) {\n    await prisma.user.findUnique({ where: { id } });\n  }\n"

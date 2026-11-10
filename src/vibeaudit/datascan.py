@@ -102,8 +102,10 @@ class DataScanner:
         parents = {id(child): parent for parent in ast.walk(tree) for child in ast.iter_child_nodes(parent)}
         for node in ast.walk(tree):
             GUARD.tick()
+            # range(start, stop, step) walks a list in chunks: one batched query per chunk is the fix, not N+1
+            chunked = isinstance(getattr(node, "iter", None), ast.Call) and dotted(node.iter.func) == "range" and len(node.iter.args) == 3  # type: ignore[attr-defined]
             if isinstance(node, (ast.For, ast.AsyncFor)) and not isinstance(node.iter, (ast.Tuple, ast.List, ast.Set, ast.Constant)) \
-                    and not any(isinstance(n, ast.Call) and dotted(n.func).endswith("sleep") for n in self._walk_body(node.body)):
+                    and not chunked and not any(isinstance(n, ast.Call) and dotted(n.func).endswith("sleep") for n in self._walk_body(node.body)):
                 for inner in self._walk_body(node.body):
                     if isinstance(inner, ast.Call):
                         d = dotted(inner.func)

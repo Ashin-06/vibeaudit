@@ -65,8 +65,13 @@ class ReliabilityScanner:
                         or d in ("urllib.request.urlopen", "urlopen")) and "timeout" not in kws and None not in kws:
                     self.add(sf, "REL001", node.lineno, f"`{d}()` has no timeout; one slow upstream server can hang this worker forever.")
             elif isinstance(node, ast.AsyncFunctionDef):
+                # `if driven_synchronously: time.sleep() else: await asyncio.sleep()` is a deliberate dual path
+                dual = {id(n) for branch in walk_shallow(node) if isinstance(branch, ast.If)
+                        for mine, other in ((branch.body, branch.orelse), (branch.orelse, branch.body))
+                        if any(isinstance(a, ast.Await) for s in other for a in ast.walk(s))
+                        for s in mine for n in ast.walk(s)}
                 for inner in walk_shallow(node):
-                    if inner is node or not isinstance(inner, ast.Call):
+                    if inner is node or not isinstance(inner, ast.Call) or id(inner) in dual:
                         continue
                     d = dotted(inner.func)
                     if d in BLOCKING:

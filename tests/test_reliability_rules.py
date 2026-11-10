@@ -22,6 +22,13 @@ def test_timeouts_and_blocking_calls(tmp_path):
     assert _rules(tmp_path) == [("a.py", 5, "REL001"), ("a.py", 8, "REL001"), ("a.py", 12, "REL002"), ("a.py", 13, "REL002")]
 
 
+def test_blocking_call_in_a_branch_whose_sibling_awaits_is_deliberate(tmp_path):
+    write(tmp_path, "a.py",
+          "import asyncio, time\n\nasync def retry(sync_mode):\n    if sync_mode:\n        time.sleep(1)\n"
+          "    else:\n        await asyncio.sleep(1)\n    if sync_mode:\n        time.sleep(2)\n")
+    assert _rules(tmp_path) == [("a.py", 9, "REL002")]
+
+
 def test_uploads(tmp_path):
     write(tmp_path, "api.py",
           "from fastapi import UploadFile\n\n@app.post('/up')\nasync def up(file: UploadFile):\n    data = await file.read()\n    return {}\n\n"
