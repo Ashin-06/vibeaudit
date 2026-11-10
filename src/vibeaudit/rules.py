@@ -15,6 +15,7 @@ CATEGORIES = {
     "quality": "Code quality and tests",
     "llm-review": "LLM review (model-generated, unverified)",
     "data": "Data and database",
+    "reliability": "Reliability and performance",
     "custom": "Custom rules (plugins)",
 }
 
@@ -442,6 +443,30 @@ _R = [
          "When one of several related writes fails halfway (for example charge recorded but order not created), "
          "the data is left inconsistent.",
          "Wrap related writes in a transaction (prisma.$transaction, db.transaction, BEGIN/COMMIT).", "CWE-662", ""),
+    Rule("REL001", "Outbound HTTP request without a timeout", "reliability", "medium",
+         "`requests` and `urlopen` wait forever by default. One slow or dead upstream API ties up a worker per "
+         "request until the whole service stops responding.",
+         "Always pass a timeout, for example `requests.get(url, timeout=10)`.", "CWE-1088", ""),
+    Rule("REL002", "Blocking call inside an async handler", "reliability", "medium",
+         "time.sleep, requests and subprocess block the event loop, so every other request on that worker waits "
+         "until the call finishes.",
+         "Use the async equivalent (asyncio.sleep, httpx.AsyncClient, asyncio.create_subprocess_exec) or run the "
+         "call in a thread with asyncio.to_thread.", "CWE-1050", ""),
+    Rule("REL003", "Webhook handler is not idempotent", "reliability", "medium",
+         "Payment and other providers retry webhooks. Without recording the event id, a retry credits a customer, "
+         "creates an order or sends an email twice.",
+         "Store each processed event id (unique constraint) and skip events you have already handled.", "CWE-837", ""),
+    Rule("REL004", "Upload accepted without a size limit", "reliability", "medium",
+         "Reading an upload with no size limit lets one large request exhaust memory or disk and crash the server.",
+         "Set a limit (MAX_CONTENT_LENGTH, multer limits.fileSize, a size check before reading) and stream large "
+         "files.", "CWE-770", ""),
+    Rule("REL005", "In-memory state on a serverless host", "reliability", "medium",
+         "Serverless functions run many short-lived instances that do not share memory, so rate limits, sessions and "
+         "caches kept in a module-level Map or object silently reset and never apply across instances.",
+         "Keep shared state in Redis/Upstash, the database or the platform's KV store.", "", ""),
+    Rule("REL006", "No health-check endpoint", "reliability", "low",
+         "Load balancers, containers and uptime monitors need a cheap endpoint to tell a dead instance from a live one.",
+         "Add GET /health (or /healthz) that returns 200 when the app and its database are reachable.", "", ""),
     Rule("AI001", "Issue reported by the LLM review (unverified)", "llm-review", "medium",
          "With --llm-review a model reads the riskiest files and reports issues the rules did not cover. These are "
          "suggestions from a model and can be wrong.",

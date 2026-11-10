@@ -92,6 +92,11 @@ def stripe_webhook():
     return jsonify({"received": event["type"]})
 
 
+@app.get("/health")
+def health():
+    return jsonify({"ok": True})
+
+
 def new_reset_token():
     return secrets.token_urlsafe(32)
 

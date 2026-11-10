@@ -6,3 +6,4 @@ Dockerfile:2:CFG003
 Dockerfile:4:CFG009
 requirements.txt:1:QA001
 requirements.txt:1:QA002
+Dockerfile:1:REL006
