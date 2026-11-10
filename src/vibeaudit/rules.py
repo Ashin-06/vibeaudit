@@ -17,6 +17,7 @@ CATEGORIES = {
     "data": "Data and database",
     "reliability": "Reliability and performance",
     "ui": "UI, UX and accessibility",
+    "contracts": "Frontend-backend contracts",
     "custom": "Custom rules (plugins)",
 }
 
@@ -546,6 +547,15 @@ _R = [
     Rule("UI013", "Link to a page that does not exist", "ui", "medium",
          "The link points to a path with no matching page or route, so users land on a 404.",
          "Fix the path, or create the page."),
+    # ------------------------------------------------- frontend-backend contracts
+    Rule("API001", "Frontend calls an API path that no route handles", "contracts", "medium",
+         "The browser code requests a path that no backend route in this project serves, so the request always "
+         "fails with 404: often a renamed route or a route the model forgot to write.",
+         "Create the route, or fix the path in the call."),
+    Rule("API002", "Frontend calls an API route with the wrong method", "contracts", "medium",
+         "The route exists but does not accept this HTTP method, so the request fails with 405 (or reaches a "
+         "different handler than intended).",
+         "Send the method the route handles, or add a handler for this method."),
     Rule("AI001", "Issue reported by the LLM review (unverified)", "llm-review", "medium",
          "With --llm-review a model reads the riskiest files and reports issues the rules did not cover. These are "
          "suggestions from a model and can be wrong.",

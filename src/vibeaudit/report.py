@@ -15,6 +15,17 @@ from .rules import CATEGORIES, RULES, SECURITY_SEVERITY
 TOOL_URL = "https://github.com/Ashin-06/vibeaudit"
 
 
+WEIGHTS = {"critical": 25, "high": 10, "medium": 3, "low": 1, "info": 0}
+DOMAINS = {
+    "Security": ("secrets", "supply-chain", "backend", "frontend", "auth", "config"),
+    "AI": ("llm", "llm-review"),
+    "Quality": ("quality", "contracts", "custom"),
+    "Data": ("data",),
+    "Reliability": ("reliability",),
+    "UI": ("ui",),
+}
+
+
 class Result:
     def __init__(self, root: str, findings: List[Finding], meta: Dict, routes: Optional[list] = None):
         self.root = root
@@ -29,8 +40,13 @@ class Result:
 
     @property
     def score(self) -> int:
-        weights = {"critical": 25, "high": 10, "medium": 3, "low": 1, "info": 0}
-        return max(0, 100 - sum(weights[f.severity] for f in self.findings))
+        return max(0, 100 - sum(WEIGHTS[f.severity] for f in self.findings))
+
+    @property
+    def domain_scores(self) -> Dict[str, int]:
+        """The same score, computed separately for each domain (security, AI, quality, ...)."""
+        return {name: max(0, 100 - sum(WEIGHTS[f.severity] for f in self.findings if f.category in cats))
+                for name, cats in DOMAINS.items()}
 
     @property
     def grade(self) -> str:
@@ -79,6 +95,7 @@ def render_text(res: Result, color: bool, verbose: bool = True) -> str:
     for cat, n in by_cat.most_common():
         out.append(f"  {_cat(cat)}: {n}")
     out.append(f"  Score: {res.score}/100  Grade: {res.grade}")
+    out.append("  Domains: " + "  ".join(f"{k} {v}" for k, v in res.domain_scores.items()))
     for note in res.meta.get("notes", []):
         out.append(f"  Note: {note}")
     return "\n".join(out) + "\n"
@@ -88,7 +105,8 @@ def render_text(res: Result, color: bool, verbose: bool = True) -> str:
 def render_json(res: Result) -> str:
     return json.dumps({
         "tool": "vibeaudit", "version": __version__, "root": res.root,
-        "summary": {"counts": res.counts, "total": len(res.findings), "score": res.score, "grade": res.grade},
+        "summary": {"counts": res.counts, "total": len(res.findings), "score": res.score, "grade": res.grade,
+                    "domains": res.domain_scores},
         "meta": res.meta, "findings": [f.to_dict() for f in res.findings],
         "routes": [r.to_dict() for r in sorted(res.routes, key=lambda r: (r.file, r.line))],
     }, indent=2) + "\n"
@@ -146,6 +164,7 @@ def render_markdown(res: Result) -> str:
         out += [f"Stack: {', '.join(res.meta['stack'])}", ""]
     out += [f"**Score: {res.score}/100 (grade {res.grade})**", "", "| Severity | Count |", "| --- | --- |"]
     out += [f"| {s} | {c[s]} |" for s in SEVERITIES if s != "info"]
+    out += ["", "| Domain | Score |", "| --- | --- |"] + [f"| {k} | {v}/100 |" for k, v in res.domain_scores.items()]
     out += ["", "| Category | Count |", "| --- | --- |"]
     out += [f"| {_cat(k)} | {v} |" for k, v in Counter(f.category for f in res.findings).most_common()]
     for note in res.meta.get("notes", []):
@@ -214,6 +233,8 @@ def render_html(res: Result) -> str:
     for s in SEVERITIES[:4]:
         parts.append(f"<div class=\"tile\"><span class=\"muted\">{s.title()}</span><b>{c[s]}</b></div>")
     parts.append("</div>")
+    parts.append("<div class=\"tiles\">" + "".join(
+        f"<div class=\"tile\"><span class=\"muted\">{e(k)}</span><b>{v}</b>of 100</div>" for k, v in res.domain_scores.items()) + "</div>")
     for note in res.meta.get("notes", []):
         parts.append(f"<p class=\"muted\">Note: {e(note)}</p>")
     parts.append("<div class=\"filters\" role=\"group\" aria-label=\"Filter by severity\">"
