@@ -36,6 +36,10 @@ SENSITIVE_TABLE = re.compile(
     r"(?i)(?:^|\.)(?:users?|profiles?|customers?|orders?|payments?|messages?|api_keys?|secrets?|documents?|invoices?|"
     r"subscriptions?|accounts?|transactions?|notes?|chats?|conversations?|addresses|private\w*)$"
 )
+API_CLIENTS = re.compile(
+    r"(?i)^(?:openai|anthropic|groq|mistral|cohere|replicate|together|stripe|resend|twilio|sgMail|sendgrid|mailgun|"
+    r"postmark|slack|octokit|github|cloudinary|s3|s3Client|pusher|ably|clerk|clerkClient|posthog|analytics|sentry)$")
+NAIVE_COLUMN = re.compile(r"(?i)\b(\w+_at|created|updated|deleted|timestamp)\s+timestamp(?:\s+without\s+time\s+zone)?\b(?!\s+with\s+time\s+zone)(?!tz)")
 PLATFORM_ENV = re.compile(
     r"^(?:NODE_ENV|PORT|HOST|HOSTNAME|HOME|PATH|PWD|USER|SHELL|LANG|TZ|CI|DEBUG|VERCEL\w*|NETLIFY\w*|RENDER\w*|RAILWAY\w*|"
     r"FLY_\w+|HEROKU\w*|GITHUB_\w+|RUNNER_\w+|NEXT_RUNTIME|NEXT_PHASE|PYTHON\w*|VIRTUAL_ENV|AWS_REGION|AWS_LAMBDA_\w+|"
@@ -76,7 +80,7 @@ class DataScanner:
                 GUARD.run(sf.rel, "data checks", self._javascript, sf, self._js_serverless(sf))
             elif sf.kind == "sql":
                 GUARD.run(sf.rel, "data checks", self._sql, sf)
-            elif sf.rel.endswith("schema.prisma"):
+            elif sf.rel.endswith(".prisma"):  # schema.prisma or a multi-file schema folder
                 GUARD.run(sf.rel, "data checks", self._prisma, sf)
         GUARD.run("<project>", "env var documentation", self._env_parity)
         GUARD.run("<project>", "transactions", self._transactions)
@@ -100,6 +104,20 @@ class DataScanner:
         from .pyscan import dotted
 
         parents = {id(child): parent for parent in ast.walk(tree) for child in ast.iter_child_nodes(parent)}
+        # `import datetime as dt`, `from datetime import datetime as DT`: resolve the first name of a call
+        aliases: Dict[str, str] = {}
+        for n in ast.walk(tree):
+            if isinstance(n, ast.Import):
+                for a in n.names:
+                    aliases[a.asname or a.name.split(".")[0]] = a.name if a.asname else a.name.split(".")[0]
+            elif isinstance(n, ast.ImportFrom) and n.module and not n.level:
+                for a in n.names:
+                    aliases[a.asname or a.name] = f"{n.module}.{a.name}"
+
+        def resolve(d: str) -> str:
+            head, _, rest = d.partition(".")
+            return aliases.get(head, head) + ("." + rest if rest else "")
+
         for node in ast.walk(tree):
             GUARD.tick()
             # range(start, stop, step) walks a list in chunks: one batched query per chunk is the fix, not N+1
@@ -114,13 +132,17 @@ class DataScanner:
                             break
             elif isinstance(node, ast.Call):
                 d = dotted(node.func)
-                if d in ("datetime.utcnow", "datetime.datetime.utcnow") or (
-                        d in ("datetime.now", "datetime.datetime.now") and not node.args and not node.keywords and self._persisted(node, parents)):
+                full = resolve(d)
+                no_tz = not node.keywords and (not node.args or (len(node.args) == 1 and isinstance(node.args[0], ast.Constant) and node.args[0].value is None))
+                if full in ("datetime.utcnow", "datetime.datetime.utcnow") or (
+                        full in ("datetime.now", "datetime.datetime.now") and no_tz and self._persisted(node, parents)):
                     self.add(sf, "DATA006", node.lineno, f"`{d}()` returns a naive datetime without a time zone.")
-                if serverless and re.search(r"sqlite:///|sqlite3\.connect", ast.unparse(node)[:300]) and not self._memory_db(node):
+                # match the call itself, not its unparsed text: closing(sqlite3.connect(...)) is one database
+                literals = [a.value for a in list(node.args) + [k.value for k in node.keywords] if isinstance(a, ast.Constant) and isinstance(a.value, str)]
+                if serverless and (full == "sqlite3.connect" or any(s.startswith("sqlite:///") for s in literals)) and not self._memory_db(node):
                     self.add(sf, "DATA009", node.lineno, "SQLite file database on a serverless host; the file is lost between requests.")
             elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                if any(re.search(r"\.(?:route|get|post|put|patch|delete)\(", ast.unparse(dec)) for dec in node.decorator_list):
+                if any(re.search(r"\.(?:route|api_route|get|post|put|patch|delete|websocket)\(|\bapi_view\b|\baction\(", ast.unparse(dec)) for dec in node.decorator_list):
                     for inner in self._walk_body(node.body):
                         if isinstance(inner, ast.Call) and dotted(inner.func).endswith(("create_engine", "create_async_engine", "MongoClient", "psycopg2.connect", "psycopg.connect")):
                             self.add(sf, "DATA008", inner.lineno, "A database client or engine is created on every request.")
@@ -190,6 +212,8 @@ class DataScanner:
             if not SENSITIVE_MODEL.match(model):
                 continue
             close = match_close(bare, m.end() - 1)
+            if close < 0:
+                continue  # unbalanced call (malformed code)
             args = code[m.end():close]
             if re.search(r"\bselect\s*:|\bomit\s*:|\.select\s*\(|\battributes\s*:|\bprojection\b|['\"]-\w", args + code[close:close + 60]):
                 continue
@@ -233,8 +257,10 @@ class DataScanner:
                 self.add(sf, "DATA003", sf.line_at(m.start()), f"Migration runs `{m.group(1).upper()}`, which destroys data irreversibly.")
         for m in finditer(r"(?i)\b(" + MONEY + r")\b\s+(float4?|float8|real|double\s+precision|double)\b", clean):
             self.add(sf, "DATA004", sf.line_at(m.start()), f"Column `{m.group(1)}` stores money as `{m.group(2).upper()}`.")
-        for m in finditer(r"(?i)\b(\w+_at|created|updated|deleted|timestamp)\s+timestamp(?:\s+without\s+time\s+zone)?\b(?!\s+with\s+time\s+zone)(?!tz)", clean):
-            self.add(sf, "DATA006", sf.line_at(m.start()), f"Column `{m.group(1)}` is a timestamp without time zone.")
+        # only column definitions: `SELECT created_at timestamp` is an alias, not a column type
+        for st in finditer(r"(?i)\b(?:create\s+(?:(?:temp|temporary|unlogged)\s+)?table|alter\s+table)\b[^;]*", clean):
+            for m in NAIVE_COLUMN.finditer(clean, st.start(), st.end()):
+                self.add(sf, "DATA006", sf.line_at(m.start()), f"Column `{m.group(1)}` is a timestamp without time zone.")
         for m in finditer(r"(?is)\bcreate\s+policy\s+(?:\"[^\"]*\"|\w+)\s+on\s+((?:\"?\w+\"?\.)?\"?\w+\"?)([^;]*);", clean):
             body = m.group(2)
             cmd = re.search(r"(?i)\bfor\s+(all|select|insert|update|delete)\b", body)
@@ -297,12 +323,44 @@ class DataScanner:
     def _transactions(self) -> None:
         for r in self.routes:
             body = r.body
-            if r.lang != "js" or re.search(r"\$transaction|\.transaction\s*\(|\bBEGIN\b|\bbatch\s*\(", body):
+            if re.search(r"\$transaction|\.transaction\s*\(|\btransaction\.atomic\b|@atomic\b|\bBEGIN\b|\bbatch\s*\(|\.begin\s*\(", body):
                 continue
-            writes = list(re.finditer(JS_WRITE, body))
-            # `await prisma.order.create(` -> "order": writes to two different models need to succeed together
-            models = {re.sub(r"\s", "", w.group(0)).split(".")[-2] for w in writes if w.group(0).count(".") >= 2}
-            if len(writes) >= 2 and len(models) >= 2:
+            if r.lang == "py" and self.atomic_requests:
+                continue  # Django ATOMIC_REQUESTS wraps every view in a transaction
+            models = self._py_write_models(body) if r.lang == "py" else self._js_write_models(body)
+            # writes to two different models (tables) need to succeed or fail together
+            if len(set(models)) >= 2:
                 sf = self.p.get(r.file)
                 if sf is not None:
                     self.add(sf, "DATA010", r.line, f"{'/'.join(r.methods)} {r.path} makes several writes without a transaction.")
+
+    @property
+    def atomic_requests(self) -> bool:
+        return any(f.kind == "py" and re.search(r"ATOMIC_REQUESTS['\"]?\s*[:=]\s*True", f.text or "") for f in self.p.files)
+
+    @staticmethod
+    def _js_write_models(body: str) -> List[str]:
+        """The model or table each write in a handler goes to: prisma.order.create -> order, Order.create -> order,
+        db.insert(orders) -> orders (Drizzle), order.save() -> order (Mongoose), supabase.from('orders').insert -> orders."""
+        out: List[str] = []
+        for w in re.finditer(JS_WRITE, body):
+            parts = re.sub(r"\s", "", w.group(0))[len("await"):].rstrip("(").split(".")
+            method, owner = parts[-1], [p for p in parts[:-1] if p]
+            if owner and API_CLIENTS.match(owner[0]):
+                continue  # openai.embeddings.create, stripe.checkout.sessions.create: API calls, not database writes
+            if method in ("insert", "update", "delete"):
+                arg = re.match(r"\s*([A-Za-z_$][\w$]*)\s*\)", body[w.end():w.end() + 80])
+                if arg:
+                    out.append(arg.group(1).lower())
+                    continue
+            if owner and owner[-1] not in ("session", "req", "res", "this"):
+                out.append(owner[-1].lower())
+        out += [m.group(1).lower() for m in re.finditer(r"""\.from\(\s*['"`](\w+)['"`]\s*\)\s*\.\s*(?:insert|update|upsert|delete)\s*\(""", body)]
+        return out
+
+    @staticmethod
+    def _py_write_models(body: str) -> List[str]:
+        """Django ORM writes (autocommit: each is its own transaction) and supabase-py table writes."""
+        out = [m.group(1).lower() for m in re.finditer(r"\b([A-Z]\w*)\.objects\.(?:create|bulk_create|get_or_create|update_or_create)\s*\(", body)]
+        out += [m.group(1).lower() for m in re.finditer(r"""\.table\(\s*['"](\w+)['"]\s*\)\s*\.\s*(?:insert|update|upsert|delete)\s*\(""", body)]
+        return out
