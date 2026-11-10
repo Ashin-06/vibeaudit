@@ -135,7 +135,7 @@ JSON_MODE = re.compile(
 
 PLACEHOLDER = re.compile(
     r"(?i)your|example|xxx|\*\*\*|placeholder|changeme|change_me|replace|dummy|fake|sample|redacted|insert|todo"
-    r"|<[^>]*>|\$\{|\{\{|%\(|^\$|process\.env|import\.meta|os\.environ|getenv|0000000000|1234567890|abcdef"
+    r"|<[^<>]{0,100}>|\$\{|\{\{|%\(|^\$|process\.env|import\.meta|os\.environ|getenv|0000000000|1234567890|abcdef"
     r"|lorem|test_?key|mock|not.?real|my_?(?:api|secret)|_here\b|\.\.\.|^sk-\.+$|^none$|^null$|^env\(|^\$\(|^vault:|changethis"
 )
 

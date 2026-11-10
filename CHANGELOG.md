@@ -34,6 +34,11 @@ rules in 12 categories).
 - A 0-100 score per domain (security, AI, quality, data, reliability, UI) in the terminal, JSON
   (`summary.domains`), Markdown and HTML reports.
 
+### Fixed
+
+- The placeholder pattern used by the secret rules was quadratic on a long run of `<` without `>`
+  (2.3 s on 40,000 characters on a CI runner); it is now bounded.
+
 ### Notes
 
 - Every new rule was run over the 15 real repositories used since 0.2.0; false alarms were fixed at the
