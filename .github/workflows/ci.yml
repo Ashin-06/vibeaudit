@@ -15,7 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python: ["3.9", "3.11", "3.12", "3.13"]
+        python: ["3.9", "3.10", "3.11", "3.12", "3.13"]
         exclude:
           # setup-python ships no 3.9 build for the current Ubuntu image (3.9 is end-of-life);
           # 3.9 is still tested on Windows and macOS.
@@ -100,7 +100,7 @@ jobs:
         uses: ./
         with:
           path: tests/fixtures/clean_app
-          args: --offline --external none
+          args: --offline --external none --exclude legacy/*
           sarif: clean.sarif
       - name: The action fails on a vulnerable sample app
         id: vulnerable

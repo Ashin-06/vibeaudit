@@ -62,7 +62,7 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--config", metavar="FILE", help="read settings from this TOML file instead of .vibeaudit.toml / pyproject.toml")
     s.add_argument("--no-config", action="store_true",
                    help="ignore configuration and feedback files in the scanned project")
-    s.add_argument("--no-cache", action="store_true", help="do not read or write cached registry and vulnerability answers")
+    s.add_argument("--no-cache", action="store_true", help="do not read or write cached registry, vulnerability and LLM answers")
     s.add_argument("-q", "--quiet", action="store_true", help="print only the summary")
     s.add_argument("--no-color", action="store_true", help="disable colored output")
 
