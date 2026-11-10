@@ -153,7 +153,7 @@ class FileState:
         return True
 
     def kinds(self, code: str, bare: str, at: Optional[int] = None) -> Set[str]:
-        if SANITIZER.search(code):
+        if SANITIZER.search(code) or H.CUSTOM.is_sanitizer(code):
             return set()
         k: Set[str] = set()
         if USER_SRC.search(code):
@@ -422,7 +422,7 @@ class JsScanner:
         not_auth = re.compile(r"(?:session|cookieSession|expressSession|passport\s*\.\s*(?:initialize|session))\s*\(")
 
         def is_auth(c: str) -> bool:
-            return bool(H.AUTH_MIDDLEWARE.search(c)) and not not_auth.search(c)
+            return (bool(H.AUTH_MIDDLEWARE.search(c)) and not not_auth.search(c)) or H.CUSTOM.is_auth(c)
 
         for fs in self.files:
             if not fs.is_framework:
@@ -605,7 +605,7 @@ class JsScanner:
         code, bare = fs.v.code, fs.v.bare
 
         def judge(off: int, expr_code: str, expr_bare: str, where: str) -> None:
-            if off in fs.handled or is_static_string(expr_code) or SANITIZER.search(expr_code):
+            if off in fs.handled or is_static_string(expr_code) or SANITIZER.search(expr_code) or H.CUSTOM.is_sanitizer(expr_code):
                 return
             fs.handled.add(off)
             k = fs.kinds(expr_code, expr_bare, off)
@@ -853,7 +853,7 @@ class JsScanner:
     def _route(self, fs: FileState, off: int, path: str, methods: List[str], body: str, framework: str,
                middleware: str = "", known: bool = True) -> None:
         sf = fs.sf
-        auth = bool(H.AUTH_EVIDENCE.search(body) or H.AUTH_MIDDLEWARE.search(middleware))
+        auth = bool(H.AUTH_EVIDENCE.search(body) or H.AUTH_MIDDLEWARE.search(middleware) or H.CUSTOM.is_auth(middleware + body))
         if sf.rel in self.authed_files or off > sf.cache.get("auth_from", 10 ** 12):
             auth = True
         if framework == "supabase-edge" and re.search(r"""headers\s*\.\s*get\s*\(\s*['"]authorization['"]""", body, re.I) \

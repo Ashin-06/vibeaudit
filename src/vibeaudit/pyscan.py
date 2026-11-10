@@ -450,7 +450,7 @@ class PyScanner:
         lines = (self.sf.text or "").split("\n")[first - 1: fn.end_lineno]  # type: ignore[attr-defined]
         body = "\n".join(lines)
         calls_llm = any(isinstance(n, ast.Call) and is_llm_call(n, self.llm_funcs) for n in walk_shallow(fn))
-        auth = bool(H.AUTH_EVIDENCE.search(body)) or self.global_auth or self.sf.rel in self.file_auth
+        auth = bool(H.AUTH_EVIDENCE.search(body)) or self.global_auth or self.sf.rel in self.file_auth or H.CUSTOM.is_auth(body)
         for a in fn.args.args + fn.args.kwonlyargs:  # type: ignore[attr-defined]
             ann = ast.unparse(a.annotation) if a.annotation is not None else ""
             if ann and (ann.split("[")[0].split(".")[-1] in self.auth_aliases or AUTH_ANNOTATION.search(ann)):
@@ -491,7 +491,7 @@ class PyScanner:
             if is_llm_call(node, self.llm_funcs):
                 return {"llm": node.lineno}
             name = last_name(node.func)
-            if name in SANITIZERS or re.match(r"(?i)(sanitize|validate|escape|clean)", name or ""):
+            if name in SANITIZERS or name in H.CUSTOM.sanitizers or re.match(r"(?i)(sanitize|validate|escape|clean)", name or ""):
                 return {}
             parts = [self.taint(a, ctx) for a in node.args] + [self.taint(k.value, ctx) for k in node.keywords]
             if isinstance(node.func, ast.Attribute):

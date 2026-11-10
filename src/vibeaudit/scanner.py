@@ -11,6 +11,7 @@ from typing import Callable, List, Optional, Set
 
 from . import external
 from .deps import DepScanner
+from . import heuristics as H
 from .files import Project
 from .guard import GUARD
 from .jsscan import JsScanner
@@ -50,6 +51,9 @@ class Options:
     llm_review: bool = False
     llm_max_requests: int = 10
     file_timeout: float = 30.0
+    auth_helpers: List[str] = field(default_factory=list)
+    sanitizers: List[str] = field(default_factory=list)
+    public_paths: List[str] = field(default_factory=list)
     log: Callable[[str], None] = lambda s: None
 
 
@@ -80,6 +84,7 @@ def scan(root: str, opts: Optional[Options] = None) -> Result:
     opts = opts or Options()
     start = time.time()
     GUARD.reset(opts.file_timeout)
+    H.CUSTOM.reset(opts.auth_helpers, opts.sanitizers, opts.public_paths)
     project = Project(Path(root), opts.excludes, opts.max_file_bytes)
     raw: List[Finding] = []
     emit = raw.append

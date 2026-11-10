@@ -171,3 +171,30 @@ def mask(secret: str) -> str:
     if len(secret) <= 8:
         return "*" * len(secret)
     return secret[:4] + "*" * min(12, len(secret) - 6) + secret[-2:]
+
+
+class Custom:
+    """Project knowledge from the config file: the project's own auth helpers, sanitizers and public paths."""
+
+    def __init__(self) -> None:
+        self.reset()
+
+    def reset(self, auth_helpers=(), sanitizers=(), public_paths=()) -> None:
+        self.auth_rx = re.compile(r"(?<![\w$])(?:" + "|".join(map(re.escape, auth_helpers)) + r")(?![\w$])") if auth_helpers else None
+        self.sanitizers = set(sanitizers)
+        self.sanitizer_rx = re.compile(r"(?<![\w$])(?:" + "|".join(map(re.escape, sanitizers)) + r")\s*\(") if sanitizers else None
+        self.public_paths = list(public_paths)
+
+    def is_auth(self, text: str) -> bool:
+        return bool(self.auth_rx and self.auth_rx.search(text))
+
+    def is_sanitizer(self, text: str) -> bool:
+        return bool(self.sanitizer_rx and self.sanitizer_rx.search(text))
+
+    def is_public(self, path: str) -> bool:
+        import fnmatch
+
+        return any(fnmatch.fnmatchcase(path, p) for p in self.public_paths)
+
+
+CUSTOM = Custom()

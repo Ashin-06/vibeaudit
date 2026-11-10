@@ -335,7 +335,7 @@ class ProjectScanner:
         reads_body: Optional[Route] = None
         for r in self.routes:
             path = r.path
-            public = bool(H.PUBLIC_PATH.search(path))
+            public = bool(H.PUBLIC_PATH.search(path)) or H.CUSTOM.is_public(path)
             # PUT/PATCH/DELETE change state by definition; POST and catch-all handlers are often reads, so they
             # need evidence of a write (or a paid model call) before we call them state-changing.
             semantic = any(m in ("PUT", "PATCH", "DELETE") for m in r.methods) and r.framework not in ("next-server-action",)
