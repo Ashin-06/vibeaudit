@@ -105,12 +105,15 @@ class SecretScanner:
 
     def run(self) -> None:
         for sf in self.p.files:
-            text = sf.text
-            if text is None or sf.is_lockfile or sf.rel.endswith((".map", ".min.js", ".svg")):
+            text = sf.raw_text
+            if text is None or sf.is_lockfile or sf.rel.endswith((".map", ".svg")):
                 continue
-            GUARD.run(sf.rel, "secret scan", self.scan_file, sf, text)
+            # minified or committed bundles: only the precise checks (provider keys, private keys, service-role
+            # JWTs, passwords in database URLs); the heuristic ones would be noise in generated code
+            bundle = sf.text is None or sf.rel.endswith(".min.js")
+            GUARD.run(sf.rel, "secret scan", self.scan_file, sf, text, bundle)
 
-    def scan_file(self, sf: SourceFile, text: str) -> None:
+    def scan_file(self, sf: SourceFile, text: str, bundle: bool = False) -> None:
         seen_lines = set()
 
         def once(off: int) -> bool:
@@ -156,7 +159,7 @@ class SecretScanner:
             if once(m.start()):
                 self.add(sf, "SEC005", m.start(), f"Connection string for {host} includes a password.", pw)
         is_doc = sf.rel.lower().endswith(DOC_EXTS)
-        if sf.is_test or is_doc:
+        if sf.is_test or is_doc or bundle:
             return
         public_lines = set()
         for m in finditer(PUBLIC_ENV, text):

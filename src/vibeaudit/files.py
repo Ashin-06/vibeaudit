@@ -18,6 +18,8 @@ SKIP_DIRS = {
     "coverage", "htmlcov", ".idea", ".vscode", "target", ".gradle", "Pods", ".expo",
     ".terraform", ".serverless", "storybook-static", ".docusaurus", ".angular",
 }
+BUNDLE_DIRS = {"dist", "build", "out"}
+BUNDLE_EXTS = {".js", ".mjs", ".cjs", ".html", ".htm"}
 BINARY_EXTS = {
     ".png", ".jpg", ".jpeg", ".gif", ".webp", ".ico", ".bmp", ".tiff", ".avif", ".heic",
     ".pdf", ".zip", ".gz", ".tgz", ".bz2", ".xz", ".7z", ".rar", ".jar", ".war", ".whl",
@@ -84,6 +86,8 @@ class SourceFile:
         self.is_lockfile = rel.rsplit("/", 1)[-1] in LOCKFILES
         self.max_bytes = max_bytes
         self._text: Optional[str] = None
+        self._raw: Optional[str] = None  # content of a generated bundle: secrets are checked, code rules are not
+        self.secrets_only = False  # committed build output (dist/, build/, out/)
         self._loaded = False
         self._line_starts: Optional[List[int]] = None
         self._lines: Optional[List[str]] = None
@@ -108,24 +112,31 @@ class SourceFile:
                     return None
             if b"\x00" in data[:8192]:
                 return None
-            text = data.decode("utf-8-sig", errors="replace")
-            # Minified bundles are generated code; findings there are noise.
-            if self.kind in ("js", "html") and len(text) > 5000:
-                nl = text.count("\n") + 1
-                if len(text) / nl > 500:
-                    return None
-            self._text = text.replace("\r\n", "\n").replace("\r", "\n")
+            text = data.decode("utf-8-sig", errors="replace").replace("\r\n", "\n").replace("\r", "\n")
+            # Minified bundles and committed build output are generated code: code findings there are noise,
+            # but a key baked into a bundle is still a leak, so the text stays available as `raw_text`.
+            nl = text.count("\n") + 1
+            if self.secrets_only or (self.kind in ("js", "html") and len(text) > 5000 and len(text) / nl > 500):
+                self._raw = text
+                return None
+            self._text = text
         return self._text
+
+    @property
+    def raw_text(self) -> Optional[str]:
+        """The file's text, also for generated bundles whose `text` is None (used by the secret scanner)."""
+        text = self.text
+        return text if text is not None else self._raw
 
     @property
     def lines(self) -> List[str]:
         if self._lines is None:
-            self._lines = (self.text or "").split("\n")
+            self._lines = (self.raw_text or "").split("\n")
         return self._lines
 
     def line_at(self, offset: int) -> int:
         if self._line_starts is None:
-            t = self.text or ""
+            t = self.raw_text or ""
             self._line_starts = [0] + [m.end() for m in re.finditer("\n", t)]
         return bisect.bisect_right(self._line_starts, offset)
 
@@ -231,7 +242,11 @@ class Project:
             rels.sort()
         for rel in rels:
             parts = rel.split("/")
-            if any(p in SKIP_DIRS for p in parts[:-1]) or self._in_venv(parts):
+            skipped = {p for p in parts[:-1] if p in SKIP_DIRS}
+            # committed build output is still checked for secrets (a key inlined into a deployed bundle leaks)
+            bundle = bool(skipped) and skipped <= BUNDLE_DIRS and self.is_git and rel in self.tracked \
+                and os.path.splitext(rel)[1].lower() in BUNDLE_EXTS
+            if (skipped and not bundle) or self._in_venv(parts):
                 continue
             if os.path.splitext(rel)[1].lower() in BINARY_EXTS:
                 continue
@@ -245,6 +260,7 @@ class Project:
             if path.is_symlink() and not _inside(path, self.root):
                 continue  # a link out of the repository (for example to ~/.ssh) is not part of the project
             sf = SourceFile(self.root, rel, self.max_bytes)
+            sf.secrets_only = bundle
             self.files.append(sf)
             self._by_rel[rel] = sf
 
