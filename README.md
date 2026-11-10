@@ -83,7 +83,7 @@ vibeaudit scan path/to/project --report html --report sarif:results.sarif
 
 | Option | Meaning |
 | --- | --- |
-| `--report FORMAT[:PATH]` | `json`, `sarif`, `md` or `html` (repeatable). `json:-` writes JSON to stdout. |
+| `--report FORMAT[:PATH]` | `json`, `sarif`, `md`, `html`, `prompt` (a fix brief to paste into an AI assistant) or `badge` (SVG). Repeatable; `json:-` writes to stdout. |
 | `--fail-on SEVERITY` | Exit 1 when a finding is at least this severe (default `high`; `none` never fails). |
 | `--min-severity SEVERITY` | Hide findings below this severity (default `low`). |
 | `--offline` | No network: skip registry, new-package and CVE lookups (typosquat check still runs). |
@@ -93,6 +93,9 @@ vibeaudit scan path/to/project --report html --report sarif:results.sarif
 | `--external auto\|none\|LIST` | Run installed gitleaks, bandit, osv-scanner, semgrep and merge results. |
 | `--llm gemini\|openai\|anthropic` | Model triage of findings; `--llm-review` adds a review of the riskiest files. |
 | `--file-timeout SECONDS` | Time each analysis step may spend on one file before it is stopped (default 30). |
+| `--staged` / `--diff REV` | Report only findings on staged lines (pre-commit) or lines changed since `REV` (pull requests). |
+| `--plugin FILE_OR_MODULE` | Load custom rules (see below). |
+| `--config FILE` / `--no-config` | Use another settings file, or ignore the scanned project's settings. |
 
 With `--external auto` (the default), gitleaks, bandit, osv-scanner and semgrep are run when they are
 installed, and their findings are merged and de-duplicated. Bandit checks that a built-in rule covers
@@ -148,15 +151,133 @@ GEMINI_API_KEY=... vibeaudit scan . --llm gemini --llm-review --llm-max-requests
   for any compatible server such as Ollama), `anthropic` (`ANTHROPIC_API_KEY`). `--llm-model` picks the
   model; `--llm-max-requests` is a hard cap.
 
-## Using it in CI
+## Configuration file
+
+Settings can live in `.vibeaudit.toml` or in a `[tool.vibeaudit]` table of `pyproject.toml`. Flags on the
+command line win. Unknown keys and wrong types are errors, so a typo cannot quietly weaken a scan.
+
+```toml
+# .vibeaudit.toml
+fail-on = "high"
+min-severity = "low"
+exclude = ["legacy/**", "scripts/one_off_*.py"]
+disable = ["QA002"]
+baseline = ".vibeaudit-baseline.json"   # relative to this file
+offline = false
+external = "auto"
+
+# Teach vibeaudit your project's own conventions
+auth-helpers = ["require_org_member", "withWorkspaceAuth"]   # count as an auth check in a route
+sanitizers = ["clean_sql_input"]                               # their output is not tainted
+public-paths = ["/api/public/*", "/api/survey-*"]              # intentionally unauthenticated routes
+```
+
+The file is part of the scanned repository, so it can switch rules off. When you audit code you do not
+trust, run with `--no-config`.
+
+## Pre-commit and pull requests
+
+`--staged` and `--diff REV` still analyse the whole project (auth middleware and helpers in unchanged
+files count) but report only findings on added or changed lines.
 
 ```yaml
-- run: pip install git+https://github.com/Ashin-06/vibeaudit.git
-- run: vibeaudit scan . --report sarif:vibeaudit.sarif --fail-on high
-- uses: github/codeql-action/upload-sarif@v3
-  if: always()
-  with:
-    sarif_file: vibeaudit.sarif
+# .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/Ashin-06/vibeaudit
+    rev: v0.3.0
+    hooks:
+      - id: vibeaudit
+```
+
+```bash
+vibeaudit scan . --diff origin/main --fail-on high
+```
+
+## GitHub Action
+
+```yaml
+name: vibeaudit
+on: [push, pull_request]
+permissions:
+  contents: read
+  security-events: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: Ashin-06/vibeaudit@v0.3.0
+        with:
+          fail-on: high
+          args: --diff origin/main   # optional: only changed lines
+      - uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: vibeaudit.sarif
+```
+
+Inputs: `path`, `fail-on`, `sarif`, `args`, `setup-python`, `python-version`. While the repository is
+private, other repositories need access to it (or vendor the action).
+
+## MCP server for coding agents
+
+`vibeaudit mcp` runs a Model Context Protocol server on stdio, so Claude Code, Cursor and other agents can
+audit their own changes before handing them back. Tools: `scan_project` (optionally only changed lines),
+`scan_file`, `list_routes`, `check_package` (does it exist, is it brand new, is it a typosquat, known CVEs)
+and `explain_rule`. All tools are read-only.
+
+```json
+{ "mcpServers": { "vibeaudit": { "command": "vibeaudit", "args": ["mcp"] } } }
+```
+
+```bash
+claude mcp add vibeaudit -- vibeaudit mcp
+```
+
+## Routes inventory
+
+`vibeaudit routes [PATH] [--format text|json|md]` lists every HTTP entry point the scanners found, with
+method, path, location, framework and whether it has a visible auth check, writes data or calls a paid AI
+API. The JSON report has the same `routes` section.
+
+## Custom rules and the Python API
+
+```python
+# org_rules.py
+from vibeaudit import route_rule, file_rule
+
+@route_rule("ORG001", "Billing route without audit log", severity="high", fix="Call audit_log().")
+def billing_audit(route):
+    if route.path.startswith("/api/billing") and "audit_log(" not in route.body:
+        return f"{route.path} changes billing without calling audit_log()."
+
+@file_rule("ORG002", "print() in production code", severity="low", kinds=["py"])
+def no_print(source_file):
+    for number, line in enumerate(source_file.lines, 1):
+        if line.strip().startswith("print("):
+            yield number, "Use the logger instead of print()."
+```
+
+```bash
+vibeaudit scan . --plugin org_rules.py
+```
+
+`rule(...)` registers a project-wide check that receives the project and route table. Custom findings show
+up in every report format, can be suppressed and baselined like built-in ones, and a failing custom rule
+is isolated like any other check. Plugins run your Python code, so they are only loaded from `--plugin` or
+your own imports, never from the scanned repository.
+
+Library use:
+
+```python
+from vibeaudit import scan, Options
+
+result = scan("path/to/project", Options(offline=True))
+print(result.score, result.grade)
+for f in result.findings:
+    print(f.severity, f.rule_id, f.file, f.line, f.message)
+for r in result.routes:
+    print(r.methods, r.path, r.has_auth)
 ```
 
 ## Suppressing findings

@@ -4,6 +4,26 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] - 2026-11-10
+
+Integration release: vibeaudit now fits into editors, agents, pre-commit, pull requests and custom
+policies.
+
+### Added
+
+- Configuration in `.vibeaudit.toml` or `[tool.vibeaudit]`: every scan option plus the project's own
+  `auth-helpers`, `sanitizers` and `public-paths`. Flags override the file; unknown keys and wrong types
+  are errors. `--config FILE` and `--no-config`.
+- `--staged` and `--diff REV`: analyse the whole project, report only findings on added or changed lines.
+- `vibeaudit routes`: every HTTP entry point with auth, data-write and AI-call status (text, JSON,
+  Markdown); the JSON report gains a `routes` section.
+- A GitHub Action (`uses: Ashin-06/vibeaudit@v0.3.0`) and a pre-commit hook (`id: vibeaudit`).
+- `vibeaudit mcp`: a Model Context Protocol server with `scan_project`, `scan_file`, `list_routes`,
+  `check_package` and `explain_rule`.
+- A public Python API (`vibeaudit.scan`, `Options`, `Result`, `Finding`, `Route`) and custom rules
+  (`rule`, `route_rule`, `file_rule`) loaded with `--plugin`.
+- Report formats `prompt` (a fix brief for AI coding assistants) and `badge` (SVG score badge).
+
 ## [0.2.1] - 2026-11-09
 
 Fixes for issues raised by an external review of the code. Each has a regression test that fails when the

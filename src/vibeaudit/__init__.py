@@ -10,7 +10,7 @@ Library use:
 Custom rules: see `vibeaudit.plugins` (`rule`, `route_rule`, `file_rule`).
 """
 
-__version__ = "0.2.1"
+__version__ = "0.3.0"
 
 __all__ = ["__version__", "scan", "Options", "Result", "Finding", "Route", "rule", "route_rule", "file_rule"]
 
