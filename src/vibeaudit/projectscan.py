@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Callable, Dict, List, Optional
 
 from . import heuristics as H
+from . import iacscan as iac
 from .guard import GUARD, finditer
 from .files import ENV_EXAMPLE_RE, ENV_FILE_RE, TEST_PATH_RE, Project, SourceFile, read_ignore_file, _matches
 from .lexer import py_views
@@ -78,6 +79,14 @@ class ProjectScanner:
             self.mcp(sf)
         if name == "package.json":
             self.package_json(sf)
+        if name in ("action.yml", "action.yaml") and k != "workflow":
+            self.action_pins(sf)
+        if re.fullmatch(r"requirements[\w.-]*\.(?:txt|in)|pip\.conf|pip\.ini|uv\.toml|pyproject\.toml", name) \
+                or re.search(r"(?:^|/)requirements/[^/]+\.(?:txt|in)$", sf.rel):
+            for m in finditer(r"(?im)^[ \t]*(?:--extra-index-url\b|extra[-_]index[-_]url[ \t]*=)", sf.text or ""):
+                self.add(sf, sf.line_at(m.start()), "DEP008", "An extra package index is searched next to PyPI.")
+        if k in ("yaml", "json", "other"):
+            iac.scan(sf, self.add)
         if k == "py" and not sf.is_test:
             code = sf.cache.get("views") or py_views(sf.text)
             for m in finditer(H.DANGEROUS_AGENT_OPTIONS, code.code):  # type: ignore[attr-defined]
@@ -152,6 +161,17 @@ class ProjectScanner:
         if re.search(r"(?m)^\s*(?:on:\s*.*\bpull_request_target\b|pull_request_target\s*:|-\s*pull_request_target\b)", text) or re.search(r"(?m)^on:\s*\[?[^\n]*pull_request_target", text):
             for m in finditer(r"ref:\s*\$\{\{\s*github\.event\.pull_request\.head\.(?:sha|ref)|github\.head_ref|refs/pull/", text):
                 self.add(sf, sf.line_at(m.start()), "CFG005", "pull_request_target workflow checks out the pull request's code.")
+        self.action_pins(sf)
+        for m in finditer(r"(?m)^[ \t]*permissions:[ \t]*['\"]?write-all\b", text):
+            self.add(sf, sf.line_at(m.start()), "CFG011", "`permissions: write-all` gives the token write access to everything.")
+
+    def action_pins(self, sf: SourceFile) -> None:
+        """Third-party actions and reusable workflows used by tag or branch (workflows and composite actions)."""
+        for m in finditer(r"(?m)^[ \t]*(?:-[ \t]+)?uses:[ \t]*['\"]?([\w.-]+/[\w./-]+)@([^\s'\"#]+)", sf.text or ""):
+            owner = m.group(1).split("/", 1)[0].lower()
+            if owner in ("actions", "github") or re.fullmatch(r"[0-9a-f]{40}", m.group(2)):
+                continue  # GitHub's own actions, or pinned to a full commit SHA
+            self.add(sf, sf.line_at(m.start()), "CFG010", f"`{m.group(1)}@{m.group(2)}` follows a tag or branch, not a commit.")
 
     # ---------------------------------------------------------- firebase
     def firebase(self, sf: SourceFile) -> None:

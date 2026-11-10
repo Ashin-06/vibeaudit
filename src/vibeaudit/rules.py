@@ -38,6 +38,8 @@ class Rule:
     preview_reason: str = ""
 
 
+NEW_IN_070 = "New in 0.7.0: not yet measured on enough real-world findings in the benchmark."
+
 _R = [
     # ---------------------------------------------------------------- secrets
     Rule("SEC001", "Hardcoded API key or access token", "secrets", "critical",
@@ -131,6 +133,12 @@ _R = [
          "The agent config runs `npx -y` / `uvx` on a package without a version, so a malicious update "
          "gets code execution inside your AI assistant.",
          "Pin an exact version, for example `npx -y some-mcp-server@1.2.3`.", "CWE-1357", "LLM03:2025"),
+    Rule("DEP008", "Extra package index (dependency confusion)", "supply-chain", "medium",
+         "With --extra-index-url pip takes the highest version of a name from any index, so anyone who "
+         "publishes your private package's name on PyPI with a higher version gets their code installed.",
+         "Use a single index that proxies PyPI (--index-url), or pin each private package to its index "
+         "(uv `[[tool.uv.index]]` with `explicit = true`) and use hashes.", "CWE-427", "A08:2021",
+         preview=True, preview_reason=NEW_IN_070),
     # ---------------------------------------------------------------- backend
     Rule("BE001", "SQL injection", "backend", "high",
          "Building SQL with string formatting lets an attacker change the query: read other users' data, "
@@ -341,6 +349,43 @@ _R = [
     Rule("CFG009", ".env file copied into the container image", "config", "medium",
          "`COPY . .` with no .dockerignore entry for .env bakes your local secrets into the image.",
          "Add `.env*` to .dockerignore and pass secrets at runtime.", "CWE-538", "A05:2021"),
+    Rule("CFG010", "Third-party GitHub Action not pinned to a commit", "config", "medium",
+         "A tag like `@v3` can be moved by whoever controls the action's repository; if it is compromised, "
+         "your workflow runs their code with your secrets and token (as in the tj-actions/changed-files "
+         "attack).",
+         "Pin the full commit SHA and keep the version in a comment: "
+         "`uses: owner/action@<40-character sha>  # v3.1.0`. Dependabot can update pinned SHAs.",
+         "CWE-829", "A08:2021", preview=True, preview_reason=NEW_IN_070),
+    Rule("CFG011", "Workflow token with write access to everything", "config", "medium",
+         "`permissions: write-all` gives every step, including third-party actions, write access to the "
+         "code, releases, packages and settings the GITHUB_TOKEN can reach.",
+         "Set `permissions: contents: read` at the top and grant single write scopes only to the jobs that "
+         "need them.", "CWE-250", "A01:2021", preview=True, preview_reason=NEW_IN_070),
+    Rule("CFG012", "Privileged or host-mounted Kubernetes container", "config", "high",
+         "A privileged container, a hostPath volume or the host's network or PID namespace lets a "
+         "compromised container take over the node and every other workload on it.",
+         "Remove `privileged: true`, `hostPath`, `hostNetwork` and `hostPID`; use a securityContext with "
+         "`allowPrivilegeEscalation: false` and `runAsNonRoot: true`.", "CWE-250", "A05:2021",
+         preview=True, preview_reason=NEW_IN_070),
+    Rule("CFG013", "Kubernetes container without resource limits", "config", "low",
+         "Without CPU and memory limits one runaway or attacked pod can starve every other workload on the "
+         "node.", "Set `resources.requests` and `resources.limits` for every container.", "CWE-770", "",
+         preview=True, preview_reason=NEW_IN_070),
+    Rule("CFG014", "Public S3 bucket", "config", "high",
+         "A public-read ACL or disabled public access block exposes every object in the bucket to the "
+         "internet; leaked backups and user uploads are among the most common cloud breaches.",
+         "Keep the bucket private with all four public access block settings on, and serve public files "
+         "through a CDN with an origin access identity.", "CWE-284", "A01:2021",
+         preview=True, preview_reason=NEW_IN_070),
+    Rule("CFG015", "Admin or database port open to the internet", "config", "high",
+         "A security group allowing 0.0.0.0/0 on SSH, RDP or a database port gets scanned and brute-forced "
+         "within minutes of going up.",
+         "Allow only your own address range or a bastion/VPN security group, or use SSM Session Manager "
+         "instead of open SSH.", "CWE-284", "A05:2021", preview=True, preview_reason=NEW_IN_070),
+    Rule("CFG016", "Unencrypted database or disk storage", "config", "medium",
+         "A database or volume without encryption at rest exposes its data in snapshots, backups and "
+         "discarded disks.", "Set `storage_encrypted = true` (RDS) or `encrypted = true` (EBS), with a KMS "
+         "key you control.", "CWE-311", "A02:2021", preview=True, preview_reason=NEW_IN_070),
     # -------------------------------------------------------------------- llm
     Rule("LLM001", "Untrusted input placed in the system prompt", "llm", "high",
          "User text inside the system prompt gets system-level authority, which makes prompt injection "

@@ -259,7 +259,8 @@ def test_llm_redaction_covers_signing_secrets_and_passwords():
 
 def test_extra_index_url_keeps_dependency_checks(tmp_path):
     (tmp_path / "requirements.txt").write_text("--extra-index-url https://download.pytorch.org/whl/cu121\nreqeusts==1.0\n")
-    assert [r for _, _, r in _rules(_scan(tmp_path))] == ["DEP002"]
+    # the extra index itself is DEP008 (the 2022 torchtriton attack came through exactly this index)
+    assert sorted(r for _, _, r in _rules(_scan(tmp_path))) == ["DEP002", "DEP008"]
     (tmp_path / "requirements.txt").write_text("--index-url https://pypi.internal.example/simple\nreqeusts==1.0\n")
     assert _scan(tmp_path).findings == []
 

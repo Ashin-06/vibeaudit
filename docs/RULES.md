@@ -3,9 +3,9 @@
 Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do not edit by hand.
 `vibeaudit rules` prints the same list, and `vibeaudit rules --format json` includes every field.
 
-117 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
+125 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-8 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+16 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -146,6 +146,7 @@ References: CWE-259, A07:2021
 | [DEP005](#dep005) | low | stable | Dependencies are not locked |
 | [DEP006](#dep006) | high | stable | Install script downloads and runs remote code |
 | [DEP007](#dep007) | medium | stable | MCP server launched from an unpinned package |
+| [DEP008](#dep008) | medium | preview | Extra package index (dependency confusion) |
 
 ### DEP001
 
@@ -216,6 +217,18 @@ Why it matters: The agent config runs `npx -y` / `uvx` on a package without a ve
 How to fix: Pin an exact version, for example `npx -y some-mcp-server@1.2.3`.
 
 References: CWE-1357, LLM03:2025
+
+### DEP008
+
+**Extra package index (dependency confusion)** (medium, preview)
+
+Preview: New in 0.7.0: not yet measured on enough real-world findings in the benchmark.
+
+Why it matters: With --extra-index-url pip takes the highest version of a name from any index, so anyone who publishes your private package's name on PyPI with a higher version gets their code installed.
+
+How to fix: Use a single index that proxies PyPI (--index-url), or pin each private package to its index (uv `[[tool.uv.index]]` with `explicit = true`) and use hashes.
+
+References: CWE-427, A08:2021
 
 ## Backend security
 
@@ -634,6 +647,13 @@ References: CWE-307, A07:2021
 | [CFG007](#cfg007) | medium | stable | Default database credentials |
 | [CFG008](#cfg008) | low | stable | Express app without security headers |
 | [CFG009](#cfg009) | medium | stable | .env file copied into the container image |
+| [CFG010](#cfg010) | medium | preview | Third-party GitHub Action not pinned to a commit |
+| [CFG011](#cfg011) | medium | preview | Workflow token with write access to everything |
+| [CFG012](#cfg012) | high | preview | Privileged or host-mounted Kubernetes container |
+| [CFG013](#cfg013) | low | preview | Kubernetes container without resource limits |
+| [CFG014](#cfg014) | high | preview | Public S3 bucket |
+| [CFG015](#cfg015) | high | preview | Admin or database port open to the internet |
+| [CFG016](#cfg016) | medium | preview | Unencrypted database or disk storage |
 
 ### CFG001
 
@@ -724,6 +744,90 @@ Why it matters: `COPY . .` with no .dockerignore entry for .env bakes your local
 How to fix: Add `.env*` to .dockerignore and pass secrets at runtime.
 
 References: CWE-538, A05:2021
+
+### CFG010
+
+**Third-party GitHub Action not pinned to a commit** (medium, preview)
+
+Preview: New in 0.7.0: not yet measured on enough real-world findings in the benchmark.
+
+Why it matters: A tag like `@v3` can be moved by whoever controls the action's repository; if it is compromised, your workflow runs their code with your secrets and token (as in the tj-actions/changed-files attack).
+
+How to fix: Pin the full commit SHA and keep the version in a comment: `uses: owner/action@<40-character sha>  # v3.1.0`. Dependabot can update pinned SHAs.
+
+References: CWE-829, A08:2021
+
+### CFG011
+
+**Workflow token with write access to everything** (medium, preview)
+
+Preview: New in 0.7.0: not yet measured on enough real-world findings in the benchmark.
+
+Why it matters: `permissions: write-all` gives every step, including third-party actions, write access to the code, releases, packages and settings the GITHUB_TOKEN can reach.
+
+How to fix: Set `permissions: contents: read` at the top and grant single write scopes only to the jobs that need them.
+
+References: CWE-250, A01:2021
+
+### CFG012
+
+**Privileged or host-mounted Kubernetes container** (high, preview)
+
+Preview: New in 0.7.0: not yet measured on enough real-world findings in the benchmark.
+
+Why it matters: A privileged container, a hostPath volume or the host's network or PID namespace lets a compromised container take over the node and every other workload on it.
+
+How to fix: Remove `privileged: true`, `hostPath`, `hostNetwork` and `hostPID`; use a securityContext with `allowPrivilegeEscalation: false` and `runAsNonRoot: true`.
+
+References: CWE-250, A05:2021
+
+### CFG013
+
+**Kubernetes container without resource limits** (low, preview)
+
+Preview: New in 0.7.0: not yet measured on enough real-world findings in the benchmark.
+
+Why it matters: Without CPU and memory limits one runaway or attacked pod can starve every other workload on the node.
+
+How to fix: Set `resources.requests` and `resources.limits` for every container.
+
+References: CWE-770
+
+### CFG014
+
+**Public S3 bucket** (high, preview)
+
+Preview: New in 0.7.0: not yet measured on enough real-world findings in the benchmark.
+
+Why it matters: A public-read ACL or disabled public access block exposes every object in the bucket to the internet; leaked backups and user uploads are among the most common cloud breaches.
+
+How to fix: Keep the bucket private with all four public access block settings on, and serve public files through a CDN with an origin access identity.
+
+References: CWE-284, A01:2021
+
+### CFG015
+
+**Admin or database port open to the internet** (high, preview)
+
+Preview: New in 0.7.0: not yet measured on enough real-world findings in the benchmark.
+
+Why it matters: A security group allowing 0.0.0.0/0 on SSH, RDP or a database port gets scanned and brute-forced within minutes of going up.
+
+How to fix: Allow only your own address range or a bastion/VPN security group, or use SSM Session Manager instead of open SSH.
+
+References: CWE-284, A05:2021
+
+### CFG016
+
+**Unencrypted database or disk storage** (medium, preview)
+
+Preview: New in 0.7.0: not yet measured on enough real-world findings in the benchmark.
+
+Why it matters: A database or volume without encryption at rest exposes its data in snapshots, backups and discarded disks.
+
+How to fix: Set `storage_encrypted = true` (RDS) or `encrypted = true` (EBS), with a KMS key you control.
+
+References: CWE-311, A02:2021
 
 ## LLM and AI-specific risks
 
