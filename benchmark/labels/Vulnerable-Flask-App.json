@@ -1,0 +1,270 @@
+{
+ "repo": "Vulnerable-Flask-App",
+ "commit": "b6a4f97afd466e83e1f60781494252dec1c37039",
+ "findings": [
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile",
+   "line": 1,
+   "fingerprint": "bcc61cd35d3718a91c4f9280fca4f169",
+   "verdict": "tp",
+   "reason": "Dockerfile has no USER instruction, so the app runs as root."
+  },
+  {
+   "rule": "REL006",
+   "file": "Dockerfile",
+   "line": 1,
+   "fingerprint": "80f3c109c3f775b0d0791a1eb73bd654",
+   "verdict": "tp",
+   "reason": "Deployed with a Dockerfile, 11 routes and no health-check route."
+  },
+  {
+   "rule": "SEC004",
+   "file": "app/app.py",
+   "line": 28,
+   "fingerprint": "e287408572ac5a3acdc7872155497e5b",
+   "verdict": "tp",
+   "reason": "app.secret_key is a literal string in source."
+  },
+  {
+   "rule": "SEC011",
+   "file": "app/app.py",
+   "line": 63,
+   "fingerprint": "6e60c06d1aac307bab1f5bec4f977f45",
+   "verdict": "tp",
+   "reason": "Seed code sets the admin password to the literal admin123."
+  },
+  {
+   "rule": "DATA006",
+   "file": "app/app.py",
+   "line": 81,
+   "fingerprint": "1671f829360d82e569d599a0b02a9135",
+   "verdict": "tp",
+   "reason": "utcnow() gives a naive datetime used for the JWT expiry."
+  },
+  {
+   "rule": "BE016",
+   "file": "app/app.py",
+   "line": 97,
+   "fingerprint": "958b8033d452de979623469d977884d9",
+   "verdict": "tp",
+   "reason": "jwt.decode(token, verify=False) skips signature verification."
+  },
+  {
+   "rule": "BE007",
+   "file": "app/app.py",
+   "line": 114,
+   "fingerprint": "88843a5fa7be0fd83b1cf751e9ebafa0",
+   "verdict": "tp",
+   "reason": "request.url is formatted into a template passed to render_template_string (SSTI)."
+  },
+  {
+   "rule": "BE018",
+   "file": "app/app.py",
+   "line": 135,
+   "fingerprint": "8c02eea9816032f00ebc2fd5836ae0f6",
+   "verdict": "tp",
+   "reason": "register reads request.json fields directly with no validation library."
+  },
+  {
+   "rule": "BE014",
+   "file": "app/app.py",
+   "line": 141,
+   "fingerprint": "c0588ea0d321f32ff232ef161144f9d8",
+   "verdict": "tp",
+   "reason": "Password is hashed with hashlib.md5."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "app/app.py",
+   "line": 171,
+   "fingerprint": "3282325ed94c0a60ec0bbc8b5d4e6ac1",
+   "verdict": "tp",
+   "reason": "/login has no rate limiter."
+  },
+  {
+   "rule": "DATA006",
+   "file": "app/app.py",
+   "line": 184,
+   "fingerprint": "44cd116d64479e761ccaac943e1edff2",
+   "verdict": "tp",
+   "reason": "utcnow() naive datetime used for JWT nbf/iat claims."
+  },
+  {
+   "rule": "BE001",
+   "file": "app/app.py",
+   "line": 265,
+   "fingerprint": "760132202c854353c58dac4ff9733282",
+   "verdict": "tp",
+   "reason": "str_query is built from request JSON and passed to engine.execute."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/app.py",
+   "line": 291,
+   "fingerprint": "501f5c61866a50995df8768eb36c87be",
+   "verdict": "tp",
+   "reason": "/xxe_uploader saves uploaded files with no authentication."
+  },
+  {
+   "rule": "REL004",
+   "file": "app/app.py",
+   "line": 294,
+   "fingerprint": "04ed6ab8e8dfbe99ee73def78bdcf1d6",
+   "verdict": "tp",
+   "reason": "Uploads accepted and MAX_CONTENT_LENGTH is never configured."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/app.py",
+   "line": 316,
+   "fingerprint": "5f354baa8f4408a8c23baa5767aa6b61",
+   "verdict": "tp",
+   "reason": "/yaml_hammer accepts uploads with no authentication."
+  },
+  {
+   "rule": "BE004",
+   "file": "app/app.py",
+   "line": 329,
+   "fingerprint": "1ee10fe82c58037cfbf0d43d3de64efb",
+   "verdict": "tp",
+   "reason": "yaml.load without a SafeLoader on uploaded file content."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/static/loader.js",
+   "line": 20,
+   "fingerprint": "90eab2024dfa39bb544cfe6994acf337",
+   "verdict": "fp",
+   "reason": "Vendored minified Google Closure library (loader.js), not application code; not detected as minified."
+  },
+  {
+   "rule": "BE003",
+   "file": "app/static/loader.js",
+   "line": 24,
+   "fingerprint": "ad848de53c620cfb98c1104fbf88ba84",
+   "verdict": "fp",
+   "reason": "Vendored minified Google Closure library (loader.js), not application code; not detected as minified."
+  },
+  {
+   "rule": "BE003",
+   "file": "app/static/loader.js",
+   "line": 26,
+   "fingerprint": "b0636e84bd3c48940c9ce55461358a03",
+   "verdict": "fp",
+   "reason": "Vendored minified Google Closure library (loader.js), not application code; not detected as minified."
+  },
+  {
+   "rule": "QA003",
+   "file": "app/static/loader.js",
+   "line": 30,
+   "fingerprint": "55463a839f1f24d13a5ae8efd8b514ca",
+   "verdict": "fp",
+   "reason": "Vendored minified Google Closure library (loader.js), not application code; not detected as minified."
+  },
+  {
+   "rule": "QA003",
+   "file": "app/static/loader.js",
+   "line": 33,
+   "fingerprint": "f0ede1ba8eba26eeb2f19fb6d2a7b86b",
+   "verdict": "fp",
+   "reason": "Vendored minified Google Closure library (loader.js), not application code; not detected as minified."
+  },
+  {
+   "rule": "BE003",
+   "file": "app/static/loader.js",
+   "line": 41,
+   "fingerprint": "eba0b31adf87e9d89ace0ad49ac9bd03",
+   "verdict": "fp",
+   "reason": "Vendored minified Google Closure library (loader.js), not application code; not detected as minified."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/static/loader.js",
+   "line": 50,
+   "fingerprint": "ba0fc77f9017d163b968da5707eaa108",
+   "verdict": "fp",
+   "reason": "Vendored minified Google Closure library (loader.js), not application code; not detected as minified."
+  },
+  {
+   "rule": "FE004",
+   "file": "app/static/loader.js",
+   "line": 120,
+   "fingerprint": "198c267e7de23ad01695580d306ab826",
+   "verdict": "fp",
+   "reason": "Vendored minified Google Closure library (loader.js), not application code; not detected as minified."
+  },
+  {
+   "rule": "QA003",
+   "file": "app/static/loader.js",
+   "line": 126,
+   "fingerprint": "a857783982b368bc92942fe0960a9bd2",
+   "verdict": "fp",
+   "reason": "Vendored minified Google Closure library (loader.js), not application code; not detected as minified."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/static/loader.js",
+   "line": 153,
+   "fingerprint": "1b3b3d27c513d6c65983be61428a6e37",
+   "verdict": "fp",
+   "reason": "Vendored minified Google Closure library (loader.js), not application code; not detected as minified."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/static/loader.js",
+   "line": 153,
+   "fingerprint": "5ac5d250dc5b89be01f8c2d3a03a89e4",
+   "verdict": "fp",
+   "reason": "Vendored minified Google Closure library (loader.js), not application code; not detected as minified."
+  },
+  {
+   "rule": "QA003",
+   "file": "app/static/loader.js",
+   "line": 181,
+   "fingerprint": "5abe8d67154f175ccda12f8479d91b5d",
+   "verdict": "fp",
+   "reason": "Vendored minified Google Closure library (loader.js), not application code; not detected as minified."
+  },
+  {
+   "rule": "QA003",
+   "file": "app/static/loader.js",
+   "line": 189,
+   "fingerprint": "71c4b571c187a426f97ab9102d003caf",
+   "verdict": "fp",
+   "reason": "Vendored minified Google Closure library (loader.js), not application code; not detected as minified."
+  },
+  {
+   "rule": "QA003",
+   "file": "app/static/loader.js",
+   "line": 193,
+   "fingerprint": "45222507b0916b1385ec362510e0a665",
+   "verdict": "fp",
+   "reason": "Vendored minified Google Closure library (loader.js), not application code; not detected as minified."
+  },
+  {
+   "rule": "UI001",
+   "file": "app/templates/test.html",
+   "line": 15,
+   "fingerprint": "7be10c6f5bacebc5b06a5fd692ce6175",
+   "verdict": "fp",
+   "reason": "The img tag is inside an HTML comment."
+  },
+  {
+   "rule": "UI001",
+   "file": "app/templates/view.html",
+   "line": 15,
+   "fingerprint": "546d1b52690b2a984eedc18f9849d571",
+   "verdict": "fp",
+   "reason": "The img tag is inside an HTML comment."
+  },
+  {
+   "rule": "UI001",
+   "file": "app/templates/yaml_test.html",
+   "line": 15,
+   "fingerprint": "1f86c2680a7e1c549418250d3ec08c31",
+   "verdict": "fp",
+   "reason": "The img tag is inside an HTML comment."
+  }
+ ]
+}

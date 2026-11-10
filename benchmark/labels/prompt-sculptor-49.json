@@ -1,0 +1,614 @@
+{
+ "repo": "prompt-sculptor-49",
+ "commit": "d60d5e9e66c6aefc713f67dec823d247a8585411",
+ "findings": [
+  {
+   "rule": "SEC006",
+   "file": ".env",
+   "line": 0,
+   "fingerprint": "c3a1c3a42a11a866b4ab7fa1978bee47",
+   "verdict": "tp",
+   "reason": ".env and .env.server are tracked and hold live-looking secrets (OpenAI, Supabase, Vercel, Clerk)."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env",
+   "line": 1,
+   "fingerprint": "4dee67458c0f339e8b80d4de9ff4da27",
+   "verdict": "tp",
+   "reason": "A real-looking credential value is committed in the env file."
+  },
+  {
+   "rule": "SEC001",
+   "file": ".env",
+   "line": 2,
+   "fingerprint": "4c0419e108abe313a68883f44c054ff7",
+   "verdict": "tp",
+   "reason": "A real-looking credential value is committed in the env file."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env",
+   "line": 3,
+   "fingerprint": "b1f10a180ca8f99e5ef12eda8486cfb8",
+   "verdict": "tp",
+   "reason": "A real-looking credential value is committed in the env file."
+  },
+  {
+   "rule": "SEC001",
+   "file": ".env",
+   "line": 5,
+   "fingerprint": "ca8a48ae73518fb69160eba576133f92",
+   "verdict": "tp",
+   "reason": "A real-looking credential value is committed in the env file."
+  },
+  {
+   "rule": "SEC005",
+   "file": ".env",
+   "line": 6,
+   "fingerprint": "8a3ced2f06691713091db98f60258a48",
+   "verdict": "tp",
+   "reason": "A real-looking credential value is committed in the env file."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env",
+   "line": 7,
+   "fingerprint": "69fd071aba6df2388820f8ef42f02fd5",
+   "verdict": "tp",
+   "reason": "A real-looking credential value is committed in the env file."
+  },
+  {
+   "rule": "SEC009",
+   "file": ".env",
+   "line": 8,
+   "fingerprint": "084d52cc0f4d6b27fe7d2064a34e1869",
+   "verdict": "tp",
+   "reason": "A real-looking credential value is committed in the env file."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env",
+   "line": 12,
+   "fingerprint": "3edcd2987aeb2f56eb30715057f5c5ec",
+   "verdict": "tp",
+   "reason": "A real-looking credential value is committed in the env file."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env",
+   "line": 13,
+   "fingerprint": "e7992715962721e736aacbba8d8382ba",
+   "verdict": "fp",
+   "reason": "ck_pub_ is CopilotKit's public client key, meant for the browser."
+  },
+  {
+   "rule": "SEC006",
+   "file": ".env.server",
+   "line": 0,
+   "fingerprint": "9c8bcf1607d4ec5f0d186446b2998ea4",
+   "verdict": "tp",
+   "reason": ".env and .env.server are tracked and hold live-looking secrets (OpenAI, Supabase, Vercel, Clerk)."
+  },
+  {
+   "rule": "SEC009",
+   "file": ".env.server",
+   "line": 5,
+   "fingerprint": "e9dd6da5ccf5aa37423b0010d77ad390",
+   "verdict": "tp",
+   "reason": "A real-looking credential value is committed in the env file."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.server",
+   "line": 6,
+   "fingerprint": "4b1d50636b90f5b9550eba6cb5c037cc",
+   "verdict": "tp",
+   "reason": "A real-looking credential value is committed in the env file."
+  },
+  {
+   "rule": "SEC001",
+   "file": ".env.server",
+   "line": 7,
+   "fingerprint": "82ef7c66b9a1f5b2b0b3b6ae62bc74ab",
+   "verdict": "tp",
+   "reason": "A real-looking credential value is committed in the env file."
+  },
+  {
+   "rule": "SEC005",
+   "file": ".env.server",
+   "line": 11,
+   "fingerprint": "ef4f5fdfec8aa535ab271e1f2df0d758",
+   "verdict": "tp",
+   "reason": "A real-looking credential value is committed in the env file."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.server",
+   "line": 14,
+   "fingerprint": "0e8a118ee8d31e6cbce4f4d52ddb7e6c",
+   "verdict": "tp",
+   "reason": "A real-looking credential value is committed in the env file."
+  },
+  {
+   "rule": "SEC001",
+   "file": ".env.server",
+   "line": 18,
+   "fingerprint": "41c525bab51f0d1dd22e424634fbdb27",
+   "verdict": "tp",
+   "reason": "A real-looking credential value is committed in the env file."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.server",
+   "line": 19,
+   "fingerprint": "d2236b7d79ff729922340562d75aa506",
+   "verdict": "tp",
+   "reason": "A real-looking credential value is committed in the env file."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.server",
+   "line": 22,
+   "fingerprint": "80a9545a00ce298106c82b6841cf6c3c",
+   "verdict": "tp",
+   "reason": "A real-looking credential value is committed in the env file."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.server",
+   "line": 26,
+   "fingerprint": "25649573742a4706569766365d3563c8",
+   "verdict": "tp",
+   "reason": "A real-looking credential value is committed in the env file."
+  },
+  {
+   "rule": "BE012",
+   "file": "api-server.js",
+   "line": 9,
+   "fingerprint": "490e31f14d3b822f39017365fa374b33",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies, so no call as the logged-in user."
+  },
+  {
+   "rule": "SEC008",
+   "file": "api-server.js",
+   "line": 19,
+   "fingerprint": "96417cbb3f22eaef96989c20ae1e4373",
+   "verdict": "fp",
+   "reason": "VITE_OPENAI_API_KEY is read only in server code (api-server.js); no client code references it."
+  },
+  {
+   "rule": "QA001",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "6ebc345ae714486cf41d50d631704e0c",
+   "verdict": "tp",
+   "reason": "No test files in the project."
+  },
+  {
+   "rule": "QA002",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
+   "verdict": "tp",
+   "reason": "No CI configuration."
+  },
+  {
+   "rule": "SEC001",
+   "file": "scripts/create-additional-tables.js",
+   "line": 4,
+   "fingerprint": "50933b97d9e6c1b7ea319873efb2810d",
+   "verdict": "tp",
+   "reason": "A Supabase personal access token is hard-coded in each script."
+  },
+  {
+   "rule": "SEC001",
+   "file": "scripts/create-content-pages-table.js",
+   "line": 4,
+   "fingerprint": "b97c66242d2255acf595f807d437a465",
+   "verdict": "tp",
+   "reason": "A Supabase personal access token is hard-coded in each script."
+  },
+  {
+   "rule": "SEC001",
+   "file": "scripts/deploy-complete-sample-data.js",
+   "line": 6,
+   "fingerprint": "874d838aee519c8d89f56d0059b211ed",
+   "verdict": "tp",
+   "reason": "A Supabase personal access token is hard-coded in each script."
+  },
+  {
+   "rule": "SEC001",
+   "file": "scripts/deploy-corrected-sample-data.js",
+   "line": 4,
+   "fingerprint": "a503d8f5a537bd01a14a3f27b1e43b74",
+   "verdict": "tp",
+   "reason": "A Supabase personal access token is hard-coded in each script."
+  },
+  {
+   "rule": "SEC001",
+   "file": "scripts/deploy-final-sample-data.js",
+   "line": 4,
+   "fingerprint": "a7e47b338feac866fc9602be877d2863",
+   "verdict": "tp",
+   "reason": "A Supabase personal access token is hard-coded in each script."
+  },
+  {
+   "rule": "SEC001",
+   "file": "scripts/deploy-remaining-sample-data.js",
+   "line": 4,
+   "fingerprint": "31837db4a0f8a2ec3e408efdbcaeb2ae",
+   "verdict": "tp",
+   "reason": "A Supabase personal access token is hard-coded in each script."
+  },
+  {
+   "rule": "SEC001",
+   "file": "scripts/implement-rls-security.js",
+   "line": 4,
+   "fingerprint": "328e82d97d6b44f595cb6dcd45c976ae",
+   "verdict": "tp",
+   "reason": "A Supabase personal access token is hard-coded in each script."
+  },
+  {
+   "rule": "SEC001",
+   "file": "scripts/seed-additional-tables.js",
+   "line": 4,
+   "fingerprint": "f12457a9ffb4b55781a73589ab468f9d",
+   "verdict": "tp",
+   "reason": "A Supabase personal access token is hard-coded in each script."
+  },
+  {
+   "rule": "SEC001",
+   "file": "scripts/seed-case-studies.js",
+   "line": 4,
+   "fingerprint": "14a6d376949e903be861028e63db5778",
+   "verdict": "tp",
+   "reason": "A Supabase personal access token is hard-coded in each script."
+  },
+  {
+   "rule": "SEC001",
+   "file": "scripts/seed-comprehensive-data.js",
+   "line": 6,
+   "fingerprint": "0732fc5cf577110002d6939315b46d92",
+   "verdict": "tp",
+   "reason": "A Supabase personal access token is hard-coded in each script."
+  },
+  {
+   "rule": "SEC001",
+   "file": "scripts/seed-content-pages.js",
+   "line": 4,
+   "fingerprint": "b5329ed5b37ef7299c7ddb0a8ae988e6",
+   "verdict": "tp",
+   "reason": "A Supabase personal access token is hard-coded in each script."
+  },
+  {
+   "rule": "SEC001",
+   "file": "scripts/seed-core-data.js",
+   "line": 4,
+   "fingerprint": "659987fce9163eafc18ebf8520e7b034",
+   "verdict": "tp",
+   "reason": "A Supabase personal access token is hard-coded in each script."
+  },
+  {
+   "rule": "SEC001",
+   "file": "scripts/seed-essential-data.js",
+   "line": 4,
+   "fingerprint": "7ed46a03b4a3d2cff7afe2ddb5dc26be",
+   "verdict": "tp",
+   "reason": "A Supabase personal access token is hard-coded in each script."
+  },
+  {
+   "rule": "SEC001",
+   "file": "scripts/seed-real-world-data.js",
+   "line": 4,
+   "fingerprint": "1f6e5264c575f6f91e2a4737228e7c9a",
+   "verdict": "tp",
+   "reason": "A Supabase personal access token is hard-coded in each script."
+  },
+  {
+   "rule": "SEC001",
+   "file": "scripts/seed-simple-data.js",
+   "line": 4,
+   "fingerprint": "bcf6ddcac044dec13fcf79af96c9ee5c",
+   "verdict": "tp",
+   "reason": "A Supabase personal access token is hard-coded in each script."
+  },
+  {
+   "rule": "SEC001",
+   "file": "scripts/setup-database.js",
+   "line": 11,
+   "fingerprint": "7e3a82de9fdacb11d28e70c6d7aa423c",
+   "verdict": "tp",
+   "reason": "A Supabase personal access token is hard-coded in each script."
+  },
+  {
+   "rule": "SEC001",
+   "file": "scripts/setup-schema-step-by-step.js",
+   "line": 4,
+   "fingerprint": "e55bdcec07ad12b22929dcfcb507bb32",
+   "verdict": "tp",
+   "reason": "A Supabase personal access token is hard-coded in each script."
+  },
+  {
+   "rule": "SEC001",
+   "file": "scripts/test-connection.js",
+   "line": 4,
+   "fingerprint": "0d223f4b293b154feeb7bc29327bae39",
+   "verdict": "tp",
+   "reason": "A Supabase personal access token is hard-coded in each script."
+  },
+  {
+   "rule": "SEC001",
+   "file": "scripts/verify-database.js",
+   "line": 4,
+   "fingerprint": "8df27705e6447b3339f895f047a69cb5",
+   "verdict": "tp",
+   "reason": "A Supabase personal access token is hard-coded in each script."
+  },
+  {
+   "rule": "SEC001",
+   "file": "scripts/verify-rls-security.js",
+   "line": 4,
+   "fingerprint": "62b4c1e6e1792abe55abd0e931643b0e",
+   "verdict": "tp",
+   "reason": "A Supabase personal access token is hard-coded in each script."
+  },
+  {
+   "rule": "BE012",
+   "file": "simple-api-server.js",
+   "line": 8,
+   "fingerprint": "371759939dd497c65babbb56d2fa48e0",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies, so no call as the logged-in user."
+  },
+  {
+   "rule": "BE018",
+   "file": "simple-api-server.js",
+   "line": 12,
+   "fingerprint": "29b5fb5a58541c1d1f5754fbc1629df5",
+   "verdict": "tp",
+   "reason": "req.body is used without validation."
+  },
+  {
+   "rule": "UI002",
+   "file": "src/components/crm/CRMLayout.tsx",
+   "line": 124,
+   "fingerprint": "8ac3930230600c997138ce0d73579881",
+   "verdict": "fp",
+   "reason": "Backdrop overlay that closes the mobile sidebar; the sidebar has its own close control."
+  },
+  {
+   "rule": "UI006",
+   "file": "src/components/crm/InvoiceCard.tsx",
+   "line": 76,
+   "fingerprint": "ba10d3118fe10f800367e5baf1832304",
+   "verdict": "fp",
+   "reason": "The parent page opens a delete confirmation dialog before deleting."
+  },
+  {
+   "rule": "UI004",
+   "file": "src/components/layout/Footer.tsx",
+   "line": 54,
+   "fingerprint": "e56866a09b02ba0c011a543a986ce366",
+   "verdict": "tp",
+   "reason": "Footer social links are href=\"#\" placeholders that go nowhere."
+  },
+  {
+   "rule": "UI004",
+   "file": "src/components/layout/Footer.tsx",
+   "line": 61,
+   "fingerprint": "895db4906612b09069ef2fa55ac59f1f",
+   "verdict": "tp",
+   "reason": "Footer social links are href=\"#\" placeholders that go nowhere."
+  },
+  {
+   "rule": "UI004",
+   "file": "src/components/layout/Footer.tsx",
+   "line": 68,
+   "fingerprint": "a18227d85e45540297308298a3d66d3f",
+   "verdict": "tp",
+   "reason": "Footer social links are href=\"#\" placeholders that go nowhere."
+  },
+  {
+   "rule": "UI004",
+   "file": "src/components/layout/Footer.tsx",
+   "line": 75,
+   "fingerprint": "f63623553ac707051838659e28dc3cd1",
+   "verdict": "tp",
+   "reason": "Footer social links are href=\"#\" placeholders that go nowhere."
+  },
+  {
+   "rule": "UI002",
+   "file": "src/components/sections/ProcessTimeline.tsx",
+   "line": 79,
+   "fingerprint": "a2882e32b67feea4416a7ebe3aea9416",
+   "verdict": "tp",
+   "reason": "Clickable div cards with no role, tabIndex or key handler."
+  },
+  {
+   "rule": "UI002",
+   "file": "src/components/sections/ProcessTimeline.tsx",
+   "line": 123,
+   "fingerprint": "28d1bbd30129963e93b8725bee06abd8",
+   "verdict": "tp",
+   "reason": "Clickable div cards with no role, tabIndex or key handler."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/components/wizard/TagInput.tsx",
+   "line": 49,
+   "fingerprint": "edfb0d7ef5c14b81756dfe26868ed3e7",
+   "verdict": "tp",
+   "reason": "Text input with no label, aria-label or id."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/components/wizard/stages/ProjectVisionStage.tsx",
+   "line": 82,
+   "fingerprint": "d4bc0ad8565687b6c2be39044e648ba0",
+   "verdict": "tp",
+   "reason": "Text input with no label, aria-label or id."
+  },
+  {
+   "rule": "DATA007",
+   "file": "src/lib/strapi.ts",
+   "line": 3,
+   "fingerprint": "76f40364bee24b439992effaf856e822",
+   "verdict": "fp",
+   "reason": "VITE_STRAPI_URL has a || fallback; a missing value cannot break the app."
+  },
+  {
+   "rule": "DATA007",
+   "file": "src/lib/strapi.ts",
+   "line": 4,
+   "fingerprint": "aa7f7f4945782276d64bc23f4c309feb",
+   "verdict": "tp",
+   "reason": "VITE_STRAPI_API_TOKEN is read without a fallback and is not in .env.example."
+  },
+  {
+   "rule": "UI002",
+   "file": "src/pages/crm/ClientDetailPage.tsx",
+   "line": 208,
+   "fingerprint": "4e6c0867c38e931451c229e038f39b80",
+   "verdict": "tp",
+   "reason": "Clickable div cards with no role, tabIndex or key handler."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 166,
+   "fingerprint": "e0e91290423de0c021b7c27438071136",
+   "verdict": "fp",
+   "reason": "RLS is enabled for this table in scripts/implement-rls-security.js."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 214,
+   "fingerprint": "3f59bc33c32230bc677f1438c6ccb02b",
+   "verdict": "fp",
+   "reason": "RLS is enabled for this table in scripts/implement-rls-security.js."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 258,
+   "fingerprint": "820c2b86f1829bb2f3e62713b7d08fa5",
+   "verdict": "fp",
+   "reason": "RLS is enabled for this table in scripts/implement-rls-security.js."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 305,
+   "fingerprint": "f8f0b19adbde9f821207bd7914b6f709",
+   "verdict": "tp",
+   "reason": "copilot_interactions and copilot_suggestions never get RLS enabled anywhere."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 319,
+   "fingerprint": "bc5765b195f0e83e82a620202440bf6c",
+   "verdict": "tp",
+   "reason": "copilot_interactions and copilot_suggestions never get RLS enabled anywhere."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 338,
+   "fingerprint": "b96fc6719865bb9b6dca603812c90879",
+   "verdict": "fp",
+   "reason": "RLS is enabled for this table in scripts/implement-rls-security.js."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 357,
+   "fingerprint": "c09f8dcc7d48b7abddd3f6455b9ef856",
+   "verdict": "fp",
+   "reason": "RLS is enabled for this table in scripts/implement-rls-security.js."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 378,
+   "fingerprint": "519514edae979f8f470b16948a300fa3",
+   "verdict": "fp",
+   "reason": "RLS is enabled for this table in scripts/implement-rls-security.js."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 430,
+   "fingerprint": "e9fe5a850a92a0d0d32002e45b1cfdaf",
+   "verdict": "fp",
+   "reason": "RLS is enabled for this table in scripts/implement-rls-security.js."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 465,
+   "fingerprint": "763664354467826ddf0119ed472b6894",
+   "verdict": "fp",
+   "reason": "RLS is enabled for this table in scripts/implement-rls-security.js."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 482,
+   "fingerprint": "7967ba4bdc58a8e62c22e328fc904573",
+   "verdict": "fp",
+   "reason": "RLS is enabled for this table in scripts/implement-rls-security.js."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 499,
+   "fingerprint": "0294792aab65867eda608ea6c9ccfba2",
+   "verdict": "fp",
+   "reason": "RLS is enabled for this table in scripts/implement-rls-security.js."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/copilotkit/index.ts",
+   "line": 5,
+   "fingerprint": "4bf10b17ca5baca92d4d3aee35cff8be",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies, so no call as the logged-in user."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/send-brief-email/index.ts",
+   "line": 8,
+   "fingerprint": "2a390ec42d743870c9f262a7426216e3",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies, so no call as the logged-in user."
+  },
+  {
+   "rule": "AUTH006",
+   "file": "supabase/migrations/20251006040936_28745902-3579-47f8-9835-9f8a2cfc69b4.sql",
+   "line": 46,
+   "fingerprint": "a573b05bbe8f244ea6e6fb30406c3a5c",
+   "verdict": "fp",
+   "reason": "Anonymous inserts are the intended design of the public brief submission form."
+  },
+  {
+   "rule": "AUTH006",
+   "file": "supabase/migrations/20251006054217_f3a5b796-77d4-4ef5-854a-82d0560ece28.sql",
+   "line": 356,
+   "fingerprint": "d1a83e61e2e10ce5da4059a881cc7cdb",
+   "verdict": "tp",
+   "reason": "INSERT WITH CHECK (true) with no TO clause lets any role insert notifications or audit-log rows."
+  },
+  {
+   "rule": "AUTH006",
+   "file": "supabase/migrations/20251006054217_f3a5b796-77d4-4ef5-854a-82d0560ece28.sql",
+   "line": 361,
+   "fingerprint": "06a388cfe8030c42edbdee7b9cf07be7",
+   "verdict": "tp",
+   "reason": "INSERT WITH CHECK (true) with no TO clause lets any role insert notifications or audit-log rows."
+  }
+ ]
+}

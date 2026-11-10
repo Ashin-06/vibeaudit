@@ -1,0 +1,246 @@
+{
+ "repo": "helpdesk-flow-verse",
+ "commit": "c08ede8e4213ad37e3ad319fe12d871dbfd908c9",
+ "findings": [
+  {
+   "rule": "QA001",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "6ebc345ae714486cf41d50d631704e0c",
+   "verdict": "tp",
+   "reason": "No test files in the project."
+  },
+  {
+   "rule": "QA002",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
+   "verdict": "tp",
+   "reason": "No CI configuration (no .github or other CI files)."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/components/FileManager.tsx",
+   "line": 371,
+   "fingerprint": "d030ed8b30f0195b0215b15694b17992",
+   "verdict": "tp",
+   "reason": "Row checkbox has no label, aria-label or id."
+  },
+  {
+   "rule": "UI006",
+   "file": "src/components/FileManager.tsx",
+   "line": 413,
+   "fingerprint": "711fe28a8ef84b2d116fb9e3d3a6ef6a",
+   "verdict": "tp",
+   "reason": "deleteFile removes the stored file directly on click, no confirmation."
+  },
+  {
+   "rule": "SEC010",
+   "file": "src/pages/AddAgent.tsx",
+   "line": 121,
+   "fingerprint": "64058482ff1f5be15202fa45c251abd1",
+   "verdict": "tp",
+   "reason": "console.log includes the new agent's password when a custom password is set."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/pages/UserManagement.tsx",
+   "line": 261,
+   "fingerprint": "c33addb20ad25f212c64882877937ff6",
+   "verdict": "tp",
+   "reason": "Role and department selects have no label or aria-label."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/pages/UserManagement.tsx",
+   "line": 270,
+   "fingerprint": "be6a3a919cdfd820f70ba73760534a14",
+   "verdict": "tp",
+   "reason": "Role and department selects have no label or aria-label."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/ai-answer-bot/index.ts",
+   "line": 7,
+   "fingerprint": "6d4cfc85d3eae4fe912da335621a8d73",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies; the rule's claim (call as the logged-in user) does not hold."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "supabase/functions/ai-answer-bot/index.ts",
+   "line": 53,
+   "fingerprint": "dbca3066dca330a42f37dc26caf1b18b",
+   "verdict": "tp",
+   "reason": "verify_jwt is false and the function never checks the caller, yet calls OpenAI."
+  },
+  {
+   "rule": "BE018",
+   "file": "supabase/functions/ai-answer-bot/index.ts",
+   "line": 53,
+   "fingerprint": "38a65c2e54261792d34dbd9fbeb2397f",
+   "verdict": "tp",
+   "reason": "The JSON body fields are used without any validation."
+  },
+  {
+   "rule": "LLM004",
+   "file": "supabase/functions/ai-answer-bot/index.ts",
+   "line": 53,
+   "fingerprint": "d34811b31853cb8d1de8377227b10f40",
+   "verdict": "tp",
+   "reason": "The function calls OpenAI and nothing in the project rate-limits it."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/ai-pattern-detector/index.ts",
+   "line": 7,
+   "fingerprint": "3507b946db84adb20e54266d89f4a5ad",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies; the rule's claim (call as the logged-in user) does not hold."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "supabase/functions/ai-pattern-detector/index.ts",
+   "line": 39,
+   "fingerprint": "5eadb767721bac240a7c60245e3bc236",
+   "verdict": "tp",
+   "reason": "verify_jwt is false and the function never checks the caller, yet calls OpenAI."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/ai-response-suggestions/index.ts",
+   "line": 7,
+   "fingerprint": "c05f50c7696f6d9f34cb93d118f399bf",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies; the rule's claim (call as the logged-in user) does not hold."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "supabase/functions/ai-response-suggestions/index.ts",
+   "line": 11,
+   "fingerprint": "a0cde27cf75881b78a144062923b35bc",
+   "verdict": "tp",
+   "reason": "verify_jwt is false and the function never checks the caller, yet calls OpenAI."
+  },
+  {
+   "rule": "DATA010",
+   "file": "supabase/functions/ai-response-suggestions/index.ts",
+   "line": 11,
+   "fingerprint": "1f79bba5bf10e4ed7429960b5c8500cd",
+   "verdict": "tp",
+   "reason": "Inserts into one table and updates another with no transaction."
+  },
+  {
+   "rule": "LLM004",
+   "file": "supabase/functions/ai-response-suggestions/index.ts",
+   "line": 11,
+   "fingerprint": "fdb533fe7c0858c686355fb4887435f2",
+   "verdict": "tp",
+   "reason": "The function calls OpenAI and nothing in the project rate-limits it."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/ai-ticket-routing/index.ts",
+   "line": 7,
+   "fingerprint": "a93871b736519fbacb11b15a68453149",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies; the rule's claim (call as the logged-in user) does not hold."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "supabase/functions/ai-ticket-routing/index.ts",
+   "line": 11,
+   "fingerprint": "50a6db8cc801b3e286189e0d2abfaf6f",
+   "verdict": "tp",
+   "reason": "verify_jwt is false and the function never checks the caller, yet calls OpenAI."
+  },
+  {
+   "rule": "DATA010",
+   "file": "supabase/functions/ai-ticket-routing/index.ts",
+   "line": 11,
+   "fingerprint": "4f3218e9ce4a842ba1c29560e7362d18",
+   "verdict": "tp",
+   "reason": "Inserts into one table and updates another with no transaction."
+  },
+  {
+   "rule": "LLM004",
+   "file": "supabase/functions/ai-ticket-routing/index.ts",
+   "line": 11,
+   "fingerprint": "19ee3a603710ff81bf4017dc4fc097b2",
+   "verdict": "tp",
+   "reason": "The function calls OpenAI and nothing in the project rate-limits it."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/create-agent/index.ts",
+   "line": 6,
+   "fingerprint": "61f7b9307897308ef118c736aefb9410",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies; the rule's claim (call as the logged-in user) does not hold."
+  },
+  {
+   "rule": "SEC011",
+   "file": "supabase/functions/create-agent/index.ts",
+   "line": 204,
+   "fingerprint": "dbef8876a83f4aa0421ded887d846c52",
+   "verdict": "fp",
+   "reason": "'custom_password' is a value of a method field in the response, not a password."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/generate-embeddings/index.ts",
+   "line": 7,
+   "fingerprint": "ba1a7233899802b5bc370b32f79e114a",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies; the rule's claim (call as the logged-in user) does not hold."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "supabase/functions/generate-embeddings/index.ts",
+   "line": 11,
+   "fingerprint": "758b03960cca48b3401d668f3127821c",
+   "verdict": "tp",
+   "reason": "verify_jwt is false and the function never checks the caller, yet calls OpenAI."
+  },
+  {
+   "rule": "LLM004",
+   "file": "supabase/functions/generate-embeddings/index.ts",
+   "line": 11,
+   "fingerprint": "a967e6ae028a71ad5f00f62a253be5ee",
+   "verdict": "tp",
+   "reason": "The function calls OpenAI and nothing in the project rate-limits it."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/process-pdf-knowledge/index.ts",
+   "line": 6,
+   "fingerprint": "2f604b476e7ea8d5e04470c2947ce16d",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies; the rule's claim (call as the logged-in user) does not hold."
+  },
+  {
+   "rule": "QA004",
+   "file": "supabase/functions/process-pdf-knowledge/index.ts",
+   "line": 30,
+   "fingerprint": "6a94af42bc806ac7aa17a401ba02a305",
+   "verdict": "tp",
+   "reason": "PDF extraction is simulated with sample content; real parsing was never written."
+  },
+  {
+   "rule": "QA004",
+   "file": "supabase/functions/process-pdf-knowledge/index.ts",
+   "line": 61,
+   "fingerprint": "49069214832607a360ea8aa71b72429a",
+   "verdict": "tp",
+   "reason": "PDF extraction is simulated with sample content; real parsing was never written."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/send-notification/index.ts",
+   "line": 8,
+   "fingerprint": "ea8a35138f1a8a1918fa0c865fec181b",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies; the rule's claim (call as the logged-in user) does not hold."
+  }
+ ]
+}

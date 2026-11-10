@@ -1,0 +1,102 @@
+{
+ "repo": "physicalmediavault",
+ "commit": "c411c1698cf6cc68541536e3981526a51e7606ba",
+ "findings": [
+  {
+   "rule": "SEC006",
+   "file": ".env",
+   "line": 0,
+   "fingerprint": "c3a1c3a42a11a866b4ab7fa1978bee47",
+   "verdict": "fp",
+   "reason": "The tracked .env holds only the Supabase URL, project id and publishable key, which are public by design."
+  },
+  {
+   "rule": "QA002",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
+   "verdict": "tp",
+   "reason": "No CI configuration."
+  },
+  {
+   "rule": "UI006",
+   "file": "src/components/CollectionExpandedPanel.tsx",
+   "line": 39,
+   "fingerprint": "b4113671687938bba012748bab870fe9",
+   "verdict": "tp",
+   "reason": "The parent handlers delete the title or wishlist item immediately, with no confirmation or undo."
+  },
+  {
+   "rule": "UI002",
+   "file": "src/components/TitleCard.tsx",
+   "line": 21,
+   "fingerprint": "9fef774ddf8b95c54d19a57639aacc87",
+   "verdict": "tp",
+   "reason": "Clickable card div has no role, tabIndex or key handler."
+  },
+  {
+   "rule": "UI006",
+   "file": "src/components/TitleCard.tsx",
+   "line": 155,
+   "fingerprint": "824ccfeaa66a46dcddabe65130125e8f",
+   "verdict": "tp",
+   "reason": "The parent handlers delete the title or wishlist item immediately, with no confirmation or undo."
+  },
+  {
+   "rule": "UI006",
+   "file": "src/pages/Wishlist.tsx",
+   "line": 410,
+   "fingerprint": "f62ba096e41cd813d7036dcefffcf53c",
+   "verdict": "tp",
+   "reason": "The parent handlers delete the title or wishlist item immediately, with no confirmation or undo."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/backfill-runtime/index.ts",
+   "line": 5,
+   "fingerprint": "e506d67929a57cc8a7992f4f37ebd513",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies, so no call as the logged-in user."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/bluray-search/index.ts",
+   "line": 5,
+   "fingerprint": "64b860db307b7b85d61f9c2a315a71c3",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies, so no call as the logged-in user."
+  },
+  {
+   "rule": "BE018",
+   "file": "supabase/functions/bluray-search/index.ts",
+   "line": 9,
+   "fingerprint": "8f00e54acb7f7dfee7be579689ed7ff2",
+   "verdict": "tp",
+   "reason": "action, keyword, country and url from req.json() are used without validation."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/letterboxd-watched/index.ts",
+   "line": 6,
+   "fingerprint": "559ad95704a100c83d6cd8e7478bf09e",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies, so no call as the logged-in user."
+  },
+  {
+   "rule": "BE005",
+   "file": "supabase/functions/letterboxd-watched/index.ts",
+   "line": 120,
+   "fingerprint": "99cab7b35bae267ddc1e0985945218b2",
+   "verdict": "fp",
+   "reason": "The URL host is fixed (letterboxd.com); the user controls only the path, which is not SSRF."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/scrape-wishlist-url/index.ts",
+   "line": 4,
+   "fingerprint": "4cd1888bbb6b32ff68f08fdf09322680",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies, so no call as the logged-in user."
+  }
+ ]
+}

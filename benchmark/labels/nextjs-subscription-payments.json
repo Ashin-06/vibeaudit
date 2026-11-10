@@ -1,0 +1,78 @@
+{
+ "repo": "nextjs-subscription-payments",
+ "commit": "bdd0813206e47e6b218d42f15a7976c8a0d3c3eb",
+ "findings": [
+  {
+   "rule": "DATA010",
+   "file": "app/api/webhooks/route.ts",
+   "line": 24,
+   "fingerprint": "54774d5e452d3fa773c72e403e7c2662",
+   "verdict": "fp",
+   "reason": "Each Stripe event type does its own single write in a separate switch branch."
+  },
+  {
+   "rule": "BE008",
+   "file": "app/auth/callback/route.ts",
+   "line": 18,
+   "fingerprint": "59f94f1c124a0df624c58b9dda8aa049",
+   "verdict": "fp",
+   "reason": "The redirect target is the request's own origin plus a fixed path."
+  },
+  {
+   "rule": "BE008",
+   "file": "app/auth/reset_password/route.ts",
+   "line": 18,
+   "fingerprint": "af8b360442e5381c4bd5e7df6504bbce",
+   "verdict": "fp",
+   "reason": "The redirect target is the request's own origin plus a fixed path."
+  },
+  {
+   "rule": "UI011",
+   "file": "app/layout.tsx",
+   "line": 1,
+   "fingerprint": "7324db0ce11af75ed79ad2ce91b816e3",
+   "verdict": "tp",
+   "reason": "The app directory has no error.tsx."
+  },
+  {
+   "rule": "UI003",
+   "file": "components/ui/AccountForms/EmailForm.tsx",
+   "line": 52,
+   "fingerprint": "50c2e1a07dc29b263a2615b304ebe07c",
+   "verdict": "tp",
+   "reason": "The input has only a placeholder, no label or aria-label."
+  },
+  {
+   "rule": "UI003",
+   "file": "components/ui/AccountForms/NameForm.tsx",
+   "line": 46,
+   "fingerprint": "b0bec4a7d6ad192b8f0dba5bff25ded1",
+   "verdict": "tp",
+   "reason": "The input has only a placeholder, no label or aria-label."
+  },
+  {
+   "rule": "QA001",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "6ebc345ae714486cf41d50d631704e0c",
+   "verdict": "tp",
+   "reason": "No test files in the project."
+  },
+  {
+   "rule": "QA002",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
+   "verdict": "tp",
+   "reason": "No CI configuration."
+  },
+  {
+   "rule": "BE008",
+   "file": "utils/auth-helpers/server.ts",
+   "line": 15,
+   "fingerprint": "2835cb8be80853ba8bbb6df82acdfd4b",
+   "verdict": "fp",
+   "reason": "The path comes from the app's own server action results, not from the request."
+  }
+ ]
+}

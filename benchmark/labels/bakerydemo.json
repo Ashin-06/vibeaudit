@@ -1,0 +1,318 @@
+{
+ "repo": "bakerydemo",
+ "commit": "890285b95dcf980215ab9e9942d64ed2b47c48c3",
+ "findings": [
+  {
+   "rule": "SEC003",
+   "file": ".env.example",
+   "line": 2,
+   "fingerprint": "b66cc47df5c5be0b9a9712489eb30291",
+   "verdict": "fp",
+   "reason": "The documented demo admin token for the local fixture database (readme), only valid against localhost."
+  },
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile",
+   "line": 4,
+   "fingerprint": "a1a0c4664220f5fe84de365721cf983a",
+   "verdict": "tp",
+   "reason": "The final image has no USER instruction and runs as root."
+  },
+  {
+   "rule": "QA007",
+   "file": "bakerydemo/base/filters.py",
+   "line": 1,
+   "fingerprint": "beea3463fcdd456b49534d632357088f",
+   "verdict": "tp",
+   "reason": "Imported directly but not declared in requirements; it works only through wagtail's transitive installs."
+  },
+  {
+   "rule": "QA007",
+   "file": "bakerydemo/base/management/commands/create_random_data.py",
+   "line": 10,
+   "fingerprint": "f73a1288155cd9d9a6e57399b2652af8",
+   "verdict": "tp",
+   "reason": "Imported directly but not declared in requirements; it works only through wagtail's transitive installs."
+  },
+  {
+   "rule": "DATA001",
+   "file": "bakerydemo/base/management/commands/create_random_data.py",
+   "line": 131,
+   "fingerprint": "81c4ef465a6dc5447c3f58f41e13d9aa",
+   "verdict": "fp",
+   "reason": "A dev management command that generates random demo data; not request-time N+1."
+  },
+  {
+   "rule": "DATA001",
+   "file": "bakerydemo/base/management/commands/create_random_data.py",
+   "line": 135,
+   "fingerprint": "880813144bff43186f78aa35b84867a8",
+   "verdict": "fp",
+   "reason": "A dev management command that generates random demo data; not request-time N+1."
+  },
+  {
+   "rule": "DATA001",
+   "file": "bakerydemo/base/management/commands/create_random_data.py",
+   "line": 139,
+   "fingerprint": "831b48653b821e8fff5ce6aa340e46b6",
+   "verdict": "fp",
+   "reason": "A dev management command that generates random demo data; not request-time N+1."
+  },
+  {
+   "rule": "DATA001",
+   "file": "bakerydemo/base/management/commands/create_random_data.py",
+   "line": 143,
+   "fingerprint": "e7fe5fc167e73d21289be77b702aa9a8",
+   "verdict": "fp",
+   "reason": "A dev management command that generates random demo data; not request-time N+1."
+  },
+  {
+   "rule": "DATA001",
+   "file": "bakerydemo/base/management/commands/create_random_data.py",
+   "line": 152,
+   "fingerprint": "eb0da8f4e7ed726048f0e7c1ebbabfbc",
+   "verdict": "fp",
+   "reason": "A dev management command that generates random demo data; not request-time N+1."
+  },
+  {
+   "rule": "DATA001",
+   "file": "bakerydemo/base/management/commands/create_random_data.py",
+   "line": 163,
+   "fingerprint": "aa39b74fe2acac03af423e20bd207483",
+   "verdict": "fp",
+   "reason": "A dev management command that generates random demo data; not request-time N+1."
+  },
+  {
+   "rule": "QA007",
+   "file": "bakerydemo/base/migrations/0001_initial.py",
+   "line": 5,
+   "fingerprint": "4dbdb7a115a5c719993073d4274ac9cc",
+   "verdict": "tp",
+   "reason": "Imported directly but not declared in requirements; it works only through wagtail's transitive installs."
+  },
+  {
+   "rule": "QA007",
+   "file": "bakerydemo/blog/models.py",
+   "line": 6,
+   "fingerprint": "164a8e536a51517f91a9fde2c050da6a",
+   "verdict": "tp",
+   "reason": "Imported directly but not declared in requirements; it works only through wagtail's transitive installs."
+  },
+  {
+   "rule": "DATA001",
+   "file": "bakerydemo/locations/migrations/0010_migrate_operating_hours.py",
+   "line": 73,
+   "fingerprint": "71e6dd612628e9b79bc2282db8ffbd2a",
+   "verdict": "fp",
+   "reason": "A one-off migration runs a handful of sequence statements."
+  },
+  {
+   "rule": "SEC004",
+   "file": "bakerydemo/settings/base.py",
+   "line": 25,
+   "fingerprint": "c48abe23edcf1f5df13797d147c43a5a",
+   "verdict": "fp",
+   "reason": "base.py is the dev settings; production.py replaces SECRET_KEY from DJANGO_SECRET_KEY or an ephemeral random key."
+  },
+  {
+   "rule": "BE011",
+   "file": "bakerydemo/settings/base.py",
+   "line": 28,
+   "fingerprint": "d54149520a144593f154e68cee898f6a",
+   "verdict": "fp",
+   "reason": "base.py is the dev settings; production.py sets DEBUG = False."
+  },
+  {
+   "rule": "DATA007",
+   "file": "bakerydemo/settings/base.py",
+   "line": 131,
+   "fingerprint": "6a2d27b30a3f2610576957f80a1c985a",
+   "verdict": "fp",
+   "reason": "Read only inside an if \"X\" in os.environ guard; optional, unset keeps the default."
+  },
+  {
+   "rule": "SEC001",
+   "file": "bakerydemo/settings/base.py",
+   "line": 262,
+   "fingerprint": "69a6600a347841b9a9844c854464c13a",
+   "verdict": "tp",
+   "reason": "A Google API key is committed in settings (the comment says it is a demo key)."
+  },
+  {
+   "rule": "DATA007",
+   "file": "bakerydemo/settings/base.py",
+   "line": 310,
+   "fingerprint": "17794b8736d1ec1072301e8dc9a7fbc9",
+   "verdict": "fp",
+   "reason": "Read only inside an if \"X\" in os.environ guard; optional, unset keeps the default."
+  },
+  {
+   "rule": "DATA007",
+   "file": "bakerydemo/settings/base.py",
+   "line": 312,
+   "fingerprint": "22833fce0eee90b3d7ef13fb8c16285a",
+   "verdict": "fp",
+   "reason": "Read only inside an if \"X\" in os.environ guard; optional, unset keeps the default."
+  },
+  {
+   "rule": "DATA007",
+   "file": "bakerydemo/settings/base.py",
+   "line": 314,
+   "fingerprint": "165c8afa6fd88e9f76ad55a990547d62",
+   "verdict": "fp",
+   "reason": "Read only inside an if \"X\" in os.environ guard; optional, unset keeps the default."
+  },
+  {
+   "rule": "DATA007",
+   "file": "bakerydemo/settings/base.py",
+   "line": 318,
+   "fingerprint": "e8d22d0fa209df555c849101f14364cd",
+   "verdict": "fp",
+   "reason": "Read only inside an if \"X\" in os.environ guard; optional, unset keeps the default."
+  },
+  {
+   "rule": "CFG006",
+   "file": "bakerydemo/settings/dev.py",
+   "line": 10,
+   "fingerprint": "3d35f0d1c68c0ac9329ef774cfa4b2f8",
+   "verdict": "fp",
+   "reason": "dev.py and test.py settings, not production."
+  },
+  {
+   "rule": "DATA007",
+   "file": "bakerydemo/settings/production.py",
+   "line": 12,
+   "fingerprint": "5cbc2f3e68dd19921fbd8621e84f867c",
+   "verdict": "fp",
+   "reason": "Read only inside an if \"X\" in os.environ guard; optional, unset keeps the default."
+  },
+  {
+   "rule": "BE015",
+   "file": "bakerydemo/settings/production.py",
+   "line": 18,
+   "fingerprint": "48718487e7ceaaf86744db6c053fd930",
+   "verdict": "fp",
+   "reason": "random.SystemRandom() is backed by os.urandom and is cryptographically secure."
+  },
+  {
+   "rule": "CFG006",
+   "file": "bakerydemo/settings/production.py",
+   "line": 28,
+   "fingerprint": "846227e381f13112a0b132a7b9d540b3",
+   "verdict": "tp",
+   "reason": "The production settings default ALLOWED_HOSTS to \"*\"."
+  },
+  {
+   "rule": "DATA007",
+   "file": "bakerydemo/settings/production.py",
+   "line": 35,
+   "fingerprint": "119924c22c25e9d9c1b1127028619ede",
+   "verdict": "fp",
+   "reason": "Read only inside an if \"X\" in os.environ guard; optional, unset keeps the default."
+  },
+  {
+   "rule": "DATA007",
+   "file": "bakerydemo/settings/production.py",
+   "line": 53,
+   "fingerprint": "606b4196578e6954726d40f9477f5056",
+   "verdict": "fp",
+   "reason": "Optional: Redis caching is enabled only when REDIS_URL is set."
+  },
+  {
+   "rule": "DATA007",
+   "file": "bakerydemo/settings/production.py",
+   "line": 148,
+   "fingerprint": "aee54bc8f63fd7cd6d2a995ed4948313",
+   "verdict": "fp",
+   "reason": "Read only inside an if \"X\" in os.environ guard; optional, unset keeps the default."
+  },
+  {
+   "rule": "DATA007",
+   "file": "bakerydemo/settings/production.py",
+   "line": 155,
+   "fingerprint": "c5c1f38b0bb995564ea805e3dcbd8587",
+   "verdict": "fp",
+   "reason": "Read only inside an if \"X\" in os.environ guard; optional, unset keeps the default."
+  },
+  {
+   "rule": "DATA007",
+   "file": "bakerydemo/settings/production.py",
+   "line": 157,
+   "fingerprint": "015a57055736a6601b41a4f1693f5c70",
+   "verdict": "fp",
+   "reason": "Read only inside an if \"X\" in os.environ guard; optional, unset keeps the default."
+  },
+  {
+   "rule": "DATA007",
+   "file": "bakerydemo/settings/production.py",
+   "line": 160,
+   "fingerprint": "c8ba4e0fa5a13cfbbf78746dcdfd2086",
+   "verdict": "fp",
+   "reason": "Read only inside an if \"X\" in os.environ guard; optional, unset keeps the default."
+  },
+  {
+   "rule": "DATA007",
+   "file": "bakerydemo/settings/production.py",
+   "line": 161,
+   "fingerprint": "8368ff47972a1844a59cd913698c6121",
+   "verdict": "fp",
+   "reason": "Read only inside an if \"X\" in os.environ guard; optional, unset keeps the default."
+  },
+  {
+   "rule": "DATA007",
+   "file": "bakerydemo/settings/production.py",
+   "line": 201,
+   "fingerprint": "d91607931cee2a87ca58de49102fe3be",
+   "verdict": "fp",
+   "reason": "Read only inside a block guarded by the related variable being set; optional feature configured as a group."
+  },
+  {
+   "rule": "DATA007",
+   "file": "bakerydemo/settings/production.py",
+   "line": 213,
+   "fingerprint": "e432f74bfbb7225cd64aaa5a6c92b668",
+   "verdict": "fp",
+   "reason": "Read only inside a block guarded by the related variable being set; optional feature configured as a group."
+  },
+  {
+   "rule": "DATA007",
+   "file": "bakerydemo/settings/production.py",
+   "line": 214,
+   "fingerprint": "0b49786fa44ff3edb03ce188b677f0f8",
+   "verdict": "fp",
+   "reason": "Read only inside a block guarded by the related variable being set; optional feature configured as a group."
+  },
+  {
+   "rule": "DATA007",
+   "file": "bakerydemo/settings/production.py",
+   "line": 223,
+   "fingerprint": "e9ab72ee8f49fe21f1f97b5426d04c67",
+   "verdict": "fp",
+   "reason": "Read only inside a block guarded by the related variable being set; optional feature configured as a group."
+  },
+  {
+   "rule": "DATA007",
+   "file": "bakerydemo/settings/production.py",
+   "line": 244,
+   "fingerprint": "5ea8f0da6c19ab1c35e780f8843e63b8",
+   "verdict": "fp",
+   "reason": "Read only inside a block guarded by the related variable being set; optional feature configured as a group."
+  },
+  {
+   "rule": "CFG006",
+   "file": "bakerydemo/settings/test.py",
+   "line": 6,
+   "fingerprint": "5a7302b9a62efadc95d34e0d39bbfaf3",
+   "verdict": "fp",
+   "reason": "dev.py and test.py settings, not production."
+  },
+  {
+   "rule": "CFG007",
+   "file": "docker-compose.yml",
+   "line": 6,
+   "fingerprint": "1ba9c4a30ce4d2cc2af752bc4fd3324d",
+   "verdict": "tp",
+   "reason": "docker-compose sets the default postgres password."
+  }
+ ]
+}

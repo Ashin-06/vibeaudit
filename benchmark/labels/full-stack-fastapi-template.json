@@ -1,0 +1,86 @@
+{
+ "repo": "full-stack-fastapi-template",
+ "commit": "aabb90126964a164e02aff39e7c385bb0598236d",
+ "findings": [
+  {
+   "rule": "CFG001",
+   "file": "backend/Dockerfile",
+   "line": 19,
+   "fingerprint": "cccde6cf5585dd2720349ec6308c5a22",
+   "verdict": "tp",
+   "reason": "The final image has no USER instruction and runs as root."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "backend/app/api/routes/login.py",
+   "line": 24,
+   "fingerprint": "966f74ba6965748ce7adceeb01e546b3",
+   "verdict": "tp",
+   "reason": "The password login has no rate limit."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "backend/app/api/routes/login.py",
+   "line": 46,
+   "fingerprint": "69a798b3eec34e1a6e76b5a54212bc04",
+   "verdict": "fp",
+   "reason": "test-token takes no password; it only echoes the bearer token's user."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "backend/app/api/routes/login.py",
+   "line": 54,
+   "fingerprint": "bd38a5ebd5d313fdae00b8bc5c34ec6b",
+   "verdict": "tp",
+   "reason": "Password recovery emails can be triggered without limit for any address."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "backend/app/api/routes/login.py",
+   "line": 78,
+   "fingerprint": "66ea844b42ce61ad59e5761322be3f2e",
+   "verdict": "fp",
+   "reason": "Reset needs a signed JWT; there is nothing guessable to rate-limit."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "backend/app/api/routes/login.py",
+   "line": 105,
+   "fingerprint": "4a3230b325e4de15fbfb93ec838e5a42",
+   "verdict": "fp",
+   "reason": "The route is superuser-only (get_current_active_superuser dependency)."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "backend/app/api/routes/users.py",
+   "line": 104,
+   "fingerprint": "616d3d759f43a4b27929c417f0292209",
+   "verdict": "tp",
+   "reason": "Nothing limits guesses at the current password on /me/password."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "backend/app/api/routes/users.py",
+   "line": 187,
+   "fingerprint": "4c8a3dd7be6abc0726d1540d6abf1e6d",
+   "verdict": "fp",
+   "reason": "The route is superuser-only via the decorator dependency, an admin edit by design."
+  },
+  {
+   "rule": "CFG001",
+   "file": "frontend/Dockerfile.playwright",
+   "line": 1,
+   "fingerprint": "aaec1e760b76f092fc34e41c8c31dd14",
+   "verdict": "tp",
+   "reason": "The final image has no USER instruction and runs as root."
+  },
+  {
+   "rule": "FE005",
+   "file": "frontend/src/hooks/useAuth.ts",
+   "line": 45,
+   "fingerprint": "045e9334cb82070b254ba6deee0a1f4f",
+   "verdict": "tp",
+   "reason": "The access token is stored in localStorage."
+  }
+ ]
+}

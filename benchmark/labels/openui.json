@@ -1,0 +1,238 @@
+{
+ "repo": "openui",
+ "commit": "42d7ab4ab6650433486dfb12eb3783c393a3e475",
+ "findings": [
+  {
+   "rule": "REL006",
+   "file": "backend/Dockerfile",
+   "line": 1,
+   "fingerprint": "efe4ec5fc2a06b5a562f0bf3a2610c32",
+   "verdict": "tp",
+   "reason": "The backend is deployed with a Dockerfile, has 12 routes and no health route."
+  },
+  {
+   "rule": "CFG001",
+   "file": "backend/Dockerfile",
+   "line": 19,
+   "fingerprint": "5e40672308a5667854de4ba5af1ae7e1",
+   "verdict": "tp",
+   "reason": "The distroless final image does not set a non-root USER."
+  },
+  {
+   "rule": "QA003",
+   "file": "backend/openui/__main__.py",
+   "line": 25,
+   "fingerprint": "59e74c5f5e0acc2d831ec25ff5d8909b",
+   "verdict": "tp",
+   "reason": "except Exception: pass with no comment."
+  },
+  {
+   "rule": "LLM012",
+   "file": "backend/openui/eval/evaluate.py",
+   "line": 42,
+   "fingerprint": "7f5eafb1233f8a074e4cce4914f486ec",
+   "verdict": "tp",
+   "reason": "gpt-4-vision-preview is retired."
+  },
+  {
+   "rule": "BE003",
+   "file": "backend/openui/eval/evaluate.py",
+   "line": 194,
+   "fingerprint": "fcbc02fa5a6b6939bac09ebd824df422",
+   "verdict": "fp",
+   "reason": "eval here is the module's own async def eval(), not the builtin."
+  },
+  {
+   "rule": "QA007",
+   "file": "backend/openui/eval/evaluate_weave.py",
+   "line": 6,
+   "fingerprint": "99b63a7d06c14fb903a7aa0edd1def92",
+   "verdict": "tp",
+   "reason": "Imported directly but not declared in pyproject (not in the eval or tui extras either)."
+  },
+  {
+   "rule": "BE003",
+   "file": "backend/openui/eval/evaluate_weave.py",
+   "line": 428,
+   "fingerprint": "b9968fe1f914615e4ad720b1af111340",
+   "verdict": "fp",
+   "reason": "eval here is the module's own async def eval(), not the builtin."
+  },
+  {
+   "rule": "LLM003",
+   "file": "backend/openui/eval/model.py",
+   "line": 37,
+   "fingerprint": "b458b25e3507dcccfa4debe4210f2dfc",
+   "verdict": "tp",
+   "reason": "The model call has no max_tokens."
+  },
+  {
+   "rule": "QA007",
+   "file": "backend/openui/eval/promptsearch.py",
+   "line": 2,
+   "fingerprint": "d53b88943b7b831e9c66f5c987457017",
+   "verdict": "tp",
+   "reason": "Imported directly but not declared in pyproject (not in the eval or tui extras either)."
+  },
+  {
+   "rule": "LLM003",
+   "file": "backend/openui/eval/promptsearch.py",
+   "line": 69,
+   "fingerprint": "a5feec3aeccbfe6fc50ac32a48754dac",
+   "verdict": "tp",
+   "reason": "The model call has no max_tokens."
+  },
+  {
+   "rule": "REL001",
+   "file": "backend/openui/eval/scrape.py",
+   "line": 96,
+   "fingerprint": "89265df3c410595c9e83cdfe214ad796",
+   "verdict": "tp",
+   "reason": "urlopen() has no timeout."
+  },
+  {
+   "rule": "FE001",
+   "file": "backend/openui/eval/svg_annotator.html",
+   "line": 407,
+   "fingerprint": "2b4c6eab7623caff1427b4a229a386e0",
+   "verdict": "tp",
+   "reason": "Model-generated SVG is inserted with innerHTML in the annotator page."
+  },
+  {
+   "rule": "LLM012",
+   "file": "backend/openui/litellm.py",
+   "line": 14,
+   "fingerprint": "30d7eea5e95413352dde56d7fcd43e20",
+   "verdict": "tp",
+   "reason": "The model id is retired by its provider."
+  },
+  {
+   "rule": "LLM012",
+   "file": "backend/openui/litellm.py",
+   "line": 20,
+   "fingerprint": "4384df1284ac9f4243fd26e79be90e89",
+   "verdict": "tp",
+   "reason": "The model id is retired by its provider."
+  },
+  {
+   "rule": "LLM012",
+   "file": "backend/openui/litellm.py",
+   "line": 34,
+   "fingerprint": "6b8c6adb2990e5eecf28bc6444049657",
+   "verdict": "tp",
+   "reason": "The model id is retired by its provider."
+  },
+  {
+   "rule": "LLM012",
+   "file": "backend/openui/litellm.py",
+   "line": 40,
+   "fingerprint": "b5c4452339b80fdd2e41e01a0f3c22b4",
+   "verdict": "tp",
+   "reason": "The model id is retired by its provider."
+  },
+  {
+   "rule": "QA007",
+   "file": "backend/openui/server.py",
+   "line": 24,
+   "fingerprint": "5e0e24bb6954352852ef38ec523619ba",
+   "verdict": "tp",
+   "reason": "Imported directly but not declared in pyproject (not in the eval or tui extras either)."
+  },
+  {
+   "rule": "LLM012",
+   "file": "backend/openui/server.py",
+   "line": 135,
+   "fingerprint": "463a4a6708aa97d60455ad12c2f81e51",
+   "verdict": "fp",
+   "reason": "gpt-4-32k is only named to reject it (\"Model not supported\")."
+  },
+  {
+   "rule": "QA007",
+   "file": "backend/openui/tui/app.py",
+   "line": 11,
+   "fingerprint": "f7e9499d7ab837e08796b2f78911252d",
+   "verdict": "tp",
+   "reason": "Imported directly but not declared in pyproject (not in the eval or tui extras either)."
+  },
+  {
+   "rule": "FE004",
+   "file": "frontend/public/annotator/index.html",
+   "line": 513,
+   "fingerprint": "4cf9a78bdd77d0b57cf253a899b588bf",
+   "verdict": "tp",
+   "reason": "The annotator iframe accepts postMessage from any origin."
+  },
+  {
+   "rule": "FE001",
+   "file": "frontend/public/annotator/index.html",
+   "line": 566,
+   "fingerprint": "1f983e6bb2272837d566ab123997a855",
+   "verdict": "tp",
+   "reason": "event.data.html from any sender is written with innerHTML."
+  },
+  {
+   "rule": "LLM003",
+   "file": "frontend/src/api/openai.ts",
+   "line": 245,
+   "fingerprint": "b5a740c6f06fc79e7c73959a5b2b3e56",
+   "verdict": "tp",
+   "reason": "The model call has no max_tokens."
+  },
+  {
+   "rule": "FE001",
+   "file": "frontend/src/components/HtmlAnnotator.tsx",
+   "line": 700,
+   "fingerprint": "a9ae754b5c221ccb45a10d60ccc798f1",
+   "verdict": "tp",
+   "reason": "image.url is interpolated into HTML written to a new tab without escaping."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/components/ShareDialog.tsx",
+   "line": 75,
+   "fingerprint": "40e1cbf42a0cfc333b6e6acbfdf6daa0",
+   "verdict": "tp",
+   "reason": "The share-link input has no label or aria-label."
+  },
+  {
+   "rule": "FE007",
+   "file": "frontend/src/components/VersionPreview.tsx",
+   "line": 28,
+   "fingerprint": "7423501ce1d26427132368ee1b072337",
+   "verdict": "fp",
+   "reason": "localhost is used only when the app itself runs on localhost."
+  },
+  {
+   "rule": "SEC003",
+   "file": "frontend/src/lib/html.ts",
+   "line": 9,
+   "fingerprint": "39717d004b5005dc64eabe412e506454",
+   "verdict": "fp",
+   "reason": "An Unsplash Access Key is the public client id, meant for browser requests."
+  },
+  {
+   "rule": "FE005",
+   "file": "frontend/src/lib/webauthn.ts",
+   "line": 70,
+   "fingerprint": "2b0cf7550c7a02e48216256047b2f17c",
+   "verdict": "fp",
+   "reason": "localStorage holds the WebAuthn credential id and public key, not a token."
+  },
+  {
+   "rule": "FE005",
+   "file": "frontend/src/lib/webauthn.ts",
+   "line": 71,
+   "fingerprint": "afb42fcf0856b5cde56163c33fa43baa",
+   "verdict": "fp",
+   "reason": "localStorage holds the WebAuthn credential id and public key, not a token."
+  },
+  {
+   "rule": "QA004",
+   "file": "frontend/src/lib/webauthn.ts",
+   "line": 115,
+   "fingerprint": "a1973da95fc651054f86b149af1f692b",
+   "verdict": "tp",
+   "reason": "The WebAuthn assertion is never verified (TODO)."
+  }
+ ]
+}

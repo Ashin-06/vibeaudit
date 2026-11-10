@@ -1,0 +1,238 @@
+{
+ "repo": "next-learn",
+ "commit": "bb2558441a6673ab76c89914c25018bffa27a2ba",
+ "findings": [
+  {
+   "rule": "FE001",
+   "file": "basics/api-routes-starter/pages/posts/[id].js",
+   "line": 18,
+   "fingerprint": "f70219386a27bd9fb6b221db22d0990d",
+   "verdict": "fp",
+   "reason": "contentHtml is built from the repo's own markdown posts with remark."
+  },
+  {
+   "rule": "FE001",
+   "file": "basics/basics-final/pages/posts/[id].js",
+   "line": 18,
+   "fingerprint": "3273715b6711ad220a58c96219531f16",
+   "verdict": "fp",
+   "reason": "contentHtml is built from the repo's own markdown posts with remark."
+  },
+  {
+   "rule": "FE001",
+   "file": "basics/demo/pages/posts/[id].js",
+   "line": 18,
+   "fingerprint": "5030cdfab01e3ebbe12088228d09b9a7",
+   "verdict": "fp",
+   "reason": "contentHtml is built from the repo's own markdown posts with remark."
+  },
+  {
+   "rule": "FE001",
+   "file": "basics/typescript-final/pages/posts/[id].tsx",
+   "line": 27,
+   "fingerprint": "56a5352ea600e8776ac2e0561d76ae1b",
+   "verdict": "fp",
+   "reason": "contentHtml is built from the repo's own markdown posts with remark."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "dashboard/final-example/app/lib/actions.ts",
+   "line": 38,
+   "fingerprint": "77e563902f4a3445d489ede0fc3a8f0e",
+   "verdict": "tp",
+   "reason": "Server actions are callable by anyone with the action id; middleware on /dashboard does not protect them and they check no session."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "dashboard/final-example/app/lib/actions.ts",
+   "line": 77,
+   "fingerprint": "4d01f90fb73f68b1720fdb675f00b079",
+   "verdict": "tp",
+   "reason": "Server actions are callable by anyone with the action id; middleware on /dashboard does not protect them and they check no session."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "dashboard/final-example/app/lib/actions.ts",
+   "line": 112,
+   "fingerprint": "10f42572edb077665f73cd45b3b25b73",
+   "verdict": "tp",
+   "reason": "Server actions are callable by anyone with the action id; middleware on /dashboard does not protect them and they check no session."
+  },
+  {
+   "rule": "SEC011",
+   "file": "dashboard/final-example/app/lib/placeholder-data.ts",
+   "line": 8,
+   "fingerprint": "37fd4adf95700ac50fa5429b80868c83",
+   "verdict": "fp",
+   "reason": "Placeholder seed users for the tutorial database."
+  },
+  {
+   "rule": "BE001",
+   "file": "dashboard/final-example/app/seed/route.ts",
+   "line": 18,
+   "fingerprint": "49800948c5032fbf70de1d32c4a4884a",
+   "verdict": "fp",
+   "reason": "postgres.js sql tagged templates send ${} values as parameters."
+  },
+  {
+   "rule": "BE001",
+   "file": "dashboard/final-example/app/seed/route.ts",
+   "line": 45,
+   "fingerprint": "b8e5df7bc512d336dacdb690990ac2d5",
+   "verdict": "fp",
+   "reason": "postgres.js sql tagged templates send ${} values as parameters."
+  },
+  {
+   "rule": "BE001",
+   "file": "dashboard/final-example/app/seed/route.ts",
+   "line": 70,
+   "fingerprint": "4539398b528928e79f8e163c2aabb092",
+   "verdict": "fp",
+   "reason": "postgres.js sql tagged templates send ${} values as parameters."
+  },
+  {
+   "rule": "BE001",
+   "file": "dashboard/final-example/app/seed/route.ts",
+   "line": 91,
+   "fingerprint": "6e181bd52f6fbe7c6ad8948f23a71098",
+   "verdict": "fp",
+   "reason": "postgres.js sql tagged templates send ${} values as parameters."
+  },
+  {
+   "rule": "UI003",
+   "file": "dashboard/final-example/app/ui/search.tsx",
+   "line": 32,
+   "fingerprint": "65e9e63ab13634498cdb5610b0572dc3",
+   "verdict": "tp",
+   "reason": "The label has htmlFor=\"search\" but the input has no id, so they are not associated."
+  },
+  {
+   "rule": "UI012",
+   "file": "dashboard/starter-example/app/layout.tsx",
+   "line": 1,
+   "fingerprint": "25e5a5b59c266d164c522430e75f7852",
+   "verdict": "tp",
+   "reason": "The root layout exports no metadata."
+  },
+  {
+   "rule": "SEC011",
+   "file": "dashboard/starter-example/app/lib/placeholder-data.ts",
+   "line": 8,
+   "fingerprint": "dd94cbc5287f1c7fe26c52aac8be4338",
+   "verdict": "fp",
+   "reason": "Placeholder seed users for the tutorial database."
+  },
+  {
+   "rule": "BE001",
+   "file": "dashboard/starter-example/app/seed/route.ts",
+   "line": 18,
+   "fingerprint": "6376c1a4749fad993d1fe5143f726846",
+   "verdict": "fp",
+   "reason": "postgres.js sql tagged templates send ${} values as parameters."
+  },
+  {
+   "rule": "BE001",
+   "file": "dashboard/starter-example/app/seed/route.ts",
+   "line": 45,
+   "fingerprint": "0d4903b27b13cddb2ff035967ff09ca8",
+   "verdict": "fp",
+   "reason": "postgres.js sql tagged templates send ${} values as parameters."
+  },
+  {
+   "rule": "BE001",
+   "file": "dashboard/starter-example/app/seed/route.ts",
+   "line": 70,
+   "fingerprint": "2be25be4f44423f273ec6b3d83f86d17",
+   "verdict": "fp",
+   "reason": "postgres.js sql tagged templates send ${} values as parameters."
+  },
+  {
+   "rule": "BE001",
+   "file": "dashboard/starter-example/app/seed/route.ts",
+   "line": 91,
+   "fingerprint": "6283d904f7b743fa67a3e17dc667e381",
+   "verdict": "fp",
+   "reason": "postgres.js sql tagged templates send ${} values as parameters."
+  },
+  {
+   "rule": "QA006",
+   "file": "dashboard/starter-example/app/ui/acme-logo.tsx",
+   "line": 2,
+   "fingerprint": "020ad2a38ec2e302f9ffc24e49786ca9",
+   "verdict": "tp",
+   "reason": "The starter imports @/app/ui/fonts, which does not exist until the tutorial adds it; it fails to build as shipped."
+  },
+  {
+   "rule": "QA006",
+   "file": "dashboard/starter-example/app/ui/customers/table.tsx",
+   "line": 2,
+   "fingerprint": "3eab3a20968a6a2437c87d8547a52b5c",
+   "verdict": "tp",
+   "reason": "The starter imports @/app/ui/fonts, which does not exist until the tutorial adds it; it fails to build as shipped."
+  },
+  {
+   "rule": "QA006",
+   "file": "dashboard/starter-example/app/ui/dashboard/cards.tsx",
+   "line": 7,
+   "fingerprint": "96f87498c751cdd0003448c7db0e752c",
+   "verdict": "tp",
+   "reason": "The starter imports @/app/ui/fonts, which does not exist until the tutorial adds it; it fails to build as shipped."
+  },
+  {
+   "rule": "QA006",
+   "file": "dashboard/starter-example/app/ui/dashboard/latest-invoices.tsx",
+   "line": 4,
+   "fingerprint": "b7ecae76456247460367e8a8d5d587c7",
+   "verdict": "tp",
+   "reason": "The starter imports @/app/ui/fonts, which does not exist until the tutorial adds it; it fails to build as shipped."
+  },
+  {
+   "rule": "QA006",
+   "file": "dashboard/starter-example/app/ui/dashboard/revenue-chart.tsx",
+   "line": 3,
+   "fingerprint": "c1f35bd1182634ef4c26d8053f88c0cc",
+   "verdict": "tp",
+   "reason": "The starter imports @/app/ui/fonts, which does not exist until the tutorial adds it; it fails to build as shipped."
+  },
+  {
+   "rule": "QA006",
+   "file": "dashboard/starter-example/app/ui/invoices/breadcrumbs.tsx",
+   "line": 3,
+   "fingerprint": "57d6487f4547d90dc7b256cd9a2f25c6",
+   "verdict": "tp",
+   "reason": "The starter imports @/app/ui/fonts, which does not exist until the tutorial adds it; it fails to build as shipped."
+  },
+  {
+   "rule": "QA006",
+   "file": "dashboard/starter-example/app/ui/login-form.tsx",
+   "line": 1,
+   "fingerprint": "6452b25ade6dd6bcb366dc859afde5d5",
+   "verdict": "tp",
+   "reason": "The starter imports @/app/ui/fonts, which does not exist until the tutorial adds it; it fails to build as shipped."
+  },
+  {
+   "rule": "UI003",
+   "file": "dashboard/starter-example/app/ui/search.tsx",
+   "line": 11,
+   "fingerprint": "38b379341081c40ed318a56fcae1bcb0",
+   "verdict": "tp",
+   "reason": "The label has htmlFor=\"search\" but the input has no id, so they are not associated."
+  },
+  {
+   "rule": "QA001",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "6ebc345ae714486cf41d50d631704e0c",
+   "verdict": "tp",
+   "reason": "No test files in the project."
+  },
+  {
+   "rule": "UI003",
+   "file": "seo/pages/index.js",
+   "line": 42,
+   "fingerprint": "b5509927339683a778dfc3cb553f1665",
+   "verdict": "tp",
+   "reason": "The search input has only a placeholder, no label or aria-label."
+  }
+ ]
+}

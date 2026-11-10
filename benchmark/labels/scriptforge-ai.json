@@ -1,0 +1,182 @@
+{
+ "repo": "scriptforge-ai",
+ "commit": "07f5342b53db706d7afc0ae85b1e29a4145bd5dc",
+ "findings": [
+  {
+   "rule": "QA002",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
+   "verdict": "tp",
+   "reason": "No CI configuration."
+  },
+  {
+   "rule": "QA007",
+   "file": "playwright-fixture.ts",
+   "line": 3,
+   "fingerprint": "f40d91face0409e1cdbd2d2d36f8b057",
+   "verdict": "tp",
+   "reason": "lovable-agent-playwright-config is imported but not in package.json."
+  },
+  {
+   "rule": "UI002",
+   "file": "src/components/UsageBadge.tsx",
+   "line": 44,
+   "fingerprint": "a5e27d0f23cdc7993ac6c24bf93c1fc2",
+   "verdict": "fp",
+   "reason": "Transparent backdrop that closes the popover on outside click; the popover has its own controls."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/pages/Auth.tsx",
+   "line": 132,
+   "fingerprint": "f70b9d0bb825006c4981c74ac166b2db",
+   "verdict": "tp",
+   "reason": "Auth form inputs have only an icon and placeholder, no label, aria-label or id."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/pages/Auth.tsx",
+   "line": 143,
+   "fingerprint": "66c4772ff227f23554d198c9d4a5d37d",
+   "verdict": "tp",
+   "reason": "Auth form inputs have only an icon and placeholder, no label, aria-label or id."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/pages/Auth.tsx",
+   "line": 154,
+   "fingerprint": "3ed4223eb0450d10a7f0bc8c55182c78",
+   "verdict": "tp",
+   "reason": "Auth form inputs have only an icon and placeholder, no label, aria-label or id."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/pages/ResetPassword.tsx",
+   "line": 59,
+   "fingerprint": "034c574b9d1f24352f856ed3e482eeba",
+   "verdict": "tp",
+   "reason": "Auth form inputs have only an icon and placeholder, no label, aria-label or id."
+  },
+  {
+   "rule": "UI009",
+   "file": "src/pages/Settings.tsx",
+   "line": 26,
+   "fingerprint": "f05d71909f36d40f5102188734230276",
+   "verdict": "tp",
+   "reason": "Settings fetches profile data in an effect with no loading or error state."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/create-checkout/index.ts",
+   "line": 5,
+   "fingerprint": "c4ecbfd658911b476df2215466b2c70f",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies, so no call as the logged-in user."
+  },
+  {
+   "rule": "BE018",
+   "file": "supabase/functions/create-checkout/index.ts",
+   "line": 42,
+   "fingerprint": "8e8ada75617c64300b76b2c62e4db87a",
+   "verdict": "fp",
+   "reason": "The only body field, billing_period, is type-checked before it is used as a URL parameter."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/enhance-prompt/index.ts",
+   "line": 4,
+   "fingerprint": "ec5adf79cb9114ebad806647322bc29b",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies, so no call as the logged-in user."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "supabase/functions/enhance-prompt/index.ts",
+   "line": 12,
+   "fingerprint": "5d53945c544d5bbf043d070f7104a4e7",
+   "verdict": "tp",
+   "reason": "The function calls a paid model and never checks the caller (anon key or verify_jwt=false)."
+  },
+  {
+   "rule": "LLM004",
+   "file": "supabase/functions/enhance-prompt/index.ts",
+   "line": 12,
+   "fingerprint": "42c955b1cad029a6b78c238b1b9b80e6",
+   "verdict": "tp",
+   "reason": "The model endpoint has no rate limiting anywhere in the project."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/generate-script/index.ts",
+   "line": 5,
+   "fingerprint": "523055a4a91620099868861c551b6991",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies, so no call as the logged-in user."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "supabase/functions/generate-script/index.ts",
+   "line": 10,
+   "fingerprint": "43d6d70095e1b27563ec1914e404c6c0",
+   "verdict": "tp",
+   "reason": "The function calls a paid model and never checks the caller (anon key or verify_jwt=false)."
+  },
+  {
+   "rule": "LLM004",
+   "file": "supabase/functions/generate-script/index.ts",
+   "line": 10,
+   "fingerprint": "eff01f85e5c83464e982ce15541c9215",
+   "verdict": "tp",
+   "reason": "The model endpoint has no rate limiting anywhere in the project."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/groq-check/index.ts",
+   "line": 2,
+   "fingerprint": "cd0d2f540b092874a456321d84885cdc",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies, so no call as the logged-in user."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "supabase/functions/groq-check/index.ts",
+   "line": 6,
+   "fingerprint": "3d5c3013c190cd0d86582a452084921d",
+   "verdict": "tp",
+   "reason": "The function calls a paid model and never checks the caller (anon key or verify_jwt=false)."
+  },
+  {
+   "rule": "LLM004",
+   "file": "supabase/functions/groq-check/index.ts",
+   "line": 6,
+   "fingerprint": "e8dfbabc8d51a9e3292a2bf6815fec83",
+   "verdict": "tp",
+   "reason": "The model endpoint has no rate limiting anywhere in the project."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/payment-webhook/index.ts",
+   "line": 5,
+   "fingerprint": "a828a93fcaaf804aaba0a6b6f0483df6",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies, so no call as the logged-in user."
+  },
+  {
+   "rule": "AUTH004",
+   "file": "supabase/functions/payment-webhook/index.ts",
+   "line": 26,
+   "fingerprint": "a2be462b887ac66243e424d1d4a496da",
+   "verdict": "fp",
+   "reason": "The webhook compares the x-webhook-signature header with a shared secret in constant time."
+  },
+  {
+   "rule": "REL003",
+   "file": "supabase/functions/payment-webhook/index.ts",
+   "line": 26,
+   "fingerprint": "f89b0a868e3a9a15a2cbfe0b040a741a",
+   "verdict": "tp",
+   "reason": "The webhook updates subscriptions without checking whether the event was already processed."
+  }
+ ]
+}

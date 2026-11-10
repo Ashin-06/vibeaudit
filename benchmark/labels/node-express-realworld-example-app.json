@@ -1,0 +1,126 @@
+{
+ "repo": "node-express-realworld-example-app",
+ "commit": "30b68e1e881462b2f4164ea09ab4c4f5699c7b0b",
+ "findings": [
+  {
+   "rule": "REL006",
+   "file": "Dockerfile",
+   "line": 1,
+   "fingerprint": "3b650a62c6bb91ce881db5b02259604a",
+   "verdict": "tp",
+   "reason": "The service is deployed with a Dockerfile, has 20 routes and no health route."
+  },
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile",
+   "line": 7,
+   "fingerprint": "fc886f135b2c8216a668e6cc380dee3d",
+   "verdict": "tp",
+   "reason": "The final image has no USER instruction and runs as root."
+  },
+  {
+   "rule": "QA002",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
+   "verdict": "tp",
+   "reason": "No CI configuration."
+  },
+  {
+   "rule": "BE018",
+   "file": "src/app/routes/article/article.controller.ts",
+   "line": 71,
+   "fingerprint": "c9734f1ce290eae1623ce0cff19c2fa2",
+   "verdict": "fp",
+   "reason": "The service validates required fields by hand (422 \"can't be blank\") before writing."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/app/routes/article/article.controller.ts",
+   "line": 110,
+   "fingerprint": "cbde6dabb36530da5ec354355100d8e9",
+   "verdict": "fp",
+   "reason": "The handler passes the caller's id to the service, which checks the author and throws 403."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/app/routes/article/article.controller.ts",
+   "line": 129,
+   "fingerprint": "0b0304d98176d3f793db0736d88e41c9",
+   "verdict": "fp",
+   "reason": "The handler passes the caller's id to the service, which checks the author and throws 403."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/app/routes/article/article.controller.ts",
+   "line": 190,
+   "fingerprint": "e374ebf67d16221d6fe9e165a126621d",
+   "verdict": "fp",
+   "reason": "The handler passes the caller's id to the service, which checks the author and throws 403."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/app/routes/article/article.controller.ts",
+   "line": 230,
+   "fingerprint": "2d029c99d9125cafac279e4b8b97197d",
+   "verdict": "fp",
+   "reason": "The handler passes the caller's id to the service, which checks the author and throws 403."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "src/app/routes/auth/auth.controller.ts",
+   "line": 30,
+   "fingerprint": "90243bf7eecf9ce040a4ad6d10928124",
+   "verdict": "tp",
+   "reason": "The password login has no rate limit."
+  },
+  {
+   "rule": "SEC004",
+   "file": "src/app/routes/auth/auth.ts",
+   "line": 16,
+   "fingerprint": "878f68c40c2ba74dd95fd2d8f2f74d89",
+   "verdict": "tp",
+   "reason": "The JWT secret falls back to 'superSecret' when the env var is missing."
+  },
+  {
+   "rule": "SEC004",
+   "file": "src/app/routes/auth/auth.ts",
+   "line": 21,
+   "fingerprint": "883dc2fd475fc8c1da5e2e32df16f008",
+   "verdict": "tp",
+   "reason": "The JWT secret falls back to 'superSecret' when the env var is missing."
+  },
+  {
+   "rule": "SEC004",
+   "file": "src/app/routes/auth/token.utils.ts",
+   "line": 4,
+   "fingerprint": "2957ca39b3d4c0a6e53a6a063a12499e",
+   "verdict": "tp",
+   "reason": "The JWT secret falls back to 'superSecret' when the env var is missing."
+  },
+  {
+   "rule": "CFG008",
+   "file": "src/main.ts",
+   "line": 7,
+   "fingerprint": "267b6d0a02e2072796428c9d6e2dfd96",
+   "verdict": "tp",
+   "reason": "No helmet() or equivalent security headers."
+  },
+  {
+   "rule": "BE012",
+   "file": "src/main.ts",
+   "line": 13,
+   "fingerprint": "4fe4c049649a120d57012b31344c25ff",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: auth is a bearer header, so no call as the logged-in user."
+  },
+  {
+   "rule": "DATA003",
+   "file": "src/prisma/migrations/20211001143221_implicit_tags/migration.sql",
+   "line": 15,
+   "fingerprint": "c661b8cf49ab0d646483e635f15588f0",
+   "verdict": "tp",
+   "reason": "The migration drops ArticleTags without copying its rows into _ArticleToTag; Prisma warns the data is lost."
+  }
+ ]
+}

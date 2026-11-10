@@ -1,0 +1,166 @@
+{
+ "repo": "microblog",
+ "commit": "a975ef64864354867c88e0ed3a17ba7d17dca752",
+ "findings": [
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile",
+   "line": 1,
+   "fingerprint": "a74cfc9d169d4053e6615de34bf0373f",
+   "verdict": "tp",
+   "reason": "The final image has no USER instruction and runs as root."
+  },
+  {
+   "rule": "REL006",
+   "file": "Dockerfile",
+   "line": 1,
+   "fingerprint": "fd55987dabaa78c7218b5ad2718c41dd",
+   "verdict": "tp",
+   "reason": "The service is deployed with a Dockerfile, has 26 routes and no health route."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "app/api/users.py",
+   "line": 66,
+   "fingerprint": "c08da3357c5d20bb896f5dcf291c09f1",
+   "verdict": "fp",
+   "reason": "The handler checks token_auth.current_user().id != id and aborts."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "app/auth/routes.py",
+   "line": 15,
+   "fingerprint": "14d2344820c30bdaaa56fca795df3684",
+   "verdict": "tp",
+   "reason": "The password login has no rate limit."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "app/auth/routes.py",
+   "line": 56,
+   "fingerprint": "e2f7d2d3a73a3458239cc5b7846312bd",
+   "verdict": "tp",
+   "reason": "Password reset emails can be requested without limit."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "app/auth/routes.py",
+   "line": 73,
+   "fingerprint": "d94a290c8633182b0c93a617540ecc37",
+   "verdict": "fp",
+   "reason": "The reset needs a signed token; there is nothing guessable to rate-limit."
+  },
+  {
+   "rule": "BE002",
+   "file": "app/cli.py",
+   "line": 20,
+   "fingerprint": "b282fe4a6410ebde3a2f8f774e8bdbac",
+   "verdict": "fp",
+   "reason": "A developer CLI command; lang is the developer's own argument."
+  },
+  {
+   "rule": "BE008",
+   "file": "app/main/routes.py",
+   "line": 126,
+   "fingerprint": "4fd623ff428fa675ff2494fba6a0e5eb",
+   "verdict": "fp",
+   "reason": "url_for() builds a same-site path; the username only fills a path segment."
+  },
+  {
+   "rule": "BE008",
+   "file": "app/main/routes.py",
+   "line": 130,
+   "fingerprint": "2d0b58d58b6bec0f56fcff13d8745576",
+   "verdict": "fp",
+   "reason": "url_for() builds a same-site path; the username only fills a path segment."
+  },
+  {
+   "rule": "BE008",
+   "file": "app/main/routes.py",
+   "line": 147,
+   "fingerprint": "06af87daf937af485346259747791524",
+   "verdict": "fp",
+   "reason": "url_for() builds a same-site path; the username only fills a path segment."
+  },
+  {
+   "rule": "BE008",
+   "file": "app/main/routes.py",
+   "line": 151,
+   "fingerprint": "07da46dbd7a0fa17cc77f9d1c5d58772",
+   "verdict": "fp",
+   "reason": "url_for() builds a same-site path; the username only fills a path segment."
+  },
+  {
+   "rule": "BE008",
+   "file": "app/main/routes.py",
+   "line": 194,
+   "fingerprint": "80fb461e649ecb8bf70eeb229b4255e1",
+   "verdict": "fp",
+   "reason": "url_for() builds a same-site path; the username only fills a path segment."
+  },
+  {
+   "rule": "UI001",
+   "file": "app/templates/_post.html",
+   "line": 5,
+   "fingerprint": "0e57b6ea0c8c2a292e3c25b259637092",
+   "verdict": "tp",
+   "reason": "The img has no alt attribute."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/templates/base.html",
+   "line": 99,
+   "fingerprint": "b26150bb126937f2ab8afc237ec04d72",
+   "verdict": "fp",
+   "reason": "innerHTML is set to a constant loading-image string."
+  },
+  {
+   "rule": "UI001",
+   "file": "app/templates/base.html",
+   "line": 100,
+   "fingerprint": "ae7220ccf8c43850d81cee5eb6a24a5b",
+   "verdict": "tp",
+   "reason": "The img has no alt attribute."
+  },
+  {
+   "rule": "UI001",
+   "file": "app/templates/user.html",
+   "line": 6,
+   "fingerprint": "d44b6677d687a75e5fc2925cf1c34af1",
+   "verdict": "tp",
+   "reason": "The img has no alt attribute."
+  },
+  {
+   "rule": "UI001",
+   "file": "app/templates/user_popup.html",
+   "line": 2,
+   "fingerprint": "64ea996eba08d2b2a40bc71b8eb910c7",
+   "verdict": "tp",
+   "reason": "The img has no alt attribute."
+  },
+  {
+   "rule": "REL001",
+   "file": "app/translate.py",
+   "line": 14,
+   "fingerprint": "5da4eb26c04612311c9e28dc0d2a5131",
+   "verdict": "tp",
+   "reason": "requests.post to the translator has no timeout."
+  },
+  {
+   "rule": "QA001",
+   "file": "requirements.txt",
+   "line": 1,
+   "fingerprint": "f21a074f0c485c01ae585595423c8572",
+   "verdict": "fp",
+   "reason": "tests.py at the project root holds the unit tests."
+  },
+  {
+   "rule": "QA002",
+   "file": "requirements.txt",
+   "line": 1,
+   "fingerprint": "7601f314655aa1d1c6ad34d072e89de7",
+   "verdict": "tp",
+   "reason": "No CI configuration."
+  }
+ ]
+}

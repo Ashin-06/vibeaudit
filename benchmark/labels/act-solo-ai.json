@@ -1,0 +1,174 @@
+{
+ "repo": "act-solo-ai",
+ "commit": "f4c6a6296c90313c2c40422e95601222edee19c2",
+ "findings": [
+  {
+   "rule": "UI006",
+   "file": "src/components/ScriptList.tsx",
+   "line": 141,
+   "fingerprint": "2a6c3fce10ee20e2606403b82f25a027",
+   "verdict": "tp",
+   "reason": "handleDelete deletes the script from Supabase directly on click, no confirm or undo."
+  },
+  {
+   "rule": "FE001",
+   "file": "src/components/practice/TTSManager.tsx",
+   "line": 55,
+   "fingerprint": "e87928730ff51a762c55395c6a8060d1",
+   "verdict": "tp",
+   "reason": "innerHTML on a detached div with stored script HTML still fires onerror handlers of injected img tags."
+  },
+  {
+   "rule": "FE001",
+   "file": "src/components/practice/TTSManager.tsx",
+   "line": 69,
+   "fingerprint": "bd95e9935f707f38db20ecd8a63992f4",
+   "verdict": "tp",
+   "reason": "innerHTML on a detached div with stored script HTML still fires onerror handlers of injected img tags."
+  },
+  {
+   "rule": "FE001",
+   "file": "src/components/practice/TeleprompterDisplay.tsx",
+   "line": 212,
+   "fingerprint": "f58fef8b52fef6f45036d76af918a510",
+   "verdict": "tp",
+   "reason": "dangerouslySetInnerHTML renders stored script line HTML without sanitizing."
+  },
+  {
+   "rule": "FE001",
+   "file": "src/components/practice/rehearsal/scriptParser.ts",
+   "line": 38,
+   "fingerprint": "207a99481c00d1f088132d8b422a3ec4",
+   "verdict": "tp",
+   "reason": "innerHTML on a detached div with stored script HTML still fires onerror handlers of injected img tags."
+  },
+  {
+   "rule": "FE001",
+   "file": "src/components/practice/rehearsal/scriptParser.ts",
+   "line": 46,
+   "fingerprint": "6c3727054c1d7b8f8fc14e4d0b53ea7e",
+   "verdict": "tp",
+   "reason": "innerHTML on a detached div with stored script HTML still fires onerror handlers of injected img tags."
+  },
+  {
+   "rule": "FE001",
+   "file": "src/components/practice/rehearsal/textUtils.ts",
+   "line": 10,
+   "fingerprint": "041d0fb5e9dffa3f8bf6ae9a9a290b48",
+   "verdict": "tp",
+   "reason": "innerHTML on a detached div with stored script HTML still fires onerror handlers of injected img tags."
+  },
+  {
+   "rule": "FE001",
+   "file": "src/components/practice/rehearsal/textUtils.ts",
+   "line": 32,
+   "fingerprint": "94f4080d6f6d4a5a0555f8596dff2e9c",
+   "verdict": "tp",
+   "reason": "innerHTML on a detached div with stored script HTML still fires onerror handlers of injected img tags."
+  },
+  {
+   "rule": "FE001",
+   "file": "src/components/practice/rehearsal/textUtils.ts",
+   "line": 58,
+   "fingerprint": "87b6cb0bc83cf4c5336107b97b3729c9",
+   "verdict": "tp",
+   "reason": "innerHTML on a detached div with stored script HTML still fires onerror handlers of injected img tags."
+  },
+  {
+   "rule": "FE001",
+   "file": "src/components/practice/rehearsal/textUtils.ts",
+   "line": 86,
+   "fingerprint": "35ef67188f000f33eedf362b5457c639",
+   "verdict": "tp",
+   "reason": "innerHTML on a detached div with stored script HTML still fires onerror handlers of injected img tags."
+  },
+  {
+   "rule": "FE001",
+   "file": "src/components/practice/rehearsal/textUtils.ts",
+   "line": 101,
+   "fingerprint": "81edd465c25e204adaa5b44cd1410242",
+   "verdict": "tp",
+   "reason": "innerHTML on a detached div with stored script HTML still fires onerror handlers of injected img tags."
+  },
+  {
+   "rule": "FE001",
+   "file": "src/components/practice/rehearsal/textUtils.ts",
+   "line": 116,
+   "fingerprint": "d74a656a2a86be96dac494bdeb54559b",
+   "verdict": "tp",
+   "reason": "innerHTML on a detached div with stored script HTML still fires onerror handlers of injected img tags."
+  },
+  {
+   "rule": "QA007",
+   "file": "src/lib/logger.ts",
+   "line": 7,
+   "fingerprint": "9410aa3b08c5992b82c87242560047c2",
+   "verdict": "tp",
+   "reason": "lodash is imported but only lodash.* sub-packages appear, transitively; lodash itself is not declared."
+  },
+  {
+   "rule": "FE001",
+   "file": "src/lib/scriptMeta.ts",
+   "line": 11,
+   "fingerprint": "7f317a41008282eefaccf915fdba35bb",
+   "verdict": "tp",
+   "reason": "innerHTML on a detached div with stored script HTML still fires onerror handlers of injected img tags."
+  },
+  {
+   "rule": "FE001",
+   "file": "src/lib/validation.ts",
+   "line": 43,
+   "fingerprint": "58ac31920ff67fc0c747b16d5a8b40c2",
+   "verdict": "tp",
+   "reason": "The home-made sanitizer parses untrusted HTML with innerHTML on a live-document div (onerror runs during parsing)."
+  },
+  {
+   "rule": "LLM007",
+   "file": "src/utils/scriptCueBuilder.ts",
+   "line": 88,
+   "fingerprint": "48199b70f90fa6f41e462b8eb1ea7a26",
+   "verdict": "tp",
+   "reason": "The AI agent's instructions are assembled in browser code and can be read or changed by the user."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "supabase/functions/get-voices/index.ts",
+   "line": 72,
+   "fingerprint": "98fe5b6d94ffa5e213af15ef00558ff0",
+   "verdict": "fp",
+   "reason": "The function calls getAuthedUser() from ../_shared/auth.ts and returns 401 without a user; helper not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "supabase/functions/rehearsal-log/index.ts",
+   "line": 182,
+   "fingerprint": "d780eb14bbaa86bd98270d1d9c0b0d01",
+   "verdict": "fp",
+   "reason": "The function calls getAuthedUser() from ../_shared/auth.ts and returns 401 without a user; helper not followed."
+  },
+  {
+   "rule": "BE018",
+   "file": "supabase/functions/rehearsal-log/index.ts",
+   "line": 182,
+   "fingerprint": "d99292a7f565eafc6bd7875f557e84a8",
+   "verdict": "fp",
+   "reason": "The body is validated by hand (type checks, ID pattern, size and count limits) before use."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/send-contact-email/index.ts",
+   "line": 5,
+   "fingerprint": "8c5bbaabcbd4b8742f5154694224a504",
+   "verdict": "fp",
+   "reason": "Wildcard CORS on a public contact endpoint without credentials gives no extra access."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "supabase/functions/text-to-speech/index.ts",
+   "line": 96,
+   "fingerprint": "72078fa283471099a43e8d9e0e539bd7",
+   "verdict": "fp",
+   "reason": "The function calls getAuthedUser() from ../_shared/auth.ts and returns 401 without a user; helper not followed."
+  }
+ ]
+}

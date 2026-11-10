@@ -31,11 +31,14 @@ def fake_values() -> Dict[str, str]:
             "Q2hhbmdlTWVQbGVhc2VUaGlzSXNOb3RBUmVhbFNpZ25hdHVyZQ",
         ]),
         "FAKE_GOOGLE_KEY": "AI" + "za" + "SyD8x7Kq2LmN4pR6tV8wX0zB2cE4gH6jK8m",
+        "FAKE_PRIVATE_KEY": "-----BEGIN " + "PRIVATE KEY-----\n" + "\n".join(body[i:i + 64] for i in range(0, 96, 32))
+                            + "\n-----END " + "PRIVATE KEY-----",
     }
 
 
-def materialize(name: str, dest: Path) -> Path:
-    src = FIXTURES / name
+def materialize(name: str, dest: Path, src: Path = None) -> Path:
+    """Copy a sample app (a fixture by default) to dest, filling in {{FAKE_*}} placeholders."""
+    src = src or FIXTURES / name
     target = dest / name
     shutil.copytree(src, target)
     values = fake_values()

@@ -1,0 +1,94 @@
+{
+ "repo": "learnathon-leaderboard",
+ "commit": "87ee5a2d7c2290ace3b14dedea25a4f4406b7cab",
+ "findings": [
+  {
+   "rule": "QA001",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "6ebc345ae714486cf41d50d631704e0c",
+   "verdict": "tp",
+   "reason": "No test files in the project."
+  },
+  {
+   "rule": "QA002",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
+   "verdict": "tp",
+   "reason": "No CI configuration."
+  },
+  {
+   "rule": "SEC009",
+   "file": "src/components/dashboard/LeaderboardSettings.tsx",
+   "line": 18,
+   "fingerprint": "d367542a3482bf5f0aeced6c8a5378c0",
+   "verdict": "fp",
+   "reason": "The text only names the SUPABASE_SERVICE_ROLE_KEY secret in a help message; no key value or env access in the browser."
+  },
+  {
+   "rule": "BE001",
+   "file": "src/services/dashboard/dashboardService.ts",
+   "line": 37,
+   "fingerprint": "84c9d455d358dda6c7791ea17108d167",
+   "verdict": "fp",
+   "reason": "Queries use the Supabase query builder; the only template strings are log messages."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/data-sync/index.ts",
+   "line": 9,
+   "fingerprint": "ed89bcc9eddd6b12a6f272f9a300172f",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies, so no call as the logged-in user."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "supabase/functions/data-sync/index.ts",
+   "line": 78,
+   "fingerprint": "925386b9a9dbe42c716419bb616fc02f",
+   "verdict": "tp",
+   "reason": "Only the public anon JWT is required; no user or role check before a write-heavy sync."
+  },
+  {
+   "rule": "BE018",
+   "file": "supabase/functions/data-sync/index.ts",
+   "line": 78,
+   "fingerprint": "8389dca82ed805fa8068cec3dddb42df",
+   "verdict": "tp",
+   "reason": "req.json() fields are used without validation."
+  },
+  {
+   "rule": "DATA010",
+   "file": "supabase/functions/data-sync/index.ts",
+   "line": 78,
+   "fingerprint": "cff9b47dcaba7c102780b35cf9d1970f",
+   "verdict": "tp",
+   "reason": "Several upserts into different tables without a transaction."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/update-repository-permissions/index.ts",
+   "line": 6,
+   "fingerprint": "f2f850af22c3f1295a279fb01ca19940",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies, so no call as the logged-in user."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/webhooks/index.ts",
+   "line": 7,
+   "fingerprint": "17ef1df31d914adb9232c2f1e2c732ea",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies, so no call as the logged-in user."
+  },
+  {
+   "rule": "AUTH004",
+   "file": "supabase/functions/webhooks/index.ts",
+   "line": 16,
+   "fingerprint": "163cb41f627ad393989d95c23dab4324",
+   "verdict": "tp",
+   "reason": "The webhook handler never verifies a signature or shared secret."
+  }
+ ]
+}

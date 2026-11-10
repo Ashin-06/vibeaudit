@@ -1,0 +1,278 @@
+{
+ "repo": "werkzeug",
+ "commit": "0f43c6ebd426039e4b99ec22535c2c8a2ec2f69f",
+ "findings": [
+  {
+   "rule": "DATA006",
+   "file": "examples/couchy/models.py",
+   "line": 15,
+   "fingerprint": "19fb40eed8539ef020f430c423fe22e7",
+   "verdict": "fp",
+   "reason": "Demo code in the library's examples/ directory, not deployed application code."
+  },
+  {
+   "rule": "BE008",
+   "file": "examples/couchy/views.py",
+   "line": 35,
+   "fingerprint": "ed58f153606c4d54c44741b668a44de0",
+   "verdict": "fp",
+   "reason": "Demo code in the library's examples/ directory, not deployed application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "examples/cupoftee/db.py",
+   "line": 44,
+   "fingerprint": "975ced9847f03032fd56ffa57b1f39e6",
+   "verdict": "fp",
+   "reason": "Demo code in the library's examples/ directory, not deployed application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "examples/cupoftee/db.py",
+   "line": 66,
+   "fingerprint": "ce3ad0c3198cbb66322bfc9361028b26",
+   "verdict": "fp",
+   "reason": "Demo code in the library's examples/ directory, not deployed application code."
+  },
+  {
+   "rule": "DATA006",
+   "file": "examples/cupoftee/network.py",
+   "line": 21,
+   "fingerprint": "7676a9922112a25f45c3c9d284935be7",
+   "verdict": "fp",
+   "reason": "Demo code in the library's examples/ directory, not deployed application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "examples/cupoftee/network.py",
+   "line": 64,
+   "fingerprint": "52d54f6bf6370fddbc070c64f7034111",
+   "verdict": "fp",
+   "reason": "Demo code in the library's examples/ directory, not deployed application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "examples/cupoftee/network.py",
+   "line": 108,
+   "fingerprint": "e5d0684faf2cc0a71a581d9014feb962",
+   "verdict": "fp",
+   "reason": "Demo code in the library's examples/ directory, not deployed application code."
+  },
+  {
+   "rule": "DATA001",
+   "file": "examples/plnt/sync.py",
+   "line": 36,
+   "fingerprint": "2ac4ca705dd0ce4254b321d78a5bd89b",
+   "verdict": "fp",
+   "reason": "Demo code in the library's examples/ directory, not deployed application code."
+  },
+  {
+   "rule": "DATA006",
+   "file": "examples/shorty/models.py",
+   "line": 31,
+   "fingerprint": "ed72ecf00f6258a159909829094ccbcb",
+   "verdict": "fp",
+   "reason": "Demo code in the library's examples/ directory, not deployed application code."
+  },
+  {
+   "rule": "BE008",
+   "file": "examples/shorty/views.py",
+   "line": 31,
+   "fingerprint": "242b3fb076ad56dd144fbe7590bbbf31",
+   "verdict": "fp",
+   "reason": "Demo code in the library's examples/ directory, not deployed application code."
+  },
+  {
+   "rule": "DATA006",
+   "file": "examples/simplewiki/database.py",
+   "line": 80,
+   "fingerprint": "ea8a3ec2d7a1768f242b00b2fca048fe",
+   "verdict": "fp",
+   "reason": "Demo code in the library's examples/ directory, not deployed application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "src/werkzeug/datastructures/file_storage.py",
+   "line": 132,
+   "fingerprint": "1f9e4d9a3aec1a67ac89d286cf925825",
+   "verdict": "fp",
+   "reason": "Library code that swallows an expected exception on purpose in a best-effort path."
+  },
+  {
+   "rule": "QA003",
+   "file": "src/werkzeug/datastructures/headers.py",
+   "line": 459,
+   "fingerprint": "978a4ae5abd053706a49924be5dbbe68",
+   "verdict": "fp",
+   "reason": "Library code that swallows an expected exception on purpose in a best-effort path."
+  },
+  {
+   "rule": "QA003",
+   "file": "src/werkzeug/datastructures/set.py",
+   "line": 87,
+   "fingerprint": "b393f96226bdb7181c83237f63f744ab",
+   "verdict": "fp",
+   "reason": "Library code that swallows an expected exception on purpose in a best-effort path."
+  },
+  {
+   "rule": "QA003",
+   "file": "src/werkzeug/datastructures/structures.py",
+   "line": 329,
+   "fingerprint": "c762738557d8657f895f08abb03d51a9",
+   "verdict": "fp",
+   "reason": "Library code that swallows an expected exception on purpose in a best-effort path."
+  },
+  {
+   "rule": "QA003",
+   "file": "src/werkzeug/debug/__init__.py",
+   "line": 79,
+   "fingerprint": "20be407a0375dd7ddc67017ac108974e",
+   "verdict": "fp",
+   "reason": "Library code that swallows an expected exception on purpose in a best-effort path."
+  },
+  {
+   "rule": "QA003",
+   "file": "src/werkzeug/debug/__init__.py",
+   "line": 95,
+   "fingerprint": "f5cb6875ea27480e1358364b6d7ef985",
+   "verdict": "fp",
+   "reason": "Library code that swallows an expected exception on purpose in a best-effort path."
+  },
+  {
+   "rule": "QA003",
+   "file": "src/werkzeug/debug/__init__.py",
+   "line": 117,
+   "fingerprint": "37eb77413593663f08e0a222ecce69c8",
+   "verdict": "fp",
+   "reason": "Library code that swallows an expected exception on purpose in a best-effort path."
+  },
+  {
+   "rule": "BE003",
+   "file": "src/werkzeug/debug/console.py",
+   "line": 178,
+   "fingerprint": "f4fb1b0d423e56a9de36db674df49efd",
+   "verdict": "fp",
+   "reason": "The interactive debugger console executes the developer's input by design."
+  },
+  {
+   "rule": "QA003",
+   "file": "src/werkzeug/debug/repr.py",
+   "line": 260,
+   "fingerprint": "b5ff66d2506bbbd719cd655d14c3d9ef",
+   "verdict": "fp",
+   "reason": "Library code that swallows an expected exception on purpose in a best-effort path."
+  },
+  {
+   "rule": "FE001",
+   "file": "src/werkzeug/debug/shared/debugger.js",
+   "line": 157,
+   "fingerprint": "b45fa988a40e1b4cecc702a6e17dc527",
+   "verdict": "fp",
+   "reason": "innerHTML is set to a constant help string."
+  },
+  {
+   "rule": "FE001",
+   "file": "src/werkzeug/debug/shared/debugger.js",
+   "line": 273,
+   "fingerprint": "b16c9d9fd987fb3beae4cc6f4b886b48",
+   "verdict": "fp",
+   "reason": "The debugger fetches HTML rendered by its own server for the traceback."
+  },
+  {
+   "rule": "QA003",
+   "file": "src/werkzeug/exceptions.py",
+   "line": 51,
+   "fingerprint": "a80131a2e77366a1b453e79fda941828",
+   "verdict": "fp",
+   "reason": "Library code that swallows an expected exception on purpose in a best-effort path."
+  },
+  {
+   "rule": "QA003",
+   "file": "src/werkzeug/middleware/lint.py",
+   "line": 222,
+   "fingerprint": "a2902f566714d4c43e3b0fdfd80c00fd",
+   "verdict": "fp",
+   "reason": "Library code that swallows an expected exception on purpose in a best-effort path."
+  },
+  {
+   "rule": "QA003",
+   "file": "src/werkzeug/routing/map.py",
+   "line": 763,
+   "fingerprint": "d558e09b6e88150ca53f38dfea30c460",
+   "verdict": "fp",
+   "reason": "Library code that swallows an expected exception on purpose in a best-effort path."
+  },
+  {
+   "rule": "QA003",
+   "file": "src/werkzeug/routing/map.py",
+   "line": 778,
+   "fingerprint": "cb20112d85ef9da53b2978bd468570e5",
+   "verdict": "fp",
+   "reason": "Library code that swallows an expected exception on purpose in a best-effort path."
+  },
+  {
+   "rule": "QA003",
+   "file": "src/werkzeug/routing/rules.py",
+   "line": 104,
+   "fingerprint": "ec3f6efe5d50f0e768bef4bb4734cd25",
+   "verdict": "fp",
+   "reason": "Library code that swallows an expected exception on purpose in a best-effort path."
+  },
+  {
+   "rule": "BE003",
+   "file": "src/werkzeug/routing/rules.py",
+   "line": 736,
+   "fingerprint": "495d7b4fd64234c7bb809fa9da399d96",
+   "verdict": "fp",
+   "reason": "The router compiles code it generates itself from rule definitions."
+  },
+  {
+   "rule": "BE003",
+   "file": "src/werkzeug/routing/rules.py",
+   "line": 836,
+   "fingerprint": "0b5c5c66049e40fe14898edace95edf8",
+   "verdict": "fp",
+   "reason": "The router compiles code it generates itself from rule definitions."
+  },
+  {
+   "rule": "QA003",
+   "file": "src/werkzeug/serving.py",
+   "line": 238,
+   "fingerprint": "5216f794b85eeb256fcb44ca33c0aca7",
+   "verdict": "fp",
+   "reason": "Library code that swallows an expected exception on purpose in a best-effort path."
+  },
+  {
+   "rule": "QA003",
+   "file": "src/werkzeug/serving.py",
+   "line": 392,
+   "fingerprint": "41fe95f659643f315608e9c31011d56c",
+   "verdict": "fp",
+   "reason": "Library code that swallows an expected exception on purpose in a best-effort path."
+  },
+  {
+   "rule": "QA003",
+   "file": "src/werkzeug/urls.py",
+   "line": 191,
+   "fingerprint": "f808b29a0fc9aee113b19b544dcdd0a2",
+   "verdict": "fp",
+   "reason": "Library code that swallows an expected exception on purpose in a best-effort path."
+  },
+  {
+   "rule": "QA003",
+   "file": "src/werkzeug/utils.py",
+   "line": 442,
+   "fingerprint": "1eaaefa056297ae3f0e00ffadf6a24df",
+   "verdict": "fp",
+   "reason": "Library code that swallows an expected exception on purpose in a best-effort path."
+  },
+  {
+   "rule": "QA003",
+   "file": "src/werkzeug/wsgi.py",
+   "line": 336,
+   "fingerprint": "cd2844420f2495c5375cfdee67dd23bb",
+   "verdict": "fp",
+   "reason": "Library code that swallows an expected exception on purpose in a best-effort path."
+  }
+ ]
+}

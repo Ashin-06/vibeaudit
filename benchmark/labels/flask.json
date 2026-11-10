@@ -1,0 +1,70 @@
+{
+ "repo": "flask",
+ "commit": "49943b5a94413a530761350f04e896f76e8d620e",
+ "findings": [
+  {
+   "rule": "BE018",
+   "file": "examples/celery/src/task_app/views.py",
+   "line": 22,
+   "fingerprint": "442baf2ba1c55ea623fdfa8bac984401",
+   "verdict": "fp",
+   "reason": "Demo code in the library's examples/ directory, not deployed application code."
+  },
+  {
+   "rule": "SEC004",
+   "file": "examples/tutorial/flaskr/__init__.py",
+   "line": 11,
+   "fingerprint": "fc1b9d73827692f18acf447ff9844354",
+   "verdict": "fp",
+   "reason": "Demo code in the library's examples/ directory, not deployed application code."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "examples/tutorial/flaskr/auth.py",
+   "line": 85,
+   "fingerprint": "7307aedf89bff7345485c475ba265a3e",
+   "verdict": "fp",
+   "reason": "Demo code in the library's examples/ directory, not deployed application code."
+  },
+  {
+   "rule": "DATA006",
+   "file": "examples/tutorial/flaskr/schema.sql",
+   "line": 16,
+   "fingerprint": "a66aff3262a8d9425fd959a7d326a567",
+   "verdict": "fp",
+   "reason": "Demo code in the library's examples/ directory, not deployed application code."
+  },
+  {
+   "rule": "BE003",
+   "file": "src/flask/cli.py",
+   "line": 1022,
+   "fingerprint": "bf568d83cba6f97fc7a0df6ca5487727",
+   "verdict": "fp",
+   "reason": "flask shell runs the user's own PYTHONSTARTUP file by design."
+  },
+  {
+   "rule": "QA003",
+   "file": "src/flask/cli.py",
+   "line": 1097,
+   "fingerprint": "abb10e0dca1ba66c87564573f6c42ac8",
+   "verdict": "fp",
+   "reason": "An unknown sort key is ignored on purpose (the rows stay unsorted)."
+  },
+  {
+   "rule": "QA003",
+   "file": "src/flask/config.py",
+   "line": 163,
+   "fingerprint": "a70125e45d05ff6dc4f830560275a21d",
+   "verdict": "fp",
+   "reason": "The comment says it keeps the value as a string when loading fails; deliberate."
+  },
+  {
+   "rule": "BE003",
+   "file": "src/flask/config.py",
+   "line": 209,
+   "fingerprint": "1f8834ef0a4d546d8d6ab5f3683b57fe",
+   "verdict": "fp",
+   "reason": "Config.from_pyfile executes the app's own config file by design."
+  }
+ ]
+}

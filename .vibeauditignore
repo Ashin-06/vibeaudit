@@ -1,2 +1,5 @@
 # Deliberately vulnerable sample apps used by the test suite
 tests/fixtures
+# Benchmark labels quote rule names and reasons; seeded apps are deliberately vulnerable
+benchmark/labels
+benchmark/seeded

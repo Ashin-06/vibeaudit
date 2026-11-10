@@ -1,0 +1,62 @@
+{
+ "repo": "taxonomy",
+ "commit": "298a8857c7128a0d121e7f699dfd729f23b3966d",
+ "findings": [
+  {
+   "rule": "QA004",
+   "file": "app/api/posts/[postId]/route.ts",
+   "line": 62,
+   "fingerprint": "20581e2e02ee254b87f5284e8ca6eb52",
+   "verdict": "tp",
+   "reason": "TODO says post content is not sanitized before it is stored."
+  },
+  {
+   "rule": "REL003",
+   "file": "app/api/webhooks/stripe/route.ts",
+   "line": 8,
+   "fingerprint": "480354fa4f72d5dabc36b8c8f2a6b312",
+   "verdict": "fp",
+   "reason": "Each event sets the user's subscription fields to absolute values with update(); replaying it changes nothing."
+  },
+  {
+   "rule": "UI011",
+   "file": "app/layout.tsx",
+   "line": 1,
+   "fingerprint": "74070c679f9da86acff02ca6165fb72d",
+   "verdict": "tp",
+   "reason": "The app directory has no error.tsx."
+  },
+  {
+   "rule": "QA008",
+   "file": "lib/subscription.ts",
+   "line": 1,
+   "fingerprint": "a16d94bdac802489702740435cabff1d",
+   "verdict": "tp",
+   "reason": "// @ts-nocheck disables type checking for the whole file."
+  },
+  {
+   "rule": "QA008",
+   "file": "lib/toc.ts",
+   "line": 1,
+   "fingerprint": "78aaeba444f7d2d5b97ce18399cddbda",
+   "verdict": "tp",
+   "reason": "// @ts-nocheck disables type checking for the whole file."
+  },
+  {
+   "rule": "QA001",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "6ebc345ae714486cf41d50d631704e0c",
+   "verdict": "tp",
+   "reason": "No test files in the project."
+  },
+  {
+   "rule": "QA002",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
+   "verdict": "tp",
+   "reason": "No CI configuration."
+  }
+ ]
+}

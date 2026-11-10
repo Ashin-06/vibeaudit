@@ -1,0 +1,118 @@
+{
+ "repo": "Django-Styleguide-Example",
+ "commit": "a70ef43d7df03706c1211d4fcfd70b4b0120ba1e",
+ "findings": [
+  {
+   "rule": "CFG006",
+   "file": "config/django/base.py",
+   "line": 28,
+   "fingerprint": "4031757eb03ad565ff401ef133e87197",
+   "verdict": "fp",
+   "reason": "base.py is shared dev settings; production.py reads ALLOWED_HOSTS from the environment with an empty default."
+  },
+  {
+   "rule": "CFG007",
+   "file": "docker-compose.yml",
+   "line": 9,
+   "fingerprint": "21844ecfd5eec767b3621c74bb8b3c5e",
+   "verdict": "tp",
+   "reason": "docker-compose sets the default postgres password."
+  },
+  {
+   "rule": "CFG001",
+   "file": "docker/local.Dockerfile",
+   "line": 3,
+   "fingerprint": "40d0ff9b5d6e7f8b90dc198d4332b139",
+   "verdict": "tp",
+   "reason": "The final image has no USER instruction and runs as root."
+  },
+  {
+   "rule": "CFG001",
+   "file": "docker/production.Dockerfile",
+   "line": 3,
+   "fingerprint": "b676f4d039379a7624edc8d302adcca0",
+   "verdict": "tp",
+   "reason": "The final image has no USER instruction and runs as root."
+  },
+  {
+   "rule": "BE016",
+   "file": "styleguide_example/blog_examples/google_login_server_flow/raw/service.py",
+   "line": 30,
+   "fingerprint": "ed5a6c036bde41872d4a0da132133f60",
+   "verdict": "fp",
+   "reason": "The id_token comes straight from Google's token endpoint over TLS, where Google says signature checks may be skipped."
+  },
+  {
+   "rule": "REL001",
+   "file": "styleguide_example/blog_examples/google_login_server_flow/raw/service.py",
+   "line": 96,
+   "fingerprint": "054db210a5a1c1fd97dbab43d6f1be20",
+   "verdict": "tp",
+   "reason": "requests call has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "styleguide_example/blog_examples/google_login_server_flow/raw/service.py",
+   "line": 109,
+   "fingerprint": "26c89b29a997d9ca3e9602ec5bc6b573",
+   "verdict": "tp",
+   "reason": "requests call has no timeout."
+  },
+  {
+   "rule": "BE016",
+   "file": "styleguide_example/blog_examples/google_login_server_flow/sdk/services.py",
+   "line": 28,
+   "fingerprint": "a4d52374dd29d3403f5eada1a54b54c8",
+   "verdict": "fp",
+   "reason": "The id_token comes straight from Google's token endpoint over TLS, where Google says signature checks may be skipped."
+  },
+  {
+   "rule": "REL001",
+   "file": "styleguide_example/blog_examples/google_login_server_flow/sdk/services.py",
+   "line": 115,
+   "fingerprint": "d57ea3ffac05c2a4d79bf4b722955939",
+   "verdict": "tp",
+   "reason": "requests call has no timeout."
+  },
+  {
+   "rule": "FE001",
+   "file": "styleguide_example/blog_examples/templates/admin_2fa/setup_2fa.html",
+   "line": 11,
+   "fingerprint": "ca17ba2fb152eb66e682bf9ad5dfb700",
+   "verdict": "fp",
+   "reason": "The QR code SVG is generated server-side by the qrcode library, not user input."
+  },
+  {
+   "rule": "DATA001",
+   "file": "styleguide_example/emails/services.py",
+   "line": 63,
+   "fingerprint": "94017d8f183b3905d4b9ada5f14665a7",
+   "verdict": "fp",
+   "reason": "Per-email atomic updates are deliberate (docstring) so each email gets its own on_commit hook."
+  },
+  {
+   "rule": "SEC001",
+   "file": "styleguide_example/integrations/aws/client.py",
+   "line": 76,
+   "fingerprint": "e8cf815c4915b8aab85a621f71e151ec",
+   "verdict": "fp",
+   "reason": "An access key id inside a docstring showing sample presigned output; the id alone is not a secret."
+  },
+  {
+   "rule": "DATA001",
+   "file": "styleguide_example/tasks/management/commands/setup_periodic_tasks.py",
+   "line": 50,
+   "fingerprint": "5cdd657aa79586f3b846ea7c95a492f7",
+   "verdict": "fp",
+   "reason": "A setup management command creating a fixed list of periodic tasks."
+  },
+  {
+   "rule": "QA004",
+   "file": "styleguide_example/users/apis.py",
+   "line": 14,
+   "fingerprint": "ca9bcd4ba3f7c31cd178821c93250c07",
+   "verdict": "tp",
+   "reason": "TODO marks a missing authenticated endpoint."
+  }
+ ]
+}

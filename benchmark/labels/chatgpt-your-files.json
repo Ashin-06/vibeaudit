@@ -1,0 +1,110 @@
+{
+ "repo": "chatgpt-your-files",
+ "commit": "005fd90817fadcd85db2b5fe96c53f1bcf949e96",
+ "findings": [
+  {
+   "rule": "AUTH010",
+   "file": "app/auth/sign-in/route.ts",
+   "line": 7,
+   "fingerprint": "44e17b2549f2b29d32967e4435429f34",
+   "verdict": "tp",
+   "reason": "The sign-in route adds no rate limit of its own in front of signInWithPassword."
+  },
+  {
+   "rule": "BE018",
+   "file": "app/auth/sign-in/route.ts",
+   "line": 7,
+   "fingerprint": "0c2c9d705b524901cb35fe55b0f4cde0",
+   "verdict": "tp",
+   "reason": "email and password form fields are read without validation."
+  },
+  {
+   "rule": "UI002",
+   "file": "app/files/page.tsx",
+   "line": 65,
+   "fingerprint": "2abcb4a220ac6ba72624da87892ced32",
+   "verdict": "tp",
+   "reason": "Clickable document card div with no role, tabIndex or key handler."
+  },
+  {
+   "rule": "UI011",
+   "file": "app/layout.tsx",
+   "line": 1,
+   "fingerprint": "b60274785b3379cac745ae3a8c27e035",
+   "verdict": "tp",
+   "reason": "The app directory has no error.tsx."
+  },
+  {
+   "rule": "UI003",
+   "file": "app/login/page.tsx",
+   "line": 14,
+   "fingerprint": "57ae8b20b847c18bae93a0e55dc67770",
+   "verdict": "tp",
+   "reason": "The label has htmlFor but the input has no id, so they are not associated."
+  },
+  {
+   "rule": "UI003",
+   "file": "app/login/page.tsx",
+   "line": 23,
+   "fingerprint": "ca8ed103400ec6e9ae125a9d95ec5146",
+   "verdict": "tp",
+   "reason": "The label has htmlFor but the input has no id, so they are not associated."
+  },
+  {
+   "rule": "FE004",
+   "file": "lib/hooks/use-pipeline.ts",
+   "line": 59,
+   "fingerprint": "a1ddaaf26e0742a1d5bec232bde40018",
+   "verdict": "fp",
+   "reason": "These are Web Worker message handlers; a worker only talks to its own page, so there is no origin to check."
+  },
+  {
+   "rule": "FE004",
+   "file": "lib/hooks/use-pipeline.ts",
+   "line": 103,
+   "fingerprint": "a09d1dd319a8bc2dea9390024f8b5769",
+   "verdict": "fp",
+   "reason": "These are Web Worker message handlers; a worker only talks to its own page, so there is no origin to check."
+  },
+  {
+   "rule": "FE004",
+   "file": "lib/workers/pipeline.ts",
+   "line": 76,
+   "fingerprint": "938b430e0578947609ddbe34914aa682",
+   "verdict": "fp",
+   "reason": "These are Web Worker message handlers; a worker only talks to its own page, so there is no origin to check."
+  },
+  {
+   "rule": "QA001",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "6ebc345ae714486cf41d50d631704e0c",
+   "verdict": "tp",
+   "reason": "No test files in the project."
+  },
+  {
+   "rule": "QA002",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
+   "verdict": "tp",
+   "reason": "No CI configuration."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/chat/index.ts",
+   "line": 16,
+   "fingerprint": "ba10be3dfc7f194fe46976d7c317b99f",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies, so no call as the logged-in user."
+  },
+  {
+   "rule": "LLM004",
+   "file": "supabase/functions/chat/index.ts",
+   "line": 21,
+   "fingerprint": "5ce2213177447ac87110e0c072aec4ab",
+   "verdict": "tp",
+   "reason": "The chat function calls OpenAI and nothing rate-limits it."
+  }
+ ]
+}

@@ -1,0 +1,550 @@
+{
+ "repo": "opengpts",
+ "commit": "8e7fef72e1f7fd1cd3518b4c6e1d6fbb33a4fe2c",
+ "findings": [
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile",
+   "line": 16,
+   "fingerprint": "9614aa832b6e132200f0e672968157aa",
+   "verdict": "tp",
+   "reason": "The final image has no USER instruction and runs as root."
+  },
+  {
+   "rule": "CFG001",
+   "file": "backend/Dockerfile",
+   "line": 2,
+   "fingerprint": "fa64d9511ec93489f99d626a08861fe3",
+   "verdict": "tp",
+   "reason": "The final image has no USER instruction and runs as root."
+  },
+  {
+   "rule": "QA007",
+   "file": "backend/app/auth/handlers.py",
+   "line": 6,
+   "fingerprint": "2667f6620a6e09693e8833fbc1cdc288",
+   "verdict": "tp",
+   "reason": "Imported directly but not declared (only psycopg2-binary is listed); it works only through transitive installs."
+  },
+  {
+   "rule": "REL001",
+   "file": "backend/app/auth/handlers.py",
+   "line": 101,
+   "fingerprint": "8c458e17c6e61bf98d6776959ce155df",
+   "verdict": "tp",
+   "reason": "requests.get(url) has no timeout."
+  },
+  {
+   "rule": "QA007",
+   "file": "backend/app/auth/settings.py",
+   "line": 7,
+   "fingerprint": "067fbbe3a9f6636cc6e5357a51b625f6",
+   "verdict": "tp",
+   "reason": "Imported directly but not declared (only psycopg2-binary is listed); it works only through transitive installs."
+  },
+  {
+   "rule": "QA007",
+   "file": "backend/app/checkpoint.py",
+   "line": 15,
+   "fingerprint": "27cfc6b8348a534df3a885794a9c12de",
+   "verdict": "tp",
+   "reason": "Imported directly but not declared (only psycopg2-binary is listed); it works only through transitive installs."
+  },
+  {
+   "rule": "QA007",
+   "file": "backend/app/checkpoint.py",
+   "line": 16,
+   "fingerprint": "c9effe1b63f5cbd260b8e38dc03a3287",
+   "verdict": "tp",
+   "reason": "Imported directly but not declared (only psycopg2-binary is listed); it works only through transitive installs."
+  },
+  {
+   "rule": "DATA007",
+   "file": "backend/app/checkpoint.py",
+   "line": 57,
+   "fingerprint": "ef0caa8c3bb21273f8c3dadae4c6e9bf",
+   "verdict": "tp",
+   "reason": "POSTGRES_HOST is required (os.environ[...]) and missing from .env.example."
+  },
+  {
+   "rule": "LLM003",
+   "file": "backend/app/llms.py",
+   "line": 31,
+   "fingerprint": "cbba3d783beac65af22a0fd3f81cb0b7",
+   "verdict": "tp",
+   "reason": "The chat model is created without max_tokens."
+  },
+  {
+   "rule": "LLM003",
+   "file": "backend/app/llms.py",
+   "line": 40,
+   "fingerprint": "2e9cc3e796cb61c64c4c85f19bd4188c",
+   "verdict": "tp",
+   "reason": "The chat model is created without max_tokens."
+  },
+  {
+   "rule": "LLM003",
+   "file": "backend/app/llms.py",
+   "line": 49,
+   "fingerprint": "069ff2c4a6eb47c81c7677638d5c4f77",
+   "verdict": "tp",
+   "reason": "The chat model is created without max_tokens."
+  },
+  {
+   "rule": "DATA007",
+   "file": "backend/app/llms.py",
+   "line": 66,
+   "fingerprint": "8665bd3de72a40800e55ba4b2b59d512",
+   "verdict": "fp",
+   "reason": "Optional: without them boto3 uses its default credential chain."
+  },
+  {
+   "rule": "DATA007",
+   "file": "backend/app/llms.py",
+   "line": 67,
+   "fingerprint": "01814b01923c649d0fcbc462d8e94949",
+   "verdict": "fp",
+   "reason": "Optional: without them boto3 uses its default credential chain."
+  },
+  {
+   "rule": "LLM012",
+   "file": "backend/app/llms.py",
+   "line": 82,
+   "fingerprint": "59a5bd31552cd7f8764bb43af121c681",
+   "verdict": "tp",
+   "reason": "gemini-pro is retired."
+  },
+  {
+   "rule": "LLM003",
+   "file": "backend/app/llms.py",
+   "line": 88,
+   "fingerprint": "6aa790612b7f377be6d847db93149dae",
+   "verdict": "tp",
+   "reason": "The chat model is created without max_tokens."
+  },
+  {
+   "rule": "DATA007",
+   "file": "backend/app/llms.py",
+   "line": 93,
+   "fingerprint": "04ff6f1387151ff0c662a0e4853df1c1",
+   "verdict": "fp",
+   "reason": "The code falls back to a default (llama2, localhost) on the next line when unset."
+  },
+  {
+   "rule": "DATA007",
+   "file": "backend/app/llms.py",
+   "line": 96,
+   "fingerprint": "aacabf3d4010f4aedda2f3b19ce11eec",
+   "verdict": "fp",
+   "reason": "The code falls back to a default (llama2, localhost) on the next line when unset."
+  },
+  {
+   "rule": "LLM004",
+   "file": "backend/app/server.py",
+   "line": 29,
+   "fingerprint": "74cb21eaf6cbcd046daf74d6bd48d9dc",
+   "verdict": "tp",
+   "reason": "/ingest embeds uploaded files with a model and nothing rate-limits it."
+  },
+  {
+   "rule": "QA003",
+   "file": "backend/app/upload.py",
+   "line": 63,
+   "fingerprint": "559d376d9d53b8b4bcbd7c70111d999c",
+   "verdict": "fp",
+   "reason": "The decode failure is the intended \"not text\" branch of MIME sniffing."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/000003_create_user.up.sql",
+   "line": 20,
+   "fingerprint": "ae3c0bd8ba74608a43eb7daeaea93ba9",
+   "verdict": "fp",
+   "reason": "ALTER COLUMN TYPE UUID USING user_id::UUID keeps the values; nothing is destroyed."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/000003_create_user.up.sql",
+   "line": 24,
+   "fingerprint": "083fa1418db3ed78340a5928b81ed59a",
+   "verdict": "fp",
+   "reason": "ALTER COLUMN TYPE UUID USING user_id::UUID keeps the values; nothing is destroyed."
+  },
+  {
+   "rule": "CFG001",
+   "file": "frontend/Dockerfile",
+   "line": 2,
+   "fingerprint": "0fb633622db5199249801a909f1afcc3",
+   "verdict": "tp",
+   "reason": "The final image has no USER instruction and runs as root."
+  },
+  {
+   "rule": "UI002",
+   "file": "frontend/src/components/Chat.tsx",
+   "line": 130,
+   "fingerprint": "f4900d5d5aa75a0cb1133606bb4a9d79",
+   "verdict": "tp",
+   "reason": "Clickable div, span or td with no role, tabIndex or key handler."
+  },
+  {
+   "rule": "UI002",
+   "file": "frontend/src/components/ChatList.tsx",
+   "line": 30,
+   "fingerprint": "f2dd4a674fb7a6c9e806c6ae8e2106ef",
+   "verdict": "tp",
+   "reason": "Clickable div, span or td with no role, tabIndex or key handler."
+  },
+  {
+   "rule": "UI002",
+   "file": "frontend/src/components/ChatList.tsx",
+   "line": 52,
+   "fingerprint": "bb59d0e82cb5a4491c65f7ba426503f1",
+   "verdict": "tp",
+   "reason": "Clickable div, span or td with no role, tabIndex or key handler."
+  },
+  {
+   "rule": "UI002",
+   "file": "frontend/src/components/ChatList.tsx",
+   "line": 88,
+   "fingerprint": "28cad42ce5b83a08c672cd917bbed67c",
+   "verdict": "tp",
+   "reason": "Clickable div, span or td with no role, tabIndex or key handler."
+  },
+  {
+   "rule": "UI002",
+   "file": "frontend/src/components/Config.tsx",
+   "line": 61,
+   "fingerprint": "2dc80a669c84d9a14c95fdc9bce16022",
+   "verdict": "tp",
+   "reason": "Clickable div, span or td with no role, tabIndex or key handler."
+  },
+  {
+   "rule": "FE001",
+   "file": "frontend/src/components/Config.tsx",
+   "line": 214,
+   "fingerprint": "200d8eae4917e2607f5e6df41382134f",
+   "verdict": "fp",
+   "reason": "marked() renders developer-defined tool descriptions from the backend, not user input."
+  },
+  {
+   "rule": "UI002",
+   "file": "frontend/src/components/ConfigList.tsx",
+   "line": 15,
+   "fingerprint": "53e163b620b180fe7110f3a665da8922",
+   "verdict": "tp",
+   "reason": "Clickable div, span or td with no role, tabIndex or key handler."
+  },
+  {
+   "rule": "UI002",
+   "file": "frontend/src/components/FileUpload.tsx",
+   "line": 55,
+   "fingerprint": "befab16bca9e2f52d20b57c97379393b",
+   "verdict": "tp",
+   "reason": "Clickable div, span or td with no role, tabIndex or key handler."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/components/MessageEditor.tsx",
+   "line": 29,
+   "fingerprint": "7974d4654d1fdbce35a27c79bb977c51",
+   "verdict": "tp",
+   "reason": "Form control with no label, aria-label or id."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/components/MessageEditor.tsx",
+   "line": 61,
+   "fingerprint": "a8af743d34513532a1506c69d3b86291",
+   "verdict": "tp",
+   "reason": "Form control with no label, aria-label or id."
+  },
+  {
+   "rule": "UI002",
+   "file": "frontend/src/components/MessageEditor.tsx",
+   "line": 117,
+   "fingerprint": "e8fd6f912a1e8de4dddc10a1bc81b5af",
+   "verdict": "tp",
+   "reason": "Clickable div, span or td with no role, tabIndex or key handler."
+  },
+  {
+   "rule": "UI002",
+   "file": "frontend/src/components/MessageEditor.tsx",
+   "line": 182,
+   "fingerprint": "111d56e6bae9b8fc3b127ad511829cf4",
+   "verdict": "tp",
+   "reason": "Clickable div, span or td with no role, tabIndex or key handler."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/components/OrphanChat.tsx",
+   "line": 77,
+   "fingerprint": "9fe7d84ea71f143ad2042098e36b96f4",
+   "verdict": "tp",
+   "reason": "Form control with no label, aria-label or id."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/components/StringEditor.tsx",
+   "line": 25,
+   "fingerprint": "fb6d23649e8424a99f6258904255125c",
+   "verdict": "tp",
+   "reason": "Form control with no label, aria-label or id."
+  },
+  {
+   "rule": "UI002",
+   "file": "frontend/src/components/Tool.tsx",
+   "line": 72,
+   "fingerprint": "233ff87cc7f677c8cf1ecb399ad2b946",
+   "verdict": "tp",
+   "reason": "Clickable div, span or td with no role, tabIndex or key handler."
+  },
+  {
+   "rule": "UI002",
+   "file": "frontend/src/components/TypingBox.tsx",
+   "line": 113,
+   "fingerprint": "91939288dd85be6b9f4af2f5441894b6",
+   "verdict": "tp",
+   "reason": "Clickable div, span or td with no role, tabIndex or key handler."
+  },
+  {
+   "rule": "UI009",
+   "file": "frontend/src/hooks/useChatList.ts",
+   "line": 34,
+   "fingerprint": "36411069505514c021f8d77b3c133c29",
+   "verdict": "tp",
+   "reason": "The hook fetches with no error handling; a failure leaves the UI empty."
+  },
+  {
+   "rule": "UI009",
+   "file": "frontend/src/hooks/useSchemas.ts",
+   "line": 37,
+   "fingerprint": "1c4e0c20fac7ede197afd21dc65f550b",
+   "verdict": "tp",
+   "reason": "The hook fetches with no error handling; a failure leaves the UI empty."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/utils/json-refs.js",
+   "line": 84,
+   "fingerprint": "35563d2720646faec3c1260b8c9694af",
+   "verdict": "fp",
+   "reason": "Vendored third-party bundle (header: Original source ... json-refs-min.js), not application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/utils/json-refs.js",
+   "line": 1053,
+   "fingerprint": "5891da7d92bed19a4dec63e257069bbe",
+   "verdict": "fp",
+   "reason": "Vendored third-party bundle (header: Original source ... json-refs-min.js), not application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/utils/json-refs.js",
+   "line": 1217,
+   "fingerprint": "feebe5d5f1a6b6dd8e5b4c2ab726f48d",
+   "verdict": "fp",
+   "reason": "Vendored third-party bundle (header: Original source ... json-refs-min.js), not application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/utils/json-refs.js",
+   "line": 1220,
+   "fingerprint": "e5900390d13c7471e90f0b22e6aee249",
+   "verdict": "fp",
+   "reason": "Vendored third-party bundle (header: Original source ... json-refs-min.js), not application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/utils/json-refs.js",
+   "line": 1248,
+   "fingerprint": "7c9c4249c501965bdca5b6ca5794f63d",
+   "verdict": "fp",
+   "reason": "Vendored third-party bundle (header: Original source ... json-refs-min.js), not application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/utils/json-refs.js",
+   "line": 3026,
+   "fingerprint": "17da53fbed23a54737f94124f0175794",
+   "verdict": "fp",
+   "reason": "Vendored third-party bundle (header: Original source ... json-refs-min.js), not application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/utils/json-refs.js",
+   "line": 3533,
+   "fingerprint": "6cc783fcf22f24b4737583d22df4d0df",
+   "verdict": "fp",
+   "reason": "Vendored third-party bundle (header: Original source ... json-refs-min.js), not application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/utils/json-refs.js",
+   "line": 4054,
+   "fingerprint": "fe8cefa4a05e89f3355c825ab724918b",
+   "verdict": "fp",
+   "reason": "Vendored third-party bundle (header: Original source ... json-refs-min.js), not application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/utils/json-refs.js",
+   "line": 5542,
+   "fingerprint": "1f4abb40b64c1833d33ddf5b17d8ebed",
+   "verdict": "fp",
+   "reason": "Vendored third-party bundle (header: Original source ... json-refs-min.js), not application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/utils/json-refs.js",
+   "line": 5545,
+   "fingerprint": "188772216c499cc27e076d5341fb3344",
+   "verdict": "fp",
+   "reason": "Vendored third-party bundle (header: Original source ... json-refs-min.js), not application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/utils/json-refs.js",
+   "line": 7955,
+   "fingerprint": "ffc24b23ed03cefd6d207bed5caa62e5",
+   "verdict": "fp",
+   "reason": "Vendored third-party bundle (header: Original source ... json-refs-min.js), not application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/utils/json-refs.js",
+   "line": 9746,
+   "fingerprint": "4718f3d96f063785070949ed2d339fde",
+   "verdict": "fp",
+   "reason": "Vendored third-party bundle (header: Original source ... json-refs-min.js), not application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/utils/json-refs.js",
+   "line": 9749,
+   "fingerprint": "06a440300924e75c18e5cfd40f2505d4",
+   "verdict": "fp",
+   "reason": "Vendored third-party bundle (header: Original source ... json-refs-min.js), not application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/utils/json-refs.js",
+   "line": 9752,
+   "fingerprint": "836e26746a5d169cdcf82a14483c0bdb",
+   "verdict": "fp",
+   "reason": "Vendored third-party bundle (header: Original source ... json-refs-min.js), not application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/utils/json-refs.js",
+   "line": 9755,
+   "fingerprint": "914b90d441808aadcc8f454660916d0a",
+   "verdict": "fp",
+   "reason": "Vendored third-party bundle (header: Original source ... json-refs-min.js), not application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/utils/json-refs.js",
+   "line": 10045,
+   "fingerprint": "a72f0b2e3faf52cfed61de447d12d2cf",
+   "verdict": "fp",
+   "reason": "Vendored third-party bundle (header: Original source ... json-refs-min.js), not application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/utils/json-refs.js",
+   "line": 10523,
+   "fingerprint": "a2899cc47c2561dae99ce9b292fb317c",
+   "verdict": "fp",
+   "reason": "Vendored third-party bundle (header: Original source ... json-refs-min.js), not application code."
+  },
+  {
+   "rule": "FE004",
+   "file": "frontend/src/utils/json-refs.js",
+   "line": 10731,
+   "fingerprint": "0013b0793b55b528bf8b52ce899fec92",
+   "verdict": "fp",
+   "reason": "Vendored third-party bundle (header: Original source ... json-refs-min.js), not application code."
+  },
+  {
+   "rule": "BE003",
+   "file": "frontend/src/utils/json-refs.js",
+   "line": 10737,
+   "fingerprint": "2fdf3dc79563248077d28fb5b36a8e4f",
+   "verdict": "fp",
+   "reason": "Vendored third-party bundle (header: Original source ... json-refs-min.js), not application code."
+  },
+  {
+   "rule": "CFG001",
+   "file": "tools/redis_to_postgres/Dockerfile",
+   "line": 1,
+   "fingerprint": "465346165974c47413a78489f2f99c7f",
+   "verdict": "tp",
+   "reason": "The final image has no USER instruction and runs as root."
+  },
+  {
+   "rule": "CFG002",
+   "file": "tools/redis_to_postgres/Dockerfile",
+   "line": 1,
+   "fingerprint": "d3d4957081e3ec458688e5051e2d00dc",
+   "verdict": "tp",
+   "reason": "The base image uses the latest tag."
+  },
+  {
+   "rule": "CFG007",
+   "file": "tools/redis_to_postgres/docker-compose.yml",
+   "line": 22,
+   "fingerprint": "723a827822a718d45f9dae32922f24af",
+   "verdict": "tp",
+   "reason": "docker-compose sets the default postgres password."
+  },
+  {
+   "rule": "QA007",
+   "file": "tools/redis_to_postgres/migrate_data.py",
+   "line": 21,
+   "fingerprint": "d4e56ba2601566db0003cee8f79589f4",
+   "verdict": "tp",
+   "reason": "Imported directly but not declared (only psycopg2-binary is listed); it works only through transitive installs."
+  },
+  {
+   "rule": "DATA007",
+   "file": "tools/redis_to_postgres/migrate_data.py",
+   "line": 34,
+   "fingerprint": "faee15bcd0d2a159305018691f6351c7",
+   "verdict": "tp",
+   "reason": "REDIS_URL is required by the migration tool and not documented."
+  },
+  {
+   "rule": "BE004",
+   "file": "tools/redis_to_postgres/migrate_data.py",
+   "line": 87,
+   "fingerprint": "cec48d786897bad406e1726efa283e08",
+   "verdict": "fp",
+   "reason": "pickle.loads reads the app's own Redis data during a one-off migration, not untrusted input."
+  },
+  {
+   "rule": "DATA001",
+   "file": "tools/redis_to_postgres/migrate_data.py",
+   "line": 133,
+   "fingerprint": "84fc1b7a8033be78f77c77411b022424",
+   "verdict": "fp",
+   "reason": "A one-off migration script copies rows one by one; not request-time N+1."
+  },
+  {
+   "rule": "DATA001",
+   "file": "tools/redis_to_postgres/migrate_data.py",
+   "line": 163,
+   "fingerprint": "3eb3fe836da364a212bbd39561f76f3c",
+   "verdict": "fp",
+   "reason": "A one-off migration script copies rows one by one; not request-time N+1."
+  },
+  {
+   "rule": "DATA001",
+   "file": "tools/redis_to_postgres/migrate_data.py",
+   "line": 252,
+   "fingerprint": "31c6766e7e6949aa92c66a210fa70695",
+   "verdict": "fp",
+   "reason": "A one-off migration script copies rows one by one; not request-time N+1."
+  }
+ ]
+}

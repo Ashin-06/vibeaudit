@@ -1,0 +1,142 @@
+{
+ "repo": "ai-chatbot",
+ "commit": "a8989b522fa3672a2ae52f053105e40993b36ca1",
+ "findings": [
+  {
+   "rule": "DATA010",
+   "file": "app/(chat)/api/chat/route.ts",
+   "line": 70,
+   "fingerprint": "98eb1fe183e699651a8be9794cbf0d98",
+   "verdict": "tp",
+   "reason": "saveChat and saveMessages write separately; a failure leaves a chat without its messages."
+  },
+  {
+   "rule": "LLM003",
+   "file": "app/(chat)/api/chat/route.ts",
+   "line": 269,
+   "fingerprint": "6c8bcdb07cf597b6162aac2104401583",
+   "verdict": "tp",
+   "reason": "streamText/generateText is called without maxOutputTokens."
+  },
+  {
+   "rule": "DATA010",
+   "file": "app/(chat)/api/chat/route.ts",
+   "line": 447,
+   "fingerprint": "8acc1b6c02994135567780d0c8b42287",
+   "verdict": "tp",
+   "reason": "deleteChatById deletes votes, messages, streams and chats in separate statements without a transaction."
+  },
+  {
+   "rule": "DATA010",
+   "file": "app/(chat)/api/history/route.ts",
+   "line": 39,
+   "fingerprint": "5cf047aa7ff5e5f1899752b49cfb50ef",
+   "verdict": "tp",
+   "reason": "deleteChatById deletes votes, messages, streams and chats in separate statements without a transaction."
+  },
+  {
+   "rule": "UI011",
+   "file": "app/layout.tsx",
+   "line": 1,
+   "fingerprint": "c44b90f6cc69eea1339e7b0e8891c38a",
+   "verdict": "tp",
+   "reason": "The app directory has no error.tsx or global-error.tsx."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/layout.tsx",
+   "line": 65,
+   "fingerprint": "835a6eb47dec5dec463092806905cf56",
+   "verdict": "fp",
+   "reason": "__html is a constant theme script string defined in the same file."
+  },
+  {
+   "rule": "LLM003",
+   "file": "artifacts/code/server.ts",
+   "line": 18,
+   "fingerprint": "01670f47921502c0dbd66df261fe9509",
+   "verdict": "tp",
+   "reason": "streamText/generateText is called without maxOutputTokens."
+  },
+  {
+   "rule": "LLM003",
+   "file": "artifacts/code/server.ts",
+   "line": 40,
+   "fingerprint": "159a3d94d78d163f593b97d78dbf16cb",
+   "verdict": "tp",
+   "reason": "streamText/generateText is called without maxOutputTokens."
+  },
+  {
+   "rule": "LLM003",
+   "file": "artifacts/sheet/server.ts",
+   "line": 11,
+   "fingerprint": "f2d666819494475a00928c8363458179",
+   "verdict": "tp",
+   "reason": "streamText/generateText is called without maxOutputTokens."
+  },
+  {
+   "rule": "LLM003",
+   "file": "artifacts/sheet/server.ts",
+   "line": 33,
+   "fingerprint": "ff56daa5da1ddbad779b5e2671bcf5b0",
+   "verdict": "tp",
+   "reason": "streamText/generateText is called without maxOutputTokens."
+  },
+  {
+   "rule": "LLM003",
+   "file": "artifacts/text/server.ts",
+   "line": 11,
+   "fingerprint": "67a4852e4dd60f3869c2dc3fb469f464",
+   "verdict": "tp",
+   "reason": "streamText/generateText is called without maxOutputTokens."
+  },
+  {
+   "rule": "LLM003",
+   "file": "artifacts/text/server.ts",
+   "line": 35,
+   "fingerprint": "9cf0e2b9dd916e575025a470ffe7b9f3",
+   "verdict": "tp",
+   "reason": "streamText/generateText is called without maxOutputTokens."
+  },
+  {
+   "rule": "FE001",
+   "file": "components/chat/diffview.tsx",
+   "line": 70,
+   "fingerprint": "c54a4329e2523dd7cc49f6519f46d9e9",
+   "verdict": "tp",
+   "reason": "Model-written document HTML is parsed with innerHTML on a detached div; injected img onerror handlers still run."
+  },
+  {
+   "rule": "FE001",
+   "file": "components/chat/diffview.tsx",
+   "line": 73,
+   "fingerprint": "73bd16327b03cddb3662738e7b2ad1d5",
+   "verdict": "tp",
+   "reason": "Model-written document HTML is parsed with innerHTML on a detached div; injected img onerror handlers still run."
+  },
+  {
+   "rule": "LLM003",
+   "file": "lib/ai/generate-title.ts",
+   "line": 16,
+   "fingerprint": "16abf0821d65fb9828a1fb416a119b3d",
+   "verdict": "tp",
+   "reason": "streamText/generateText is called without maxOutputTokens."
+  },
+  {
+   "rule": "LLM003",
+   "file": "lib/ai/tools/request-suggestions.ts",
+   "line": 42,
+   "fingerprint": "599a6072abb1384c69aee932b30b2a76",
+   "verdict": "tp",
+   "reason": "streamText/generateText is called without maxOutputTokens."
+  },
+  {
+   "rule": "FE001",
+   "file": "lib/editor/functions.tsx",
+   "line": 19,
+   "fingerprint": "0be0cd24f5579b3e9cca5c5524b9d9c0",
+   "verdict": "tp",
+   "reason": "Rendered markdown (model output) is parsed with innerHTML on a detached div; img onerror handlers still run."
+  }
+ ]
+}

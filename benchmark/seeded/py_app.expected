@@ -1,0 +1,2 @@
+# Findings without a line to carry an `expect:` comment (path:line:RULE)
+keys/server.pem:1:SEC002

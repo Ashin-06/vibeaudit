@@ -1,0 +1,86 @@
+{
+ "repo": "starlette",
+ "commit": "271c277da0ff64e2048a4d46ecc812b9d61db5f6",
+ "findings": [
+  {
+   "rule": "AUTH008",
+   "file": "starlette/authentication.py",
+   "line": 134,
+   "fingerprint": "8f665058a441385231917e14d4142819",
+   "verdict": "fp",
+   "reason": "SimpleUser represents an authenticated user; UnauthenticatedUser returns False."
+  },
+  {
+   "rule": "QA003",
+   "file": "starlette/datastructures.py",
+   "line": 136,
+   "fingerprint": "fe4c007e699404b4d823ac6d5bad6176",
+   "verdict": "fp",
+   "reason": "A specific expected exception is caught on purpose as a no-op fallback in library code."
+  },
+  {
+   "rule": "QA003",
+   "file": "starlette/middleware/body_limit.py",
+   "line": 95,
+   "fingerprint": "1f93176af9420bcbf3f905ad0dade472",
+   "verdict": "fp",
+   "reason": "A specific expected exception is caught on purpose as a no-op fallback in library code."
+  },
+  {
+   "rule": "QA003",
+   "file": "starlette/routing.py",
+   "line": 459,
+   "fingerprint": "04f8aa4f39539a9e3db8d8f9df3db3d6",
+   "verdict": "fp",
+   "reason": "A specific expected exception is caught on purpose as a no-op fallback in library code."
+  },
+  {
+   "rule": "QA003",
+   "file": "starlette/routing.py",
+   "line": 525,
+   "fingerprint": "d5669faf2aaf1828b9e83eaa354f8f35",
+   "verdict": "fp",
+   "reason": "A specific expected exception is caught on purpose as a no-op fallback in library code."
+  },
+  {
+   "rule": "QA003",
+   "file": "starlette/routing.py",
+   "line": 648,
+   "fingerprint": "55c32f7f440e53450581cbf087ca5ab3",
+   "verdict": "fp",
+   "reason": "A specific expected exception is caught on purpose as a no-op fallback in library code."
+  },
+  {
+   "rule": "QA003",
+   "file": "starlette/staticfiles.py",
+   "line": 228,
+   "fingerprint": "3143e4c282e6a40e4f87a31e45caa173",
+   "verdict": "fp",
+   "reason": "A specific expected exception is caught on purpose as a no-op fallback in library code."
+  },
+  {
+   "rule": "QA003",
+   "file": "starlette/websockets.py",
+   "line": 154,
+   "fingerprint": "db88675e0095d4f4ab82f4d5a0ea4b3a",
+   "verdict": "fp",
+   "reason": "A specific expected exception is caught on purpose as a no-op fallback in library code."
+  },
+  {
+   "rule": "QA003",
+   "file": "starlette/websockets.py",
+   "line": 161,
+   "fingerprint": "f34b37ffe61939d539c838f8db4b3aa7",
+   "verdict": "fp",
+   "reason": "A specific expected exception is caught on purpose as a no-op fallback in library code."
+  },
+  {
+   "rule": "QA003",
+   "file": "starlette/websockets.py",
+   "line": 168,
+   "fingerprint": "b43662e12a7322b9f5c00787b696b121",
+   "verdict": "fp",
+   "reason": "A specific expected exception is caught on purpose as a no-op fallback in library code."
+  }
+ ]
+}

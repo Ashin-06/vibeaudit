@@ -1,0 +1,3109 @@
+{
+ "tool": "vibeaudit benchmark",
+ "corpus": 32,
+ "scanned": 32,
+ "skipped": {},
+ "repos": {
+  "act-solo-ai": {
+   "findings": 17,
+   "labelled": 17,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 4
+  },
+  "helpdesk-flow-verse": {
+   "findings": 22,
+   "labelled": 22,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 8
+  },
+  "learnathon-leaderboard": {
+   "findings": 7,
+   "labelled": 7,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 4
+  },
+  "LinguaLearn": {
+   "findings": 48,
+   "labelled": 48,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 6
+  },
+  "physicalmediavault": {
+   "findings": 8,
+   "labelled": 8,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 4
+  },
+  "prompt-sculptor-49": {
+   "findings": 59,
+   "labelled": 59,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 17
+  },
+  "scriptforge-ai": {
+   "findings": 15,
+   "labelled": 15,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 7
+  },
+  "sync-plan-flow": {
+   "findings": 20,
+   "labelled": 20,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 8
+  },
+  "ai-chatbot": {
+   "findings": 17,
+   "labelled": 17,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "chat-langchain": {
+   "findings": 4,
+   "labelled": 4,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 4
+  },
+  "chatbot-ui": {
+   "findings": 47,
+   "labelled": 47,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 1
+  },
+  "chatgpt-your-files": {
+   "findings": 9,
+   "labelled": 9,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 4
+  },
+  "llm-examples": {
+   "findings": 6,
+   "labelled": 6,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "opengpts": {
+   "findings": 41,
+   "labelled": 41,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 27
+  },
+  "openui": {
+   "findings": 25,
+   "labelled": 25,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 4
+  },
+  "sec-insights": {
+   "findings": 40,
+   "labelled": 40,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 10
+  },
+  "bakerydemo": {
+   "findings": 13,
+   "labelled": 13,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 26
+  },
+  "commerce": {
+   "findings": 8,
+   "labelled": 8,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "Django-Styleguide-Example": {
+   "findings": 11,
+   "labelled": 11,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 3
+  },
+  "djangoproject.com": {
+   "findings": 14,
+   "labelled": 14,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 62
+  },
+  "express": {
+   "findings": 1,
+   "labelled": 1,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 9
+  },
+  "flask": {
+   "findings": 2,
+   "labelled": 2,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 6
+  },
+  "full-stack-fastapi-template": {
+   "findings": 6,
+   "labelled": 6,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 4
+  },
+  "microblog": {
+   "findings": 13,
+   "labelled": 13,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 7
+  },
+  "next-learn": {
+   "findings": 19,
+   "labelled": 19,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 10
+  },
+  "nextjs-subscription-payments": {
+   "findings": 7,
+   "labelled": 7,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 2
+  },
+  "node-express-boilerplate": {
+   "findings": 2,
+   "labelled": 2,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 2
+  },
+  "node-express-realworld-example-app": {
+   "findings": 11,
+   "labelled": 11,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 4
+  },
+  "starlette": {
+   "findings": 1,
+   "labelled": 1,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 9
+  },
+  "taxonomy": {
+   "findings": 7,
+   "labelled": 7,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "werkzeug": {
+   "findings": 8,
+   "labelled": 8,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 26
+  },
+  "Vulnerable-Flask-App": {
+   "findings": 16,
+   "labelled": 16,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 17
+  }
+ },
+ "rules": {
+  "AI001": {
+   "title": "Issue reported by the LLM review (unverified)",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 0,
+   "seeded_found": 0,
+   "seeded_recall": null,
+   "by_repo": {}
+  },
+  "API001": {
+   "title": "Frontend calls an API path that no route handles",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "API002": {
+   "title": "Frontend calls an API route with the wrong method",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "AUTH001": {
+   "title": "State-changing endpoint without authentication",
+   "preview": false,
+   "tp": 18,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 7,
+   "seeded_found": 7,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     2,
+     0,
+     0
+    ],
+    "Vulnerable-Flask-App": [
+     2,
+     0,
+     0
+    ],
+    "chatbot-ui": [
+     1,
+     0,
+     0
+    ],
+    "helpdesk-flow-verse": [
+     5,
+     0,
+     0
+    ],
+    "learnathon-leaderboard": [
+     1,
+     0,
+     0
+    ],
+    "next-learn": [
+     3,
+     0,
+     0
+    ],
+    "scriptforge-ai": [
+     3,
+     0,
+     0
+    ],
+    "sec-insights": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "AUTH002": {
+   "title": "Admin endpoint without a role check",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 3,
+   "seeded_found": 3,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "AUTH003": {
+   "title": "Possible insecure direct object reference (IDOR)",
+   "preview": false,
+   "tp": 0,
+   "fp": 2,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.0,
+   "precision_pessimistic": 0.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "microblog": [
+     0,
+     1,
+     0
+    ],
+    "node-express-realworld-example-app": [
+     0,
+     1,
+     0
+    ]
+   }
+  },
+  "AUTH004": {
+   "title": "Webhook without signature verification",
+   "preview": false,
+   "tp": 1,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "learnathon-leaderboard": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "AUTH005": {
+   "title": "Supabase table without Row Level Security",
+   "preview": false,
+   "tp": 2,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "prompt-sculptor-49": [
+     2,
+     0,
+     0
+    ]
+   }
+  },
+  "AUTH006": {
+   "title": "Permissive Supabase policy",
+   "preview": false,
+   "tp": 12,
+   "fp": 1,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.9231,
+   "precision_pessimistic": 0.9231,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "prompt-sculptor-49": [
+     2,
+     1,
+     0
+    ],
+    "sync-plan-flow": [
+     10,
+     0,
+     0
+    ]
+   }
+  },
+  "AUTH007": {
+   "title": "Open Firebase security rules",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 4,
+   "seeded_found": 4,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "AUTH008": {
+   "title": "Auth check stub always succeeds",
+   "preview": false,
+   "tp": 0,
+   "fp": 1,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.0,
+   "precision_pessimistic": 0.0,
+   "seeded_expected": 2,
+   "seeded_found": 2,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "starlette": [
+     0,
+     1,
+     0
+    ]
+   }
+  },
+  "AUTH009": {
+   "title": "CSRF protection disabled",
+   "preview": false,
+   "tp": 0,
+   "fp": 1,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.0,
+   "precision_pessimistic": 0.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "djangoproject.com": [
+     0,
+     1,
+     0
+    ]
+   }
+  },
+  "AUTH010": {
+   "title": "Login endpoint without rate limiting",
+   "preview": false,
+   "tp": 8,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 2,
+   "seeded_found": 2,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Vulnerable-Flask-App": [
+     1,
+     0,
+     0
+    ],
+    "chatgpt-your-files": [
+     1,
+     0,
+     0
+    ],
+    "full-stack-fastapi-template": [
+     3,
+     0,
+     0
+    ],
+    "microblog": [
+     2,
+     0,
+     0
+    ],
+    "node-express-realworld-example-app": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "BE001": {
+   "title": "SQL injection",
+   "preview": false,
+   "tp": 1,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 2,
+   "seeded_found": 2,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Vulnerable-Flask-App": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "BE002": {
+   "title": "Command injection",
+   "preview": false,
+   "tp": 0,
+   "fp": 3,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.0,
+   "precision_pessimistic": 0.0,
+   "seeded_expected": 2,
+   "seeded_found": 2,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "djangoproject.com": [
+     0,
+     1,
+     0
+    ],
+    "microblog": [
+     0,
+     1,
+     0
+    ],
+    "node-express-boilerplate": [
+     0,
+     1,
+     0
+    ]
+   }
+  },
+  "BE003": {
+   "title": "Dynamic code execution",
+   "preview": false,
+   "tp": 0,
+   "fp": 4,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.0,
+   "precision_pessimistic": 0.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "flask": [
+     0,
+     2,
+     0
+    ],
+    "werkzeug": [
+     0,
+     2,
+     0
+    ]
+   }
+  },
+  "BE004": {
+   "title": "Unsafe deserialization",
+   "preview": false,
+   "tp": 1,
+   "fp": 1,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.5,
+   "precision_pessimistic": 0.5,
+   "seeded_expected": 2,
+   "seeded_found": 2,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Vulnerable-Flask-App": [
+     1,
+     0,
+     0
+    ],
+    "opengpts": [
+     0,
+     1,
+     0
+    ]
+   }
+  },
+  "BE005": {
+   "title": "Server-side request forgery (SSRF)",
+   "preview": false,
+   "tp": 0,
+   "fp": 1,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.0,
+   "precision_pessimistic": 0.0,
+   "seeded_expected": 2,
+   "seeded_found": 2,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "physicalmediavault": [
+     0,
+     1,
+     0
+    ]
+   }
+  },
+  "BE006": {
+   "title": "Path traversal",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "BE007": {
+   "title": "Server-side template injection",
+   "preview": false,
+   "tp": 1,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Vulnerable-Flask-App": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "BE008": {
+   "title": "Open redirect",
+   "preview": false,
+   "tp": 1,
+   "fp": 1,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.5,
+   "precision_pessimistic": 0.5,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "chatbot-ui": [
+     1,
+     0,
+     0
+    ],
+    "nextjs-subscription-payments": [
+     0,
+     1,
+     0
+    ]
+   }
+  },
+  "BE009": {
+   "title": "Mass assignment",
+   "preview": false,
+   "tp": 0,
+   "fp": 2,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.0,
+   "precision_pessimistic": 0.0,
+   "seeded_expected": 2,
+   "seeded_found": 2,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     0,
+     2,
+     0
+    ]
+   }
+  },
+  "BE010": {
+   "title": "NoSQL injection",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "BE011": {
+   "title": "Debug mode enabled",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 2,
+   "seeded_found": 2,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "BE012": {
+   "title": "Insecure CORS policy",
+   "preview": false,
+   "tp": 1,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 3,
+   "seeded_found": 3,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "BE013": {
+   "title": "TLS certificate verification disabled",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "BE014": {
+   "title": "Weak or plaintext password storage",
+   "preview": false,
+   "tp": 1,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Vulnerable-Flask-App": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "BE015": {
+   "title": "Insecure randomness for secrets",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "BE016": {
+   "title": "JWT signature not verified",
+   "preview": false,
+   "tp": 1,
+   "fp": 2,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.3333,
+   "precision_pessimistic": 0.3333,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Django-Styleguide-Example": [
+     0,
+     2,
+     0
+    ],
+    "Vulnerable-Flask-App": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "BE017": {
+   "title": "Internal error details sent to the client",
+   "preview": false,
+   "tp": 6,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 2,
+   "seeded_found": 2,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     6,
+     0,
+     0
+    ]
+   }
+  },
+  "BE018": {
+   "title": "No server-side input validation",
+   "preview": true,
+   "tp": 6,
+   "fp": 3,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.6667,
+   "precision_pessimistic": 0.6667,
+   "seeded_expected": 3,
+   "seeded_found": 3,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Vulnerable-Flask-App": [
+     1,
+     0,
+     0
+    ],
+    "act-solo-ai": [
+     0,
+     1,
+     0
+    ],
+    "chatgpt-your-files": [
+     1,
+     0,
+     0
+    ],
+    "helpdesk-flow-verse": [
+     1,
+     0,
+     0
+    ],
+    "learnathon-leaderboard": [
+     1,
+     0,
+     0
+    ],
+    "node-express-realworld-example-app": [
+     0,
+     1,
+     0
+    ],
+    "physicalmediavault": [
+     1,
+     0,
+     0
+    ],
+    "prompt-sculptor-49": [
+     1,
+     0,
+     0
+    ],
+    "scriptforge-ai": [
+     0,
+     1,
+     0
+    ]
+   }
+  },
+  "CFG001": {
+   "title": "Container runs as root",
+   "preview": false,
+   "tp": 17,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Django-Styleguide-Example": [
+     2,
+     0,
+     0
+    ],
+    "LinguaLearn": [
+     1,
+     0,
+     0
+    ],
+    "Vulnerable-Flask-App": [
+     1,
+     0,
+     0
+    ],
+    "bakerydemo": [
+     1,
+     0,
+     0
+    ],
+    "djangoproject.com": [
+     1,
+     0,
+     0
+    ],
+    "full-stack-fastapi-template": [
+     2,
+     0,
+     0
+    ],
+    "microblog": [
+     1,
+     0,
+     0
+    ],
+    "node-express-realworld-example-app": [
+     1,
+     0,
+     0
+    ],
+    "opengpts": [
+     4,
+     0,
+     0
+    ],
+    "openui": [
+     1,
+     0,
+     0
+    ],
+    "sec-insights": [
+     2,
+     0,
+     0
+    ]
+   }
+  },
+  "CFG002": {
+   "title": "Unpinned container base image",
+   "preview": false,
+   "tp": 1,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "opengpts": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "CFG003": {
+   "title": "Secret baked into the container image",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "CFG004": {
+   "title": "GitHub Actions script injection",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "CFG005": {
+   "title": "pull_request_target checks out untrusted code",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "CFG006": {
+   "title": "Any Host header accepted",
+   "preview": false,
+   "tp": 1,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "bakerydemo": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "CFG007": {
+   "title": "Default database credentials",
+   "preview": false,
+   "tp": 5,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Django-Styleguide-Example": [
+     1,
+     0,
+     0
+    ],
+    "bakerydemo": [
+     1,
+     0,
+     0
+    ],
+    "djangoproject.com": [
+     1,
+     0,
+     0
+    ],
+    "opengpts": [
+     1,
+     0,
+     0
+    ],
+    "sec-insights": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "CFG008": {
+   "title": "Express app without security headers",
+   "preview": false,
+   "tp": 1,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "node-express-realworld-example-app": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "CFG009": {
+   "title": ".env file copied into the container image",
+   "preview": false,
+   "tp": 2,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     1,
+     0,
+     0
+    ],
+    "sec-insights": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "DATA001": {
+   "title": "Database query inside a loop (N+1)",
+   "preview": true,
+   "tp": 1,
+   "fp": 4,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.2,
+   "precision_pessimistic": 0.2,
+   "seeded_expected": 2,
+   "seeded_found": 2,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Django-Styleguide-Example": [
+     0,
+     1,
+     0
+    ],
+    "djangoproject.com": [
+     1,
+     3,
+     0
+    ]
+   }
+  },
+  "DATA002": {
+   "title": "Whole user record returned to the client",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "DATA003": {
+   "title": "Destructive database migration",
+   "preview": false,
+   "tp": 2,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "chatbot-ui": [
+     1,
+     0,
+     0
+    ],
+    "node-express-realworld-example-app": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "DATA004": {
+   "title": "Money stored as a floating-point number",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 2,
+   "seeded_found": 2,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "DATA005": {
+   "title": "Private table readable by everyone",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "DATA006": {
+   "title": "Timestamp without time zone",
+   "preview": false,
+   "tp": 14,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 2,
+   "seeded_found": 2,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     8,
+     0,
+     0
+    ],
+    "Vulnerable-Flask-App": [
+     2,
+     0,
+     0
+    ],
+    "sec-insights": [
+     4,
+     0,
+     0
+    ]
+   }
+  },
+  "DATA007": {
+   "title": "Environment variable missing from the example env file",
+   "preview": true,
+   "tp": 6,
+   "fp": 6,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.5,
+   "precision_pessimistic": 0.5,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "bakerydemo": [
+     0,
+     4,
+     0
+    ],
+    "chat-langchain": [
+     3,
+     0,
+     0
+    ],
+    "opengpts": [
+     2,
+     2,
+     0
+    ],
+    "prompt-sculptor-49": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "DATA008": {
+   "title": "Database client created per request",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "DATA009": {
+   "title": "SQLite file database on a serverless host",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "DATA010": {
+   "title": "Several writes without a transaction",
+   "preview": true,
+   "tp": 8,
+   "fp": 1,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.8889,
+   "precision_pessimistic": 0.8889,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "ai-chatbot": [
+     3,
+     0,
+     0
+    ],
+    "chatbot-ui": [
+     2,
+     0,
+     0
+    ],
+    "helpdesk-flow-verse": [
+     2,
+     0,
+     0
+    ],
+    "learnathon-leaderboard": [
+     1,
+     0,
+     0
+    ],
+    "nextjs-subscription-payments": [
+     0,
+     1,
+     0
+    ]
+   }
+  },
+  "DEP001": {
+   "title": "Dependency does not exist on the registry",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 0,
+   "seeded_found": 0,
+   "seeded_recall": null,
+   "by_repo": {}
+  },
+  "DEP002": {
+   "title": "Package name looks like a typo of a popular package",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 2,
+   "seeded_found": 2,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "DEP003": {
+   "title": "Very new package",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 0,
+   "seeded_found": 0,
+   "seeded_recall": null,
+   "by_repo": {}
+  },
+  "DEP004": {
+   "title": "Dependency with known vulnerabilities",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 0,
+   "seeded_found": 0,
+   "seeded_recall": null,
+   "by_repo": {}
+  },
+  "DEP005": {
+   "title": "Dependencies are not locked",
+   "preview": false,
+   "tp": 2,
+   "fp": 1,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.6667,
+   "precision_pessimistic": 0.6667,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     1,
+     0,
+     0
+    ],
+    "express": [
+     0,
+     1,
+     0
+    ],
+    "llm-examples": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "DEP006": {
+   "title": "Install script downloads and runs remote code",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "DEP007": {
+   "title": "MCP server launched from an unpinned package",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "FE001": {
+   "title": "Cross-site scripting through a raw HTML sink",
+   "preview": true,
+   "tp": 20,
+   "fp": 10,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.6667,
+   "precision_pessimistic": 0.6667,
+   "seeded_expected": 4,
+   "seeded_found": 4,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "act-solo-ai": [
+     13,
+     0,
+     0
+    ],
+    "ai-chatbot": [
+     3,
+     1,
+     0
+    ],
+    "commerce": [
+     1,
+     1,
+     0
+    ],
+    "microblog": [
+     0,
+     1,
+     0
+    ],
+    "next-learn": [
+     0,
+     4,
+     0
+    ],
+    "opengpts": [
+     0,
+     1,
+     0
+    ],
+    "openui": [
+     3,
+     0,
+     0
+    ],
+    "werkzeug": [
+     0,
+     2,
+     0
+    ]
+   }
+  },
+  "FE002": {
+   "title": "LLM or secret API called directly from the browser",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "FE003": {
+   "title": "Authorization state kept in browser storage",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "FE004": {
+   "title": "postMessage handler without origin check",
+   "preview": false,
+   "tp": 1,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "openui": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "FE005": {
+   "title": "Auth token stored in localStorage",
+   "preview": false,
+   "tp": 6,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     5,
+     0,
+     0
+    ],
+    "full-stack-fastapi-template": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "FE006": {
+   "title": "Production source maps enabled",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "FE007": {
+   "title": "Hardcoded localhost URL in frontend code",
+   "preview": false,
+   "tp": 3,
+   "fp": 1,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.75,
+   "precision_pessimistic": 0.75,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     3,
+     0,
+     0
+    ],
+    "openui": [
+     0,
+     1,
+     0
+    ]
+   }
+  },
+  "LLM001": {
+   "title": "Untrusted input placed in the system prompt",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 3,
+   "seeded_found": 3,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "LLM002": {
+   "title": "LLM output used in a dangerous operation",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "LLM003": {
+   "title": "LLM call without an output token limit",
+   "preview": false,
+   "tp": 25,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 3,
+   "seeded_found": 3,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "ai-chatbot": [
+     9,
+     0,
+     0
+    ],
+    "chatbot-ui": [
+     4,
+     0,
+     0
+    ],
+    "llm-examples": [
+     4,
+     0,
+     0
+    ],
+    "opengpts": [
+     4,
+     0,
+     0
+    ],
+    "openui": [
+     3,
+     0,
+     0
+    ],
+    "sync-plan-flow": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "LLM004": {
+   "title": "LLM endpoint without rate limiting",
+   "preview": false,
+   "tp": 20,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 4,
+   "seeded_found": 4,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "chatbot-ui": [
+     11,
+     0,
+     0
+    ],
+    "chatgpt-your-files": [
+     1,
+     0,
+     0
+    ],
+    "helpdesk-flow-verse": [
+     4,
+     0,
+     0
+    ],
+    "opengpts": [
+     1,
+     0,
+     0
+    ],
+    "scriptforge-ai": [
+     3,
+     0,
+     0
+    ]
+   }
+  },
+  "LLM005": {
+   "title": "Agent tool with dangerous capability",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 2,
+   "seeded_found": 2,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "LLM006": {
+   "title": "Dangerous agent or framework option enabled",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "LLM007": {
+   "title": "System prompt shipped to the browser",
+   "preview": false,
+   "tp": 1,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "act-solo-ai": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "LLM008": {
+   "title": "Unsafe model loading",
+   "preview": false,
+   "tp": 1,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 2,
+   "seeded_found": 2,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "LLM009": {
+   "title": "Unbounded agent loop",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "LLM010": {
+   "title": "Vector search without a user or tenant filter",
+   "preview": false,
+   "tp": 1,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "chatbot-ui": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "LLM011": {
+   "title": "Model output parsed as JSON without error handling",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "LLM012": {
+   "title": "Retired or deprecated model hardcoded",
+   "preview": false,
+   "tp": 17,
+   "fp": 1,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.9444,
+   "precision_pessimistic": 0.9444,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "chatbot-ui": [
+     10,
+     0,
+     0
+    ],
+    "llm-examples": [
+     1,
+     0,
+     0
+    ],
+    "opengpts": [
+     1,
+     0,
+     0
+    ],
+    "openui": [
+     5,
+     1,
+     0
+    ]
+   }
+  },
+  "LLM013": {
+   "title": "MCP server with broad access",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 2,
+   "seeded_found": 2,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "LLM014": {
+   "title": "Secret in an MCP configuration",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "LLM015": {
+   "title": "Agent combines untrusted input with dangerous tools",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "QA001": {
+   "title": "No automated tests",
+   "preview": false,
+   "tp": 8,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 2,
+   "seeded_found": 2,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "chatgpt-your-files": [
+     1,
+     0,
+     0
+    ],
+    "commerce": [
+     1,
+     0,
+     0
+    ],
+    "helpdesk-flow-verse": [
+     1,
+     0,
+     0
+    ],
+    "learnathon-leaderboard": [
+     1,
+     0,
+     0
+    ],
+    "next-learn": [
+     1,
+     0,
+     0
+    ],
+    "nextjs-subscription-payments": [
+     1,
+     0,
+     0
+    ],
+    "prompt-sculptor-49": [
+     1,
+     0,
+     0
+    ],
+    "taxonomy": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "QA002": {
+   "title": "No continuous integration",
+   "preview": false,
+   "tp": 15,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 2,
+   "seeded_found": 2,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     1,
+     0,
+     0
+    ],
+    "chatbot-ui": [
+     1,
+     0,
+     0
+    ],
+    "chatgpt-your-files": [
+     1,
+     0,
+     0
+    ],
+    "commerce": [
+     1,
+     0,
+     0
+    ],
+    "helpdesk-flow-verse": [
+     1,
+     0,
+     0
+    ],
+    "learnathon-leaderboard": [
+     1,
+     0,
+     0
+    ],
+    "microblog": [
+     1,
+     0,
+     0
+    ],
+    "nextjs-subscription-payments": [
+     1,
+     0,
+     0
+    ],
+    "node-express-realworld-example-app": [
+     1,
+     0,
+     0
+    ],
+    "physicalmediavault": [
+     1,
+     0,
+     0
+    ],
+    "prompt-sculptor-49": [
+     1,
+     0,
+     0
+    ],
+    "scriptforge-ai": [
+     1,
+     0,
+     0
+    ],
+    "sec-insights": [
+     1,
+     0,
+     0
+    ],
+    "sync-plan-flow": [
+     1,
+     0,
+     0
+    ],
+    "taxonomy": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "QA003": {
+   "title": "Exception silently swallowed",
+   "preview": true,
+   "tp": 2,
+   "fp": 4,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.3333,
+   "precision_pessimistic": 0.3333,
+   "seeded_expected": 2,
+   "seeded_found": 2,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "chat-langchain": [
+     1,
+     0,
+     0
+    ],
+    "openui": [
+     1,
+     0,
+     0
+    ],
+    "werkzeug": [
+     0,
+     4,
+     0
+    ]
+   }
+  },
+  "QA004": {
+   "title": "Security placeholder or TODO left in code",
+   "preview": false,
+   "tp": 9,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Django-Styleguide-Example": [
+     1,
+     0,
+     0
+    ],
+    "LinguaLearn": [
+     4,
+     0,
+     0
+    ],
+    "helpdesk-flow-verse": [
+     2,
+     0,
+     0
+    ],
+    "openui": [
+     1,
+     0,
+     0
+    ],
+    "taxonomy": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "QA005": {
+   "title": "Unfinished stub left in code",
+   "preview": false,
+   "tp": 0,
+   "fp": 1,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.0,
+   "precision_pessimistic": 0.0,
+   "seeded_expected": 2,
+   "seeded_found": 2,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "sec-insights": [
+     0,
+     1,
+     0
+    ]
+   }
+  },
+  "QA006": {
+   "title": "Import of a file or name that does not exist",
+   "preview": false,
+   "tp": 10,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 4,
+   "seeded_found": 4,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "chatbot-ui": [
+     1,
+     0,
+     0
+    ],
+    "next-learn": [
+     7,
+     0,
+     0
+    ],
+    "sync-plan-flow": [
+     2,
+     0,
+     0
+    ]
+   }
+  },
+  "QA007": {
+   "title": "Package imported but not declared as a dependency",
+   "preview": false,
+   "tp": 27,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 2,
+   "seeded_found": 2,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     8,
+     0,
+     0
+    ],
+    "act-solo-ai": [
+     1,
+     0,
+     0
+    ],
+    "bakerydemo": [
+     4,
+     0,
+     0
+    ],
+    "opengpts": [
+     5,
+     0,
+     0
+    ],
+    "openui": [
+     4,
+     0,
+     0
+    ],
+    "scriptforge-ai": [
+     1,
+     0,
+     0
+    ],
+    "sec-insights": [
+     4,
+     0,
+     0
+    ]
+   }
+  },
+  "QA008": {
+   "title": "TypeScript checking disabled for a whole file",
+   "preview": false,
+   "tp": 2,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "taxonomy": [
+     2,
+     0,
+     0
+    ]
+   }
+  },
+  "REL001": {
+   "title": "Outbound HTTP request without a timeout",
+   "preview": false,
+   "tp": 16,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Django-Styleguide-Example": [
+     3,
+     0,
+     0
+    ],
+    "djangoproject.com": [
+     4,
+     0,
+     0
+    ],
+    "microblog": [
+     1,
+     0,
+     0
+    ],
+    "opengpts": [
+     1,
+     0,
+     0
+    ],
+    "openui": [
+     1,
+     0,
+     0
+    ],
+    "sec-insights": [
+     6,
+     0,
+     0
+    ]
+   }
+  },
+  "REL002": {
+   "title": "Blocking call inside an async handler",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "REL003": {
+   "title": "Webhook handler is not idempotent",
+   "preview": false,
+   "tp": 1,
+   "fp": 1,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.5,
+   "precision_pessimistic": 0.5,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "scriptforge-ai": [
+     1,
+     0,
+     0
+    ],
+    "taxonomy": [
+     0,
+     1,
+     0
+    ]
+   }
+  },
+  "REL004": {
+   "title": "Upload accepted without a size limit",
+   "preview": false,
+   "tp": 2,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     1,
+     0,
+     0
+    ],
+    "Vulnerable-Flask-App": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "REL005": {
+   "title": "In-memory state on a serverless host",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "REL006": {
+   "title": "No health-check endpoint",
+   "preview": false,
+   "tp": 6,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Vulnerable-Flask-App": [
+     1,
+     0,
+     0
+    ],
+    "microblog": [
+     1,
+     0,
+     0
+    ],
+    "node-express-boilerplate": [
+     1,
+     0,
+     0
+    ],
+    "node-express-realworld-example-app": [
+     1,
+     0,
+     0
+    ],
+    "openui": [
+     1,
+     0,
+     0
+    ],
+    "sec-insights": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "SEC001": {
+   "title": "Hardcoded API key or access token",
+   "preview": false,
+   "tp": 25,
+   "fp": 1,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.9615,
+   "precision_pessimistic": 0.9615,
+   "seeded_expected": 3,
+   "seeded_found": 3,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Django-Styleguide-Example": [
+     0,
+     1,
+     0
+    ],
+    "bakerydemo": [
+     1,
+     0,
+     0
+    ],
+    "prompt-sculptor-49": [
+     24,
+     0,
+     0
+    ]
+   }
+  },
+  "SEC002": {
+   "title": "Private key committed",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "SEC003": {
+   "title": "High-entropy secret assigned in code",
+   "preview": true,
+   "tp": 9,
+   "fp": 2,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.8182,
+   "precision_pessimistic": 0.8182,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "bakerydemo": [
+     0,
+     1,
+     0
+    ],
+    "openui": [
+     0,
+     1,
+     0
+    ],
+    "prompt-sculptor-49": [
+     9,
+     0,
+     0
+    ]
+   }
+  },
+  "SEC004": {
+   "title": "Hardcoded or default signing secret",
+   "preview": false,
+   "tp": 4,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 3,
+   "seeded_found": 3,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Vulnerable-Flask-App": [
+     1,
+     0,
+     0
+    ],
+    "node-express-realworld-example-app": [
+     3,
+     0,
+     0
+    ]
+   }
+  },
+  "SEC005": {
+   "title": "Database URL with embedded password",
+   "preview": false,
+   "tp": 2,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "prompt-sculptor-49": [
+     2,
+     0,
+     0
+    ]
+   }
+  },
+  "SEC006": {
+   "title": "Environment file committed to git",
+   "preview": false,
+   "tp": 2,
+   "fp": 2,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.5,
+   "precision_pessimistic": 0.5,
+   "seeded_expected": 0,
+   "seeded_found": 0,
+   "seeded_recall": null,
+   "by_repo": {
+    "LinguaLearn": [
+     0,
+     1,
+     0
+    ],
+    "physicalmediavault": [
+     0,
+     1,
+     0
+    ],
+    "prompt-sculptor-49": [
+     2,
+     0,
+     0
+    ]
+   }
+  },
+  "SEC007": {
+   "title": "Environment file not git-ignored",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 2,
+   "seeded_found": 2,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "SEC008": {
+   "title": "Secret exposed to the browser through a public env var",
+   "preview": false,
+   "tp": 0,
+   "fp": 1,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.0,
+   "precision_pessimistic": 0.0,
+   "seeded_expected": 3,
+   "seeded_found": 3,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "prompt-sculptor-49": [
+     0,
+     1,
+     0
+    ]
+   }
+  },
+  "SEC009": {
+   "title": "Supabase service_role key outside the server",
+   "preview": false,
+   "tp": 2,
+   "fp": 1,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.6667,
+   "precision_pessimistic": 0.6667,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "learnathon-leaderboard": [
+     0,
+     1,
+     0
+    ],
+    "prompt-sculptor-49": [
+     2,
+     0,
+     0
+    ]
+   }
+  },
+  "SEC010": {
+   "title": "Secret written to logs",
+   "preview": false,
+   "tp": 1,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "helpdesk-flow-verse": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "SEC011": {
+   "title": "Hardcoded password",
+   "preview": false,
+   "tp": 2,
+   "fp": 1,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.6667,
+   "precision_pessimistic": 0.6667,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     1,
+     0,
+     0
+    ],
+    "Vulnerable-Flask-App": [
+     1,
+     0,
+     0
+    ],
+    "helpdesk-flow-verse": [
+     0,
+     1,
+     0
+    ]
+   }
+  },
+  "UI001": {
+   "title": "Image without alt text",
+   "preview": false,
+   "tp": 18,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "djangoproject.com": [
+     2,
+     0,
+     0
+    ],
+    "microblog": [
+     4,
+     0,
+     0
+    ],
+    "sec-insights": [
+     12,
+     0,
+     0
+    ]
+   }
+  },
+  "UI002": {
+   "title": "Click handler on a non-interactive element",
+   "preview": false,
+   "tp": 35,
+   "fp": 1,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.9722,
+   "precision_pessimistic": 0.9722,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "chatbot-ui": [
+     14,
+     0,
+     0
+    ],
+    "chatgpt-your-files": [
+     1,
+     0,
+     0
+    ],
+    "commerce": [
+     1,
+     1,
+     0
+    ],
+    "opengpts": [
+     11,
+     0,
+     0
+    ],
+    "physicalmediavault": [
+     1,
+     0,
+     0
+    ],
+    "prompt-sculptor-49": [
+     3,
+     0,
+     0
+    ],
+    "sec-insights": [
+     3,
+     0,
+     0
+    ],
+    "sync-plan-flow": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "UI003": {
+   "title": "Form field without a label",
+   "preview": false,
+   "tp": 31,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     1,
+     0,
+     0
+    ],
+    "chatgpt-your-files": [
+     2,
+     0,
+     0
+    ],
+    "commerce": [
+     2,
+     0,
+     0
+    ],
+    "helpdesk-flow-verse": [
+     3,
+     0,
+     0
+    ],
+    "next-learn": [
+     3,
+     0,
+     0
+    ],
+    "nextjs-subscription-payments": [
+     2,
+     0,
+     0
+    ],
+    "opengpts": [
+     4,
+     0,
+     0
+    ],
+    "openui": [
+     1,
+     0,
+     0
+    ],
+    "prompt-sculptor-49": [
+     2,
+     0,
+     0
+    ],
+    "scriptforge-ai": [
+     4,
+     0,
+     0
+    ],
+    "sec-insights": [
+     3,
+     0,
+     0
+    ],
+    "sync-plan-flow": [
+     4,
+     0,
+     0
+    ]
+   }
+  },
+  "UI004": {
+   "title": "Control that does nothing",
+   "preview": false,
+   "tp": 4,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "prompt-sculptor-49": [
+     4,
+     0,
+     0
+    ]
+   }
+  },
+  "UI005": {
+   "title": "Array index used as key for a changing list",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "UI006": {
+   "title": "Destructive action without confirmation",
+   "preview": true,
+   "tp": 5,
+   "fp": 2,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.7143,
+   "precision_pessimistic": 0.7143,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "act-solo-ai": [
+     1,
+     0,
+     0
+    ],
+    "helpdesk-flow-verse": [
+     1,
+     0,
+     0
+    ],
+    "physicalmediavault": [
+     3,
+     0,
+     0
+    ],
+    "prompt-sculptor-49": [
+     0,
+     1,
+     0
+    ],
+    "sync-plan-flow": [
+     0,
+     1,
+     0
+    ]
+   }
+  },
+  "UI007": {
+   "title": "Hydration mismatch",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "UI008": {
+   "title": "Effect without cleanup",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "UI009": {
+   "title": "Data loaded without loading or error state",
+   "preview": false,
+   "tp": 3,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "opengpts": [
+     2,
+     0,
+     0
+    ],
+    "scriptforge-ai": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "UI010": {
+   "title": "Placeholder content left in the UI",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "UI011": {
+   "title": "No error page",
+   "preview": false,
+   "tp": 4,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "ai-chatbot": [
+     1,
+     0,
+     0
+    ],
+    "chatgpt-your-files": [
+     1,
+     0,
+     0
+    ],
+    "nextjs-subscription-payments": [
+     1,
+     0,
+     0
+    ],
+    "taxonomy": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "UI012": {
+   "title": "Missing page metadata or viewport",
+   "preview": false,
+   "tp": 1,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "next-learn": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "UI013": {
+   "title": "Link to a page that does not exist",
+   "preview": false,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  }
+ }
+}

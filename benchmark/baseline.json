@@ -1,0 +1,1593 @@
+{
+ "rules": {
+  "AI001": {
+   "precision": null,
+   "seeded_recall": null,
+   "by_repo": {}
+  },
+  "API001": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "API002": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "AUTH001": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     2,
+     0
+    ],
+    "Vulnerable-Flask-App": [
+     2,
+     0
+    ],
+    "chatbot-ui": [
+     1,
+     0
+    ],
+    "helpdesk-flow-verse": [
+     5,
+     0
+    ],
+    "learnathon-leaderboard": [
+     1,
+     0
+    ],
+    "next-learn": [
+     3,
+     0
+    ],
+    "scriptforge-ai": [
+     3,
+     0
+    ],
+    "sec-insights": [
+     1,
+     0
+    ]
+   }
+  },
+  "AUTH002": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "AUTH003": {
+   "precision": 0.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "microblog": [
+     0,
+     1
+    ],
+    "node-express-realworld-example-app": [
+     0,
+     1
+    ]
+   }
+  },
+  "AUTH004": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "learnathon-leaderboard": [
+     1,
+     0
+    ]
+   }
+  },
+  "AUTH005": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "prompt-sculptor-49": [
+     2,
+     0
+    ]
+   }
+  },
+  "AUTH006": {
+   "precision": 0.9231,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "prompt-sculptor-49": [
+     2,
+     1
+    ],
+    "sync-plan-flow": [
+     10,
+     0
+    ]
+   }
+  },
+  "AUTH007": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "AUTH008": {
+   "precision": 0.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "starlette": [
+     0,
+     1
+    ]
+   }
+  },
+  "AUTH009": {
+   "precision": 0.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "djangoproject.com": [
+     0,
+     1
+    ]
+   }
+  },
+  "AUTH010": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Vulnerable-Flask-App": [
+     1,
+     0
+    ],
+    "chatgpt-your-files": [
+     1,
+     0
+    ],
+    "full-stack-fastapi-template": [
+     3,
+     0
+    ],
+    "microblog": [
+     2,
+     0
+    ],
+    "node-express-realworld-example-app": [
+     1,
+     0
+    ]
+   }
+  },
+  "BE001": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Vulnerable-Flask-App": [
+     1,
+     0
+    ]
+   }
+  },
+  "BE002": {
+   "precision": 0.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "djangoproject.com": [
+     0,
+     1
+    ],
+    "microblog": [
+     0,
+     1
+    ],
+    "node-express-boilerplate": [
+     0,
+     1
+    ]
+   }
+  },
+  "BE003": {
+   "precision": 0.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "flask": [
+     0,
+     2
+    ],
+    "werkzeug": [
+     0,
+     2
+    ]
+   }
+  },
+  "BE004": {
+   "precision": 0.5,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Vulnerable-Flask-App": [
+     1,
+     0
+    ],
+    "opengpts": [
+     0,
+     1
+    ]
+   }
+  },
+  "BE005": {
+   "precision": 0.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "physicalmediavault": [
+     0,
+     1
+    ]
+   }
+  },
+  "BE006": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "BE007": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Vulnerable-Flask-App": [
+     1,
+     0
+    ]
+   }
+  },
+  "BE008": {
+   "precision": 0.5,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "chatbot-ui": [
+     1,
+     0
+    ],
+    "nextjs-subscription-payments": [
+     0,
+     1
+    ]
+   }
+  },
+  "BE009": {
+   "precision": 0.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     0,
+     2
+    ]
+   }
+  },
+  "BE010": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "BE011": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "BE012": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     1,
+     0
+    ]
+   }
+  },
+  "BE013": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "BE014": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Vulnerable-Flask-App": [
+     1,
+     0
+    ]
+   }
+  },
+  "BE015": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "BE016": {
+   "precision": 0.3333,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Django-Styleguide-Example": [
+     0,
+     2
+    ],
+    "Vulnerable-Flask-App": [
+     1,
+     0
+    ]
+   }
+  },
+  "BE017": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     6,
+     0
+    ]
+   }
+  },
+  "BE018": {
+   "precision": 0.6667,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Vulnerable-Flask-App": [
+     1,
+     0
+    ],
+    "act-solo-ai": [
+     0,
+     1
+    ],
+    "chatgpt-your-files": [
+     1,
+     0
+    ],
+    "helpdesk-flow-verse": [
+     1,
+     0
+    ],
+    "learnathon-leaderboard": [
+     1,
+     0
+    ],
+    "node-express-realworld-example-app": [
+     0,
+     1
+    ],
+    "physicalmediavault": [
+     1,
+     0
+    ],
+    "prompt-sculptor-49": [
+     1,
+     0
+    ],
+    "scriptforge-ai": [
+     0,
+     1
+    ]
+   }
+  },
+  "CFG001": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Django-Styleguide-Example": [
+     2,
+     0
+    ],
+    "LinguaLearn": [
+     1,
+     0
+    ],
+    "Vulnerable-Flask-App": [
+     1,
+     0
+    ],
+    "bakerydemo": [
+     1,
+     0
+    ],
+    "djangoproject.com": [
+     1,
+     0
+    ],
+    "full-stack-fastapi-template": [
+     2,
+     0
+    ],
+    "microblog": [
+     1,
+     0
+    ],
+    "node-express-realworld-example-app": [
+     1,
+     0
+    ],
+    "opengpts": [
+     4,
+     0
+    ],
+    "openui": [
+     1,
+     0
+    ],
+    "sec-insights": [
+     2,
+     0
+    ]
+   }
+  },
+  "CFG002": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "opengpts": [
+     1,
+     0
+    ]
+   }
+  },
+  "CFG003": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "CFG004": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "CFG005": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "CFG006": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "bakerydemo": [
+     1,
+     0
+    ]
+   }
+  },
+  "CFG007": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Django-Styleguide-Example": [
+     1,
+     0
+    ],
+    "bakerydemo": [
+     1,
+     0
+    ],
+    "djangoproject.com": [
+     1,
+     0
+    ],
+    "opengpts": [
+     1,
+     0
+    ],
+    "sec-insights": [
+     1,
+     0
+    ]
+   }
+  },
+  "CFG008": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "node-express-realworld-example-app": [
+     1,
+     0
+    ]
+   }
+  },
+  "CFG009": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     1,
+     0
+    ],
+    "sec-insights": [
+     1,
+     0
+    ]
+   }
+  },
+  "DATA001": {
+   "precision": 0.2,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Django-Styleguide-Example": [
+     0,
+     1
+    ],
+    "djangoproject.com": [
+     1,
+     3
+    ]
+   }
+  },
+  "DATA002": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "DATA003": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "chatbot-ui": [
+     1,
+     0
+    ],
+    "node-express-realworld-example-app": [
+     1,
+     0
+    ]
+   }
+  },
+  "DATA004": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "DATA005": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "DATA006": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     8,
+     0
+    ],
+    "Vulnerable-Flask-App": [
+     2,
+     0
+    ],
+    "sec-insights": [
+     4,
+     0
+    ]
+   }
+  },
+  "DATA007": {
+   "precision": 0.5,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "bakerydemo": [
+     0,
+     4
+    ],
+    "chat-langchain": [
+     3,
+     0
+    ],
+    "opengpts": [
+     2,
+     2
+    ],
+    "prompt-sculptor-49": [
+     1,
+     0
+    ]
+   }
+  },
+  "DATA008": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "DATA009": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "DATA010": {
+   "precision": 0.8889,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "ai-chatbot": [
+     3,
+     0
+    ],
+    "chatbot-ui": [
+     2,
+     0
+    ],
+    "helpdesk-flow-verse": [
+     2,
+     0
+    ],
+    "learnathon-leaderboard": [
+     1,
+     0
+    ],
+    "nextjs-subscription-payments": [
+     0,
+     1
+    ]
+   }
+  },
+  "DEP001": {
+   "precision": null,
+   "seeded_recall": null,
+   "by_repo": {}
+  },
+  "DEP002": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "DEP003": {
+   "precision": null,
+   "seeded_recall": null,
+   "by_repo": {}
+  },
+  "DEP004": {
+   "precision": null,
+   "seeded_recall": null,
+   "by_repo": {}
+  },
+  "DEP005": {
+   "precision": 0.6667,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     1,
+     0
+    ],
+    "express": [
+     0,
+     1
+    ],
+    "llm-examples": [
+     1,
+     0
+    ]
+   }
+  },
+  "DEP006": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "DEP007": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "FE001": {
+   "precision": 0.6667,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "act-solo-ai": [
+     13,
+     0
+    ],
+    "ai-chatbot": [
+     3,
+     1
+    ],
+    "commerce": [
+     1,
+     1
+    ],
+    "microblog": [
+     0,
+     1
+    ],
+    "next-learn": [
+     0,
+     4
+    ],
+    "opengpts": [
+     0,
+     1
+    ],
+    "openui": [
+     3,
+     0
+    ],
+    "werkzeug": [
+     0,
+     2
+    ]
+   }
+  },
+  "FE002": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "FE003": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "FE004": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "openui": [
+     1,
+     0
+    ]
+   }
+  },
+  "FE005": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     5,
+     0
+    ],
+    "full-stack-fastapi-template": [
+     1,
+     0
+    ]
+   }
+  },
+  "FE006": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "FE007": {
+   "precision": 0.75,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     3,
+     0
+    ],
+    "openui": [
+     0,
+     1
+    ]
+   }
+  },
+  "LLM001": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "LLM002": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "LLM003": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "ai-chatbot": [
+     9,
+     0
+    ],
+    "chatbot-ui": [
+     4,
+     0
+    ],
+    "llm-examples": [
+     4,
+     0
+    ],
+    "opengpts": [
+     4,
+     0
+    ],
+    "openui": [
+     3,
+     0
+    ],
+    "sync-plan-flow": [
+     1,
+     0
+    ]
+   }
+  },
+  "LLM004": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "chatbot-ui": [
+     11,
+     0
+    ],
+    "chatgpt-your-files": [
+     1,
+     0
+    ],
+    "helpdesk-flow-verse": [
+     4,
+     0
+    ],
+    "opengpts": [
+     1,
+     0
+    ],
+    "scriptforge-ai": [
+     3,
+     0
+    ]
+   }
+  },
+  "LLM005": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "LLM006": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "LLM007": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "act-solo-ai": [
+     1,
+     0
+    ]
+   }
+  },
+  "LLM008": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     1,
+     0
+    ]
+   }
+  },
+  "LLM009": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "LLM010": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "chatbot-ui": [
+     1,
+     0
+    ]
+   }
+  },
+  "LLM011": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "LLM012": {
+   "precision": 0.9444,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "chatbot-ui": [
+     10,
+     0
+    ],
+    "llm-examples": [
+     1,
+     0
+    ],
+    "opengpts": [
+     1,
+     0
+    ],
+    "openui": [
+     5,
+     1
+    ]
+   }
+  },
+  "LLM013": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "LLM014": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "LLM015": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "QA001": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "chatgpt-your-files": [
+     1,
+     0
+    ],
+    "commerce": [
+     1,
+     0
+    ],
+    "helpdesk-flow-verse": [
+     1,
+     0
+    ],
+    "learnathon-leaderboard": [
+     1,
+     0
+    ],
+    "next-learn": [
+     1,
+     0
+    ],
+    "nextjs-subscription-payments": [
+     1,
+     0
+    ],
+    "prompt-sculptor-49": [
+     1,
+     0
+    ],
+    "taxonomy": [
+     1,
+     0
+    ]
+   }
+  },
+  "QA002": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     1,
+     0
+    ],
+    "chatbot-ui": [
+     1,
+     0
+    ],
+    "chatgpt-your-files": [
+     1,
+     0
+    ],
+    "commerce": [
+     1,
+     0
+    ],
+    "helpdesk-flow-verse": [
+     1,
+     0
+    ],
+    "learnathon-leaderboard": [
+     1,
+     0
+    ],
+    "microblog": [
+     1,
+     0
+    ],
+    "nextjs-subscription-payments": [
+     1,
+     0
+    ],
+    "node-express-realworld-example-app": [
+     1,
+     0
+    ],
+    "physicalmediavault": [
+     1,
+     0
+    ],
+    "prompt-sculptor-49": [
+     1,
+     0
+    ],
+    "scriptforge-ai": [
+     1,
+     0
+    ],
+    "sec-insights": [
+     1,
+     0
+    ],
+    "sync-plan-flow": [
+     1,
+     0
+    ],
+    "taxonomy": [
+     1,
+     0
+    ]
+   }
+  },
+  "QA003": {
+   "precision": 0.3333,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "chat-langchain": [
+     1,
+     0
+    ],
+    "openui": [
+     1,
+     0
+    ],
+    "werkzeug": [
+     0,
+     4
+    ]
+   }
+  },
+  "QA004": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Django-Styleguide-Example": [
+     1,
+     0
+    ],
+    "LinguaLearn": [
+     4,
+     0
+    ],
+    "helpdesk-flow-verse": [
+     2,
+     0
+    ],
+    "openui": [
+     1,
+     0
+    ],
+    "taxonomy": [
+     1,
+     0
+    ]
+   }
+  },
+  "QA005": {
+   "precision": 0.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "sec-insights": [
+     0,
+     1
+    ]
+   }
+  },
+  "QA006": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "chatbot-ui": [
+     1,
+     0
+    ],
+    "next-learn": [
+     7,
+     0
+    ],
+    "sync-plan-flow": [
+     2,
+     0
+    ]
+   }
+  },
+  "QA007": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     8,
+     0
+    ],
+    "act-solo-ai": [
+     1,
+     0
+    ],
+    "bakerydemo": [
+     4,
+     0
+    ],
+    "opengpts": [
+     5,
+     0
+    ],
+    "openui": [
+     4,
+     0
+    ],
+    "scriptforge-ai": [
+     1,
+     0
+    ],
+    "sec-insights": [
+     4,
+     0
+    ]
+   }
+  },
+  "QA008": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "taxonomy": [
+     2,
+     0
+    ]
+   }
+  },
+  "REL001": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Django-Styleguide-Example": [
+     3,
+     0
+    ],
+    "djangoproject.com": [
+     4,
+     0
+    ],
+    "microblog": [
+     1,
+     0
+    ],
+    "opengpts": [
+     1,
+     0
+    ],
+    "openui": [
+     1,
+     0
+    ],
+    "sec-insights": [
+     6,
+     0
+    ]
+   }
+  },
+  "REL002": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "REL003": {
+   "precision": 0.5,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "scriptforge-ai": [
+     1,
+     0
+    ],
+    "taxonomy": [
+     0,
+     1
+    ]
+   }
+  },
+  "REL004": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     1,
+     0
+    ],
+    "Vulnerable-Flask-App": [
+     1,
+     0
+    ]
+   }
+  },
+  "REL005": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "REL006": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Vulnerable-Flask-App": [
+     1,
+     0
+    ],
+    "microblog": [
+     1,
+     0
+    ],
+    "node-express-boilerplate": [
+     1,
+     0
+    ],
+    "node-express-realworld-example-app": [
+     1,
+     0
+    ],
+    "openui": [
+     1,
+     0
+    ],
+    "sec-insights": [
+     1,
+     0
+    ]
+   }
+  },
+  "SEC001": {
+   "precision": 0.9615,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Django-Styleguide-Example": [
+     0,
+     1
+    ],
+    "bakerydemo": [
+     1,
+     0
+    ],
+    "prompt-sculptor-49": [
+     24,
+     0
+    ]
+   }
+  },
+  "SEC002": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "SEC003": {
+   "precision": 0.8182,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "bakerydemo": [
+     0,
+     1
+    ],
+    "openui": [
+     0,
+     1
+    ],
+    "prompt-sculptor-49": [
+     9,
+     0
+    ]
+   }
+  },
+  "SEC004": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Vulnerable-Flask-App": [
+     1,
+     0
+    ],
+    "node-express-realworld-example-app": [
+     3,
+     0
+    ]
+   }
+  },
+  "SEC005": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "prompt-sculptor-49": [
+     2,
+     0
+    ]
+   }
+  },
+  "SEC006": {
+   "precision": 0.5,
+   "seeded_recall": null,
+   "by_repo": {
+    "LinguaLearn": [
+     0,
+     1
+    ],
+    "physicalmediavault": [
+     0,
+     1
+    ],
+    "prompt-sculptor-49": [
+     2,
+     0
+    ]
+   }
+  },
+  "SEC007": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "SEC008": {
+   "precision": 0.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "prompt-sculptor-49": [
+     0,
+     1
+    ]
+   }
+  },
+  "SEC009": {
+   "precision": 0.6667,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "learnathon-leaderboard": [
+     0,
+     1
+    ],
+    "prompt-sculptor-49": [
+     2,
+     0
+    ]
+   }
+  },
+  "SEC010": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "helpdesk-flow-verse": [
+     1,
+     0
+    ]
+   }
+  },
+  "SEC011": {
+   "precision": 0.6667,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     1,
+     0
+    ],
+    "Vulnerable-Flask-App": [
+     1,
+     0
+    ],
+    "helpdesk-flow-verse": [
+     0,
+     1
+    ]
+   }
+  },
+  "UI001": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "djangoproject.com": [
+     2,
+     0
+    ],
+    "microblog": [
+     4,
+     0
+    ],
+    "sec-insights": [
+     12,
+     0
+    ]
+   }
+  },
+  "UI002": {
+   "precision": 0.9722,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "chatbot-ui": [
+     14,
+     0
+    ],
+    "chatgpt-your-files": [
+     1,
+     0
+    ],
+    "commerce": [
+     1,
+     1
+    ],
+    "opengpts": [
+     11,
+     0
+    ],
+    "physicalmediavault": [
+     1,
+     0
+    ],
+    "prompt-sculptor-49": [
+     3,
+     0
+    ],
+    "sec-insights": [
+     3,
+     0
+    ],
+    "sync-plan-flow": [
+     1,
+     0
+    ]
+   }
+  },
+  "UI003": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     1,
+     0
+    ],
+    "chatgpt-your-files": [
+     2,
+     0
+    ],
+    "commerce": [
+     2,
+     0
+    ],
+    "helpdesk-flow-verse": [
+     3,
+     0
+    ],
+    "next-learn": [
+     3,
+     0
+    ],
+    "nextjs-subscription-payments": [
+     2,
+     0
+    ],
+    "opengpts": [
+     4,
+     0
+    ],
+    "openui": [
+     1,
+     0
+    ],
+    "prompt-sculptor-49": [
+     2,
+     0
+    ],
+    "scriptforge-ai": [
+     4,
+     0
+    ],
+    "sec-insights": [
+     3,
+     0
+    ],
+    "sync-plan-flow": [
+     4,
+     0
+    ]
+   }
+  },
+  "UI004": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "prompt-sculptor-49": [
+     4,
+     0
+    ]
+   }
+  },
+  "UI005": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "UI006": {
+   "precision": 0.7143,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "act-solo-ai": [
+     1,
+     0
+    ],
+    "helpdesk-flow-verse": [
+     1,
+     0
+    ],
+    "physicalmediavault": [
+     3,
+     0
+    ],
+    "prompt-sculptor-49": [
+     0,
+     1
+    ],
+    "sync-plan-flow": [
+     0,
+     1
+    ]
+   }
+  },
+  "UI007": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "UI008": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "UI009": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "opengpts": [
+     2,
+     0
+    ],
+    "scriptforge-ai": [
+     1,
+     0
+    ]
+   }
+  },
+  "UI010": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "UI011": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "ai-chatbot": [
+     1,
+     0
+    ],
+    "chatgpt-your-files": [
+     1,
+     0
+    ],
+    "nextjs-subscription-payments": [
+     1,
+     0
+    ],
+    "taxonomy": [
+     1,
+     0
+    ]
+   }
+  },
+  "UI012": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "next-learn": [
+     1,
+     0
+    ]
+   }
+  },
+  "UI013": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  }
+ }
+}

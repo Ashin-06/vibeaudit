@@ -1,0 +1,614 @@
+{
+ "repo": "djangoproject.com",
+ "commit": "83a027bb6aac5bb36b9ef48dad8cb4ff45a2e84f",
+ "findings": [
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile",
+   "line": 2,
+   "fingerprint": "12ba2b8a83b75fdfc7df29a2250ed231",
+   "verdict": "tp",
+   "reason": "The final image has no USER instruction and runs as root."
+  },
+  {
+   "rule": "QA007",
+   "file": "aggregator/management/commands/update_subscriptions.py",
+   "line": 7,
+   "fingerprint": "a4526f1e98f84b8009c513149cead5d7",
+   "verdict": "fp",
+   "reason": "django-push is declared in requirements/dev.txt as a PEP 508 direct reference (name @ git+url)."
+  },
+  {
+   "rule": "QA003",
+   "file": "aggregator/models.py",
+   "line": 79,
+   "fingerprint": "21cd40fc0e9c29729f74ede91039885b",
+   "verdict": "fp",
+   "reason": "A specific exception is caught on purpose as a no-op fallback."
+  },
+  {
+   "rule": "SEC011",
+   "file": "aggregator/tests.py",
+   "line": 161,
+   "fingerprint": "fccc662af8bbc10c507ef59ff7f6c807",
+   "verdict": "fp",
+   "reason": "A throwaway password in a unit test fixture."
+  },
+  {
+   "rule": "SEC011",
+   "file": "aggregator/tests.py",
+   "line": 173,
+   "fingerprint": "ca0dfa5ce021f285b53deba9f8e56c8e",
+   "verdict": "fp",
+   "reason": "A throwaway password in a unit test fixture."
+  },
+  {
+   "rule": "FE001",
+   "file": "checklists/templates/checklists/checklist_detail.html",
+   "line": 15,
+   "fingerprint": "324db05a2715a840207d31d514a6e9fa",
+   "verdict": "fp",
+   "reason": "The markdown comes from a server-side template rendered for staff, not user input."
+  },
+  {
+   "rule": "REL001",
+   "file": "contact/tests.py",
+   "line": 17,
+   "fingerprint": "f4c68bf7f938de490ae4a2fa3a59118d",
+   "verdict": "fp",
+   "reason": "Test code checking network access."
+  },
+  {
+   "rule": "REL001",
+   "file": "dashboard/models.py",
+   "line": 186,
+   "fingerprint": "3144fa3f0f72f141ce923a72c27ae9ce",
+   "verdict": "tp",
+   "reason": "The dashboard metrics fetch has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "dashboard/models.py",
+   "line": 207,
+   "fingerprint": "5d5a1342ece7cd19259c529fbe201c65",
+   "verdict": "tp",
+   "reason": "The dashboard metrics fetch has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "dashboard/models.py",
+   "line": 256,
+   "fingerprint": "4e3aa4adc26ce3b5a565dd51b0b8587f",
+   "verdict": "tp",
+   "reason": "The dashboard metrics fetch has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "dashboard/models.py",
+   "line": 260,
+   "fingerprint": "4daae60d470f8dce0e854b025512f6e1",
+   "verdict": "tp",
+   "reason": "The dashboard metrics fetch has no timeout."
+  },
+  {
+   "rule": "DATA001",
+   "file": "dashboard/tests.py",
+   "line": 37,
+   "fingerprint": "302847eae2d714b86509ecbac9908f6d",
+   "verdict": "fp",
+   "reason": "Test setup creating fixture rows in a loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "dashboard/tests.py",
+   "line": 249,
+   "fingerprint": "40bacc81858884f9e7507d3a43b17381",
+   "verdict": "fp",
+   "reason": "Test setup creating fixture rows in a loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "dashboard/views.py",
+   "line": 76,
+   "fingerprint": "ea8d51525a0dc376b8234e062e467bcb",
+   "verdict": "fp",
+   "reason": "Loops over a handful of Metric subclasses to find one slug."
+  },
+  {
+   "rule": "QA003",
+   "file": "djangoproject/middleware.py",
+   "line": 70,
+   "fingerprint": "f3505a4b7ca6bfad040147bb7c3e6311",
+   "verdict": "fp",
+   "reason": "A specific exception is caught on purpose as a no-op fallback."
+  },
+  {
+   "rule": "BE003",
+   "file": "djangoproject/static/js/lib/require.js",
+   "line": 36,
+   "fingerprint": "5d4ee676df788756d7c282733366e341",
+   "verdict": "fp",
+   "reason": "Minified vendored require.js, not application code."
+  },
+  {
+   "rule": "UI001",
+   "file": "djangoproject/templates/accounts/user_profile.html",
+   "line": 37,
+   "fingerprint": "3a6e9933b831f83fef490a70c3b71fba",
+   "verdict": "tp",
+   "reason": "The img has no alt attribute."
+  },
+  {
+   "rule": "FE001",
+   "file": "djangoproject/templates/aggregator/local-django-community.html",
+   "line": 36,
+   "fingerprint": "ef2c62722edece8f5b3b610f488fea4f",
+   "verdict": "fp",
+   "reason": "The value is staff-authored CMS content or developer-defined help text, rendered as HTML by design."
+  },
+  {
+   "rule": "FE001",
+   "file": "djangoproject/templates/blog/entry_detail.html",
+   "line": 15,
+   "fingerprint": "c45f959de66d6b81d2065752002484e9",
+   "verdict": "fp",
+   "reason": "The value is staff-authored CMS content or developer-defined help text, rendered as HTML by design."
+  },
+  {
+   "rule": "FE001",
+   "file": "djangoproject/templates/blog/entry_detail.html",
+   "line": 22,
+   "fingerprint": "5e5cf668dc1428f6fbca0b435c0a887e",
+   "verdict": "fp",
+   "reason": "The value is staff-authored CMS content or developer-defined help text, rendered as HTML by design."
+  },
+  {
+   "rule": "FE001",
+   "file": "djangoproject/templates/blog/news_summary.html",
+   "line": 5,
+   "fingerprint": "5190e00c094ac2e61be584212c6bd2f5",
+   "verdict": "fp",
+   "reason": "The value is staff-authored CMS content or developer-defined help text, rendered as HTML by design."
+  },
+  {
+   "rule": "FE001",
+   "file": "djangoproject/templates/blog/news_summary.html",
+   "line": 8,
+   "fingerprint": "da13a67f1bc50fff9f279dcccaa219e3",
+   "verdict": "fp",
+   "reason": "The value is staff-authored CMS content or developer-defined help text, rendered as HTML by design."
+  },
+  {
+   "rule": "FE001",
+   "file": "djangoproject/templates/blog/news_summary.html",
+   "line": 20,
+   "fingerprint": "ef99bf7b744db911d383f24f6bd68f76",
+   "verdict": "fp",
+   "reason": "The value is staff-authored CMS content or developer-defined help text, rendered as HTML by design."
+  },
+  {
+   "rule": "FE001",
+   "file": "djangoproject/templates/feeds/community_description.html",
+   "line": 1,
+   "fingerprint": "10f0b87a29a8b51a856c1fd38661b987",
+   "verdict": "fp",
+   "reason": "The value is staff-authored CMS content or developer-defined help text, rendered as HTML by design."
+  },
+  {
+   "rule": "FE001",
+   "file": "djangoproject/templates/foundation/banner.html",
+   "line": 6,
+   "fingerprint": "9911206253a518e8ef68661fd1f585d5",
+   "verdict": "fp",
+   "reason": "The value is staff-authored CMS content or developer-defined help text, rendered as HTML by design."
+  },
+  {
+   "rule": "FE001",
+   "file": "djangoproject/templates/foundation/meeting_detail.html",
+   "line": 45,
+   "fingerprint": "015e001be5558a1aab14939a909a0ff3",
+   "verdict": "fp",
+   "reason": "The value is staff-authored CMS content or developer-defined help text, rendered as HTML by design."
+  },
+  {
+   "rule": "FE001",
+   "file": "djangoproject/templates/foundation/meeting_detail.html",
+   "line": 84,
+   "fingerprint": "44203c7d6be64d8d8fcd6dd08a365e9e",
+   "verdict": "fp",
+   "reason": "The value is staff-authored CMS content or developer-defined help text, rendered as HTML by design."
+  },
+  {
+   "rule": "FE001",
+   "file": "djangoproject/templates/foundation/meeting_detail.html",
+   "line": 94,
+   "fingerprint": "0a1c1a95b8fc436f00d1b8c3c2269aa6",
+   "verdict": "fp",
+   "reason": "The value is staff-authored CMS content or developer-defined help text, rendered as HTML by design."
+  },
+  {
+   "rule": "UI010",
+   "file": "djangoproject/templates/homepage.html",
+   "line": 83,
+   "fingerprint": "76020921dc21623af116d82573a534b1",
+   "verdict": "fp",
+   "reason": "The lorem ipsum is inside a {% comment %} block and never rendered."
+  },
+  {
+   "rule": "UI001",
+   "file": "djangoproject/templates/members/corporate_member_badges.html",
+   "line": 44,
+   "fingerprint": "0218f412f3be8e60bdf0e50a267bfa02",
+   "verdict": "tp",
+   "reason": "The img has no alt attribute."
+  },
+  {
+   "rule": "FE001",
+   "file": "djangoproject/templates/members/corporatemember_form.html",
+   "line": 24,
+   "fingerprint": "8386cfd8bc841c341f8121910fcc5146",
+   "verdict": "fp",
+   "reason": "The value is staff-authored CMS content or developer-defined help text, rendered as HTML by design."
+  },
+  {
+   "rule": "FE001",
+   "file": "djangoproject/templates/members/team_list.html",
+   "line": 38,
+   "fingerprint": "bcfe2ac73cb6cc46e76e27226d8badf0",
+   "verdict": "fp",
+   "reason": "The value is staff-authored CMS content or developer-defined help text, rendered as HTML by design."
+  },
+  {
+   "rule": "UI010",
+   "file": "djangoproject/templates/overview.html",
+   "line": 101,
+   "fingerprint": "ea33e06a31a0d8d9415a47750df49cfe",
+   "verdict": "fp",
+   "reason": "The lorem ipsum is inside a {% comment %} block and never rendered."
+  },
+  {
+   "rule": "FE001",
+   "file": "djangoproject/templates/registration/password_reset_email.html",
+   "line": 2,
+   "fingerprint": "c7558ba3f1a6507e586808c51aa3eeb7",
+   "verdict": "fp",
+   "reason": "autoescape off in a plain-text email template, the standard Django pattern."
+  },
+  {
+   "rule": "QA005",
+   "file": "djangoproject/urls/docs.py",
+   "line": 36,
+   "fingerprint": "b0f2f22b7f0bc797212450e4c91d5ac9",
+   "verdict": "fp",
+   "reason": "A read-only mapping deliberately refuses item assignment and deletion."
+  },
+  {
+   "rule": "QA005",
+   "file": "djangoproject/urls/docs.py",
+   "line": 39,
+   "fingerprint": "225fd55eb0a8d536d83d7e72591fdf07",
+   "verdict": "fp",
+   "reason": "A read-only mapping deliberately refuses item assignment and deletion."
+  },
+  {
+   "rule": "CFG007",
+   "file": "docker-compose.yml",
+   "line": 38,
+   "fingerprint": "708df3c6f8ada6486b930594624979b5",
+   "verdict": "tp",
+   "reason": "docker-compose sets a default postgres password."
+  },
+  {
+   "rule": "BE002",
+   "file": "docs/management/commands/update_docs.py",
+   "line": 170,
+   "fingerprint": "c38da0b92d2a08bfe877e39d2db09f4e",
+   "verdict": "fp",
+   "reason": "The shell command interpolates a checkout path from settings, not user input."
+  },
+  {
+   "rule": "QA003",
+   "file": "docs/models.py",
+   "line": 58,
+   "fingerprint": "c434e6b38cccbcabdf7bf2120a970ad7",
+   "verdict": "fp",
+   "reason": "A specific exception is caught on purpose as a no-op fallback."
+  },
+  {
+   "rule": "DATA001",
+   "file": "docs/models.py",
+   "line": 209,
+   "fingerprint": "a139d2caed3dd2b4e0283067b7c2fd45",
+   "verdict": "fp",
+   "reason": "An offline docs indexing management job, not a request path."
+  },
+  {
+   "rule": "DATA001",
+   "file": "docs/models.py",
+   "line": 256,
+   "fingerprint": "0edb6cde50f37c9cf24a39ee8a285671",
+   "verdict": "fp",
+   "reason": "An offline docs indexing management job, not a request path."
+  },
+  {
+   "rule": "FE001",
+   "file": "docs/templates/docs/doc.html",
+   "line": 4,
+   "fingerprint": "26ebe9453e7679600597491a8c52b603",
+   "verdict": "fp",
+   "reason": "Sphinx-built documentation HTML from the project's own docs build."
+  },
+  {
+   "rule": "FE001",
+   "file": "docs/templates/docs/doc.html",
+   "line": 112,
+   "fingerprint": "3381e5de3727b69ab808c2168b37757a",
+   "verdict": "fp",
+   "reason": "Sphinx-built documentation HTML from the project's own docs build."
+  },
+  {
+   "rule": "FE001",
+   "file": "docs/templates/docs/doc.html",
+   "line": 120,
+   "fingerprint": "3be7417a5b6cfc000ae7e425147db0bf",
+   "verdict": "fp",
+   "reason": "Sphinx-built documentation HTML from the project's own docs build."
+  },
+  {
+   "rule": "FE001",
+   "file": "docs/templates/docs/doc.html",
+   "line": 123,
+   "fingerprint": "91727181b181d6a07c8ba91cc34a7679",
+   "verdict": "fp",
+   "reason": "Sphinx-built documentation HTML from the project's own docs build."
+  },
+  {
+   "rule": "FE001",
+   "file": "docs/templates/docs/doc.html",
+   "line": 139,
+   "fingerprint": "070380f97692d0ce2c37a311aba1428a",
+   "verdict": "fp",
+   "reason": "Sphinx-built documentation HTML from the project's own docs build."
+  },
+  {
+   "rule": "FE001",
+   "file": "docs/templates/docs/doc.html",
+   "line": 149,
+   "fingerprint": "489d667a749ac73086b630ad5f2f70b1",
+   "verdict": "fp",
+   "reason": "Sphinx-built documentation HTML from the project's own docs build."
+  },
+  {
+   "rule": "FE001",
+   "file": "docs/templates/docs/doc.html",
+   "line": 152,
+   "fingerprint": "5b7fa35891754602393212fb04262087",
+   "verdict": "fp",
+   "reason": "Sphinx-built documentation HTML from the project's own docs build."
+  },
+  {
+   "rule": "FE001",
+   "file": "docs/templates/docs/doc.html",
+   "line": 170,
+   "fingerprint": "e7c7d59fa3bb938c6f16aa7673faf6b2",
+   "verdict": "fp",
+   "reason": "Sphinx-built documentation HTML from the project's own docs build."
+  },
+  {
+   "rule": "FE001",
+   "file": "docs/templates/docs/doc.html",
+   "line": 172,
+   "fingerprint": "4bada63e9222d78ded6692bc8232cf3e",
+   "verdict": "fp",
+   "reason": "Sphinx-built documentation HTML from the project's own docs build."
+  },
+  {
+   "rule": "FE001",
+   "file": "docs/templates/docs/search_results.html",
+   "line": 44,
+   "fingerprint": "0cdf510fc71609b0dacc0e9deb38ec67",
+   "verdict": "fp",
+   "reason": "Sphinx-built documentation HTML from the project's own docs build."
+  },
+  {
+   "rule": "FE001",
+   "file": "docs/templates/docs/search_results.html",
+   "line": 54,
+   "fingerprint": "8f1967c020100cb86f5d97a626cd7b93",
+   "verdict": "fp",
+   "reason": "Sphinx-built documentation HTML from the project's own docs build."
+  },
+  {
+   "rule": "BE008",
+   "file": "docs/views.py",
+   "line": 115,
+   "fingerprint": "58ae70eafaec1f8f69273e09a1108322",
+   "verdict": "fp",
+   "reason": "NormalizeSlashesMiddleware collapses // first, so the redirect target is always a same-site path."
+  },
+  {
+   "rule": "BE008",
+   "file": "docs/views.py",
+   "line": 132,
+   "fingerprint": "263203a04b770e81136052433480c25c",
+   "verdict": "fp",
+   "reason": "The redirect base is a reverse()d URL with a fixed host; q only lands in the query string."
+  },
+  {
+   "rule": "BE008",
+   "file": "docs/views.py",
+   "line": 172,
+   "fingerprint": "6382fd3859cbdf78d5689338cd256305",
+   "verdict": "fp",
+   "reason": "redirect(model) uses the document's get_absolute_url."
+  },
+  {
+   "rule": "QA007",
+   "file": "foundation/migrations/0001_initial.py",
+   "line": 6,
+   "fingerprint": "5f8889040f92e370411cae8b196dca3f",
+   "verdict": "fp",
+   "reason": "djmoney is the import name of django-money, which requirements/dev.txt declares."
+  },
+  {
+   "rule": "DATA001",
+   "file": "fundraising/admin_views.py",
+   "line": 26,
+   "fingerprint": "ce6d1f99a78771bc743a2c989ff2f2b7",
+   "verdict": "tp",
+   "reason": "The admin CSV export runs one Payment query per donor."
+  },
+  {
+   "rule": "AUTH009",
+   "file": "fundraising/views.py",
+   "line": 281,
+   "fingerprint": "369efe2484887cef2f088181a44999ee",
+   "verdict": "fp",
+   "reason": "The Stripe webhook verifies the signature with construct_event, so CSRF is not needed."
+  },
+  {
+   "rule": "DATA001",
+   "file": "releases/tests.py",
+   "line": 279,
+   "fingerprint": "5734e1a1dfa99d475b61e802bb75c715",
+   "verdict": "fp",
+   "reason": "Test setup creating fixture rows in a loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "releases/tests.py",
+   "line": 338,
+   "fingerprint": "5ff2b2fd24010bba053f9ed62e531395",
+   "verdict": "fp",
+   "reason": "Test setup creating fixture rows in a loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "releases/tests.py",
+   "line": 356,
+   "fingerprint": "8f0bfb86d6e9eb31c2c7a62c4147a6cd",
+   "verdict": "fp",
+   "reason": "Test setup creating fixture rows in a loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "releases/tests.py",
+   "line": 389,
+   "fingerprint": "0e39780ce9787fa2bb79f0e09ebe9381",
+   "verdict": "fp",
+   "reason": "Test setup creating fixture rows in a loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "releases/tests.py",
+   "line": 415,
+   "fingerprint": "652a8a9aeb58bd493ef7446f5814f7c6",
+   "verdict": "fp",
+   "reason": "Test setup creating fixture rows in a loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "releases/tests.py",
+   "line": 429,
+   "fingerprint": "7cf8f45dbe39929461b879fcc4973dc8",
+   "verdict": "fp",
+   "reason": "Test setup creating fixture rows in a loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "releases/tests.py",
+   "line": 445,
+   "fingerprint": "87430034b1f446088cf5ba34ebc78ab0",
+   "verdict": "fp",
+   "reason": "Test setup creating fixture rows in a loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "releases/tests.py",
+   "line": 461,
+   "fingerprint": "c316d662b34b1ccf4341a99e9fe0ebec",
+   "verdict": "fp",
+   "reason": "Test setup creating fixture rows in a loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "releases/tests.py",
+   "line": 475,
+   "fingerprint": "5d11070790f4916601917ac057c6abf0",
+   "verdict": "fp",
+   "reason": "Test setup creating fixture rows in a loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "releases/tests.py",
+   "line": 488,
+   "fingerprint": "72da6c44c8b36995ef6e58729a8ac10d",
+   "verdict": "fp",
+   "reason": "Test setup creating fixture rows in a loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "releases/tests.py",
+   "line": 499,
+   "fingerprint": "07fbe2131073520f7447f99b3a3e358a",
+   "verdict": "fp",
+   "reason": "Test setup creating fixture rows in a loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "releases/tests.py",
+   "line": 510,
+   "fingerprint": "15eecd8293365cd36cd7e8a5f53239be",
+   "verdict": "fp",
+   "reason": "Test setup creating fixture rows in a loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "releases/tests.py",
+   "line": 523,
+   "fingerprint": "9b41bb531589b467b62ad24028db9c66",
+   "verdict": "fp",
+   "reason": "Test setup creating fixture rows in a loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "releases/tests.py",
+   "line": 539,
+   "fingerprint": "7b1bcde393a3185b907b8482a2db1985",
+   "verdict": "fp",
+   "reason": "Test setup creating fixture rows in a loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "releases/tests.py",
+   "line": 557,
+   "fingerprint": "5bfaa93c5dab7dd279bbc0ebacab065c",
+   "verdict": "fp",
+   "reason": "Test setup creating fixture rows in a loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "releases/tests.py",
+   "line": 834,
+   "fingerprint": "b8e176859583fe4382c12d0999bbf225",
+   "verdict": "fp",
+   "reason": "Test setup creating fixture rows in a loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "releases/tests.py",
+   "line": 1171,
+   "fingerprint": "0633710eaaa2acd147a627d44d9e9504",
+   "verdict": "fp",
+   "reason": "Test setup creating fixture rows in a loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "releases/tests.py",
+   "line": 1295,
+   "fingerprint": "3ec4d64b6a4a474af4f9b6a7e0699d3a",
+   "verdict": "fp",
+   "reason": "Test setup creating fixture rows in a loop."
+  }
+ ]
+}

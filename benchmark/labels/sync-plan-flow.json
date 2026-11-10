@@ -1,0 +1,230 @@
+{
+ "repo": "sync-plan-flow",
+ "commit": "9bbf2bf4b86d9a193d3ac37a09f7be7b3a4db0e1",
+ "findings": [
+  {
+   "rule": "QA002",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
+   "verdict": "tp",
+   "reason": "No CI configuration."
+  },
+  {
+   "rule": "UI002",
+   "file": "src/components/AppSidebar.tsx",
+   "line": 44,
+   "fingerprint": "4c1ac7b4d5a16dcb80d6e51c5e7514ff",
+   "verdict": "fp",
+   "reason": "Backdrop overlay that closes the mobile sidebar; the sidebar has its own close control."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/components/TaskCard.tsx",
+   "line": 166,
+   "fingerprint": "bb09c1bfb195b78fbe72f64c0a4f20c9",
+   "verdict": "tp",
+   "reason": "Input with no label, aria-label or id."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/components/bella/BellaVariant2.tsx",
+   "line": 610,
+   "fingerprint": "a5f5070bee5fd1829aa033d136754947",
+   "verdict": "tp",
+   "reason": "Input with no label, aria-label or id."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/components/bella/BellaVariant4.tsx",
+   "line": 578,
+   "fingerprint": "22cc7914de3bd6438a9b1aea51c3ef3d",
+   "verdict": "tp",
+   "reason": "Input with no label, aria-label or id."
+  },
+  {
+   "rule": "UI002",
+   "file": "src/pages/Dashboard.tsx",
+   "line": 156,
+   "fingerprint": "2a07eb7f4af21d1428002108063e01d7",
+   "verdict": "tp",
+   "reason": "Clickable task card div with no role, tabIndex or key handler."
+  },
+  {
+   "rule": "UI006",
+   "file": "src/pages/Memory.tsx",
+   "line": 262,
+   "fingerprint": "4c07319a9a451d46edabf9a6ae6fd5cf",
+   "verdict": "fp",
+   "reason": "deleteMemory only removes the item from local state; nothing is persisted."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/pages/Themes.tsx",
+   "line": 250,
+   "fingerprint": "7ef034451e7c80d46bbd3db7d7bf30b3",
+   "verdict": "tp",
+   "reason": "Input with no label, aria-label or id."
+  },
+  {
+   "rule": "QA006",
+   "file": "supabase/functions/_shared/github.ts",
+   "line": 2,
+   "fingerprint": "15e0916f2eaf48b9c471f82f57b70d74",
+   "verdict": "tp",
+   "reason": "tokenCrypto.ts does not exist in supabase/functions/_shared; the import fails."
+  },
+  {
+   "rule": "LLM003",
+   "file": "supabase/functions/_shared/responses.ts",
+   "line": 47,
+   "fingerprint": "d5be54d51db7bcb2e170da37f32bd1df",
+   "verdict": "tp",
+   "reason": "streamText is called without maxTokens or maxOutputTokens."
+  },
+  {
+   "rule": "BE018",
+   "file": "supabase/functions/concierge-chat/index.ts",
+   "line": 109,
+   "fingerprint": "48dc5602c75ae5f9f32240599fcc8a65",
+   "verdict": "fp",
+   "reason": "The request body is validated with zod (imported as npm:zod@4)."
+  },
+  {
+   "rule": "QA006",
+   "file": "supabase/functions/github-connection/index.ts",
+   "line": 6,
+   "fingerprint": "77d93f65aeb90d97bf990d67abf83ee9",
+   "verdict": "tp",
+   "reason": "tokenCrypto.ts does not exist in supabase/functions/_shared; the import fails."
+  },
+  {
+   "rule": "AUTH006",
+   "file": "supabase/migrations/20260221000000_create_spf_schema.sql",
+   "line": 176,
+   "fingerprint": "b850f4cb5e5121398bec52f486de7785",
+   "verdict": "fp",
+   "reason": "The policy applies TO service_role, which bypasses RLS anyway; no extra access."
+  },
+  {
+   "rule": "AUTH006",
+   "file": "supabase/migrations/20260221000000_create_spf_schema.sql",
+   "line": 181,
+   "fingerprint": "6a6764b2856383492e6e254eb0ee2a45",
+   "verdict": "fp",
+   "reason": "The policy applies TO service_role, which bypasses RLS anyway; no extra access."
+  },
+  {
+   "rule": "AUTH006",
+   "file": "supabase/migrations/20260221000000_create_spf_schema.sql",
+   "line": 186,
+   "fingerprint": "b3bdab429187060e9b52ac2a2b878085",
+   "verdict": "fp",
+   "reason": "The policy applies TO service_role, which bypasses RLS anyway; no extra access."
+  },
+  {
+   "rule": "AUTH006",
+   "file": "supabase/migrations/20260221000000_create_spf_schema.sql",
+   "line": 207,
+   "fingerprint": "5e609a7fd282f817dfeefbc01369c0f0",
+   "verdict": "tp",
+   "reason": "Any authenticated user can insert, update or delete every task, sub-task and dependency (USING true)."
+  },
+  {
+   "rule": "AUTH006",
+   "file": "supabase/migrations/20260221000000_create_spf_schema.sql",
+   "line": 209,
+   "fingerprint": "420047be7be29acd742feb9fef4a2fce",
+   "verdict": "tp",
+   "reason": "Any authenticated user can insert, update or delete every task, sub-task and dependency (USING true)."
+  },
+  {
+   "rule": "AUTH006",
+   "file": "supabase/migrations/20260221000000_create_spf_schema.sql",
+   "line": 211,
+   "fingerprint": "56194d7206e3e7213e8061851a285b4b",
+   "verdict": "tp",
+   "reason": "Any authenticated user can insert, update or delete every task, sub-task and dependency (USING true)."
+  },
+  {
+   "rule": "AUTH006",
+   "file": "supabase/migrations/20260221000000_create_spf_schema.sql",
+   "line": 217,
+   "fingerprint": "3ca225851c44ae1452cec2868f56cfe9",
+   "verdict": "tp",
+   "reason": "Any authenticated user can insert, update or delete every task, sub-task and dependency (USING true)."
+  },
+  {
+   "rule": "AUTH006",
+   "file": "supabase/migrations/20260221000000_create_spf_schema.sql",
+   "line": 219,
+   "fingerprint": "89f871c31a595ae891ce10ff42be82e5",
+   "verdict": "tp",
+   "reason": "Any authenticated user can insert, update or delete every task, sub-task and dependency (USING true)."
+  },
+  {
+   "rule": "AUTH006",
+   "file": "supabase/migrations/20260221000000_create_spf_schema.sql",
+   "line": 221,
+   "fingerprint": "d39a3f294b1fa07ac44335eb3afe74a1",
+   "verdict": "tp",
+   "reason": "Any authenticated user can insert, update or delete every task, sub-task and dependency (USING true)."
+  },
+  {
+   "rule": "AUTH006",
+   "file": "supabase/migrations/20260221000000_create_spf_schema.sql",
+   "line": 227,
+   "fingerprint": "9ff35c9d3b92088311325eb8f587a452",
+   "verdict": "tp",
+   "reason": "Any authenticated user can insert, update or delete every task, sub-task and dependency (USING true)."
+  },
+  {
+   "rule": "AUTH006",
+   "file": "supabase/migrations/20260221000000_create_spf_schema.sql",
+   "line": 229,
+   "fingerprint": "c07ee6b984195598a0d4ba9dc4ca76ac",
+   "verdict": "tp",
+   "reason": "Any authenticated user can insert, update or delete every task, sub-task and dependency (USING true)."
+  },
+  {
+   "rule": "AUTH006",
+   "file": "supabase/migrations/20260221000000_create_spf_schema.sql",
+   "line": 231,
+   "fingerprint": "611a38c0786cfb950df5bd391ee08545",
+   "verdict": "tp",
+   "reason": "Any authenticated user can insert, update or delete every task, sub-task and dependency (USING true)."
+  },
+  {
+   "rule": "AUTH006",
+   "file": "supabase/migrations/20260221000002_fix_app_task_manager_grants.sql",
+   "line": 58,
+   "fingerprint": "615351c0f058f31e0866ee12a68ac37f",
+   "verdict": "fp",
+   "reason": "The policy applies TO service_role, which bypasses RLS anyway; no extra access."
+  },
+  {
+   "rule": "AUTH006",
+   "file": "supabase/migrations/20260221000002_fix_app_task_manager_grants.sql",
+   "line": 69,
+   "fingerprint": "0ba6fe1975f2d71450b3ed2821084267",
+   "verdict": "tp",
+   "reason": "Any authenticated user can insert any app user row (WITH CHECK true, no auth.uid() match)."
+  },
+  {
+   "rule": "AUTH006",
+   "file": "supabase/migrations/20260221000002_fix_app_task_manager_grants.sql",
+   "line": 72,
+   "fingerprint": "e880ed0c01f546376190cc58f16e4ffc",
+   "verdict": "fp",
+   "reason": "The policy applies TO service_role, which bypasses RLS anyway; no extra access."
+  },
+  {
+   "rule": "AUTH006",
+   "file": "supabase/migrations/20260221000002_fix_app_task_manager_grants.sql",
+   "line": 83,
+   "fingerprint": "7e397a5a4e7e589c038ee5af32776e3e",
+   "verdict": "fp",
+   "reason": "The policy applies TO service_role, which bypasses RLS anyway; no extra access."
+  }
+ ]
+}

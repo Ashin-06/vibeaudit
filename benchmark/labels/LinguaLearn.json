@@ -1,0 +1,438 @@
+{
+ "repo": "LinguaLearn",
+ "commit": "f1cc2e2ea82ec7e7504da0d931503112e80ec25e",
+ "findings": [
+  {
+   "rule": "SEC006",
+   "file": ".env",
+   "line": 0,
+   "fingerprint": "c3a1c3a42a11a866b4ab7fa1978bee47",
+   "verdict": "fp",
+   "reason": "The tracked .env holds only the Supabase URL, anon key and a service URL, which are public by design."
+  },
+  {
+   "rule": "CFG009",
+   "file": "Dockerfile.frontend",
+   "line": 14,
+   "fingerprint": "88aabfa39b050c9ed71752475d7caa76",
+   "verdict": "tp",
+   "reason": "COPY . . with no .dockerignore copies .env into the image."
+  },
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile.frontend",
+   "line": 20,
+   "fingerprint": "2867e7e3ca14ea28515d4342fcb57164",
+   "verdict": "tp",
+   "reason": "The nginx final stage never sets a non-root USER."
+  },
+  {
+   "rule": "DATA001",
+   "file": "create-tables.js",
+   "line": 34,
+   "fingerprint": "71322cf179dc9f5c744b6b7846b0b4aa",
+   "verdict": "fp",
+   "reason": "A one-off setup script runs each DDL statement in turn; not an N+1 query."
+  },
+  {
+   "rule": "QA007",
+   "file": "experiments/lesson_generation_evaluation.py",
+   "line": 18,
+   "fingerprint": "0e4a90264380562a2567e1a9ffba2061",
+   "verdict": "tp",
+   "reason": "seaborn is imported but missing from experiments/requirements.txt."
+  },
+  {
+   "rule": "QA007",
+   "file": "experiments/lesson_generation_evaluation.py",
+   "line": 23,
+   "fingerprint": "3f2d546ac367ff2b3a978c84f05c7357",
+   "verdict": "tp",
+   "reason": "ml_service is not importable (the folder is ml-service); the import fails."
+  },
+  {
+   "rule": "DEP005",
+   "file": "experiments/requirements.txt",
+   "line": 1,
+   "fingerprint": "1bd5224df36e1b18e6eea0eebb6d4d2d",
+   "verdict": "tp",
+   "reason": "All 16 experiment requirements are unpinned (>=)."
+  },
+  {
+   "rule": "DATA006",
+   "file": "ml-service/app.py",
+   "line": 83,
+   "fingerprint": "f90bb73f82d0f498d9ab933b8043d849",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() produces naive timestamps (no zone in the ISO string or JWT claims)."
+  },
+  {
+   "rule": "DATA006",
+   "file": "ml-service/app.py",
+   "line": 93,
+   "fingerprint": "878a2ac7f19e3999cf345bc629f6a3f1",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() produces naive timestamps (no zone in the ISO string or JWT claims)."
+  },
+  {
+   "rule": "BE017",
+   "file": "ml-service/app.py",
+   "line": 188,
+   "fingerprint": "8d728b89c709baad120a97b0abe941be",
+   "verdict": "tp",
+   "reason": "str(e) is returned to the client in the JSON error."
+  },
+  {
+   "rule": "REL004",
+   "file": "ml-service/app.py",
+   "line": 224,
+   "fingerprint": "0f92abdbbf307a1f547269a574a5dc43",
+   "verdict": "tp",
+   "reason": "request.files is used and MAX_CONTENT_LENGTH is never set."
+  },
+  {
+   "rule": "BE017",
+   "file": "ml-service/app.py",
+   "line": 252,
+   "fingerprint": "8db1f12e5619404a0d47f5bb5eb6901f",
+   "verdict": "tp",
+   "reason": "str(e) is returned to the client in the JSON error."
+  },
+  {
+   "rule": "BE017",
+   "file": "ml-service/app.py",
+   "line": 298,
+   "fingerprint": "f93c43be724317e4afbd3d85b0ee5887",
+   "verdict": "tp",
+   "reason": "str(e) is returned to the client in the JSON error."
+  },
+  {
+   "rule": "BE017",
+   "file": "ml-service/app.py",
+   "line": 338,
+   "fingerprint": "75993d9120e864807e77b64ceba6a01e",
+   "verdict": "tp",
+   "reason": "str(e) is returned to the client in the JSON error."
+  },
+  {
+   "rule": "DATA006",
+   "file": "ml-service/app.py",
+   "line": 381,
+   "fingerprint": "ec6ba6d3e78fb914b435a2c737d6a7f4",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() produces naive timestamps (no zone in the ISO string or JWT claims)."
+  },
+  {
+   "rule": "DATA006",
+   "file": "ml-service/app.py",
+   "line": 548,
+   "fingerprint": "902f38ec5b2835a3fb603d969b874b5e",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() produces naive timestamps (no zone in the ISO string or JWT claims)."
+  },
+  {
+   "rule": "BE017",
+   "file": "ml-service/app.py",
+   "line": 574,
+   "fingerprint": "9c19f2bff15d122aaeda5b0834ef0980",
+   "verdict": "tp",
+   "reason": "str(e) is returned to the client in the JSON error."
+  },
+  {
+   "rule": "QA004",
+   "file": "ml-service/app.py",
+   "line": 594,
+   "fingerprint": "b1520205c61a2903cfef35edfa296472",
+   "verdict": "tp",
+   "reason": "A simplified placeholder stands in for the real model (\"in production this would use ...\")."
+  },
+  {
+   "rule": "BE017",
+   "file": "ml-service/app.py",
+   "line": 622,
+   "fingerprint": "2f22fb7c89e3140188ade2a263c09fd5",
+   "verdict": "tp",
+   "reason": "str(e) is returned to the client in the JSON error."
+  },
+  {
+   "rule": "DATA006",
+   "file": "ml-service/app.py",
+   "line": 668,
+   "fingerprint": "b2faef3d02475647090fee13bc97e6f0",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() produces naive timestamps (no zone in the ISO string or JWT claims)."
+  },
+  {
+   "rule": "QA007",
+   "file": "ml-service/main.py",
+   "line": 27,
+   "fingerprint": "99e07705a8037c5a178505dd9c4f5b73",
+   "verdict": "tp",
+   "reason": "main.py imports fastapi, joblib, textblob, gtts, speech_recognition, uvicorn; ml-service/requirements.txt lists none of them."
+  },
+  {
+   "rule": "QA007",
+   "file": "ml-service/main.py",
+   "line": 38,
+   "fingerprint": "8ebb9c3d0d5e293f0637f62cbcd89402",
+   "verdict": "tp",
+   "reason": "main.py imports fastapi, joblib, textblob, gtts, speech_recognition, uvicorn; ml-service/requirements.txt lists none of them."
+  },
+  {
+   "rule": "QA007",
+   "file": "ml-service/main.py",
+   "line": 43,
+   "fingerprint": "0f91dcbca6bfb8b7b0b03852752b78fc",
+   "verdict": "tp",
+   "reason": "main.py imports fastapi, joblib, textblob, gtts, speech_recognition, uvicorn; ml-service/requirements.txt lists none of them."
+  },
+  {
+   "rule": "QA007",
+   "file": "ml-service/main.py",
+   "line": 44,
+   "fingerprint": "6b8d445608a252e42add106c1f261407",
+   "verdict": "tp",
+   "reason": "main.py imports fastapi, joblib, textblob, gtts, speech_recognition, uvicorn; ml-service/requirements.txt lists none of them."
+  },
+  {
+   "rule": "QA007",
+   "file": "ml-service/main.py",
+   "line": 45,
+   "fingerprint": "080191ebfb139348b834a0394cd24ac7",
+   "verdict": "tp",
+   "reason": "main.py imports fastapi, joblib, textblob, gtts, speech_recognition, uvicorn; ml-service/requirements.txt lists none of them."
+  },
+  {
+   "rule": "BE012",
+   "file": "ml-service/main.py",
+   "line": 58,
+   "fingerprint": "ac6b8ece01dcfed90aa189a4fb7231a9",
+   "verdict": "tp",
+   "reason": "allow_origins [\"*\"] with allow_credentials=True: Starlette echoes any origin with credentials."
+  },
+  {
+   "rule": "BE009",
+   "file": "ml-service/main.py",
+   "line": 435,
+   "fingerprint": "74c434079c94d220e8162fa71bd58013",
+   "verdict": "fp",
+   "reason": "LearningPathResponse is a Pydantic response built from computed data, not a database write."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "ml-service/main.py",
+   "line": 545,
+   "fingerprint": "0f61a1efacb3da8815ff8a356330f986",
+   "verdict": "tp",
+   "reason": "POST /speech/synthesize has no authentication dependency."
+  },
+  {
+   "rule": "QA004",
+   "file": "ml-service/main.py",
+   "line": 608,
+   "fingerprint": "17ab6651252545af10b86ea2f478aaf7",
+   "verdict": "tp",
+   "reason": "A simplified placeholder stands in for the real model (\"in production this would use ...\")."
+  },
+  {
+   "rule": "QA007",
+   "file": "ml-service/main.py",
+   "line": 719,
+   "fingerprint": "19759a55c1362d436bd8ceb4f9ac6c80",
+   "verdict": "tp",
+   "reason": "main.py imports fastapi, joblib, textblob, gtts, speech_recognition, uvicorn; ml-service/requirements.txt lists none of them."
+  },
+  {
+   "rule": "LLM008",
+   "file": "ml-service/models/pronunciation/pronunciation_model.py",
+   "line": 121,
+   "fingerprint": "aadcc14c7720241e0e41f25d7181b36b",
+   "verdict": "tp",
+   "reason": "torch.load without weights_only=True."
+  },
+  {
+   "rule": "QA004",
+   "file": "ml-service/models/pronunciation/pronunciation_model.py",
+   "line": 251,
+   "fingerprint": "95685fc8697702c2e34395c185f51f4b",
+   "verdict": "tp",
+   "reason": "A simplified placeholder stands in for the real model (\"in production this would use ...\")."
+  },
+  {
+   "rule": "BE009",
+   "file": "ml-service/models/rag/rag_model.py",
+   "line": 382,
+   "fingerprint": "ed5f0f6eace00bfa33747b588fb8a289",
+   "verdict": "fp",
+   "reason": "LessonPlan is a Pydantic object built from model output, not a database write."
+  },
+  {
+   "rule": "DATA006",
+   "file": "ml-service/utils/auth.py",
+   "line": 67,
+   "fingerprint": "b0f2651b144fc814d81d58e22788f6e4",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() produces naive timestamps (no zone in the ISO string or JWT claims)."
+  },
+  {
+   "rule": "DATA006",
+   "file": "ml-service/utils/auth.py",
+   "line": 69,
+   "fingerprint": "31e1620da8ae354f00d85f39b95a6054",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() produces naive timestamps (no zone in the ISO string or JWT claims)."
+  },
+  {
+   "rule": "DATA006",
+   "file": "ml-service/utils/auth.py",
+   "line": 71,
+   "fingerprint": "582002141dfeed7ae238a29f942c4e69",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() produces naive timestamps (no zone in the ISO string or JWT claims)."
+  },
+  {
+   "rule": "QA002",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
+   "verdict": "tp",
+   "reason": "No CI configuration."
+  },
+  {
+   "rule": "FE005",
+   "file": "src/contexts/AuthContext.tsx",
+   "line": 73,
+   "fingerprint": "1c872e990f3d99c941540839726e8464",
+   "verdict": "tp",
+   "reason": "The ML API token is stored in localStorage."
+  },
+  {
+   "rule": "FE005",
+   "file": "src/contexts/AuthContext.tsx",
+   "line": 94,
+   "fingerprint": "9adfcbdcada289cb49dc074c89fea11f",
+   "verdict": "tp",
+   "reason": "The ML API token is stored in localStorage."
+  },
+  {
+   "rule": "FE005",
+   "file": "src/contexts/AuthContext.tsx",
+   "line": 118,
+   "fingerprint": "d7f5fef180ac89844b06ab01c1c8e60f",
+   "verdict": "tp",
+   "reason": "The ML API token is stored in localStorage."
+  },
+  {
+   "rule": "FE005",
+   "file": "src/contexts/AuthContext.tsx",
+   "line": 147,
+   "fingerprint": "3d818c67d4ffc7774b07c8ae1739f087",
+   "verdict": "tp",
+   "reason": "The ML API token is stored in localStorage."
+  },
+  {
+   "rule": "SEC011",
+   "file": "src/lib/ml-api.ts",
+   "line": 258,
+   "fingerprint": "73dcb9acd6142f14c2565cb8dac14845",
+   "verdict": "tp",
+   "reason": "The browser code logs in with a hard-coded demo password."
+  },
+  {
+   "rule": "FE005",
+   "file": "src/lib/ml-api.ts",
+   "line": 266,
+   "fingerprint": "897d9de44f9e5229458a18ce102921ac",
+   "verdict": "tp",
+   "reason": "The ML API token is stored in localStorage."
+  },
+  {
+   "rule": "FE007",
+   "file": "src/pages/FileTranslator.tsx",
+   "line": 234,
+   "fingerprint": "98b2c8dfe33b52bb195a68db2c741399",
+   "verdict": "tp",
+   "reason": "Frontend calls a hard-coded http://localhost:5000 backend."
+  },
+  {
+   "rule": "FE007",
+   "file": "src/pages/FileTranslator.tsx",
+   "line": 254,
+   "fingerprint": "f5bf0ecabdbe2c96947d295b29f76303",
+   "verdict": "tp",
+   "reason": "Frontend calls a hard-coded http://localhost:5000 backend."
+  },
+  {
+   "rule": "FE007",
+   "file": "src/pages/FileTranslator.tsx",
+   "line": 337,
+   "fingerprint": "62a593e430a8ad2f5fb8686879f973af",
+   "verdict": "tp",
+   "reason": "Frontend calls a hard-coded http://localhost:5000 backend."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/pages/Lessons.tsx",
+   "line": 206,
+   "fingerprint": "b961d2417da532038b3dc97ae29becbe",
+   "verdict": "tp",
+   "reason": "The visible label has no htmlFor and the input has no id, so they are not associated."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/analyze-pronunciation/index.ts",
+   "line": 4,
+   "fingerprint": "4f0f253fb75dd7c328ad1e41d9d4cbc7",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies, so no call as the logged-in user."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/generate-lesson/index.ts",
+   "line": 5,
+   "fingerprint": "6b4e82f7b353dcb2af5b98298dc8c649",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies, so no call as the logged-in user."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "supabase/functions/generate-lesson/index.ts",
+   "line": 128,
+   "fingerprint": "815a6bb23be0db0a61e71d52d8e7a70c",
+   "verdict": "tp",
+   "reason": "The edge function calls the AI gateway and never checks the caller."
+  },
+  {
+   "rule": "QA004",
+   "file": "supabase/functions/generate-lesson/index.ts",
+   "line": 140,
+   "fingerprint": "d50d8508271b8c8a7113259930546734",
+   "verdict": "tp",
+   "reason": "A simplified placeholder stands in for the real model (\"in production this would use ...\")."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/handle-immersion-conversation/index.ts",
+   "line": 5,
+   "fingerprint": "9c4db7d53b7a32aa48165432e590ea50",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies, so no call as the logged-in user."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/translate-file/index.ts",
+   "line": 4,
+   "fingerprint": "90cdf4c2bcd1eeb26e22214e6659a76f",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies, so no call as the logged-in user."
+  },
+  {
+   "rule": "BE012",
+   "file": "supabase/functions/translate-text/index.ts",
+   "line": 4,
+   "fingerprint": "aebc57d25754f132da0c8f7b8d494ef2",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies, so no call as the logged-in user."
+  }
+ ]
+}

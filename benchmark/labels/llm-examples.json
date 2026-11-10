@@ -1,0 +1,54 @@
+{
+ "repo": "llm-examples",
+ "commit": "7cf260745675e41f92e7436d3777aafdab9dad9f",
+ "findings": [
+  {
+   "rule": "LLM003",
+   "file": "Chatbot.py",
+   "line": 26,
+   "fingerprint": "9b563da699c4caf8c61c057cf3e4b550",
+   "verdict": "tp",
+   "reason": "The model call has no max_tokens."
+  },
+  {
+   "rule": "LLM003",
+   "file": "pages/1_File_Q&A.py",
+   "line": 26,
+   "fingerprint": "f1fb61b28164624609c3cd46adf6e957",
+   "verdict": "tp",
+   "reason": "The model call has no max_tokens."
+  },
+  {
+   "rule": "LLM003",
+   "file": "pages/2_Chat_with_search.py",
+   "line": 39,
+   "fingerprint": "4f6d2af16542389674c99d40aaf16700",
+   "verdict": "tp",
+   "reason": "ChatOpenAI is created without max_tokens."
+  },
+  {
+   "rule": "LLM012",
+   "file": "pages/4_Langchain_PromptTemplate.py",
+   "line": 12,
+   "fingerprint": "37aad1becbf4d0e6e4e39de3e1651996",
+   "verdict": "tp",
+   "reason": "text-davinci-003 was retired by OpenAI."
+  },
+  {
+   "rule": "LLM003",
+   "file": "pages/5_Chat_with_user_feedback.py",
+   "line": 38,
+   "fingerprint": "d257de17104a5c30125e68f986af5ef4",
+   "verdict": "tp",
+   "reason": "The model call has no max_tokens."
+  },
+  {
+   "rule": "DEP005",
+   "file": "requirements.txt",
+   "line": 1,
+   "fingerprint": "699b891ad0c42fe578edccd2e8a68187",
+   "verdict": "tp",
+   "reason": "6 of 8 requirements use >= instead of exact pins."
+  }
+ ]
+}

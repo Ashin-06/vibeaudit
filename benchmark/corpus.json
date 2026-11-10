@@ -1,0 +1,229 @@
+{
+  "about": "Public repositories used to measure vibeaudit's precision. Each is pinned to an exact commit and fetched into a cache outside this repository by tools/benchmark.py; no code from them is stored here. The labels in benchmark/labels/ hold only rule ids, paths, line numbers and short reasons.",
+  "repos": [
+    {
+      "name": "act-solo-ai",
+      "url": "https://github.com/afllewellyn/act-solo-ai",
+      "commit": "f4c6a6296c90313c2c40422e95601222edee19c2",
+      "licence": "none declared",
+      "kind": "ai-built"
+    },
+    {
+      "name": "helpdesk-flow-verse",
+      "url": "https://github.com/piyushraj04/helpdesk-flow-verse",
+      "commit": "c08ede8e4213ad37e3ad319fe12d871dbfd908c9",
+      "licence": "none declared",
+      "kind": "ai-built"
+    },
+    {
+      "name": "learnathon-leaderboard",
+      "url": "https://github.com/BrainStation-23/learnathon-leaderboard",
+      "commit": "87ee5a2d7c2290ace3b14dedea25a4f4406b7cab",
+      "licence": "none declared",
+      "kind": "ai-built"
+    },
+    {
+      "name": "LinguaLearn",
+      "url": "https://github.com/josephkamau32/LinguaLearn",
+      "commit": "f1cc2e2ea82ec7e7504da0d931503112e80ec25e",
+      "licence": "none declared",
+      "kind": "ai-built"
+    },
+    {
+      "name": "physicalmediavault",
+      "url": "https://github.com/thamarakandabada/physicalmediavault",
+      "commit": "c411c1698cf6cc68541536e3981526a51e7606ba",
+      "licence": "MIT",
+      "kind": "ai-built"
+    },
+    {
+      "name": "prompt-sculptor-49",
+      "url": "https://github.com/amo-tech-ai/prompt-sculptor-49",
+      "commit": "d60d5e9e66c6aefc713f67dec823d247a8585411",
+      "licence": "none declared",
+      "kind": "ai-built"
+    },
+    {
+      "name": "scriptforge-ai",
+      "url": "https://github.com/3h0ll7/scriptforge-ai",
+      "commit": "07f5342b53db706d7afc0ae85b1e29a4145bd5dc",
+      "licence": "none declared",
+      "kind": "ai-built"
+    },
+    {
+      "name": "sync-plan-flow",
+      "url": "https://github.com/thefixer3x/sync-plan-flow",
+      "commit": "9bbf2bf4b86d9a193d3ac37a09f7be7b3a4db0e1",
+      "licence": "none declared",
+      "kind": "ai-built"
+    },
+    {
+      "name": "ai-chatbot",
+      "url": "https://github.com/vercel/ai-chatbot",
+      "commit": "a8989b522fa3672a2ae52f053105e40993b36ca1",
+      "licence": "custom (see repository)",
+      "kind": "llm-app"
+    },
+    {
+      "name": "chat-langchain",
+      "url": "https://github.com/langchain-ai/chat-langchain",
+      "commit": "1a5fbe967b47bdc5d5f142c515fd8bc0b185bd81",
+      "licence": "MIT",
+      "kind": "llm-app"
+    },
+    {
+      "name": "chatbot-ui",
+      "url": "https://github.com/mckaywrigley/chatbot-ui",
+      "commit": "81328b61d2a4ab597a7a057be70e785cf756d9f8",
+      "licence": "MIT",
+      "kind": "llm-app"
+    },
+    {
+      "name": "chatgpt-your-files",
+      "url": "https://github.com/supabase-community/chatgpt-your-files",
+      "commit": "005fd90817fadcd85db2b5fe96c53f1bcf949e96",
+      "licence": "none declared",
+      "kind": "llm-app"
+    },
+    {
+      "name": "llm-examples",
+      "url": "https://github.com/streamlit/llm-examples",
+      "commit": "7cf260745675e41f92e7436d3777aafdab9dad9f",
+      "licence": "Apache-2.0",
+      "kind": "llm-app"
+    },
+    {
+      "name": "opengpts",
+      "url": "https://github.com/langchain-ai/opengpts",
+      "commit": "8e7fef72e1f7fd1cd3518b4c6e1d6fbb33a4fe2c",
+      "licence": "MIT",
+      "kind": "llm-app"
+    },
+    {
+      "name": "openui",
+      "url": "https://github.com/wandb/openui",
+      "commit": "42d7ab4ab6650433486dfb12eb3783c393a3e475",
+      "licence": "Apache-2.0",
+      "kind": "llm-app"
+    },
+    {
+      "name": "sec-insights",
+      "url": "https://github.com/run-llama/sec-insights",
+      "commit": "a9b6da0f5c4bff52437a5285954ff17bc713f14f",
+      "licence": "MIT",
+      "kind": "llm-app"
+    },
+    {
+      "name": "bakerydemo",
+      "url": "https://github.com/wagtail/bakerydemo",
+      "commit": "890285b95dcf980215ab9e9942d64ed2b47c48c3",
+      "licence": "BSD-3-Clause",
+      "kind": "well-maintained"
+    },
+    {
+      "name": "commerce",
+      "url": "https://github.com/vercel/commerce",
+      "commit": "f7521d57d29f0eb3d23c1399cf9bb299d61fcd21",
+      "licence": "MIT",
+      "kind": "well-maintained"
+    },
+    {
+      "name": "Django-Styleguide-Example",
+      "url": "https://github.com/HackSoftware/Django-Styleguide-Example",
+      "commit": "a70ef43d7df03706c1211d4fcfd70b4b0120ba1e",
+      "licence": "MIT",
+      "kind": "well-maintained"
+    },
+    {
+      "name": "djangoproject.com",
+      "url": "https://github.com/django/djangoproject.com",
+      "commit": "83a027bb6aac5bb36b9ef48dad8cb4ff45a2e84f",
+      "licence": "BSD-3-Clause",
+      "kind": "well-maintained"
+    },
+    {
+      "name": "express",
+      "url": "https://github.com/expressjs/express",
+      "commit": "43fca52d28a422c8be48fd489cbd4f2d6152bab6",
+      "licence": "MIT",
+      "kind": "well-maintained"
+    },
+    {
+      "name": "flask",
+      "url": "https://github.com/pallets/flask",
+      "commit": "49943b5a94413a530761350f04e896f76e8d620e",
+      "licence": "BSD-3-Clause",
+      "kind": "well-maintained"
+    },
+    {
+      "name": "full-stack-fastapi-template",
+      "url": "https://github.com/fastapi/full-stack-fastapi-template",
+      "commit": "aabb90126964a164e02aff39e7c385bb0598236d",
+      "licence": "MIT",
+      "kind": "well-maintained"
+    },
+    {
+      "name": "microblog",
+      "url": "https://github.com/miguelgrinberg/microblog",
+      "commit": "a975ef64864354867c88e0ed3a17ba7d17dca752",
+      "licence": "MIT",
+      "kind": "well-maintained"
+    },
+    {
+      "name": "next-learn",
+      "url": "https://github.com/vercel/next-learn",
+      "commit": "bb2558441a6673ab76c89914c25018bffa27a2ba",
+      "licence": "MIT",
+      "kind": "well-maintained"
+    },
+    {
+      "name": "nextjs-subscription-payments",
+      "url": "https://github.com/vercel/nextjs-subscription-payments",
+      "commit": "bdd0813206e47e6b218d42f15a7976c8a0d3c3eb",
+      "licence": "MIT",
+      "kind": "well-maintained"
+    },
+    {
+      "name": "node-express-boilerplate",
+      "url": "https://github.com/hagopj13/node-express-boilerplate",
+      "commit": "179ae84efec61b14206d0305d941daed6c6d07f9",
+      "licence": "MIT",
+      "kind": "well-maintained"
+    },
+    {
+      "name": "node-express-realworld-example-app",
+      "url": "https://github.com/gothinkster/node-express-realworld-example-app",
+      "commit": "30b68e1e881462b2f4164ea09ab4c4f5699c7b0b",
+      "licence": "none declared",
+      "kind": "well-maintained"
+    },
+    {
+      "name": "starlette",
+      "url": "https://github.com/encode/starlette",
+      "commit": "271c277da0ff64e2048a4d46ecc812b9d61db5f6",
+      "licence": "BSD-3-Clause",
+      "kind": "well-maintained"
+    },
+    {
+      "name": "taxonomy",
+      "url": "https://github.com/shadcn-ui/taxonomy",
+      "commit": "298a8857c7128a0d121e7f699dfd729f23b3966d",
+      "licence": "MIT",
+      "kind": "well-maintained"
+    },
+    {
+      "name": "werkzeug",
+      "url": "https://github.com/pallets/werkzeug",
+      "commit": "0f43c6ebd426039e4b99ec22535c2c8a2ec2f69f",
+      "licence": "BSD-3-Clause",
+      "kind": "well-maintained"
+    },
+    {
+      "name": "Vulnerable-Flask-App",
+      "url": "https://github.com/we45/Vulnerable-Flask-App",
+      "commit": "b6a4f97afd466e83e1f60781494252dec1c37039",
+      "licence": "none declared",
+      "kind": "known-vulnerable"
+    }
+  ]
+}

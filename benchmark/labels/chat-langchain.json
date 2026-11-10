@@ -1,0 +1,70 @@
+{
+ "repo": "chat-langchain",
+ "commit": "1a5fbe967b47bdc5d5f142c515fd8bc0b185bd81",
+ "findings": [
+  {
+   "rule": "DATA007",
+   "file": "frontend/app/api/auth/guest/introspect/route.ts",
+   "line": 6,
+   "fingerprint": "d7ff8837bdd78d6588cfa44d309a28f2",
+   "verdict": "tp",
+   "reason": "GUEST_AUTH_SECRET is undocumented; without it guest auth silently returns 503."
+  },
+  {
+   "rule": "DATA007",
+   "file": "frontend/app/api/langsmith/capabilities/[capabilityId]/route.ts",
+   "line": 10,
+   "fingerprint": "166903b6e442cc960e8d2e8efd800a77",
+   "verdict": "tp",
+   "reason": "LANGSMITH_API_KEY is undocumented; without it the capability routes silently return nothing."
+  },
+  {
+   "rule": "DATA007",
+   "file": "frontend/app/api/langsmith/capabilities/[capabilityId]/route.ts",
+   "line": 15,
+   "fingerprint": "50e5276352e04302552018bb159e02e4",
+   "verdict": "fp",
+   "reason": "LANGSMITH_ENDPOINT is an optional override with the client default."
+  },
+  {
+   "rule": "DATA007",
+   "file": "frontend/app/layout.tsx",
+   "line": 27,
+   "fingerprint": "c206764f4524d9d6ae45b3e8e8c7314a",
+   "verdict": "tp",
+   "reason": "NEXT_PUBLIC_SEGMENT_WRITE_KEY is undocumented; analytics silently stays off."
+  },
+  {
+   "rule": "DATA007",
+   "file": "frontend/lib/api/langgraph-client.ts",
+   "line": 40,
+   "fingerprint": "cff613ad4b4b3bec6a5b4914603cca58",
+   "verdict": "fp",
+   "reason": "The gateway key is optional by design (sent only when a proxy expects it)."
+  },
+  {
+   "rule": "QA003",
+   "file": "src/middleware/legal_handoff_middleware.py",
+   "line": 141,
+   "fingerprint": "6e6ed8195184f41066e7c3a19d5355e4",
+   "verdict": "tp",
+   "reason": "except Exception: pass with no comment hides failures in the middleware."
+  },
+  {
+   "rule": "DATA007",
+   "file": "src/prompts/docs_agent_prompt.py",
+   "line": 607,
+   "fingerprint": "6cc428043693ee6ee00d932a6ab14dc1",
+   "verdict": "fp",
+   "reason": "The os.environ read is example code inside a prompt string literal, not code that runs."
+  },
+  {
+   "rule": "DATA007",
+   "file": "src/utils/trace_root_metadata.py",
+   "line": 26,
+   "fingerprint": "d00c593a8777fde5668b5e831e9c3599",
+   "verdict": "fp",
+   "reason": "The revision id is optional metadata, used only when set."
+  }
+ ]
+}

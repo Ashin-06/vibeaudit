@@ -1,0 +1,406 @@
+{
+ "repo": "sec-insights",
+ "commit": "a9b6da0f5c4bff52437a5285954ff17bc713f14f",
+ "findings": [
+  {
+   "rule": "CFG001",
+   "file": ".devcontainer/Dockerfile",
+   "line": 2,
+   "fingerprint": "7dc12eef5633add9bdd79f7cb779743b",
+   "verdict": "tp",
+   "reason": "The final image has no USER instruction and runs as root."
+  },
+  {
+   "rule": "QA002",
+   "file": "README.md",
+   "line": 1,
+   "fingerprint": "2a95677914fac65102461f72d5687746",
+   "verdict": "tp",
+   "reason": "No CI configuration."
+  },
+  {
+   "rule": "REL006",
+   "file": "backend/Dockerfile",
+   "line": 1,
+   "fingerprint": "757a79073c263f27d707d7812bff8310",
+   "verdict": "tp",
+   "reason": "The backend is deployed with a Dockerfile, has 9 routes and no health route."
+  },
+  {
+   "rule": "CFG001",
+   "file": "backend/Dockerfile",
+   "line": 2,
+   "fingerprint": "46ec26c5830f99dfe273a76463bf664f",
+   "verdict": "tp",
+   "reason": "The final image has no USER instruction and runs as root."
+  },
+  {
+   "rule": "CFG009",
+   "file": "backend/Dockerfile",
+   "line": 8,
+   "fingerprint": "d668de952ef30247540a92275049cd61",
+   "verdict": "tp",
+   "reason": "COPY . ./ copies .env.development (API key and AWS secret names) into the image; there is no .dockerignore."
+  },
+  {
+   "rule": "BE001",
+   "file": "backend/alembic/versions/1b0b616e08c6_replace_value_within_.py",
+   "line": 44,
+   "fingerprint": "df959e63372378cfd53fea14ba655ad3",
+   "verdict": "fp",
+   "reason": "The f-strings interpolate constant enum and table identifiers in an Alembic migration; parameters cannot bind identifiers."
+  },
+  {
+   "rule": "BE001",
+   "file": "backend/alembic/versions/1b0b616e08c6_replace_value_within_.py",
+   "line": 46,
+   "fingerprint": "a42198bf3b5034d8aca2031c9afb79b9",
+   "verdict": "fp",
+   "reason": "The f-strings interpolate constant enum and table identifiers in an Alembic migration; parameters cannot bind identifiers."
+  },
+  {
+   "rule": "BE001",
+   "file": "backend/alembic/versions/1b0b616e08c6_replace_value_within_.py",
+   "line": 49,
+   "fingerprint": "338c9dd6c7c14521bed8f481e3b89a0f",
+   "verdict": "fp",
+   "reason": "The f-strings interpolate constant enum and table identifiers in an Alembic migration; parameters cannot bind identifiers."
+  },
+  {
+   "rule": "BE001",
+   "file": "backend/alembic/versions/663b3fea3024_update_sub_process_columns.py",
+   "line": 51,
+   "fingerprint": "cb986b6ad78cdb2765516e36439bf638",
+   "verdict": "fp",
+   "reason": "The f-strings interpolate constant enum and table identifiers in an Alembic migration; parameters cannot bind identifiers."
+  },
+  {
+   "rule": "BE001",
+   "file": "backend/alembic/versions/663b3fea3024_update_sub_process_columns.py",
+   "line": 53,
+   "fingerprint": "6e36f75ca5d2d5b99121ee34862f633c",
+   "verdict": "fp",
+   "reason": "The f-strings interpolate constant enum and table identifiers in an Alembic migration; parameters cannot bind identifiers."
+  },
+  {
+   "rule": "BE001",
+   "file": "backend/alembic/versions/663b3fea3024_update_sub_process_columns.py",
+   "line": 56,
+   "fingerprint": "d256e82a46e1406c83df6b65ac4e1f9c",
+   "verdict": "fp",
+   "reason": "The f-strings interpolate constant enum and table identifiers in an Alembic migration; parameters cannot bind identifiers."
+  },
+  {
+   "rule": "BE001",
+   "file": "backend/alembic/versions/c008bb4f3f48_update_sub_process_columns.py",
+   "line": 41,
+   "fingerprint": "dd8706c975bf35c11fe42b4289523bc1",
+   "verdict": "fp",
+   "reason": "The f-strings interpolate constant enum and table identifiers in an Alembic migration; parameters cannot bind identifiers."
+  },
+  {
+   "rule": "BE001",
+   "file": "backend/alembic/versions/c008bb4f3f48_update_sub_process_columns.py",
+   "line": 43,
+   "fingerprint": "8b3f31c117113672cfe3da7395a54209",
+   "verdict": "fp",
+   "reason": "The f-strings interpolate constant enum and table identifiers in an Alembic migration; parameters cannot bind identifiers."
+  },
+  {
+   "rule": "BE001",
+   "file": "backend/alembic/versions/c008bb4f3f48_update_sub_process_columns.py",
+   "line": 46,
+   "fingerprint": "106fc57c6b4e822125f9445723dcc457",
+   "verdict": "fp",
+   "reason": "The f-strings interpolate constant enum and table identifiers in an Alembic migration; parameters cannot bind identifiers."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "backend/app/api/endpoints/conversation.py",
+   "line": 58,
+   "fingerprint": "dcc0f924b9c66465b63d5007fdba8a0c",
+   "verdict": "tp",
+   "reason": "The app has no authentication: anyone with a conversation id can delete it."
+  },
+  {
+   "rule": "DATA006",
+   "file": "backend/app/api/endpoints/conversation.py",
+   "line": 88,
+   "fingerprint": "3f43661314f561be31e7b3584b68e261",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() returns a naive datetime."
+  },
+  {
+   "rule": "DATA006",
+   "file": "backend/app/api/endpoints/conversation.py",
+   "line": 89,
+   "fingerprint": "1517549c79fa104077aba9132f375d8f",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() returns a naive datetime."
+  },
+  {
+   "rule": "DATA006",
+   "file": "backend/app/api/endpoints/conversation.py",
+   "line": 129,
+   "fingerprint": "4619707349e18f63eb62ff7e29d49818",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() returns a naive datetime."
+  },
+  {
+   "rule": "QA007",
+   "file": "backend/app/chat/engine.py",
+   "line": 14,
+   "fingerprint": "09ada5e13809c972a84f4badea7bc23c",
+   "verdict": "tp",
+   "reason": "Imported directly but not declared in pyproject; it works only through transitive installs."
+  },
+  {
+   "rule": "QA007",
+   "file": "backend/app/chat/engine.py",
+   "line": 15,
+   "fingerprint": "97d0f2dcb91f41f8324d0df4252d0cc2",
+   "verdict": "tp",
+   "reason": "Imported directly but not declared in pyproject; it works only through transitive installs."
+  },
+  {
+   "rule": "REL001",
+   "file": "backend/app/chat/engine.py",
+   "line": 78,
+   "fingerprint": "f225bc66efd876743d300918ca47be88",
+   "verdict": "tp",
+   "reason": "requests call has no timeout."
+  },
+  {
+   "rule": "DATA006",
+   "file": "backend/app/chat/engine.py",
+   "line": 290,
+   "fingerprint": "90c06c8e2bf047c4a3b83b470c6217f1",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() returns a naive datetime."
+  },
+  {
+   "rule": "QA005",
+   "file": "backend/app/chat/tools.py",
+   "line": 134,
+   "fingerprint": "03a0a7056f65e29f6377435c766bb9e1",
+   "verdict": "fp",
+   "reason": "The tool is async-only by design; the sync placeholder raising NotImplementedError is intentional."
+  },
+  {
+   "rule": "CFG007",
+   "file": "backend/docker-compose.yml",
+   "line": 25,
+   "fingerprint": "47aecb28520bad4c466590adf7362453",
+   "verdict": "tp",
+   "reason": "docker-compose sets the default postgres password."
+  },
+  {
+   "rule": "REL001",
+   "file": "backend/scripts/chat_llama.py",
+   "line": 11,
+   "fingerprint": "58d2d3ee828a71c8c3c763facc9ae20c",
+   "verdict": "tp",
+   "reason": "requests call has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "backend/scripts/chat_llama.py",
+   "line": 25,
+   "fingerprint": "f029ffb7aeaf5c566d134f89f561b6ba",
+   "verdict": "tp",
+   "reason": "requests call has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "backend/scripts/chat_llama.py",
+   "line": 93,
+   "fingerprint": "29e0dbb3b4f7ac58eaa4ff52ff79a647",
+   "verdict": "tp",
+   "reason": "requests call has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "backend/scripts/chat_llama.py",
+   "line": 105,
+   "fingerprint": "313ad8b1192983c6f6961371ca2a69a8",
+   "verdict": "tp",
+   "reason": "requests call has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "backend/scripts/chat_llama.py",
+   "line": 118,
+   "fingerprint": "732dfbd96027a3fd5bc52b8cd616e6a7",
+   "verdict": "tp",
+   "reason": "requests call has no timeout."
+  },
+  {
+   "rule": "QA007",
+   "file": "backend/scripts/download_sec_pdf.py",
+   "line": 9,
+   "fingerprint": "2235fcc191bf58cfc7aed5c24b0135a3",
+   "verdict": "tp",
+   "reason": "Imported directly but not declared in pyproject; it works only through transitive installs."
+  },
+  {
+   "rule": "QA007",
+   "file": "backend/scripts/file_utils.py",
+   "line": 5,
+   "fingerprint": "b11d2fb00f0036eda8749786f383836d",
+   "verdict": "tp",
+   "reason": "Imported directly but not declared in pyproject; it works only through transitive installs."
+  },
+  {
+   "rule": "UI002",
+   "file": "frontend/src/components/basics/Modal.tsx",
+   "line": 22,
+   "fingerprint": "3c2f002d35649b2d9181a5e0b6c04643",
+   "verdict": "fp",
+   "reason": "Backdrop overlay that closes the modal; the modal has its own close button."
+  },
+  {
+   "rule": "UI002",
+   "file": "frontend/src/components/conversations/RenderConversations.tsx",
+   "line": 25,
+   "fingerprint": "7d05c77937a4a93f64ce3e3fa8ee4802",
+   "verdict": "tp",
+   "reason": "Clickable div with no role, tabIndex or key handler."
+  },
+  {
+   "rule": "UI002",
+   "file": "frontend/src/components/conversations/RenderConversations.tsx",
+   "line": 93,
+   "fingerprint": "1cd291f4f08645ccbf18f602f2ac6f27",
+   "verdict": "tp",
+   "reason": "Clickable div with no role, tabIndex or key handler."
+  },
+  {
+   "rule": "UI001",
+   "file": "frontend/src/components/landing-page/MarketingSection.tsx",
+   "line": 40,
+   "fingerprint": "00d9f081574de3c81cf072411e5fb93c",
+   "verdict": "tp",
+   "reason": "The img has no alt attribute."
+  },
+  {
+   "rule": "UI001",
+   "file": "frontend/src/components/landing-page/MarketingSection.tsx",
+   "line": 44,
+   "fingerprint": "b1f365fd842379921681cd5361dc349e",
+   "verdict": "tp",
+   "reason": "The img has no alt attribute."
+  },
+  {
+   "rule": "UI001",
+   "file": "frontend/src/components/landing-page/MarketingSection.tsx",
+   "line": 48,
+   "fingerprint": "a64f8daa702b66f305eef2de6ca4228e",
+   "verdict": "tp",
+   "reason": "The img has no alt attribute."
+  },
+  {
+   "rule": "UI001",
+   "file": "frontend/src/components/landing-page/MarketingSection.tsx",
+   "line": 52,
+   "fingerprint": "86aa16b25eb69802265b14ca1ab13c8a",
+   "verdict": "tp",
+   "reason": "The img has no alt attribute."
+  },
+  {
+   "rule": "UI001",
+   "file": "frontend/src/components/landing-page/MarketingSection.tsx",
+   "line": 56,
+   "fingerprint": "4574cc542eb34a8a7f0903ba65654be3",
+   "verdict": "tp",
+   "reason": "The img has no alt attribute."
+  },
+  {
+   "rule": "UI001",
+   "file": "frontend/src/components/landing-page/MarketingSection.tsx",
+   "line": 94,
+   "fingerprint": "065c7829f4770039f9da8b384898c243",
+   "verdict": "tp",
+   "reason": "The img has no alt attribute."
+  },
+  {
+   "rule": "UI001",
+   "file": "frontend/src/components/landing-page/MarketingSection.tsx",
+   "line": 98,
+   "fingerprint": "0562e7f646c417f1404db8c1cd874074",
+   "verdict": "tp",
+   "reason": "The img has no alt attribute."
+  },
+  {
+   "rule": "UI001",
+   "file": "frontend/src/components/landing-page/MarketingSection.tsx",
+   "line": 102,
+   "fingerprint": "d9b57a163c09044def2fcb1b18e7f9aa",
+   "verdict": "tp",
+   "reason": "The img has no alt attribute."
+  },
+  {
+   "rule": "UI001",
+   "file": "frontend/src/components/landing-page/MarketingSection.tsx",
+   "line": 130,
+   "fingerprint": "b037d7f53f966855b36ab67e85e2cd39",
+   "verdict": "tp",
+   "reason": "The img has no alt attribute."
+  },
+  {
+   "rule": "UI001",
+   "file": "frontend/src/components/landing-page/MarketingSection.tsx",
+   "line": 134,
+   "fingerprint": "f6f2dceb9b0a251ca1acc5926b4bb63f",
+   "verdict": "tp",
+   "reason": "The img has no alt attribute."
+  },
+  {
+   "rule": "UI001",
+   "file": "frontend/src/components/landing-page/MarketingSection.tsx",
+   "line": 138,
+   "fingerprint": "74b910eaeb2dba73182470271fb6bcde",
+   "verdict": "tp",
+   "reason": "The img has no alt attribute."
+  },
+  {
+   "rule": "UI001",
+   "file": "frontend/src/components/landing-page/TitleAndDropdown.tsx",
+   "line": 79,
+   "fingerprint": "4f30c5e7845423d30feb2e9877769bf8",
+   "verdict": "tp",
+   "reason": "The img has no alt attribute."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/components/modals/ShareLinkModal.tsx",
+   "line": 36,
+   "fingerprint": "cfe33340ac13245400daac3c421d27c0",
+   "verdict": "tp",
+   "reason": "Form control with no label, aria-label or id."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/components/pdf-viewer/PdfOptionsBar.tsx",
+   "line": 99,
+   "fingerprint": "83f935dffadc0f53fcd59c78c966d39a",
+   "verdict": "tp",
+   "reason": "Form control with no label, aria-label or id."
+  },
+  {
+   "rule": "UI002",
+   "file": "frontend/src/components/pdf-viewer/PdfOptionsBar.tsx",
+   "line": 125,
+   "fingerprint": "b3947385b40f211f9ad9f7731ab2c8ac",
+   "verdict": "tp",
+   "reason": "Clickable div with no role, tabIndex or key handler."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/pages/conversation/[id].tsx",
+   "line": 194,
+   "fingerprint": "8eed477b7fa816d1d8de6a876c4e89c1",
+   "verdict": "tp",
+   "reason": "Form control with no label, aria-label or id."
+  }
+ ]
+}

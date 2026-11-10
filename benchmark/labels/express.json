@@ -1,0 +1,86 @@
+{
+ "repo": "express",
+ "commit": "43fca52d28a422c8be48fd489cbd4f2d6152bab6",
+ "findings": [
+  {
+   "rule": "SEC004",
+   "file": "examples/auth/index.js",
+   "line": 22,
+   "fingerprint": "eca90df325f1124b34c6eb1b7faafe7f",
+   "verdict": "fp",
+   "reason": "A demo secret in the library's examples/ directory, not deployed application code."
+  },
+  {
+   "rule": "SEC011",
+   "file": "examples/auth/index.js",
+   "line": 50,
+   "fingerprint": "9b8b18701368b20b2f092250e4b33f4a",
+   "verdict": "fp",
+   "reason": "A demo secret in the library's examples/ directory, not deployed application code."
+  },
+  {
+   "rule": "SEC004",
+   "file": "examples/cookie-sessions/index.js",
+   "line": 13,
+   "fingerprint": "dfa4c22f99233b6ebdc3850d7d8a101d",
+   "verdict": "fp",
+   "reason": "A demo secret in the library's examples/ directory, not deployed application code."
+  },
+  {
+   "rule": "SEC004",
+   "file": "examples/cookies/index.js",
+   "line": 19,
+   "fingerprint": "de0d45f8af989ebf9fcb0e1ab6f3c7c2",
+   "verdict": "fp",
+   "reason": "A demo secret in the library's examples/ directory, not deployed application code."
+  },
+  {
+   "rule": "BE006",
+   "file": "examples/downloads/index.js",
+   "line": 27,
+   "fingerprint": "42adb095f28f02514cb152866b12478d",
+   "verdict": "fp",
+   "reason": "res.download with the root option rejects paths that escape FILES_DIR."
+  },
+  {
+   "rule": "SEC004",
+   "file": "examples/mvc/index.js",
+   "line": 40,
+   "fingerprint": "2de8f63a6ed3a2025094f01587cb6016",
+   "verdict": "fp",
+   "reason": "A demo secret in the library's examples/ directory, not deployed application code."
+  },
+  {
+   "rule": "SEC004",
+   "file": "examples/session/index.js",
+   "line": 16,
+   "fingerprint": "67bb796a2508d45b35733c03aa7f4d5c",
+   "verdict": "fp",
+   "reason": "A demo secret in the library's examples/ directory, not deployed application code."
+  },
+  {
+   "rule": "SEC004",
+   "file": "examples/session/redis.js",
+   "line": 20,
+   "fingerprint": "9a27f7ecb415ebfcfb17ec80a00d6c25",
+   "verdict": "fp",
+   "reason": "A demo secret in the library's examples/ directory, not deployed application code."
+  },
+  {
+   "rule": "SEC004",
+   "file": "lib/response.js",
+   "line": 754,
+   "fingerprint": "938098b031a6d6b3275497ff9e8dc233",
+   "verdict": "fp",
+   "reason": "The match is an error message string, cookieParser(\"secret\") required, not a secret."
+  },
+  {
+   "rule": "DEP005",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "5e6440f154e5fafdbedb3d38d01fb73b",
+   "verdict": "fp",
+   "reason": "express is a published library; libraries deliberately leave lockfiles out."
+  }
+ ]
+}

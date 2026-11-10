@@ -1,0 +1,70 @@
+{
+ "repo": "commerce",
+ "commit": "f7521d57d29f0eb3d23c1399cf9bb299d61fcd21",
+ "findings": [
+  {
+   "rule": "FE001",
+   "file": "app/product/[handle]/page.tsx",
+   "line": 79,
+   "fingerprint": "d812a6fcd89e4cf54f89f50bb7d8c54e",
+   "verdict": "tp",
+   "reason": "JSON.stringify does not escape </script>, so a product title can break out of the JSON-LD script tag."
+  },
+  {
+   "rule": "UI003",
+   "file": "components/layout/navbar/search.tsx",
+   "line": 15,
+   "fingerprint": "42d66967cb9b220987eea761e01f81d7",
+   "verdict": "tp",
+   "reason": "The search input has only a placeholder, no label or aria-label."
+  },
+  {
+   "rule": "UI003",
+   "file": "components/layout/navbar/search.tsx",
+   "line": 34,
+   "fingerprint": "7c8060fbdc38cae1e9000fcaa9c3a789",
+   "verdict": "tp",
+   "reason": "The search input has only a placeholder, no label or aria-label."
+  },
+  {
+   "rule": "UI002",
+   "file": "components/layout/search/filter/dropdown.tsx",
+   "line": 41,
+   "fingerprint": "87a32fd467d8d6c1d78d498347c49861",
+   "verdict": "tp",
+   "reason": "The filter dropdown toggle is a div with no role, tabIndex or key handler."
+  },
+  {
+   "rule": "UI002",
+   "file": "components/layout/search/filter/dropdown.tsx",
+   "line": 51,
+   "fingerprint": "4ecba84c086ba79ee4fdbd577c609e65",
+   "verdict": "fp",
+   "reason": "The open list's onClick only closes it; the items inside are links."
+  },
+  {
+   "rule": "FE001",
+   "file": "components/prose.tsx",
+   "line": 10,
+   "fingerprint": "fbc44825fd5b9799fd7d135fac51b734",
+   "verdict": "fp",
+   "reason": "Renders Shopify descriptionHtml authored by the store admin; rendering CMS HTML is the intent."
+  },
+  {
+   "rule": "QA001",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "6ebc345ae714486cf41d50d631704e0c",
+   "verdict": "tp",
+   "reason": "No test files in the project."
+  },
+  {
+   "rule": "QA002",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
+   "verdict": "tp",
+   "reason": "No CI configuration."
+  }
+ ]
+}

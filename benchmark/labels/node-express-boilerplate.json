@@ -1,0 +1,38 @@
+{
+ "repo": "node-express-boilerplate",
+ "commit": "179ae84efec61b14206d0305d941daed6c6d07f9",
+ "findings": [
+  {
+   "rule": "REL006",
+   "file": "Dockerfile",
+   "line": 1,
+   "fingerprint": "fd2f1e544301212d61c06184ee0cf556",
+   "verdict": "tp",
+   "reason": "The service is deployed with a Dockerfile, has 9 routes and no health route."
+  },
+  {
+   "rule": "BE002",
+   "file": "bin/createNodejsApp.js",
+   "line": 11,
+   "fingerprint": "111caf15e688471f3559c2010b30e7e2",
+   "verdict": "fp",
+   "reason": "A project generator CLI run by the developer; the commands are its own."
+  },
+  {
+   "rule": "BE012",
+   "file": "src/app.js",
+   "line": 41,
+   "fingerprint": "e546e8581cdf651ad32bb96cdb9e050b",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies, so no call as the logged-in user."
+  },
+  {
+   "rule": "BE012",
+   "file": "src/app.js",
+   "line": 42,
+   "fingerprint": "07cd8324f4d4f1b9ce6906ef9e21cba7",
+   "verdict": "fp",
+   "reason": "Wildcard CORS without credentials: browsers send no cookies, so no call as the logged-in user."
+  }
+ ]
+}

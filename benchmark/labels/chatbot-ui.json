@@ -1,0 +1,390 @@
+{
+ "repo": "chatbot-ui",
+ "commit": "81328b61d2a4ab597a7a057be70e785cf756d9f8",
+ "findings": [
+  {
+   "rule": "DATA007",
+   "file": "app/[locale]/login/page.tsx",
+   "line": 86,
+   "fingerprint": "600775ce743764fd88256156af8cb682",
+   "verdict": "fp",
+   "reason": "EDGE_CONFIG is optional: without it the code falls back to process.env."
+  },
+  {
+   "rule": "LLM004",
+   "file": "app/api/chat/anthropic/route.ts",
+   "line": 11,
+   "fingerprint": "a0fb6b06e89586518c294d25eb67d161",
+   "verdict": "tp",
+   "reason": "The chat route calls a model and nothing rate-limits it; server env keys can back the profile."
+  },
+  {
+   "rule": "LLM004",
+   "file": "app/api/chat/azure/route.ts",
+   "line": 9,
+   "fingerprint": "b5e0bb543bfdbe34ab3aafd02a6fdf34",
+   "verdict": "tp",
+   "reason": "The chat route calls a model and nothing rate-limits it; server env keys can back the profile."
+  },
+  {
+   "rule": "LLM012",
+   "file": "app/api/chat/azure/route.ts",
+   "line": 29,
+   "fingerprint": "e032ba3634ea243207d84c85b8dc0f90",
+   "verdict": "tp",
+   "reason": "gpt-4-vision-preview is retired."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/api/chat/custom/route.ts",
+   "line": 11,
+   "fingerprint": "a67794970409f2dc623d4171d3c7284e",
+   "verdict": "tp",
+   "reason": "/api/chat/custom loads any custom model by id with the service role and checks no user."
+  },
+  {
+   "rule": "LLM004",
+   "file": "app/api/chat/custom/route.ts",
+   "line": 11,
+   "fingerprint": "ae80affa72818a260c0c046151a12a9a",
+   "verdict": "tp",
+   "reason": "The chat route calls a model and nothing rate-limits it; server env keys can back the profile."
+  },
+  {
+   "rule": "LLM003",
+   "file": "app/api/chat/custom/route.ts",
+   "line": 40,
+   "fingerprint": "96dd03d68b5449d28fb6d4b79cf17dfd",
+   "verdict": "tp",
+   "reason": "The completion call has no max_tokens."
+  },
+  {
+   "rule": "LLM004",
+   "file": "app/api/chat/google/route.ts",
+   "line": 7,
+   "fingerprint": "2b376ad03414bf6d667d5149cec8e414",
+   "verdict": "tp",
+   "reason": "The chat route calls a model and nothing rate-limits it; server env keys can back the profile."
+  },
+  {
+   "rule": "LLM004",
+   "file": "app/api/chat/groq/route.ts",
+   "line": 8,
+   "fingerprint": "22471ea9a1e90098985a3c6b73ad2e52",
+   "verdict": "tp",
+   "reason": "The chat route calls a model and nothing rate-limits it; server env keys can back the profile."
+  },
+  {
+   "rule": "LLM004",
+   "file": "app/api/chat/mistral/route.ts",
+   "line": 9,
+   "fingerprint": "13ab3da942ac852994b3519a842c99ad",
+   "verdict": "tp",
+   "reason": "The chat route calls a model and nothing rate-limits it; server env keys can back the profile."
+  },
+  {
+   "rule": "LLM004",
+   "file": "app/api/chat/openai/route.ts",
+   "line": 10,
+   "fingerprint": "867f370160b8b1ba99ccba801d61f961",
+   "verdict": "tp",
+   "reason": "The chat route calls a model and nothing rate-limits it; server env keys can back the profile."
+  },
+  {
+   "rule": "LLM004",
+   "file": "app/api/chat/openrouter/route.ts",
+   "line": 10,
+   "fingerprint": "cfa4dcb7ccc3c55abcaad29f47e993bd",
+   "verdict": "tp",
+   "reason": "The chat route calls a model and nothing rate-limits it; server env keys can back the profile."
+  },
+  {
+   "rule": "LLM004",
+   "file": "app/api/chat/perplexity/route.ts",
+   "line": 8,
+   "fingerprint": "aa586a2e15a4cfd275eb5f934e27696a",
+   "verdict": "tp",
+   "reason": "The chat route calls a model and nothing rate-limits it; server env keys can back the profile."
+  },
+  {
+   "rule": "LLM003",
+   "file": "app/api/chat/perplexity/route.ts",
+   "line": 26,
+   "fingerprint": "0aa017741b997fdef6ea82677be470e7",
+   "verdict": "tp",
+   "reason": "The completion call has no max_tokens."
+  },
+  {
+   "rule": "LLM004",
+   "file": "app/api/chat/tools/route.ts",
+   "line": 9,
+   "fingerprint": "d89786651b7ae85ed10e0605ae853ffe",
+   "verdict": "tp",
+   "reason": "The chat route calls a model and nothing rate-limits it; server env keys can back the profile."
+  },
+  {
+   "rule": "LLM003",
+   "file": "app/api/chat/tools/route.ts",
+   "line": 62,
+   "fingerprint": "49639df3c6bba662ebd2e35106e11a32",
+   "verdict": "tp",
+   "reason": "The completion call has no max_tokens."
+  },
+  {
+   "rule": "LLM003",
+   "file": "app/api/chat/tools/route.ts",
+   "line": 201,
+   "fingerprint": "7afc36652babc8bfa648522a36384646",
+   "verdict": "tp",
+   "reason": "The completion call has no max_tokens."
+  },
+  {
+   "rule": "LLM004",
+   "file": "app/api/command/route.ts",
+   "line": 7,
+   "fingerprint": "6bea80f80d41ca1fce7bdc8ae279916e",
+   "verdict": "tp",
+   "reason": "The chat route calls a model and nothing rate-limits it; server env keys can back the profile."
+  },
+  {
+   "rule": "DATA010",
+   "file": "app/api/retrieval/process/docx/route.ts",
+   "line": 10,
+   "fingerprint": "5ebff1c0f385df906de3a090197b9c5c",
+   "verdict": "tp",
+   "reason": "File items and the file status are written in separate statements without a transaction."
+  },
+  {
+   "rule": "DATA010",
+   "file": "app/api/retrieval/process/route.ts",
+   "line": 16,
+   "fingerprint": "a304d8875c404122c88a36d1e0aba742",
+   "verdict": "tp",
+   "reason": "File items and the file status are written in separate statements without a transaction."
+  },
+  {
+   "rule": "LLM010",
+   "file": "app/api/retrieval/retrieve/route.ts",
+   "line": 60,
+   "fingerprint": "f85d06806b673d61a03a965335dc8766",
+   "verdict": "tp",
+   "reason": "Embedding search uses the service-role client with file ids taken from the request body."
+  },
+  {
+   "rule": "BE008",
+   "file": "app/auth/callback/route.ts",
+   "line": 17,
+   "fingerprint": "d139279fd4db927409d2a89d5284711f",
+   "verdict": "tp",
+   "reason": "origin + next lets next=\"@evil.com\" turn the redirect into https://app@evil.com."
+  },
+  {
+   "rule": "UI002",
+   "file": "components/chat/chat-files-display.tsx",
+   "line": 176,
+   "fingerprint": "6aeca7a3c3b5f78995a8137e1c0cf0f7",
+   "verdict": "tp",
+   "reason": "Clickable div with no role or key handler (folder-item has tabIndex but Enter does nothing)."
+  },
+  {
+   "rule": "UI002",
+   "file": "components/chat/chat-input.tsx",
+   "line": 172,
+   "fingerprint": "37eeaab1bfa0ef081a042fb2ef74c480",
+   "verdict": "tp",
+   "reason": "Clickable div with no role or key handler (folder-item has tabIndex but Enter does nothing)."
+  },
+  {
+   "rule": "UI002",
+   "file": "components/messages/message-replies.tsx",
+   "line": 27,
+   "fingerprint": "947a5b4eef2ba856f714423370a6b2dd",
+   "verdict": "tp",
+   "reason": "Clickable div with no role or key handler (folder-item has tabIndex but Enter does nothing)."
+  },
+  {
+   "rule": "UI002",
+   "file": "components/messages/message.tsx",
+   "line": 315,
+   "fingerprint": "a4cf2f67e1a1e83bc5b72f4ec67295be",
+   "verdict": "tp",
+   "reason": "Clickable div with no role or key handler (folder-item has tabIndex but Enter does nothing)."
+  },
+  {
+   "rule": "UI002",
+   "file": "components/messages/message.tsx",
+   "line": 327,
+   "fingerprint": "4a5b6c4ff876f88b17488a3b5e67b927",
+   "verdict": "tp",
+   "reason": "Clickable div with no role or key handler (folder-item has tabIndex but Enter does nothing)."
+  },
+  {
+   "rule": "UI002",
+   "file": "components/messages/message.tsx",
+   "line": 357,
+   "fingerprint": "a588d8bd8d1f407eca285083f718bf78",
+   "verdict": "tp",
+   "reason": "Clickable div with no role or key handler (folder-item has tabIndex but Enter does nothing)."
+  },
+  {
+   "rule": "UI002",
+   "file": "components/models/model-option.tsx",
+   "line": 37,
+   "fingerprint": "e53bba921e2d34ce862ab2a6e8d47d2b",
+   "verdict": "tp",
+   "reason": "Clickable div with no role or key handler (folder-item has tabIndex but Enter does nothing)."
+  },
+  {
+   "rule": "UI002",
+   "file": "components/sidebar/items/assistants/assistant-retrieval-select.tsx",
+   "line": 174,
+   "fingerprint": "921a97f47c527737c104778497983894",
+   "verdict": "tp",
+   "reason": "Clickable div with no role or key handler (folder-item has tabIndex but Enter does nothing)."
+  },
+  {
+   "rule": "UI002",
+   "file": "components/sidebar/items/assistants/assistant-tool-select.tsx",
+   "line": 144,
+   "fingerprint": "3732e720f27cc05c39bf14dab159e134",
+   "verdict": "tp",
+   "reason": "Clickable div with no role or key handler (folder-item has tabIndex but Enter does nothing)."
+  },
+  {
+   "rule": "UI002",
+   "file": "components/sidebar/items/collections/collection-file-select.tsx",
+   "line": 138,
+   "fingerprint": "2b9e0c4d78cb0e67169becbb17df2848",
+   "verdict": "tp",
+   "reason": "Clickable div with no role or key handler (folder-item has tabIndex but Enter does nothing)."
+  },
+  {
+   "rule": "UI002",
+   "file": "components/sidebar/items/files/file-item.tsx",
+   "line": 33,
+   "fingerprint": "1baedc8e2d96735192d36637f5abda75",
+   "verdict": "tp",
+   "reason": "Clickable div with no role or key handler (folder-item has tabIndex but Enter does nothing)."
+  },
+  {
+   "rule": "UI002",
+   "file": "components/sidebar/items/folders/folder-item.tsx",
+   "line": 75,
+   "fingerprint": "1c659baba1025f160d0354cdcbaf1928",
+   "verdict": "tp",
+   "reason": "Clickable div with no role or key handler (folder-item has tabIndex but Enter does nothing)."
+  },
+  {
+   "rule": "UI002",
+   "file": "components/utility/announcements.tsx",
+   "line": 153,
+   "fingerprint": "6943ab74ed18d144d0c131695792f2e7",
+   "verdict": "tp",
+   "reason": "Clickable div with no role or key handler (folder-item has tabIndex but Enter does nothing)."
+  },
+  {
+   "rule": "UI002",
+   "file": "components/workspace/assign-workspaces.tsx",
+   "line": 147,
+   "fingerprint": "9d82a3207bb6a898caf94a92a3ffcb3d",
+   "verdict": "tp",
+   "reason": "Clickable div with no role or key handler (folder-item has tabIndex but Enter does nothing)."
+  },
+  {
+   "rule": "QA006",
+   "file": "db/index.ts",
+   "line": 3,
+   "fingerprint": "cc23f7dcf111bcc6f5cd85bcd3f0bdc3",
+   "verdict": "tp",
+   "reason": "./file-items does not exist in db/."
+  },
+  {
+   "rule": "LLM012",
+   "file": "lib/build-prompt.ts",
+   "line": 255,
+   "fingerprint": "ee5548112316857105a0066cfba53c13",
+   "verdict": "tp",
+   "reason": "The model id is retired by its provider."
+  },
+  {
+   "rule": "LLM012",
+   "file": "lib/chat-setting-limits.ts",
+   "line": 12,
+   "fingerprint": "b01321621e99aee60997ada4b709b5a4",
+   "verdict": "tp",
+   "reason": "The model id is retired by its provider."
+  },
+  {
+   "rule": "LLM012",
+   "file": "lib/chat-setting-limits.ts",
+   "line": 18,
+   "fingerprint": "a33ca10912c891f588946a16c38f9f59",
+   "verdict": "tp",
+   "reason": "The model id is retired by its provider."
+  },
+  {
+   "rule": "LLM012",
+   "file": "lib/chat-setting-limits.ts",
+   "line": 30,
+   "fingerprint": "b470ebaa64b566b6f7d29450e5f938c7",
+   "verdict": "tp",
+   "reason": "The model id is retired by its provider."
+  },
+  {
+   "rule": "LLM012",
+   "file": "lib/chat-setting-limits.ts",
+   "line": 36,
+   "fingerprint": "efcffc81a0633e08e75be18d155e9805",
+   "verdict": "tp",
+   "reason": "The model id is retired by its provider."
+  },
+  {
+   "rule": "LLM012",
+   "file": "lib/chat-setting-limits.ts",
+   "line": 42,
+   "fingerprint": "aab54b4f4c125ce1b7ddd837dfeb8387",
+   "verdict": "tp",
+   "reason": "The model id is retired by its provider."
+  },
+  {
+   "rule": "LLM012",
+   "file": "lib/chat-setting-limits.ts",
+   "line": 51,
+   "fingerprint": "88f7afb9fb870ac7b13e006ea7368d26",
+   "verdict": "tp",
+   "reason": "The model id is retired by its provider."
+  },
+  {
+   "rule": "LLM012",
+   "file": "lib/chat-setting-limits.ts",
+   "line": 57,
+   "fingerprint": "11daf4694927e1e0549117c9195ad08b",
+   "verdict": "tp",
+   "reason": "The model id is retired by its provider."
+  },
+  {
+   "rule": "LLM012",
+   "file": "lib/chat-setting-limits.ts",
+   "line": 63,
+   "fingerprint": "b334fad3753d887e0bb72823333084b7",
+   "verdict": "tp",
+   "reason": "The model id is retired by its provider."
+  },
+  {
+   "rule": "QA002",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
+   "verdict": "tp",
+   "reason": "No CI configuration."
+  },
+  {
+   "rule": "DATA003",
+   "file": "supabase/migrations/20240213040255_remove_request_in_body_from_tools.sql",
+   "line": 2,
+   "fingerprint": "d8ef2d80089f231b1cd92f092337a1d8",
+   "verdict": "tp",
+   "reason": "The migration drops the request_in_body column."
+  }
+ ]
+}
