@@ -91,3 +91,16 @@ def test_ts_nocheck_and_not_implemented(tmp_path):
     write(tmp_path, "a.ts", "// @ts-nocheck\nexport function f() {\n  throw new Error('Not implemented yet');\n}\n")
     write(tmp_path, "b.d.ts", "// @ts-nocheck\n")
     assert _rules(tmp_path) == [("a.ts", 1, "QA008"), ("a.ts", 3, "QA005")]
+
+
+def test_dependencies_declared_outside_pyproject(tmp_path):
+    """Audit item B2 did not reproduce (setup.cfg, Pipfile and requirements.in are all read); kept as a guard."""
+    manifests = {"setup.cfg": "[options]\ninstall_requires =\n    requests>=2\n    flask==3.0.0\n",
+                 "Pipfile": '[packages]\nrequests = "*"\nflask = "==3.0.0"\n', "requirements.in": "requests\nflask\n"}
+    for name, text in manifests.items():
+        root = tmp_path / name.replace(".", "_")
+        write(root, "pyproject.toml", "[tool.black]\nline-length = 100\n")  # tool settings only
+        write(root, name, text)
+        write(root, "app.py", "import requests\nimport flask\n")
+        res = scan(str(root), Options(offline=True, external="none"))
+        assert not [f for f in res.findings if f.rule_id == "QA007"], name

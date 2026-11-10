@@ -93,3 +93,10 @@ def test_sql_rules(tmp_path):
     write(tmp_path, "db/seed.sql", "truncate table orders;\n")
     assert _rules(tmp_path) == [("db/migrations/001.sql", 1, "DATA004"), ("db/migrations/001.sql", 1, "DATA006"),
                                 ("db/migrations/001.sql", 2, "DATA005"), ("db/migrations/001.sql", 5, "DATA003")]
+
+
+def test_env_fallbacks_and_undotted_example_file(tmp_path):
+    """Audit item A8 did not reproduce; kept as a guard."""
+    write(tmp_path, "env.example", "DATABASE_URL=\n")
+    write(tmp_path, "app.py", "import os\nA = os.getenv('REGION') or 'eu'\nB = os.environ['STRIPE_KEY']\nC = os.getenv('DATABASE_URL')\n")
+    assert _rules(tmp_path) == [("app.py", 3, "DATA007")]

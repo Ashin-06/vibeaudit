@@ -1,4 +1,4 @@
-// @ts-nocheck
+// @ts-nocheck (expect: QA008)
 import Stripe from "stripe"; // expect: QA007
 import { chargeCard } from "./stripe-helpers"; // expect: QA006
 import { formatPrice, formatTax } from "./format"; // expect: QA006
