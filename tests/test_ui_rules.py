@@ -142,6 +142,10 @@ def test_links_to_missing_pages(tmp_path):
           "    <button onClick={() => router.push('/pricing?plan=pro')}>Go</button>\n"
           "  </nav>)\n}\n")
     assert _rules(tmp_path) == [("components/Nav.tsx", 9, "UI013"), ("components/Nav.tsx", 10, "UI013")]
+    # Next.js 16 calls middleware proxy.ts; either can rewrite paths outside the file tree
+    write(tmp_path, "proxy.ts", "export function proxy(req) { return NextResponse.next() }\n")
+    assert _rules(tmp_path) == []
+    (tmp_path / "proxy.ts").unlink()
     write(tmp_path, "next.config.js", "module.exports = { async rewrites() { return [] } };\n")
     assert _rules(tmp_path) == []
 

@@ -208,7 +208,7 @@ class UiScanner:
         if len(routes) < 2:
             return
         config = " ".join(f.text or "" for f in files if re.search(r"(?:^|/)next\.config\.\w+$", f.rel))
-        if re.search(r"\b(?:rewrites|redirects|basePath|i18n)\b", config) or any(f.rel.endswith(("middleware.ts", "middleware.js")) for f in files):
+        if re.search(r"\b(?:rewrites|redirects|basePath|i18n)\b", config) or any(re.search(r"(?:^|/)(?:src/)?(?:middleware|proxy)\.[jt]s$", f.rel) for f in files):
             return  # paths can be rewritten outside the file tree
         public: Set[str] = {"/" + f.rel.split("public/", 1)[1] for f in self.p.files if "public/" in f.rel}
         for f in files:
