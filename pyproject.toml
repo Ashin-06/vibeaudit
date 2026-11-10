@@ -11,16 +11,25 @@ license = { text = "MIT" }
 authors = [{ name = "Ashin" }]
 requires-python = ">=3.9"
 dependencies = ["tomli>=1.1; python_version < '3.11'"]
-keywords = ["security", "sast", "llm", "ai", "vibe-coding", "prompt-injection", "slopsquatting", "sarif"]
+keywords = ["security", "sast", "static-analysis", "llm", "ai", "vibe-coding", "prompt-injection", "slopsquatting",
+            "supply-chain", "secrets", "accessibility", "sarif", "mcp", "code-review"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Console",
     "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Security",
     "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Testing",
 ]
 
 [project.optional-dependencies]
@@ -31,6 +40,11 @@ vibeaudit = "vibeaudit.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/Ashin-06/vibeaudit"
+Documentation = "https://github.com/Ashin-06/vibeaudit#readme"
+Source = "https://github.com/Ashin-06/vibeaudit"
+Issues = "https://github.com/Ashin-06/vibeaudit/issues"
+Changelog = "https://github.com/Ashin-06/vibeaudit/blob/main/CHANGELOG.md"
+Security = "https://github.com/Ashin-06/vibeaudit/blob/main/SECURITY.md"
 
 [tool.setuptools.dynamic]
 version = { attr = "vibeaudit.__version__" }
@@ -46,3 +60,5 @@ testpaths = ["tests"]
 pythonpath = ["src", "tests"]
 norecursedirs = ["fixtures"]
 markers = ["network: needs internet access (registry and OSV lookups)"]
+# live network tests are opt-in (`python -m pytest -m network`), so an outage elsewhere cannot fail a build
+addopts = "-m 'not network'"

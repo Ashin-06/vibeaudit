@@ -16,8 +16,9 @@ if _SRC not in os.environ.get("PYTHONPATH", "").split(os.pathsep):
 @pytest.fixture(autouse=True)
 def _no_user_cache(tmp_path_factory, monkeypatch):
     """Tests never read or write the real user cache, and cached answers never leak between tests."""
-    from vibeaudit import llm, store  # noqa: F401 - importing llm registers its verdict cache
+    from vibeaudit import deps, llm, store  # noqa: F401 - importing llm registers its verdict cache
 
+    deps.BREAKER.reset()  # a test that simulated an outage must not leave registry lookups switched off
     monkeypatch.setenv("VIBEAUDIT_CACHE_DIR", str(tmp_path_factory.mktemp("cache")))
     monkeypatch.setattr(store, "ENABLED", False)
     for cache in store.TimedCache.instances:  # registry, OSV and LLM verdict caches
