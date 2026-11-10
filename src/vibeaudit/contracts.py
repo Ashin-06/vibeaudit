@@ -17,10 +17,11 @@ from .model import Finding, Route
 Emit = Callable[[Finding], None]
 
 def _string(n: str, base_path: bool = False) -> str:
-    """A quoted path, or a template literal path whose `${...}` parts may contain quotes (`${id || 'new'}`)."""
+    """A quoted path, or a template literal path whose `${...}` parts may contain quotes (`${id || 'new'}`)
+    and one level of nested template literal (`${alt ? `alt-${id}` : id}`)."""
     prefix = r"(?:\$\{[^{}\n]{0,120}(?i:base_?path)[^{}\n]{0,60}\})?" if base_path else ""
     return (rf"""(?:(?P<q{n}>["'])(?P<s{n}>/[^"'\n]{{0,300}})(?P=q{n})"""
-            rf"""|`{prefix}(?P<t{n}>/(?:[^`\n$]|\$\{{[^{{}}`\n]{{0,120}}\}}|\$(?!\{{)){{0,300}})`)""")
+            rf"""|`{prefix}(?P<t{n}>/(?:[^`\n$]|\$\{{(?:[^{{}}`\n]|`[^`\n]{{0,120}}`){{0,120}}\}}|\$(?!\{{)){{0,300}})`)""")
 
 
 CALL = re.compile(
@@ -93,7 +94,9 @@ class ContractScanner:
             if not call:
                 continue
             # `/api/users` called while the backend serves `/users`: a missing or extra prefix
-            unprefixed = [r for segs, r in self.routes if len(call) > 1 and matches(segs, call[1:])]
+            # (a route that starts with a parameter, like /<slug>, matches anything and proves nothing)
+            unprefixed = [r for segs, r in self.routes
+                          if len(call) > 1 and segs and segs[0] not in ("*", "**") and matches(segs, call[1:])]
             if call[0] not in self.owned and not unprefixed:
                 continue  # served by something outside this repository
             method = self._method(m, code, bare)

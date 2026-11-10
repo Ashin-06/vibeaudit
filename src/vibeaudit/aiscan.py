@@ -15,7 +15,7 @@ VECTOR_QUERY = re.compile(
     r"\.\s*similarity_search(?:_with_score|_by_vector)?\s*\(|\.\s*as_retriever\s*\(|\.\s*max_marginal_relevance_search\s*\("
     r"|\bcollection\s*\.\s*query\s*\(|\bindex\s*\.\s*query\s*\(|\.\s*search\s*\(\s*collection_name\b"
     r"|\.\s*rpc\s*\(\s*['\"]match_\w*['\"]|\bORDER\s+BY\s+\w*embedding\w*\s*(?:<->|<=>|<#>)", re.I)
-TENANT_FILTER = re.compile(r"(?i)\bfilter\b|\bwhere\b|\bnamespace\b|query_filter|user_?id|tenant|org_?id|owner|account_?id|search_kwargs")
+TENANT_FILTER = re.compile(r"(?i)\bfilter\b|\bwhere\b|\bnamespace\b|query_filter|user_?id|tenant|org_?id|owner|account_?id")  # search_kwargs alone is not a filter
 SERVICE_ROLE = re.compile(r"(?i)service_?role|supabaseAdmin|admin_?client")
 _RETIRED: List["re.Pattern[str]"] = []
 
