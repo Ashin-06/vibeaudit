@@ -1,0 +1,62 @@
+name: Release
+
+# On a version tag: build the sdist and wheel, write a CycloneDX SBOM, sign build provenance for all three
+# (GitHub artifact attestations, Sigstore-backed) and attach them to the GitHub release. Nothing is published
+# to PyPI. How to verify a download: README.md, "Verifying a release".
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write       # create the release and upload its files
+      id-token: write       # Sigstore signing identity for the attestation
+      attestations: write   # store the attestation
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1  # v6
+        with:
+          python-version: "3.12"
+      - name: Check the tag against the package version and the changelog
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          VERSION=$(python -c "import re; print(re.search(r'__version__ = \"([^\"]+)\"', open('src/vibeaudit/__init__.py').read()).group(1))")
+          test "$TAG" = "v$VERSION" || { echo "tag $TAG does not match version $VERSION"; exit 1; }
+          python tools/release_notes.py "$VERSION" > notes.md
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+      - name: Build sdist and wheel
+        run: |
+          python -m pip install build==1.4.4 cyclonedx-bom==7.6.0
+          python -m build
+      - name: Install the wheel in a clean environment and write its SBOM
+        run: |
+          python -m venv /tmp/clean
+          /tmp/clean/bin/pip install dist/*.whl
+          /tmp/clean/bin/vibeaudit --version
+          /tmp/clean/bin/python -m pip uninstall -y pip
+          cyclonedx-py environment /tmp/clean/bin/python --output-format JSON \
+            --output-file "dist/vibeaudit-$VERSION.cdx.json"
+      - name: Sign build provenance
+        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be  # v2
+        with:
+          subject-path: |
+            dist/*.whl
+            dist/*.tar.gz
+            dist/*.cdx.json
+      - name: Create the GitHub release with the files
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            gh release upload "$TAG" dist/* --clobber
+          else
+            gh release create "$TAG" dist/* --title "vibeaudit $VERSION" --notes-file notes.md --verify-tag
+          fi
