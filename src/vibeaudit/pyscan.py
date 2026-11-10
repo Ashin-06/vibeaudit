@@ -23,6 +23,8 @@ Taint = Dict[str, int]  # kind -> line where it entered
 USER_ATTRS = {
     "args", "form", "json", "get_json", "data", "get_data", "values", "files", "cookies", "headers",
     "query_params", "path_params", "body", "stream", "POST", "GET", "FILES", "COOKIES", "META", "query_string",
+    # the URL and Host header are attacker-chosen too (`'%s' % request.url` in an error page is a classic SSTI)
+    "url", "base_url", "url_root", "host_url", "host", "full_path", "path", "referrer",
 }
 SANITIZERS = {
     "int", "float", "bool", "len", "abs", "round", "secure_filename", "escape", "quote", "basename",
@@ -684,7 +686,11 @@ class PyScanner:
             if not self.sink(call, tt, "FE001", f"{name}() (raw HTML)", "high", False) and arg0 is not None and is_formatted(arg0):
                 self.add("FE001", call, f"{name}() marks a formatted string as safe HTML.", "medium")
         elif name in ("redirect", "RedirectResponse", "HttpResponseRedirect") and arg0 is not None:
-            if not (isinstance(arg0, ast.JoinedStr) and arg0.values and isinstance(arg0.values[0], ast.Constant) and str(arg0.values[0].value).startswith("/")):
+            # redirecting to the request's own URL (http -> https, trailing slash) goes back to the same site
+            same_site = bool(re.fullmatch(r"request\.(?:url|base_url|url_root|host_url|full_path|path)(?:\.\w+\(.*\))?",
+                                          ast.unparse(self.resolve(arg0, ctx)), re.S))
+            if not same_site and not (isinstance(arg0, ast.JoinedStr) and arg0.values and isinstance(arg0.values[0], ast.Constant)
+                                      and str(arg0.values[0].value).startswith("/")):
                 self.sink(call, t0, "BE008", "a redirect target", "medium", False)
         # deserialization and model loading
         elif d in ("pickle.loads", "pickle.load", "cPickle.loads", "cPickle.load", "dill.loads", "dill.load", "marshal.loads", "marshal.load", "jsonpickle.decode", "shelve.open", "yaml.unsafe_load"):

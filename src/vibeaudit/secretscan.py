@@ -1,6 +1,7 @@
 """Secret detection over raw file text (comments included: a key in a comment is still leaked)."""
 from __future__ import annotations
 
+import ast
 import base64
 import json
 import re
@@ -13,6 +14,24 @@ from .lexer import js_views, py_views
 from .model import Finding
 
 Emit = Callable[[Finding], None]
+
+
+def _blank_docstrings(sf: SourceFile, code: str) -> str:
+    """`code` with module, class and function docstrings replaced by spaces (offsets and newlines kept)."""
+    tree = sf.cache.get("ast")
+    if tree is None:
+        try:
+            tree = ast.parse(sf.text or "")
+        except (SyntaxError, ValueError, RecursionError):
+            return code
+    lines = code.split("\n")
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.Module, ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef)) and node.body:
+            first = node.body[0]
+            if isinstance(first, ast.Expr) and isinstance(first.value, ast.Constant) and isinstance(first.value.value, str):
+                for i in range(first.lineno - 1, min(len(lines), (first.end_lineno or first.lineno))):
+                    lines[i] = " " * len(lines[i])
+    return "\n".join(lines)
 
 PROVIDER_KEYS: List[Tuple[str, Pattern[str]]] = [
     ("OpenAI API key", re.compile(r"\bsk-(?:proj|svcacct|admin)-[A-Za-z0-9_-]{40,}")),
@@ -212,7 +231,12 @@ class SecretScanner:
 
     @staticmethod
     def _code(sf: SourceFile, text: str) -> str:
-        """Comment-free view for rules where commented-out examples are noise."""
+        """Comment-free view for rules where commented-out examples are noise. In Python, docstrings (usage
+        examples such as `SECRET_KEY = 'dev'`) are blanked too."""
+        if sf.kind == "py":
+            cached = sf.cache.get("code_no_docstrings")
+            if isinstance(cached, str):
+                return cached
         v = sf.cache.get("views")
         if v is None:
             if sf.kind == "py":
@@ -222,7 +246,11 @@ class SecretScanner:
             else:
                 return text
             sf.cache["views"] = v
-        return v.code  # type: ignore[attr-defined]
+        code = v.code  # type: ignore[attr-defined]
+        if sf.kind == "py":
+            code = _blank_docstrings(sf, code)
+            sf.cache["code_no_docstrings"] = code
+        return code
 
 
 PUBLIC_ENV = re.compile(

@@ -61,6 +61,8 @@ JS_IMPORT = re.compile(
     r"""|\bimport\s*\(\s*['"]([^'"\n]+)['"]\s*\)""",
     re.M,
 )
+# example and documentation code runs with whatever the reader installs, not with the project's dependencies
+NOT_DEPLOYED = re.compile(r"(?i)(?:^|/)(?:examples?|docs?|samples?)/")
 NOT_IMPLEMENTED_JS = re.compile(r"""\bthrow\s+new\s+Error\s*\(\s*['"`](?:not\s+(?:yet\s+)?implemented|unimplemented|implement\s+me|todo\b)[^'"`]*['"`]\s*\)""", re.I)
 
 
@@ -143,6 +145,7 @@ class QualityScanner:
         self.py_manifest = False
         self.reported_py: Set[str] = set()
         self.reported_js: Dict[str, Set[str]] = {}
+        self._bases: Optional[Set[str]] = None
 
     def add(self, sf: SourceFile, rule: str, line: int, msg: str, sev: str = "") -> None:
         self.emit(Finding(rule, sf.rel, line, msg, sev, sf.line(line).strip()[:200]))
@@ -225,14 +228,15 @@ class QualityScanner:
 
     @staticmethod
     def _optional_import_nodes(tree: ast.AST) -> Set[int]:
-        """Imports inside `try: ... except ImportError` or `if TYPE_CHECKING:` are optional by design."""
+        """Imports inside `try: ... except ImportError`, `if TYPE_CHECKING:` or a Python version or platform
+        check (`if sys.version_info >= (3, 15):`, `if sys.platform == "win32":`) are optional by design."""
         out: Set[int] = set()
         for node in ast.walk(tree):
             if isinstance(node, ast.Try) and any(
                     h.type is None or re.search(r"ImportError|ModuleNotFoundError|Exception", ast.unparse(h.type)) for h in node.handlers):
                 out.update(id(n) for st in node.body for n in ast.walk(st))
-            elif isinstance(node, ast.If) and "TYPE_CHECKING" in ast.unparse(node.test):
-                out.update(id(n) for st in node.body for n in ast.walk(st))
+            elif isinstance(node, ast.If) and re.search(r"TYPE_CHECKING|version_info|\bplatform\b|os\.name", ast.unparse(node.test)):
+                out.update(id(n) for st in node.body + node.orelse for n in ast.walk(st))
         return out
 
     def _absolute_import(self, sf: SourceFile, node: ast.AST, module: str, reported: Set[str]) -> None:
@@ -243,6 +247,8 @@ class QualityScanner:
             if isinstance(node, ast.ImportFrom):
                 self._local_absolute(sf, node, module)
             return
+        if NOT_DEPLOYED.search(sf.rel):
+            return  # examples and docs are not deployed with the project's dependencies
         if self.py_manifest and top not in reported and not self._py_declared(top):
             reported.add(top)
             self.add(sf, "QA007", node.lineno, f"`{top}` is imported but not declared in the project's Python dependencies.")  # type: ignore[attr-defined]
@@ -309,6 +315,21 @@ class QualityScanner:
             return None
         return names
 
+    def _subclassed(self) -> Set[str]:
+        """Names of every class used as a base class somewhere in the project's Python code."""
+        if self._bases is None:
+            self._bases = set()
+            for f in self.p.files:
+                if f.kind != "py" or f.text is None or "class " not in f.text:
+                    continue
+                tree = f.cache.get("ast")
+                if tree is None:
+                    continue  # not parsed (syntax error): no base classes to learn from it
+                for node in ast.walk(tree):  # type: ignore[arg-type]
+                    if isinstance(node, ast.ClassDef):
+                        self._bases.update(ast.unparse(b).split(".")[-1].split("[")[0] for b in node.bases)
+        return self._bases
+
     def _python_stub(self, sf: SourceFile, fn: ast.AST, tree: ast.Module) -> None:
         body = [s for s in fn.body if not (isinstance(s, ast.Expr) and isinstance(s.value, ast.Constant) and isinstance(s.value.value, str))]  # type: ignore[attr-defined]
         if len(body) != 1:
@@ -326,6 +347,8 @@ class QualityScanner:
             bases = " ".join(ast.unparse(b) for b in owner.bases) + " " + " ".join(ast.unparse(k.value) for k in owner.keywords)
             if re.search(r"ABC|Protocol|Interface|Base|Mixin|Abstract|metaclass", bases + " " + owner.name) or empty:
                 return  # interface methods and no-op hooks in classes are normal
+            if owner.name in self._subclassed():
+                return  # a class the project subclasses: NotImplementedError means "override me"
         is_route = bool(re.search(r"\.(?:route|get|post|put|patch|delete|api_route)\(|api_view", decorators))
         if is_route:
             self.add(sf, "QA005", fn.lineno, f"Route handler `{fn.name}()` is an unfinished stub.")  # type: ignore[attr-defined]
@@ -438,7 +461,7 @@ class QualityScanner:
             if declared is None or spec.startswith(("#", "$", "virtual:", "~")):
                 continue
             pkg = "/".join(spec.split("/")[:2]) if spec.startswith("@") else spec.split("/")[0]
-            if pkg in NODE_BUILTINS or pkg.startswith("node:") or pkg in declared or pkg in reported or m.group(1):
+            if pkg in NODE_BUILTINS or pkg.startswith("node:") or pkg in declared or pkg in reported or m.group(1) or NOT_DEPLOYED.search(rel):
                 continue
             if pkg.startswith("@types/") or ("@types/" + pkg) in declared:
                 continue
