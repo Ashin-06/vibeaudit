@@ -74,6 +74,14 @@ def _download(url: str) -> bytes:
     return data
 
 
+def forget_loaded_data() -> None:
+    """Drop what was built from the data files, so a long-lived process (the MCP server) uses fresh copies."""
+    from . import aiscan, deps
+
+    aiscan._RETIRED.clear()
+    deps._POPULAR.clear()
+
+
 def update_data(log: Callable[[str], None], fetch: Callable[[str], bytes] = _download) -> int:
     """Refresh every data file. Returns the number of files that could not be refreshed."""
     failed = 0
@@ -93,6 +101,7 @@ def update_data(log: Callable[[str], None], fetch: Callable[[str], bytes] = _dow
         else:
             count = len(_names(data)) if name.endswith(".gz") else len(model_ids(data))
             log(f"{name}: updated ({count} entries)")
+    forget_loaded_data()
     return failed
 
 

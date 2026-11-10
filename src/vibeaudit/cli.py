@@ -85,6 +85,9 @@ def build_parser() -> argparse.ArgumentParser:
     f.add_argument("location", nargs="?", help="FILE:LINE as shown in the report")
     f.add_argument("--note", default="", help="why (kept with the entry)")
     f.add_argument("--path", default=".", help="project directory (default: current directory)")
+    f.add_argument("--config", metavar="FILE", help="settings file, as for scan")
+    f.add_argument("--plugin", action="append", default=[], metavar="FILE_OR_MODULE",
+                   help="load custom rules, as for scan, so their findings can be marked")
     return p
 
 
@@ -120,9 +123,21 @@ def cmd_feedback(a: argparse.Namespace) -> int:
     if not a.rule or not file or not line.isdigit():
         print("vibeaudit: usage: vibeaudit feedback false-positive|confirmed RULE FILE:LINE [--note TEXT]", file=sys.stderr)
         return 2
-    entry = feedback.record(root, a.rule, file, int(line), a.verdict, a.note)
+    from . import plugins
+
+    for spec in a.plugin:
+        try:
+            plugins.load(spec)
+        except Exception as e:  # noqa: BLE001 - any import failure is a usage error here
+            print(f"vibeaudit: cannot load plugin {spec}: {type(e).__name__}: {e}", file=sys.stderr)
+            return 2
+    try:
+        entry = feedback.record(root, a.rule, file, int(line), a.verdict, a.note, a.config)
+    except ConfigError as e:
+        print(f"vibeaudit: {e}", file=sys.stderr)
+        return 2
     if entry is None:
-        print(f"vibeaudit: no {a.rule.upper()} finding at {file}:{line} (built-in rules only)", file=sys.stderr)
+        print(f"vibeaudit: no {a.rule.upper()} finding at {file}:{line}", file=sys.stderr)
         return 1
     print(f"recorded {a.verdict} for {entry['rule']} at {entry['file']}:{entry['line']} in {root / feedback.FILE}")
     return 0
@@ -252,11 +267,8 @@ def cmd_scan(a: argparse.Namespace) -> int:
                    file_timeout=max(0.1, float(pick(a.file_timeout, "file_timeout", 30.0))),
                    auth_helpers=list(cfg.get("auth_helpers", [])), sanitizers=list(cfg.get("sanitizers", [])),
                    public_paths=list(cfg.get("public_paths", [])), changes=changes, log=log,
-                   feedback=not a.no_config)  # the feedback file lives in the repository, like the config
-    if a.no_cache:
-        from . import store
-
-        store.ENABLED = False
+                   feedback=not a.no_config,  # the feedback file lives in the repository, like the config
+                   cache=not a.no_cache)
     if cfg_path:
         log(f"using settings from {cfg_path}")
     try:

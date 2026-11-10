@@ -62,6 +62,7 @@ class Options:
     public_paths: List[str] = field(default_factory=list)
     changes: Optional[dict] = None  # from gitdiff.changed(): report only findings on changed lines
     feedback: bool = True  # hide findings marked false positive in .vibeaudit/feedback.json
+    cache: bool = True  # read and write the user cache (registry, OSV, LLM verdicts) during this scan
     log: Callable[[str], None] = lambda s: None
 
 
@@ -94,6 +95,18 @@ def scan(root: str, opts: Optional[Options] = None) -> Result:
         from .config import project_options
 
         opts = project_options(root)
+    if opts.cache:
+        return _scan(root, opts)
+    from . import store
+
+    previous, store.ENABLED = store.ENABLED, False
+    try:  # only this scan skips the cache; a long-lived caller keeps its own setting
+        return _scan(root, opts)
+    finally:
+        store.ENABLED = previous
+
+
+def _scan(root: str, opts: Options) -> Result:
     start = time.time()
     GUARD.reset(opts.file_timeout)
     H.CUSTOM.reset(opts.auth_helpers, opts.sanitizers, opts.public_paths)

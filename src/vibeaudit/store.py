@@ -9,7 +9,7 @@ import tempfile
 import threading
 import time
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 ENABLED = os.environ.get("VIBEAUDIT_NO_CACHE", "") not in ("1", "true", "yes")
 
@@ -57,39 +57,52 @@ def write_json(path: Path, obj: Any) -> bool:
 class TimedCache:
     """A JSON dict of key -> [timestamp, value] in the user cache, loaded on first use and saved by `save()`.
 
-    ponytail: one file per cache, last writer wins between concurrent scans; it is a cache, so a lost entry
-    only costs one more network request."""
+    Thread-safe: dependency lookups run in a thread pool. Between processes the last writer wins; it is a
+    cache, so a lost entry only costs one more network request."""
+
+    instances: List["TimedCache"] = []
 
     def __init__(self, name: str, ttl: float):
         self.name, self.ttl = name, ttl
         self._data: Optional[Dict[str, list]] = None
         self._dirty = False
-        self._lock = threading.Lock()  # lookups run in a thread pool
+        self._lock = threading.Lock()
+        TimedCache.instances.append(self)
 
-    def _load(self) -> Dict[str, list]:
+    def reset(self) -> None:
+        """Forget what was loaded (tests, and a long-lived process that switches cache folders)."""
         with self._lock:
-            if self._data is None:
-                raw = read_json(cache_dir() / self.name) if ENABLED else None
-                self._data = {k: v for k, v in raw.items() if isinstance(v, list) and len(v) == 2} if isinstance(raw, dict) else {}
-            return self._data
+            self._data, self._dirty = None, False
+
+    def _loaded(self) -> Dict[str, list]:
+        """The entries; the caller holds the lock."""
+        if self._data is None:
+            raw = read_json(cache_dir() / self.name) if ENABLED else None
+            self._data = {k: v for k, v in raw.items() if isinstance(v, list) and len(v) == 2} if isinstance(raw, dict) else {}
+        return self._data
 
     def get(self, key: str, ttl: Optional[float] = None) -> Any:
         if not ENABLED:
             return None
-        hit = self._load().get(key)
+        with self._lock:
+            hit = self._loaded().get(key)
         if hit is None or not isinstance(hit[0], (int, float)) or time.time() - hit[0] > (self.ttl if ttl is None else ttl):
             return None
         return hit[1]
 
     def put(self, key: str, value: Any) -> None:
         if ENABLED:
-            self._load()[key] = [time.time(), value]
-            self._dirty = True
+            with self._lock:
+                self._loaded()[key] = [time.time(), value]
+                self._dirty = True
 
     def save(self) -> None:
-        if not (ENABLED and self._dirty and self._data is not None):
+        if not ENABLED:
             return
-        now = time.time()
-        keep = {k: v for k, v in self._data.items() if now - v[0] <= self.ttl}  # drop expired entries
-        if write_json(cache_dir() / self.name, keep):
-            self._dirty = False
+        with self._lock:  # snapshot, write and clear the flag as one step, so no put is lost or half-written
+            if not self._dirty or self._data is None:
+                return
+            now = time.time()
+            keep = {k: v for k, v in self._data.items() if now - v[0] <= self.ttl}  # drop expired entries
+            if write_json(cache_dir() / self.name, keep):
+                self._dirty = False

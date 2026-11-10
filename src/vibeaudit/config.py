@@ -91,13 +91,13 @@ def load(root: Path, explicit: Optional[str] = None) -> Tuple[Dict[str, object],
     return {}, None
 
 
-def project_options(root: str, **overrides):
-    """Options for scanning `root` with its own configuration file applied, then `overrides` on top.
-    Used by the Python API, the MCP server and `vibeaudit routes`, so every entry point sees the same
-    auth helpers, sanitizers, exclusions and disabled rules as `vibeaudit scan`."""
+def project_options(root: str, config: Optional[str] = None, **overrides):
+    """Options for scanning `root` with its own configuration file (or `config`) applied, then `overrides` on
+    top. Used by the Python API, the MCP server, `vibeaudit routes` and `vibeaudit feedback`, so every entry
+    point sees the same auth helpers, sanitizers, exclusions and disabled rules as `vibeaudit scan`."""
     from .scanner import Options
 
-    cfg, cfg_path = load(Path(root))
+    cfg, cfg_path = load(Path(root), config)
     baseline = cfg.get("baseline")
     if baseline and cfg_path:
         baseline = str(Path(cfg_path).parent / str(baseline))
