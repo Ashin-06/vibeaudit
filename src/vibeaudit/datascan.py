@@ -103,10 +103,22 @@ class DataScanner:
                 return
         from .pyscan import dotted
 
-        parents = {id(child): parent for parent in ast.walk(tree) for child in ast.iter_child_nodes(parent)}
-        # `import datetime as dt`, `from datetime import datetime as DT`: resolve the first name of a call
+        parents_memo: List[Dict[int, ast.AST]] = []
+
+        def parents() -> Dict[int, ast.AST]:  # built on first use: only datetime.now() checks need it
+            if not parents_memo:
+                parents_memo.append({id(child): parent for parent in ast.walk(tree) for child in ast.iter_child_nodes(parent)})
+            return parents_memo[0]
+
+        # `import datetime as dt`, `from datetime import datetime as DT`: resolve the first name of a call.
+        # Module-level imports only (also inside if/try/with), so huge files are not walked once more.
         aliases: Dict[str, str] = {}
-        for n in ast.walk(tree):
+        todo: List[ast.AST] = list(tree.body)
+        while todo:
+            n = todo.pop()
+            for field in ("body", "orelse", "finalbody", "handlers"):
+                if not isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                    todo.extend(getattr(n, field, None) or [])
             if isinstance(n, ast.Import):
                 for a in n.names:
                     aliases[a.asname or a.name.split(".")[0]] = a.name if a.asname else a.name.split(".")[0]
@@ -135,7 +147,7 @@ class DataScanner:
                 full = resolve(d)
                 no_tz = not node.keywords and (not node.args or (len(node.args) == 1 and isinstance(node.args[0], ast.Constant) and node.args[0].value is None))
                 if full in ("datetime.utcnow", "datetime.datetime.utcnow") or (
-                        full in ("datetime.now", "datetime.datetime.now") and no_tz and self._persisted(node, parents)):
+                        full in ("datetime.now", "datetime.datetime.now") and no_tz and self._persisted(node, parents())):
                     self.add(sf, "DATA006", node.lineno, f"`{d}()` returns a naive datetime without a time zone.")
                 # match the call itself, not its unparsed text: closing(sqlite3.connect(...)) is one database
                 literals = [a.value for a in list(node.args) + [k.value for k in node.keywords] if isinstance(a, ast.Constant) and isinstance(a.value, str)]

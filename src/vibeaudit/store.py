@@ -78,7 +78,9 @@ class TimedCache:
         """The entries; the caller holds the lock."""
         if self._data is None:
             raw = read_json(cache_dir() / self.name) if ENABLED else None
-            self._data = {k: v for k, v in raw.items() if isinstance(v, list) and len(v) == 2} if isinstance(raw, dict) else {}
+            # a hand-edited or corrupt file may hold anything: keep only [number, value] entries
+            self._data = {k: v for k, v in raw.items() if isinstance(v, list) and len(v) == 2 and isinstance(v[0], (int, float))
+                          and not isinstance(v[0], bool)} if isinstance(raw, dict) else {}
         return self._data
 
     def get(self, key: str, ttl: Optional[float] = None) -> Any:

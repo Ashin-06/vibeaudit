@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import threading
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -82,28 +83,40 @@ def suppressed(project: Project, f: Finding) -> bool:
     sf = project.get(f.file)
     if not sf or not f.line:
         return False
+    # parsed once per line: one long line with thousands of findings must not be searched thousands of times
+    memo: dict = sf.cache.setdefault("suppress", {})  # type: ignore[assignment]
     for ln in (f.line, f.line - 1):
-        m = SUPPRESS.search(sf.line(ln))
-        if m and (not m.group(1) or f.rule_id.upper() in {x.strip().upper() for x in m.group(1).split(",")}):
+        if ln not in memo:
+            m = SUPPRESS.search(sf.line(ln))
+            memo[ln] = None if m is None else ("*" if not m.group(1) else {x.strip().upper() for x in m.group(1).split(",")})
+        rules = memo[ln]
+        if rules == "*" or (rules and f.rule_id.upper() in rules):
             return True
     return False
 
 
+_SCAN_LOCK = threading.RLock()
+
+
 def scan(root: str, opts: Optional[Options] = None) -> Result:
-    """Scan `root`. Without `opts`, the project's own .vibeaudit.toml / [tool.vibeaudit] settings apply."""
+    """Scan `root`. Without `opts`, the project's own .vibeaudit.toml / [tool.vibeaudit] settings apply.
+
+    Safe to call from several threads: scans run one at a time, because the time budget, the custom auth
+    helpers and the cache switch are process-wide (scans are CPU-bound, so threads would not speed them up)."""
     if opts is None:
         from .config import project_options
 
         opts = project_options(root)
-    if opts.cache:
-        return _scan(root, opts)
-    from . import store
+    with _SCAN_LOCK:
+        if opts.cache:
+            return _scan(root, opts)
+        from . import store
 
-    previous, store.ENABLED = store.ENABLED, False
-    try:  # only this scan skips the cache; a long-lived caller keeps its own setting
-        return _scan(root, opts)
-    finally:
-        store.ENABLED = previous
+        previous, store.ENABLED = store.ENABLED, False
+        try:  # only this scan skips the cache; a long-lived caller keeps its own setting
+            return _scan(root, opts)
+        finally:
+            store.ENABLED = previous
 
 
 def _scan(root: str, opts: Options) -> Result:
