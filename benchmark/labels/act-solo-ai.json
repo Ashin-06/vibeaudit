@@ -3,6 +3,14 @@
  "commit": "f4c6a6296c90313c2c40422e95601222edee19c2",
  "findings": [
   {
+   "rule": "CFG010",
+   "file": ".github/workflows/claude.yml",
+   "line": 34,
+   "fingerprint": "41397eefc44abd1060b8e6fe15ca262b",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA; a moved tag runs new code with the workflow's secrets."
+  },
+  {
    "rule": "UI006",
    "file": "src/components/ScriptList.tsx",
    "line": 141,

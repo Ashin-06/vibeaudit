@@ -1,0 +1,9 @@
+name: deploy
+on: push
+permissions: write-all # expect: CFG011
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: some-org/deploy-action@v2 # expect: CFG010

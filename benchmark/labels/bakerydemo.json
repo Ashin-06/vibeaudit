@@ -11,6 +11,14 @@
    "reason": "The documented demo admin token for the local fixture database (readme), only valid against localhost."
   },
   {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 28,
+   "fingerprint": "fd44691534aace0b01faf38dc7b3561b",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA; a moved tag runs new code with the workflow's secrets."
+  },
+  {
    "rule": "CFG001",
    "file": "Dockerfile",
    "line": 4,

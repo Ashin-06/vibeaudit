@@ -503,6 +503,74 @@
     ]
    }
   },
+  "CFG010": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "Vulnerable-Flask-App": [
+     1,
+     0
+    ],
+    "act-solo-ai": [
+     1,
+     0
+    ],
+    "ai-chatbot": [
+     2,
+     0
+    ],
+    "bakerydemo": [
+     1,
+     0
+    ],
+    "djangoproject.com": [
+     7,
+     0
+    ],
+    "llm-examples": [
+     2,
+     0
+    ],
+    "next-learn": [
+     1,
+     0
+    ],
+    "opengpts": [
+     4,
+     0
+    ]
+   }
+  },
+  "CFG011": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "CFG012": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "CFG013": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "CFG014": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "CFG015": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "CFG016": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
   "DATA001": {
    "precision": 0.2,
    "seeded_recall": 1.0,
@@ -666,6 +734,11 @@
    "by_repo": {}
   },
   "DEP007": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "DEP008": {
    "precision": null,
    "seeded_recall": 1.0,
    "by_repo": {}

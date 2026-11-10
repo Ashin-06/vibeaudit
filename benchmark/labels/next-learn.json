@@ -3,6 +3,14 @@
  "commit": "bb2558441a6673ab76c89914c25018bffa27a2ba",
  "findings": [
   {
+   "rule": "CFG010",
+   "file": ".github/workflows/test.yml",
+   "line": 8,
+   "fingerprint": "401d7682552909bba8325bf378f09927",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA; a moved tag runs new code with the workflow's secrets."
+  },
+  {
    "rule": "FE001",
    "file": "basics/api-routes-starter/pages/posts/[id].js",
    "line": 18,

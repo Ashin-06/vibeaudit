@@ -3,6 +3,14 @@
  "commit": "b6a4f97afd466e83e1f60781494252dec1c37039",
  "findings": [
   {
+   "rule": "CFG010",
+   "file": ".github/workflows/zap_test.yml",
+   "line": 49,
+   "fingerprint": "6aa42fb0a2166b52df3d4e6df2201a8e",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA; a moved tag runs new code with the workflow's secrets."
+  },
+  {
    "rule": "CFG001",
    "file": "Dockerfile",
    "line": 1,

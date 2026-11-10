@@ -1,0 +1,2 @@
+# Findings without a line to carry an `expect:` comment (path:line:RULE)
+requirements.txt:1:DEP008

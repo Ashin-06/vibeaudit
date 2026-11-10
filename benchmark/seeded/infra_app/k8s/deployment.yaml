@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  template:
+    spec:
+      containers: # expect: CFG013
+        - name: api
+          image: example/api:1.0
+          securityContext:
+            privileged: true # expect: CFG012

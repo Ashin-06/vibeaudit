@@ -3,6 +3,62 @@
  "commit": "83a027bb6aac5bb36b9ef48dad8cb4ff45a2e84f",
  "findings": [
   {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-publish.yml",
+   "line": 23,
+   "fingerprint": "004b76119ec919bd7575b4fccd335357",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA; a moved tag runs new code with the workflow's secrets."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-publish.yml",
+   "line": 31,
+   "fingerprint": "f6c6757bcecffb570e07be5f1b2f4b80",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA; a moved tag runs new code with the workflow's secrets."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-publish.yml",
+   "line": 41,
+   "fingerprint": "48fe084df8aa712a6c535ffb49aedc4b",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA; a moved tag runs new code with the workflow's secrets."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-test-build.yml",
+   "line": 30,
+   "fingerprint": "10280aa2c3b969e47e43ebba2be4df0c",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA; a moved tag runs new code with the workflow's secrets."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-test-build.yml",
+   "line": 39,
+   "fingerprint": "c0c04ffa7fdcd90599cf048df5321fc7",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA; a moved tag runs new code with the workflow's secrets."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/prek.yml",
+   "line": 13,
+   "fingerprint": "3877c129258afe7e5a233f215d2f7294",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA; a moved tag runs new code with the workflow's secrets."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/tests.yml",
+   "line": 72,
+   "fingerprint": "4167224efdac2d13560e084e30ead8db",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA; a moved tag runs new code with the workflow's secrets."
+  },
+  {
    "rule": "CFG001",
    "file": "Dockerfile",
    "line": 2,

@@ -3,6 +3,22 @@
  "commit": "7cf260745675e41f92e7436d3777aafdab9dad9f",
  "findings": [
   {
+   "rule": "CFG010",
+   "file": ".github/workflows/app-testing.yml",
+   "line": 20,
+   "fingerprint": "5f4566451d8ae23e45c0407f2ea5df05",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA; a moved tag runs new code with the workflow's secrets."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/app-testing.yml",
+   "line": 26,
+   "fingerprint": "d00f3460315bf05ec06bfe306a367862",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA; a moved tag runs new code with the workflow's secrets."
+  },
+  {
    "rule": "LLM003",
    "file": "Chatbot.py",
    "line": 26,

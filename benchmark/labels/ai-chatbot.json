@@ -3,6 +3,22 @@
  "commit": "a8989b522fa3672a2ae52f053105e40993b36ca1",
  "findings": [
   {
+   "rule": "CFG010",
+   "file": ".github/workflows/lint.yml",
+   "line": 14,
+   "fingerprint": "72e5f32ea72f5d1cbdbfede3808101dc",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA; a moved tag runs new code with the workflow's secrets."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/playwright.yml",
+   "line": 24,
+   "fingerprint": "9baadae20f2280a59559717c500f05da",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA; a moved tag runs new code with the workflow's secrets."
+  },
+  {
    "rule": "DATA010",
    "file": "app/(chat)/api/chat/route.ts",
    "line": 70,
