@@ -41,6 +41,10 @@ on 0.5.1.
 - A cache entry with a non-numeric timestamp crashed saving the cache.
 - `project_options()` (API, MCP) defaulted to `min_severity="info"`; it is `low`, as in the CLI.
 - vibeaudit's own scan reported one finding on itself; it is clean again.
+- BE001 reported SQL built from a variable that holds only fixed SQL text and bind markers
+  (`where = f"tx IN ({','.join('?' * n)})"`); found on Rubicon and on sec-insights.
+- QA003 reported the "this must raise" idiom (`raise AssertionError(...)` at the end of the try body,
+  then `except SomeError: pass`).
 
 ### Changed
 
