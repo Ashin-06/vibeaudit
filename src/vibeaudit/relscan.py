@@ -20,7 +20,7 @@ IDEMPOTENCY = re.compile(
     r"|processed_events|webhook_events|stripeEventId|stripe_event_id|\.exists\s*\(|findUnique\s*\(\s*\{\s*where:\s*\{\s*(?:event|stripe)")
 WRITE = re.compile(r"(?i)\.\s*(?:create|insert|update|upsert|save|add|increment|execute)\s*\(|\bINSERT\s+INTO\b|\bUPDATE\s+\w+\s+SET\b")
 HEALTH = re.compile(r"(?i)(?:^|/)(?:health|healthz|healthcheck|health-check|ready|readyz|live|livez|ping|status)(?:/|$)")
-DEPLOY_FILES = re.compile(r"(?:^|/)(?:Dockerfile[\w.-]*|docker-compose[\w.-]*\.ya?ml|compose[\w.-]*\.ya?ml|fly\.toml|render\.ya?ml|"
+DEPLOY_FILES = re.compile(r"(?:^|/)(?:Dockerfile[\w.-]*|Containerfile[\w.-]*|docker-compose[\w.-]*\.ya?ml|compose[\w.-]*\.ya?ml|fly\.toml|render\.ya?ml|"
                           r"railway\.(?:json|toml)|app\.ya?ml|Procfile|k8s/[^/]+\.ya?ml|kubernetes/[^/]+\.ya?ml|helm/.+)$")
 STATE_NAME = r"[A-Za-z_$]*(?:rate|limit|attempt|session|cache|store|counter|visits|requests|tokens|users|memory|queue|jobs)[A-Za-z_$]*"
 

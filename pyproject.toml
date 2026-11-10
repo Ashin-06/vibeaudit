@@ -43,5 +43,6 @@ vibeaudit = ["data/*.gz", "data/*.txt"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["src", "tests"]
 norecursedirs = ["fixtures"]
 markers = ["network: needs internet access (registry and OSV lookups)"]

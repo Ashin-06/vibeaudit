@@ -388,6 +388,10 @@ _R = [
          "An empty except/catch hides failures, including failed auth or payment calls, and makes incidents "
          "very hard to debug.",
          "Log the error and handle it explicitly, or let it propagate.", "CWE-390", "A09:2021"),
+    Rule("QA004", "Security placeholder or TODO left in code", "quality", "medium",
+         "Comments like \"TODO: add auth\" or \"in production, use...\" are where assistants leave "
+         "unfinished security work that then ships.",
+         "Implement the missing control now, or track it as a blocking issue before launch.", "CWE-1188", ""),
     Rule("QA005", "Unfinished stub left in code", "quality", "medium",
          "A route handler or function that only passes, raises NotImplementedError or throws 'not implemented' is "
          "a placeholder an assistant left behind. The feature silently does nothing or crashes when used.",
@@ -560,10 +564,6 @@ _R = [
          "With --llm-review a model reads the riskiest files and reports issues the rules did not cover. These are "
          "suggestions from a model and can be wrong.",
          "Check the issue by hand before acting on it; suppress or disable AI001 if it is a false alarm.", "", ""),
-    Rule("QA004", "Security placeholder or TODO left in code", "quality", "medium",
-         "Comments like \"TODO: add auth\" or \"in production, use...\" are where assistants leave "
-         "unfinished security work that then ships.",
-         "Implement the missing control now, or track it as a blocking issue before launch.", "CWE-1188", ""),
 ]
 
 RULES: Dict[str, Rule] = {r.id: r for r in _R}

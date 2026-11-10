@@ -45,5 +45,8 @@ runs:
         VIBEAUDIT_FAIL_ON: ${{ inputs.fail-on }}
         VIBEAUDIT_SARIF: ${{ inputs.sarif }}
         VIBEAUDIT_ARGS: ${{ inputs.args }}
-      # Inputs travel through environment variables, never through ${{ }} inside the script.
-      run: vibeaudit scan "$VIBEAUDIT_PATH" --fail-on "$VIBEAUDIT_FAIL_ON" --report "sarif:$VIBEAUDIT_SARIF" $VIBEAUDIT_ARGS
+      # Inputs travel through environment variables, never through ${{ }} inside the script. `args` is split
+      # on whitespace (set -f stops `--exclude legacy/*` from being expanded by the shell before vibeaudit sees it).
+      run: |
+        set -f
+        vibeaudit scan "$VIBEAUDIT_PATH" --fail-on "$VIBEAUDIT_FAIL_ON" --report "sarif:$VIBEAUDIT_SARIF" $VIBEAUDIT_ARGS

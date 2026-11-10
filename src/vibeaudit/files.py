@@ -59,7 +59,7 @@ def kind_of(rel: str) -> str:
         return "html"
     if ext == ".sql":
         return "sql"
-    if low == "dockerfile" or low.startswith("dockerfile.") or low.endswith(".dockerfile"):
+    if low in ("dockerfile", "containerfile") or low.startswith(("dockerfile.", "containerfile.")) or low.endswith((".dockerfile", ".containerfile")):
         return "docker"
     if re.search(r"(^|/)\.github/workflows/[^/]+\.ya?ml$", rel):
         return "workflow"
