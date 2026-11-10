@@ -4,6 +4,43 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.4.0] - 2026-11-10
+
+Whole-app release: beyond security, vibeaudit now checks code completeness, data, reliability, more AI
+risks, UI and accessibility, and whether the frontend calls routes that exist. 41 new rules (116 static
+rules in 12 categories).
+
+### Added
+
+- Quality: QA005 unfinished stubs, QA006 imports of files or names that do not exist (Python and JS/TS,
+  with tsconfig `paths` and `baseUrl`), QA007 packages imported but not declared, QA008 `@ts-nocheck`.
+- Data: DATA001 queries in loops (N+1), DATA002 whole user records returned to the client, DATA003
+  destructive migrations, DATA004 money as float, DATA005 private tables readable by everyone, DATA006
+  timestamps without time zone, DATA007 env vars missing from the example env file, DATA008 a database
+  client per request, DATA009 SQLite on a serverless host, DATA010 several writes without a transaction.
+- Reliability: REL001 HTTP requests without timeout, REL002 blocking calls in async handlers, REL003
+  webhooks that are not idempotent, REL004 uploads without a size limit, REL005 in-memory state on
+  serverless hosts, REL006 deployed services without a health check.
+- AI: LLM010 vector search without a user or tenant filter, LLM011 model output parsed as JSON without
+  error handling (JSON mode and schemas are recognised), LLM012 retired model ids, LLM013 MCP servers with
+  whole-disk access or plain HTTP, LLM014 secrets in MCP configs (reported once, instead of the generic
+  secret rule), LLM015 agents that read untrusted content and have dangerous tools.
+- UI, UX and accessibility: UI001 to UI013 (alt text, keyboard access, labels, dead controls, index keys
+  on changing lists with inputs, unconfirmed deletes, hydration mismatches, effects without cleanup,
+  missing loading or error states, lorem ipsum, missing Next.js error page, missing metadata or viewport,
+  links to Next.js paths no page handles).
+- Frontend-backend contracts: API001 calls to API paths no route handles, API002 calls with a method the
+  route does not accept.
+- A 0-100 score per domain (security, AI, quality, data, reliability, UI) in the terminal, JSON
+  (`summary.domains`), Markdown and HTML reports.
+
+### Notes
+
+- Every new rule was run over the 15 real repositories used since 0.2.0; false alarms were fixed at the
+  root, each with a regression test that was confirmed to fail when its fix is reverted.
+- The contract rules skip projects whose routes use router prefixes (FastAPI `include_router`, Express
+  `app.use`, Flask blueprints, Django URLconfs), because prefixes are not resolved yet.
+
 ## [0.3.0] - 2026-11-10
 
 Integration release: vibeaudit now fits into editors, agents, pre-commit, pull requests and custom

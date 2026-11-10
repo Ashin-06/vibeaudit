@@ -7,7 +7,10 @@ prioritised list of what is actually dangerous, with file and line, why it matte
 It targets the failure modes that AI-generated ("vibe-coded") apps keep shipping: keys in the browser
 bundle, API routes with no auth check, Supabase tables without Row Level Security, packages the
 assistant invented, model output piped into `exec`, unbounded token spend, and placeholder security
-that was never finished.
+that was never finished. Beyond security it checks what makes generated apps break in production:
+unfinished stubs and missing imports, N+1 queries and money stored as floats, requests without
+timeouts, buttons that do nothing, inaccessible forms, and frontend calls to API routes that do not
+exist.
 
 ```
 $ vibeaudit scan .
@@ -22,8 +25,10 @@ Stack: Flask, OpenAI SDK
   app.py:50  Request data flows into a shell command.
 ...
 Summary
-  critical: 5  high: 19  medium: 11  low: 4   total: 39
+  critical: 3  high: 20  medium: 15  low: 7   total: 45
+  ...
   Score: 0/100  Grade: F
+  Domains: Security 0  AI 42  Quality 66  Data 93  Reliability 99  UI 100
 ```
 
 (Output from the `vuln_flask_llm` test fixture.)
@@ -32,8 +37,9 @@ Summary
   lookups (`--offline` turns that off); an LLM is used only if you ask for it (`--llm`).
 - One `pip install`, pure Python, 3.9 to 3.13 on Linux, macOS and Windows.
 - Terminal summary plus JSON, SARIF 2.1.0 (GitHub code scanning), Markdown and self-contained HTML.
-- 75 static rules in 8 categories (plus AI001 for the optional LLM review), mapped to CWE, OWASP Top 10
-  and the OWASP Top 10 for LLM Applications 2025.
+- 116 static rules in 12 categories (plus AI001 for the optional LLM review), mapped to CWE, OWASP Top 10
+  and the OWASP Top 10 for LLM Applications 2025, with an overall score and a 0-100 score per domain
+  (security, AI, quality, data, reliability, UI).
 
 ## Why another scanner
 
@@ -61,7 +67,12 @@ What vibeaudit adds:
    keystroke from a top package, and OSV advisories for pinned versions.
 4. **Backend-as-a-service config.** Supabase migrations, Firebase rules, MCP server configs, GitHub
    Actions script injection, Dockerfiles that bake in `.env`.
-5. **Unfinished work.** Auth functions that `return true`, `TODO: add auth` comments, no tests, no CI.
+5. **Unfinished work.** Auth functions that `return true`, `TODO: add auth` comments, stubs, imports of
+   files that were never written, packages that are imported but not declared, no tests, no CI.
+6. **Whole-app checks.** Data (N+1 queries, destructive migrations, money as float, missing env
+   documentation), reliability (timeouts, blocking calls in async handlers, idempotent webhooks),
+   accessibility and UX (labels, alt text, keyboard access, dead controls, hydration traps) and whether
+   the frontend calls routes that exist with methods they accept.
 
 ## Install
 
@@ -130,12 +141,21 @@ is down, and never report a package as missing unless the registry answered 404 
 | Frontend | FE001 XSS through raw HTML sinks, FE002 LLM API called from the browser, FE003 authorization in browser storage, FE004 postMessage without origin check, FE005 token in localStorage, FE006 production source maps, FE007 hardcoded localhost URL |
 | Auth | AUTH001 unauthenticated state-changing or paid-API endpoint, AUTH002 admin route without role check, AUTH003 IDOR, AUTH004 unverified webhook, AUTH005 table without RLS, AUTH006 permissive policy, AUTH007 open Firebase rules, AUTH008 auth stub returns true, AUTH009 CSRF disabled, AUTH010 login without rate limit |
 | Config | CFG001 root container, CFG002 unpinned base image, CFG003 secret in image, CFG004 Actions script injection, CFG005 pull_request_target checkout, CFG006 any Host accepted, CFG007 default DB password, CFG008 no security headers, CFG009 `.env` copied into image |
-| LLM | LLM001 untrusted input in system prompt, LLM002 model output in a dangerous sink, LLM003 no token limit, LLM004 LLM endpoint without rate limiting, LLM005 agent tool with dangerous capability, LLM006 dangerous agent option, LLM007 system prompt in the browser, LLM008 unsafe model loading, LLM009 unbounded agent loop |
-| Quality | QA001 no tests, QA002 no CI, QA003 swallowed exception, QA004 security TODO left in code |
+| LLM | LLM001 untrusted input in system prompt, LLM002 model output in a dangerous sink, LLM003 no token limit, LLM004 LLM endpoint without rate limiting, LLM005 agent tool with dangerous capability, LLM006 dangerous agent option, LLM007 system prompt in the browser, LLM008 unsafe model loading, LLM009 unbounded agent loop, LLM010 vector search without a user or tenant filter, LLM011 model output parsed as JSON without error handling, LLM012 retired model hardcoded, LLM013 MCP server with whole-disk access or plain HTTP, LLM014 secret in an MCP config, LLM015 agent that reads untrusted content and has dangerous tools |
+| Quality | QA001 no tests, QA002 no CI, QA003 swallowed exception, QA004 security TODO left in code, QA005 unfinished stub, QA006 import of a file or name that does not exist, QA007 package imported but not declared, QA008 TypeScript checking disabled for a file |
+| Data | DATA001 query in a loop (N+1), DATA002 whole user record returned, DATA003 destructive migration, DATA004 money as float, DATA005 private table readable by everyone, DATA006 timestamp without time zone, DATA007 env var missing from the example env file, DATA008 DB client per request, DATA009 SQLite on a serverless host, DATA010 several writes without a transaction |
+| Reliability | REL001 HTTP request without timeout, REL002 blocking call in an async handler, REL003 webhook not idempotent, REL004 upload without size limit, REL005 in-memory state on serverless, REL006 no health-check endpoint |
+| UI, UX and accessibility | UI001 image without alt, UI002 click handler on a non-interactive element, UI003 form field without label, UI004 control that does nothing, UI005 index key on a list whose items hold input state, UI006 delete without confirmation, UI007 hydration mismatch, UI008 effect without cleanup, UI009 no loading or error state, UI010 lorem ipsum, UI011 no error page, UI012 missing metadata or viewport, UI013 link to a page that does not exist |
+| Frontend-backend contracts | API001 call to an API path no route handles, API002 call with a method the route does not accept |
 | LLM review | AI001 issue reported by the optional `--llm-review` (model-generated, unverified) |
 
-OWASP LLM Top 10 coverage: LLM01, LLM02, LLM03, LLM05, LLM06, LLM07, LLM10. LLM04 (poisoning), LLM08
-(vector stores) and LLM09 (misinformation) are runtime properties; test them with promptfoo or garak.
+OWASP LLM Top 10 coverage: LLM01, LLM02, LLM03, LLM05, LLM06, LLM07, LLM08, LLM10. LLM04 (poisoning) and
+LLM09 (misinformation) are runtime properties; test them with promptfoo or garak.
+
+Categories roll up into six domains for the per-domain scores: Security (secrets, supply chain, backend,
+frontend, auth, config), AI (LLM, LLM review), Quality (quality, contracts, custom rules), Data,
+Reliability and UI. Every score uses the same weights: 100 minus 25 per critical, 10 per high, 3 per
+medium and 1 per low finding, floored at 0. The JSON report has them under `summary.domains`.
 
 ## LLM-assisted checks (optional)
 
@@ -184,7 +204,7 @@ files count) but report only findings on added or changed lines.
 # .pre-commit-config.yaml
 repos:
   - repo: https://github.com/Ashin-06/vibeaudit
-    rev: v0.3.0
+    rev: v0.4.0
     hooks:
       - id: vibeaudit
 ```
@@ -206,7 +226,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Ashin-06/vibeaudit@v0.3.0
+      - uses: Ashin-06/vibeaudit@v0.4.0
         with:
           fail-on: high
           args: --diff origin/main   # optional: only changed lines
@@ -308,8 +328,8 @@ existing debt. An empty `except`/`catch` with an explanatory comment is treated 
   cause catastrophic backtracking.
 - **Network.** Registry and OSV lookups are tested against timeouts, DNS failures, resets, 403/429/5xx,
   `Retry-After`, HTML error pages, truncated and wrongly typed JSON, and a full outage.
-- **Scale.** A generated 10,000-file repository scans in under a minute with about 120 MB peak traced
-  memory (CI runs 2,000 files on every platform and 10,000 on Linux).
+- **Scale.** A generated 10,000-file repository scans in under a minute (53 s with every 0.4.0 rule) with
+  about 130 MB peak traced memory (CI runs 2,000 files on every platform and 10,000 on Linux).
 - **Real projects.** 15 public repositories: mckaywrigley/chatbot-ui, langchain-ai/chat-langchain,
   fastapi/full-stack-fastapi-template, miguelgrinberg/microblog, HackSoftware/Django-Styleguide-Example,
   vercel/ai-chatbot, vercel/nextjs-subscription-payments, hagopj13/node-express-boilerplate,
@@ -321,6 +341,18 @@ existing debt. An empty `except`/`catch` with an explanatory comment is treated 
   key) by id with the service-role key, unauthenticated delete endpoints, and edge functions that call a
   paid AI API with JWT verification disabled. High and critical dependency advisories (DEP004) come from
   OSV for the pinned versions and were spot-checked, not reviewed one by one.
+- **New domains (0.4.0).** Every quality, data, reliability, AI, UI and contract rule was run over the
+  same 15 repositories and each finding was read. False alarms were fixed at the root with a test (for
+  example: a retry loop or a chunked batch delete counted as N+1, a Supabase `rpc` with the user's JWT counted as an unfiltered
+  vector search, JSON mode output counted as unsafe JSON parsing, `src/pages` of a react-router app
+  mapped as Next.js routes, removing an item from a local list counted as a destructive action), and
+  every fix was reverted once to confirm its test fails. Examples of confirmed findings: chatbot-ui's
+  retrieval route searches embeddings with the service-role client using file ids taken from the request
+  body (LLM010); retired model ids (`claude-2.1`, `gemini-pro`, `gpt-4-32k`) still offered in model
+  lists (LLM012); a login form whose `<label htmlFor="email">` points at an input with no `id` (UI003);
+  Next.js apps with no `error.tsx` (UI011). The contract checker found no broken calls in these
+  repositories; on chatbot-ui and vercel/ai-chatbot it resolved every relative API call to the right
+  route and method, which was checked by hand.
 - **LLM providers.** Gemini was tested live (triage and review). OpenAI and Anthropic are implemented
   against their documented HTTP APIs and unit-tested with a stubbed transport, not called live.
 
@@ -335,6 +367,12 @@ existing debt. An empty `except`/`catch` with an explanatory comment is treated 
   regex step cannot be interrupted, which is why every module-level pattern is tested for linear time.
 - Memory grows with the size of the repository (file text and lexer views are kept for cross-file
   analysis); about 12 KB per source file in the scale test.
+- Router prefixes (FastAPI `include_router`, Express `app.use("/api", router)`, Flask blueprints, Django
+  URLconfs) are not resolved yet, so the frontend-backend contract rules only run when routes are
+  file-based (Next.js, SvelteKit) or the project has no prefixes.
+- UI rules read JSX and HTML with the lexer and pattern checks; they cover React/Next.js and plain HTML
+  templates, and only image alt text and placeholder text in Vue, Svelte and Astro files.
+- The retired-model list (LLM012) is fixed at release time; `vibeaudit update` (planned) will refresh it.
 
 ## Development
 
