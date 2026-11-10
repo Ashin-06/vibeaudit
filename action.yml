@@ -1,0 +1,49 @@
+name: vibeaudit
+description: Security and quality audit for AI-generated (vibe-coded) and LLM-powered apps, with SARIF output.
+branding:
+  icon: shield
+  color: purple
+inputs:
+  path:
+    description: Project directory to scan.
+    default: "."
+  fail-on:
+    description: Fail the step when a finding is at least this severe (critical, high, medium, low or none).
+    default: high
+  sarif:
+    description: Where to write the SARIF report (for github/codeql-action/upload-sarif).
+    default: vibeaudit.sarif
+  args:
+    description: Extra arguments for `vibeaudit scan`, for example "--offline --diff origin/main".
+    default: ""
+  setup-python:
+    description: Install Python with actions/setup-python first. Set to "false" if the job already has Python 3.9+.
+    default: "true"
+  python-version:
+    description: Python version for actions/setup-python.
+    default: "3.12"
+outputs:
+  sarif:
+    description: Path of the SARIF report.
+    value: ${{ inputs.sarif }}
+runs:
+  using: composite
+  steps:
+    - if: inputs.setup-python == 'true'
+      uses: actions/setup-python@v6
+      with:
+        python-version: ${{ inputs.python-version }}
+    - name: Install vibeaudit
+      shell: bash
+      env:
+        VIBEAUDIT_SRC: ${{ github.action_path }}
+      run: python -m pip install --quiet --disable-pip-version-check "$VIBEAUDIT_SRC"
+    - name: Run vibeaudit
+      shell: bash
+      env:
+        VIBEAUDIT_PATH: ${{ inputs.path }}
+        VIBEAUDIT_FAIL_ON: ${{ inputs.fail-on }}
+        VIBEAUDIT_SARIF: ${{ inputs.sarif }}
+        VIBEAUDIT_ARGS: ${{ inputs.args }}
+      # Inputs travel through environment variables, never through ${{ }} inside the script.
+      run: vibeaudit scan "$VIBEAUDIT_PATH" --fail-on "$VIBEAUDIT_FAIL_ON" --report "sarif:$VIBEAUDIT_SARIF" $VIBEAUDIT_ARGS

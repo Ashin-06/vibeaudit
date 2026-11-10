@@ -1,0 +1,7 @@
+- id: vibeaudit
+  name: vibeaudit
+  description: Block commits that add secrets, missing auth, injection or unsafe AI code (staged lines only).
+  entry: vibeaudit scan . --staged --offline --external none -q
+  language: python
+  pass_filenames: false
+  always_run: true
