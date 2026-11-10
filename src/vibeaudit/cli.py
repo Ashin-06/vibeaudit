@@ -55,6 +55,8 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--llm-model", help="model name for the LLM provider")
     s.add_argument("--llm-review", action="store_true", help="also ask the LLM to review the riskiest files for missed issues")
     s.add_argument("--llm-max-requests", type=int, default=None, help="hard cap on LLM requests per scan (default: 10)")
+    s.add_argument("--plugin", action="append", default=[], metavar="FILE_OR_MODULE",
+                   help="load custom rules from a Python file or module (repeatable; runs that code)")
     s.add_argument("--staged", action="store_true", help="report only findings on lines staged for commit (pre-commit hooks)")
     s.add_argument("--diff", metavar="REV", help="report only findings on lines changed since REV, e.g. origin/main (pull requests)")
     s.add_argument("--config", metavar="FILE", help="read settings from this TOML file instead of .vibeaudit.toml / pyproject.toml")
@@ -136,6 +138,14 @@ def cmd_scan(a: argparse.Namespace) -> int:
         return flag if flag is not None else cfg.get(key, default)
 
     fail_on = pick(a.fail_on, "fail_on", "high")
+    from . import plugins
+
+    for spec in a.plugin:
+        try:
+            plugins.load(spec)
+        except Exception as e:  # noqa: BLE001 - any import failure is a usage error here
+            print(f"vibeaudit: cannot load plugin {spec}: {type(e).__name__}: {e}", file=sys.stderr)
+            return 2
     changes = None
     if a.staged or a.diff:
         if a.staged and a.diff:

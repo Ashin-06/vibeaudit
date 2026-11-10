@@ -9,7 +9,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable, List, Optional, Set
 
-from . import external
+from . import external, plugins
 from .deps import DepScanner
 from . import heuristics as H
 from .files import Project
@@ -95,6 +95,7 @@ def scan(root: str, opts: Optional[Options] = None) -> Result:
     py_routes = PyScanner(project, emit).run()
     SecretScanner(project, emit).run()
     ProjectScanner(project, emit, js_routes + py_routes).run()
+    plugins.run(project, js_routes + py_routes, emit)
     deps = DepScanner(project, emit, opts.offline)
     GUARD.run("<project>", "dependency checks", deps.run)
     notes += deps.notes
@@ -199,7 +200,7 @@ def finalize(project: Project, raw: List[Finding], opts: Options, already: bool 
         if key in seen:
             continue
         loc = (f.file, f.line)
-        if f.source not in ("vibeaudit", "llm-review") and loc in builtin_locs:
+        if f.source not in ("vibeaudit", "llm-review", "plugin") and loc in builtin_locs:
             continue
         seen.add(key)
         if f.source == "vibeaudit":

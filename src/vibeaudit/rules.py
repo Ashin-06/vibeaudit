@@ -14,6 +14,7 @@ CATEGORIES = {
     "llm": "LLM and AI-specific risks",
     "quality": "Code quality and tests",
     "llm-review": "LLM review (model-generated, unverified)",
+    "custom": "Custom rules (plugins)",
 }
 
 
