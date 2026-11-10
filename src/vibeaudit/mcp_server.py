@@ -96,9 +96,22 @@ def _summary(res, findings) -> Dict[str, Any]:
     }
 
 
+def _options(root: str, **overrides: Any):
+    """The project's own settings (auth helpers, exclusions, disabled rules), with the tool's overrides."""
+    from .config import ConfigError, project_options
+
+    try:
+        return project_options(root, **overrides)
+    except ConfigError as e:
+        raise ToolError(str(e)) from None
+
+
+PROJECT_MARKERS = (".git", ".vibeaudit.toml", "pyproject.toml", "package.json", "setup.py", "requirements.txt")
+
+
 def tool_scan_project(args: Dict[str, Any]) -> Dict[str, Any]:
     from .gitdiff import DiffError, changed
-    from .scanner import Options, scan
+    from .scanner import scan
 
     root = _dir(args.get("path"))
     changes = None
@@ -108,13 +121,13 @@ def tool_scan_project(args: Dict[str, Any]) -> Dict[str, Any]:
                               base=None if args["changes"] == "staged" else str(args["changes"]))
         except DiffError as e:
             raise ToolError(f"cannot compute changes: {e}") from None
-    res = scan(root, Options(offline=bool(args.get("offline", True)), external="none",
-                             min_severity=str(args.get("min_severity", "low")), changes=changes))
+    res = scan(root, _options(root, offline=bool(args.get("offline", True)), external="none",
+                              min_severity=str(args.get("min_severity", "low")), changes=changes))
     return _summary(res, res.findings)
 
 
 def tool_scan_file(args: Dict[str, Any]) -> Dict[str, Any]:
-    from .scanner import Options, scan
+    from .scanner import scan
 
     file = args.get("file")
     if not isinstance(file, str) or not Path(file).is_file():
@@ -124,19 +137,22 @@ def tool_scan_file(args: Dict[str, Any]) -> Dict[str, Any]:
     if project:
         root = Path(_dir(project)).resolve()
     else:
-        root = next((p for p in target.parents if (p / ".git").exists()), target.parent)
+        # the nearest folder that looks like a project root; a git root wins over a nested manifest
+        root = next((p for p in target.parents if (p / ".git").exists()), None) or \
+            next((p for p in target.parents if any((p / m).exists() for m in PROJECT_MARKERS)), target.parent)
     try:
         rel = target.relative_to(root).as_posix()
     except ValueError:
         raise ToolError("the file is not inside the project") from None
-    res = scan(str(root), Options(offline=True, external="none"))
+    res = scan(str(root), _options(str(root), offline=True, external="none"))
     return _summary(res, [f for f in res.findings if f.file == rel])
 
 
 def tool_list_routes(args: Dict[str, Any]) -> Dict[str, Any]:
-    from .scanner import Options, scan
+    from .scanner import scan
 
-    res = scan(_dir(args.get("path")), Options(offline=True, external="none"))
+    root = _dir(args.get("path"))
+    res = scan(root, _options(root, offline=True, external="none"))
     return {"routes": [r.to_dict() for r in sorted(res.routes, key=lambda r: (r.file, r.line))]}
 
 
@@ -147,6 +163,7 @@ def tool_check_package(args: Dict[str, Any]) -> Dict[str, Any]:
     if not isinstance(name, str) or not name or eco not in ("PyPI", "npm"):
         raise ToolError("name (string) and ecosystem (PyPI or npm) are required")
     dep = deps.Dep(name, eco, "", 0, args.get("version") if isinstance(args.get("version"), str) else None)
+    deps.BREAKER.reset()  # the server lives long: one network blip must not disable lookups for good
     status, first, note = deps.registry_info(dep)
     out: Dict[str, Any] = {"name": name, "ecosystem": eco, "registry": status,
                            "first_release": first.isoformat() if first else None,

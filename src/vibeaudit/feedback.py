@@ -27,9 +27,12 @@ def false_positives(root: Path) -> Set[str]:
 def record(root: Path, rule: str, file: str, line: int, verdict: str, note: str = "") -> Optional[Dict]:
     """Find the current finding `rule` at `file:line` and record a verdict for it. None if there is no such
     finding (the scan is offline and skips third-party tools, so only built-in rules can be marked)."""
-    from .scanner import Options, scan
+    from .config import project_options
+    from .scanner import scan
 
-    res = scan(str(root), Options(offline=True, external="none", feedback=False))  # a verdict can be changed later
+    # the project's settings apply, so only findings the scan really reports can be marked;
+    # feedback=False so that a verdict can be changed later
+    res = scan(str(root), project_options(str(root), offline=True, external="none", feedback=False))
     file = file.replace("\\", "/")
     while file.startswith("./"):
         file = file[2:]

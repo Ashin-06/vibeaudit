@@ -144,13 +144,21 @@ def cmd_rules(fmt: str) -> int:
 
 
 def cmd_routes(a: argparse.Namespace) -> int:
-    from .scanner import Options, scan
+    from .scanner import scan
 
     if not os.path.isdir(a.path):
         print(f"vibeaudit: not a directory: {a.path}", file=sys.stderr)
         return 2
-    res = scan(a.path, Options(offline=True, external="none", excludes=a.exclude))
-    rows = [r.to_dict() for r in sorted(res.routes, key=lambda r: (r.file, r.line))]
+    from .config import project_options
+
+    try:
+        opts = project_options(a.path, offline=True, external="none")
+    except ConfigError as e:
+        print(f"vibeaudit: {e}", file=sys.stderr)
+        return 2
+    opts.excludes += a.exclude
+    res = scan(a.path, opts)
+    rows =[r.to_dict() for r in sorted(res.routes, key=lambda r: (r.file, r.line))]
     if a.format == "json":
         print(json.dumps(rows, indent=2))
         return 0

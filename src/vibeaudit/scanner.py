@@ -89,7 +89,11 @@ def suppressed(project: Project, f: Finding) -> bool:
 
 
 def scan(root: str, opts: Optional[Options] = None) -> Result:
-    opts = opts or Options()
+    """Scan `root`. Without `opts`, the project's own .vibeaudit.toml / [tool.vibeaudit] settings apply."""
+    if opts is None:
+        from .config import project_options
+
+        opts = project_options(root)
     start = time.time()
     GUARD.reset(opts.file_timeout)
     H.CUSTOM.reset(opts.auth_helpers, opts.sanitizers, opts.public_paths)

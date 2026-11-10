@@ -89,3 +89,27 @@ def load(root: Path, explicit: Optional[str] = None) -> Tuple[Dict[str, object],
             table = data.get("tool", {}).get("vibeaudit", data) if isinstance(data.get("tool"), dict) else data
         return parse(table, str(path)), str(path)
     return {}, None
+
+
+def project_options(root: str, **overrides):
+    """Options for scanning `root` with its own configuration file applied, then `overrides` on top.
+    Used by the Python API, the MCP server and `vibeaudit routes`, so every entry point sees the same
+    auth helpers, sanitizers, exclusions and disabled rules as `vibeaudit scan`."""
+    from .scanner import Options
+
+    cfg, cfg_path = load(Path(root))
+    baseline = cfg.get("baseline")
+    if baseline and cfg_path:
+        baseline = str(Path(cfg_path).parent / str(baseline))
+    disabled = {x.strip() for d in cfg.get("disable", []) for x in str(d).split(",") if x.strip()}  # type: ignore[attr-defined]
+    values = {
+        "offline": bool(cfg.get("offline", False)), "excludes": list(cfg.get("exclude", [])),  # type: ignore[call-overload]
+        "disabled": disabled, "min_severity": cfg.get("min_severity", "info"), "external": cfg.get("external", "auto"),
+        "baseline": baseline, "max_file_bytes": cfg.get("max_file_size", 1_000_000), "llm": cfg.get("llm"),
+        "llm_model": cfg.get("llm_model"), "llm_max_requests": cfg.get("llm_max_requests", 10),
+        "file_timeout": float(cfg.get("file_timeout", 30.0)),  # type: ignore[arg-type]
+        "auth_helpers": list(cfg.get("auth_helpers", [])), "sanitizers": list(cfg.get("sanitizers", [])),  # type: ignore[call-overload]
+        "public_paths": list(cfg.get("public_paths", [])),  # type: ignore[call-overload]
+    }
+    values.update(overrides)
+    return Options(**values)
