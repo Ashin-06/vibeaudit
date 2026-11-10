@@ -106,7 +106,8 @@ vibeaudit scan path/to/project --report html --report sarif:results.sarif
 | `--file-timeout SECONDS` | Time each analysis step may spend on one file before it is stopped (default 30). |
 | `--staged` / `--diff REV` | Report only findings on staged lines (pre-commit) or lines changed since `REV` (pull requests). |
 | `--plugin FILE_OR_MODULE` | Load custom rules (see below). |
-| `--config FILE` / `--no-config` | Use another settings file, or ignore the scanned project's settings. |
+| `--config FILE` / `--no-config` | Use another settings file, or ignore the scanned project's settings and feedback file. |
+| `--no-cache` | Do not read or write cached registry and vulnerability answers. |
 
 With `--external auto` (the default), gitleaks, bandit, osv-scanner and semgrep are run when they are
 installed, and their findings are merged and de-duplicated. Bandit checks that a built-in rule covers
@@ -204,7 +205,7 @@ files count) but report only findings on added or changed lines.
 # .pre-commit-config.yaml
 repos:
   - repo: https://github.com/Ashin-06/vibeaudit
-    rev: v0.4.0
+    rev: v0.5.0
     hooks:
       - id: vibeaudit
 ```
@@ -226,7 +227,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Ashin-06/vibeaudit@v0.4.0
+      - uses: Ashin-06/vibeaudit@v0.5.0
         with:
           fail-on: high
           args: --diff origin/main   # optional: only changed lines
@@ -290,21 +291,57 @@ your own imports, never from the scanned repository.
 Library use:
 
 ```python
-from vibeaudit import scan, Options
+from vibeaudit import scan, project_options
 
-result = scan("path/to/project", Options(offline=True))
-print(result.score, result.grade)
+result = scan("path/to/project", project_options("path/to/project", offline=True))
+print(result.score, result.grade, result.domain_scores)
 for f in result.findings:
     print(f.severity, f.rule_id, f.file, f.line, f.message)
 for r in result.routes:
     print(r.methods, r.path, r.has_auth)
 ```
 
+`scan(path)` without options and `project_options(path, **overrides)` apply the project's
+`.vibeaudit.toml` / `[tool.vibeaudit]`, like the CLI, the MCP tools and `vibeaudit routes` do. An explicit
+`Options(...)` is used exactly as given.
+
 ## Suppressing findings
 
 Inline `# vibeaudit: ignore[AUTH001]` (or `// vibeaudit: ignore`) on the line or the line above;
 `--exclude` or `.vibeauditignore` for paths; `--disable` for rules or categories; baselines for
 existing debt. An empty `except`/`catch` with an explanatory comment is treated as deliberate.
+
+## Feedback on findings
+
+```bash
+vibeaudit feedback false-positive AUTH001 app/api/internal.py:12 --note "only reachable from the VPN"
+```
+
+```bash
+vibeaudit feedback list
+```
+
+Verdicts (`false-positive` or `confirmed`) are stored in `.vibeaudit/feedback.json`, meant to be committed
+so the team shares them. Later scans hide findings marked as false positives (the report notes how many);
+entries match by rule, file and line text, so they follow the code when lines move. `list` prints the
+entries and a per-rule count. Like the configuration file, the feedback file is ignored with `--no-config`.
+
+## Caching and updates
+
+Registry answers and OSV advisories are cached in the user cache folder (`%LOCALAPPDATA%\vibeaudit`,
+`~/Library/Caches/vibeaudit` or `~/.cache/vibeaudit`; `VIBEAUDIT_CACHE_DIR` overrides it) for a day, and
+"package does not exist" for an hour, because a name can be registered at any time. Failed lookups are
+never cached. LLM triage verdicts are cached for 30 days per model, finding and surrounding code, so an
+unchanged finding costs no request. `--no-cache` (or `VIBEAUDIT_NO_CACHE=1`) turns caching off.
+
+```bash
+vibeaudit update
+```
+
+refreshes the popular-package lists (typosquat checks) and the retired-model list (LLM012) from this
+repository into the cache folder. A downloaded file replaces the shipped one only if it passes
+validation. While the repository is private, set `GITHUB_TOKEN` (or `GH_TOKEN`) to a token that can read
+it. `vibeaudit update --self` upgrades the installed package with pip.
 
 ## How it was validated
 
@@ -372,7 +409,7 @@ existing debt. An empty `except`/`catch` with an explanatory comment is treated 
   file-based (Next.js, SvelteKit) or the project has no prefixes.
 - UI rules read JSX and HTML with the lexer and pattern checks; they cover React/Next.js and plain HTML
   templates, and only image alt text and placeholder text in Vue, Svelte and Astro files.
-- The retired-model list (LLM012) is fixed at release time; `vibeaudit update` (planned) will refresh it.
+- The retired-model list (LLM012) is maintained by hand; `vibeaudit update` fetches the latest copy.
 
 ## Development
 

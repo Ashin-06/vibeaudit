@@ -4,6 +4,63 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.5.0] - 2026-11-10
+
+Learning and updates, plus fixes from a second external audit. Each fix has a regression test that fails
+on 0.4.0.
+
+### Added
+
+- `vibeaudit feedback false-positive|confirmed RULE FILE:LINE [--note]` records a verdict in
+  `.vibeaudit/feedback.json`; later scans hide findings marked as false positives (they follow the code
+  when lines move). `vibeaudit feedback list` shows entries and per-rule counts. Ignored with `--no-config`.
+- `vibeaudit update` refreshes the popular-package lists and the retired-model list (now
+  `data/retired_models.txt`) from the repository, validating each file before use; `--self` upgrades the
+  package with pip.
+- Registry answers and OSV advisories are cached for a day ("package missing" for an hour), LLM triage
+  verdicts for 30 days. `--no-cache` / `VIBEAUDIT_NO_CACHE=1` turns this off.
+- `vibeaudit.project_options(path, **overrides)`; `vibeaudit.scan(path)` without options applies the
+  project's configuration.
+
+### Fixed
+
+- The project configuration (`.vibeaudit.toml` / `[tool.vibeaudit]`) now reaches `vibeaudit.scan()`, the
+  MCP tools, `vibeaudit routes` and `vibeaudit feedback`, not only `vibeaudit scan`.
+- MCP `scan_file` finds the project root through `.vibeaudit.toml`, `pyproject.toml`, `package.json` and
+  similar files when there is no `.git`; `check_package` resets the network circuit breaker per call.
+- DATA004 checks every `.prisma` file (multi-file schemas), not only `schema.prisma`.
+- DATA009 reports a nested `sqlite3.connect` once (it matched the unparsed text of every enclosing call).
+- DATA006 follows `import datetime as dt` / `from datetime import datetime as DT` and `now(None)`; in SQL
+  it only checks CREATE/ALTER TABLE (a `SELECT created_at timestamp` alias was reported).
+- DATA008 covers DRF `@api_view`/`@action` and FastAPI `@api_route` handlers.
+- DATA010 covers Python routes (Django ORM, supabase-py) and more JS write styles (`Order.create`, Drizzle
+  `db.insert(orders)`, Mongoose `doc.save()`, `supabase.from(t).insert`); SDK calls such as
+  `openai.embeddings.create` or `stripe.checkout.sessions.create` are not database writes.
+- QA006 compares Python imports with module-level names (and `global` declarations and `__all__`);
+  function parameters and locals were counted as exports. JS exports are read without comments, and
+  `export { a as b }` exports `b`, not `a`.
+- QA007 reports an undeclared package once per project (once per package.json) instead of once per file.
+- QA008 reports the line of `@ts-nocheck`, also after a block-comment header, and skips generated files.
+- `Containerfile` is checked like a Dockerfile.
+- The GitHub Action no longer lets bash expand globs in `args` (for example `--exclude legacy/*`).
+- `python -m pytest` works from a checkout without installing (pytest `pythonpath`).
+- Dependencies are collected once per scan instead of twice; a duplicate key in the import-to-package map
+  and a dead branch in the JS resolver were removed.
+
+### Audit findings that did not reproduce
+
+- Prisma, Netlify, Wrangler, Serverless, SAM, Pipfile, setup.cfg and requirements.in files "never loaded":
+  every non-binary file is loaded whatever its type, and the checks match these files by name. The
+  serverless and manifest cases have guard tests; the related Prisma gap (other `.prisma` names) is fixed.
+- DATA002 with an unbalanced call: the slice was harmless (the follow-up search ran on an empty string);
+  an explicit guard was added for clarity.
+- DATA007 `os.getenv("X") or "default"` was already treated as having a fallback, and the `env.example`
+  branch is reachable (files are matched by name); guard test added.
+- The `.astro` extension is already a JS file kind.
+- The JS lexer's brace depth can only go negative at the top level, where it is never read; inside a
+  template expression it pops at zero.
+- The default LLM model ids were reported as invalid; they are current ids and were left unchanged.
+
 ## [0.4.0] - 2026-11-10
 
 Whole-app release: beyond security, vibeaudit now checks code completeness, data, reliability, more AI
