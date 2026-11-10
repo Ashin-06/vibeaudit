@@ -1,0 +1,37 @@
+# Model ids that their provider has retired or announced for retirement (LLM012).
+# One id per line; a trailing * matches any suffix made of letters, digits, '.', '-' and '_'.
+# Refreshed by `vibeaudit update`.
+text-davinci-001
+text-davinci-002
+text-davinci-003
+code-davinci-001
+code-davinci-002
+code-davinci-003
+gpt-3.5-turbo-0301
+gpt-3.5-turbo-0613
+gpt-3.5-turbo-16k-0613
+gpt-4-0314
+gpt-4-32k
+gpt-4-32k-0314
+gpt-4-32k-0613
+gpt-4-vision-preview
+gpt-4.5-preview
+text-embedding-ada-001
+text-similarity-*
+claude-instant-1*
+claude-1
+claude-1.*
+claude-2
+claude-2.*
+claude-3-sonnet-20240229
+claude-3-opus-20240229
+claude-3-5-sonnet-20240620
+claude-3-5-sonnet-20241022
+gemini-pro
+gemini-pro-vision
+gemini-1.0-pro*
+gemini-1.5-pro*
+gemini-1.5-flash*
+text-bison*
+chat-bison*
+code-bison*

@@ -60,7 +60,9 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--staged", action="store_true", help="report only findings on lines staged for commit (pre-commit hooks)")
     s.add_argument("--diff", metavar="REV", help="report only findings on lines changed since REV, e.g. origin/main (pull requests)")
     s.add_argument("--config", metavar="FILE", help="read settings from this TOML file instead of .vibeaudit.toml / pyproject.toml")
-    s.add_argument("--no-config", action="store_true", help="ignore configuration files in the scanned project")
+    s.add_argument("--no-config", action="store_true",
+                   help="ignore configuration and feedback files in the scanned project")
+    s.add_argument("--no-cache", action="store_true", help="do not read or write cached registry and vulnerability answers")
     s.add_argument("-q", "--quiet", action="store_true", help="print only the summary")
     s.add_argument("--no-color", action="store_true", help="disable colored output")
 
@@ -73,7 +75,57 @@ def build_parser() -> argparse.ArgumentParser:
 
     r = sub.add_parser("rules", help="list every rule")
     r.add_argument("--format", choices=["text", "json", "md"], default="text")
+
+    u = sub.add_parser("update", help="refresh package lists and retired model ids, or upgrade vibeaudit itself")
+    u.add_argument("--self", dest="upgrade_self", action="store_true", help="upgrade the installed package with pip")
+
+    f = sub.add_parser("feedback", help="record that a finding is a false positive or confirmed, or list feedback")
+    f.add_argument("verdict", nargs="?", choices=["false-positive", "confirmed", "list"], default="list")
+    f.add_argument("rule", nargs="?", help="rule id, for example AUTH001")
+    f.add_argument("location", nargs="?", help="FILE:LINE as shown in the report")
+    f.add_argument("--note", default="", help="why (kept with the entry)")
+    f.add_argument("--path", default=".", help="project directory (default: current directory)")
     return p
+
+
+def cmd_update(a: argparse.Namespace) -> int:
+    from . import updater
+
+    def log(msg: str) -> None:
+        print(f"vibeaudit: {msg}")
+
+    if a.upgrade_self:
+        return 0 if updater.update_self(log) == 0 else 1
+    return 0 if updater.update_data(log) == 0 else 1
+
+
+def cmd_feedback(a: argparse.Namespace) -> int:
+    from . import feedback
+
+    root = Path(a.path)
+    if not root.is_dir():
+        print(f"vibeaudit: not a directory: {a.path}", file=sys.stderr)
+        return 2
+    if a.verdict == "list":
+        entries = feedback.load(root)
+        for e in entries:
+            note = f"  ({e.get('note')})" if e.get("note") else ""
+            print(f"{e['verdict']:15} {e.get('rule', '?'):8} {e.get('file', '?')}:{e.get('line', '?')}{note}")
+        for rule, counts in feedback.summary(root).items():
+            print(f"{rule}: {counts['false-positive']} false positive, {counts['confirmed']} confirmed")
+        if not entries:
+            print("no feedback recorded")
+        return 0
+    file, _, line = (a.location or "").rpartition(":")
+    if not a.rule or not file or not line.isdigit():
+        print("vibeaudit: usage: vibeaudit feedback false-positive|confirmed RULE FILE:LINE [--note TEXT]", file=sys.stderr)
+        return 2
+    entry = feedback.record(root, a.rule, file, int(line), a.verdict, a.note)
+    if entry is None:
+        print(f"vibeaudit: no {a.rule.upper()} finding at {file}:{line} (built-in rules only)", file=sys.stderr)
+        return 1
+    print(f"recorded {a.verdict} for {entry['rule']} at {entry['file']}:{entry['line']} in {root / feedback.FILE}")
+    return 0
 
 
 def cmd_rules(fmt: str) -> int:
@@ -191,7 +243,12 @@ def cmd_scan(a: argparse.Namespace) -> int:
                    llm_max_requests=max(0, pick(a.llm_max_requests, "llm_max_requests", 10)),
                    file_timeout=max(0.1, float(pick(a.file_timeout, "file_timeout", 30.0))),
                    auth_helpers=list(cfg.get("auth_helpers", [])), sanitizers=list(cfg.get("sanitizers", [])),
-                   public_paths=list(cfg.get("public_paths", [])), changes=changes, log=log)
+                   public_paths=list(cfg.get("public_paths", [])), changes=changes, log=log,
+                   feedback=not a.no_config)  # the feedback file lives in the repository, like the config
+    if a.no_cache:
+        from . import store
+
+        store.ENABLED = False
     if cfg_path:
         log(f"using settings from {cfg_path}")
     try:
@@ -229,6 +286,10 @@ def main(argv: Optional[List[str]] = None) -> int:
         return mcp_main()
     if a.command == "scan":
         return cmd_scan(a)
+    if a.command == "update":
+        return cmd_update(a)
+    if a.command == "feedback":
+        return cmd_feedback(a)
     parser.print_help()
     return 2
 

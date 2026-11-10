@@ -17,11 +17,18 @@ VECTOR_QUERY = re.compile(
     r"|\.\s*rpc\s*\(\s*['\"]match_\w*['\"]|\bORDER\s+BY\s+\w*embedding\w*\s*(?:<->|<=>|<#>)", re.I)
 TENANT_FILTER = re.compile(r"(?i)\bfilter\b|\bwhere\b|\bnamespace\b|query_filter|user_?id|tenant|org_?id|owner|account_?id|search_kwargs")
 SERVICE_ROLE = re.compile(r"(?i)service_?role|supabaseAdmin|admin_?client")
-RETIRED_MODELS = re.compile(
-    r"""['"`]((?:text|code)-davinci-00[123]|gpt-3\.5-turbo-(?:0301|0613|16k-0613)|gpt-4-0314|gpt-4-32k(?:-0314|-0613)?"""
-    r"""|claude-instant-1(?:\.\d)?|claude-[12](?:\.\d)?|claude-3-(?:sonnet|opus)-20240229|gemini-pro(?:-vision)?"""
-    r"""|gemini-1\.0-pro(?:-\d+)?|gemini-1\.5-(?:pro|flash)(?:-\d+|-latest|-8b)?|(?:text|chat|code)-bison(?:@\d+)?"""
-    r"""|text-embedding-ada-001|text-similarity-\w+)['"`]""")
+_RETIRED: List["re.Pattern[str]"] = []
+
+
+def retired_models() -> "re.Pattern[str]":
+    """A quoted model id from data/retired_models.txt (refreshed by `vibeaudit update`); `*` is any id suffix."""
+    if not _RETIRED:
+        from .updater import data_bytes, model_ids
+
+        alts = sorted((re.escape(i[:-1]) + r"[\w.@-]*" if i.endswith("*") else re.escape(i)
+                       for i in model_ids(data_bytes("retired_models.txt"))), key=len, reverse=True)
+        _RETIRED.append(re.compile(r"""['"`](""" + "|".join(alts) + r""")['"`]"""))
+    return _RETIRED[0]
 AGENT = re.compile(r"\b(?:create_react_agent|initialize_agent|AgentExecutor|create_openai_tools_agent|create_tool_calling_agent"
                    r"|createReactAgent|createToolCallingAgent|AgentExecutor\.fromAgentAndTools|Agent)\s*\(|\bnew\s+Agent\s*\(")
 TOOL_NAME = re.compile(r"""@tool(?:\(\s*['"]([\w-]+)['"])?\s*\n\s*(?:async\s+)?def\s+(\w+)|\bTool\s*\(\s*name\s*=\s*['"]([\w-]+)['"]"""
@@ -64,7 +71,7 @@ class AiScanner:
     def _file(self, sf: SourceFile) -> None:
         v = sf.cache.get("views")
         code = v.code if v is not None else (sf.text or "")  # type: ignore[attr-defined]
-        for m in finditer(RETIRED_MODELS, code):
+        for m in finditer(retired_models(), code):
             if m.group(1) not in self.retired_seen:  # model lists repeat ids across files; once per project is enough
                 self.retired_seen.add(m.group(1))
                 self.add(sf, "LLM012", sf.line_at(m.start()), f"Model `{m.group(1)}` has been retired or deprecated by its provider.")

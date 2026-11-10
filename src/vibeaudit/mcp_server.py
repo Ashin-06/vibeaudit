@@ -163,6 +163,7 @@ def tool_check_package(args: Dict[str, Any]) -> Dict[str, Any]:
             out["vulnerabilities"] = [v.get("id") for v in vulns]
         except ConnectionError:
             out["vulnerabilities"] = None
+    deps.save_caches()
     return out
 
 

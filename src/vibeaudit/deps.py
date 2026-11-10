@@ -13,11 +13,11 @@ import urllib.parse
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
-from importlib import resources
 from typing import Callable, Dict, List, Optional, Set, Tuple
 
 from .files import Project, SourceFile
 from .model import Finding
+from .store import TimedCache
 
 try:  # Python 3.11+
     import tomllib  # type: ignore[import-not-found]
@@ -45,8 +45,9 @@ def pep503(name: str) -> str:
 
 
 def _load_popular(fn: str) -> List[str]:
-    data = resources.files("vibeaudit").joinpath("data", fn).read_bytes()
-    return gzip.decompress(data).decode("utf-8").split()
+    from .updater import data_bytes
+
+    return gzip.decompress(data_bytes(fn)).decode("utf-8").split()
 
 
 _POPULAR: Dict[str, Tuple[Set[str], List[str]]] = {}
@@ -351,8 +352,30 @@ def _dict(value) -> dict:
     return value if isinstance(value, dict) else {}
 
 
+REGISTRY_CACHE = TimedCache("registry.json", 24 * 3600)
+OSV_CACHE = TimedCache("osv.json", 24 * 3600)
+
+
+def save_caches() -> None:
+    REGISTRY_CACHE.save()
+    OSV_CACHE.save()
+
+
 def registry_info(dep: Dep) -> Tuple[str, Optional[dt.datetime], str]:
-    """Return (status, first_release, note); status is ok | missing | malware | error."""
+    """Return (status, first_release, note); status is ok | missing | malware | error.
+
+    Answers are cached for a day; "missing" only for an hour, because a name can be registered at any time."""
+    key = f"{dep.ecosystem}:{pep503(dep.name) if dep.ecosystem == 'PyPI' else dep.name.lower()}"
+    hit = REGISTRY_CACHE.get(key)
+    if isinstance(hit, list) and len(hit) == 3 and (hit[0] != "missing" or REGISTRY_CACHE.get(key, ttl=3600) is not None):
+        return str(hit[0]), _parse_time(hit[1]), str(hit[2])
+    status, first, note = _registry_lookup(dep)
+    if status != "error":
+        REGISTRY_CACHE.put(key, [status, first.isoformat() if first else None, note])
+    return status, first, note
+
+
+def _registry_lookup(dep: Dep) -> Tuple[str, Optional[dt.datetime], str]:
     if dep.ecosystem == "PyPI":
         code, data = _get_json(f"https://pypi.org/pypi/{urllib.parse.quote(pep503(dep.name))}/json")
         if code in (404, 410):
@@ -410,8 +433,15 @@ def osv_lookup(deps: List[Dep]) -> Dict[Tuple[str, str, str], List[dict]]:
             if ids:
                 ids_for[key] = ids
     all_ids = sorted({i for ids in ids_for.values() for i in ids})[:200]
+    details = {i: OSV_CACHE.get(i) for i in all_ids}
+    todo = [i for i, d in details.items() if not isinstance(d, dict)]
     with ThreadPoolExecutor(8) as ex:
-        details = dict(zip(all_ids, ex.map(lambda i: _get_json(f"https://api.osv.dev/v1/vulns/{urllib.parse.quote(i)}")[1], all_ids)))
+        fetched = dict(zip(todo, ex.map(lambda i: _get_json(f"https://api.osv.dev/v1/vulns/{urllib.parse.quote(i)}")[1], todo)))
+    for i, doc in fetched.items():
+        details[i] = doc
+        if isinstance(doc, dict):
+            # only what the report uses: an advisory body can be tens of kilobytes
+            OSV_CACHE.put(i, {k: doc[k] for k in ("id", "summary", "affected", "database_specific", "severity") if k in doc})
     for key, ids in ids_for.items():
         out[key] = [details.get(i) or {"id": i} for i in ids]
     return out
@@ -443,6 +473,12 @@ class DepScanner:
         self.emit(Finding(rule, dep.file, dep.line, msg, sev, sf.line(dep.line).strip() if sf else ""))
 
     def run(self) -> None:
+        try:
+            self._run()
+        finally:
+            save_caches()
+
+    def _run(self) -> None:
         deps = collect(self.p)
         if not deps:
             return

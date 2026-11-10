@@ -61,6 +61,7 @@ class Options:
     sanitizers: List[str] = field(default_factory=list)
     public_paths: List[str] = field(default_factory=list)
     changes: Optional[dict] = None  # from gitdiff.changed(): report only findings on changed lines
+    feedback: bool = True  # hide findings marked false positive in .vibeaudit/feedback.json
     log: Callable[[str], None] = lambda s: None
 
 
@@ -138,6 +139,17 @@ def scan(root: str, opts: Optional[Options] = None) -> Result:
         from .gitdiff import keep
 
         findings = [f for f in findings if keep(opts.changes, f.file, f.line)]
+    hidden = 0
+    if opts.feedback:
+        from .feedback import false_positives
+
+        reviewed = false_positives(project.root)
+        if reviewed:
+            before = len(findings)
+            findings = [f for f in findings if f.fingerprint not in reviewed]
+            hidden = before - len(findings)
+            if hidden:
+                notes.append(f"{hidden} findings marked as false positives in .vibeaudit/feedback.json are hidden.")
     if GUARD.skipped:
         notes.append(f"{len(GUARD.skipped)} file checks were skipped (time budget or nesting); see meta.skipped.")
     if GUARD.internal_errors:
@@ -161,6 +173,7 @@ def scan(root: str, opts: Optional[Options] = None) -> Result:
         "stack": _stack(project), "external_tools": ran, "offline": opts.offline, "notes": notes,
         "routes_found": len(js_routes) + len(py_routes), "git": project.is_git,
         "skipped": list(GUARD.skipped), "internal_errors": list(GUARD.internal_errors),
+        "feedback_hidden": hidden,
     }
     if opts.changes is not None:
         meta["changed_files"] = len(opts.changes)
