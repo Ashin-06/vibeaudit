@@ -4,3 +4,5 @@ Dockerfile:1:CFG002
 Dockerfile:1:CFG001
 Dockerfile:2:CFG003
 Dockerfile:4:CFG009
+requirements.txt:1:QA001
+requirements.txt:1:QA002

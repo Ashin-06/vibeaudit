@@ -92,7 +92,7 @@ def m_rename(root):
     for p in files(root, ".py", ".js", ".ts", ".tsx", ".html"):
         def fix(t):
             for old, new in names.items():
-                t = re.sub(r"(?<![\w$.\"'/-])" + re.escape(old) + r"(?![\w$\"'])", new, t)
+                t = re.sub(r"(?<![\w$.\"'/@-])" + re.escape(old) + r"(?![\w$\"'/-])", new, t)  # not inside package names
             return t
         rewrite(p, fix)
 

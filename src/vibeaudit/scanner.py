@@ -18,6 +18,7 @@ from .jsscan import JsScanner
 from .model import SEVERITY_RANK, Finding, at_least
 from .projectscan import ProjectScanner
 from .pyscan import PyScanner
+from .qualityscan import QualityScanner
 from .report import Result
 from .rules import RULES
 from .secretscan import SecretScanner
@@ -95,6 +96,7 @@ def scan(root: str, opts: Optional[Options] = None) -> Result:
     py_routes = PyScanner(project, emit).run()
     SecretScanner(project, emit).run()
     ProjectScanner(project, emit, js_routes + py_routes).run()
+    QualityScanner(project, emit).run()
     plugins.run(project, js_routes + py_routes, emit)
     deps = DepScanner(project, emit, opts.offline)
     GUARD.run("<project>", "dependency checks", deps.run)

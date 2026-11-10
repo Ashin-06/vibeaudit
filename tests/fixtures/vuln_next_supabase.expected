@@ -4,3 +4,4 @@ package.json:15:DEP002
 package.json:1:DEP005
 package.json:1:QA001
 package.json:1:QA002
+lib/payments.ts:1:QA008

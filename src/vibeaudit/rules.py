@@ -384,6 +384,21 @@ _R = [
          "An empty except/catch hides failures, including failed auth or payment calls, and makes incidents "
          "very hard to debug.",
          "Log the error and handle it explicitly, or let it propagate.", "CWE-390", "A09:2021"),
+    Rule("QA005", "Unfinished stub left in code", "quality", "medium",
+         "A route handler or function that only passes, raises NotImplementedError or throws 'not implemented' is "
+         "a placeholder an assistant left behind. The feature silently does nothing or crashes when used.",
+         "Implement the function, or remove it and every caller until it is ready.", "CWE-1164", ""),
+    Rule("QA006", "Import of a file or name that does not exist", "quality", "high",
+         "The code imports a local module, file or function that is not in the project. Assistants invent helper "
+         "names that sound right; the app crashes on start-up or when that code path runs.",
+         "Create the missing module or function, or import the one that actually exists.", "CWE-1164", ""),
+    Rule("QA007", "Package imported but not declared as a dependency", "quality", "medium",
+         "The package is installed on the author's machine but missing from requirements.txt, pyproject.toml or "
+         "package.json, so a clean install (CI, Docker, production) fails with an import error.",
+         "Add the package with a pinned version to the project's dependency file.", "CWE-1104", ""),
+    Rule("QA008", "TypeScript checking disabled for a whole file", "quality", "low",
+         "`// @ts-nocheck` hides every type error in the file, including the ones that would catch broken AI edits.",
+         "Remove @ts-nocheck and fix or narrowly suppress the individual errors.", "", ""),
     Rule("AI001", "Issue reported by the LLM review (unverified)", "llm-review", "medium",
          "With --llm-review a model reads the riskiest files and reports issues the rules did not cover. These are "
          "suggestions from a model and can be wrong.",

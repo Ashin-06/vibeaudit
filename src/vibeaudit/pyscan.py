@@ -303,6 +303,7 @@ class PyScanner:
             tree = ast.parse(sf.text or "", filename=sf.rel)
         except (SyntaxError, ValueError):
             return  # not valid Python (templates, Python 2, partial files): nothing to analyse
+        sf.cache["ast"] = tree
         self.trees.append((sf, tree))
 
     def _check_file(self, sf: SourceFile, tree: ast.Module) -> None:
