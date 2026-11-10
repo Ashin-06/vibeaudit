@@ -33,7 +33,7 @@ Contents: [Quickstart](#quickstart) - [Example output](#example-output) - [What 
 ## Quickstart
 
 ```bash
-pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.5.2"
+pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.6.0"
 ```
 
 ```bash
@@ -115,13 +115,13 @@ Good tools exist, and vibeaudit runs them when they are installed instead of rep
 vibeaudit is installed from this repository (it is not on PyPI yet). Python 3.9 or newer:
 
 ```bash
-pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.5.2"
+pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.6.0"
 ```
 
 or, to keep it in its own environment:
 
 ```bash
-pipx install "git+https://github.com/Ashin-06/vibeaudit.git@v0.5.2"
+pipx install "git+https://github.com/Ashin-06/vibeaudit.git@v0.6.0"
 ```
 
 Optional: if [gitleaks](https://github.com/gitleaks/gitleaks), [bandit](https://github.com/PyCQA/bandit),
@@ -148,6 +148,7 @@ Every command has `--help`.
 | `-r`, `--report FORMAT[:PATH]` | Also write a report: `json`, `sarif`, `md`, `html`, `prompt` (a fix brief for AI assistants) or `badge` (SVG). Repeatable; `-` as the path writes to stdout, as in `-r json:-`. Default path `vibeaudit-report.<ext>`. |
 | `--fail-on SEVERITY` | Exit 1 when a finding is at least `critical`, `high` (default), `medium` or `low`; `none` never fails. |
 | `--min-severity SEVERITY` | Hide findings below this severity (default `low`). |
+| `--include-preview` | Count findings of preview rules toward `--fail-on` and the score; they are always reported (see [STABILITY.md](STABILITY.md)). |
 | `--offline` | No network: skip registry, new-package and vulnerability lookups (the typosquat check still runs). |
 | `--exclude GLOB` | Skip matching paths (repeatable). A `.vibeauditignore` file with one glob per line works too. |
 | `--disable RULE_OR_CATEGORY` | Switch off a rule (`QA002`) or a category (`quality`); repeatable, comma lists allowed. |
@@ -217,7 +218,7 @@ sanitizers = ["clean_sql_input"]                               # their output is
 public-paths = ["/api/public/*", "/api/survey-*"]              # intentionally unauthenticated routes
 ```
 
-Other keys: `llm`, `llm-model`, `llm-max-requests`, `max-file-size`, `file-timeout`. The same settings apply
+Other keys: `include-preview`, `llm`, `llm-model`, `llm-max-requests`, `max-file-size`, `file-timeout`. The same settings apply
 to `vibeaudit scan`, `vibeaudit routes`, `vibeaudit feedback`, the MCP server and the Python API. The file is
 part of the scanned repository and can switch rules off: when you audit code you do not trust, use
 `--no-config`.
@@ -242,7 +243,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0                  # needed for --diff
-      - uses: Ashin-06/vibeaudit@v0.5.2
+      - uses: Ashin-06/vibeaudit@v0.6.0
         with:
           fail-on: high
           args: --diff origin/main        # optional: only changed lines
@@ -263,7 +264,7 @@ flags, split on spaces), `setup-python` (`true`/`false`) and `python-version`.
 # .pre-commit-config.yaml
 repos:
   - repo: https://github.com/Ashin-06/vibeaudit
-    rev: v0.5.2
+    rev: v0.6.0
     hooks:
       - id: vibeaudit
 ```
@@ -349,6 +350,10 @@ The same formula gives a score per domain, so you can see where the problems are
 The terminal, JSON (`summary.domains`), Markdown and HTML reports all show them. A score is a summary for
 tracking progress, not a security guarantee: read the findings.
 
+Findings of **preview** rules (marked `(preview)`, `"preview": true` in JSON) are reported but left out of
+the score, the grade and `--fail-on`, unless you pass `--include-preview`. A rule is in preview while its
+measured precision is below 90% or it is new; see [STABILITY.md](STABILITY.md).
+
 ## False positives and suppressing findings
 
 Static analysis guesses, and some findings will be wrong for your project. In order of preference:
@@ -405,7 +410,7 @@ How it reads code:
 - The per-file time budget is checked between regex matches and statements; a single regex step cannot be
   interrupted, which is why every pattern is tested for linear time.
 
-Not covered (roadmap, contributions welcome):
+Not covered (see [ROADMAP.md](ROADMAP.md); contributions welcome):
 
 - Languages other than Python and JavaScript/TypeScript: Go, Java, Kotlin, Rust, Ruby, PHP, C#.
 - Infrastructure as code: Terraform, CloudFormation, Kubernetes manifests, Helm.
@@ -413,6 +418,24 @@ Not covered (roadmap, contributions welcome):
 - Automatic fixes (a fix command that edits code) and a gate on score drift between commits.
 - Runtime testing: vibeaudit reads code, it does not attack a running app or a model. For prompt injection
   and jailbreaks against a live model, use promptfoo or garak.
+
+## Accuracy
+
+Every rule is measured on a labelled benchmark: 32 public repositories pinned to exact commits (AI-built
+Lovable/Supabase apps, LLM apps, well-maintained Python and JavaScript projects and one deliberately
+vulnerable app), where each of the 524 findings was read in the code and labelled true or false, plus
+seeded examples for recall. Precision per rule, seeded recall and the status of every rule are in
+[benchmark/RESULTS.md](benchmark/RESULTS.md): 88% of findings are true positives overall, and every
+stable rule with at least 5 labelled findings is at 90% or above. Rules below that are in preview.
+CI fails when a rule's precision drops, a labelled true positive disappears or seeded recall drops.
+
+Reproduce it (the repositories are cloned into `~/.cache/vibeaudit-bench`, never into this one):
+
+```bash
+python tools/benchmark.py run --json results.json
+```
+
+How the corpus was chosen and how findings are labelled: [benchmark/README.md](benchmark/README.md).
 
 ## How it was validated
 
@@ -440,6 +463,22 @@ Not covered (roadmap, contributions welcome):
 - **Packaging.** The built wheel was installed in fresh environments on Python 3.9, 3.11, 3.12 and 3.13 and
   every command was run; CI runs the tests on 3.9 to 3.13 on Linux, macOS and Windows, and also from a plain
   checkout without installing.
+
+## Verifying a release
+
+Each [GitHub release](https://github.com/Ashin-06/vibeaudit/releases) has the wheel, the sdist and a
+CycloneDX SBOM (`vibeaudit-VERSION.cdx.json`), built by the release workflow from the tagged commit. Their
+build provenance is signed with GitHub artifact attestations (Sigstore). With the GitHub CLI:
+
+```bash
+gh attestation verify vibeaudit-0.6.0-py3-none-any.whl --repo Ashin-06/vibeaudit
+```
+
+Run the same for the `.tar.gz` and the `.cdx.json` file. The check passes only if the file was built by
+this repository's release workflow; `--format json` shows the commit and workflow it came from. The SBOM
+lists what the wheel installs (vibeaudit has no runtime dependencies on Python 3.11 and later, and
+`tomli` before that). vibeaudit is not published to PyPI by this project yet; install a verified wheel
+with `pip install vibeaudit-0.6.0-py3-none-any.whl`.
 
 ## Contributing, security and license
 

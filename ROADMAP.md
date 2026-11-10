@@ -1,0 +1,117 @@
+# Roadmap
+
+Status: **done** (released, stable), **preview** (released as a preview rule or feature, see
+[STABILITY.md](STABILITY.md)), **planned** (not started). Updated with every release. New rules always ship
+as preview first and leave preview only at 90% precision or more on the [benchmark](benchmark/README.md).
+
+## Phase 0: prove the rules are accurate (0.6.0)
+
+| Item | Status |
+| --- | --- |
+| Labelled benchmark corpus: 32 pinned public repositories, labels per finding | done |
+| Precision per rule and seeded recall (`tools/benchmark.py`), table and JSON results | done |
+| CI regression gate against a stored baseline, tolerant of network failures | done |
+| Rule stability policy and preview rules (`--include-preview`) | done |
+| Signed build provenance and CycloneDX SBOM on every release | done |
+| Accuracy section in the README | done |
+
+## Phase 1: new checks (0.7.x)
+
+| Item | Status |
+| --- | --- |
+| React server actions leaking secrets or server closures to the client | planned |
+| Hydration mismatches: window sizes, `new Date()`, random ids during render (extends UI007) | planned |
+| Images without width and height (layout shift) | planned |
+| Form errors without `aria-describedby` | planned |
+| Focus outlines removed | planned |
+| Asset links (fonts, SVG, favicon, public images) to missing files | planned |
+| CORS wildcard or reflected origin with credentials | done (BE012, narrowed in 0.6.0) |
+| Cookie-authenticated state changes without a CSRF token or SameSite=Lax/Strict | planned |
+| Rate limits keyed on the raw IP behind a proxy | planned |
+| Webhooks without a timestamp or replay window | planned |
+| Payment amounts or prices taken from the client | planned |
+| Email header injection | planned |
+| Open redirects and SSRF in "fetch this URL" features (extends BE005/BE008) | planned |
+| JWT verified without pinned algorithms (alg none, HMAC/RSA confusion) | planned |
+| Password change or reset not revoking sessions and refresh tokens | planned |
+| Queries not scoped to the current tenant or org (extends AUTH003) | planned |
+| Feature flags or admin toggles reachable without auth | planned |
+| User text in prompts without delimiters (extends LLM001) | planned |
+| RAG ingestion storing unsanitised text or instructions (chunk poisoning) | planned |
+| Agent tool loops without a max iteration limit (extends LLM009) | planned |
+| Streaming completions not cancelled when the client disconnects | planned |
+| No per-user or per-request cost limit | planned |
+| Prompts or completions with personal data written to logs | planned |
+| Model output used as SQL, a shell argument or a file path (extends LLM002) | planned |
+| LLM features without a test or eval of their prompt | planned |
+| Agent config files granting auto-approve or broad shell and file access | planned |
+| Foreign keys without an index | planned |
+| Postgres `CREATE INDEX` without `CONCURRENTLY` in migrations | planned |
+| Vector stores keeping raw personal data in metadata | planned |
+| Redis keys without a TTL | planned |
+| Multi-step cache invalidation without a lock (stampede) | planned |
+| Cron and queue jobs that are not idempotent | planned |
+| Dockerfile multi-stage builds copying secrets into layers | planned |
+| Kubernetes: no resource limits, privileged containers, hostPath | planned |
+| Terraform and CloudFormation: public S3, open security groups, unencrypted storage | planned |
+| Third-party GitHub Actions not pinned to a SHA | planned |
+| Secrets passed to untrusted steps or forks | planned |
+| Over-broad `GITHUB_TOKEN` | planned |
+| Transitive vulnerabilities from lockfiles, with OSV offline data | planned |
+| Phantom JS dependencies (only transitive in the lockfile) | planned |
+| Registry confusion (private scopes without a registry, `extra-index-url`) | planned |
+| Duplicate utility functions across files | planned |
+| Mixed framework idioms (App Router and Pages Router in one app) | planned |
+| Fake fallbacks and mock relics in production code | planned |
+
+## Phase 2: `vibeaudit fix`
+
+| Item | Status |
+| --- | --- |
+| Codemods (diff by default, `--apply`): request timeouts, `rel="noopener noreferrer"`, guarded `JSON.parse` of model output, pinned JWT algorithms, Decimal money columns, CORS credentials, Redis TTL | planned |
+| Agentic patch generator for complex findings (writes a `.patch`, never applies it) | planned |
+| MCP `auto_repair` tool returning the diff | planned |
+
+## Phase 3: everywhere it runs
+
+| Item | Status |
+| --- | --- |
+| `vibeaudit watch` (incremental re-scan) | planned |
+| Language server with diagnostics and code actions | planned |
+| VS Code / Cursor extension (.vsix built in CI, not published) | planned |
+| `vibeaudit studio` local web UI (127.0.0.1 only) | planned |
+| PR review bot and `--fail-on-regression N` | planned |
+| Pre-commit fast path under 150 ms | planned |
+| MCP tools: audit_current_file, verify_package, simulate_migration, auto_repair | planned |
+| GitLab CI and CircleCI templates | planned |
+| Monorepo mode | planned |
+| Offline / air-gapped mode with bundled data | planned |
+| `vibeaudit explain <finding>` | planned |
+
+## Phase 4: compliance and threat intelligence
+
+| Item | Status |
+| --- | --- |
+| Rule mapping to OWASP Top 10 2021, OWASP LLM Top 10 2025, EU AI Act themes, SOC 2, HIPAA, GDPR (a mapping, not certification or legal advice) | planned |
+| `--report compliance:<framework>` (HTML and printable output) | planned |
+| Signed threat-intel feed in `vibeaudit update`: slopsquatted names, model sunset calendar, prompt-injection patterns, community submissions; works offline | planned |
+
+## Phase 5: more languages
+
+| Item | Status |
+| --- | --- |
+| Go (net/http, Gin, Fiber, Chi, GORM) | planned |
+| Java/Kotlin (Spring Boot, Quarkus) | planned |
+| C#/.NET (ASP.NET Core, EF Core) | planned |
+| Rust (Actix, Axum) | planned |
+| PHP (Laravel, Symfony) | planned |
+
+## Phase 6: opt-in extras
+
+| Item | Status |
+| --- | --- |
+| `vibeaudit test-exploit <finding>`: proof-of-concept request, localhost only, no destructive payloads | planned |
+| Runtime observability middleware for Express and FastAPI (staging only, off by default) | planned |
+
+vibeaudit is not published to PyPI or any marketplace by this project; packages are built in CI and
+attached to GitHub releases.

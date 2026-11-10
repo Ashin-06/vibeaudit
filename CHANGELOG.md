@@ -4,6 +4,67 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.6.0] - 2026-11-11
+
+Measurement and trust: every rule's accuracy is now measured on a labelled benchmark, and the rules were
+fixed where it showed false positives. No new rules. Overall precision on the benchmark went from 56% to
+88% with no true positive lost; details per rule in [benchmark/README.md](benchmark/README.md).
+
+### Added
+
+- Accuracy benchmark: 32 public repositories pinned to exact commits (AI-built apps, LLM apps,
+  well-maintained Python and JavaScript projects, one deliberately vulnerable app), with all 524 findings
+  read and labelled, plus seeded sample apps. `tools/benchmark.py` prints precision per rule and seeded
+  recall ([benchmark/RESULTS.md](benchmark/RESULTS.md)).
+- A CI job that fails when a rule's precision drops, a labelled true positive disappears or seeded recall
+  drops. A repository that cannot be fetched is retried, then skipped and listed.
+- Preview rules ([STABILITY.md](STABILITY.md)): reported, but not counted toward `--fail-on`, the score or
+  the grade unless `--include-preview` (or `include-preview = true`) is given. Rule IDs never change
+  meaning and are never reused.
+- Releases are built by a workflow from the tag, with a CycloneDX SBOM and signed build provenance (GitHub
+  artifact attestations) for the wheel, the sdist and the SBOM. See "Verifying a release" in the README.
+- [ROADMAP.md](ROADMAP.md).
+
+### Changed
+
+- Eight rules are now preview because their measured precision is under 90%: BE018, DATA001, DATA007,
+  DATA010, FE001, QA003, SEC003, UI006. Their findings are still reported; the reason is in
+  `vibeaudit rules --format json` and docs/RULES.md. Pass `--include-preview` to gate on them as before.
+- BE012 reports an open or reflected CORS origin only together with credentials (without credentials no
+  cookies are sent, so another site cannot act as the logged-in user).
+- QA003 reports only bare, `Exception` and `BaseException` handlers; naming a specific exception means the
+  failure was expected.
+- FE001 reports template `|safe` only on values named like user or model input (`user.bio`, `comment`,
+  `answer`), not on CMS fields or generated docs.
+- All GitHub Actions in this repository and in `action.yml` are pinned to commit SHAs.
+
+### Fixed
+
+False positives found by labelling the corpus, each with a regression test that fails on 0.5.2:
+
+- Django `tests.py` modules were not treated as tests (and counted as "no tests"); code in a library's
+  `examples/` folder was reported as application code (credentials are still reported there).
+- Minified files with lines under 500 characters on average, and vendored builds kept readable
+  ("Original source: .../dist/x-min.js"), were scanned as application code.
+- DATA001 and BE001 in migrations, management commands, seed and setup scripts; BE001 on
+  `Promise.all(rows.map(...))`.
+- DATA007 on variables read only when set (`"X" in os.environ`, `if x:`, a default assigned on the next
+  line, a ternary) and on examples inside prompt strings; a Python f-string interpolation still counts.
+- BE008 on `url_for()`, `reverse()`, `redirect(model)` and the request's own origin with a fixed path.
+- AUTH005 when a setup script enables Row Level Security; AUTH006 on policies `TO service_role`.
+- AUTH001 when the handler calls an imported `getAuthedUser()`; AUTH004 with a constant-time signature
+  comparison; AUTH003 on `req.auth?.user?.id`, `current_user().id` and admin-only routes; AUTH010 on
+  token-based resets and routes that take no credential.
+- SEC004 on an error message naming `cookieParser("secret")` and on base or dev settings that
+  `production.py` replaces (also CFG006 and BE011, and dev and test settings files); SEC003 on `pub_` and
+  `pk_` public keys; SEC011 in seed data files.
+- BE003 on a module's own `eval()` function; BE015 on `random.SystemRandom()`; FE004 on Web Worker message
+  channels; FE005 on WebAuthn credential ids; BE018 with `npm:zod` imports.
+- UI001 and UI010 inside HTML and Django template comments; UI002 on backdrop overlays that close a
+  dialog; QA003 with a comment above `pass`; QA005 on `__setitem__` raising NotImplementedError; QA007 on
+  PEP 508 direct references (`name @ git+...`) and `djmoney`; DATA003 on `ALTER COLUMN ... TYPE ... USING`.
+- Scanning code with an invalid escape sequence printed Python's SyntaxWarning.
+
 ## [0.5.2] - 2026-11-10
 
 Fixes from a fourth external audit and from six audit passes run afterwards (a fresh read of the code,
