@@ -67,6 +67,8 @@ def build_parser() -> argparse.ArgumentParser:
     m.add_argument("--format", choices=["text", "json", "md"], default="text")
     m.add_argument("--exclude", action="append", default=[], metavar="GLOB", help="skip paths matching GLOB (repeatable)")
 
+    sub.add_parser("mcp", help="run a Model Context Protocol server on stdio for coding agents")
+
     r = sub.add_parser("rules", help="list every rule")
     r.add_argument("--format", choices=["text", "json", "md"], default="text")
     return p
@@ -211,6 +213,10 @@ def main(argv: Optional[List[str]] = None) -> int:
         return cmd_rules(a.format)
     if a.command == "routes":
         return cmd_routes(a)
+    if a.command == "mcp":
+        from .mcp_server import main as mcp_main
+
+        return mcp_main()
     if a.command == "scan":
         return cmd_scan(a)
     parser.print_help()
