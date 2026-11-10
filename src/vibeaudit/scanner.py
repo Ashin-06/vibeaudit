@@ -54,6 +54,7 @@ class Options:
     auth_helpers: List[str] = field(default_factory=list)
     sanitizers: List[str] = field(default_factory=list)
     public_paths: List[str] = field(default_factory=list)
+    changes: Optional[dict] = None  # from gitdiff.changed(): report only findings on changed lines
     log: Callable[[str], None] = lambda s: None
 
 
@@ -120,6 +121,10 @@ def scan(root: str, opts: Optional[Options] = None) -> Result:
             raw.extend(res)
 
     findings = finalize(project, raw, opts)
+    if opts.changes is not None:
+        from .gitdiff import keep
+
+        findings = [f for f in findings if keep(opts.changes, f.file, f.line)]
     if GUARD.skipped:
         notes.append(f"{len(GUARD.skipped)} file checks were skipped (time budget or nesting); see meta.skipped.")
     if GUARD.internal_errors:
@@ -144,6 +149,8 @@ def scan(root: str, opts: Optional[Options] = None) -> Result:
         "routes_found": len(js_routes) + len(py_routes), "git": project.is_git,
         "skipped": list(GUARD.skipped), "internal_errors": list(GUARD.internal_errors),
     }
+    if opts.changes is not None:
+        meta["changed_files"] = len(opts.changes)
     return Result(str(project.root), findings, meta)
 
 

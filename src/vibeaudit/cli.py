@@ -55,6 +55,8 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--llm-model", help="model name for the LLM provider")
     s.add_argument("--llm-review", action="store_true", help="also ask the LLM to review the riskiest files for missed issues")
     s.add_argument("--llm-max-requests", type=int, default=None, help="hard cap on LLM requests per scan (default: 10)")
+    s.add_argument("--staged", action="store_true", help="report only findings on lines staged for commit (pre-commit hooks)")
+    s.add_argument("--diff", metavar="REV", help="report only findings on lines changed since REV, e.g. origin/main (pull requests)")
     s.add_argument("--config", metavar="FILE", help="read settings from this TOML file instead of .vibeaudit.toml / pyproject.toml")
     s.add_argument("--no-config", action="store_true", help="ignore configuration files in the scanned project")
     s.add_argument("-q", "--quiet", action="store_true", help="print only the summary")
@@ -96,6 +98,18 @@ def cmd_scan(a: argparse.Namespace) -> int:
         return flag if flag is not None else cfg.get(key, default)
 
     fail_on = pick(a.fail_on, "fail_on", "high")
+    changes = None
+    if a.staged or a.diff:
+        if a.staged and a.diff:
+            print("vibeaudit: use either --staged or --diff, not both", file=sys.stderr)
+            return 2
+        from .gitdiff import DiffError, changed
+
+        try:
+            changes = changed(Path(a.path), staged=a.staged, base=a.diff)
+        except DiffError as e:
+            print(f"vibeaudit: cannot compute changes: {e}", file=sys.stderr)
+            return 2
     reports = []
     for spec in a.report:
         fmt, _, path = spec.partition(":")
@@ -129,7 +143,7 @@ def cmd_scan(a: argparse.Namespace) -> int:
                    llm_max_requests=max(0, pick(a.llm_max_requests, "llm_max_requests", 10)),
                    file_timeout=max(0.1, float(pick(a.file_timeout, "file_timeout", 30.0))),
                    auth_helpers=list(cfg.get("auth_helpers", [])), sanitizers=list(cfg.get("sanitizers", [])),
-                   public_paths=list(cfg.get("public_paths", [])), log=log)
+                   public_paths=list(cfg.get("public_paths", [])), changes=changes, log=log)
     if cfg_path:
         log(f"using settings from {cfg_path}")
     try:
