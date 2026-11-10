@@ -104,7 +104,7 @@ def project_options(root: str, config: Optional[str] = None, **overrides):
     disabled = {x.strip() for d in cfg.get("disable", []) for x in str(d).split(",") if x.strip()}  # type: ignore[attr-defined]
     values = {
         "offline": bool(cfg.get("offline", False)), "excludes": list(cfg.get("exclude", [])),  # type: ignore[call-overload]
-        "disabled": disabled, "min_severity": cfg.get("min_severity", "info"), "external": cfg.get("external", "auto"),
+        "disabled": disabled, "min_severity": cfg.get("min_severity", "low"),  # as the CLI "external": cfg.get("external", "auto"),
         "baseline": baseline, "max_file_bytes": cfg.get("max_file_size", 1_000_000), "llm": cfg.get("llm"),
         "llm_model": cfg.get("llm_model"), "llm_max_requests": cfg.get("llm_max_requests", 10),
         "file_timeout": float(cfg.get("file_timeout", 30.0)),  # type: ignore[arg-type]

@@ -34,8 +34,17 @@ def _git(root: Path, *args: str) -> str:
 def parse_diff(text: str) -> Changes:
     changes: Changes = {}
     current: Optional[str] = None
+    in_header = True  # file headers come before the first hunk of each file
+    previous = ""
     for line in text.splitlines():
-        if line.startswith("+++ "):
+        prev, previous = previous, line
+        if line.startswith("diff --git "):
+            in_header = True
+            continue
+        if line.startswith("@@"):
+            in_header = False
+        # inside a hunk, an added line "++ x" reads "+++ x": it is content, not a new file
+        if line.startswith("+++ ") and (in_header or prev.startswith("--- ")):
             path = line[4:].strip()
             if path.startswith('"') and path.endswith('"'):  # git quotes paths with quotes or backslashes
                 path = path[1:-1].replace('\\"', '"').replace("\\\\", "\\")
@@ -59,7 +68,9 @@ def changed(root: Path, staged: bool = False, base: Optional[str] = None) -> Cha
     common = ["--relative", "-U0", "--no-color", "--no-ext-diff", "--no-prefix", "--diff-filter=ACMR"]
     if staged:
         return parse_diff(_git(root, "diff", "--cached", *common))
-    assert base is not None
+    if not base or base.startswith("-"):
+        # the revision can come from an MCP client; `--output=FILE` would make git write files
+        raise DiffError(f"not a git revision: {base!r}")
     try:
         point = _git(root, "merge-base", base, "HEAD").strip()
     except DiffError:

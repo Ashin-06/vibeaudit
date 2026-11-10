@@ -32,8 +32,10 @@ def findings(tmp_path, capsys, *args):
 
 
 def test_parse_diff_handles_additions_deletions_and_quoted_paths():
-    text = ("+++ app.py\n@@ -3,0 +4,2 @@\n+a\n+b\n@@ -9 +11 @@\n-x\n+y\n@@ -20,3 +22,0 @@\n"
-            "+++ /dev/null\n@@ -1 +0,0 @@\n+++ \"we\\\"ird.py\"\n@@ -0,0 +1 @@\n")
+    # shaped like `git diff -U0 --no-prefix` output: a diff --git line and ---/+++ headers per file
+    text = ("diff --git app.py app.py\n--- app.py\n+++ app.py\n@@ -3,0 +4,2 @@\n+a\n+b\n@@ -9 +11 @@\n-x\n+y\n@@ -20,3 +22,0 @@\n"
+            "diff --git gone.py gone.py\n--- gone.py\n+++ /dev/null\n@@ -1 +0,0 @@\n"
+            "diff --git \"we\\\"ird.py\" \"we\\\"ird.py\"\n--- /dev/null\n+++ \"we\\\"ird.py\"\n@@ -0,0 +1 @@\n")
     assert parse_diff(text) == {"app.py": {4, 5, 11}, 'we"ird.py': {1}}
     assert keep({"a.py": None}, "a.py", 7) and keep({"a.py": {2}}, "a.py", 0) and not keep({"a.py": {2}}, "a.py", 3)
 

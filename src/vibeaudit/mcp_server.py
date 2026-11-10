@@ -113,16 +113,26 @@ def tool_scan_project(args: Dict[str, Any]) -> Dict[str, Any]:
     from .gitdiff import DiffError, changed
     from .scanner import scan
 
+    from .model import SEVERITIES
+
     root = _dir(args.get("path"))
+    # arguments come from a model: check them against the schema instead of trusting their types
+    severity = args.get("min_severity", "low")
+    if severity not in SEVERITIES:
+        raise ToolError(f"min_severity must be one of {', '.join(SEVERITIES)}")
+    offline = args.get("offline", True)
+    if not isinstance(offline, bool):
+        raise ToolError("offline must be true or false")
+    changes_arg = args.get("changes")
+    if changes_arg is not None and (not isinstance(changes_arg, str) or not changes_arg.strip()):
+        raise ToolError("changes must be 'staged' or a git revision such as 'origin/main'")
     changes = None
-    if args.get("changes"):
+    if changes_arg:
         try:
-            changes = changed(Path(root), staged=args["changes"] == "staged",
-                              base=None if args["changes"] == "staged" else str(args["changes"]))
+            changes = changed(Path(root), staged=changes_arg == "staged", base=None if changes_arg == "staged" else changes_arg)
         except DiffError as e:
             raise ToolError(f"cannot compute changes: {e}") from None
-    res = scan(root, _options(root, offline=bool(args.get("offline", True)), external="none",
-                              min_severity=str(args.get("min_severity", "low")), changes=changes))
+    res = scan(root, _options(root, offline=offline, external="none", min_severity=severity, changes=changes))
     return _summary(res, res.findings)
 
 
@@ -162,7 +172,10 @@ def tool_check_package(args: Dict[str, Any]) -> Dict[str, Any]:
     name, eco = args.get("name"), args.get("ecosystem")
     if not isinstance(name, str) or not name or eco not in ("PyPI", "npm"):
         raise ToolError("name (string) and ecosystem (PyPI or npm) are required")
-    dep = deps.Dep(name, eco, "", 0, args.get("version") if isinstance(args.get("version"), str) else None)
+    version = args.get("version")
+    if version is not None and not isinstance(version, str):
+        raise ToolError("version must be a string such as \"2.31.0\"")
+    dep = deps.Dep(name, eco, "", 0, version or None)
     deps.BREAKER.reset()  # the server lives long: one network blip must not disable lookups for good
     status, first, note = deps.registry_info(dep)
     out: Dict[str, Any] = {"name": name, "ecosystem": eco, "registry": status,
