@@ -205,7 +205,7 @@ files count) but report only findings on added or changed lines.
 # .pre-commit-config.yaml
 repos:
   - repo: https://github.com/Ashin-06/vibeaudit
-    rev: v0.5.0
+    rev: v0.5.1
     hooks:
       - id: vibeaudit
 ```
@@ -227,7 +227,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Ashin-06/vibeaudit@v0.5.0
+      - uses: Ashin-06/vibeaudit@v0.5.1
         with:
           fail-on: high
           args: --diff origin/main   # optional: only changed lines
@@ -325,6 +325,8 @@ Verdicts (`false-positive` or `confirmed`) are stored in `.vibeaudit/feedback.js
 so the team shares them. Later scans hide findings marked as false positives (the report notes how many);
 entries match by rule, file and line text, so they follow the code when lines move. `list` prints the
 entries and a per-rule count. Like the configuration file, the feedback file is ignored with `--no-config`.
+Dependency findings are looked up online (through the cache) when you mark them; pass `--config` and
+`--plugin` as for `scan` to mark findings that depend on another settings file or on plugin rules.
 
 ## Caching and updates
 
@@ -424,6 +426,8 @@ python -m pytest -q
 ```bash
 python tools/check_ascii.py
 ```
+
+The tests also run from a plain checkout with only pytest installed (CI checks both ways).
 
 Deeper runs: `VIBEAUDIT_FUZZ_ROUNDS=300` for the fuzzer and `VIBEAUDIT_PERF_FILES=10000` for the scale
 test.

@@ -4,6 +4,41 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.5.1] - 2026-11-10
+
+Fixes from a third external audit; no new features. Each fix has a regression test that fails on 0.5.0.
+
+### Fixed
+
+- The user cache was not thread-safe: registry lookups run in a thread pool, and a save during lookups
+  could raise "dictionary changed size during iteration" or drop entries. Every access now holds the lock.
+- `--no-cache` switched the cache off for the rest of the process. It now applies to one scan
+  (`Options.cache`) and restores the previous setting.
+- `vibeaudit update` had no effect on a running process (the MCP server) until restart: the compiled
+  retired-model pattern and the loaded package lists are now dropped after a refresh.
+- `vibeaudit feedback` could not mark DEP001, DEP003 or DEP004 (its scan was offline) nor findings from
+  another settings file or plugin rules; dependency findings are now looked up online through the cache, and
+  `--config` and `--plugin` are accepted.
+- LLM010 missed a tenant filter built on the lines before the vector search, and reported the route line
+  instead of the line of the search call.
+- API001/API002 skipped template literals whose `${...}` parts contain quotes, and skipped
+  `fetch("/api/users")` when the backend serves `/users`; that mismatch is now reported (with a hint) unless
+  a rewrite or proxy is configured.
+- DATA010 counted writes through a transaction client (`await tx.order.create(...)`) as outside a
+  transaction.
+- The test suite failed without `pip install -e` (the MCP test starts `python -m vibeaudit` in a child
+  process, which did not see the checkout). Child processes now get `src` on `PYTHONPATH`, and CI runs the
+  suite without installing on Linux and Windows. The test fixture now resets every cache, including LLM
+  verdicts.
+
+### Audit findings that did not reproduce
+
+- UI013 and files in `public/` that are never loaded (PDFs, images): links whose last segment has a file
+  extension were already skipped. Parallel `@slot` segments were already removed, and an intercepting
+  `(.)photo` folder only adds a route next to the real one. Guard tests added.
+- REL004 and the `Content-Length` header: the pattern is case-insensitive and its `.` matches both `-` and
+  `_`. Guard test added.
+
 ## [0.5.0] - 2026-11-10
 
 Learning and updates, plus fixes from a second external audit. Each fix has a regression test that fails
