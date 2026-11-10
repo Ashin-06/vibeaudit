@@ -24,6 +24,21 @@ def false_positives(root: Path) -> Set[str]:
     return {e["fingerprint"] for e in load(root) if e["verdict"] == "false-positive"}
 
 
+def relative_path(root: Path, file: str) -> str:
+    """A path as reports show it (relative to the project, forward slashes), from whatever an editor or a
+    shell gives: absolute paths, backslashes, a leading ./"""
+    candidate = Path(file)
+    if candidate.is_absolute():
+        try:
+            return candidate.resolve().relative_to(Path(root).resolve()).as_posix()
+        except ValueError:
+            pass  # outside the project: keep it as given, so the lookup reports "no finding"
+    out = file.replace("\\", "/")
+    while out.startswith("./"):
+        out = out[2:]
+    return out
+
+
 def record(root: Path, rule: str, file: str, line: int, verdict: str, note: str = "",
            config: Optional[str] = None) -> Optional[Dict]:
     """Find the current finding `rule` at `file:line` and record a verdict for it. None if there is no such
@@ -37,10 +52,8 @@ def record(root: Path, rule: str, file: str, line: int, verdict: str, note: str 
     opts = project_options(str(root), config, external="none", feedback=False)
     opts.offline = opts.offline or not rule.upper().startswith("DEP")
     res = scan(str(root), opts)
-    file = file.replace("\\", "/")
-    while file.startswith("./"):
-        file = file[2:]
-    match = next((f for f in res.findings if f.rule_id == rule.upper() and f.file == file and f.line == line), None)
+    file = relative_path(root, file)
+    match =next((f for f in res.findings if f.rule_id == rule.upper() and f.file == file and f.line == line), None)
     if match is None:
         return None
     entry = {"fingerprint": match.fingerprint, "rule": match.rule_id, "file": match.file, "line": match.line,

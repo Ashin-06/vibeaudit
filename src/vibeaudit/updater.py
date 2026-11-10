@@ -53,12 +53,14 @@ FILES: Dict[str, Callable[[bytes], bool]] = {
 
 def data_bytes(name: str) -> bytes:
     """The refreshed copy of a data file when there is a valid one, else the packaged copy."""
-    try:
-        data = (cache_dir() / "data" / name).read_bytes()
-        if FILES[name](data):
-            return data
-    except OSError:
-        pass
+    path = cache_dir() / "data" / name
+    if path.is_file():  # only after `vibeaudit update`
+        try:
+            data = path.read_bytes()
+            if FILES[name](data):
+                return data
+        except OSError:
+            pass  # an unreadable refreshed copy falls back to the shipped one below
     return resources.files("vibeaudit").joinpath("data", name).read_bytes()
 
 
