@@ -52,14 +52,14 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | Multi-step cache invalidation without a lock (stampede) | planned |
 | Cron and queue jobs that are not idempotent | planned |
 | Dockerfile multi-stage builds copying secrets into layers | planned |
-| Kubernetes: no resource limits, privileged containers, hostPath | planned |
-| Terraform and CloudFormation: public S3, open security groups, unencrypted storage | planned |
-| Third-party GitHub Actions not pinned to a SHA | planned |
+| Kubernetes: no resource limits, privileged containers, hostPath | preview (CFG012, CFG013; 0.7.0) |
+| Terraform and CloudFormation: public S3, open security groups, unencrypted storage | preview (CFG014, CFG015, CFG016; 0.7.0, AWS) |
+| Third-party GitHub Actions not pinned to a SHA | preview (CFG010; 0.7.0, 19 of 19 true on the corpus) |
 | Secrets passed to untrusted steps or forks | planned |
-| Over-broad `GITHUB_TOKEN` | planned |
+| Over-broad `GITHUB_TOKEN` | preview (CFG011, `write-all`; 0.7.0) |
 | Transitive vulnerabilities from lockfiles, with OSV offline data | planned |
-| Phantom JS dependencies (only transitive in the lockfile) | planned |
-| Registry confusion (private scopes without a registry, `extra-index-url`) | planned |
+| Phantom JS dependencies (only transitive in the lockfile) | done (QA007 reports every import missing from package.json) |
+| Registry confusion (private scopes without a registry, `extra-index-url`) | preview (DEP008, pip extra indexes; 0.7.0). npm scopes: planned |
 | Duplicate utility functions across files | planned |
 | Mixed framework idioms (App Router and Pages Router in one app) | planned |
 | Fake fallbacks and mock relics in production code | planned |

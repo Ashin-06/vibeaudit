@@ -4,6 +4,31 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.7.0] - 2026-11-11
+
+First Phase 1 release: CI, supply-chain and infrastructure-as-code checks. All new rules are preview
+([STABILITY.md](STABILITY.md)): reported, but not counted toward `--fail-on` or the score until they have
+been measured at 90% or more on the benchmark for at least one release.
+
+### Added
+
+- CFG010: third-party GitHub Actions and reusable workflows used by tag or branch instead of a commit SHA
+  (GitHub's own `actions/*` and `github/*` are not reported). 19 findings on the benchmark corpus, all true.
+- CFG011: `permissions: write-all` in a workflow.
+- DEP008: `--extra-index-url` / `extra-index-url` in requirements files, `pip.conf`, `pip.ini`, `uv.toml`
+  and `pyproject.toml` (dependency confusion).
+- Kubernetes manifests: CFG012 privileged containers, `hostPath`, `hostNetwork`, `hostPID`, `hostIPC`;
+  CFG013 workloads whose containers set no resource limits (templated Helm `resources` is accepted).
+- Terraform and CloudFormation (AWS): CFG014 public S3 bucket ACLs and disabled public access blocks;
+  CFG015 security groups open to 0.0.0.0/0 or ::/0 on SSH, RDP or a database port (or every port);
+  CFG016 RDS and EBS storage without encryption at rest, or encryption switched off.
+- Seeded benchmark cases for all eight rules (`benchmark/seeded/infra_app`).
+
+### Changed
+
+- A requirements file with an extra index (for example the PyTorch wheel index) now also reports DEP008.
+  That is the setup of the 2022 torchtriton dependency-confusion attack.
+
 ## [0.6.0] - 2026-11-11
 
 Measurement and trust: every rule's accuracy is now measured on a labelled benchmark, and the rules were
