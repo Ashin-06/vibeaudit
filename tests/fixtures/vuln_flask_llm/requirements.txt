@@ -3,5 +3,6 @@ flask-cors==4.0.1
 openai==1.40.0
 requests==2.32.3
 pyyaml==6.0.1
+sqlalchemy==2.0.30
 reqeusts==2.31.0  # expect: DEP002
 flask-openai-chat-helper==0.1.0  # expect-online: DEP001

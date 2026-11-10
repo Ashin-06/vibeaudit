@@ -14,6 +14,7 @@ CATEGORIES = {
     "llm": "LLM and AI-specific risks",
     "quality": "Code quality and tests",
     "llm-review": "LLM review (model-generated, unverified)",
+    "data": "Data and database",
     "custom": "Custom rules (plugins)",
 }
 
@@ -399,6 +400,48 @@ _R = [
     Rule("QA008", "TypeScript checking disabled for a whole file", "quality", "low",
          "`// @ts-nocheck` hides every type error in the file, including the ones that would catch broken AI edits.",
          "Remove @ts-nocheck and fix or narrowly suppress the individual errors.", "", ""),
+    Rule("DATA001", "Database query inside a loop (N+1)", "data", "medium",
+         "One query per item turns a page with 100 rows into 101 round trips: slow pages, timeouts and database "
+         "load that grows with your data.",
+         "Fetch everything in one query (IN / join / include / select_related / prefetch_related) or batch the "
+         "writes (createMany, bulk_create, executemany).", "CWE-1050", ""),
+    Rule("DATA002", "Whole user record returned to the client", "data", "high",
+         "Returning the full user or account row sends every column to the browser, including password hashes, "
+         "reset tokens, Stripe ids and other private fields.",
+         "Select only the fields the client needs (Prisma `select`, Mongoose projection, a response schema).",
+         "CWE-213", "A01:2021"),
+    Rule("DATA003", "Destructive database migration", "data", "low",
+         "DROP TABLE, DROP COLUMN, TRUNCATE and column type changes destroy data and can lock big tables.",
+         "Back up first, deploy in steps (stop writing, copy, then drop) and keep a down migration.", "", ""),
+    Rule("DATA004", "Money stored as a floating-point number", "data", "medium",
+         "Floats cannot represent most decimal amounts exactly (0.1 + 0.2 != 0.3), so totals, refunds and balances "
+         "drift by cents.",
+         "Store integer cents or use NUMERIC/DECIMAL columns and Decimal types.", "CWE-1339", ""),
+    Rule("DATA005", "Private table readable by everyone", "data", "high",
+         "A Supabase policy `for select using (true)` on a table that holds users, orders, messages or keys lets "
+         "anyone with the public anon key read every row.",
+         "Scope the policy to the owner, for example `using (auth.uid() = user_id)`, or to `authenticated`.",
+         "CWE-284", "A01:2021"),
+    Rule("DATA006", "Timestamp without time zone", "data", "low",
+         "Naive datetimes and `timestamp without time zone` columns silently mix local and UTC times, which breaks "
+         "expiry checks, schedules and reports across regions and daylight saving.",
+         "Use timezone-aware values: `datetime.now(timezone.utc)` and `timestamptz` columns.", "", ""),
+    Rule("DATA007", "Environment variable missing from the example env file", "data", "low",
+         "The code reads a variable that .env.example does not document, so the next deploy or teammate setup "
+         "crashes or silently runs with a missing setting.",
+         "Add the variable (with a placeholder value) to .env.example.", "", ""),
+    Rule("DATA008", "Database client created per request", "data", "medium",
+         "Creating a client, pool or engine inside a handler opens new connections on every request and exhausts "
+         "the database's connection limit under load.",
+         "Create one client at module level (and reuse it via globalThis in Next.js development).", "CWE-400", ""),
+    Rule("DATA009", "SQLite file database on a serverless host", "data", "medium",
+         "Serverless platforms give each request a fresh, read-only or throw-away file system, so data written to a "
+         "SQLite file disappears or fails to save.",
+         "Use a hosted database (Postgres, MySQL, Turso, D1) or a mounted persistent volume.", "", ""),
+    Rule("DATA010", "Several writes without a transaction", "data", "low",
+         "When one of several related writes fails halfway (for example charge recorded but order not created), "
+         "the data is left inconsistent.",
+         "Wrap related writes in a transaction (prisma.$transaction, db.transaction, BEGIN/COMMIT).", "CWE-662", ""),
     Rule("AI001", "Issue reported by the LLM review (unverified)", "llm-review", "medium",
          "With --llm-review a model reads the riskiest files and reports issues the rules did not cover. These are "
          "suggestions from a model and can be wrong.",

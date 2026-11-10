@@ -1,0 +1,11 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id    String @id
+  name  String
+  price Float // expect: DATA004
+  stock Int
+}
