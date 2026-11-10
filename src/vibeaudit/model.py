@@ -86,6 +86,15 @@ class Route:
     reads_body: bool = False
     params: List[str] = field(default_factory=list)
 
+    def to_dict(self) -> dict:
+        from .heuristics import MUTATION_EVIDENCE
+
+        return {
+            "methods": self.methods, "path": self.path, "file": self.file, "line": self.line,
+            "framework": self.framework, "authenticated": self.has_auth, "calls_llm": self.calls_llm,
+            "writes_data": bool(MUTATION_EVIDENCE.search(self.body)), "reads_body": self.reads_body,
+        }
+
     @property
     def mutating(self) -> bool:
         return any(m in ("POST", "PUT", "PATCH", "DELETE", "ALL") for m in self.methods)

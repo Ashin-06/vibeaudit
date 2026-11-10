@@ -62,6 +62,11 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("-q", "--quiet", action="store_true", help="print only the summary")
     s.add_argument("--no-color", action="store_true", help="disable colored output")
 
+    m = sub.add_parser("routes", help="list every HTTP entry point with its auth, data-write and AI-call status")
+    m.add_argument("path", nargs="?", default=".", help="project directory (default: current directory)")
+    m.add_argument("--format", choices=["text", "json", "md"], default="text")
+    m.add_argument("--exclude", action="append", default=[], metavar="GLOB", help="skip paths matching GLOB (repeatable)")
+
     r = sub.add_parser("rules", help="list every rule")
     r.add_argument("--format", choices=["text", "json", "md"], default="text")
     return p
@@ -79,6 +84,37 @@ def cmd_rules(fmt: str) -> int:
     else:
         for r in rules:
             print(f"{r.id:8} {r.severity:9} {r.category:13} {r.title}")
+    return 0
+
+
+def cmd_routes(a: argparse.Namespace) -> int:
+    from .scanner import Options, scan
+
+    if not os.path.isdir(a.path):
+        print(f"vibeaudit: not a directory: {a.path}", file=sys.stderr)
+        return 2
+    res = scan(a.path, Options(offline=True, external="none", excludes=a.exclude))
+    rows = [r.to_dict() for r in sorted(res.routes, key=lambda r: (r.file, r.line))]
+    if a.format == "json":
+        print(json.dumps(rows, indent=2))
+        return 0
+
+    def yn(v: bool) -> str:
+        return "yes" if v else "no"
+
+    if a.format == "md":
+        print("| Method | Path | Auth | Writes | AI call | Location | Framework |\n| --- | --- | --- | --- | --- | --- | --- |")
+        for r in rows:
+            print(f"| {'/'.join(r['methods'])} | `{r['path']}` | {yn(r['authenticated'])} | {yn(r['writes_data'])} | "
+                  f"{yn(r['calls_llm'])} | {r['file']}:{r['line']} | {r['framework']} |")
+        return 0
+    width = max([len(r["path"]) for r in rows] + [4])
+    print(f"{'METHOD':10} {'PATH':{width}}  AUTH  WRITES  AI   LOCATION")
+    for r in rows:
+        print(f"{'/'.join(r['methods']):10} {r['path']:{width}}  {yn(r['authenticated']):4}  {yn(r['writes_data']):6}  "
+              f"{yn(r['calls_llm']):3}  {r['file']}:{r['line']}")
+    exposed = [r for r in rows if not r["authenticated"] and (r["writes_data"] or r["calls_llm"])]
+    print(f"\n{len(rows)} routes; {len(exposed)} write data or call a paid AI API without a visible auth check.")
     return 0
 
 
@@ -173,6 +209,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     a = parser.parse_args(argv)
     if a.command == "rules":
         return cmd_rules(a.format)
+    if a.command == "routes":
+        return cmd_routes(a)
     if a.command == "scan":
         return cmd_scan(a)
     parser.print_help()

@@ -151,7 +151,7 @@ def scan(root: str, opts: Optional[Options] = None) -> Result:
     }
     if opts.changes is not None:
         meta["changed_files"] = len(opts.changes)
-    return Result(str(project.root), findings, meta)
+    return Result(str(project.root), findings, meta, js_routes + py_routes)
 
 
 def _risky_files(project: Project, findings: List[Finding], routes) -> List[str]:

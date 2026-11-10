@@ -6,7 +6,7 @@ import json
 import os
 import sys
 from collections import Counter
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from . import __version__
 from .model import SEVERITIES, Finding
@@ -16,10 +16,11 @@ TOOL_URL = "https://github.com/Ashin-06/vibeaudit"
 
 
 class Result:
-    def __init__(self, root: str, findings: List[Finding], meta: Dict):
+    def __init__(self, root: str, findings: List[Finding], meta: Dict, routes: Optional[list] = None):
         self.root = root
         self.findings = findings
         self.meta = meta
+        self.routes = routes or []
 
     @property
     def counts(self) -> Dict[str, int]:
@@ -89,6 +90,7 @@ def render_json(res: Result) -> str:
         "tool": "vibeaudit", "version": __version__, "root": res.root,
         "summary": {"counts": res.counts, "total": len(res.findings), "score": res.score, "grade": res.grade},
         "meta": res.meta, "findings": [f.to_dict() for f in res.findings],
+        "routes": [r.to_dict() for r in sorted(res.routes, key=lambda r: (r.file, r.line))],
     }, indent=2) + "\n"
 
 
