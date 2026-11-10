@@ -169,3 +169,13 @@ def test_feedback_errors(tmp_path, capsys):
     (root / ".vibeaudit").mkdir()
     (root / ".vibeaudit" / "feedback.json").write_text('{"entries": [1, {"fingerprint": 2}, {"fingerprint": "x", "verdict": "maybe"}]}')
     assert feedback.load(root) == []
+
+
+def test_shipped_data_files_pass_their_own_validation():
+    """Found by running `vibeaudit update` live: npm has a real package called "-", and the all-names check
+    rejected the whole npm list, so it could never be refreshed."""
+    from importlib import resources
+
+    for name, valid in updater.FILES.items():
+        assert valid(resources.files("vibeaudit").joinpath("data", name).read_bytes()), name
+    assert not updater.FILES["npm_top.txt.gz"](gzip.compress(b"<script>\n" * 2000))

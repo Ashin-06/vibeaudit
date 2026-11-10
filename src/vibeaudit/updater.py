@@ -31,7 +31,8 @@ def _valid_top(data: bytes) -> bool:
         names = _names(data)
     except (OSError, EOFError, ValueError):
         return False
-    return len(names) >= 1000 and all(PACKAGE_NAME.fullmatch(n) for n in names)
+    # a few real packages have odd names (npm has one called "-"), so require 99%, not every name
+    return len(names) >= 1000 and sum(1 for n in names if PACKAGE_NAME.fullmatch(n)) >= 0.99 * len(names)
 
 
 def model_ids(data: bytes) -> List[str]:
