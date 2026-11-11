@@ -190,6 +190,26 @@
     ]
    }
   },
+  "AUTH011": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "AUTH012": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "AUTH013": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "AUTH014": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
   "BE001": {
    "precision": 1.0,
    "seeded_recall": 1.0,
@@ -417,6 +437,16 @@
      1
     ]
    }
+  },
+  "BE019": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "BE020": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
   },
   "CFG001": {
    "precision": 1.0,

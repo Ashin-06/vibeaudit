@@ -54,3 +54,34 @@ def upload():
 
 async def poll():
     time.sleep(1)  # expect: REL002
+
+
+@app.get("/profile")
+def profile():
+    return jwt.decode(request.headers["Authorization"], PUBLIC_KEY)  # expect: AUTH011
+
+
+@app.post("/session")
+def session_cookie():
+    resp = make_response("ok")
+    resp.set_cookie("session_token", issue(), httponly=True)  # expect: AUTH012
+    return resp
+
+
+@app.post("/webhooks/shop")
+def shop_hook():  # expect: AUTH013
+    expected = hmac.new(SECRET, request.data, "sha256").hexdigest()
+    if not hmac.compare_digest(expected, request.headers["X-Signature"]):
+        abort(401)
+    return ""
+
+
+@app.post("/pay")
+def pay():  # expect: BE019
+    intent = stripe.PaymentIntent.create(amount=request.json["amount"], currency="usd")
+    return intent.id
+
+
+def notify(subject, body):
+    raw = f"Subject: {subject}\r\n\r\n{body}"  # expect: BE020
+    smtplib.SMTP("localhost").sendmail(SENDER, ADMIN, raw)
