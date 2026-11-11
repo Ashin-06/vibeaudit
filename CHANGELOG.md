@@ -4,6 +4,30 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.7.1] - 2026-11-11
+
+Second Phase 1 release: frontend and accessibility checks. The new rules are preview.
+
+### Added
+
+- UI014: `<img>` without `width` and `height` or any sizing class or style (layout shift).
+- UI015: a field error rendered next to an input with no `aria-describedby`, `role="alert"` or live region
+  in the component, so screen readers never announce it.
+- UI016: a focus outline removed (`outline-none`, `focus:outline-none`, CSS `outline: none` in a `:focus`
+  rule) with no visible replacement. Text fields (the caret shows the focus), parts styled by their
+  selected or open state, dialog and popover containers and `.min.css` files are not reported.
+- UI017: `src`, `href` or `url()` pointing at an image, font, icon or document that is not in the app's
+  `public` folder.
+- UI007 also reports `window.innerWidth`/`innerHeight` and `crypto.randomUUID()` in server-rendered markup.
+- 27 new labelled findings on the benchmark corpus (26 true, 1 false) and seeded cases for all four rules.
+
+### Changed
+
+- The release workflow can be run by hand to rehearse the build, SBOM and signing steps without creating
+  a release. The pinned actions were updated to their current major versions (checkout 7, setup-python 7,
+  cache 6, upload-artifact 7, attest-build-provenance 4).
+- The fuzz test's time limit is scaled to the machine it runs on.
+
 ## [0.7.0] - 2026-11-11
 
 First Phase 1 release: CI, supply-chain and infrastructure-as-code checks. All new rules are preview

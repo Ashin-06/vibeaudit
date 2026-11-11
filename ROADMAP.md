@@ -20,11 +20,11 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | Item | Status |
 | --- | --- |
 | React server actions leaking secrets or server closures to the client | planned |
-| Hydration mismatches: window sizes, `new Date()`, random ids during render (extends UI007) | planned |
-| Images without width and height (layout shift) | planned |
-| Form errors without `aria-describedby` | planned |
-| Focus outlines removed | planned |
-| Asset links (fonts, SVG, favicon, public images) to missing files | planned |
+| Hydration mismatches: window sizes, `new Date()`, random ids during render (extends UI007) | done (UI007 also covers `window.innerWidth`/`innerHeight` and `crypto.randomUUID()`; 0.7.1) |
+| Images without width and height (layout shift) | preview (UI014; 0.7.1, 10 of 11 true on the corpus) |
+| Form errors without `aria-describedby` | preview (UI015; 0.7.1, 8 of 8) |
+| Focus outlines removed | preview (UI016; 0.7.1, 6 of 6) |
+| Asset links (fonts, SVG, favicon, public images) to missing files | preview (UI017; 0.7.1, 2 of 2) |
 | CORS wildcard or reflected origin with credentials | done (BE012, narrowed in 0.6.0) |
 | Cookie-authenticated state changes without a CSRF token or SameSite=Lax/Strict | planned |
 | Rate limits keyed on the raw IP behind a proxy | planned |

@@ -20,7 +20,7 @@ nothing, inaccessible forms and frontend calls to API routes that do not exist.
 - Works offline with no API key. The network is used only for package-registry and vulnerability
   lookups (`--offline` turns that off); an LLM is used only if you ask for it.
 - Pure Python, no dependencies on 3.11+ (`tomli` on 3.9 and 3.10). Linux, macOS and Windows.
-- 124 rules in 12 categories, mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
+- 128 rules in 12 categories, mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
 - Terminal output plus JSON, SARIF 2.1.0 (GitHub code scanning), Markdown, HTML, an SVG badge and a fix
   brief you can paste into an AI assistant.
 - Fits into CI (GitHub Action, `--diff`), pre-commit (`--staged`) and coding agents (an MCP server).
@@ -33,7 +33,7 @@ Contents: [Quickstart](#quickstart) - [Example output](#example-output) - [What 
 ## Quickstart
 
 ```bash
-pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.7.0"
+pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.7.1"
 ```
 
 ```bash
@@ -87,7 +87,7 @@ That project is one of the deliberately vulnerable sample apps in `tests/fixture
 | Code completeness (QA) | no tests, no CI, swallowed exceptions, security TODOs, unfinished stubs, imports of files or names that do not exist, packages imported but not declared, TypeScript checking disabled |
 | Data (DATA) | N+1 queries, whole user records returned to the client, destructive migrations, money as float, private tables readable by everyone, timestamps without time zone, env vars missing from the example env file, a database client per request, SQLite on a serverless host, several writes without a transaction |
 | Reliability (REL) | HTTP requests without a timeout, blocking calls in async handlers, webhooks that are not idempotent, uploads without a size limit, in-memory state on serverless hosts, no health-check endpoint |
-| UI, UX and accessibility (UI) | images without alt text, click handlers the keyboard cannot reach, unlabeled form fields, controls that do nothing, index keys on changing lists, deletes without confirmation, hydration mismatches, effects without cleanup, no loading or error state, lorem ipsum, no error page, missing metadata or viewport, links to pages that do not exist |
+| UI, UX and accessibility (UI) | images without alt text, click handlers the keyboard cannot reach, unlabeled form fields, controls that do nothing, index keys on changing lists, deletes without confirmation, hydration mismatches, effects without cleanup, no loading or error state, lorem ipsum, no error page, missing metadata or viewport, links to pages that do not exist; in preview: images without width and height, form errors that screen readers do not hear, focus outlines removed without a replacement, links to assets that are not in the public folder |
 | Frontend-backend contracts (API) | frontend calls to API paths no route handles, and calls with a method the route does not accept |
 
 Every rule, with its severity, why it matters and how to fix it, is in the
@@ -115,13 +115,13 @@ Good tools exist, and vibeaudit runs them when they are installed instead of rep
 vibeaudit is installed from this repository (it is not on PyPI yet). Python 3.9 or newer:
 
 ```bash
-pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.7.0"
+pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.7.1"
 ```
 
 or, to keep it in its own environment:
 
 ```bash
-pipx install "git+https://github.com/Ashin-06/vibeaudit.git@v0.7.0"
+pipx install "git+https://github.com/Ashin-06/vibeaudit.git@v0.7.1"
 ```
 
 Optional: if [gitleaks](https://github.com/gitleaks/gitleaks), [bandit](https://github.com/PyCQA/bandit),
@@ -243,7 +243,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0                  # needed for --diff
-      - uses: Ashin-06/vibeaudit@v0.7.0
+      - uses: Ashin-06/vibeaudit@v0.7.1
         with:
           fail-on: high
           args: --diff origin/main        # optional: only changed lines
@@ -264,7 +264,7 @@ flags, split on spaces), `setup-python` (`true`/`false`) and `python-version`.
 # .pre-commit-config.yaml
 repos:
   - repo: https://github.com/Ashin-06/vibeaudit
-    rev: v0.7.0
+    rev: v0.7.1
     hooks:
       - id: vibeaudit
 ```
@@ -424,7 +424,7 @@ Not covered (see [ROADMAP.md](ROADMAP.md); contributions welcome):
 
 Every rule is measured on a labelled benchmark: 32 public repositories pinned to exact commits (AI-built
 Lovable/Supabase apps, LLM apps, well-maintained Python and JavaScript projects and one deliberately
-vulnerable app), where each of the 543 findings was read in the code and labelled true or false, plus
+vulnerable app), where each of the 570 findings was read in the code and labelled true or false, plus
 seeded examples for recall. Precision per rule, seeded recall and the status of every rule are in
 [benchmark/RESULTS.md](benchmark/RESULTS.md): 88% of findings are true positives overall, and every
 stable rule with at least 5 labelled findings is at 90% or above. Rules below that are in preview.
@@ -472,14 +472,14 @@ CycloneDX SBOM (`vibeaudit-VERSION.cdx.json`), built by the release workflow fro
 build provenance is signed with GitHub artifact attestations (Sigstore). With the GitHub CLI:
 
 ```bash
-gh attestation verify vibeaudit-0.7.0-py3-none-any.whl --repo Ashin-06/vibeaudit
+gh attestation verify vibeaudit-0.7.1-py3-none-any.whl --repo Ashin-06/vibeaudit
 ```
 
 Run the same for the `.tar.gz` and the `.cdx.json` file. The check passes only if the file was built by
 this repository's release workflow; `--format json` shows the commit and workflow it came from. The SBOM
 lists what the wheel installs (vibeaudit has no runtime dependencies on Python 3.11 and later, and
 `tomli` before that). vibeaudit is not published to PyPI by this project yet; install a verified wheel
-with `pip install vibeaudit-0.7.0-py3-none-any.whl`.
+with `pip install vibeaudit-0.7.1-py3-none-any.whl`.
 
 ## Contributing, security and license
 
