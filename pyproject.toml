@@ -37,6 +37,7 @@ dev = ["pytest>=7"]
 
 [project.scripts]
 vibeaudit = "vibeaudit.cli:main"
+vibeaudit-hook = "vibeaudit.hook:main"
 
 [project.urls]
 Homepage = "https://github.com/Ashin-06/vibeaudit"

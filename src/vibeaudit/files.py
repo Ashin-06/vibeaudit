@@ -151,6 +151,14 @@ class SourceFile:
         self.signature: Optional[tuple] = None  # (mtime_ns, size) when discovered; see Project.refresh
         self.overlay: Optional[bytes] = None  # unsaved editor content used instead of the file (language server)
 
+    @classmethod
+    def from_text(cls, root: Path, rel: str, text: str) -> "SourceFile":
+        """A file whose content is given (staged content from git) rather than read from disk."""
+        sf = cls(root, rel)
+        sf._loaded = True
+        sf._text = text.replace("\r\n", "\n").replace("\r", "\n")
+        return sf
+
     @property
     def text(self) -> Optional[str]:
         _read(self)

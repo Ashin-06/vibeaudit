@@ -324,6 +324,14 @@ repos:
       - id: vibeaudit
 ```
 
+The `vibeaudit` hook analyses the whole project and reports findings on the staged lines, which takes a
+few seconds on a medium project. For a hook that never slows a commit down, use `vibeaudit-secrets`
+instead (or as well, with `vibeaudit` in CI): it runs only the secret checks, which need nothing but the
+file itself, on the staged content of the changed files, with one `git diff` call and without scanning the
+rest of the project. On a 300-file repository it takes about 0.2 s on Windows, most of it Python and git
+starting, against 1 to 5.5 s for the full hook on medium corpus repositories (`tools/hook_latency.py`). The
+same command is `vibeaudit-hook`. Settings, `vibeaudit: ignore` comments, the baseline and feedback apply.
+
 ## Editors (VS Code, Cursor and other LSP clients)
 
 `vibeaudit lsp` is a [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) server
