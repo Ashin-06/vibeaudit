@@ -4,6 +4,20 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- `vibeaudit fix`: a unified diff (or `--apply`) that fixes findings with one obvious repair: request
+  timeouts (REL001), output token limits (LLM003), guarded parsing of model output (LLM011), pinned JWT
+  algorithms (BE016, AUTH011), Decimal money columns (DATA004) and CORS origin allow-lists (BE012). A change
+  is kept only when the file still parses; line endings and BOMs are kept.
+- `vibeaudit fix --llm`: model-written patches for findings without a codemod, written to a `.patch` file
+  and never applied.
+- MCP tool `auto_repair`: the `fix` diff for a project or one file; it writes nothing.
+- `tools/fix_corpus.py`: runs every codemod over the benchmark corpus and checks that the finding goes away,
+  the file parses, nothing new is reported and a second run changes nothing.
+
 ## [0.7.2] - 2026-11-11
 
 Third Phase 1 release: API and auth checks, and a held-out benchmark split. The new rules are preview.
