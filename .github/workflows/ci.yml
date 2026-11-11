@@ -64,6 +64,11 @@ jobs:
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
         with:
           python-version: "3.12"
+      # a YAML error in action.yml breaks every workflow that uses the action, and nothing else would notice
+      - name: action.yml, the hook definitions and the workflows are valid YAML
+        run: |
+          python -m pip install --quiet pyyaml==6.0.2
+          python tools/check_yaml.py
       - name: Build wheel and sdist
         run: |
           python -m pip install build

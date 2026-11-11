@@ -23,7 +23,7 @@ inputs:
     description: Python version for actions/setup-python.
     default: "3.12"
   review:
-    description: On pull requests, post review comments with suggested fixes on changed lines ("true" or "false"). Needs `permissions: pull-requests: write`.
+    description: 'On pull requests, post review comments with suggested fixes on changed lines ("true" or "false"). Needs `permissions: pull-requests: write`.'
     default: "false"
   github-token:
     description: Token used to post the review.
