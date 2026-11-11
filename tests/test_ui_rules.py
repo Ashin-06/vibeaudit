@@ -33,7 +33,8 @@ def test_alt_text_labels_and_keyboard_access(tmp_path):
         '    <input tabIndex={-1} className="sr-trap" />\n'
         "    <input {...props} />\n"
         "  </div>)"))
-    assert _rules(tmp_path) == [("c.tsx", 4, "UI001"), ("c.tsx", 6, "UI002"), ("c.tsx", 9, "UI003")]
+    assert _rules(tmp_path) == [("c.tsx", 4, "UI001"), ("c.tsx", 4, "UI014"), ("c.tsx", 5, "UI014"),  # no width/height
+                                ("c.tsx", 6, "UI002"), ("c.tsx", 9, "UI003")]
 
 
 def test_dead_controls(tmp_path):

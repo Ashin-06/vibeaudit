@@ -38,6 +38,7 @@ class Rule:
     preview_reason: str = ""
 
 
+NEW_IN_071 = "New in 0.7.1: not yet measured on enough real-world findings in the benchmark."
 NEW_IN_070 = "New in 0.7.0: not yet measured on enough real-world findings in the benchmark."
 
 _R = [
@@ -624,6 +625,25 @@ _R = [
     Rule("UI013", "Link to a page that does not exist", "ui", "medium",
          "The link points to a path with no matching page or route, so users land on a 404.",
          "Fix the path, or create the page."),
+    Rule("UI014", "Image without width and height", "ui", "low",
+         "The browser cannot reserve space for an image without dimensions, so the content below jumps when "
+         "it loads (cumulative layout shift, a Core Web Vital).",
+         "Set `width` and `height` (the intrinsic size is enough; CSS can still scale it), or give the image "
+         "a fixed box with CSS such as `aspect-ratio`.", preview=True, preview_reason=NEW_IN_071),
+    Rule("UI015", "Form error not announced to screen readers", "ui", "low",
+         "An error message that only appears next to the field is invisible to a screen reader user, who "
+         "hears nothing when the form is rejected.",
+         "Give the message an id and point the input's `aria-describedby` at it, with `aria-invalid` on the "
+         "input, or render it in a `role=\"alert\"` element.", preview=True, preview_reason=NEW_IN_071),
+    Rule("UI016", "Focus outline removed", "ui", "medium",
+         "`outline: none` with no replacement leaves keyboard users unable to see which control has focus "
+         "(WCAG 2.4.7).",
+         "Keep the outline, or replace it with a visible `:focus-visible` style such as a ring, border or "
+         "box-shadow.", preview=True, preview_reason=NEW_IN_071),
+    Rule("UI017", "Link to an asset that does not exist", "ui", "medium",
+         "The image, font, icon or file is not in the public folder, so the browser gets a 404: a broken "
+         "image or a missing font.",
+         "Add the file to the public folder, or fix the path.", preview=True, preview_reason=NEW_IN_071),
     # ------------------------------------------------- frontend-backend contracts
     Rule("API001", "Frontend calls an API path that no route handles", "contracts", "medium",
          "The browser code requests a path that no backend route in this project serves, so the request always "

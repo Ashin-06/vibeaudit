@@ -3,9 +3,9 @@
 Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do not edit by hand.
 `vibeaudit rules` prints the same list, and `vibeaudit rules --format json` includes every field.
 
-125 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
+129 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-16 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+20 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -1297,6 +1297,10 @@ How to fix: Add GET /health (or /healthz) that returns 200 when the app and its 
 | [UI011](#ui011) | low | stable | No error page |
 | [UI012](#ui012) | low | stable | Missing page metadata or viewport |
 | [UI013](#ui013) | medium | stable | Link to a page that does not exist |
+| [UI014](#ui014) | low | preview | Image without width and height |
+| [UI015](#ui015) | low | preview | Form error not announced to screen readers |
+| [UI016](#ui016) | medium | preview | Focus outline removed |
+| [UI017](#ui017) | medium | preview | Link to an asset that does not exist |
 
 ### UI001
 
@@ -1411,6 +1415,46 @@ How to fix: Export metadata (title, description) from the root layout and includ
 Why it matters: The link points to a path with no matching page or route, so users land on a 404.
 
 How to fix: Fix the path, or create the page.
+
+### UI014
+
+**Image without width and height** (low, preview)
+
+Preview: New in 0.7.1: not yet measured on enough real-world findings in the benchmark.
+
+Why it matters: The browser cannot reserve space for an image without dimensions, so the content below jumps when it loads (cumulative layout shift, a Core Web Vital).
+
+How to fix: Set `width` and `height` (the intrinsic size is enough; CSS can still scale it), or give the image a fixed box with CSS such as `aspect-ratio`.
+
+### UI015
+
+**Form error not announced to screen readers** (low, preview)
+
+Preview: New in 0.7.1: not yet measured on enough real-world findings in the benchmark.
+
+Why it matters: An error message that only appears next to the field is invisible to a screen reader user, who hears nothing when the form is rejected.
+
+How to fix: Give the message an id and point the input's `aria-describedby` at it, with `aria-invalid` on the input, or render it in a `role="alert"` element.
+
+### UI016
+
+**Focus outline removed** (medium, preview)
+
+Preview: New in 0.7.1: not yet measured on enough real-world findings in the benchmark.
+
+Why it matters: `outline: none` with no replacement leaves keyboard users unable to see which control has focus (WCAG 2.4.7).
+
+How to fix: Keep the outline, or replace it with a visible `:focus-visible` style such as a ring, border or box-shadow.
+
+### UI017
+
+**Link to an asset that does not exist** (medium, preview)
+
+Preview: New in 0.7.1: not yet measured on enough real-world findings in the benchmark.
+
+Why it matters: The image, font, icon or file is not in the public folder, so the browser gets a 404: a broken image or a missing font.
+
+How to fix: Add the file to the public folder, or fix the path.
 
 ## Frontend-backend contracts
 

@@ -252,6 +252,7 @@ class Project:
         self.max_bytes = max_bytes
         self.is_git = False
         self.tracked: Set[str] = set()
+        self.binary: Set[str] = set()  # images, fonts and other binary files: listed, never read
         self.untracked: Set[str] = set()
         self.files: List[SourceFile] = []
         self._by_rel: Dict[str, SourceFile] = {}
@@ -286,9 +287,10 @@ class Project:
                 and os.path.splitext(rel)[1].lower() in BUNDLE_EXTS
             if (skipped and not bundle) or self._in_venv(parts):
                 continue
-            if os.path.splitext(rel)[1].lower() in BINARY_EXTS:
-                continue
             if _matches(rel, self.excludes):
+                continue
+            if os.path.splitext(rel)[1].lower() in BINARY_EXTS:
+                self.binary.add(rel)  # not read, but checks on asset links need to know it exists
                 continue
             if not self.is_git and ENV_FILE_RE.search(rel) and gitignore_covers(self.root, rel):
                 continue  # a local, ignored .env is how secrets are supposed to live
