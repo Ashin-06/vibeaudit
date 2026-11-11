@@ -52,8 +52,17 @@ False positives on the tuned split, each with a regression test that fails on 0.
 - A webhook view that verifies its sender's signature may be `csrf_exempt` (AUTH009).
 - Published npm libraries (with a `files` list) and documentation requirement files need no lockfile (DEP005).
 
+- `vibeaudit lsp`: a Language Server Protocol server (standard library only) with diagnostics, also for
+  unsaved buffers, and the `vibeaudit fix` codemods as quick fixes. It never writes files and accepts only
+  files inside the workspace.
+- `editors/vscode`: a thin VS Code / Cursor extension that starts `vibeaudit lsp`, built as a `.vsix` in CI
+  and not published. It runs only in trusted workspaces, and its server settings are machine-scoped.
+
 ### Changed
 
+- QA007 no longer reports `require("vscode")` in an editor extension (a package.json with `engines.vscode`).
+- Git and external tools now run with stdin closed, so a scan started by a server that reads stdin on
+  another thread cannot hang on Windows.
 - Faster QA006 checks: the names a JavaScript module exports are computed once per module instead of once
   per import.
 

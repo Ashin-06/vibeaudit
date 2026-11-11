@@ -507,6 +507,8 @@ class QualityScanner:
                         out.update(pkg[key])
                 if isinstance(pkg.get("name"), str):
                     out.add(pkg["name"])
+                if isinstance(pkg.get("engines"), dict) and "vscode" in pkg["engines"]:
+                    out.add("vscode")  # an editor extension: the `vscode` module is provided by the editor
                 if pkg.get("workspaces"):
                     out.update(self._workspace_names())
             if not parts:

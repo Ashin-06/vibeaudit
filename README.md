@@ -27,7 +27,7 @@ nothing, inaccessible forms and frontend calls to API routes that do not exist.
 
 Contents: [Quickstart](#quickstart) - [Example output](#example-output) - [What it checks](#what-it-checks) -
 [Install](#install) - [Commands](#commands) - [Automatic fixes](#automatic-fixes-vibeaudit-fix) - [Configuration](#configuration) - [CI and pre-commit](#ci-and-pre-commit) -
-[MCP server](#mcp-server-for-coding-agents) - [Scoring](#scoring) - [False positives](#false-positives-and-suppressing-findings) -
+[Editors](#editors-vs-code-cursor-and-other-lsp-clients) - [MCP server](#mcp-server-for-coding-agents) - [Scoring](#scoring) - [False positives](#false-positives-and-suppressing-findings) -
 [Limits](#limits-and-what-is-not-covered) - [Contributing](#contributing-security-and-license)
 
 ## Quickstart
@@ -139,6 +139,7 @@ your `PATH`, their findings are merged into the report and de-duplicated.
 | `vibeaudit rules` | List every rule (`--format text\|json\|md`; JSON includes the why and fix text). |
 | `vibeaudit feedback` | Record that a finding is a false positive or confirmed, or list recorded feedback (see [False positives](#false-positives-and-suppressing-findings)). |
 | `vibeaudit update` | Refresh the popular-package lists and the retired-model list; `--self` upgrades vibeaudit with pip. |
+| `vibeaudit lsp` | Run the language server for editors: diagnostics and fix code actions (see [Editors](#editors-vs-code-cursor-and-other-lsp-clients)). |
 | `vibeaudit mcp` | Run the MCP server for coding agents (see [MCP server](#mcp-server-for-coding-agents)). |
 
 Every command has `--help`.
@@ -320,6 +321,26 @@ repos:
     rev: v0.8.0
     hooks:
       - id: vibeaudit
+```
+
+## Editors (VS Code, Cursor and other LSP clients)
+
+`vibeaudit lsp` is a [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) server
+on stdio, written with the standard library only. It scans the workspace like `vibeaudit scan` (offline,
+no external tools, with the workspace's configuration) and publishes every finding as a diagnostic, also for
+unsaved changes. It keeps unchanged files between scans as `watch` does, and re-scans 0.25 seconds after the
+last edit. The `vibeaudit fix` codemods are offered as quick fixes, plus a "fix all" action per file. The
+server never writes a file: the editor applies the edits you accept. It accepts only `file:` URIs inside
+the workspace folder and caps message sizes.
+
+`editors/vscode` is a thin VS Code / Cursor extension that starts the server. CI builds it as a `.vsix`
+artifact (it is not published); install it with **Extensions: Install from VSIX...**. Its
+`vibeaudit.serverCommand` and `vibeaudit.serverArgs` settings are machine-scoped and it does not run in
+untrusted workspaces, so a cloned repository cannot make it start another program. Other editors can run
+`vibeaudit lsp` directly, for example in Neovim:
+
+```lua
+vim.lsp.start({ name = "vibeaudit", cmd = { "vibeaudit", "lsp" }, root_dir = vim.fn.getcwd() })
 ```
 
 ## MCP server for coding agents

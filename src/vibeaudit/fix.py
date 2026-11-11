@@ -627,7 +627,9 @@ def read_text(path: Path) -> Union[Tuple[str, str, bool], str]:
     return text.replace("\r\n", "\n"), ("\r\n" if crlf else "\n"), bom
 
 
-def plan_findings(root: Path, findings: Sequence[Finding], project=None) -> Plan:
+def plan_findings(root: Path, findings: Sequence[Finding], project=None, texts: Optional[Dict[str, str]] = None) -> Plan:
+    """Plan fixes for `findings`. `texts` maps a file to the text to fix instead of its content on disk (an
+    editor's unsaved buffer); such changes are for showing, not for `Plan.apply`."""
     plan = Plan(root)
     by_file: Dict[str, List[Finding]] = {}
     for f in findings:
@@ -644,7 +646,13 @@ def plan_findings(root: Path, findings: Sequence[Finding], project=None) -> Plan
                 str(path.resolve()).startswith(str(resolved_root))
         except OSError:
             inside = False
-        got = read_text(path) if inside else "the file is outside the project"
+        if not inside:
+            got: Union[Tuple[str, str, bool], str] = "the file is outside the project"
+        elif texts is not None and rel in texts:
+            buf = texts[rel]
+            got = (buf.replace("\r\n", "\n"), "\r\n" if "\r\n" in buf else "\n", False)
+        else:
+            got = read_text(path)
         if isinstance(got, str):
             plan.skipped += [(f, got) for f in fs]
             continue
@@ -681,7 +689,8 @@ def plan_findings(root: Path, findings: Sequence[Finding], project=None) -> Plan
         if not ok or after == text:
             plan.skipped += [(f, "the fixed file would not parse") for f in fixed]
             continue
-        plan.changes.append(Change(rel, path, path.read_bytes(), text, after, eol, bom, fixed))
+        original = b"" if texts is not None and rel in texts else path.read_bytes()
+        plan.changes.append(Change(rel, path, original, text, after, eol, bom, fixed))
     return plan
 
 
