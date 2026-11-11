@@ -133,6 +133,7 @@ your `PATH`, their findings are merged into the report and de-duplicated.
 | Command | What it does |
 | --- | --- |
 | `vibeaudit scan [PATH]` | Audit a project (default: the current directory). |
+| `vibeaudit watch [PATH]` | Scan, then re-scan after every change and print the findings that appeared (`+`) or were fixed (`-`); see [Watch mode](#watch-mode). |
 | `vibeaudit fix [PATH]` | Print a diff that fixes the findings with one obvious repair; `--apply` writes it (see [Automatic fixes](#automatic-fixes-vibeaudit-fix)). |
 | `vibeaudit routes [PATH]` | List every HTTP entry point with method, path, location and whether it has a visible auth check, writes data or calls a paid AI API (`--format text\|json\|md`). |
 | `vibeaudit rules` | List every rule (`--format text\|json\|md`; JSON includes the why and fix text). |
@@ -197,6 +198,21 @@ GEMINI_API_KEY=... vibeaudit scan . --llm gemini --llm-review --llm-max-requests
 - Providers: `gemini` (`GEMINI_API_KEY` or `GOOGLE_API_KEY`), `openai` (`OPENAI_API_KEY`; `OPENAI_BASE_URL`
   for any compatible server such as Ollama) and `anthropic` (`ANTHROPIC_API_KEY`). Verdicts are cached, so
   an unchanged finding costs no request the next time.
+
+### Watch mode
+
+```bash
+vibeaudit watch .                     # Ctrl+C to stop
+vibeaudit watch . --interval 2 --min-severity medium
+```
+
+`watch` scans once, then checks for changed files every `--interval` seconds (default 1) and re-scans. It
+keeps every unchanged file's text, parse trees and lexer state between scans, and replays the findings of
+per-file checks whose inputs did not change (the files each check read are recorded, so a check that
+depends on another file runs again when that file changes). Checks that build project-wide state (routes,
+call graphs, auth middleware) run on every change, so the result is always the same as a fresh `scan`. A
+changed manifest or config file, or an added or removed file, replays nothing. It runs offline, without
+external tools, and honours the configuration, `--exclude` and `--config` like `scan`.
 
 ## Automatic fixes (`vibeaudit fix`)
 

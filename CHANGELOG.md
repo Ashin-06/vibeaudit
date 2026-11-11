@@ -19,6 +19,9 @@ preview. No new rules.
 - `vibeaudit fix --llm`: model-written patches for findings without a codemod, written to a `.patch` file
   and never applied.
 - MCP tool `auto_repair`: the `fix` diff for a project or one file; it writes nothing.
+- `vibeaudit watch`: re-scans after every change and prints new (`+`) and fixed (`-`) findings. Unchanged files
+  keep their parse trees, and per-file checks whose inputs did not change are replayed; the result always
+  equals a fresh scan. `tools/watch_latency.py` measures the re-scan time and checks it against a fresh scan.
 - `tools/fix_corpus.py`: runs every codemod over the benchmark corpus and checks that the finding goes away,
   the file parses, nothing new is reported and a second run changes nothing.
 - 13 benchmark repositories: 7 pinned to the commit before the fix of a published GitHub advisory
@@ -48,6 +51,11 @@ False positives on the tuned split, each with a regression test that fails on 0.
   database reset or seed files with demo users (SEC011) are not reported.
 - A webhook view that verifies its sender's signature may be `csrf_exempt` (AUTH009).
 - Published npm libraries (with a `files` list) and documentation requirement files need no lockfile (DEP005).
+
+### Changed
+
+- Faster QA006 checks: the names a JavaScript module exports are computed once per module instead of once
+  per import.
 
 ## [0.7.2] - 2026-11-11
 

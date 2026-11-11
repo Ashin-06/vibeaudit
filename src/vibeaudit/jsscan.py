@@ -280,8 +280,8 @@ class JsScanner:
         return self.routes
 
     def _load(self, sf: SourceFile) -> None:
-        v = js_views(sf.text or "")
-        sf.cache["views"] = v
+        v = sf.cache.get("js_views") or js_views(sf.text or "")
+        sf.cache["views"] = sf.cache["js_views"] = v
         sf.is_client = self.is_client(sf, v)
         self.files.append(FileState(sf, v))
 

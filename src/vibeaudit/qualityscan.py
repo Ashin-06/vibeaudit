@@ -524,32 +524,45 @@ class QualityScanner:
                     names.add(pkg["name"])
         return names
 
-    def _check_js_names(self, sf: SourceFile, line: int, spec: str, target: str, clause: str) -> None:
-        tf = self.p.get(target)
-        if tf is None or not tf.text or target.endswith((".vue", ".svelte", ".astro", ".json")):
-            return
+    @staticmethod
+    def _js_exports(tf: SourceFile) -> Optional[Set[str]]:
+        """Every name a module exports, or None when it re-exports or uses CommonJS. Computed once per file
+        (and kept across `vibeaudit watch` re-scans): one module is often imported by many files."""
+        if "js_exports" in tf.cache:
+            return tf.cache["js_exports"]  # type: ignore[return-value]
         views = tf.cache.get("views")
         if views is None:
             from .lexer import js_views
 
-            views = js_views(tf.text)
+            views = js_views(tf.text or "")
         text = views.code  # type: ignore[attr-defined]  # comments blanked: a commented-out export is not an export
-        if re.search(r"\bexport\s*\*\s*from|module\.exports|\bexports\.\w+\s*=", text):
+        names: Optional[Set[str]] = None
+        if not re.search(r"\bexport\s*\*\s*from|module\.exports|\bexports\.\w+\s*=", text):
+            # `export { a as b, c }` exports b and c (not a); `export { x as default }` exports only default
+            listed = {item.strip().split(" as ")[-1].strip() for lst in re.findall(r"\bexport\s*(?:type\s*)?\{([^}]{0,5000})\}", text)
+                      for item in lst.split(",")}
+            names = {re.sub(r"^type\s+", "", n) for n in listed}
+            names.update(re.findall(
+                r"\bexport\s+(?:declare\s+)?(?:default\s+)?(?:async\s+)?(?:function\*?|class|const|let|var|type|interface|enum"
+                r"|abstract\s+class|namespace)\s+([A-Za-z_$][\w$]*)", text))
+            for pattern in re.findall(r"\bexport\s+(?:const|let|var)\s*([{\[](?:[^{}\[\]]|[{\[][^{}\[\]]*[}\]])*)", text):
+                names.update(re.findall(r"[A-Za-z_$][\w$]*", pattern))  # destructured: `export const { a, b: c } = x`
+        tf.cache["js_exports"] = names
+        return names
+
+    def _check_js_names(self, sf: SourceFile, line: int, spec: str, target: str, clause: str) -> None:
+        tf = self.p.get(target)
+        if tf is None or not tf.text or target.endswith((".vue", ".svelte", ".astro", ".json")):
+            return
+        exports = self._js_exports(tf)
+        if exports is None:
             return  # re-exports or CommonJS: too dynamic to check by name
         m = re.search(r"\{([^}]*)\}", clause)
         if not m:
             return
-        # `export { a as b, c }` exports b and c (not a); `export { x as default }` exports only default
-        listed = {item.strip().split(" as ")[-1].strip() for lst in re.findall(r"\bexport\s*(?:type\s*)?\{([^}]{0,5000})\}", text)
-                  for item in lst.split(",")}
-        listed = {re.sub(r"^type\s+", "", n) for n in listed}
         for part in m.group(1).split(","):
             name = part.strip().split(" as ")[0].strip()
             if not name or name.startswith("type ") or name == "default":
                 continue
-            exported = name in listed or re.search(
-                r"\bexport\s+(?:declare\s+)?(?:default\s+)?(?:async\s+)?(?:function\*?|class|const|let|var|type|interface|enum|abstract\s+class|namespace)\s+"
-                + re.escape(name) + r"\b", text) \
-                or re.search(r"\bexport\s+(?:const|let|var)\s*[{\[](?:[^{}\[\]]|[{\[][^{}\[\]]*[}\]])*?\b" + re.escape(name) + r"\b", text)
-            if not exported:
+            if name not in exports:
                 self.add(sf, "QA006", line, f"`{name}` is imported from `{spec}` but that file does not export it.")
