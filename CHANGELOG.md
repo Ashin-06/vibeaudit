@@ -4,6 +4,17 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- `vibeaudit review --diff REV`: pull request review comments for the findings on changed lines, with a
+  one-click GitHub suggestion when a `vibeaudit fix` codemod rewrites the line inside the diff. `--post`
+  sends them with GITHUB_TOKEN and skips comments an earlier run already posted; the action posts them with
+  `review: "true"`. Text from the repository is neutralised (no @mentions, no injected markers).
+- `--fail-on-regression N`: fail when the whole project's score drops more than N points below the score in
+  the `--baseline` report, computed before `--baseline`, `--diff` and `--staged` hide findings.
+
 ## [0.8.1] - 2026-11-11
 
 Phase 3 starts with `vibeaudit watch`; also AI agent and LLM checks. The new rules are preview.

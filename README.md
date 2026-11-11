@@ -134,6 +134,7 @@ your `PATH`, their findings are merged into the report and de-duplicated.
 | --- | --- |
 | `vibeaudit scan [PATH]` | Audit a project (default: the current directory). |
 | `vibeaudit watch [PATH]` | Scan, then re-scan after every change and print the findings that appeared (`+`) or were fixed (`-`); see [Watch mode](#watch-mode). |
+| `vibeaudit review [PATH] --diff REV` | Pull request review comments, with suggested fixes, for the findings on changed lines; `--post` sends them to GitHub (see [Pull request review](#pull-request-review)). |
 | `vibeaudit fix [PATH]` | Print a diff that fixes the findings with one obvious repair; `--apply` writes it (see [Automatic fixes](#automatic-fixes-vibeaudit-fix)). |
 | `vibeaudit routes [PATH]` | List every HTTP entry point with method, path, location and whether it has a visible auth check, writes data or calls a paid AI API (`--format text\|json\|md`). |
 | `vibeaudit rules` | List every rule (`--format text\|json\|md`; JSON includes the why and fix text). |
@@ -156,6 +157,7 @@ Every command has `--help`.
 | `--disable RULE_OR_CATEGORY` | Switch off a rule (`QA002`) or a category (`quality`); repeatable, comma lists allowed. |
 | `--baseline FILE` | Hide findings already present in an earlier JSON report. |
 | `--write-baseline FILE` | Save all current findings as a baseline and exit 0. |
+| `--fail-on-regression N` | Exit 1 if the whole project's score is more than N points below the score in the `--baseline` report. The score is computed before `--baseline`, `--diff` and `--staged` hide findings. |
 | `--external auto\|none\|LIST` | Third-party scanners to run: those installed (default), none, or a list such as `gitleaks,bandit`. |
 | `--staged` | Report only findings on lines staged for commit (pre-commit hooks). |
 | `--diff REV` | Report only findings on lines changed since `REV`, for example `origin/main` (pull requests). |
@@ -307,7 +309,40 @@ jobs:
 ```
 
 Inputs: `path` (default `.`), `fail-on` (default `high`), `sarif` (default `vibeaudit.sarif`), `args` (extra
-flags, split on spaces), `setup-python` (`true`/`false`) and `python-version`.
+flags, split on spaces), `setup-python` (`true`/`false`), `python-version`, `review` (`true` posts review
+comments on pull requests) and `github-token` (default: the workflow token).
+
+### Pull request review
+
+With `review: "true"` the action also comments on the pull request: one review comment per finding on a
+changed line (the 30 most severe), with why it matters, and a one-click GitHub suggestion when a
+`vibeaudit fix` codemod rewrites it inside the diff. A re-run does not repeat comments it already posted.
+The job needs `pull-requests: write`; on pull requests from forks the token is read-only and the review is
+skipped with a warning. Use `pull_request`, not `pull_request_target`, so the pull request's code never runs
+with a write token.
+
+```yaml
+on: pull_request
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: Ashin-06/vibeaudit@v0.8.1
+        with:
+          review: "true"
+          args: --diff origin/${{ github.base_ref }} --baseline .vibeaudit-baseline.json --fail-on-regression 5
+```
+
+`vibeaudit review . --diff origin/main` prints the same review as JSON without posting it. To keep the
+overall score from slipping, commit a baseline (`vibeaudit scan . --write-baseline .vibeaudit-baseline.json`)
+and pass `--fail-on-regression N`: the build fails when the whole project's score drops more than N points
+below the baseline's, even if every new finding is below `--fail-on`.
 
 **Any other CI**: run `vibeaudit scan . --fail-on high -r sarif:results.sarif` and keep the exit code.
 

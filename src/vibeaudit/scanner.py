@@ -245,6 +245,18 @@ def _risky_files(project: Project, findings: List[Finding], routes) -> List[str]
     return [f for f, _ in sorted(score.items(), key=lambda kv: -kv[1]) if project.get(f)][:5]
 
 
+def read_baseline(path: str) -> "Optional[tuple[Set[str], Optional[int]]]":
+    """The fingerprints in a JSON report used as a baseline, and its score (None in reports without one)."""
+    try:
+        data = json.loads(Path(path).read_text(encoding="utf-8"))
+        fingerprints = {f["fingerprint"] for f in data.get("findings", []) if "fingerprint" in f}
+    except (OSError, ValueError, AttributeError, TypeError):
+        return None
+    summary = data.get("summary") if isinstance(data.get("summary"), dict) else {}
+    score = summary.get("score")
+    return fingerprints, (score if isinstance(score, int) and not isinstance(score, bool) else None)
+
+
 def finalize(project: Project, raw: List[Finding], opts: Options, already: bool = False) -> List[Finding]:
     out: List[Finding] = []
     occurrences: dict = {}
@@ -252,11 +264,11 @@ def finalize(project: Project, raw: List[Finding], opts: Options, already: bool 
     builtin_locs = set()
     baseline: Set[str] = set()
     if opts.baseline:
-        try:
-            data = json.loads(Path(opts.baseline).read_text(encoding="utf-8"))
-            baseline = {f["fingerprint"] for f in data.get("findings", []) if "fingerprint" in f}
-        except (OSError, ValueError, AttributeError, TypeError):
+        got = read_baseline(opts.baseline)
+        if got is None:
             opts.log(f"could not read baseline {opts.baseline}")
+        else:
+            baseline = got[0]
     # a secret in an MCP config is reported once, by the more specific LLM014
     mcp_secrets = {(f.file, f.line) for f in raw if f.rule_id == "LLM014"}
     # built-in findings first so that duplicates from external tools are the ones dropped
