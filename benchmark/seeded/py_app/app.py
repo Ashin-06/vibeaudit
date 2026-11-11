@@ -85,3 +85,20 @@ def pay():  # expect: BE019
 def notify(subject, body):
     raw = f"Subject: {subject}\r\n\r\n{body}"  # expect: BE020
     smtplib.SMTP("localhost").sendmail(SENDER, ADMIN, raw)
+
+
+from openai import OpenAI  # noqa: E402
+
+client = OpenAI()
+
+
+@app.post("/chat")
+def chat():  # expect: LLM017
+    stream = client.chat.completions.create(model="gpt-4o", messages=request.json["messages"], stream=True)
+    logger.info("prompt: %s", request.json["messages"])
+    return StreamingResponse(chunk.choices[0].delta.content for chunk in stream)
+
+
+def summarize(prompt):
+    logger.info("summarizing %s", prompt)  # expect: LLM018
+    return client.chat.completions.create(model="gpt-4o", messages=[{"role": "user", "content": prompt}])

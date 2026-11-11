@@ -13,6 +13,29 @@ All notable changes to this project are documented here. The format follows
   CI holds it under 150 ms on a 3-file commit in a 300-file repository; `tools/hook_latency.py` compares it
   with the full `vibeaudit` hook on corpus repositories.
 
+## [0.8.1] - 2026-11-11
+
+Phase 3 starts with `vibeaudit watch`; also AI agent and LLM checks. The new rules are preview.
+
+### Added
+
+- `vibeaudit watch [PATH]`: scans once, then re-scans when files change and prints the findings that
+  appeared (`+`) or were fixed (`-`). Unchanged files keep their parse trees, and per-file checks whose
+  inputs did not change replay their findings, so a re-scan matches a fresh scan at a fraction of the cost.
+  QA006 also computes a module's exported names once per module, which makes every scan faster.
+- LLM016: a coding agent allowed to act without asking: `bypassPermissions` or a bare `Bash` grant in
+  `.claude/settings.json`, auto-approve settings for VS Code, Cursor and Gemini, MCP servers with every tool
+  pre-approved, Codex `approval_policy = "never"` or `danger-full-access`, and scripts that start an agent
+  with `--dangerously-skip-permissions`, `--yolo` and similar flags.
+- LLM017: a streamed completion in a route that never passes the request's abort signal (JavaScript) or
+  checks for a disconnected client (Python), so the model keeps generating after the user leaves.
+  All 13 corpus findings are true (10 tuned, 3 held-out).
+- LLM018: prompts, chat history or completions written to logs in files that call a model.
+
+### Fixed
+
+- Files in `.vscode/` were skipped, so the MCP check never read `.vscode/mcp.json`. They are scanned now.
+
 ## [0.8.0] - 2026-11-11
 
 Phase 2 starts: `vibeaudit fix` repairs findings that have one obvious fix. The benchmark grows to 53
@@ -28,6 +51,9 @@ preview. No new rules.
 - `vibeaudit fix --llm`: model-written patches for findings without a codemod, written to a `.patch` file
   and never applied.
 - MCP tool `auto_repair`: the `fix` diff for a project or one file; it writes nothing.
+- `vibeaudit watch`: re-scans after every change and prints new (`+`) and fixed (`-`) findings. Unchanged files
+  keep their parse trees, and per-file checks whose inputs did not change are replayed; the result always
+  equals a fresh scan. `tools/watch_latency.py` measures the re-scan time and checks it against a fresh scan.
 - `tools/fix_corpus.py`: runs every codemod over the benchmark corpus and checks that the finding goes away,
   the file parses, nothing new is reported and a second run changes nothing.
 - 13 benchmark repositories: 7 pinned to the commit before the fix of a published GitHub advisory
@@ -57,6 +83,11 @@ False positives on the tuned split, each with a regression test that fails on 0.
   database reset or seed files with demo users (SEC011) are not reported.
 - A webhook view that verifies its sender's signature may be `csrf_exempt` (AUTH009).
 - Published npm libraries (with a `files` list) and documentation requirement files need no lockfile (DEP005).
+
+### Changed
+
+- Faster QA006 checks: the names a JavaScript module exports are computed once per module instead of once
+  per import.
 
 ## [0.7.2] - 2026-11-11
 

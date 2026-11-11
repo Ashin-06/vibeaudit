@@ -73,6 +73,16 @@ def build_parser() -> argparse.ArgumentParser:
     m.add_argument("--format", choices=["text", "json", "md"], default="text")
     m.add_argument("--exclude", action="append", default=[], metavar="GLOB", help="skip paths matching GLOB (repeatable)")
 
+    w = sub.add_parser("watch", help="re-scan whenever a file changes and print new and fixed findings",
+                       description="Scan once, then poll the project and re-scan after every change, reusing what "
+                                   "is unchanged. Prints the findings that appeared (+) or went away (-). Offline, "
+                                   "no external tools; stop with Ctrl+C.")
+    w.add_argument("path", nargs="?", default=".", help="project directory (default: current directory)")
+    w.add_argument("--interval", type=float, default=1.0, help="seconds between checks for changes (default: 1)")
+    w.add_argument("--min-severity", default=None, choices=SEVERITIES, help="hide findings below this severity")
+    w.add_argument("--exclude", action="append", default=[], metavar="GLOB", help="skip paths matching GLOB (repeatable)")
+    w.add_argument("--config", metavar="FILE", help="read settings from this TOML file, as for scan")
+
     x = sub.add_parser("fix", help="show (or --apply) deterministic fixes for findings that have one obvious repair",
                        description="Print a unified diff that fixes every finding a codemod covers: request timeouts "
                                    "(REL001), output token limits (LLM003), guarded JSON parsing of model output (LLM011), "
@@ -392,6 +402,18 @@ def main(argv: Optional[List[str]] = None) -> int:
         return cmd_scan(a)
     if a.command == "fix":
         return cmd_fix(a)
+    if a.command == "watch":
+        from . import watch
+
+        if not os.path.isdir(a.path):
+            print(f"vibeaudit: not a directory: {a.path}", file=sys.stderr)
+            return 2
+        try:
+            opts = watch.main_options(a.path, a.config, a.exclude, a.min_severity)
+        except ConfigError as e:
+            print(f"vibeaudit: {e}", file=sys.stderr)
+            return 2
+        return watch.run(a.path, opts, sys.stdout, max(0.1, a.interval))
     if a.command == "update":
         return cmd_update(a)
     if a.command == "feedback":

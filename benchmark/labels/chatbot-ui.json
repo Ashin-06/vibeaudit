@@ -401,6 +401,78 @@
    "fingerprint": "9784d0d9d36df2bd123081e192611d21",
    "verdict": "tp",
    "reason": "A keyboard-focusable folder row with focus:outline-none and no other focus style."
+  },
+  {
+   "rule": "LLM017",
+   "file": "app/api/chat/anthropic/route.ts",
+   "line": 11,
+   "fingerprint": "b378f64649896eced3736a1376699e6b",
+   "verdict": "tp",
+   "reason": "The streamed completion is created without the request abort signal."
+  },
+  {
+   "rule": "LLM017",
+   "file": "app/api/chat/azure/route.ts",
+   "line": 9,
+   "fingerprint": "bfbb6903cb9ce4533dfe23a18ef36d18",
+   "verdict": "tp",
+   "reason": "The streamed completion is created without the request abort signal."
+  },
+  {
+   "rule": "LLM017",
+   "file": "app/api/chat/custom/route.ts",
+   "line": 11,
+   "fingerprint": "a6f2c1d69318537e57e05e87f7766a13",
+   "verdict": "tp",
+   "reason": "The streamed completion is created without the request abort signal."
+  },
+  {
+   "rule": "LLM017",
+   "file": "app/api/chat/groq/route.ts",
+   "line": 8,
+   "fingerprint": "17aa3fec300287cfd938edeaa4ee4141",
+   "verdict": "tp",
+   "reason": "The streamed completion is created without the request abort signal."
+  },
+  {
+   "rule": "LLM017",
+   "file": "app/api/chat/mistral/route.ts",
+   "line": 9,
+   "fingerprint": "e9856892d00d3360936be9f0d044b816",
+   "verdict": "tp",
+   "reason": "The streamed completion is created without the request abort signal."
+  },
+  {
+   "rule": "LLM017",
+   "file": "app/api/chat/openai/route.ts",
+   "line": 10,
+   "fingerprint": "ccc498fdb5c5408afe9a8157860de19c",
+   "verdict": "tp",
+   "reason": "The streamed completion is created without the request abort signal."
+  },
+  {
+   "rule": "LLM017",
+   "file": "app/api/chat/openrouter/route.ts",
+   "line": 10,
+   "fingerprint": "a4b348ebbdb4175ba2517ff4210ddbbc",
+   "verdict": "tp",
+   "reason": "The streamed completion is created without the request abort signal."
+  },
+  {
+   "rule": "LLM017",
+   "file": "app/api/chat/perplexity/route.ts",
+   "line": 8,
+   "fingerprint": "d95c480a0958bcd355b0371fb5ab1c21",
+   "verdict": "tp",
+   "reason": "The streamed completion is created without the request abort signal."
+  },
+  {
+   "rule": "LLM017",
+   "file": "app/api/chat/tools/route.ts",
+   "line": 9,
+   "fingerprint": "cd34d079b28fa35736a31c73505883bd",
+   "verdict": "tp",
+   "reason": "The streamed completion is created without the request abort signal."
   }
  ]
 }

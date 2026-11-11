@@ -121,6 +121,14 @@
    "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
    "verdict": "tp",
    "reason": "No tests and no CI."
+  },
+  {
+   "rule": "LLM017",
+   "file": "app/api/assistants/threads/[threadId]/messages/route.ts",
+   "line": 7,
+   "fingerprint": "c94af3b621df4eef0cea32bd31a1fd85",
+   "verdict": "tp",
+   "reason": "The streamed completion is created without the request abort signal."
   }
  ]
 }
