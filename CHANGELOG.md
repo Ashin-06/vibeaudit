@@ -4,7 +4,20 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.8.2] - 2026-11-12
+
+Phase 3 continues with the language server and the editor extension; severe preview rules gate again.
+
+### Changed
+
+- Severe preview rules gate again. Command injection (BE002), dynamic code execution (BE003), unsafe
+  deserialization (BE004), open redirect (BE008) and XSS (FE001) stay in preview with their measured
+  precision, but their findings count toward `--fail-on`, the score and the grade by default: for these bug
+  classes a miss costs more than a false alarm ([STABILITY.md](STABILITY.md)). This undoes, for these five
+  rules, the default introduced when they moved to preview in 0.6.0 and 0.8.0.
+- QA007 no longer reports `require("vscode")` in an editor extension (a package.json with `engines.vscode`).
+- Git and external tools now run with stdin closed, so a scan started by a server that reads stdin on
+  another thread cannot hang on Windows.
 
 ### Added
 
@@ -13,12 +26,10 @@ All notable changes to this project are documented here. The format follows
   files inside the workspace.
 - `editors/vscode`: a thin VS Code / Cursor extension that starts `vibeaudit lsp`, built as a `.vsix` in CI
   and not published. It runs only in trusted workspaces, and its server settings are machine-scoped.
-
-### Changed
-
-- QA007 no longer reports `require("vscode")` in an editor extension (a package.json with `engines.vscode`).
-- Git and external tools now run with stdin closed, so a scan started by a server that reads stdin on
-  another thread cannot hang on Windows.
+- `--no-gate-severe-preview` and the configuration key `gate-severe-preview = false` leave the severe preview
+  rules out of `--fail-on` and the score. `--include-preview` is unchanged.
+- The `gates_in_preview` rule property, shown in `vibeaudit rules --format json`, docs/RULES.md
+  (`preview, gates`) and as `"gates_in_preview": true` on findings in the JSON report.
 
 ## [0.8.1] - 2026-11-11
 
