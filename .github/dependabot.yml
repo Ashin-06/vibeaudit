@@ -10,3 +10,9 @@ updates:
     directory: /
     schedule:
       interval: weekly
+  # the VS Code / Cursor extension: its build tool (@vscode/vsce) pins glob and minimatch through `overrides`
+  # in its package.json until a vsce release asks for the patched versions itself
+  - package-ecosystem: npm
+    directory: /editors/vscode
+    schedule:
+      interval: weekly
