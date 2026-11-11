@@ -8,7 +8,7 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 
 | Item | Status |
 | --- | --- |
-| Labelled benchmark corpus: 40 pinned public repositories (8 held out since 0.7.2), labels per finding | done |
+| Labelled benchmark corpus: 53 pinned public repositories (12 held out; pre-fix advisory commits and training apps since 0.8.0), labels per finding | done |
 | Precision per rule and seeded recall (`tools/benchmark.py`), table and JSON results | done |
 | CI regression gate against a stored baseline, tolerant of network failures | done |
 | Rule stability policy and preview rules (`--include-preview`) | done |
@@ -68,10 +68,10 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 
 | Item | Status |
 | --- | --- |
-| Codemods (diff by default, `--apply`): request timeouts, output token limits, guarded `JSON.parse` of model output, pinned JWT algorithms, Decimal money columns, CORS credentials | done, unreleased (REL001, LLM003, LLM011, BE016, AUTH011, DATA004, BE012) |
+| Codemods (diff by default, `--apply`): request timeouts, output token limits, guarded `JSON.parse` of model output, pinned JWT algorithms, Decimal money columns, CORS credentials | done (0.8.0; REL001, LLM003, LLM011, BE016, AUTH011, DATA004, BE012) |
 | Codemods for `rel="noopener noreferrer"` and Redis TTL | planned (waits for a rule that reports them) |
-| Agentic patch generator for complex findings (writes a `.patch`, never applies it) | done, unreleased (`vibeaudit fix --llm`) |
-| MCP `auto_repair` tool returning the diff | done, unreleased |
+| Agentic patch generator for complex findings (writes a `.patch`, never applies it) | done (`vibeaudit fix --llm`; 0.8.0) |
+| MCP `auto_repair` tool returning the diff | done (0.8.0) |
 
 ## Phase 3: everywhere it runs
 

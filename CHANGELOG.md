@@ -4,7 +4,11 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.8.0] - 2026-11-11
+
+Phase 2 starts: `vibeaudit fix` repairs findings that have one obvious fix. The benchmark grows to 53
+repositories so that more rules can be measured, and rules that the larger corpus shows under 90% move to
+preview. No new rules.
 
 ### Added
 
@@ -17,6 +21,33 @@ All notable changes to this project are documented here. The format follows
 - MCP tool `auto_repair`: the `fix` diff for a project or one file; it writes nothing.
 - `tools/fix_corpus.py`: runs every codemod over the benchmark corpus and checks that the finding goes away,
   the file parses, nothing new is reported and a second run changes nothing.
+- 13 benchmark repositories: 7 pinned to the commit before the fix of a published GitHub advisory
+  (alerta, wsgidav, waline, flexible-graphrag, vibe-trading, adx-mcp-server, nodejs-whisper) and 6
+  deliberately vulnerable training apps (NodeGoat, DVNA, pygoat, dvpwa, DVGA, damn-vulnerable-llm-agent).
+  All 826 new findings were read and labelled; 4 of the repositories are held out.
+- RESULTS.md reports precision for stable rules only and without the training apps. Stable rules: 94.7%
+  tuned, 93.8% held-out. 50 rules now have at least 5 labelled findings (38 before).
+
+### Changed
+
+- Moved to preview with their measured precision: BE002 command injection (50%), BE003 dynamic code
+  execution (36%), BE004 unsafe deserialization (36%), BE008 open redirect (83%), QA004 TODO left in code
+  (87%), QA005 unfinished stub (0%), QA006 import that does not resolve (held-out 15%: `.js` imports of
+  `.d.ts` files) and SEC011 hard-coded password (89%). They are still reported.
+
+### Fixed
+
+False positives on the tuned split, each with a regression test that fails on 0.7.2:
+
+- A `@permission(...)` decorator now counts as an authentication check (AUTH001), and an authenticated
+  webhook route no longer needs a signature (AUTH004).
+- Unminified copies of well-known libraries (jQuery, Bootstrap, Materialize and others) are treated as
+  vendored code.
+- A query formatted from a `for name in ['a', 'b']` loop just above it is not reported as SQL injection.
+- Helper scripts that print the token they fetch (SEC010), use a local default secret (SEC004), and
+  database reset or seed files with demo users (SEC011) are not reported.
+- A webhook view that verifies its sender's signature may be `csrf_exempt` (AUTH009).
+- Published npm libraries (with a `files` list) and documentation requirement files need no lockfile (DEP005).
 
 ## [0.7.2] - 2026-11-11
 

@@ -76,7 +76,7 @@ the rule. So the corpus has two parts:
   are fixed, nothing more.
 - **Held-out (12 repositories, `"split": "heldout"` in corpus.json):** careconnect, thynk,
   langchain-nextjs-template, openai-assistants-quickstart, saas-starter, flasky, podinfo, terragoat and,
-  since 0.7.3, damn-vulnerable-llm-agent, dvpwa, nodejs-whisper and waline.
+  since 0.8.0, damn-vulnerable-llm-agent, dvpwa, nodejs-whisper and waline.
   Their findings are labelled the same way, but **no rule is changed because of them**. Held-out precision
   is what decides whether a rule may leave preview ([STABILITY.md](../STABILITY.md)).
 
@@ -93,13 +93,13 @@ next line (podinfo); `_test.go` files are not treated as tests (podinfo, SEC003)
 inside development and testing config classes (flasky, BE011 and AUTH009); `|safe` on HTML already cleaned
 with bleach (flasky, FE001).
 
-Since 0.7.3 also not fixed: QA006 reports a TypeScript import ending in `.js` that resolves to a `.d.ts`
+Since 0.8.0 also not fixed: QA006 reports a TypeScript import ending in `.js` that resolves to a `.d.ts`
 file (waline, 23 findings; QA006 is preview because of it); FE001 on comment HTML that the project
 sanitizes before storing (waline).
 
-## Pre-fix commits and training apps (0.7.3)
+## Pre-fix commits and training apps (0.8.0)
 
-Real vulnerabilities are rare in the original corpus, so 13 repositories were added in 0.7.3:
+Real vulnerabilities are rare in the original corpus, so 13 repositories were added in 0.8.0:
 
 - **Pre-fix commits (7):** a project pinned to the parent of the commit that fixed a published GitHub
   advisory: adx-mcp-server, alerta, flexible-graphrag, nodejs-whisper, vibe-trading, waline and wsgidav

@@ -33,7 +33,7 @@ Contents: [Quickstart](#quickstart) - [Example output](#example-output) - [What 
 ## Quickstart
 
 ```bash
-pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.7.2"
+pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.8.0"
 ```
 
 ```bash
@@ -115,13 +115,13 @@ Good tools exist, and vibeaudit runs them when they are installed instead of rep
 vibeaudit is installed from this repository (it is not on PyPI yet). Python 3.9 or newer:
 
 ```bash
-pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.7.2"
+pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.8.0"
 ```
 
 or, to keep it in its own environment:
 
 ```bash
-pipx install "git+https://github.com/Ashin-06/vibeaudit.git@v0.7.2"
+pipx install "git+https://github.com/Ashin-06/vibeaudit.git@v0.8.0"
 ```
 
 Optional: if [gitleaks](https://github.com/gitleaks/gitleaks), [bandit](https://github.com/PyCQA/bandit),
@@ -280,7 +280,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0                  # needed for --diff
-      - uses: Ashin-06/vibeaudit@v0.7.2
+      - uses: Ashin-06/vibeaudit@v0.8.0
         with:
           fail-on: high
           args: --diff origin/main        # optional: only changed lines
@@ -301,7 +301,7 @@ flags, split on spaces), `setup-python` (`true`/`false`) and `python-version`.
 # .pre-commit-config.yaml
 repos:
   - repo: https://github.com/Ashin-06/vibeaudit
-    rev: v0.7.2
+    rev: v0.8.0
     hooks:
       - id: vibeaudit
 ```
@@ -460,11 +460,13 @@ Not covered (see [ROADMAP.md](ROADMAP.md); contributions welcome):
 
 ## Accuracy
 
-Every rule is measured on a labelled benchmark: 40 public repositories pinned to exact commits (AI-built
-Lovable/Supabase apps, LLM apps, well-maintained Python and JavaScript projects, infrastructure code and
-two deliberately vulnerable projects), where each of the 716 findings was read in the code and labelled
-true or false, plus seeded examples for recall. 32 repositories were used to find and fix false positives
-(89% of their findings are true); 8 are held out and never used for tuning (90% true). Precision per rule
+Every rule is measured on a labelled benchmark: 53 public repositories pinned to exact commits (AI-built
+Lovable/Supabase apps, LLM apps, well-maintained Python and JavaScript projects, infrastructure code,
+projects at the commit before a published security fix, and deliberately vulnerable training apps), where
+each of the 1,472 findings was read in the code and labelled true or false, plus seeded examples for
+recall. 41 repositories were used to find and fix false positives; 12 are held out and never used for
+tuning. Stable rules (the ones `--fail-on` acts on) are 95% precise on the tuned split and 94% on the
+held-out one; preview rules, reported but not gating, are lower. Precision per rule
 on both splits, seeded recall and the status of every rule are in
 [benchmark/RESULTS.md](benchmark/RESULTS.md). Every stable rule with at least 5 labelled findings is at
 90% or above; rules below that are in preview, and a rule leaves preview only on its held-out precision.
@@ -512,14 +514,14 @@ CycloneDX SBOM (`vibeaudit-VERSION.cdx.json`), built by the release workflow fro
 build provenance is signed with GitHub artifact attestations (Sigstore). With the GitHub CLI:
 
 ```bash
-gh attestation verify vibeaudit-0.7.2-py3-none-any.whl --repo Ashin-06/vibeaudit
+gh attestation verify vibeaudit-0.8.0-py3-none-any.whl --repo Ashin-06/vibeaudit
 ```
 
 Run the same for the `.tar.gz` and the `.cdx.json` file. The check passes only if the file was built by
 this repository's release workflow; `--format json` shows the commit and workflow it came from. The SBOM
 lists what the wheel installs (vibeaudit has no runtime dependencies on Python 3.11 and later, and
 `tomli` before that). vibeaudit is not published to PyPI by this project yet; install a verified wheel
-with `pip install vibeaudit-0.7.2-py3-none-any.whl`.
+with `pip install vibeaudit-0.8.0-py3-none-any.whl`.
 
 ## Contributing, security and license
 
