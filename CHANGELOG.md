@@ -4,6 +4,27 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- `vibeaudit watch`: re-scans after every change and prints new (`+`) and fixed (`-`) findings. Unchanged files
+  keep their parse trees, and per-file checks whose inputs did not change are replayed; the result always
+  equals a fresh scan. `tools/watch_latency.py` measures the re-scan time and checks it against a fresh scan.
+- `vibeaudit lsp`: a Language Server Protocol server (standard library only) with diagnostics, also for
+  unsaved buffers, and the `vibeaudit fix` codemods as quick fixes. It never writes files and accepts only
+  files inside the workspace.
+- `editors/vscode`: a thin VS Code / Cursor extension that starts `vibeaudit lsp`, built as a `.vsix` in CI
+  and not published. It runs only in trusted workspaces, and its server settings are machine-scoped.
+
+### Changed
+
+- QA007 no longer reports `require("vscode")` in an editor extension (a package.json with `engines.vscode`).
+- Git and external tools now run with stdin closed, so a scan started by a server that reads stdin on
+  another thread cannot hang on Windows.
+- Faster QA006 checks: the names a JavaScript module exports are computed once per module instead of once
+  per import.
+
 ## [0.8.0] - 2026-11-11
 
 Phase 2 starts: `vibeaudit fix` repairs findings that have one obvious fix. The benchmark grows to 53
@@ -19,9 +40,6 @@ preview. No new rules.
 - `vibeaudit fix --llm`: model-written patches for findings without a codemod, written to a `.patch` file
   and never applied.
 - MCP tool `auto_repair`: the `fix` diff for a project or one file; it writes nothing.
-- `vibeaudit watch`: re-scans after every change and prints new (`+`) and fixed (`-`) findings. Unchanged files
-  keep their parse trees, and per-file checks whose inputs did not change are replayed; the result always
-  equals a fresh scan. `tools/watch_latency.py` measures the re-scan time and checks it against a fresh scan.
 - `tools/fix_corpus.py`: runs every codemod over the benchmark corpus and checks that the finding goes away,
   the file parses, nothing new is reported and a second run changes nothing.
 - 13 benchmark repositories: 7 pinned to the commit before the fix of a published GitHub advisory
@@ -51,20 +69,6 @@ False positives on the tuned split, each with a regression test that fails on 0.
   database reset or seed files with demo users (SEC011) are not reported.
 - A webhook view that verifies its sender's signature may be `csrf_exempt` (AUTH009).
 - Published npm libraries (with a `files` list) and documentation requirement files need no lockfile (DEP005).
-
-- `vibeaudit lsp`: a Language Server Protocol server (standard library only) with diagnostics, also for
-  unsaved buffers, and the `vibeaudit fix` codemods as quick fixes. It never writes files and accepts only
-  files inside the workspace.
-- `editors/vscode`: a thin VS Code / Cursor extension that starts `vibeaudit lsp`, built as a `.vsix` in CI
-  and not published. It runs only in trusted workspaces, and its server settings are machine-scoped.
-
-### Changed
-
-- QA007 no longer reports `require("vscode")` in an editor extension (a package.json with `engines.vscode`).
-- Git and external tools now run with stdin closed, so a scan started by a server that reads stdin on
-  another thread cannot hang on Windows.
-- Faster QA006 checks: the names a JavaScript module exports are computed once per module instead of once
-  per import.
 
 ## [0.7.2] - 2026-11-11
 

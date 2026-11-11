@@ -45,8 +45,8 @@ def published(out: io.BytesIO):
 
 def test_framing_round_trip_and_limits():
     buf = io.BytesIO()
-    lsp.write_message(buf, {"a": "é"})
-    assert lsp.read_message(io.BytesIO(buf.getvalue())) == {"a": "é"}
+    lsp.write_message(buf, {"a": "\u00e9"})
+    assert lsp.read_message(io.BytesIO(buf.getvalue())) == {"a": "\u00e9"}
     for bad in (b"Content-Length: abc\r\n\r\n{}", b"Content-Length: 999999999999\r\n\r\n",
                 b"Content-Length: 2\r\n\r\n[]", b"Content-Length: 3\r\n\r\n{x}", b"X" * 9000 + b"\r\n\r\n"):
         with pytest.raises(lsp.ProtocolError):
@@ -87,7 +87,7 @@ def test_code_actions_fix_the_buffer(tmp_path):
     (tmp_path / "app.py").write_text("x = 1\n")
     s, out = server(tmp_path)
     uri = (tmp_path / "app.py").as_uri()
-    text = "import requests\né = 1\nr = requests.get('https://x')\n"
+    text = "import requests\n\u00e9 = 1\nr = requests.get('https://x')\n"
     s.handle({"jsonrpc": "2.0", "method": "textDocument/didOpen",
               "params": {"textDocument": {"uri": uri, "languageId": "python", "version": 1, "text": text}}})
     s.scan()
