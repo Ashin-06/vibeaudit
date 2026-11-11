@@ -89,15 +89,15 @@
    "fixed_fp": 4
   },
   "chatbot-ui": {
-   "findings": 49,
-   "labelled": 49,
+   "findings": 58,
+   "labelled": 58,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 1
   },
   "chatgpt-your-files": {
-   "findings": 9,
-   "labelled": 9,
+   "findings": 10,
+   "labelled": 10,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 4
@@ -124,8 +124,8 @@
    "fixed_fp": 4
   },
   "sec-insights": {
-   "findings": 40,
-   "labelled": 40,
+   "findings": 41,
+   "labelled": 41,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 10
@@ -257,15 +257,15 @@
    "fixed_fp": 0
   },
   "langchain-nextjs-template": {
-   "findings": 18,
-   "labelled": 18,
+   "findings": 20,
+   "labelled": 20,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
   },
   "openai-assistants-quickstart": {
-   "findings": 15,
-   "labelled": 15,
+   "findings": 16,
+   "labelled": 16,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
@@ -3015,6 +3015,75 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {}
+  },
+  "LLM016": {
+   "title": "Coding agent allowed to act without asking",
+   "preview": true,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "LLM017": {
+   "title": "Streamed completion not cancelled on disconnect",
+   "preview": true,
+   "tp": 13,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "chatbot-ui": [
+     9,
+     0,
+     0
+    ],
+    "chatgpt-your-files": [
+     1,
+     0,
+     0
+    ],
+    "langchain-nextjs-template": [
+     2,
+     0,
+     0
+    ],
+    "openai-assistants-quickstart": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "LLM018": {
+   "title": "Prompts or completions written to logs",
+   "preview": true,
+   "tp": 1,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "sec-insights": [
+     1,
+     0,
+     0
+    ]
+   }
   },
   "QA001": {
    "title": "No automated tests",

@@ -1535,6 +1535,43 @@
    "seeded_recall": 1.0,
    "by_repo": {}
   },
+  "LLM016": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "LLM017": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "chatbot-ui": [
+     9,
+     0
+    ],
+    "chatgpt-your-files": [
+     1,
+     0
+    ],
+    "langchain-nextjs-template": [
+     2,
+     0
+    ],
+    "openai-assistants-quickstart": [
+     1,
+     0
+    ]
+   }
+  },
+  "LLM018": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "sec-insights": [
+     1,
+     0
+    ]
+   }
+  },
   "QA001": {
    "precision": 1.0,
    "seeded_recall": 1.0,

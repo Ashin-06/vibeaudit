@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Callable, Dict, List, Optional
 
 from . import heuristics as H
-from . import apiscan, iacscan as iac
+from . import agentscan, apiscan, iacscan as iac
 from .guard import GUARD, finditer
 from .files import ENV_EXAMPLE_RE, ENV_FILE_RE, TEST_PATH_RE, Project, SourceFile, read_ignore_file, _matches
 from .lexer import py_views
@@ -380,6 +380,7 @@ class ProjectScanner:
     # -------------------------------------------------------------- routes
     def api_checks(self) -> None:
         apiscan.run(self.p, self.routes, self.all_code, self.add)
+        agentscan.run(self.p, self.routes, self.add)
 
     def route_checks(self) -> None:
         rate_limited = bool(H.RATE_LIMIT_EVIDENCE.search(self.all_code))

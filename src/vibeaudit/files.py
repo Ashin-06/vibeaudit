@@ -16,7 +16,7 @@ SKIP_DIRS = {
     "venv", ".venv", "virtualenv", "__pycache__", ".tox", ".nox", ".mypy_cache",
     ".pytest_cache", ".ruff_cache", "site-packages", "dist", "build", "out", ".next", ".nuxt",
     ".output", ".svelte-kit", ".vercel", ".netlify", ".turbo", ".parcel-cache", ".cache",
-    "coverage", "htmlcov", ".idea", ".vscode", "target", ".gradle", "Pods", ".expo",
+    "coverage", "htmlcov", ".idea", "target", ".gradle", "Pods", ".expo",  # .vscode is read: mcp.json, agent settings
     ".terraform", ".serverless", "storybook-static", ".docusaurus", ".angular",
 }
 BUNDLE_DIRS = {"dist", "build", "out"}
