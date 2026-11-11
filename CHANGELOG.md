@@ -4,6 +4,32 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.7.2] - 2026-11-11
+
+Third Phase 1 release: API and auth checks, and a held-out benchmark split. The new rules are preview.
+
+### Added
+
+- AUTH011: `jwt.decode()` in Python without `algorithms`, and algorithm lists that mix HMAC with
+  public-key algorithms (key confusion).
+- AUTH012: a session cookie set without `SameSite` (or with `SameSite=None`) in a project with no CSRF
+  protection.
+- AUTH013: a webhook that checks an HMAC signature but no timestamp or event id, so a captured request can
+  be replayed.
+- AUTH014: a rate limit keyed on `X-Forwarded-For` taken as the client sent it.
+- BE019: a payment amount or price read from the request and passed to the payment provider.
+- BE020: email headers built by formatting values into the header line, or set straight from request data.
+- A held-out benchmark split: 8 new pinned repositories (40 in total) whose findings are labelled but never
+  used to tune a rule. Held-out precision is 89.7% (131 of 146); the tuned split is at 88.8%.
+  [benchmark/RESULTS.md](benchmark/RESULTS.md) shows both per rule.
+
+### Changed
+
+- A rule now leaves preview only with 90% precision on at least 5 held-out findings
+  ([STABILITY.md](STABILITY.md)).
+- FE007 (hard-coded localhost URL) is preview: 6 of its 7 labelled findings are true.
+- Seeded sample apps no longer pin dependency versions (they raised Dependabot alerts).
+
 ## [0.7.1] - 2026-11-11
 
 Second Phase 1 release: frontend and accessibility checks. The new rules are preview.

@@ -8,7 +8,7 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 
 | Item | Status |
 | --- | --- |
-| Labelled benchmark corpus: 32 pinned public repositories, labels per finding | done |
+| Labelled benchmark corpus: 40 pinned public repositories (8 held out since 0.7.2), labels per finding | done |
 | Precision per rule and seeded recall (`tools/benchmark.py`), table and JSON results | done |
 | CI regression gate against a stored baseline, tolerant of network failures | done |
 | Rule stability policy and preview rules (`--include-preview`) | done |
@@ -26,13 +26,13 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | Focus outlines removed | preview (UI016; 0.7.1, 6 of 6) |
 | Asset links (fonts, SVG, favicon, public images) to missing files | preview (UI017; 0.7.1, 2 of 2) |
 | CORS wildcard or reflected origin with credentials | done (BE012, narrowed in 0.6.0) |
-| Cookie-authenticated state changes without a CSRF token or SameSite=Lax/Strict | planned |
-| Rate limits keyed on the raw IP behind a proxy | planned |
-| Webhooks without a timestamp or replay window | planned |
-| Payment amounts or prices taken from the client | planned |
-| Email header injection | planned |
+| Cookie-authenticated state changes without a CSRF token or SameSite=Lax/Strict | preview (AUTH012; 0.7.2) |
+| Rate limits keyed on the raw IP behind a proxy | preview (AUTH014, X-Forwarded-For as the key; 0.7.2) |
+| Webhooks without a timestamp or replay window | preview (AUTH013; 0.7.2) |
+| Payment amounts or prices taken from the client | preview (BE019; 0.7.2) |
+| Email header injection | preview (BE020; 0.7.2) |
 | Open redirects and SSRF in "fetch this URL" features (extends BE005/BE008) | planned |
-| JWT verified without pinned algorithms (alg none, HMAC/RSA confusion) | planned |
+| JWT verified without pinned algorithms (alg none, HMAC/RSA confusion) | preview (AUTH011; alg none is BE016; 0.7.2) |
 | Password change or reset not revoking sessions and refresh tokens | planned |
 | Queries not scoped to the current tenant or org (extends AUTH003) | planned |
 | Feature flags or admin toggles reachable without auth | planned |
@@ -96,7 +96,7 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | `--report compliance:<framework>` (HTML and printable output) | planned |
 | Signed threat-intel feed in `vibeaudit update`: slopsquatted names, model sunset calendar, prompt-injection patterns, community submissions; works offline | planned |
 
-## Phase 5: more languages
+## Phase 5: more languages (planned, not started)
 
 | Item | Status |
 | --- | --- |
@@ -106,7 +106,7 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | Rust (Actix, Axum) | planned |
 | PHP (Laravel, Symfony) | planned |
 
-## Phase 6: opt-in extras
+## Phase 6: opt-in extras (planned, not started)
 
 | Item | Status |
 | --- | --- |

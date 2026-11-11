@@ -20,7 +20,7 @@ nothing, inaccessible forms and frontend calls to API routes that do not exist.
 - Works offline with no API key. The network is used only for package-registry and vulnerability
   lookups (`--offline` turns that off); an LLM is used only if you ask for it.
 - Pure Python, no dependencies on 3.11+ (`tomli` on 3.9 and 3.10). Linux, macOS and Windows.
-- 128 rules in 12 categories, mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
+- 134 rules in 12 categories, mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
 - Terminal output plus JSON, SARIF 2.1.0 (GitHub code scanning), Markdown, HTML, an SVG badge and a fix
   brief you can paste into an AI assistant.
 - Fits into CI (GitHub Action, `--diff`), pre-commit (`--staged`) and coding agents (an MCP server).
@@ -33,7 +33,7 @@ Contents: [Quickstart](#quickstart) - [Example output](#example-output) - [What 
 ## Quickstart
 
 ```bash
-pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.7.1"
+pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.7.2"
 ```
 
 ```bash
@@ -79,9 +79,9 @@ That project is one of the deliberately vulnerable sample apps in `tests/fixture
 | --- | --- |
 | Secrets (SEC) | provider keys and tokens, private keys, high-entropy secrets, hard-coded or default signing secrets, database URLs with passwords, committed or un-ignored `.env` files, secrets in `NEXT_PUBLIC_`/`VITE_` variables, a Supabase `service_role` key outside the server, secrets in logs, hard-coded passwords, keys baked into committed bundles |
 | Supply chain (DEP) | packages that do not exist (hallucinated names), typosquats of popular packages, packages first published in the last 30 days, known vulnerabilities (OSV) for pinned versions, missing lockfiles, install scripts that run remote code, unpinned MCP servers, extra package indexes (dependency confusion; preview) |
-| Backend (BE) | SQL, NoSQL and command injection, `eval`/`exec`, unsafe deserialization, SSRF, path traversal, server-side template injection, open redirects, mass assignment, debug mode, permissive CORS, disabled TLS verification, weak password hashing, insecure randomness, unverified JWTs, leaked error details, no server-side validation |
+| Backend (BE) | SQL, NoSQL and command injection, `eval`/`exec`, unsafe deserialization, SSRF, path traversal, server-side template injection, open redirects, mass assignment, debug mode, permissive CORS, disabled TLS verification, weak password hashing, insecure randomness, unverified JWTs, leaked error details, no server-side validation; in preview: payment amounts taken from the client, email header injection |
 | Frontend (FE) | XSS through raw HTML sinks, LLM APIs called from the browser, authorization decisions in browser storage, `postMessage` without origin checks, tokens in `localStorage`, production source maps, hard-coded localhost URLs |
-| Auth (AUTH) | endpoints that change data or spend money without authentication, admin routes without a role check, IDOR-shaped handlers, unverified webhooks, tables without Row Level Security, permissive policies, open Firebase rules, auth functions that always return true, CSRF disabled, login without rate limiting |
+| Auth (AUTH) | endpoints that change data or spend money without authentication, admin routes without a role check, IDOR-shaped handlers, unverified webhooks, tables without Row Level Security, permissive policies, open Firebase rules, auth functions that always return true, CSRF disabled, login without rate limiting; in preview: JWTs accepted without pinned algorithms, session cookies without SameSite or CSRF protection, webhook signatures without replay protection, rate limits keyed on X-Forwarded-For |
 | Config (CFG) | containers running as root, unpinned base images, secrets in images, GitHub Actions script injection, unsafe `pull_request_target`, any Host header accepted, default database passwords, missing security headers, `.env` copied into an image; in preview: third-party GitHub Actions not pinned to a commit, `permissions: write-all`, privileged or host-mounted Kubernetes containers and missing resource limits, public S3 buckets, admin and database ports open to the internet, unencrypted RDS and EBS storage (Terraform and CloudFormation) |
 | LLM and agents (LLM) | untrusted input in the system prompt, model output in a dangerous sink, no token limit, LLM endpoints without rate limiting, agent tools with dangerous capabilities, dangerous agent options, system prompts shipped to the browser, unsafe model loading, unbounded agent loops, vector search without a tenant filter, model output parsed as JSON without error handling, retired model ids, MCP servers with whole-disk access or plain HTTP, secrets in MCP configs, agents that read untrusted content and also have dangerous tools |
 | Code completeness (QA) | no tests, no CI, swallowed exceptions, security TODOs, unfinished stubs, imports of files or names that do not exist, packages imported but not declared, TypeScript checking disabled |
@@ -115,13 +115,13 @@ Good tools exist, and vibeaudit runs them when they are installed instead of rep
 vibeaudit is installed from this repository (it is not on PyPI yet). Python 3.9 or newer:
 
 ```bash
-pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.7.1"
+pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.7.2"
 ```
 
 or, to keep it in its own environment:
 
 ```bash
-pipx install "git+https://github.com/Ashin-06/vibeaudit.git@v0.7.1"
+pipx install "git+https://github.com/Ashin-06/vibeaudit.git@v0.7.2"
 ```
 
 Optional: if [gitleaks](https://github.com/gitleaks/gitleaks), [bandit](https://github.com/PyCQA/bandit),
@@ -243,7 +243,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0                  # needed for --diff
-      - uses: Ashin-06/vibeaudit@v0.7.1
+      - uses: Ashin-06/vibeaudit@v0.7.2
         with:
           fail-on: high
           args: --diff origin/main        # optional: only changed lines
@@ -264,7 +264,7 @@ flags, split on spaces), `setup-python` (`true`/`false`) and `python-version`.
 # .pre-commit-config.yaml
 repos:
   - repo: https://github.com/Ashin-06/vibeaudit
-    rev: v0.7.1
+    rev: v0.7.2
     hooks:
       - id: vibeaudit
 ```
@@ -474,14 +474,14 @@ CycloneDX SBOM (`vibeaudit-VERSION.cdx.json`), built by the release workflow fro
 build provenance is signed with GitHub artifact attestations (Sigstore). With the GitHub CLI:
 
 ```bash
-gh attestation verify vibeaudit-0.7.1-py3-none-any.whl --repo Ashin-06/vibeaudit
+gh attestation verify vibeaudit-0.7.2-py3-none-any.whl --repo Ashin-06/vibeaudit
 ```
 
 Run the same for the `.tar.gz` and the `.cdx.json` file. The check passes only if the file was built by
 this repository's release workflow; `--format json` shows the commit and workflow it came from. The SBOM
 lists what the wheel installs (vibeaudit has no runtime dependencies on Python 3.11 and later, and
 `tomli` before that). vibeaudit is not published to PyPI by this project yet; install a verified wheel
-with `pip install vibeaudit-0.7.1-py3-none-any.whl`.
+with `pip install vibeaudit-0.7.2-py3-none-any.whl`.
 
 ## Contributing, security and license
 
