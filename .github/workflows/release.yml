@@ -7,6 +7,8 @@ name: Release
 on:
   push:
     tags: ["v*"]
+  # a manual run builds, writes the SBOM and signs, but creates no release: a rehearsal of the signing step
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -19,8 +21,8 @@ jobs:
       id-token: write       # Sigstore signing identity for the attestation
       attestations: write   # store the attestation
     steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
-      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1  # v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
         with:
           python-version: "3.12"
       - name: Check the tag against the package version and the changelog
@@ -28,7 +30,9 @@ jobs:
           TAG: ${{ github.ref_name }}
         run: |
           VERSION=$(python -c "import re; print(re.search(r'__version__ = \"([^\"]+)\"', open('src/vibeaudit/__init__.py').read()).group(1))")
-          test "$TAG" = "v$VERSION" || { echo "tag $TAG does not match version $VERSION"; exit 1; }
+          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            test "$TAG" = "v$VERSION" || { echo "tag $TAG does not match version $VERSION"; exit 1; }
+          fi
           python tools/release_notes.py "$VERSION" > notes.md
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
       - name: Build sdist and wheel
@@ -44,13 +48,14 @@ jobs:
           cyclonedx-py environment /tmp/clean/bin/python --output-format JSON \
             --output-file "dist/vibeaudit-$VERSION.cdx.json"
       - name: Sign build provenance
-        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be  # v2
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8  # v4.2.2
         with:
           subject-path: |
             dist/*.whl
             dist/*.tar.gz
             dist/*.cdx.json
       - name: Create the GitHub release with the files
+        if: github.event_name == 'push'
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ github.ref_name }}
