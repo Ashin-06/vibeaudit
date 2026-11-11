@@ -38,6 +38,7 @@ class Rule:
     preview_reason: str = ""
 
 
+NEW_IN_072 = "New in 0.7.2: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_071 = "New in 0.7.1: not yet measured on enough real-world findings in the benchmark."
 NEW_IN_070 = "New in 0.7.0: not yet measured on enough real-world findings in the benchmark."
 
@@ -229,6 +230,17 @@ _R = [
          preview=True,
          preview_reason="Benchmark precision 67% (6 of 9): hand-written validation (type checks, 422 responses) is "
                        "not recognised, only known validation libraries."),
+    Rule("BE019", "Payment amount taken from the client", "backend", "high",
+         "The price sent to the payment provider comes from the request, so anyone can pay one cent for "
+         "anything by editing the request.",
+         "Send only a product or plan id from the client and look the price up on the server.", "CWE-472",
+         "A04:2021", preview=True, preview_reason=NEW_IN_072),
+    Rule("BE020", "Email header injection", "backend", "medium",
+         "A value placed into a raw email header can contain a line break and add its own headers (Bcc, "
+         "another subject), turning the form into a spam relay.",
+         "Reject values with CR or LF, and build messages with an API that validates headers "
+         "(`email.message.EmailMessage`, a mail SDK) instead of formatting header lines.", "CWE-93", "A03:2021",
+         preview=True, preview_reason=NEW_IN_072),
     # --------------------------------------------------------------- frontend
     Rule("FE001", "Cross-site scripting through a raw HTML sink", "frontend", "high",
          "Inserting unsanitized data as HTML (innerHTML, dangerouslySetInnerHTML, v-html, {@html}, |safe) "
@@ -316,6 +328,28 @@ _R = [
          "stuffing.",
          "Add rate limiting (flask-limiter, slowapi, express-rate-limit, @upstash/ratelimit) by IP and by "
          "account.", "CWE-307", "A07:2021"),
+    Rule("AUTH011", "JWT accepted without pinned algorithms", "auth", "high",
+         "When the verifier does not fix the algorithm, an attacker can pick it: sign a token with the "
+         "public key as an HMAC secret, or use an algorithm the code never meant to allow.",
+         "Pass exactly the algorithm you issue tokens with, for example `algorithms=[\"HS256\"]`, and never "
+         "mix HMAC and public-key algorithms in one list.", "CWE-347", "A02:2021",
+         preview=True, preview_reason=NEW_IN_072),
+    Rule("AUTH012", "Session cookie without SameSite and no CSRF protection", "auth", "medium",
+         "A cookie the browser sends on cross-site requests, with no CSRF token, lets another website submit "
+         "forms and API calls as the logged-in user.",
+         "Set `SameSite=Lax` (or `Strict`) on session cookies and add a CSRF token for state-changing "
+         "requests.", "CWE-352", "A01:2021", preview=True, preview_reason=NEW_IN_072),
+    Rule("AUTH013", "Webhook signature without replay protection", "auth", "medium",
+         "A valid signed webhook request that is captured once (logs, a proxy, a leaked request) can be sent "
+         "again and again, repeating the payment or the state change.",
+         "Sign and check a timestamp and reject old requests, or store processed event ids.", "CWE-294",
+         "A07:2021", preview=True, preview_reason=NEW_IN_072),
+    Rule("AUTH014", "Rate limit keyed on a client-controlled header", "auth", "medium",
+         "X-Forwarded-For is whatever the client sends unless a trusted proxy overwrites it, so each request "
+         "can claim a new address and the limit never applies.",
+         "Use the address your proxy sets (configure `trust proxy` / ProxyFix and read `req.ip`), take the "
+         "last hop, or key the limit on the authenticated user.", "CWE-348", "A04:2021",
+         preview=True, preview_reason=NEW_IN_072),
     # ----------------------------------------------------------------- config
     Rule("CFG001", "Container runs as root", "config", "low",
          "If the app is compromised the attacker is root inside the container, which makes escaping and "

@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Callable, Dict, List, Optional
 
 from . import heuristics as H
-from . import iacscan as iac
+from . import apiscan, iacscan as iac
 from .guard import GUARD, finditer
 from .files import ENV_EXAMPLE_RE, ENV_FILE_RE, TEST_PATH_RE, Project, SourceFile, read_ignore_file, _matches
 from .lexer import py_views
@@ -59,7 +59,7 @@ class ProjectScanner:
         for sf in self.p.files:
             if sf.text is not None:
                 GUARD.run(sf.rel, "configuration checks", self._file, sf)
-        for step in (self.supabase_sql, self.env_files, self.lockfiles, self.tests_and_ci, self.express_headers, self.route_checks):
+        for step in (self.supabase_sql, self.env_files, self.lockfiles, self.tests_and_ci, self.express_headers, self.route_checks, self.api_checks):
             GUARD.run("<project>", step.__name__.replace("_", " "), step)
 
     def _file(self, sf: SourceFile) -> None:
@@ -376,6 +376,9 @@ class ProjectScanner:
                 return
 
     # -------------------------------------------------------------- routes
+    def api_checks(self) -> None:
+        apiscan.run(self.p, self.routes, self.all_code, self.add)
+
     def route_checks(self) -> None:
         rate_limited = bool(H.RATE_LIMIT_EVIDENCE.search(self.all_code))
         reads_body: Optional[Route] = None

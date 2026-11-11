@@ -3,9 +3,9 @@
 Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do not edit by hand.
 `vibeaudit rules` prints the same list, and `vibeaudit rules --format json` includes every field.
 
-129 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
+135 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-21 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+27 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -252,6 +252,8 @@ References: CWE-427, A08:2021
 | [BE016](#be016) | high | stable | JWT signature not verified |
 | [BE017](#be017) | low | stable | Internal error details sent to the client |
 | [BE018](#be018) | medium | preview | No server-side input validation |
+| [BE019](#be019) | high | preview | Payment amount taken from the client |
+| [BE020](#be020) | medium | preview | Email header injection |
 
 ### BE001
 
@@ -435,6 +437,30 @@ How to fix: Validate every request body on the server with a schema (zod, valibo
 
 References: CWE-602, A04:2021
 
+### BE019
+
+**Payment amount taken from the client** (high, preview)
+
+Preview: New in 0.7.2: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: The price sent to the payment provider comes from the request, so anyone can pay one cent for anything by editing the request.
+
+How to fix: Send only a product or plan id from the client and look the price up on the server.
+
+References: CWE-472, A04:2021
+
+### BE020
+
+**Email header injection** (medium, preview)
+
+Preview: New in 0.7.2: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: A value placed into a raw email header can contain a line break and add its own headers (Bcc, another subject), turning the form into a spam relay.
+
+How to fix: Reject values with CR or LF, and build messages with an API that validates headers (`email.message.EmailMessage`, a mail SDK) instead of formatting header lines.
+
+References: CWE-93, A03:2021
+
 ## Frontend security
 
 | ID | Severity | Status | Rule |
@@ -535,6 +561,10 @@ References: CWE-1188
 | [AUTH008](#auth008) | critical | stable | Auth check stub always succeeds |
 | [AUTH009](#auth009) | medium | stable | CSRF protection disabled |
 | [AUTH010](#auth010) | medium | stable | Login endpoint without rate limiting |
+| [AUTH011](#auth011) | high | preview | JWT accepted without pinned algorithms |
+| [AUTH012](#auth012) | medium | preview | Session cookie without SameSite and no CSRF protection |
+| [AUTH013](#auth013) | medium | preview | Webhook signature without replay protection |
+| [AUTH014](#auth014) | medium | preview | Rate limit keyed on a client-controlled header |
 
 ### AUTH001
 
@@ -635,6 +665,54 @@ Why it matters: Without rate limiting, login and reset endpoints can be brute-fo
 How to fix: Add rate limiting (flask-limiter, slowapi, express-rate-limit, @upstash/ratelimit) by IP and by account.
 
 References: CWE-307, A07:2021
+
+### AUTH011
+
+**JWT accepted without pinned algorithms** (high, preview)
+
+Preview: New in 0.7.2: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: When the verifier does not fix the algorithm, an attacker can pick it: sign a token with the public key as an HMAC secret, or use an algorithm the code never meant to allow.
+
+How to fix: Pass exactly the algorithm you issue tokens with, for example `algorithms=["HS256"]`, and never mix HMAC and public-key algorithms in one list.
+
+References: CWE-347, A02:2021
+
+### AUTH012
+
+**Session cookie without SameSite and no CSRF protection** (medium, preview)
+
+Preview: New in 0.7.2: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: A cookie the browser sends on cross-site requests, with no CSRF token, lets another website submit forms and API calls as the logged-in user.
+
+How to fix: Set `SameSite=Lax` (or `Strict`) on session cookies and add a CSRF token for state-changing requests.
+
+References: CWE-352, A01:2021
+
+### AUTH013
+
+**Webhook signature without replay protection** (medium, preview)
+
+Preview: New in 0.7.2: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: A valid signed webhook request that is captured once (logs, a proxy, a leaked request) can be sent again and again, repeating the payment or the state change.
+
+How to fix: Sign and check a timestamp and reject old requests, or store processed event ids.
+
+References: CWE-294, A07:2021
+
+### AUTH014
+
+**Rate limit keyed on a client-controlled header** (medium, preview)
+
+Preview: New in 0.7.2: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: X-Forwarded-For is whatever the client sends unless a trusted proxy overwrites it, so each request can claim a new address and the limit never applies.
+
+How to fix: Use the address your proxy sets (configure `trust proxy` / ProxyFix and read `req.ip`), take the last hop, or key the limit on the authenticated user.
+
+References: CWE-348, A04:2021
 
 ## Configuration and deployment
 
