@@ -1,0 +1,926 @@
+{
+ "repo": "alerta",
+ "commit": "cc0993d0b245dbeaa19e8ec30c9992ec06fa293e",
+ "findings": [
+  {
+   "rule": "BE018",
+   "file": "alerta/auth/basic.py",
+   "line": 13,
+   "fingerprint": "f1e204ea029dffc8950dcb4eb7701932",
+   "verdict": "fp",
+   "reason": "The login body is checked by hand before use."
+  },
+  {
+   "rule": "QA007",
+   "file": "alerta/auth/basic_ldap.py",
+   "line": 2,
+   "fingerprint": "eea13f33232b964713cc8fe2dec085ad",
+   "verdict": "tp",
+   "reason": "Imported but not in install_requires."
+  },
+  {
+   "rule": "REL001",
+   "file": "alerta/auth/github.py",
+   "line": 36,
+   "fingerprint": "22e22883cbe8d1940d1dc21e6e40d178",
+   "verdict": "tp",
+   "reason": "The requests call has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "alerta/auth/github.py",
+   "line": 39,
+   "fingerprint": "92a67990d8f8944e7eab5f0901fe8076",
+   "verdict": "tp",
+   "reason": "The requests call has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "alerta/auth/github.py",
+   "line": 42,
+   "fingerprint": "46f95b208c1b3a7e1c14dc878c6153af",
+   "verdict": "tp",
+   "reason": "The requests call has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "alerta/auth/gitlab.py",
+   "line": 30,
+   "fingerprint": "2498a7efe281c59adc49a52d8558705d",
+   "verdict": "tp",
+   "reason": "The requests call has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "alerta/auth/gitlab.py",
+   "line": 36,
+   "fingerprint": "02eaa9838a5b521eb7be614e4804fd3a",
+   "verdict": "tp",
+   "reason": "The requests call has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "alerta/auth/gitlab.py",
+   "line": 41,
+   "fingerprint": "a8baa01187aef7afeeb28f85fac19bc7",
+   "verdict": "tp",
+   "reason": "The requests call has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "alerta/auth/gitlab.py",
+   "line": 49,
+   "fingerprint": "76fd34ea9167e15d4b1fa4a4262c7513",
+   "verdict": "tp",
+   "reason": "The requests call has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "alerta/auth/gitlab.py",
+   "line": 55,
+   "fingerprint": "d0403c924a04e98fa47f284a1be5d836",
+   "verdict": "tp",
+   "reason": "The requests call has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "alerta/auth/google.py",
+   "line": 26,
+   "fingerprint": "c9521d67c56ecebc802ff6198c7d3ce1",
+   "verdict": "tp",
+   "reason": "The requests call has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "alerta/auth/google.py",
+   "line": 43,
+   "fingerprint": "47206e7cc358f1737bba8212185a1f70",
+   "verdict": "tp",
+   "reason": "The requests call has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "alerta/auth/keycloak.py",
+   "line": 31,
+   "fingerprint": "e479a991c9bd2b74286086eb27bad0b1",
+   "verdict": "tp",
+   "reason": "The requests call has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "alerta/auth/keycloak.py",
+   "line": 37,
+   "fingerprint": "0c05456aa60f405e05a0c955230a1a01",
+   "verdict": "tp",
+   "reason": "The requests call has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "alerta/auth/pingfederate.py",
+   "line": 28,
+   "fingerprint": "06bee6fd718d6ddcfdc3bb0c2124c341",
+   "verdict": "tp",
+   "reason": "The requests call has no timeout."
+  },
+  {
+   "rule": "QA007",
+   "file": "alerta/auth/utils.py",
+   "line": 8,
+   "fingerprint": "f974100af29233928a167b9d26cfdcc4",
+   "verdict": "tp",
+   "reason": "Imported but not in install_requires."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/auth/utils.py",
+   "line": 52,
+   "fingerprint": "f42e1ffd4b2c5222d83574bd29946f84",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/database/backends/mongodb/base.py",
+   "line": 173,
+   "fingerprint": "fe49e57bb5133517f02bf7819a0b9250",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/database/backends/mongodb/base.py",
+   "line": 197,
+   "fingerprint": "108d8b2d8939fba30666030759db0ef2",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/database/backends/mongodb/base.py",
+   "line": 779,
+   "fingerprint": "3a3b4766e33c7eece295eedf7c9089dd",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/database/backends/mongodb/base.py",
+   "line": 1103,
+   "fingerprint": "4359bdb576dd1ec9e77b46118ad86a63",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/database/backends/mongodb/base.py",
+   "line": 1157,
+   "fingerprint": "5afb005f4c478f6fd4930f9ee98d4b71",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/database/backends/mongodb/base.py",
+   "line": 1161,
+   "fingerprint": "8ef83b67b94d16ab64a37bf7fb477a7f",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/database/backends/mongodb/base.py",
+   "line": 1187,
+   "fingerprint": "3e1c9a1c8276075a62ccceba83dcc568",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA001",
+   "file": "alerta/database/backends/mongodb/base.py",
+   "line": 1219,
+   "fingerprint": "980b5b146981fe6b284e6ba8c202e8bf",
+   "verdict": "tp",
+   "reason": "One find_one per matched role on every permission lookup."
+  },
+  {
+   "rule": "DATA001",
+   "file": "alerta/database/backends/mongodb/base.py",
+   "line": 1253,
+   "fingerprint": "6f3511e6baa5534c8a0d8e2d6b4c6916",
+   "verdict": "tp",
+   "reason": "One find_one per matched role on every permission lookup."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/database/backends/mongodb/base.py",
+   "line": 1338,
+   "fingerprint": "3f936cad17965c36993c230dc895879e",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/database/backends/mongodb/base.py",
+   "line": 1342,
+   "fingerprint": "588babf7ea91727be2975ae9bd478e11",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/database/backends/mongodb/base.py",
+   "line": 1351,
+   "fingerprint": "db6a2bc87e420c3432fa9d21cd29c9fe",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/database/backends/mongodb/base.py",
+   "line": 1377,
+   "fingerprint": "dc5fdc0f96b6f2feae747e1321b774d1",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "BE001",
+   "file": "alerta/database/backends/postgres/base.py",
+   "line": 132,
+   "fingerprint": "21a74529851e1caceeeabd3b893ad01d",
+   "verdict": "fp",
+   "reason": "The table names come from a fixed list in the same function."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/dev.py",
+   "line": 5,
+   "fingerprint": "a1d99983b417f566870b854c7d6fd194",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/management/views.py",
+   "line": 127,
+   "fingerprint": "bc136973565577078d60ad32231521c2",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/models/alert.py",
+   "line": 51,
+   "fingerprint": "f0fd617ed348de4c7f38dbecae8348aa",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/models/alert.py",
+   "line": 60,
+   "fingerprint": "718aa62efc84371cf8689ce017213ef4",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/models/alert.py",
+   "line": 233,
+   "fingerprint": "62f8264ebb022a8977a97e4b25ce9a0d",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/models/alert.py",
+   "line": 273,
+   "fingerprint": "646ee4d6f39d552f0213bab1c893fd96",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/models/alert.py",
+   "line": 327,
+   "fingerprint": "23488f34e982391009d0f32bb89574d5",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/models/alert.py",
+   "line": 378,
+   "fingerprint": "b8bc2bdcbc6b08de84c0e2bfc3cbb498",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/models/alert.py",
+   "line": 391,
+   "fingerprint": "93849bb00f312a8b865be35d7c7668db",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/models/alert.py",
+   "line": 497,
+   "fingerprint": "704a8f2dcbcf1628367ec3933f5cdab4",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/models/alert.py",
+   "line": 508,
+   "fingerprint": "cb618e53a1be2fd51f7328d4d1fe73ad",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/models/alert.py",
+   "line": 520,
+   "fingerprint": "31475b6909de8c1f3faa954cba5dfde1",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/models/alert.py",
+   "line": 543,
+   "fingerprint": "16b9902af4b9e7b65ce063244d303867",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/models/blackout.py",
+   "line": 22,
+   "fingerprint": "798917860cf6d7b5307c09702796609d",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/models/blackout.py",
+   "line": 43,
+   "fingerprint": "f4d5aa8acb5ec15fc3a5e6477b9f499f",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/models/blackout.py",
+   "line": 61,
+   "fingerprint": "e2c6ad24fc804ab8d27d7ac43b33b1f4",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/models/heartbeat.py",
+   "line": 28,
+   "fingerprint": "92b20c1c2db59ce988f0e358850fbc59",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/models/heartbeat.py",
+   "line": 30,
+   "fingerprint": "17a7759b79c4c5e3517164302f91751e",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/models/heartbeat.py",
+   "line": 39,
+   "fingerprint": "d39ddaaed3c9b6d2362d09596a992587",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/models/history.py",
+   "line": 17,
+   "fingerprint": "c48ee30760ac75d07a7c01ac91701268",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/models/key.py",
+   "line": 23,
+   "fingerprint": "aabc310346f3a7b641b480b24bbe5e65",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/models/key.py",
+   "line": 141,
+   "fingerprint": "8dd9789bdd5320725c78f41949861937",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/models/user.py",
+   "line": 35,
+   "fingerprint": "8182e49d786ea148cd780c9ef9626242",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/models/user.py",
+   "line": 38,
+   "fingerprint": "f19c0f6791cc397b285e0c240e7415ca",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "SEC004",
+   "file": "alerta/settings.py",
+   "line": 21,
+   "fingerprint": "ce6b5286c48d2238ffce1fdb469b5b40",
+   "verdict": "tp",
+   "reason": "settings.py ships a default SECRET_KEY used unless a config file overrides it."
+  },
+  {
+   "rule": "BE011",
+   "file": "alerta/utils/config.py",
+   "line": 33,
+   "fingerprint": "0b62062ed815b7f8b209ed4895b39cbb",
+   "verdict": "fp",
+   "reason": "DEBUG is switched on only when the DEBUG environment variable is set."
+  },
+  {
+   "rule": "QA007",
+   "file": "alerta/utils/format.py",
+   "line": 7,
+   "fingerprint": "fa7fdde66aa0700f2f009909ac44de2e",
+   "verdict": "fp",
+   "reason": "bson ships with pymongo, which is declared."
+  },
+  {
+   "rule": "QA007",
+   "file": "alerta/utils/format.py",
+   "line": 50,
+   "fingerprint": "22c25f8933c4e1aa58e7004549eee056",
+   "verdict": "tp",
+   "reason": "Imported but not in install_requires."
+  },
+  {
+   "rule": "QA007",
+   "file": "alerta/utils/plugin.py",
+   "line": 6,
+   "fingerprint": "3baeee8272c8126f7d676bcc973c4f9f",
+   "verdict": "tp",
+   "reason": "Imported but not in install_requires."
+  },
+  {
+   "rule": "BE017",
+   "file": "alerta/views/alerts.py",
+   "line": 51,
+   "fingerprint": "de475853e46f2364707566fb4ced5148",
+   "verdict": "tp",
+   "reason": "str(e) of the caught exception is returned in the API error."
+  },
+  {
+   "rule": "BE017",
+   "file": "alerta/views/alerts.py",
+   "line": 53,
+   "fingerprint": "f4602acbbc7f2c18f3bb491b2551edc9",
+   "verdict": "tp",
+   "reason": "str(e) of the caught exception is returned in the API error."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "alerta/views/alerts.py",
+   "line": 118,
+   "fingerprint": "ca97b55b1f7d2c0b9df15f6cb285d74c",
+   "verdict": "fp",
+   "reason": "The route has @permission(scope), the project's own auth decorator."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "alerta/views/alerts.py",
+   "line": 161,
+   "fingerprint": "d2e27afca3d9358a49de5bd3a05f8f9a",
+   "verdict": "fp",
+   "reason": "The route has @permission(scope), the project's own auth decorator."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "alerta/views/alerts.py",
+   "line": 183,
+   "fingerprint": "443d767d9ea4e90dfa7b7ed8a4d7734e",
+   "verdict": "fp",
+   "reason": "The route has @permission(scope), the project's own auth decorator."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "alerta/views/alerts.py",
+   "line": 205,
+   "fingerprint": "1c891fa4d4fa91b9a5a92b9a5b6b0a6e",
+   "verdict": "fp",
+   "reason": "The route has @permission(scope), the project's own auth decorator."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "alerta/views/alerts.py",
+   "line": 227,
+   "fingerprint": "139c374fad9b7fd20f44da9067ab8c73",
+   "verdict": "fp",
+   "reason": "The route has @permission(scope), the project's own auth decorator."
+  },
+  {
+   "rule": "DATA006",
+   "file": "alerta/views/alerts.py",
+   "line": 246,
+   "fingerprint": "efe842fcce7b4b037db07aa185736f2d",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "alerta/views/blackouts.py",
+   "line": 70,
+   "fingerprint": "6b5a56841785354fe3902552b38478c4",
+   "verdict": "fp",
+   "reason": "The route has @permission(scope), the project's own auth decorator."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "alerta/views/bulk.py",
+   "line": 75,
+   "fingerprint": "24a7a7c5ceb0f508fb53c43136713490",
+   "verdict": "fp",
+   "reason": "The route has @permission(scope), the project's own auth decorator."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "alerta/views/bulk.py",
+   "line": 101,
+   "fingerprint": "4ebe2242b1e224b78dd9cdd59afa06d9",
+   "verdict": "fp",
+   "reason": "The route has @permission(scope), the project's own auth decorator."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "alerta/views/bulk.py",
+   "line": 116,
+   "fingerprint": "0372eb658bdcec48f1e55caec6034566",
+   "verdict": "fp",
+   "reason": "The route has @permission(scope), the project's own auth decorator."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "alerta/views/bulk.py",
+   "line": 131,
+   "fingerprint": "4751cf52f27fca91e9a1f94a95070646",
+   "verdict": "fp",
+   "reason": "The route has @permission(scope), the project's own auth decorator."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "alerta/views/bulk.py",
+   "line": 146,
+   "fingerprint": "697312ea33e0ef460e1ad1c7d5ab9f26",
+   "verdict": "fp",
+   "reason": "The route has @permission(scope), the project's own auth decorator."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "alerta/views/customers.py",
+   "line": 18,
+   "fingerprint": "1637afc87d86cda163f1cac299b4b4d6",
+   "verdict": "fp",
+   "reason": "The route has @permission(scope), the project's own auth decorator."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "alerta/views/customers.py",
+   "line": 62,
+   "fingerprint": "e6f5dd9813b2dd6acb2c5ce9c8f54a43",
+   "verdict": "fp",
+   "reason": "The route has @permission(scope), the project's own auth decorator."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "alerta/views/heartbeats.py",
+   "line": 19,
+   "fingerprint": "8074b1357cdd281f5fd0fbf08bb36b5c",
+   "verdict": "fp",
+   "reason": "The route has @permission(scope), the project's own auth decorator."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "alerta/views/heartbeats.py",
+   "line": 79,
+   "fingerprint": "294b98efe4bccd4b5d7f12c28edd7595",
+   "verdict": "fp",
+   "reason": "The route has @permission(scope), the project's own auth decorator."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "alerta/views/keys.py",
+   "line": 83,
+   "fingerprint": "e2287abe1220e40a3714bd28985948d3",
+   "verdict": "fp",
+   "reason": "The route has @permission(scope), the project's own auth decorator."
+  },
+  {
+   "rule": "BE017",
+   "file": "alerta/views/oembed.py",
+   "line": 34,
+   "fingerprint": "fbcdb7883196d1dc6edb2f76a72b0e9d",
+   "verdict": "tp",
+   "reason": "str(e) of the caught exception is returned in the API error."
+  },
+  {
+   "rule": "BE017",
+   "file": "alerta/views/oembed.py",
+   "line": 40,
+   "fingerprint": "4d5ec146ec9890db44c5e668c2d8ebb5",
+   "verdict": "tp",
+   "reason": "str(e) of the caught exception is returned in the API error."
+  },
+  {
+   "rule": "BE017",
+   "file": "alerta/views/oembed.py",
+   "line": 46,
+   "fingerprint": "ae018d59c25abcd4b1ebff2b6bcc378a",
+   "verdict": "tp",
+   "reason": "str(e) of the caught exception is returned in the API error."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "alerta/views/permissions.py",
+   "line": 17,
+   "fingerprint": "88c7e05951f3b1ec5576ddc917fc5988",
+   "verdict": "fp",
+   "reason": "The route has @permission(scope), the project's own auth decorator."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "alerta/views/permissions.py",
+   "line": 65,
+   "fingerprint": "58f397cf5d4c3219d7079fda14ecccda",
+   "verdict": "fp",
+   "reason": "The route has @permission(scope), the project's own auth decorator."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "alerta/views/users.py",
+   "line": 50,
+   "fingerprint": "44f8fada63f2565b7cedf3a3b7a93e94",
+   "verdict": "fp",
+   "reason": "The route has @permission(scope), the project's own auth decorator."
+  },
+  {
+   "rule": "BE009",
+   "file": "alerta/views/users.py",
+   "line": 62,
+   "fingerprint": "8c473bcbae550d9ffcd51107ef2471bd",
+   "verdict": "tp",
+   "reason": "user.update(**request.json) writes every field the client sends."
+  },
+  {
+   "rule": "BE009",
+   "file": "alerta/views/users.py",
+   "line": 89,
+   "fingerprint": "36ead124cf6be8c7eb173e7831b48c2f",
+   "verdict": "tp",
+   "reason": "user.update(**request.json) writes every field the client sends."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "alerta/views/users.py",
+   "line": 99,
+   "fingerprint": "57be32c037d0828821aa2d486041d12e",
+   "verdict": "fp",
+   "reason": "The route has @permission(scope), the project's own auth decorator."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "alerta/views/users.py",
+   "line": 162,
+   "fingerprint": "a7085eb3418e1e5cc176f68bb0842323",
+   "verdict": "fp",
+   "reason": "The route has @permission(scope), the project's own auth decorator."
+  },
+  {
+   "rule": "AUTH004",
+   "file": "alerta/webhooks/cloudwatch.py",
+   "line": 84,
+   "fingerprint": "fb3383f3e3b0f27047c909c4293ab958",
+   "verdict": "fp",
+   "reason": "The webhook is authenticated with @permission('write:webhooks') (an API key), which replaces a signature."
+  },
+  {
+   "rule": "AUTH004",
+   "file": "alerta/webhooks/custom.py",
+   "line": 16,
+   "fingerprint": "247c780b0af1c6bd9107712f2b19a544",
+   "verdict": "fp",
+   "reason": "The webhook is authenticated with @permission('write:webhooks') (an API key), which replaces a signature."
+  },
+  {
+   "rule": "QA004",
+   "file": "alerta/webhooks/grafana.py",
+   "line": 29,
+   "fingerprint": "0eac7601dbfe7353961fa6ae8c432718",
+   "verdict": "tp",
+   "reason": "A TODO about a missing verification."
+  },
+  {
+   "rule": "AUTH004",
+   "file": "alerta/webhooks/grafana.py",
+   "line": 66,
+   "fingerprint": "db900ac0b99f860d86f9241a11b8247b",
+   "verdict": "fp",
+   "reason": "The webhook is authenticated with @permission('write:webhooks') (an API key), which replaces a signature."
+  },
+  {
+   "rule": "BE017",
+   "file": "alerta/webhooks/grafana.py",
+   "line": 75,
+   "fingerprint": "42e17e3b8f095d9fa89c97356dfd6923",
+   "verdict": "tp",
+   "reason": "str(e) of the caught exception is returned in the API error."
+  },
+  {
+   "rule": "BE017",
+   "file": "alerta/webhooks/grafana.py",
+   "line": 83,
+   "fingerprint": "84b99d52b32e7a0ea275672c38826433",
+   "verdict": "tp",
+   "reason": "str(e) of the caught exception is returned in the API error."
+  },
+  {
+   "rule": "BE017",
+   "file": "alerta/webhooks/grafana.py",
+   "line": 85,
+   "fingerprint": "ac8059e8ade3bfec4092bd13db842b4f",
+   "verdict": "tp",
+   "reason": "str(e) of the caught exception is returned in the API error."
+  },
+  {
+   "rule": "AUTH004",
+   "file": "alerta/webhooks/graylog.py",
+   "line": 35,
+   "fingerprint": "a2a40d4f00188a8735905c25cac2c832",
+   "verdict": "fp",
+   "reason": "The webhook is authenticated with @permission('write:webhooks') (an API key), which replaces a signature."
+  },
+  {
+   "rule": "AUTH004",
+   "file": "alerta/webhooks/newrelic.py",
+   "line": 62,
+   "fingerprint": "0eafb1bfacfff746ccffe3120fe562eb",
+   "verdict": "fp",
+   "reason": "The webhook is authenticated with @permission('write:webhooks') (an API key), which replaces a signature."
+  },
+  {
+   "rule": "AUTH004",
+   "file": "alerta/webhooks/pagerduty.py",
+   "line": 65,
+   "fingerprint": "f41e740369c2c21a64e869d9f293db33",
+   "verdict": "fp",
+   "reason": "The webhook is authenticated with @permission('write:webhooks') (an API key), which replaces a signature."
+  },
+  {
+   "rule": "AUTH004",
+   "file": "alerta/webhooks/pingdom.py",
+   "line": 74,
+   "fingerprint": "8f816fc093dec7badd8ea3e4e4661ec4",
+   "verdict": "fp",
+   "reason": "The webhook is authenticated with @permission('write:webhooks') (an API key), which replaces a signature."
+  },
+  {
+   "rule": "AUTH004",
+   "file": "alerta/webhooks/prometheus.py",
+   "line": 95,
+   "fingerprint": "10984c52a20c23fc53904d977a3c12d7",
+   "verdict": "fp",
+   "reason": "The webhook is authenticated with @permission('write:webhooks') (an API key), which replaces a signature."
+  },
+  {
+   "rule": "AUTH004",
+   "file": "alerta/webhooks/riemann.py",
+   "line": 36,
+   "fingerprint": "ea04c577c850af1e8614a7ce06d38ecb",
+   "verdict": "fp",
+   "reason": "The webhook is authenticated with @permission('write:webhooks') (an API key), which replaces a signature."
+  },
+  {
+   "rule": "AUTH004",
+   "file": "alerta/webhooks/serverdensity.py",
+   "line": 46,
+   "fingerprint": "5b57e3fd7fedd014d325252588b76dbc",
+   "verdict": "fp",
+   "reason": "The webhook is authenticated with @permission('write:webhooks') (an API key), which replaces a signature."
+  },
+  {
+   "rule": "AUTH004",
+   "file": "alerta/webhooks/slack.py",
+   "line": 79,
+   "fingerprint": "a88d131442e2d4d9f97cda9c2b469e59",
+   "verdict": "fp",
+   "reason": "The webhook is authenticated with @permission('write:webhooks') (an API key), which replaces a signature."
+  },
+  {
+   "rule": "AUTH004",
+   "file": "alerta/webhooks/stackdriver.py",
+   "line": 64,
+   "fingerprint": "9ddcb8b9e30c2d185c13d514302bc0b9",
+   "verdict": "fp",
+   "reason": "The webhook is authenticated with @permission('write:webhooks') (an API key), which replaces a signature."
+  },
+  {
+   "rule": "AUTH004",
+   "file": "alerta/webhooks/telegram.py",
+   "line": 72,
+   "fingerprint": "28404fdfab08ba198af608c362d2995a",
+   "verdict": "fp",
+   "reason": "The webhook is authenticated with @permission('write:webhooks') (an API key), which replaces a signature."
+  },
+  {
+   "rule": "REL003",
+   "file": "alerta/webhooks/telegram.py",
+   "line": 72,
+   "fingerprint": "3013f64c13de218feb660039985124d0",
+   "verdict": "tp",
+   "reason": "A replayed Telegram callback creates another blackout."
+  },
+  {
+   "rule": "REL001",
+   "file": "contrib/plugins/gitlab/alerta_gitlab.py",
+   "line": 39,
+   "fingerprint": "c27dcebc2e8e1746d70f4e2f079b3cf7",
+   "verdict": "tp",
+   "reason": "The requests call has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "contrib/plugins/gitlab/alerta_gitlab.py",
+   "line": 52,
+   "fingerprint": "4bb90d0d689e1e03730e075428aaaad9",
+   "verdict": "tp",
+   "reason": "The requests call has no timeout."
+  },
+  {
+   "rule": "QA007",
+   "file": "contrib/plugins/gitlab/setup.py",
+   "line": 2,
+   "fingerprint": "4c5e792edae9387968d73231dca1d490",
+   "verdict": "fp",
+   "reason": "setup.py importing setuptools is the build tool itself."
+  },
+  {
+   "rule": "SEC004",
+   "file": "install.sh",
+   "line": 52,
+   "fingerprint": "0e0173e0d03dd1b41d86b894536f65ea",
+   "verdict": "tp",
+   "reason": "The install script writes a fixed SECRET_KEY into the config."
+  },
+  {
+   "rule": "DEP005",
+   "file": "requirements-dev.txt",
+   "line": 1,
+   "fingerprint": "582a65424a36cd0086f8f6c25bf00472",
+   "verdict": "tp",
+   "reason": "The requirements are not pinned."
+  },
+  {
+   "rule": "DEP005",
+   "file": "requirements.txt",
+   "line": 1,
+   "fingerprint": "4a1eb089ae4bdcc2ecd669fa67db3721",
+   "verdict": "tp",
+   "reason": "The requirements are not pinned."
+  },
+  {
+   "rule": "DATA006",
+   "file": "setup.py",
+   "line": 22,
+   "fingerprint": "30d71f2b973409ed8cdedae4ac845f76",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() gives a naive timestamp that is stored or compared."
+  },
+  {
+   "rule": "QA003",
+   "file": "setup.py",
+   "line": 26,
+   "fingerprint": "20d46a72cb7f561f21a6e7e36c86e42b",
+   "verdict": "fp",
+   "reason": "setup.py falling back when the README cannot be read."
+  }
+ ]
+}

@@ -1,0 +1,158 @@
+{
+ "repo": "dvna",
+ "commit": "9ba473add536f66ac9007966acb2a775dd31277a",
+ "findings": [
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile",
+   "line": 3,
+   "fingerprint": "89eec179a6d090c0f3c5a10a1eff5cb2",
+   "verdict": "tp",
+   "reason": "The image runs as root."
+  },
+  {
+   "rule": "BE001",
+   "file": "core/appHandler.js",
+   "line": 11,
+   "fingerprint": "4906b76fad759f2309630483a868a803",
+   "verdict": "tp",
+   "reason": "The login from the request is concatenated into the SQL query."
+  },
+  {
+   "rule": "BE002",
+   "file": "core/appHandler.js",
+   "line": 39,
+   "fingerprint": "f1f4d3d4b127018d5ca605dade56d5f6",
+   "verdict": "tp",
+   "reason": "The address from the request is concatenated into a shell command."
+  },
+  {
+   "rule": "BE008",
+   "file": "core/appHandler.js",
+   "line": 188,
+   "fingerprint": "74dd149e5bdd5efe788937ffaadf0885",
+   "verdict": "tp",
+   "reason": "The redirect target is the url query parameter."
+  },
+  {
+   "rule": "DEP005",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "5e6440f154e5fafdbedb3d38d01fb73b",
+   "verdict": "tp",
+   "reason": "No lockfile is committed."
+  },
+  {
+   "rule": "QA001",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "6ebc345ae714486cf41d50d631704e0c",
+   "verdict": "tp",
+   "reason": "No tests and no CI."
+  },
+  {
+   "rule": "QA002",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
+   "verdict": "tp",
+   "reason": "No tests and no CI."
+  },
+  {
+   "rule": "DEP002",
+   "file": "package.json",
+   "line": 23,
+   "fingerprint": "85d1f4c9b22ffd7c6435065843302329",
+   "verdict": "fp",
+   "reason": "flash is a real, long-standing package (connect-style flash messages), not a typo of slash."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "routes/app.js",
+   "line": 42,
+   "fingerprint": "dea15d2f86e252d1e511101198fa5927",
+   "verdict": "tp",
+   "reason": "The admin routes check only that the user is logged in."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "routes/app.js",
+   "line": 44,
+   "fingerprint": "ed68a01e2650ffcb745262cd7d0fbc86",
+   "verdict": "tp",
+   "reason": "The admin routes check only that the user is logged in."
+  },
+  {
+   "rule": "BE018",
+   "file": "routes/app.js",
+   "line": 50,
+   "fingerprint": "99655ac8bbb64dcf793344ef095a23a0",
+   "verdict": "tp",
+   "reason": "Request bodies are used without validation."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "routes/main.js",
+   "line": 51,
+   "fingerprint": "b5b8e70dd551b60fc64a264f0dbe86c5",
+   "verdict": "tp",
+   "reason": "The password login has no rate limit."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "routes/main.js",
+   "line": 65,
+   "fingerprint": "a4f06256e3d51e0cbfd4f1a580e1246e",
+   "verdict": "fp",
+   "reason": "A password reset submission is unauthenticated by nature."
+  },
+  {
+   "rule": "QA007",
+   "file": "server.js",
+   "line": 2,
+   "fingerprint": "4ffad79b11524b4efb5fe4a23b5ae2ba",
+   "verdict": "tp",
+   "reason": "body-parser is required but not listed in package.json."
+  },
+  {
+   "rule": "CFG008",
+   "file": "server.js",
+   "line": 11,
+   "fingerprint": "0d878154fea61bdf5341d965c0040ef6",
+   "verdict": "tp",
+   "reason": "No helmet or security headers."
+  },
+  {
+   "rule": "SEC004",
+   "file": "server.js",
+   "line": 23,
+   "fingerprint": "6c3d25965184a48cf7db5586dde5f02c",
+   "verdict": "tp",
+   "reason": "The session secret is hard-coded."
+  },
+  {
+   "rule": "FE001",
+   "file": "views/app/adminusers.ejs",
+   "line": 40,
+   "fingerprint": "2268a126dabaf58c7f177574cf75e98a",
+   "verdict": "tp",
+   "reason": "User names and emails from the API are written with innerHTML."
+  },
+  {
+   "rule": "FE001",
+   "file": "views/app/adminusers.ejs",
+   "line": 41,
+   "fingerprint": "acc56229a63b6d2f747b9d3e62dfd2a1",
+   "verdict": "tp",
+   "reason": "User names and emails from the API are written with innerHTML."
+  },
+  {
+   "rule": "FE001",
+   "file": "views/app/adminusers.ejs",
+   "line": 42,
+   "fingerprint": "d04d683a7b87a27c020c9504d75f6777",
+   "verdict": "tp",
+   "reason": "User names and emails from the API are written with innerHTML."
+  }
+ ]
+}

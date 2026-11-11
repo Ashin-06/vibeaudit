@@ -1,0 +1,646 @@
+{
+ "repo": "waline",
+ "commit": "e9d4f6cd5d567d95349c3a28d0dcce99c1866a23",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-test.yml",
+   "line": 19,
+   "fingerprint": "998c4eb2aebb711b920b9d7534215768",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-test.yml",
+   "line": 22,
+   "fingerprint": "8325d03fec7206a6c997bf1e35881627",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-test.yml",
+   "line": 33,
+   "fingerprint": "68e894c5cc72196166cf63b2762a72ac",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-test.yml",
+   "line": 41,
+   "fingerprint": "7b10c14d81ae251777d144fc0e0c41b9",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docs-deploy.yml",
+   "line": 22,
+   "fingerprint": "4d145055f727f7a49c988963af598957",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docs-deploy.yml",
+   "line": 45,
+   "fingerprint": "50ff4eda2e293f41b2293615bb517838",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/issue-check-inactive.yml",
+   "line": 12,
+   "fingerprint": "b79b86b2d71a26db21e86849c54c9d15",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/issue-labeled.yml",
+   "line": 13,
+   "fingerprint": "2d995968b024d2c26b244c28dd37b5d6",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release-admin.yml",
+   "line": 25,
+   "fingerprint": "37320e3d9aaec564c53af49fc9fbe6b7",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release-api.yml",
+   "line": 25,
+   "fingerprint": "57596fe5af9cac4236bb0be230c939fa",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release-client.yml",
+   "line": 25,
+   "fingerprint": "cb90d0ff7b014bc09d9deee05c0c1832",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release-server.yml",
+   "line": 29,
+   "fingerprint": "d57b93d9de9a6b9950c412765e2cf566",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release-server.yml",
+   "line": 62,
+   "fingerprint": "d5ca6e6439e4c23635222756b1a1f8e2",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release-server.yml",
+   "line": 64,
+   "fingerprint": "65d16a837915a98d6198cb1ab2786994",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release-server.yml",
+   "line": 67,
+   "fingerprint": "0bd538a39fecb3d62eee8091b05dc3a2",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release-server.yml",
+   "line": 73,
+   "fingerprint": "2e5ccfa0fce1f24b7cdb000bb4a10cd6",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release-server.yml",
+   "line": 83,
+   "fingerprint": "05b3ffef5ad0d5bf1d712f26b05929c4",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/test.yml",
+   "line": 26,
+   "fingerprint": "89796c9f0240ecb539bad3117c352fe4",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/translator.yml",
+   "line": 26,
+   "fingerprint": "dabda110b047df684ec48ade749cf7e8",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch."
+  },
+  {
+   "rule": "FE001",
+   "file": "docs/src/.vuepress/components/MigrationTool.vue",
+   "line": 122,
+   "fingerprint": "b7e67bf92bc9433f8608b2c8eee1551f",
+   "verdict": "fp",
+   "reason": "v-html renders the project's own translation string."
+  },
+  {
+   "rule": "SEC003",
+   "file": "docs/src/.vuepress/theme.ts",
+   "line": 304,
+   "fingerprint": "249cf384ae52c5ccca2cb162b6c58e8c",
+   "verdict": "fp",
+   "reason": "A search-only or public client API key meant to ship in the browser."
+  },
+  {
+   "rule": "FE007",
+   "file": "packages/admin/index.html",
+   "line": 9,
+   "fingerprint": "146472f394ce545591bbf45b37aca1c5",
+   "verdict": "tp",
+   "reason": "A hard-coded localhost API URL in the admin page."
+  },
+  {
+   "rule": "UI009",
+   "file": "packages/admin/src/components/Header.jsx",
+   "line": 23,
+   "fingerprint": "0d7e4ef5cfa497b3f865409cafff129b",
+   "verdict": "tp",
+   "reason": "The effect fetches with no loading or error state."
+  },
+  {
+   "rule": "UI003",
+   "file": "packages/admin/src/components/Header.jsx",
+   "line": 83,
+   "fingerprint": "c9ad6d9d3ae544a6ca3f766b6cebc093",
+   "verdict": "tp",
+   "reason": "The field has no label or aria-label."
+  },
+  {
+   "rule": "UI014",
+   "file": "packages/admin/src/components/Header.jsx",
+   "line": 93,
+   "fingerprint": "cf6f59c3c28e1aa258835d8890362cfb",
+   "verdict": "tp",
+   "reason": "The img has no width and height."
+  },
+  {
+   "rule": "FE004",
+   "file": "packages/admin/src/index.jsx",
+   "line": 17,
+   "fingerprint": "49414965e5d3d315f7f4e77d9235bdd9",
+   "verdict": "tp",
+   "reason": "The message listener that receives the login token checks no origin."
+  },
+  {
+   "rule": "SEC003",
+   "file": "packages/admin/src/locales/jp.json",
+   "line": 85,
+   "fingerprint": "696b8b973f3dab83db68868897d397a1",
+   "verdict": "fp",
+   "reason": "A translated sentence in a locale file, not a secret."
+  },
+  {
+   "rule": "UI003",
+   "file": "packages/admin/src/pages/manage-comments/index.jsx",
+   "line": 337,
+   "fingerprint": "5fc1f39db2cd50cfff917772548a3167",
+   "verdict": "tp",
+   "reason": "The field has no label or aria-label."
+  },
+  {
+   "rule": "UI003",
+   "file": "packages/admin/src/pages/manage-comments/index.jsx",
+   "line": 486,
+   "fingerprint": "b7d2d660f385caebcd30c11cd379c937",
+   "verdict": "tp",
+   "reason": "The field has no label or aria-label."
+  },
+  {
+   "rule": "FE001",
+   "file": "packages/admin/src/pages/manage-comments/index.jsx",
+   "line": 548,
+   "fingerprint": "37d5abba4d052395ec1c48acddfe6b9e",
+   "verdict": "fp",
+   "reason": "Comment HTML is sanitized (DOMPurify) before it is stored or previewed."
+  },
+  {
+   "rule": "UI014",
+   "file": "packages/admin/src/pages/profile/index.jsx",
+   "line": 120,
+   "fingerprint": "3983729d694e0bcabae4e40eb71c2e73",
+   "verdict": "tp",
+   "reason": "The img has no width and height."
+  },
+  {
+   "rule": "FE005",
+   "file": "packages/admin/src/store/user.js",
+   "line": 45,
+   "fingerprint": "a9971bd0a0605a708dc04335657f5ded",
+   "verdict": "tp",
+   "reason": "The login token is stored in localStorage."
+  },
+  {
+   "rule": "FE004",
+   "file": "packages/api/src/login.ts",
+   "line": 106,
+   "fingerprint": "a831c7cb435ce6da758e5da9e08ce699",
+   "verdict": "tp",
+   "reason": "The message listener that receives the login token checks no origin."
+  },
+  {
+   "rule": "QA004",
+   "file": "packages/api/src/typings.ts",
+   "line": 48,
+   "fingerprint": "bacbbba988e9c42fcc436f824a6ee349",
+   "verdict": "fp",
+   "reason": "A FIXME about renaming a field, not a security gap."
+  },
+  {
+   "rule": "QA006",
+   "file": "packages/client/src/comment.ts",
+   "line": 3,
+   "fingerprint": "52340569443419f6c64281a56b4efe64",
+   "verdict": "fp",
+   "reason": "The import ./typings/index.js resolves to typings/index.d.ts under TypeScript."
+  },
+  {
+   "rule": "QA006",
+   "file": "packages/client/src/components/ArticleReaction.vue",
+   "line": 8,
+   "fingerprint": "3c322b877ce38383ec227347d6042550",
+   "verdict": "fp",
+   "reason": "The import ./typings/index.js resolves to typings/index.d.ts under TypeScript."
+  },
+  {
+   "rule": "UI014",
+   "file": "packages/client/src/components/ArticleReaction.vue",
+   "line": 143,
+   "fingerprint": "05e4159a5a91e7a741c8fcfa087060ab",
+   "verdict": "tp",
+   "reason": "The img has no width and height."
+  },
+  {
+   "rule": "QA006",
+   "file": "packages/client/src/components/CommentBox.vue",
+   "line": 18,
+   "fingerprint": "ef46458dae38d303bd7c22480c6cee33",
+   "verdict": "fp",
+   "reason": "The import ./typings/index.js resolves to typings/index.d.ts under TypeScript."
+  },
+  {
+   "rule": "UI014",
+   "file": "packages/client/src/components/CommentBox.vue",
+   "line": 551,
+   "fingerprint": "d924ed01ce4a6a0594001dcfbe6ce6ea",
+   "verdict": "tp",
+   "reason": "The img has no width and height."
+  },
+  {
+   "rule": "FE001",
+   "file": "packages/client/src/components/CommentBox.vue",
+   "line": 614,
+   "fingerprint": "7f5ea50dfc6acb7658e2a8426ff30583",
+   "verdict": "fp",
+   "reason": "Comment HTML is sanitized (DOMPurify) before it is stored or previewed."
+  },
+  {
+   "rule": "FE001",
+   "file": "packages/client/src/components/CommentCard.vue",
+   "line": 171,
+   "fingerprint": "97eccf47f389a73dd5c20d83dd86f04b",
+   "verdict": "fp",
+   "reason": "Comment HTML is sanitized (DOMPurify) before it is stored or previewed."
+  },
+  {
+   "rule": "QA006",
+   "file": "packages/client/src/components/ImageWall.vue",
+   "line": 30,
+   "fingerprint": "60503baad35a6b6d9995798e573a31f2",
+   "verdict": "fp",
+   "reason": "The import ./typings/index.js resolves to typings/index.d.ts under TypeScript."
+  },
+  {
+   "rule": "UI001",
+   "file": "packages/client/src/components/ImageWall.vue",
+   "line": 143,
+   "fingerprint": "08eb36eba8a02e273c544519c32abd43",
+   "verdict": "tp",
+   "reason": "The img has no alt attribute."
+  },
+  {
+   "rule": "QA006",
+   "file": "packages/client/src/components/WalineComment.vue",
+   "line": 11,
+   "fingerprint": "3ae68e2f89fc88778251b81d53539dd1",
+   "verdict": "fp",
+   "reason": "The import ./typings/index.js resolves to typings/index.d.ts under TypeScript."
+  },
+  {
+   "rule": "QA006",
+   "file": "packages/client/src/config/default.ts",
+   "line": 3,
+   "fingerprint": "ea54abcff15599076a47609e49f4ce22",
+   "verdict": "fp",
+   "reason": "The import ./typings/index.js resolves to typings/index.d.ts under TypeScript."
+  },
+  {
+   "rule": "SEC003",
+   "file": "packages/client/src/config/default.ts",
+   "line": 73,
+   "fingerprint": "33b2e8b668a429ff5db05afb4fd7cbba",
+   "verdict": "fp",
+   "reason": "A search-only or public client API key meant to ship in the browser."
+  },
+  {
+   "rule": "QA006",
+   "file": "packages/client/src/config/i18n/generate.ts",
+   "line": 1,
+   "fingerprint": "627d2802b7f65152b7dcfde06e3993ee",
+   "verdict": "fp",
+   "reason": "The import ./typings/index.js resolves to typings/index.d.ts under TypeScript."
+  },
+  {
+   "rule": "QA006",
+   "file": "packages/client/src/config/i18n/index.ts",
+   "line": 1,
+   "fingerprint": "e9c1a00fa694e57ecba7572d471f432c",
+   "verdict": "fp",
+   "reason": "The import ./typings/index.js resolves to typings/index.d.ts under TypeScript."
+  },
+  {
+   "rule": "QA006",
+   "file": "packages/client/src/config/sortKey.ts",
+   "line": 1,
+   "fingerprint": "b524167e5fd3425719c221f4f3eb7d45",
+   "verdict": "fp",
+   "reason": "The import ./typings/index.js resolves to typings/index.d.ts under TypeScript."
+  },
+  {
+   "rule": "QA006",
+   "file": "packages/client/src/entries/comment.ts",
+   "line": 2,
+   "fingerprint": "49a8fbe1c96b0870dd5950c483670c0b",
+   "verdict": "fp",
+   "reason": "The import ./typings/index.js resolves to typings/index.d.ts under TypeScript."
+  },
+  {
+   "rule": "QA006",
+   "file": "packages/client/src/entries/full.ts",
+   "line": 6,
+   "fingerprint": "9c1079c0c8f163f692d4e9200547ad63",
+   "verdict": "fp",
+   "reason": "The import ./typings/index.js resolves to typings/index.d.ts under TypeScript."
+  },
+  {
+   "rule": "QA006",
+   "file": "packages/client/src/entries/init.ts",
+   "line": 3,
+   "fingerprint": "9d05ce72955aeb42830fed7abcfb9b70",
+   "verdict": "fp",
+   "reason": "The import ./typings/index.js resolves to typings/index.d.ts under TypeScript."
+  },
+  {
+   "rule": "QA006",
+   "file": "packages/client/src/entries/pageview.ts",
+   "line": 2,
+   "fingerprint": "e03d37f924163985665750581b560078",
+   "verdict": "fp",
+   "reason": "The import ./typings/index.js resolves to typings/index.d.ts under TypeScript."
+  },
+  {
+   "rule": "QA006",
+   "file": "packages/client/src/init.ts",
+   "line": 7,
+   "fingerprint": "32bae784fbb7c9f5ac7527052bca72ef",
+   "verdict": "fp",
+   "reason": "The import ./typings/index.js resolves to typings/index.d.ts under TypeScript."
+  },
+  {
+   "rule": "QA006",
+   "file": "packages/client/src/pageview.ts",
+   "line": 4,
+   "fingerprint": "08b8c70cf1d6cb8d25f499095c52678a",
+   "verdict": "fp",
+   "reason": "The import ./typings/index.js resolves to typings/index.d.ts under TypeScript."
+  },
+  {
+   "rule": "QA006",
+   "file": "packages/client/src/utils/config.ts",
+   "line": 12,
+   "fingerprint": "c785fc0b01ed848c80bd1aed2fa07dee",
+   "verdict": "fp",
+   "reason": "The import ./typings/index.js resolves to typings/index.d.ts under TypeScript."
+  },
+  {
+   "rule": "QA006",
+   "file": "packages/client/src/utils/date.ts",
+   "line": 1,
+   "fingerprint": "64112d5534892ec87ff08d4072fbf161",
+   "verdict": "fp",
+   "reason": "The import ./typings/index.js resolves to typings/index.d.ts under TypeScript."
+  },
+  {
+   "rule": "QA006",
+   "file": "packages/client/src/utils/emoji.ts",
+   "line": 3,
+   "fingerprint": "e2deb74d604e5c10ad55a6a0a56bdbd5",
+   "verdict": "fp",
+   "reason": "The import ./typings/index.js resolves to typings/index.d.ts under TypeScript."
+  },
+  {
+   "rule": "QA006",
+   "file": "packages/client/src/utils/markdown.ts",
+   "line": 4,
+   "fingerprint": "20e5b4db515165754a88d17b07bb0680",
+   "verdict": "fp",
+   "reason": "The import ./typings/index.js resolves to typings/index.d.ts under TypeScript."
+  },
+  {
+   "rule": "QA006",
+   "file": "packages/client/src/utils/markedMathExtension.ts",
+   "line": 3,
+   "fingerprint": "f7595cb5dc87237c0528c98ffdb4c063",
+   "verdict": "fp",
+   "reason": "The import ./typings/index.js resolves to typings/index.d.ts under TypeScript."
+  },
+  {
+   "rule": "FE001",
+   "file": "packages/client/src/widgets/recentComments.ts",
+   "line": 73,
+   "fingerprint": "38bfa79be99ae054e153596af4689f6f",
+   "verdict": "tp",
+   "reason": "Nicknames and links from the API are interpolated into innerHTML without escaping."
+  },
+  {
+   "rule": "QA006",
+   "file": "packages/client/src/widgets/userList.ts",
+   "line": 5,
+   "fingerprint": "fa5f98537a093ce756c91217b3c1b35a",
+   "verdict": "fp",
+   "reason": "The import ./typings/index.js resolves to typings/index.d.ts under TypeScript."
+  },
+  {
+   "rule": "FE001",
+   "file": "packages/client/src/widgets/userList.ts",
+   "line": 106,
+   "fingerprint": "e14a110c4d6d68f6d056aee6d0a5c8d8",
+   "verdict": "tp",
+   "reason": "Nicknames and links from the API are interpolated into innerHTML without escaping."
+  },
+  {
+   "rule": "CFG001",
+   "file": "packages/server/Dockerfile",
+   "line": 9,
+   "fingerprint": "f825e1fc02353ddc0717c18919298cda",
+   "verdict": "tp",
+   "reason": "The image runs as root."
+  },
+  {
+   "rule": "CFG001",
+   "file": "packages/server/Dockerfile.alpine",
+   "line": 9,
+   "fingerprint": "d832714a90a2443756b2d56ff8fbe4a0",
+   "verdict": "tp",
+   "reason": "The image runs as root."
+  },
+  {
+   "rule": "CFG001",
+   "file": "packages/server/Dockerfile.source-build-alpine",
+   "line": 16,
+   "fingerprint": "d9d6eae0810e35fe406064527485b3ba",
+   "verdict": "tp",
+   "reason": "The image runs as root."
+  },
+  {
+   "rule": "QA006",
+   "file": "packages/server/development.js",
+   "line": 24,
+   "fingerprint": "dc305a8561d34e23f64ff0b0cadd523c",
+   "verdict": "fp",
+   "reason": "An optional local config.js loaded inside try/catch."
+  },
+  {
+   "rule": "DEP002",
+   "file": "packages/server/package.json",
+   "line": 45,
+   "fingerprint": "4f83c82a31ef1a4195c50af7e75e7bf9",
+   "verdict": "fp",
+   "reason": "phpass is a real package (PHP-compatible password hashing), not a typo."
+  },
+  {
+   "rule": "BE013",
+   "file": "packages/server/src/config/adapter.js",
+   "line": 121,
+   "fingerprint": "6b3ccb2c1aab0f223386bc04d8f5c1d3",
+   "verdict": "tp",
+   "reason": "TLS certificate checks are disabled for the database connection."
+  },
+  {
+   "rule": "BE013",
+   "file": "packages/server/src/config/adapter.js",
+   "line": 147,
+   "fingerprint": "5f4bc4915a3e8e392e491301596497d3",
+   "verdict": "tp",
+   "reason": "TLS certificate checks are disabled for the database connection."
+  },
+  {
+   "rule": "DATA007",
+   "file": "packages/server/src/config/middleware.js",
+   "line": 8,
+   "fingerprint": "933945a869890842a6039af3861dd3b2",
+   "verdict": "fp",
+   "reason": "Platform or optional variables; unset values are handled."
+  },
+  {
+   "rule": "DATA001",
+   "file": "packages/server/src/controller/db.js",
+   "line": 20,
+   "fingerprint": "0ddda6cc4e6257584d2af4762d808650",
+   "verdict": "fp",
+   "reason": "An admin export that reads each table once."
+  },
+  {
+   "rule": "BE015",
+   "file": "packages/server/src/controller/oauth.js",
+   "line": 97,
+   "fingerprint": "06c5a5eb1778c8de81aecb87b2c43915",
+   "verdict": "tp",
+   "reason": "Math.random() generates a password and a verification code."
+  },
+  {
+   "rule": "BE015",
+   "file": "packages/server/src/controller/user.js",
+   "line": 73,
+   "fingerprint": "df22bb247282eb5ad5dcc8ad4cf09076",
+   "verdict": "tp",
+   "reason": "Math.random() generates a password and a verification code."
+  },
+  {
+   "rule": "DATA007",
+   "file": "packages/server/src/middleware/dashboard.js",
+   "line": 14,
+   "fingerprint": "ff7355c390e688fc6d97f2a7bb70ab9b",
+   "verdict": "fp",
+   "reason": "Platform or optional variables; unset values are handled."
+  },
+  {
+   "rule": "DATA007",
+   "file": "packages/server/src/middleware/dashboard.js",
+   "line": 15,
+   "fingerprint": "58bc88bda06924cc8349ebad95e233ff",
+   "verdict": "fp",
+   "reason": "Platform or optional variables; unset values are handled."
+  },
+  {
+   "rule": "DATA007",
+   "file": "packages/server/src/middleware/dashboard.js",
+   "line": 16,
+   "fingerprint": "b74dcca77c8ff47c6b3fede1c1d88f6c",
+   "verdict": "fp",
+   "reason": "Platform or optional variables; unset values are handled."
+  },
+  {
+   "rule": "DATA007",
+   "file": "packages/server/src/middleware/dashboard.js",
+   "line": 17,
+   "fingerprint": "5638a34abae2f5c2427e999ee215e6fe",
+   "verdict": "fp",
+   "reason": "Platform or optional variables; unset values are handled."
+  },
+  {
+   "rule": "BE001",
+   "file": "packages/server/src/service/storage/sqlite.js",
+   "line": 7,
+   "fingerprint": "a482f6ad048efd9ec879d951df5c3fd4",
+   "verdict": "fp",
+   "reason": "The id is the storage layer's own numeric sequence value."
+  },
+  {
+   "rule": "QA006",
+   "file": "packages/server/vanilla.js",
+   "line": 17,
+   "fingerprint": "1a3c27bf02283553262a12a176a2a33e",
+   "verdict": "fp",
+   "reason": "An optional local config.js loaded inside try/catch."
+  }
+ ]
+}

@@ -1,0 +1,470 @@
+{
+ "repo": "vibe-trading",
+ "commit": "fd767f5c29c72cffe8e3f89c7ff006cb3041397f",
+ "findings": [
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile",
+   "line": 15,
+   "fingerprint": "40349ca18b75890cacd23df94540621d",
+   "verdict": "tp",
+   "reason": "The image runs as root."
+  },
+  {
+   "rule": "DATA007",
+   "file": "agent/api_server.py",
+   "line": 590,
+   "fingerprint": "b640be7f32d2ef312ad8fb7495e683b8",
+   "verdict": "fp",
+   "reason": "The line assigns os.environ[OPENAI_API_BASE]; it is not a read."
+  },
+  {
+   "rule": "QA003",
+   "file": "agent/api_server.py",
+   "line": 602,
+   "fingerprint": "02b0553bceff8edef56067106bda4b21",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "agent/api_server.py",
+   "line": 859,
+   "fingerprint": "9ad4cc9d8e390db7485492fc490f7b0c",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "agent/api_server.py",
+   "line": 866,
+   "fingerprint": "5a600b741c349e8c062b754f90435f18",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "agent/api_server.py",
+   "line": 886,
+   "fingerprint": "92a19cc9a281a375a10ce8d808ebe4f7",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "agent/api_server.py",
+   "line": 1193,
+   "fingerprint": "fa0e63572369ed16a6c4d0eef8062f33",
+   "verdict": "fp",
+   "reason": "The API has one shared key and no per-user sessions, so there is no owner to check."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "agent/api_server.py",
+   "line": 1210,
+   "fingerprint": "6613e7d5fa7eceb8028a062d0625b7a2",
+   "verdict": "fp",
+   "reason": "The API has one shared key and no per-user sessions, so there is no owner to check."
+  },
+  {
+   "rule": "BE006",
+   "file": "agent/api_server.py",
+   "line": 1340,
+   "fingerprint": "b3985728fe623243761e75f98d030575",
+   "verdict": "fp",
+   "reason": "The id is one path segment (no slash can reach it) and the extension is checked against html and pdf."
+  },
+  {
+   "rule": "QA003",
+   "file": "agent/backtest/engines/china_a.py",
+   "line": 108,
+   "fingerprint": "000db035cb818d20fbdb5ecab977dce4",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "agent/backtest/loaders/registry.py",
+   "line": 61,
+   "fingerprint": "82f006093c58ccd69c336f869dd006a5",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "LLM009",
+   "file": "agent/cli.py",
+   "line": 685,
+   "fingerprint": "c4179997d0bbfa8dd9edf918213c8c3d",
+   "verdict": "fp",
+   "reason": "An interactive prompt loop paced by the user's input."
+  },
+  {
+   "rule": "LLM009",
+   "file": "agent/cli.py",
+   "line": 1363,
+   "fingerprint": "a0c9f1772cfce183eeb9ac149dbdca16",
+   "verdict": "fp",
+   "reason": "An interactive prompt loop paced by the user's input."
+  },
+  {
+   "rule": "DEP005",
+   "file": "agent/requirements.txt",
+   "line": 1,
+   "fingerprint": "8d38666a3dbee06ffd3b37e8c0d84bc1",
+   "verdict": "tp",
+   "reason": "No requirement is pinned."
+  },
+  {
+   "rule": "QA003",
+   "file": "agent/src/agent/loop.py",
+   "line": 783,
+   "fingerprint": "ba09160ac457e00a24c98e8dbd247ad9",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "agent/src/providers/openai_codex.py",
+   "line": 79,
+   "fingerprint": "fb4f3aa977520f15aab7a6c213460835",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "agent/src/session/service.py",
+   "line": 336,
+   "fingerprint": "d2dcf6d0fb6e7815b3ab79dc7ecd8d88",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "REL001",
+   "file": "agent/src/skills/candlestick/example_signal_engine.py",
+   "line": 551,
+   "fingerprint": "f9cfc4aaefaf2b53f2e983d8678d2a4b",
+   "verdict": "tp",
+   "reason": "requests.get has no timeout."
+  },
+  {
+   "rule": "QA007",
+   "file": "agent/src/skills/chanlun/example_signal_engine.py",
+   "line": 11,
+   "fingerprint": "2cfae610f4a1a750c3639a62bfec8fa9",
+   "verdict": "tp",
+   "reason": "Imported but not declared in agent/requirements.txt."
+  },
+  {
+   "rule": "REL001",
+   "file": "agent/src/skills/chanlun/example_signal_engine.py",
+   "line": 196,
+   "fingerprint": "206ce3680cff23170114b05d16c672ae",
+   "verdict": "tp",
+   "reason": "requests.get has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "agent/src/skills/elliott-wave/example_signal_engine.py",
+   "line": 411,
+   "fingerprint": "d2b55ef71f445c92d9ca608e241cc565",
+   "verdict": "tp",
+   "reason": "requests.get has no timeout."
+  },
+  {
+   "rule": "QA003",
+   "file": "agent/src/skills/harmonic/example_signal_engine.py",
+   "line": 380,
+   "fingerprint": "2ed039b762ac49eb6cb73a88ef82412b",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "REL001",
+   "file": "agent/src/skills/harmonic/example_signal_engine.py",
+   "line": 444,
+   "fingerprint": "8555a88565d02f566cc1aac41e175d06",
+   "verdict": "tp",
+   "reason": "requests.get has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "agent/src/skills/ichimoku/example_signal_engine.py",
+   "line": 150,
+   "fingerprint": "8223f47665f2c83104813deb12383e1c",
+   "verdict": "tp",
+   "reason": "requests.get has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "agent/src/skills/multi-factor/example_signal_engine.py",
+   "line": 174,
+   "fingerprint": "7f2cc763a6cc8dde7512f42ca8541622",
+   "verdict": "tp",
+   "reason": "requests.get has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "agent/src/skills/okx-market/scripts/candle_data_example.py",
+   "line": 29,
+   "fingerprint": "718fc4adcd410b6b5f17357388f7c93e",
+   "verdict": "tp",
+   "reason": "requests.get has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "agent/src/skills/okx-market/scripts/candle_data_example.py",
+   "line": 60,
+   "fingerprint": "7d3daa545679a1aff603be5c7ad551ce",
+   "verdict": "tp",
+   "reason": "requests.get has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "agent/src/skills/okx-market/scripts/market_data_example.py",
+   "line": 24,
+   "fingerprint": "a72425fe877cf76e483e5dc4f45638d4",
+   "verdict": "tp",
+   "reason": "requests.get has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "agent/src/skills/okx-market/scripts/market_data_example.py",
+   "line": 51,
+   "fingerprint": "8c8f982e3394c620b0cecdaeb582c063",
+   "verdict": "tp",
+   "reason": "requests.get has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "agent/src/skills/okx-market/scripts/market_data_example.py",
+   "line": 80,
+   "fingerprint": "b60280a926dffc025c77108384d9b8ea",
+   "verdict": "tp",
+   "reason": "requests.get has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "agent/src/skills/pair-trading/example_signal_engine.py",
+   "line": 124,
+   "fingerprint": "31a4fe64580f0316721e3efae453b21e",
+   "verdict": "tp",
+   "reason": "requests.get has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "agent/src/skills/seasonal/example_signal_engine.py",
+   "line": 114,
+   "fingerprint": "d08a04e8dd12e9444e9931a200dc3e8b",
+   "verdict": "tp",
+   "reason": "requests.get has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "agent/src/skills/smc/example_signal_engine.py",
+   "line": 38,
+   "fingerprint": "099c254d2ce56532429ff60a347f74cd",
+   "verdict": "tp",
+   "reason": "requests.get has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "agent/src/skills/technical-basic/example_signal_engine.py",
+   "line": 262,
+   "fingerprint": "cce6165e524fb5fc011fa3f73e507d4f",
+   "verdict": "tp",
+   "reason": "requests.get has no timeout."
+  },
+  {
+   "rule": "QA007",
+   "file": "agent/src/skills/vnpy-export/scripts/cta_template.py",
+   "line": 15,
+   "fingerprint": "55d237027ba254eaf2fe56dc6dee2a12",
+   "verdict": "tp",
+   "reason": "Imported but not declared in agent/requirements.txt."
+  },
+  {
+   "rule": "REL001",
+   "file": "agent/src/skills/volatility/example_signal_engine.py",
+   "line": 129,
+   "fingerprint": "ca43f2eed5487dd249352d53638e282a",
+   "verdict": "tp",
+   "reason": "requests.get has no timeout."
+  },
+  {
+   "rule": "BE002",
+   "file": "agent/src/tools/background_tools.py",
+   "line": 41,
+   "fingerprint": "1d94fca2ec9d5d598a86ea8ac2033ece",
+   "verdict": "tp",
+   "reason": "A model-chosen command runs with shell=True."
+  },
+  {
+   "rule": "LLM005",
+   "file": "agent/src/tools/bash_tool.py",
+   "line": 44,
+   "fingerprint": "72c2a23843aabcbba5fcc3038723170e",
+   "verdict": "tp",
+   "reason": "The agent tool hands a model-chosen argument to a shell or file path."
+  },
+  {
+   "rule": "QA007",
+   "file": "agent/src/tools/doc_reader_tool.py",
+   "line": 79,
+   "fingerprint": "df7697479d2f0074fbff18956d8c1008",
+   "verdict": "tp",
+   "reason": "Imported but not declared in agent/requirements.txt."
+  },
+  {
+   "rule": "LLM005",
+   "file": "agent/src/tools/skill_writer_tool.py",
+   "line": 211,
+   "fingerprint": "c192e8cd7181dfc744ff87dfc28f2d02",
+   "verdict": "tp",
+   "reason": "The agent tool hands a model-chosen argument to a shell or file path."
+  },
+  {
+   "rule": "QA003",
+   "file": "agent/src/tools/trade_journal_parsers.py",
+   "line": 354,
+   "fingerprint": "d7e19e6e46b947be6e0b023876ba3e40",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "agent/src/ui_services.py",
+   "line": 421,
+   "fingerprint": "6305afc2fbe318a40daef840ab799696",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/components/chat/RunCompleteCard.tsx",
+   "line": 29,
+   "fingerprint": "59a7907b5cb383890b44407e59a628bc",
+   "verdict": "tp",
+   "reason": "An empty catch block in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/components/layout/Layout.tsx",
+   "line": 38,
+   "fingerprint": "990a081ab79af7854f6a88a30f16873c",
+   "verdict": "tp",
+   "reason": "An empty catch block in application code."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/components/layout/Layout.tsx",
+   "line": 138,
+   "fingerprint": "1cdc28e53e8afe52164dc9cfc4ae3a6e",
+   "verdict": "tp",
+   "reason": "The field has no label or aria-label."
+  },
+  {
+   "rule": "QA007",
+   "file": "frontend/src/main.tsx",
+   "line": 8,
+   "fingerprint": "fbb27537273d83b6493afd5d526acdff",
+   "verdict": "tp",
+   "reason": "highlight.js is imported but only rehype-highlight is in package.json."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/pages/Agent.tsx",
+   "line": 357,
+   "fingerprint": "fe8a0f7910baa226d551940524196149",
+   "verdict": "tp",
+   "reason": "An empty catch block in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/pages/Agent.tsx",
+   "line": 370,
+   "fingerprint": "46ac9ef6f2422e111f6033e385289ca9",
+   "verdict": "tp",
+   "reason": "An empty catch block in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/pages/Agent.tsx",
+   "line": 384,
+   "fingerprint": "9e96548c3c28aaf5d1a877c4b5b46325",
+   "verdict": "tp",
+   "reason": "An empty catch block in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/pages/Agent.tsx",
+   "line": 398,
+   "fingerprint": "c6242b63103fc95351aa0503776becab",
+   "verdict": "tp",
+   "reason": "An empty catch block in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/pages/Agent.tsx",
+   "line": 412,
+   "fingerprint": "f092e05b1cbb35705ee4318c6d2ff307",
+   "verdict": "tp",
+   "reason": "An empty catch block in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/pages/Agent.tsx",
+   "line": 431,
+   "fingerprint": "516dda3d9d5c0f9f410cb8268bd7d016",
+   "verdict": "tp",
+   "reason": "An empty catch block in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/pages/Agent.tsx",
+   "line": 446,
+   "fingerprint": "94d68c73c474e6e6ff315c9032eb71d0",
+   "verdict": "tp",
+   "reason": "An empty catch block in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/pages/Agent.tsx",
+   "line": 454,
+   "fingerprint": "1b7b8d472ec6e5c46738c26ad752fa4a",
+   "verdict": "tp",
+   "reason": "An empty catch block in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/pages/Agent.tsx",
+   "line": 485,
+   "fingerprint": "02408ced536890c7b7bda7047d2a0367",
+   "verdict": "tp",
+   "reason": "An empty catch block in application code."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/pages/Agent.tsx",
+   "line": 808,
+   "fingerprint": "208396c0e59eba3dea04372e922762eb",
+   "verdict": "tp",
+   "reason": "The field has no label or aria-label."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/pages/Compare.tsx",
+   "line": 214,
+   "fingerprint": "cc8930ca3ecbee68615e7f8aec9288fe",
+   "verdict": "tp",
+   "reason": "An empty catch block in application code."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/pages/Correlation.tsx",
+   "line": 48,
+   "fingerprint": "c55fe874bb6f825d0bd3f65edcb49231",
+   "verdict": "tp",
+   "reason": "The field has no label or aria-label."
+  }
+ ]
+}

@@ -1,0 +1,302 @@
+{
+ "repo": "wsgidav",
+ "commit": "67abdbd7d622fcf29aefdfbd0c9910de9e0c8b3d",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/codespell.yml",
+   "line": 22,
+   "fingerprint": "53de8596b6585cadcb129021701985ed",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/tests.yml",
+   "line": 67,
+   "fingerprint": "5388f72f9b9b5a3c1cb021d5016c8166",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile",
+   "line": 13,
+   "fingerprint": "d337e96ca31356b6b6e1d31af30acb9a",
+   "verdict": "tp",
+   "reason": "The image runs as root."
+  },
+  {
+   "rule": "QA003",
+   "file": "docs/source/davmount.js",
+   "line": 49,
+   "fingerprint": "a57893db4499b93284ca71938f214887",
+   "verdict": "tp",
+   "reason": "An empty catch block."
+  },
+  {
+   "rule": "DEP005",
+   "file": "docs/source/requirements.txt",
+   "line": 1,
+   "fingerprint": "dbcff4df470713a24b4c1d0eee2c80f7",
+   "verdict": "fp",
+   "reason": "Docs build requirements with compatible-release pins."
+  },
+  {
+   "rule": "SEC003",
+   "file": "wsgidav/dav_error.py",
+   "line": 125,
+   "fingerprint": "ac6b45abb29dd86a3ae4e047798f87c2",
+   "verdict": "fp",
+   "reason": "WebDAV precondition code constants, not secrets."
+  },
+  {
+   "rule": "SEC003",
+   "file": "wsgidav/dav_error.py",
+   "line": 126,
+   "fingerprint": "03a872cd98f31e8ecc7e948f2470e5a2",
+   "verdict": "fp",
+   "reason": "WebDAV precondition code constants, not secrets."
+  },
+  {
+   "rule": "AUTH008",
+   "file": "wsgidav/dc/htpasswd_dc.py",
+   "line": 26,
+   "fingerprint": "508096a1e89ae3b6a5cd45ccc8dfd163",
+   "verdict": "fp",
+   "reason": "require_authentication() returning True means authentication is required for the realm."
+  },
+  {
+   "rule": "AUTH008",
+   "file": "wsgidav/dc/nt_dc.py",
+   "line": 106,
+   "fingerprint": "f8cad6199331262ecb9619d2b3c6991d",
+   "verdict": "fp",
+   "reason": "require_authentication() returning True means authentication is required for the realm."
+  },
+  {
+   "rule": "AUTH008",
+   "file": "wsgidav/dc/pam_dc.py",
+   "line": 61,
+   "fingerprint": "eba8782a43107bd917e8bbb71458429e",
+   "verdict": "fp",
+   "reason": "require_authentication() returning True means authentication is required for the realm."
+  },
+  {
+   "rule": "SEC010",
+   "file": "wsgidav/lock_man/lock_storage.py",
+   "line": 150,
+   "fingerprint": "03bf96ed74b2a87bafb4b10f3e88559b",
+   "verdict": "fp",
+   "reason": "The value is a WebDAV lock token (a lock id), logged at debug level."
+  },
+  {
+   "rule": "BE004",
+   "file": "wsgidav/lock_man/lock_storage.py",
+   "line": 382,
+   "fingerprint": "225941ad01943172e7555c95ee436ccf",
+   "verdict": "fp",
+   "reason": "shelve opens the server's own lock and property file."
+  },
+  {
+   "rule": "SEC010",
+   "file": "wsgidav/lock_man/lock_storage_redis.py",
+   "line": 87,
+   "fingerprint": "000eb4188f6ba82b2eacc7c7677e0d34",
+   "verdict": "fp",
+   "reason": "The value is a WebDAV lock token (a lock id), logged at debug level."
+  },
+  {
+   "rule": "BE004",
+   "file": "wsgidav/lock_man/lock_storage_redis.py",
+   "line": 90,
+   "fingerprint": "5db93af50dc8920f729322d41d908f31",
+   "verdict": "fp",
+   "reason": "pickle.loads reads the server's own lock records from its Redis."
+  },
+  {
+   "rule": "BE004",
+   "file": "wsgidav/lock_man/lock_storage_redis.py",
+   "line": 169,
+   "fingerprint": "3995801b7c724bc4e6fe43d44365a37f",
+   "verdict": "fp",
+   "reason": "pickle.loads reads the server's own lock records from its Redis."
+  },
+  {
+   "rule": "BE004",
+   "file": "wsgidav/lock_man/lock_storage_redis.py",
+   "line": 185,
+   "fingerprint": "822a1f66c147df707b5f768bd059786a",
+   "verdict": "fp",
+   "reason": "pickle.loads reads the server's own lock records from its Redis."
+  },
+  {
+   "rule": "BE004",
+   "file": "wsgidav/lock_man/lock_storage_redis.py",
+   "line": 220,
+   "fingerprint": "5508964c9a734269fe769196c1ad0934",
+   "verdict": "fp",
+   "reason": "pickle.loads reads the server's own lock records from its Redis."
+  },
+  {
+   "rule": "QA003",
+   "file": "wsgidav/mw/debug_filter.py",
+   "line": 147,
+   "fingerprint": "db0df05711950c79c67a4440a8cf775b",
+   "verdict": "fp",
+   "reason": "Library code that swallows an expected failure on purpose (fallback parsing, cleanup)."
+  },
+  {
+   "rule": "SEC010",
+   "file": "wsgidav/mw/impersonator.py",
+   "line": 111,
+   "fingerprint": "bdd01311be0173d36584a2d4dfda0667",
+   "verdict": "fp",
+   "reason": "The log line prints the unix user name and ids, no password."
+  },
+  {
+   "rule": "BE004",
+   "file": "wsgidav/prop_man/property_manager.py",
+   "line": 288,
+   "fingerprint": "bc44621eed847016120e498302d412db",
+   "verdict": "fp",
+   "reason": "shelve opens the server's own lock and property file."
+  },
+  {
+   "rule": "QA005",
+   "file": "wsgidav/samples/dav_provider_tools.py",
+   "line": 194,
+   "fingerprint": "3b9e8d8263ec154acab078d35e6bed1b",
+   "verdict": "fp",
+   "reason": "A sample provider's placeholder method."
+  },
+  {
+   "rule": "BE001",
+   "file": "wsgidav/samples/mysql_dav_provider.py",
+   "line": 230,
+   "fingerprint": "974cc51cae0e6cbe4eaf0d88446d9ffd",
+   "verdict": "tp",
+   "reason": "Table and field names from the request path are concatenated into SQL (the advisory this commit precedes)."
+  },
+  {
+   "rule": "BE001",
+   "file": "wsgidav/samples/mysql_dav_provider.py",
+   "line": 391,
+   "fingerprint": "ea50f504e1918358854b6f45d6d72826",
+   "verdict": "tp",
+   "reason": "Table and field names from the request path are concatenated into SQL (the advisory this commit precedes)."
+  },
+  {
+   "rule": "BE001",
+   "file": "wsgidav/samples/mysql_dav_provider.py",
+   "line": 404,
+   "fingerprint": "46a70e77576774accb6c50862c6a3f25",
+   "verdict": "tp",
+   "reason": "Table and field names from the request path are concatenated into SQL (the advisory this commit precedes)."
+  },
+  {
+   "rule": "BE001",
+   "file": "wsgidav/samples/mysql_dav_provider.py",
+   "line": 443,
+   "fingerprint": "b4e51a060c02a60376744c2f575f13e6",
+   "verdict": "tp",
+   "reason": "Table and field names from the request path are concatenated into SQL (the advisory this commit precedes)."
+  },
+  {
+   "rule": "BE001",
+   "file": "wsgidav/samples/mysql_dav_provider.py",
+   "line": 456,
+   "fingerprint": "9f9770cb8e797dd48ac690ac7f68471b",
+   "verdict": "tp",
+   "reason": "Table and field names from the request path are concatenated into SQL (the advisory this commit precedes)."
+  },
+  {
+   "rule": "BE001",
+   "file": "wsgidav/samples/mysql_dav_provider.py",
+   "line": 497,
+   "fingerprint": "251d7aa536d6e9ace637b8d28d93823d",
+   "verdict": "tp",
+   "reason": "Table and field names from the request path are concatenated into SQL (the advisory this commit precedes)."
+  },
+  {
+   "rule": "BE001",
+   "file": "wsgidav/samples/mysql_dav_provider.py",
+   "line": 508,
+   "fingerprint": "6595f045a53d33b32714b4186ff92ab7",
+   "verdict": "tp",
+   "reason": "Table and field names from the request path are concatenated into SQL (the advisory this commit precedes)."
+  },
+  {
+   "rule": "BE001",
+   "file": "wsgidav/samples/mysql_dav_provider.py",
+   "line": 547,
+   "fingerprint": "62dd9e684064f599c5bb4f18d2bcff4f",
+   "verdict": "tp",
+   "reason": "Table and field names from the request path are concatenated into SQL (the advisory this commit precedes)."
+  },
+  {
+   "rule": "SEC002",
+   "file": "wsgidav/server/sample_bogo_server.key",
+   "line": 1,
+   "fingerprint": "f740566088825d96f20a71036502b771",
+   "verdict": "tp",
+   "reason": "A private key is committed (the sample server key)."
+  },
+  {
+   "rule": "QA004",
+   "file": "wsgidav/server/server_cli.py",
+   "line": 354,
+   "fingerprint": "1ca069cc93424426ac884d6dd99bb167",
+   "verdict": "tp",
+   "reason": "A security TODO left in the code."
+  },
+  {
+   "rule": "QA003",
+   "file": "wsgidav/util.py",
+   "line": 356,
+   "fingerprint": "2be264c2cac88b2986eedcbae828b345",
+   "verdict": "fp",
+   "reason": "Library code that swallows an expected failure on purpose (fallback parsing, cleanup)."
+  },
+  {
+   "rule": "QA003",
+   "file": "wsgidav/util.py",
+   "line": 362,
+   "fingerprint": "0195128f5351477034a6f28b5d2a8421",
+   "verdict": "fp",
+   "reason": "Library code that swallows an expected failure on purpose (fallback parsing, cleanup)."
+  },
+  {
+   "rule": "QA003",
+   "file": "wsgidav/util.py",
+   "line": 368,
+   "fingerprint": "5e3eb1309a99718119f5fab8dba9e2f9",
+   "verdict": "fp",
+   "reason": "Library code that swallows an expected failure on purpose (fallback parsing, cleanup)."
+  },
+  {
+   "rule": "QA003",
+   "file": "wsgidav/util.py",
+   "line": 375,
+   "fingerprint": "7834e070f21d6263aac97e4d9f84f3ef",
+   "verdict": "fp",
+   "reason": "Library code that swallows an expected failure on purpose (fallback parsing, cleanup)."
+  },
+  {
+   "rule": "QA003",
+   "file": "wsgidav/util.py",
+   "line": 495,
+   "fingerprint": "cf71d0bdde291d7fd1f23bbf5109f3e3",
+   "verdict": "fp",
+   "reason": "Library code that swallows an expected failure on purpose (fallback parsing, cleanup)."
+  },
+  {
+   "rule": "QA004",
+   "file": "wsgidav/wsgidav_app.py",
+   "line": 459,
+   "fingerprint": "a725618c5439ec8b6cf49be7d1ae097b",
+   "verdict": "tp",
+   "reason": "A security TODO left in the code."
+  }
+ ]
+}

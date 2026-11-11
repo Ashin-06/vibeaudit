@@ -1,0 +1,110 @@
+{
+ "repo": "adx-mcp-server",
+ "commit": "48b29339522c5a53dff1d193b29f6cd778eae5ac",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 47,
+   "fingerprint": "f47b58b208ab371bd482c2d66e9b8f1e",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 75,
+   "fingerprint": "a2aab1fa4c1477049430eee903d89bd5",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 79,
+   "fingerprint": "0d604499a8fa9fca3f90287b428ee134",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 87,
+   "fingerprint": "07efa7a75ae8a26b5e06668055d368d2",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 98,
+   "fingerprint": "13963206b8d62525144c80d3f1d02673",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 126,
+   "fingerprint": "b729dba3721d164346002814afd4c2dd",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 129,
+   "fingerprint": "c1a8c5ad699cc43273c5f2154e660c88",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 143,
+   "fingerprint": "1d227eae5215d4c3f0cbdc4179c0a2b8",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/publish.yml",
+   "line": 52,
+   "fingerprint": "10b8639b202119c1e7c627a03d02cb7e",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/publish.yml",
+   "line": 73,
+   "fingerprint": "bbdc39ad5a58f8ccf817f2104406bbe2",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yml",
+   "line": 15,
+   "fingerprint": "a81f18b51c87043ea5c64be53acc146e",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/security.yml",
+   "line": 21,
+   "fingerprint": "e1dcb3ba72b3cd0eb02c57be20e76664",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/security.yml",
+   "line": 46,
+   "fingerprint": "d04b8e5b7ff3441d26a28e3b9e3184ab",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch, not a commit SHA."
+  }
+ ]
+}

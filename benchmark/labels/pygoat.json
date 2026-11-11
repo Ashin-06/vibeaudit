@@ -1,0 +1,1414 @@
+{
+ "repo": "pygoat",
+ "commit": "2aa4cc14f251e4a780e94e200aed6b36a5b15c21",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/hadolint.yml",
+   "line": 35,
+   "fingerprint": "654c5f7f8b1cf5bd2b805c61e9b9a1b6",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile",
+   "line": 24,
+   "fingerprint": "a0171912812a76b7891b5d785e4db692",
+   "verdict": "tp",
+   "reason": "The lab image runs as root."
+  },
+  {
+   "rule": "QA007",
+   "file": "PyGoatBot.py",
+   "line": 1,
+   "fingerprint": "a64fd9534951c7d18f40911d3356da64",
+   "verdict": "tp",
+   "reason": "Imported but not declared in the requirements."
+  },
+  {
+   "rule": "CFG001",
+   "file": "challenge/labs/bopla_lab/Dockerfile",
+   "line": 1,
+   "fingerprint": "e0bfc90a51cf428c7cc923644748064f",
+   "verdict": "tp",
+   "reason": "The lab image runs as root."
+  },
+  {
+   "rule": "SEC011",
+   "file": "challenge/labs/bopla_lab/app.py",
+   "line": 48,
+   "fingerprint": "527d3714589ea92e80f45e16cdfc109e",
+   "verdict": "tp",
+   "reason": "The app's users or config are defined in code with literal passwords."
+  },
+  {
+   "rule": "SEC011",
+   "file": "challenge/labs/bopla_lab/app.py",
+   "line": 49,
+   "fingerprint": "c869e24b4a1aceca78e1a17c35726161",
+   "verdict": "tp",
+   "reason": "The app's users or config are defined in code with literal passwords."
+  },
+  {
+   "rule": "SEC011",
+   "file": "challenge/labs/bopla_lab/app.py",
+   "line": 50,
+   "fingerprint": "8efe13d7bf6432ff484aabe201409873",
+   "verdict": "tp",
+   "reason": "The app's users or config are defined in code with literal passwords."
+  },
+  {
+   "rule": "BE014",
+   "file": "challenge/labs/bopla_lab/app.py",
+   "line": 73,
+   "fingerprint": "412e9fda9556d05684c049c9f4278616",
+   "verdict": "tp",
+   "reason": "Passwords are compared in plaintext or hashed with a fast hash."
+  },
+  {
+   "rule": "BE011",
+   "file": "challenge/labs/bopla_lab/app.py",
+   "line": 152,
+   "fingerprint": "f110997daca54484c855bd89cf483ac8",
+   "verdict": "tp",
+   "reason": "The lab app runs with debug switched on."
+  },
+  {
+   "rule": "FE001",
+   "file": "challenge/labs/bopla_lab/templates/base.html",
+   "line": 25,
+   "fingerprint": "73d29ed1a995133401d5fb61b6419605",
+   "verdict": "fp",
+   "reason": "innerHTML is set to one of two constant emoji for the theme toggle."
+  },
+  {
+   "rule": "FE001",
+   "file": "challenge/labs/bopla_lab/templates/base.html",
+   "line": 36,
+   "fingerprint": "faaca429e829284ea8c1fd74c911782b",
+   "verdict": "fp",
+   "reason": "innerHTML is set to one of two constant emoji for the theme toggle."
+  },
+  {
+   "rule": "FE001",
+   "file": "challenge/labs/bopla_lab/templates/base.html",
+   "line": 55,
+   "fingerprint": "abbaf282d931c9198103783bcc67fc36",
+   "verdict": "tp",
+   "reason": "Data from the server or the request is written as HTML without escaping."
+  },
+  {
+   "rule": "CFG001",
+   "file": "challenge/labs/business_logic_lab/Dockerfile",
+   "line": 1,
+   "fingerprint": "21de0c936edfdc4d3d465290985002e7",
+   "verdict": "tp",
+   "reason": "The lab image runs as root."
+  },
+  {
+   "rule": "SEC004",
+   "file": "challenge/labs/business_logic_lab/app.py",
+   "line": 5,
+   "fingerprint": "7d1d3d933f365420553d4b1214a7ae15",
+   "verdict": "tp",
+   "reason": "The Flask or Django secret key is a literal in the code."
+  },
+  {
+   "rule": "BE011",
+   "file": "challenge/labs/business_logic_lab/app.py",
+   "line": 200,
+   "fingerprint": "0e4fa78ab27d6848efbdc1837497331b",
+   "verdict": "tp",
+   "reason": "The lab app runs with debug switched on."
+  },
+  {
+   "rule": "FE001",
+   "file": "challenge/labs/business_logic_lab/templates/base.html",
+   "line": 26,
+   "fingerprint": "52d111a85cedeba3615a12c14c608fdb",
+   "verdict": "fp",
+   "reason": "innerHTML is set to one of two constant emoji for the theme toggle."
+  },
+  {
+   "rule": "FE001",
+   "file": "challenge/labs/business_logic_lab/templates/base.html",
+   "line": 37,
+   "fingerprint": "af03435e25fb2ed66134f7a3ebb33259",
+   "verdict": "fp",
+   "reason": "innerHTML is set to one of two constant emoji for the theme toggle."
+  },
+  {
+   "rule": "CFG001",
+   "file": "challenge/labs/security_headers_lab/Dockerfile",
+   "line": 1,
+   "fingerprint": "5e82f3a5b831795f25c9983076bde173",
+   "verdict": "tp",
+   "reason": "The lab image runs as root."
+  },
+  {
+   "rule": "SEC004",
+   "file": "challenge/labs/security_headers_lab/app.py",
+   "line": 15,
+   "fingerprint": "70400cb4b71530ee16ce1ac359b9ecbb",
+   "verdict": "tp",
+   "reason": "The Flask or Django secret key is a literal in the code."
+  },
+  {
+   "rule": "SEC011",
+   "file": "challenge/labs/security_headers_lab/app.py",
+   "line": 20,
+   "fingerprint": "5c015cdb00770c7596583d0945278e22",
+   "verdict": "tp",
+   "reason": "The app's users or config are defined in code with literal passwords."
+  },
+  {
+   "rule": "SEC011",
+   "file": "challenge/labs/security_headers_lab/app.py",
+   "line": 27,
+   "fingerprint": "147803ed7b69b8bcb29378b79bfc13ce",
+   "verdict": "tp",
+   "reason": "The app's users or config are defined in code with literal passwords."
+  },
+  {
+   "rule": "BE014",
+   "file": "challenge/labs/security_headers_lab/app.py",
+   "line": 78,
+   "fingerprint": "bc5c715d8fda32820e3249d4760a2974",
+   "verdict": "tp",
+   "reason": "Passwords are compared in plaintext or hashed with a fast hash."
+  },
+  {
+   "rule": "BE017",
+   "file": "challenge/labs/security_headers_lab/app.py",
+   "line": 156,
+   "fingerprint": "330b0573667b55a540ff15b67c73c913",
+   "verdict": "tp",
+   "reason": "The exception text is sent to the client."
+  },
+  {
+   "rule": "BE008",
+   "file": "challenge/labs/security_headers_lab/app.py",
+   "line": 189,
+   "fingerprint": "dd70da93c82b477ad78aa2f44797ebfd",
+   "verdict": "tp",
+   "reason": "The redirect target comes from the request."
+  },
+  {
+   "rule": "BE011",
+   "file": "challenge/labs/security_headers_lab/app.py",
+   "line": 233,
+   "fingerprint": "aaaf8a793c3f1c133ab78d44a95cc3bd",
+   "verdict": "tp",
+   "reason": "The lab app runs with debug switched on."
+  },
+  {
+   "rule": "FE001",
+   "file": "challenge/labs/security_headers_lab/templates/base.html",
+   "line": 26,
+   "fingerprint": "8ee8a9a590c6ba1ad7bda9d28e16fa40",
+   "verdict": "fp",
+   "reason": "innerHTML is set to one of two constant emoji for the theme toggle."
+  },
+  {
+   "rule": "FE001",
+   "file": "challenge/labs/security_headers_lab/templates/base.html",
+   "line": 37,
+   "fingerprint": "3f97977e00fe551672e86f78f06004d1",
+   "verdict": "fp",
+   "reason": "innerHTML is set to one of two constant emoji for the theme toggle."
+  },
+  {
+   "rule": "FE001",
+   "file": "challenge/labs/security_headers_lab/templates/index.html",
+   "line": 160,
+   "fingerprint": "e6d9fca19ab651ce52376c9926a531aa",
+   "verdict": "fp",
+   "reason": "The list shows the server's own header settings, not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "challenge/labs/security_headers_lab/templates/transfer.html",
+   "line": 135,
+   "fingerprint": "2fe620d3c5ffe76f04fb35955dba17f2",
+   "verdict": "fp",
+   "reason": "document.write of a fixed test page into a popup."
+  },
+  {
+   "rule": "CFG001",
+   "file": "dockerized_labs/a9_uckv_lab/Dockerfile",
+   "line": 1,
+   "fingerprint": "60f56aa1a3db867e5e21513b2995e7b1",
+   "verdict": "tp",
+   "reason": "The lab image runs as root."
+  },
+  {
+   "rule": "BE004",
+   "file": "dockerized_labs/a9_uckv_lab/app.py",
+   "line": 62,
+   "fingerprint": "8aa485badcfe51fe1423e50e76e6816e",
+   "verdict": "tp",
+   "reason": "Request data is passed to an unsafe deserializer (pickle or yaml.Loader)."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "dockerized_labs/a9_uckv_lab/app.py",
+   "line": 74,
+   "fingerprint": "46327e7bcf9ad33426349fbf23a00e72",
+   "verdict": "tp",
+   "reason": "The upload-processing route has no authentication."
+  },
+  {
+   "rule": "BE011",
+   "file": "dockerized_labs/a9_uckv_lab/app.py",
+   "line": 124,
+   "fingerprint": "bdb3d87fc5636e9ec831ac2e4ad8548a",
+   "verdict": "tp",
+   "reason": "The lab app runs with debug switched on."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/a9_uckv_lab/templates/base.html",
+   "line": 34,
+   "fingerprint": "3e795e6ebbd4619400a3650a04fcb7c0",
+   "verdict": "fp",
+   "reason": "innerHTML is set to one of two constant emoji for the theme toggle."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/a9_uckv_lab/templates/base.html",
+   "line": 46,
+   "fingerprint": "9ac45b7a1ef15626d97cd8c732137c63",
+   "verdict": "fp",
+   "reason": "innerHTML is set to one of two constant emoji for the theme toggle."
+  },
+  {
+   "rule": "CFG001",
+   "file": "dockerized_labs/auth_failure_lab/Dockerfile",
+   "line": 1,
+   "fingerprint": "f43a8e7622fc7e058d7c387192e3a9a1",
+   "verdict": "tp",
+   "reason": "The lab image runs as root."
+  },
+  {
+   "rule": "SEC004",
+   "file": "dockerized_labs/auth_failure_lab/app.py",
+   "line": 12,
+   "fingerprint": "9a5bafe76b2864ee6ae8882293286766",
+   "verdict": "tp",
+   "reason": "The Flask or Django secret key is a literal in the code."
+  },
+  {
+   "rule": "SEC011",
+   "file": "dockerized_labs/auth_failure_lab/app.py",
+   "line": 44,
+   "fingerprint": "6eca7346a45683ba597b1e6b49bdf143",
+   "verdict": "tp",
+   "reason": "The app's users or config are defined in code with literal passwords."
+  },
+  {
+   "rule": "SEC011",
+   "file": "dockerized_labs/auth_failure_lab/app.py",
+   "line": 53,
+   "fingerprint": "1a87821757138b26df62115a3ccf1c32",
+   "verdict": "tp",
+   "reason": "The app's users or config are defined in code with literal passwords."
+  },
+  {
+   "rule": "SEC011",
+   "file": "dockerized_labs/auth_failure_lab/app.py",
+   "line": 59,
+   "fingerprint": "756d201f8f3ae59185890ec775a399ba",
+   "verdict": "tp",
+   "reason": "The app's users or config are defined in code with literal passwords."
+  },
+  {
+   "rule": "SEC011",
+   "file": "dockerized_labs/auth_failure_lab/app.py",
+   "line": 65,
+   "fingerprint": "c2f30bf6562f8ad2c2018f74be0918e4",
+   "verdict": "tp",
+   "reason": "The app's users or config are defined in code with literal passwords."
+  },
+  {
+   "rule": "SEC011",
+   "file": "dockerized_labs/auth_failure_lab/app.py",
+   "line": 71,
+   "fingerprint": "b6587b69eb09360a83cbe2de304e322f",
+   "verdict": "tp",
+   "reason": "The app's users or config are defined in code with literal passwords."
+  },
+  {
+   "rule": "BE015",
+   "file": "dockerized_labs/auth_failure_lab/app.py",
+   "line": 99,
+   "fingerprint": "f7d3c67db3cfa630b6bbd0844b297639",
+   "verdict": "tp",
+   "reason": "A three-digit OTP comes from random.randint."
+  },
+  {
+   "rule": "DATA006",
+   "file": "dockerized_labs/auth_failure_lab/app.py",
+   "line": 144,
+   "fingerprint": "b4bd609e956e25cd682bf80cb00f35d8",
+   "verdict": "tp",
+   "reason": "A naive datetime is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "dockerized_labs/auth_failure_lab/app.py",
+   "line": 151,
+   "fingerprint": "e4e8411885ec8ce1bee7c735192aaa19",
+   "verdict": "tp",
+   "reason": "A naive datetime is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "dockerized_labs/auth_failure_lab/app.py",
+   "line": 193,
+   "fingerprint": "d2c0c0c5b65a792bc3af7fc1969eeca7",
+   "verdict": "tp",
+   "reason": "A naive datetime is stored or compared."
+  },
+  {
+   "rule": "QA003",
+   "file": "dockerized_labs/auth_failure_lab/app.py",
+   "line": 198,
+   "fingerprint": "dff144ec35101234fc0c925bbb841229",
+   "verdict": "tp",
+   "reason": "A bare except with only pass."
+  },
+  {
+   "rule": "QA003",
+   "file": "dockerized_labs/auth_failure_lab/app.py",
+   "line": 201,
+   "fingerprint": "c5068bf3ff9d2ea7c0bfa954255f39ff",
+   "verdict": "tp",
+   "reason": "A bare except with only pass."
+  },
+  {
+   "rule": "BE014",
+   "file": "dockerized_labs/auth_failure_lab/app.py",
+   "line": 213,
+   "fingerprint": "146f1a0a22e8d2bbd758ad6fcbff3949",
+   "verdict": "tp",
+   "reason": "Passwords are compared in plaintext or hashed with a fast hash."
+  },
+  {
+   "rule": "BE011",
+   "file": "dockerized_labs/auth_failure_lab/app.py",
+   "line": 238,
+   "fingerprint": "d260728feefecab5bef7f7151d0f265f",
+   "verdict": "tp",
+   "reason": "The lab app runs with debug switched on."
+  },
+  {
+   "rule": "CFG001",
+   "file": "dockerized_labs/broken_access_lab/Dockerfile",
+   "line": 1,
+   "fingerprint": "fd60f23f9c9bf0dd667322a9b900fc4c",
+   "verdict": "tp",
+   "reason": "The lab image runs as root."
+  },
+  {
+   "rule": "BE014",
+   "file": "dockerized_labs/broken_access_lab/main.py",
+   "line": 46,
+   "fingerprint": "e6a0da8d94a3b8c6252c53c60772ff14",
+   "verdict": "tp",
+   "reason": "Passwords are compared in plaintext or hashed with a fast hash."
+  },
+  {
+   "rule": "BE011",
+   "file": "dockerized_labs/broken_access_lab/main.py",
+   "line": 70,
+   "fingerprint": "c5a1f9f3b8cae26df88350b32f9ca5ee",
+   "verdict": "tp",
+   "reason": "The lab app runs with debug switched on."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/broken_access_lab/templates/base.html",
+   "line": 25,
+   "fingerprint": "24781ca2590d0fa0f336083279d1ed94",
+   "verdict": "fp",
+   "reason": "innerHTML is set to one of two constant emoji for the theme toggle."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/broken_access_lab/templates/base.html",
+   "line": 37,
+   "fingerprint": "69e0bac993c8d541315f3ec2e7db7769",
+   "verdict": "fp",
+   "reason": "innerHTML is set to one of two constant emoji for the theme toggle."
+  },
+  {
+   "rule": "CFG001",
+   "file": "dockerized_labs/broken_auth_lab/Dockerfile",
+   "line": 1,
+   "fingerprint": "b1b5a0af2d7ab9219dc375a905e766f6",
+   "verdict": "tp",
+   "reason": "The lab image runs as root."
+  },
+  {
+   "rule": "SEC004",
+   "file": "dockerized_labs/broken_auth_lab/app.py",
+   "line": 16,
+   "fingerprint": "000adb863ea72ff3edec2818c54e810a",
+   "verdict": "tp",
+   "reason": "The Flask or Django secret key is a literal in the code."
+  },
+  {
+   "rule": "SEC011",
+   "file": "dockerized_labs/broken_auth_lab/app.py",
+   "line": 21,
+   "fingerprint": "a6760d74d14890909299cae66a7bd3fe",
+   "verdict": "tp",
+   "reason": "The app's users or config are defined in code with literal passwords."
+  },
+  {
+   "rule": "SEC011",
+   "file": "dockerized_labs/broken_auth_lab/app.py",
+   "line": 26,
+   "fingerprint": "306ed007ab5d1b31cb4ea12c76c02f8f",
+   "verdict": "tp",
+   "reason": "The app's users or config are defined in code with literal passwords."
+  },
+  {
+   "rule": "BE014",
+   "file": "dockerized_labs/broken_auth_lab/app.py",
+   "line": 53,
+   "fingerprint": "7e2becd8c8f304e7316c273a86f23ad3",
+   "verdict": "tp",
+   "reason": "Passwords are compared in plaintext or hashed with a fast hash."
+  },
+  {
+   "rule": "QA003",
+   "file": "dockerized_labs/broken_auth_lab/app.py",
+   "line": 138,
+   "fingerprint": "d6d6b463f1bd62349e1dcc543b9c251a",
+   "verdict": "tp",
+   "reason": "A bare except with only pass."
+  },
+  {
+   "rule": "BE011",
+   "file": "dockerized_labs/broken_auth_lab/app.py",
+   "line": 147,
+   "fingerprint": "5d9a1b35487177febd84a538fc7a6a85",
+   "verdict": "tp",
+   "reason": "The lab app runs with debug switched on."
+  },
+  {
+   "rule": "CFG001",
+   "file": "dockerized_labs/command_injection_lab/Dockerfile",
+   "line": 1,
+   "fingerprint": "24c213ac370c71eb4f83f190926e17fe",
+   "verdict": "tp",
+   "reason": "The lab image runs as root."
+  },
+  {
+   "rule": "SEC004",
+   "file": "dockerized_labs/command_injection_lab/app.py",
+   "line": 6,
+   "fingerprint": "9285ad8982d7350e1ee8c01901ae4ff8",
+   "verdict": "tp",
+   "reason": "The Flask or Django secret key is a literal in the code."
+  },
+  {
+   "rule": "BE002",
+   "file": "dockerized_labs/command_injection_lab/app.py",
+   "line": 29,
+   "fingerprint": "97c2ee21be64b8bd0f22b3b8b6d00f1d",
+   "verdict": "tp",
+   "reason": "A shell command is built from request input."
+  },
+  {
+   "rule": "BE003",
+   "file": "dockerized_labs/command_injection_lab/app.py",
+   "line": 49,
+   "fingerprint": "a6d308d0fedf68b2b48cc6eedd2dbad7",
+   "verdict": "tp",
+   "reason": "eval() on an expression from the request."
+  },
+  {
+   "rule": "BE017",
+   "file": "dockerized_labs/command_injection_lab/app.py",
+   "line": 52,
+   "fingerprint": "0f80c4a505507013674a892598100fff",
+   "verdict": "tp",
+   "reason": "The exception text is sent to the client."
+  },
+  {
+   "rule": "BE011",
+   "file": "dockerized_labs/command_injection_lab/app.py",
+   "line": 60,
+   "fingerprint": "1730178dbfc720072b7f123e067e6029",
+   "verdict": "tp",
+   "reason": "The lab app runs with debug switched on."
+  },
+  {
+   "rule": "CFG001",
+   "file": "dockerized_labs/crypto_failure_lab/Dockerfile",
+   "line": 1,
+   "fingerprint": "ad0f48aef65b33d971d3b659de836af2",
+   "verdict": "tp",
+   "reason": "The lab image runs as root."
+  },
+  {
+   "rule": "SEC004",
+   "file": "dockerized_labs/crypto_failure_lab/app.py",
+   "line": 7,
+   "fingerprint": "f2e4b6edd83cadd2ccbc739dfabe2faa",
+   "verdict": "tp",
+   "reason": "The Flask or Django secret key is a literal in the code."
+  },
+  {
+   "rule": "BE014",
+   "file": "dockerized_labs/crypto_failure_lab/app.py",
+   "line": 25,
+   "fingerprint": "168a069f36d76a24ab47daef9a55d765",
+   "verdict": "tp",
+   "reason": "Passwords are compared in plaintext or hashed with a fast hash."
+  },
+  {
+   "rule": "BE014",
+   "file": "dockerized_labs/crypto_failure_lab/app.py",
+   "line": 38,
+   "fingerprint": "c45186531ce35b65dba771882d7b422c",
+   "verdict": "tp",
+   "reason": "Passwords are compared in plaintext or hashed with a fast hash."
+  },
+  {
+   "rule": "DATA006",
+   "file": "dockerized_labs/crypto_failure_lab/app.py",
+   "line": 89,
+   "fingerprint": "9ab9410d04be52d46ea59a08585f10d7",
+   "verdict": "tp",
+   "reason": "A naive datetime is stored or compared."
+  },
+  {
+   "rule": "CFG001",
+   "file": "dockerized_labs/dependency_attack_lab/Dockerfile",
+   "line": 1,
+   "fingerprint": "7e4d5821ab1601c3513a198799ee6f16",
+   "verdict": "tp",
+   "reason": "The lab image runs as root."
+  },
+  {
+   "rule": "SEC004",
+   "file": "dockerized_labs/dependency_attack_lab/app.py",
+   "line": 7,
+   "fingerprint": "98851a8bee09a74e05c1dc63b1c65fb3",
+   "verdict": "tp",
+   "reason": "The Flask or Django secret key is a literal in the code."
+  },
+  {
+   "rule": "SEC003",
+   "file": "dockerized_labs/dependency_attack_lab/app.py",
+   "line": 11,
+   "fingerprint": "92cd87b990e3680432a80bee58f9a004",
+   "verdict": "tp",
+   "reason": "A secret-looking value is a literal in the code."
+  },
+  {
+   "rule": "SEC011",
+   "file": "dockerized_labs/dependency_attack_lab/app.py",
+   "line": 12,
+   "fingerprint": "20f743658c7b640bbb1f42a582c9d5a4",
+   "verdict": "tp",
+   "reason": "The app's users or config are defined in code with literal passwords."
+  },
+  {
+   "rule": "SEC003",
+   "file": "dockerized_labs/dependency_attack_lab/app.py",
+   "line": 13,
+   "fingerprint": "756534e22ff599c7c4c8043a38dece25",
+   "verdict": "tp",
+   "reason": "A secret-looking value is a literal in the code."
+  },
+  {
+   "rule": "BE011",
+   "file": "dockerized_labs/dependency_attack_lab/app.py",
+   "line": 198,
+   "fingerprint": "7268be52402c874c18249b9a7489e655",
+   "verdict": "tp",
+   "reason": "The lab app runs with debug switched on."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/dependency_attack_lab/templates/lab.html",
+   "line": 83,
+   "fingerprint": "607d2ad7fb1de48b84084934783dc349",
+   "verdict": "tp",
+   "reason": "Data from the server or the request is written as HTML without escaping."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/dependency_attack_lab/templates/lab.html",
+   "line": 144,
+   "fingerprint": "7e9190d91bae71a34bb4b73f436c638d",
+   "verdict": "tp",
+   "reason": "Data from the server or the request is written as HTML without escaping."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/dependency_attack_lab/templates/lab.html",
+   "line": 193,
+   "fingerprint": "97cddd60480f69e767c4648e83befe1f",
+   "verdict": "tp",
+   "reason": "Data from the server or the request is written as HTML without escaping."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/dependency_attack_lab/templates/lab.html",
+   "line": 277,
+   "fingerprint": "5dc80cf3e33a620129111e1aea87c1be",
+   "verdict": "tp",
+   "reason": "Data from the server or the request is written as HTML without escaping."
+  },
+  {
+   "rule": "CFG001",
+   "file": "dockerized_labs/insec_des_lab/Dockerfile",
+   "line": 1,
+   "fingerprint": "e3c65437ab9592a9f97025145c90d5ee",
+   "verdict": "tp",
+   "reason": "The lab image runs as root."
+  },
+  {
+   "rule": "BE004",
+   "file": "dockerized_labs/insec_des_lab/main.py",
+   "line": 40,
+   "fingerprint": "38b9d83cc5b15ecea05615794ba1ffbd",
+   "verdict": "tp",
+   "reason": "Request data is passed to an unsafe deserializer (pickle or yaml.Loader)."
+  },
+  {
+   "rule": "BE017",
+   "file": "dockerized_labs/insec_des_lab/main.py",
+   "line": 54,
+   "fingerprint": "ab1d3f6315415c3d5aecf60f18a10e72",
+   "verdict": "tp",
+   "reason": "The exception text is sent to the client."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/insec_des_lab/templates/base.html",
+   "line": 20,
+   "fingerprint": "47c243cd0d97e3bfe7e2a1f04de72ebf",
+   "verdict": "fp",
+   "reason": "innerHTML is set to one of two constant emoji for the theme toggle."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/insec_des_lab/templates/base.html",
+   "line": 32,
+   "fingerprint": "024ffd44b384b8ed0d967ac42f3bb137",
+   "verdict": "fp",
+   "reason": "innerHTML is set to one of two constant emoji for the theme toggle."
+  },
+  {
+   "rule": "CFG001",
+   "file": "dockerized_labs/insecure_design_lab/Dockerfile",
+   "line": 1,
+   "fingerprint": "cc54a76f9e6cf88af03701b9b5195eda",
+   "verdict": "tp",
+   "reason": "The lab image runs as root."
+  },
+  {
+   "rule": "SEC004",
+   "file": "dockerized_labs/insecure_design_lab/app.py",
+   "line": 8,
+   "fingerprint": "ef5e417099d2dacb426488b19289f3e0",
+   "verdict": "tp",
+   "reason": "The Flask or Django secret key is a literal in the code."
+  },
+  {
+   "rule": "BE014",
+   "file": "dockerized_labs/insecure_design_lab/app.py",
+   "line": 56,
+   "fingerprint": "ba12023273c135ac327ce6a50aa01f57",
+   "verdict": "tp",
+   "reason": "Passwords are compared in plaintext or hashed with a fast hash."
+  },
+  {
+   "rule": "BE011",
+   "file": "dockerized_labs/insecure_design_lab/app.py",
+   "line": 153,
+   "fingerprint": "a7ff2f0a8577c3cb4f9af7f61c45a0a5",
+   "verdict": "tp",
+   "reason": "The lab app runs with debug switched on."
+  },
+  {
+   "rule": "CFG001",
+   "file": "dockerized_labs/insufficient_logging_lab/Dockerfile",
+   "line": 1,
+   "fingerprint": "93f5df0ee2c1f79d23b9f8f9788b9f65",
+   "verdict": "tp",
+   "reason": "The lab image runs as root."
+  },
+  {
+   "rule": "SEC004",
+   "file": "dockerized_labs/insufficient_logging_lab/app.py",
+   "line": 7,
+   "fingerprint": "95fb60b2ad81a5e5656a5a7d30d5336b",
+   "verdict": "tp",
+   "reason": "The Flask or Django secret key is a literal in the code."
+  },
+  {
+   "rule": "SEC011",
+   "file": "dockerized_labs/insufficient_logging_lab/app.py",
+   "line": 15,
+   "fingerprint": "fbed6bd688ac9cd52680a76bd1159ddb",
+   "verdict": "tp",
+   "reason": "The app's users or config are defined in code with literal passwords."
+  },
+  {
+   "rule": "BE014",
+   "file": "dockerized_labs/insufficient_logging_lab/app.py",
+   "line": 40,
+   "fingerprint": "a06141bac3eba95e4286ce2202cd8ad0",
+   "verdict": "tp",
+   "reason": "Passwords are compared in plaintext or hashed with a fast hash."
+  },
+  {
+   "rule": "BE011",
+   "file": "dockerized_labs/insufficient_logging_lab/app.py",
+   "line": 96,
+   "fingerprint": "9911f0516ca0d223cd60c60ecfd16f04",
+   "verdict": "tp",
+   "reason": "The lab app runs with debug switched on."
+  },
+  {
+   "rule": "CFG001",
+   "file": "dockerized_labs/open_source_library_attack_lab/Dockerfile",
+   "line": 1,
+   "fingerprint": "b814e3ab7d11f83efbbe5b913f598f02",
+   "verdict": "tp",
+   "reason": "The lab image runs as root."
+  },
+  {
+   "rule": "SEC004",
+   "file": "dockerized_labs/open_source_library_attack_lab/app.py",
+   "line": 5,
+   "fingerprint": "96e3b46e85c5f51121bdee19ba7dcae0",
+   "verdict": "tp",
+   "reason": "The Flask or Django secret key is a literal in the code."
+  },
+  {
+   "rule": "BE011",
+   "file": "dockerized_labs/open_source_library_attack_lab/app.py",
+   "line": 259,
+   "fingerprint": "701974bc837fd146c39aa493bff808e6",
+   "verdict": "tp",
+   "reason": "The lab app runs with debug switched on."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/open_source_library_attack_lab/templates/lab.html",
+   "line": 121,
+   "fingerprint": "bde7c193ee02aa53f3d215e0d17ed8e7",
+   "verdict": "tp",
+   "reason": "Data from the server or the request is written as HTML without escaping."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/open_source_library_attack_lab/templates/lab.html",
+   "line": 238,
+   "fingerprint": "6674560d2efa48e7a013f56707d0b940",
+   "verdict": "tp",
+   "reason": "Data from the server or the request is written as HTML without escaping."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/open_source_library_attack_lab/templates/lab.html",
+   "line": 300,
+   "fingerprint": "8bb042bab6fd70cc353b5725b3a940b1",
+   "verdict": "tp",
+   "reason": "Data from the server or the request is written as HTML without escaping."
+  },
+  {
+   "rule": "CFG001",
+   "file": "dockerized_labs/package_injection_lab/Dockerfile",
+   "line": 1,
+   "fingerprint": "ba496ede15ffa0e211f84b827a16ffb4",
+   "verdict": "tp",
+   "reason": "The lab image runs as root."
+  },
+  {
+   "rule": "SEC004",
+   "file": "dockerized_labs/package_injection_lab/app.py",
+   "line": 7,
+   "fingerprint": "7d76d2b2fc82c79552c34faa9450be38",
+   "verdict": "tp",
+   "reason": "The Flask or Django secret key is a literal in the code."
+  },
+  {
+   "rule": "SEC011",
+   "file": "dockerized_labs/package_injection_lab/app.py",
+   "line": 12,
+   "fingerprint": "535d9976b232fe28113075c0e2425730",
+   "verdict": "tp",
+   "reason": "The app's users or config are defined in code with literal passwords."
+  },
+  {
+   "rule": "SEC003",
+   "file": "dockerized_labs/package_injection_lab/app.py",
+   "line": 13,
+   "fingerprint": "b4b349a5a096bea388ea49c650e2a2f3",
+   "verdict": "tp",
+   "reason": "A secret-looking value is a literal in the code."
+  },
+  {
+   "rule": "BE011",
+   "file": "dockerized_labs/package_injection_lab/app.py",
+   "line": 260,
+   "fingerprint": "92299113af6fea482b1a223a3757d460",
+   "verdict": "tp",
+   "reason": "The lab app runs with debug switched on."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/package_injection_lab/templates/lab.html",
+   "line": 83,
+   "fingerprint": "6c0cf3be630a39105dea5f712fa1fc3e",
+   "verdict": "tp",
+   "reason": "Data from the server or the request is written as HTML without escaping."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/package_injection_lab/templates/lab.html",
+   "line": 143,
+   "fingerprint": "2b991ab92a26364031a71694469402f8",
+   "verdict": "tp",
+   "reason": "Data from the server or the request is written as HTML without escaping."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/package_injection_lab/templates/lab.html",
+   "line": 196,
+   "fingerprint": "0dcde5f0b2190ea72419090a6d48dc84",
+   "verdict": "tp",
+   "reason": "Data from the server or the request is written as HTML without escaping."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/package_injection_lab/templates/lab.html",
+   "line": 283,
+   "fingerprint": "746e2d0809e6e925b8438965336f349e",
+   "verdict": "tp",
+   "reason": "Data from the server or the request is written as HTML without escaping."
+  },
+  {
+   "rule": "CFG001",
+   "file": "dockerized_labs/sde/Dockerfile",
+   "line": 1,
+   "fingerprint": "409eada1e4ba15e4b480d487bb21aa9a",
+   "verdict": "tp",
+   "reason": "The lab image runs as root."
+  },
+  {
+   "rule": "SEC004",
+   "file": "dockerized_labs/sde/app.py",
+   "line": 6,
+   "fingerprint": "4ca0e1091f74a12f762da912c28f930c",
+   "verdict": "tp",
+   "reason": "The Flask or Django secret key is a literal in the code."
+  },
+  {
+   "rule": "BE011",
+   "file": "dockerized_labs/sde/app.py",
+   "line": 7,
+   "fingerprint": "961464bb716a9b7d07fb2dd455f77d78",
+   "verdict": "tp",
+   "reason": "The lab app runs with debug switched on."
+  },
+  {
+   "rule": "BE011",
+   "file": "dockerized_labs/sde/app.py",
+   "line": 49,
+   "fingerprint": "6b403a94e3f40c945c280660e98c5d6d",
+   "verdict": "tp",
+   "reason": "The lab app runs with debug switched on."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/sde/templates/base.html",
+   "line": 27,
+   "fingerprint": "aad8002a4700794ef95d6184c0b9fbaa",
+   "verdict": "fp",
+   "reason": "innerHTML is set to one of two constant emoji for the theme toggle."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/sde/templates/base.html",
+   "line": 38,
+   "fingerprint": "de892c2c318953504974d81deb572481",
+   "verdict": "fp",
+   "reason": "innerHTML is set to one of two constant emoji for the theme toggle."
+  },
+  {
+   "rule": "CFG001",
+   "file": "dockerized_labs/sec_misconfig/Dockerfile",
+   "line": 1,
+   "fingerprint": "592d73082b628c58e3017abdab5c05a4",
+   "verdict": "tp",
+   "reason": "The lab image runs as root."
+  },
+  {
+   "rule": "SEC004",
+   "file": "dockerized_labs/sec_misconfig/Dockerfile",
+   "line": 12,
+   "fingerprint": "a0973a9be17d40066e3ec915d1c5c389",
+   "verdict": "tp",
+   "reason": "The Flask or Django secret key is a literal in the code."
+  },
+  {
+   "rule": "SEC004",
+   "file": "dockerized_labs/sec_misconfig/Dockerfile",
+   "line": 13,
+   "fingerprint": "24a9eb06be353559b98524ff33ce600c",
+   "verdict": "tp",
+   "reason": "The Flask or Django secret key is a literal in the code."
+  },
+  {
+   "rule": "BE011",
+   "file": "dockerized_labs/sec_misconfig/app.py",
+   "line": 8,
+   "fingerprint": "4665416ead113cc4cacf0368216a5e9d",
+   "verdict": "tp",
+   "reason": "The lab app runs with debug switched on."
+  },
+  {
+   "rule": "SEC003",
+   "file": "dockerized_labs/sec_misconfig/app.py",
+   "line": 14,
+   "fingerprint": "6d81e412f706c6ceb3d6a4d827f748fd",
+   "verdict": "tp",
+   "reason": "A secret-looking value is a literal in the code."
+  },
+  {
+   "rule": "SEC005",
+   "file": "dockerized_labs/sec_misconfig/app.py",
+   "line": 56,
+   "fingerprint": "64be8cee49c710251ad379b0750f87e5",
+   "verdict": "tp",
+   "reason": "A database URL with a password is a literal in the code."
+  },
+  {
+   "rule": "SEC011",
+   "file": "dockerized_labs/sec_misconfig/app.py",
+   "line": 57,
+   "fingerprint": "17de8e3fcd9818fba82f76fb54bb6cc7",
+   "verdict": "tp",
+   "reason": "The app's users or config are defined in code with literal passwords."
+  },
+  {
+   "rule": "SEC011",
+   "file": "dockerized_labs/sec_misconfig/app.py",
+   "line": 63,
+   "fingerprint": "af65b1967a2828501751d94504adc7f5",
+   "verdict": "tp",
+   "reason": "The app's users or config are defined in code with literal passwords."
+  },
+  {
+   "rule": "DATA006",
+   "file": "dockerized_labs/sec_misconfig/app.py",
+   "line": 104,
+   "fingerprint": "b14d6d48a60ae30c1b1eeadb1ba22582",
+   "verdict": "tp",
+   "reason": "A naive datetime is stored or compared."
+  },
+  {
+   "rule": "BE011",
+   "file": "dockerized_labs/sec_misconfig/app.py",
+   "line": 135,
+   "fingerprint": "91633c6e4e29d44ebbe5982b7a10909a",
+   "verdict": "tp",
+   "reason": "The lab app runs with debug switched on."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/sec_misconfig/templates/lab1.html",
+   "line": 40,
+   "fingerprint": "9ca53a34e033f86bdcfaf8cbd375438b",
+   "verdict": "tp",
+   "reason": "Data from the server or the request is written as HTML without escaping."
+  },
+  {
+   "rule": "CFG001",
+   "file": "dockerized_labs/sensitive_data_exposure/Dockerfile",
+   "line": 1,
+   "fingerprint": "b878ba980369ee69acfc6855d1721ae8",
+   "verdict": "tp",
+   "reason": "The lab image runs as root."
+  },
+  {
+   "rule": "QA004",
+   "file": "dockerized_labs/sensitive_data_exposure/dataexposure/views.py",
+   "line": 103,
+   "fingerprint": "9ecabc38b7eff248aa0d1cb8e868cdab",
+   "verdict": "tp",
+   "reason": "A FIXME about an insecure shortcut."
+  },
+  {
+   "rule": "SEC003",
+   "file": "dockerized_labs/sensitive_data_exposure/entrypoint.sh",
+   "line": 11,
+   "fingerprint": "1f86451da84a487df6ab97f6c4a29661",
+   "verdict": "fp",
+   "reason": "A shell line that creates the lab's demo user."
+  },
+  {
+   "rule": "SEC004",
+   "file": "dockerized_labs/sensitive_data_exposure/sensitive_data_lab/settings.py",
+   "line": 8,
+   "fingerprint": "34b0e3b6899dd6f83d99538aed43bc23",
+   "verdict": "tp",
+   "reason": "The Flask or Django secret key is a literal in the code."
+  },
+  {
+   "rule": "BE011",
+   "file": "dockerized_labs/sensitive_data_exposure/sensitive_data_lab/settings.py",
+   "line": 11,
+   "fingerprint": "9cbd71f80416894e25a33d7744cfd3b3",
+   "verdict": "tp",
+   "reason": "The lab app runs with debug switched on."
+  },
+  {
+   "rule": "CFG006",
+   "file": "dockerized_labs/sensitive_data_exposure/sensitive_data_lab/settings.py",
+   "line": 13,
+   "fingerprint": "ec54dd8e093756713206abe9babfac4a",
+   "verdict": "tp",
+   "reason": "ALLOWED_HOSTS accepts any host in the lab's only settings file."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/sensitive_data_exposure/templates/login.html",
+   "line": 59,
+   "fingerprint": "7aa4e5188e45f568363736ccf9072599",
+   "verdict": "fp",
+   "reason": "A Django form field's own widget HTML marked safe."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/sensitive_data_exposure/templates/login.html",
+   "line": 64,
+   "fingerprint": "e48f5d4c39689c971244fc0496661c56",
+   "verdict": "fp",
+   "reason": "A Django form field's own widget HTML marked safe."
+  },
+  {
+   "rule": "CFG001",
+   "file": "dockerized_labs/software_integrity_lab/Dockerfile",
+   "line": 1,
+   "fingerprint": "d0e229d965d266fc6859c368f89eea37",
+   "verdict": "tp",
+   "reason": "The lab image runs as root."
+  },
+  {
+   "rule": "SEC004",
+   "file": "dockerized_labs/software_integrity_lab/app.py",
+   "line": 9,
+   "fingerprint": "66c7475c1fff9c690da6dd963249dd94",
+   "verdict": "tp",
+   "reason": "The Flask or Django secret key is a literal in the code."
+  },
+  {
+   "rule": "BE004",
+   "file": "dockerized_labs/software_integrity_lab/app.py",
+   "line": 44,
+   "fingerprint": "2a97aa91cc521d9fb0e56ddc7fe46ae4",
+   "verdict": "tp",
+   "reason": "Request data is passed to an unsafe deserializer (pickle or yaml.Loader)."
+  },
+  {
+   "rule": "BE011",
+   "file": "dockerized_labs/software_integrity_lab/app.py",
+   "line": 90,
+   "fingerprint": "57d9fa806106557cf4cc301ecf8b26ed",
+   "verdict": "tp",
+   "reason": "The lab app runs with debug switched on."
+  },
+  {
+   "rule": "CFG001",
+   "file": "dockerized_labs/sql_injection_lab/Dockerfile",
+   "line": 1,
+   "fingerprint": "030a6bf30c2f8545ad9c27ba67eb1328",
+   "verdict": "tp",
+   "reason": "The lab image runs as root."
+  },
+  {
+   "rule": "SEC004",
+   "file": "dockerized_labs/sql_injection_lab/app.py",
+   "line": 7,
+   "fingerprint": "b92285bbc3e3e1550b341c3c538334b5",
+   "verdict": "tp",
+   "reason": "The Flask or Django secret key is a literal in the code."
+  },
+  {
+   "rule": "BE001",
+   "file": "dockerized_labs/sql_injection_lab/app.py",
+   "line": 57,
+   "fingerprint": "76e621c804fd0553b00267d9f931c1e9",
+   "verdict": "tp",
+   "reason": "The SQL text is built from request input."
+  },
+  {
+   "rule": "BE017",
+   "file": "dockerized_labs/sql_injection_lab/app.py",
+   "line": 69,
+   "fingerprint": "6c33317fc8a8565aeaba9fd9daf1e0d8",
+   "verdict": "tp",
+   "reason": "The exception text is sent to the client."
+  },
+  {
+   "rule": "BE011",
+   "file": "dockerized_labs/sql_injection_lab/app.py",
+   "line": 78,
+   "fingerprint": "1eb4315d4bd9bd4a5f9f573606f9ff77",
+   "verdict": "tp",
+   "reason": "The lab app runs with debug switched on."
+  },
+  {
+   "rule": "CFG001",
+   "file": "dockerized_labs/ssrf_lab/Dockerfile",
+   "line": 1,
+   "fingerprint": "732cf89ac2c0c0636f9f02c2191767b0",
+   "verdict": "tp",
+   "reason": "The lab image runs as root."
+  },
+  {
+   "rule": "SEC004",
+   "file": "dockerized_labs/ssrf_lab/app.py",
+   "line": 6,
+   "fingerprint": "f937b2ee6cc54b6c5dfe24d0847f1967",
+   "verdict": "tp",
+   "reason": "The Flask or Django secret key is a literal in the code."
+  },
+  {
+   "rule": "BE006",
+   "file": "dockerized_labs/ssrf_lab/app.py",
+   "line": 22,
+   "fingerprint": "b0ba965ba0e3976ca72586b3bb48acd8",
+   "verdict": "tp",
+   "reason": "A file path from the request is opened."
+  },
+  {
+   "rule": "BE005",
+   "file": "dockerized_labs/ssrf_lab/app.py",
+   "line": 37,
+   "fingerprint": "51fd1a59d0dafb2e71ab9f7d6c6445af",
+   "verdict": "tp",
+   "reason": "A URL from the request is fetched."
+  },
+  {
+   "rule": "REL001",
+   "file": "dockerized_labs/ssrf_lab/app.py",
+   "line": 37,
+   "fingerprint": "3fa720adf4b992fb0f806e5ec9deb227",
+   "verdict": "tp",
+   "reason": "requests.get has no timeout."
+  },
+  {
+   "rule": "DEP005",
+   "file": "dockerized_labs/ssrf_lab/requirements.txt",
+   "line": 1,
+   "fingerprint": "29e9e2ff01e5918dfedaa2114d05ff48",
+   "verdict": "tp",
+   "reason": "The requirements are not pinned."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/ssrf_lab/templates/lab2.html",
+   "line": 26,
+   "fingerprint": "9d524669ce6bc954667ecc9f6e994ede",
+   "verdict": "tp",
+   "reason": "Data from the server or the request is written as HTML without escaping."
+  },
+  {
+   "rule": "CFG001",
+   "file": "dockerized_labs/template_injection_lab/Dockerfile",
+   "line": 1,
+   "fingerprint": "3fc8ff21a4103d1c6df384d1396e8cb8",
+   "verdict": "tp",
+   "reason": "The lab image runs as root."
+  },
+  {
+   "rule": "BE017",
+   "file": "dockerized_labs/template_injection_lab/app.py",
+   "line": 104,
+   "fingerprint": "c009d74b871d9b42550ad4303972f660",
+   "verdict": "tp",
+   "reason": "The exception text is sent to the client."
+  },
+  {
+   "rule": "BE017",
+   "file": "dockerized_labs/template_injection_lab/app.py",
+   "line": 113,
+   "fingerprint": "81232aeef664f8f5fd6f139bfc3bb99c",
+   "verdict": "tp",
+   "reason": "The exception text is sent to the client."
+  },
+  {
+   "rule": "BE011",
+   "file": "dockerized_labs/template_injection_lab/app.py",
+   "line": 123,
+   "fingerprint": "2489f0be0eb3c3d272fa0b6557b36d12",
+   "verdict": "tp",
+   "reason": "The lab app runs with debug switched on."
+  },
+  {
+   "rule": "CFG001",
+   "file": "dockerized_labs/xss_lab/Dockerfile",
+   "line": 1,
+   "fingerprint": "e5a4ec5164fd40250b54d1568364d6dd",
+   "verdict": "tp",
+   "reason": "The lab image runs as root."
+  },
+  {
+   "rule": "BE008",
+   "file": "dockerized_labs/xss_lab/app.py",
+   "line": 84,
+   "fingerprint": "557e03692f94b8300dea3e3fc30e2cd7",
+   "verdict": "tp",
+   "reason": "The redirect target comes from the request."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/xss_lab/templates/base.html",
+   "line": 26,
+   "fingerprint": "7dea8705b9f27215f33fd10debc96a58",
+   "verdict": "fp",
+   "reason": "innerHTML is set to one of two constant emoji for the theme toggle."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/xss_lab/templates/base.html",
+   "line": 38,
+   "fingerprint": "26c4b180fe82e489c91a89904c44be6e",
+   "verdict": "fp",
+   "reason": "innerHTML is set to one of two constant emoji for the theme toggle."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/xss_lab/templates/lab1.html",
+   "line": 30,
+   "fingerprint": "3dcba0c99f260f9ac2f07b2882835a1f",
+   "verdict": "tp",
+   "reason": "Data from the server or the request is written as HTML without escaping."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/xss_lab/templates/lab1.html",
+   "line": 55,
+   "fingerprint": "f7a9959e9fb3cb8c3d2e4ff1a6424511",
+   "verdict": "tp",
+   "reason": "Data from the server or the request is written as HTML without escaping."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/xss_lab/templates/lab2.html",
+   "line": 24,
+   "fingerprint": "a66a06f78906e33d6fd3f94c505a1113",
+   "verdict": "tp",
+   "reason": "Data from the server or the request is written as HTML without escaping."
+  },
+  {
+   "rule": "CFG001",
+   "file": "dockerized_labs/xxe_lab/Dockerfile",
+   "line": 1,
+   "fingerprint": "44ad2208195153e7980575495eeb5835",
+   "verdict": "tp",
+   "reason": "The lab image runs as root."
+  },
+  {
+   "rule": "SEC004",
+   "file": "dockerized_labs/xxe_lab/app.py",
+   "line": 8,
+   "fingerprint": "e85a451b31530666c4d285dec8c86aa2",
+   "verdict": "tp",
+   "reason": "The Flask or Django secret key is a literal in the code."
+  },
+  {
+   "rule": "BE011",
+   "file": "dockerized_labs/xxe_lab/app.py",
+   "line": 95,
+   "fingerprint": "375fea1c905a1a169c13f15c906e8379",
+   "verdict": "tp",
+   "reason": "The lab app runs with debug switched on."
+  },
+  {
+   "rule": "UI001",
+   "file": "dockerized_labs/xxe_lab/templates/xxe_lab.html",
+   "line": 10,
+   "fingerprint": "05d2e83f3e8121e7c7a366cfe617d36f",
+   "verdict": "tp",
+   "reason": "The img has no alt attribute."
+  },
+  {
+   "rule": "AUTH009",
+   "file": "introduction/views.py",
+   "line": 155,
+   "fingerprint": "b1c7e17a837976f267590ce262cd36fc",
+   "verdict": "tp",
+   "reason": "The view is csrf_exempt."
+  },
+  {
+   "rule": "AUTH009",
+   "file": "introduction/views.py",
+   "line": 258,
+   "fingerprint": "489c2824b5614fcead625ce3cbbbf184",
+   "verdict": "tp",
+   "reason": "The view is csrf_exempt."
+  },
+  {
+   "rule": "AUTH009",
+   "file": "introduction/views.py",
+   "line": 269,
+   "fingerprint": "c440005f6a4d01d4812414697cd30549",
+   "verdict": "tp",
+   "reason": "The view is csrf_exempt."
+  },
+  {
+   "rule": "SEC004",
+   "file": "pygoat/settings.py",
+   "line": 23,
+   "fingerprint": "7098d005fcf99f06d9db115efa6f4ad3",
+   "verdict": "tp",
+   "reason": "The Flask or Django secret key is a literal in the code."
+  },
+  {
+   "rule": "BE011",
+   "file": "pygoat/settings.py",
+   "line": 28,
+   "fingerprint": "6dc37f4bb040e7f0139e9e6c6effd770",
+   "verdict": "tp",
+   "reason": "The lab app runs with debug switched on."
+  },
+  {
+   "rule": "DATA001",
+   "file": "scoring/scoring_engine.py",
+   "line": 66,
+   "fingerprint": "de55d4fe495d36d208bc59201d72e81d",
+   "verdict": "fp",
+   "reason": "An achievement row is created only when a milestone is newly reached; a handful per call."
+  },
+  {
+   "rule": "QA007",
+   "file": "setup.py",
+   "line": 4,
+   "fingerprint": "c72999c28c003593afcaf3ef78c273c1",
+   "verdict": "fp",
+   "reason": "setup.py importing setuptools is the build tool itself."
+  },
+  {
+   "rule": "QA007",
+   "file": "uninstaller.py",
+   "line": 9,
+   "fingerprint": "a97a28af06bbfb1aeacdf3a31875cbee",
+   "verdict": "tp",
+   "reason": "Imported but not declared in the requirements."
+  }
+ ]
+}

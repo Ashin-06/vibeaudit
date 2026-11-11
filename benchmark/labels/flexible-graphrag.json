@@ -1,0 +1,2118 @@
+{
+ "repo": "flexible-graphrag",
+ "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-publish.yml",
+   "line": 64,
+   "fingerprint": "e4f0afa273d007b8d7bb03f7c2111b6f",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-publish.yml",
+   "line": 67,
+   "fingerprint": "b54fb85d7ed15a16e634545c907271ef",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-publish.yml",
+   "line": 70,
+   "fingerprint": "cb9f857306f38206f6f56915d1ca4abe",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-publish.yml",
+   "line": 76,
+   "fingerprint": "84f9b341ec66742d565758a504004ca8",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-publish.yml",
+   "line": 87,
+   "fingerprint": "ce4a167b5dd5b4729c618f63a55d13c9",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-publish.yml",
+   "line": 99,
+   "fingerprint": "7ebccf419dbbc9e988567eb83bdb2694",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG001",
+   "file": "docker/Dockerfile.age-pgvector",
+   "line": 15,
+   "fingerprint": "be3eefaca04a4177fe1ce8f7ec9247d2",
+   "verdict": "tp",
+   "reason": "The image runs as root."
+  },
+  {
+   "rule": "CFG002",
+   "file": "docker/Dockerfile.age-pgvector",
+   "line": 15,
+   "fingerprint": "5133b8f5be149aa85c53c82128ea57a7",
+   "verdict": "tp",
+   "reason": "The base image uses the latest tag."
+  },
+  {
+   "rule": "FE007",
+   "file": "docker/lancedb-info/index.html",
+   "line": 120,
+   "fingerprint": "ea5161bc90951396447f884ff8520240",
+   "verdict": "fp",
+   "reason": "A static local info page that links to the local service."
+  },
+  {
+   "rule": "FE007",
+   "file": "docker/lancedb-info/index.html",
+   "line": 126,
+   "fingerprint": "48edb84bcdfd93ed96eb8da25bbc4792",
+   "verdict": "fp",
+   "reason": "A static local info page that links to the local service."
+  },
+  {
+   "rule": "DATA006",
+   "file": "docker/postgres-init/01-init-pgvector.sql",
+   "line": 20,
+   "fingerprint": "bf596e6887e95f107947498b348685d6",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "CFG001",
+   "file": "flexible-graphrag-ui/frontend-angular/Dockerfile",
+   "line": 22,
+   "fingerprint": "f2896326e4b48bcee83cb2915e2d6cf1",
+   "verdict": "tp",
+   "reason": "The image runs as root."
+  },
+  {
+   "rule": "FE007",
+   "file": "flexible-graphrag-ui/frontend-angular/src/app/components/processing-tab/processing-tab.ts",
+   "line": 478,
+   "fingerprint": "6d1102288650d51062f1d723a9991e47",
+   "verdict": "tp",
+   "reason": "A localhost URL is a default or production value in the frontend code."
+  },
+  {
+   "rule": "SEC011",
+   "file": "flexible-graphrag-ui/frontend-angular/src/app/components/processing-tab/processing-tab.ts",
+   "line": 480,
+   "fingerprint": "36de8fd840c49e8175d005874f00cf51",
+   "verdict": "tp",
+   "reason": "A default password is prefilled in the UI code."
+  },
+  {
+   "rule": "FE007",
+   "file": "flexible-graphrag-ui/frontend-angular/src/app/components/processing-tab/processing-tab.ts",
+   "line": 486,
+   "fingerprint": "a80cf2e69192a611c1b37c851353c90a",
+   "verdict": "tp",
+   "reason": "A localhost URL is a default or production value in the frontend code."
+  },
+  {
+   "rule": "SEC011",
+   "file": "flexible-graphrag-ui/frontend-angular/src/app/components/processing-tab/processing-tab.ts",
+   "line": 488,
+   "fingerprint": "1821aa280a04286819f9de851e0c614b",
+   "verdict": "tp",
+   "reason": "A default password is prefilled in the UI code."
+  },
+  {
+   "rule": "FE007",
+   "file": "flexible-graphrag-ui/frontend-angular/src/app/components/sources-tab/sources-tab.ts",
+   "line": 22,
+   "fingerprint": "4470a74ace20baeb891355a6b07f813b",
+   "verdict": "tp",
+   "reason": "A localhost URL is a default or production value in the frontend code."
+  },
+  {
+   "rule": "FE007",
+   "file": "flexible-graphrag-ui/frontend-angular/src/app/components/sources-tab/sources-tab.ts",
+   "line": 63,
+   "fingerprint": "bb722201b1ee8a6c91859facdbf41ef3",
+   "verdict": "tp",
+   "reason": "A localhost URL is a default or production value in the frontend code."
+  },
+  {
+   "rule": "FE007",
+   "file": "flexible-graphrag-ui/frontend-angular/src/app/components/sources/alfresco-source-form.component.ts",
+   "line": 103,
+   "fingerprint": "18005108f5aa139a933e54b40bf4e9f8",
+   "verdict": "tp",
+   "reason": "A localhost URL is a default or production value in the frontend code."
+  },
+  {
+   "rule": "FE007",
+   "file": "flexible-graphrag-ui/frontend-angular/src/app/components/sources/cmis-source-form.component.ts",
+   "line": 89,
+   "fingerprint": "d273248fa2ceade79ba93ed194cc367e",
+   "verdict": "tp",
+   "reason": "A localhost URL is a default or production value in the frontend code."
+  },
+  {
+   "rule": "FE007",
+   "file": "flexible-graphrag-ui/frontend-angular/src/app/components/sources/nuxeo-source-form.component.ts",
+   "line": 104,
+   "fingerprint": "439dc232abddb638a00e7ea7822721f9",
+   "verdict": "tp",
+   "reason": "A localhost URL is a default or production value in the frontend code."
+  },
+  {
+   "rule": "FE007",
+   "file": "flexible-graphrag-ui/frontend-angular/src/env-config.ts",
+   "line": 26,
+   "fingerprint": "39d33a0a22949c353c29f7d47b141887",
+   "verdict": "tp",
+   "reason": "A localhost URL is a default or production value in the frontend code."
+  },
+  {
+   "rule": "FE007",
+   "file": "flexible-graphrag-ui/frontend-angular/src/env-config.ts",
+   "line": 27,
+   "fingerprint": "003fdd494b104d0fbf26d8149db2a185",
+   "verdict": "tp",
+   "reason": "A localhost URL is a default or production value in the frontend code."
+  },
+  {
+   "rule": "FE007",
+   "file": "flexible-graphrag-ui/frontend-angular/src/env-config.ts",
+   "line": 28,
+   "fingerprint": "b0c36e8704e4f2b38cf6e688d660cada",
+   "verdict": "tp",
+   "reason": "A localhost URL is a default or production value in the frontend code."
+  },
+  {
+   "rule": "FE007",
+   "file": "flexible-graphrag-ui/frontend-angular/src/environments/environment.prod.ts",
+   "line": 6,
+   "fingerprint": "b0397a7aba204818d97dd9cc2d494c23",
+   "verdict": "tp",
+   "reason": "A localhost URL is a default or production value in the frontend code."
+  },
+  {
+   "rule": "FE007",
+   "file": "flexible-graphrag-ui/frontend-angular/src/environments/environment.prod.ts",
+   "line": 7,
+   "fingerprint": "82b1914c1096a9f9dea0f0a33e0eeeae",
+   "verdict": "tp",
+   "reason": "A localhost URL is a default or production value in the frontend code."
+  },
+  {
+   "rule": "FE007",
+   "file": "flexible-graphrag-ui/frontend-angular/src/environments/environment.prod.ts",
+   "line": 8,
+   "fingerprint": "c269e31038f19a7c4ab24decd9cf4180",
+   "verdict": "tp",
+   "reason": "A localhost URL is a default or production value in the frontend code."
+  },
+  {
+   "rule": "CFG001",
+   "file": "flexible-graphrag-ui/frontend-react/Dockerfile",
+   "line": 19,
+   "fingerprint": "586bf1fab5f4798c7bb65ae743bea5dd",
+   "verdict": "tp",
+   "reason": "The image runs as root."
+  },
+  {
+   "rule": "CFG001",
+   "file": "flexible-graphrag-ui/frontend-vue/Dockerfile",
+   "line": 19,
+   "fingerprint": "dcf2dfa85c87ba1303708bdf1229ca52",
+   "verdict": "tp",
+   "reason": "The image runs as root."
+  },
+  {
+   "rule": "FE007",
+   "file": "flexible-graphrag-ui/frontend-vue/src/components/ProcessingTab.vue",
+   "line": 913,
+   "fingerprint": "d9dd381b1a30742a06bdb296e47011fa",
+   "verdict": "tp",
+   "reason": "A localhost URL is a default or production value in the frontend code."
+  },
+  {
+   "rule": "SEC011",
+   "file": "flexible-graphrag-ui/frontend-vue/src/components/ProcessingTab.vue",
+   "line": 915,
+   "fingerprint": "3fe317b23c2e2049691843f85dc4a64f",
+   "verdict": "tp",
+   "reason": "A default password is prefilled in the UI code."
+  },
+  {
+   "rule": "FE007",
+   "file": "flexible-graphrag-ui/frontend-vue/src/components/ProcessingTab.vue",
+   "line": 921,
+   "fingerprint": "5e331adfa76e5414e593c19ef924ad19",
+   "verdict": "tp",
+   "reason": "A localhost URL is a default or production value in the frontend code."
+  },
+  {
+   "rule": "SEC011",
+   "file": "flexible-graphrag-ui/frontend-vue/src/components/ProcessingTab.vue",
+   "line": 923,
+   "fingerprint": "59b58199a43a651803c563afc870fe80",
+   "verdict": "tp",
+   "reason": "A default password is prefilled in the UI code."
+  },
+  {
+   "rule": "CFG001",
+   "file": "flexible-graphrag/Dockerfile",
+   "line": 11,
+   "fingerprint": "0b08552c67940f3380009116bd5261f2",
+   "verdict": "tp",
+   "reason": "The image runs as root."
+  },
+  {
+   "rule": "CFG001",
+   "file": "flexible-graphrag/Dockerfile.langflow",
+   "line": 23,
+   "fingerprint": "b3ba619d1689c02aa9a18ebdbec7f079",
+   "verdict": "tp",
+   "reason": "The image runs as root."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/_compat.py",
+   "line": 177,
+   "fingerprint": "75acf207fb2af76a65aa4b951d2381d7",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/_compat.py",
+   "line": 237,
+   "fingerprint": "6f609a4b825463b62b432fd2a7c4c9d0",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/_compat.py",
+   "line": 239,
+   "fingerprint": "9d2a0bf951630df22c6773165e3f9afe",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/_compat.py",
+   "line": 284,
+   "fingerprint": "523e3f482cf56c10d2faafbf9685b8c2",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/_compat.py",
+   "line": 355,
+   "fingerprint": "6d249383e533e7a702d13e417f945e57",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/_compat.py",
+   "line": 403,
+   "fingerprint": "44af92e288d49f21b43d1af869f66d7b",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/_compat.py",
+   "line": 409,
+   "fingerprint": "e7c427036ff0813bf387ffae442f452f",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/_compat.py",
+   "line": 445,
+   "fingerprint": "03b260f1cd965ebb2039176c420f3171",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/bridge.py",
+   "line": 626,
+   "fingerprint": "ccb46dae056c4e3ff4ea3e06867bd4bb",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/bridge.py",
+   "line": 650,
+   "fingerprint": "00007af64e3f1e4707d5d32dda5bc0a0",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/bridge.py",
+   "line": 875,
+   "fingerprint": "de54b099de43f54ae8822370c3413e87",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/bridge.py",
+   "line": 1085,
+   "fingerprint": "18d941f1bffc2c022ba342034f39baa6",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/bridge.py",
+   "line": 1288,
+   "fingerprint": "0bd58fc074ba14caa183040f31b28989",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/bridge.py",
+   "line": 1328,
+   "fingerprint": "2836601b6a1aea93f5b476fba8ecfa18",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/bridge.py",
+   "line": 1596,
+   "fingerprint": "27b64e6e4a0b863338ee0c91dfc0a604",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/connectors/cocoindex/property_graph/_surreal.py",
+   "line": 62,
+   "fingerprint": "d42f1a25b201cd53f1c695e58b3ac267",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/connectors/cocoindex/sources/amazon_s3.py",
+   "line": 62,
+   "fingerprint": "9b57b65a47e2c44bce7b5568afb78592",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA007",
+   "file": "flexible-graphrag/cocoindex_integration/connectors/cocoindex/vector/lancedb.py",
+   "line": 9,
+   "fingerprint": "dca72c5e647aa229d29e60cb11ff10a9",
+   "verdict": "tp",
+   "reason": "Imported but not declared in the project's dependencies."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/connectors/flexible/_map_view.py",
+   "line": 324,
+   "fingerprint": "fbae7ba1a1e867f2fdfd476e010bffd7",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/connectors/flexible/_map_view.py",
+   "line": 369,
+   "fingerprint": "63054bae3ed19680591172af7be2feb7",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/connectors/flexible/_sources/_lazy.py",
+   "line": 499,
+   "fingerprint": "a1a3375d6308e8d41a4b0fcf09cf54fa",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/connectors/flexible/_sources/_lazy.py",
+   "line": 511,
+   "fingerprint": "e0f3b27512f043a150fdea723e561571",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/connectors/seam.py",
+   "line": 109,
+   "fingerprint": "94b1a6e26ea100bb1a9bc44b6da866aa",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA004",
+   "file": "flexible-graphrag/cocoindex_integration/functions/doc_processing.py",
+   "line": 95,
+   "fingerprint": "22327288250ba20cf26d89fa1c1a4ec7",
+   "verdict": "fp",
+   "reason": "A note about a parameter that is unused for now, not a security gap."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/functions/embedding.py",
+   "line": 102,
+   "fingerprint": "db5fbb6918c76e4c68cdae358a22c2e6",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/functions/embedding.py",
+   "line": 153,
+   "fingerprint": "b555233c8113677d9fb50deea1b6a068",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/functions/llm.py",
+   "line": 141,
+   "fingerprint": "45d2fc39065d7734e258032135241f8c",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/monitoring.py",
+   "line": 300,
+   "fingerprint": "932ba17e038b3ceb0f82d97f947de5da",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/pipeline/bootstrap.py",
+   "line": 152,
+   "fingerprint": "1653e796a416ac2a8f2fa1fd77a62ce0",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/pipeline/bootstrap.py",
+   "line": 158,
+   "fingerprint": "8192c62a4ef806aa0b689b14f9ee2d35",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/pipeline/bootstrap.py",
+   "line": 187,
+   "fingerprint": "7d38ed0f0dd15f9b7e9229381bf42ffc",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/pipeline/bootstrap.py",
+   "line": 205,
+   "fingerprint": "92e69e8e8da430b24ace97f869ce7be0",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/pipeline/env_config.py",
+   "line": 46,
+   "fingerprint": "b2373211492728150330e9cafa927133",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/pipeline/flexible_app.py",
+   "line": 100,
+   "fingerprint": "2bbe228dfb00a6e7a3aa564d04b420ef",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/pipeline/flexible_app.py",
+   "line": 194,
+   "fingerprint": "2d39ba3954e3fd5364efc84aa637eab7",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/pipeline/flexible_app.py",
+   "line": 242,
+   "fingerprint": "b35b0bb4243710212f466d08e71f977d",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/pipeline/flexible_app.py",
+   "line": 583,
+   "fingerprint": "62812c11785031ec61c0ece4966650a9",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/pipeline/native_apps.py",
+   "line": 123,
+   "fingerprint": "5b2e858ca2b78d94b8c5181ac7f7e4b1",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA007",
+   "file": "flexible-graphrag/cocoindex_integration/pipeline/native_apps.py",
+   "line": 336,
+   "fingerprint": "0246a3279311b9f204e2055c59cb94e2",
+   "verdict": "tp",
+   "reason": "Imported but not declared in the project's dependencies."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/surreal_chain.py",
+   "line": 103,
+   "fingerprint": "40d6a683330802fc096416a23920266e",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/surreal_chain.py",
+   "line": 119,
+   "fingerprint": "75f6cc1d8dd3554661a46ea91aca0d08",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/surreal_chain.py",
+   "line": 135,
+   "fingerprint": "5976c9eccd9076a531a0ebcd95388ccd",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/cocoindex_integration/surreal_chain.py",
+   "line": 146,
+   "fingerprint": "0035a98b7b4dae2d51a7a66615f79e0b",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "LLM012",
+   "file": "flexible-graphrag/config.py",
+   "line": 597,
+   "fingerprint": "f1e546ac69f52ca315b6f7a4ea7571e7",
+   "verdict": "tp",
+   "reason": "The default model id is retired."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/flow_service.py",
+   "line": 92,
+   "fingerprint": "033ecfb2aee49be1de7bbbe7700ccd5d",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/flow_service.py",
+   "line": 342,
+   "fingerprint": "e69d8d8d424413454abcd76016a85778",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "BE001",
+   "file": "flexible-graphrag/incremental_updates/config_manager.py",
+   "line": 193,
+   "fingerprint": "8e9979f71dee8c44bd989db52ad64c2a",
+   "verdict": "fp",
+   "reason": "Column names come from the code; the values are bound parameters."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/incremental_updates/detectors/alfresco_broadcaster.py",
+   "line": 221,
+   "fingerprint": "ec9317afc3d69c14ec5c734a220a1e7f",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/incremental_updates/detectors/alfresco_detector.py",
+   "line": 485,
+   "fingerprint": "8cbfb045cea45e98cfb2427768421f60",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "DATA006",
+   "file": "flexible-graphrag/incremental_updates/detectors/alfresco_detector.py",
+   "line": 740,
+   "fingerprint": "8fb6300158a634414515ceb35466507d",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "flexible-graphrag/incremental_updates/detectors/alfresco_detector.py",
+   "line": 758,
+   "fingerprint": "7a0219220af5db739b1b4fe7d1a238f8",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "flexible-graphrag/incremental_updates/detectors/alfresco_detector.py",
+   "line": 881,
+   "fingerprint": "b1f85f5d141eaefc37066a9d39e24b39",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "flexible-graphrag/incremental_updates/detectors/alfresco_detector.py",
+   "line": 1100,
+   "fingerprint": "4eca6a612be19201cab73419c73d191f",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "flexible-graphrag/incremental_updates/detectors/alfresco_detector.py",
+   "line": 1359,
+   "fingerprint": "c8bae64a5a32c2beeae99a31cca9bdd6",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "flexible-graphrag/incremental_updates/detectors/alfresco_detector.py",
+   "line": 1380,
+   "fingerprint": "02d34a163791ae1d00bcc1df9519d4a8",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "flexible-graphrag/incremental_updates/detectors/alfresco_detector.py",
+   "line": 1395,
+   "fingerprint": "b8bc17548640a0a5bb75eaae35e5a9ee",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "flexible-graphrag/incremental_updates/detectors/alfresco_detector.py",
+   "line": 1416,
+   "fingerprint": "0c470f2006294c533084601b54be9d00",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "flexible-graphrag/incremental_updates/detectors/alfresco_detector.py",
+   "line": 1426,
+   "fingerprint": "47d2f6f639aa24851cb3207facaa7d85",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "flexible-graphrag/incremental_updates/detectors/alfresco_detector.py",
+   "line": 1440,
+   "fingerprint": "6301232f56a0b4d56cdcd6ecb801dba8",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "flexible-graphrag/incremental_updates/detectors/alfresco_detector.py",
+   "line": 1470,
+   "fingerprint": "40b21eb3c8afe22e3d7cf3e27ec8907f",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "flexible-graphrag/incremental_updates/detectors/filesystem_detector.py",
+   "line": 51,
+   "fingerprint": "3a5b6172daac86f0109e37ce36b85a69",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "flexible-graphrag/incremental_updates/detectors/filesystem_detector.py",
+   "line": 60,
+   "fingerprint": "5ac4c141050bd36ba0c8e3a4a3408e5e",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "flexible-graphrag/incremental_updates/detectors/filesystem_detector.py",
+   "line": 73,
+   "fingerprint": "a327dc6145fe0014b0908e5369a09875",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "flexible-graphrag/incremental_updates/detectors/filesystem_detector.py",
+   "line": 91,
+   "fingerprint": "fe7a5c0301d788c45ab4544176d4337b",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "flexible-graphrag/incremental_updates/detectors/filesystem_detector.py",
+   "line": 112,
+   "fingerprint": "9329fdca1f38f3a6a4b38b8da22790ad",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "flexible-graphrag/incremental_updates/detectors/filesystem_detector.py",
+   "line": 369,
+   "fingerprint": "557b34131a4acca4d16e46b90a594eff",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "flexible-graphrag/incremental_updates/detectors/filesystem_detector.py",
+   "line": 440,
+   "fingerprint": "b6039be099fb4fe0c3cc75882b744393",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "flexible-graphrag/incremental_updates/detectors/s3_detector.py",
+   "line": 388,
+   "fingerprint": "e8170d7d0ef8b593aa9fccd87314e77e",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "flexible-graphrag/incremental_updates/detectors/s3_detector.py",
+   "line": 416,
+   "fingerprint": "19225fd2af7813ad3efe90de4476b3b6",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "flexible-graphrag/incremental_updates/detectors/s3_detector.py",
+   "line": 442,
+   "fingerprint": "27ea6de3d50e590f982f316148f00bc1",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "flexible-graphrag/incremental_updates/detectors/s3_detector.py",
+   "line": 464,
+   "fingerprint": "bf58774a13eac7aade6d823fd20a60c2",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "flexible-graphrag/incremental_updates/detectors/s3_detector.py",
+   "line": 469,
+   "fingerprint": "c4664da1cb802e8c10e03b75d3fdd46e",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "flexible-graphrag/incremental_updates/detectors/s3_detector.py",
+   "line": 477,
+   "fingerprint": "d67d2c2538c381c32ad209ac2ec1c0ec",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "flexible-graphrag/incremental_updates/detectors/s3_detector.py",
+   "line": 492,
+   "fingerprint": "bd7605b7c7814d76256d132cda1f9dc8",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "flexible-graphrag/incremental_updates/detectors/s3_detector.py",
+   "line": 524,
+   "fingerprint": "c5fb0289e43fa250e03be36c4b36802a",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "DATA006",
+   "file": "flexible-graphrag/incremental_updates/detectors/s3_detector.py",
+   "line": 534,
+   "fingerprint": "8bac7d7e53b5cd015949e9b47e54be19",
+   "verdict": "tp",
+   "reason": "A naive datetime (utcnow or now without tz) is stored or compared."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/ingest/ingest_from_files.py",
+   "line": 175,
+   "fingerprint": "137a630d2f6804c0913b5ef229702b5f",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/ingest/ingest_from_source.py",
+   "line": 249,
+   "fingerprint": "fcb92c828bc601d3a86f75bba20314ae",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/ingest/ingest_lc_graph.py",
+   "line": 660,
+   "fingerprint": "5f02107b6f0fb374aca84a69135293ce",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/ingest/update_pg_graph.py",
+   "line": 383,
+   "fingerprint": "995659fa33ed0417476acc1cc51139d6",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/ingest/update_pg_graph.py",
+   "line": 388,
+   "fingerprint": "1df58335deb4936436bb5c927fce15f4",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/ingest/update_pg_graph.py",
+   "line": 393,
+   "fingerprint": "4dac7fcb050640342b6784ef755da9dd",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/ingest/update_search.py",
+   "line": 195,
+   "fingerprint": "4f108f0062c9bec77647d0d56834823f",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/ingest/update_search.py",
+   "line": 219,
+   "fingerprint": "008978d564c4423f3eff04ae0765969b",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/ingest/update_search.py",
+   "line": 224,
+   "fingerprint": "886de3ed927af0198ff19979772eb82b",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/ingest/update_vector.py",
+   "line": 160,
+   "fingerprint": "090a59b2c1a6371243e5aa4969dda2de",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/ingest/update_vector.py",
+   "line": 165,
+   "fingerprint": "666bddf73af423b0b6c30cf239b6ea92",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "BE001",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/apache_age_adapter.py",
+   "line": 181,
+   "fingerprint": "a0fd440de73f27209e83f36476d24a9c",
+   "verdict": "tp",
+   "reason": "Labels or ids derived from documents and model output are formatted into the query text."
+  },
+  {
+   "rule": "BE001",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/apache_age_adapter.py",
+   "line": 227,
+   "fingerprint": "b343d7eef6e884243bb33e2f65daf89a",
+   "verdict": "tp",
+   "reason": "Labels or ids derived from documents and model output are formatted into the query text."
+  },
+  {
+   "rule": "LLM006",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/apache_age_adapter.py",
+   "line": 366,
+   "fingerprint": "4a3e5ffc13c2b14e75860a3e7243cacc",
+   "verdict": "tp",
+   "reason": "allow_dangerous_requests=True lets model-written queries run against the graph database."
+  },
+  {
+   "rule": "LLM006",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/arangodb_adapter.py",
+   "line": 81,
+   "fingerprint": "7d11f21c50da9cc9d128308ef189730f",
+   "verdict": "tp",
+   "reason": "allow_dangerous_requests=True lets model-written queries run against the graph database."
+  },
+  {
+   "rule": "LLM006",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/arcadedb_lc_adapter.py",
+   "line": 669,
+   "fingerprint": "05d3896fd3de4933aceeaa838a57dadc",
+   "verdict": "tp",
+   "reason": "allow_dangerous_requests=True lets model-written queries run against the graph database."
+  },
+  {
+   "rule": "QA007",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/cosmos_gremlin_adapter.py",
+   "line": 248,
+   "fingerprint": "999af33fc160a861413c27cd96b8b983",
+   "verdict": "tp",
+   "reason": "Imported but not declared in the project's dependencies."
+  },
+  {
+   "rule": "LLM006",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/cosmos_gremlin_adapter.py",
+   "line": 438,
+   "fingerprint": "fab5a1e8bb95d2449312c04b40cae325",
+   "verdict": "tp",
+   "reason": "allow_dangerous_requests=True lets model-written queries run against the graph database."
+  },
+  {
+   "rule": "LLM006",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/falkordb_adapter.py",
+   "line": 78,
+   "fingerprint": "d7377556a565c772325b4cd44edb98c3",
+   "verdict": "tp",
+   "reason": "allow_dangerous_requests=True lets model-written queries run against the graph database."
+  },
+  {
+   "rule": "LLM006",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/falkordb_adapter.py",
+   "line": 86,
+   "fingerprint": "960baa00f0941b162e3946963a227240",
+   "verdict": "tp",
+   "reason": "allow_dangerous_requests=True lets model-written queries run against the graph database."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/hugegraph_adapter.py",
+   "line": 187,
+   "fingerprint": "2d14993b68114c8ff5c008c90e2e5319",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA007",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/hugegraph_adapter.py",
+   "line": 380,
+   "fingerprint": "07d765afc62564b90b00e5d76b9d8254",
+   "verdict": "tp",
+   "reason": "Imported but not declared in the project's dependencies."
+  },
+  {
+   "rule": "LLM006",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/ladybug_adapter.py",
+   "line": 75,
+   "fingerprint": "8c1372bd0d2be0285c56d6d093932c9d",
+   "verdict": "tp",
+   "reason": "allow_dangerous_requests=True lets model-written queries run against the graph database."
+  },
+  {
+   "rule": "LLM006",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/ladybug_adapter.py",
+   "line": 93,
+   "fingerprint": "d9b4996c62a8df79d61d13d4158e6552",
+   "verdict": "tp",
+   "reason": "allow_dangerous_requests=True lets model-written queries run against the graph database."
+  },
+  {
+   "rule": "BE001",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/ladybug_adapter.py",
+   "line": 133,
+   "fingerprint": "028b7e077c2ce98e4df2cc55ab7672c9",
+   "verdict": "tp",
+   "reason": "Labels or ids derived from documents and model output are formatted into the query text."
+  },
+  {
+   "rule": "BE001",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/ladybug_adapter.py",
+   "line": 189,
+   "fingerprint": "32fa70b8f54d4c7bcfe5e50cf96ca14a",
+   "verdict": "tp",
+   "reason": "Labels or ids derived from documents and model output are formatted into the query text."
+  },
+  {
+   "rule": "BE001",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/ladybug_adapter.py",
+   "line": 197,
+   "fingerprint": "ce8eafb21855763484eb69860f4697c3",
+   "verdict": "tp",
+   "reason": "Labels or ids derived from documents and model output are formatted into the query text."
+  },
+  {
+   "rule": "DATA001",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/ladybug_adapter.py",
+   "line": 197,
+   "fingerprint": "1e479b3e9b86f60cf97c98ec9434572f",
+   "verdict": "tp",
+   "reason": "One database statement per item in the loop."
+  },
+  {
+   "rule": "BE001",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/ladybug_adapter.py",
+   "line": 235,
+   "fingerprint": "f1bd83ae22771488e4c6d8ae440bf1d1",
+   "verdict": "tp",
+   "reason": "Labels or ids derived from documents and model output are formatted into the query text."
+  },
+  {
+   "rule": "DATA001",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/ladybug_adapter.py",
+   "line": 235,
+   "fingerprint": "a7f71931a0ed0fc199715ac3fad90daf",
+   "verdict": "tp",
+   "reason": "One database statement per item in the loop."
+  },
+  {
+   "rule": "BE001",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/ladybug_adapter.py",
+   "line": 258,
+   "fingerprint": "be948a0369a51d0619bd8839838184be",
+   "verdict": "tp",
+   "reason": "Labels or ids derived from documents and model output are formatted into the query text."
+  },
+  {
+   "rule": "DATA001",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/ladybug_adapter.py",
+   "line": 280,
+   "fingerprint": "c952f6103b6063680aafd2724c80012a",
+   "verdict": "tp",
+   "reason": "One database statement per item in the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/ladybug_adapter.py",
+   "line": 295,
+   "fingerprint": "93eb95f40c350dabf5b96397ae433d43",
+   "verdict": "tp",
+   "reason": "One database statement per item in the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/ladybug_adapter.py",
+   "line": 342,
+   "fingerprint": "97a5b45921f73b8ff8bbe499febf9290",
+   "verdict": "tp",
+   "reason": "One database statement per item in the loop."
+  },
+  {
+   "rule": "BE001",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/ladybug_adapter.py",
+   "line": 399,
+   "fingerprint": "1086f6b1cd4f779f59851078099f7254",
+   "verdict": "tp",
+   "reason": "Labels or ids derived from documents and model output are formatted into the query text."
+  },
+  {
+   "rule": "DATA001",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/ladybug_adapter.py",
+   "line": 399,
+   "fingerprint": "ebbf3b3894bf4fa683330e28b68dd4c3",
+   "verdict": "tp",
+   "reason": "One database statement per item in the loop."
+  },
+  {
+   "rule": "LLM006",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/memgraph_adapter.py",
+   "line": 64,
+   "fingerprint": "069ffd176d241c2746343d13da35c50e",
+   "verdict": "tp",
+   "reason": "allow_dangerous_requests=True lets model-written queries run against the graph database."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/nebula_adapter.py",
+   "line": 91,
+   "fingerprint": "b2b0541e0ed12b7a687307049a41530a",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/nebula_adapter.py",
+   "line": 95,
+   "fingerprint": "b26d073b38ac70c4f039924cfd661f3e",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "BE001",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/nebula_adapter.py",
+   "line": 358,
+   "fingerprint": "ad133c3213e2debfc0cd9d39a6ba5ecd",
+   "verdict": "tp",
+   "reason": "Labels or ids derived from documents and model output are formatted into the query text."
+  },
+  {
+   "rule": "LLM006",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/nebula_adapter.py",
+   "line": 409,
+   "fingerprint": "28e8edafc24125c61473326b4e70dae4",
+   "verdict": "tp",
+   "reason": "allow_dangerous_requests=True lets model-written queries run against the graph database."
+  },
+  {
+   "rule": "BE001",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/nebula_adapter.py",
+   "line": 437,
+   "fingerprint": "6007c999e0ddbbfd508211d90216a202",
+   "verdict": "tp",
+   "reason": "Labels or ids derived from documents and model output are formatted into the query text."
+  },
+  {
+   "rule": "BE001",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/nebula_adapter.py",
+   "line": 457,
+   "fingerprint": "7f4a44e2ac601878ecaa239d53d76a91",
+   "verdict": "tp",
+   "reason": "Labels or ids derived from documents and model output are formatted into the query text."
+  },
+  {
+   "rule": "LLM006",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/neo4j_adapter.py",
+   "line": 97,
+   "fingerprint": "92b752d45324863841370c0e37445fc9",
+   "verdict": "tp",
+   "reason": "allow_dangerous_requests=True lets model-written queries run against the graph database."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/neo4j_adapter.py",
+   "line": 112,
+   "fingerprint": "094c4affb0cbc30a4e7295a70c8906c4",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "LLM006",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/neptune_pg_adapter.py",
+   "line": 189,
+   "fingerprint": "01bd9926d3b29c5d1fb02433bf43d746",
+   "verdict": "tp",
+   "reason": "allow_dangerous_requests=True lets model-written queries run against the graph database."
+  },
+  {
+   "rule": "LLM006",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/neptune_pg_adapter.py",
+   "line": 255,
+   "fingerprint": "4be5b2a807e72d7a7ff4a85d95608f21",
+   "verdict": "tp",
+   "reason": "allow_dangerous_requests=True lets model-written queries run against the graph database."
+  },
+  {
+   "rule": "LLM006",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/spanner_adapter.py",
+   "line": 70,
+   "fingerprint": "3b346940cc4b0a4942cbde4676adf9c1",
+   "verdict": "tp",
+   "reason": "allow_dangerous_requests=True lets model-written queries run against the graph database."
+  },
+  {
+   "rule": "LLM006",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/surrealdb_adapter.py",
+   "line": 199,
+   "fingerprint": "6b43beba2a507c47d52c16d045cf6b0b",
+   "verdict": "tp",
+   "reason": "allow_dangerous_requests=True lets model-written queries run against the graph database."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/tigergraph_adapter.py",
+   "line": 360,
+   "fingerprint": "c65da05c5fed1bf0f3efcb8182a6f5ff",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA005",
+   "file": "flexible-graphrag/langchain/graph/rdf_store_adapters/fuseki_langchain_adapter.py",
+   "line": 204,
+   "fingerprint": "839a6753b7659cbbe13491ce02da87c7",
+   "verdict": "fp",
+   "reason": "An adapter method that deliberately reports an unsupported operation."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/langchain/graph/rdf_store_adapters/fuseki_langchain_adapter.py",
+   "line": 234,
+   "fingerprint": "d0d14c406116a740e2f0d8e30e8ca24c",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "LLM006",
+   "file": "flexible-graphrag/langchain/graph/rdf_store_adapters/fuseki_langchain_adapter.py",
+   "line": 256,
+   "fingerprint": "342c9cc9282f4f73e377581cbcc9b343",
+   "verdict": "tp",
+   "reason": "allow_dangerous_requests=True lets model-written queries run against the graph database."
+  },
+  {
+   "rule": "LLM006",
+   "file": "flexible-graphrag/langchain/graph/rdf_store_adapters/graphdb_langchain_adapter.py",
+   "line": 390,
+   "fingerprint": "f27b059ebb6edb8c3352298d615f1b1e",
+   "verdict": "tp",
+   "reason": "allow_dangerous_requests=True lets model-written queries run against the graph database."
+  },
+  {
+   "rule": "REL001",
+   "file": "flexible-graphrag/langchain/graph/rdf_store_adapters/neptune_rdf_adapter.py",
+   "line": 393,
+   "fingerprint": "316b8e2a9f1e9b0c0c6c319b518b85ac",
+   "verdict": "tp",
+   "reason": "The requests call has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "flexible-graphrag/langchain/graph/rdf_store_adapters/neptune_rdf_adapter.py",
+   "line": 412,
+   "fingerprint": "554a351d3c2df59fe03376af2857fdb5",
+   "verdict": "tp",
+   "reason": "The requests call has no timeout."
+  },
+  {
+   "rule": "LLM006",
+   "file": "flexible-graphrag/langchain/graph/rdf_store_adapters/neptune_rdf_adapter.py",
+   "line": 548,
+   "fingerprint": "45b32b71992ed9b8f7496fa6bc5b932a",
+   "verdict": "tp",
+   "reason": "allow_dangerous_requests=True lets model-written queries run against the graph database."
+  },
+  {
+   "rule": "QA005",
+   "file": "flexible-graphrag/langchain/graph/rdf_store_adapters/oxigraph_langchain_adapter.py",
+   "line": 91,
+   "fingerprint": "e355f4c43fe2a9d3644e450c55717c04",
+   "verdict": "fp",
+   "reason": "An adapter method that deliberately reports an unsupported operation."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/langchain/graph/rdf_store_adapters/oxigraph_langchain_adapter.py",
+   "line": 121,
+   "fingerprint": "12762a6bc79136374c9b4114ab05ca0e",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "LLM006",
+   "file": "flexible-graphrag/langchain/graph/rdf_store_adapters/oxigraph_langchain_adapter.py",
+   "line": 143,
+   "fingerprint": "eb7113e4e7fc0c3dcf6290c9d56451d7",
+   "verdict": "tp",
+   "reason": "allow_dangerous_requests=True lets model-written queries run against the graph database."
+  },
+  {
+   "rule": "LLM006",
+   "file": "flexible-graphrag/langchain/graph/retrievers/chains/_cypher.py",
+   "line": 426,
+   "fingerprint": "02b50cf5f963b99cdcaba29a1cb14f64",
+   "verdict": "tp",
+   "reason": "allow_dangerous_requests=True lets model-written queries run against the graph database."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/langchain/graph/retrievers/chains/_cypher.py",
+   "line": 520,
+   "fingerprint": "0aa2d0c161632bb14da84079f1b83a16",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "LLM006",
+   "file": "flexible-graphrag/langchain/graph/retrievers/chains/_cypher.py",
+   "line": 1001,
+   "fingerprint": "785ee63abfad358287a2fe5f44a87750",
+   "verdict": "tp",
+   "reason": "allow_dangerous_requests=True lets model-written queries run against the graph database."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/langchain/graph/retrievers/chains/_gsql.py",
+   "line": 22,
+   "fingerprint": "092aaf6232756bea10360630b0b7c5f0",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/langchain/graph/retrievers/chains/_gsql.py",
+   "line": 117,
+   "fingerprint": "9033accbf4f3b5951f7a1c58f8771d86",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/langchain/graph/retrievers/chains/_hugegraph.py",
+   "line": 135,
+   "fingerprint": "4d259e793b5ec7b265e159efa6e85d2b",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/langchain/graph/retrievers/chains/_hugegraph.py",
+   "line": 145,
+   "fingerprint": "6b1b633079a93a9be5cd54727f0a7978",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/langchain/graph/retrievers/chains/_hugegraph.py",
+   "line": 198,
+   "fingerprint": "277f159fbc96117ec35a76a7ab1756c3",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "LLM006",
+   "file": "flexible-graphrag/langchain/graph/retrievers/chains/_sparql.py",
+   "line": 451,
+   "fingerprint": "6aea121d3ce99471304b6500e56c0e43",
+   "verdict": "tp",
+   "reason": "allow_dangerous_requests=True lets model-written queries run against the graph database."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/langchain/graph/retrievers/chains/_sparql.py",
+   "line": 463,
+   "fingerprint": "02328454efd4d0644e541c8d6f815e54",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/langchain/graph/retrievers/chains/_surql.py",
+   "line": 73,
+   "fingerprint": "354099fe256cf51bd4bb35659d83cfba",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "LLM006",
+   "file": "flexible-graphrag/langchain/graph/retrievers/lc_graph_retriever.py",
+   "line": 101,
+   "fingerprint": "6ab289aab671b87abc3f1644548ca643",
+   "verdict": "tp",
+   "reason": "allow_dangerous_requests=True lets model-written queries run against the graph database."
+  },
+  {
+   "rule": "LLM003",
+   "file": "flexible-graphrag/langchain/llm/llm_factory.py",
+   "line": 169,
+   "fingerprint": "21c81f2883dfcbccefd6c4cedcee7f78",
+   "verdict": "tp",
+   "reason": "ChatOpenAI is created without max_tokens."
+  },
+  {
+   "rule": "LLM003",
+   "file": "flexible-graphrag/langchain/llm/llm_factory.py",
+   "line": 199,
+   "fingerprint": "919f6719fca83779e0ae411e7bfe945f",
+   "verdict": "tp",
+   "reason": "ChatOpenAI is created without max_tokens."
+  },
+  {
+   "rule": "LLM003",
+   "file": "flexible-graphrag/langchain/llm/llm_factory.py",
+   "line": 221,
+   "fingerprint": "f699481ab3a78edc5732108fad17a5d5",
+   "verdict": "tp",
+   "reason": "ChatOpenAI is created without max_tokens."
+  },
+  {
+   "rule": "LLM003",
+   "file": "flexible-graphrag/langchain/llm/llm_factory.py",
+   "line": 226,
+   "fingerprint": "58cd515d6dd03ceb502b32caf764d435",
+   "verdict": "tp",
+   "reason": "ChatOpenAI is created without max_tokens."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/langchain/process/chunker_adapter.py",
+   "line": 202,
+   "fingerprint": "7aa07ce718a69a8b185aeaad4c30f8f1",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/langchain/vector/adapters/chroma_adapter.py",
+   "line": 106,
+   "fingerprint": "b0574c87248c36e8592a09b1818e2c86",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/langchain/vector/adapters/milvus_adapter.py",
+   "line": 231,
+   "fingerprint": "cbbf239f4b4b4fca9337e681ea071160",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/langchain/vector/adapters/neo4j_adapter.py",
+   "line": 110,
+   "fingerprint": "1a1d6f07a6eb54d5b5325738745b441f",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/langchain/vector/adapters/neo4j_adapter.py",
+   "line": 135,
+   "fingerprint": "bc6bf0720360cfa0950b931df4e6b824",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/langchain/vector/adapters/postgres_adapter.py",
+   "line": 81,
+   "fingerprint": "696ebe22dde5c88bed1b7fbc52927105",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/langchain/vector/adapters/qdrant_adapter.py",
+   "line": 39,
+   "fingerprint": "2a593738e53fc684a695253c07b8c342",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/langchain/vector/adapters/weaviate_adapter.py",
+   "line": 236,
+   "fingerprint": "076516c0dedd7646282c8110ab827c99",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/langchain/vector/vector_store_adapter.py",
+   "line": 88,
+   "fingerprint": "1b5e6fac4e13b7162ceddb0ae52d06d3",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/langflow_components/flexible_graphrag/_fg_shared.py",
+   "line": 56,
+   "fingerprint": "6618e530b97519a505cecfe3826cef47",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/langflow_components/flexible_graphrag/_fg_shared.py",
+   "line": 103,
+   "fingerprint": "692d68845ef04ff5f11b2070da29b81c",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA007",
+   "file": "flexible-graphrag/langflow_components/generate_flows.py",
+   "line": 28,
+   "fingerprint": "1e84bb832ec6950ce41a59714aea1e67",
+   "verdict": "tp",
+   "reason": "Imported but not declared in the project's dependencies."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/llamaindex/graph/adapters/falkordb_param_patch.py",
+   "line": 85,
+   "fingerprint": "a0264b0d58159d3cb533dc09aa053ac3",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/llamaindex/graph/adapters/nebula_adapter.py",
+   "line": 80,
+   "fingerprint": "9c366c48a1c36a070a8f5a7686b7cda9",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/llamaindex/graph/adapters/nebula_adapter.py",
+   "line": 196,
+   "fingerprint": "3685429f22af89ca59f771147f9b8562",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/llamaindex/llm/llm_factory.py",
+   "line": 68,
+   "fingerprint": "d8bd56a67cbc8068adad6677d06148d4",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/main.py",
+   "line": 167,
+   "fingerprint": "4ec6cd588b886f259eb713d6957fc236",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/main.py",
+   "line": 169,
+   "fingerprint": "9b5a291e5b0c21ef473670d2a2efa1a9",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/main.py",
+   "line": 193,
+   "fingerprint": "25a5ce4b2e01cf3a2c61db998489e7b3",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/main.py",
+   "line": 229,
+   "fingerprint": "94a6f75eb358af007208e224552d376b",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/main.py",
+   "line": 277,
+   "fingerprint": "fbd253cd16a0e98fa8f04af1071a2858",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/main.py",
+   "line": 279,
+   "fingerprint": "5632f425387f7da2a8399620fad72834",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/main.py",
+   "line": 315,
+   "fingerprint": "ac71b7889faa905116b8a85cb0a7140a",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/main.py",
+   "line": 355,
+   "fingerprint": "b3d018ded510100e19a33428376b2247",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/main.py",
+   "line": 361,
+   "fingerprint": "34e69e2db67c396da3d80287c4d2d177",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/main.py",
+   "line": 381,
+   "fingerprint": "979af8c197fc23f6710b2584e06e6ddb",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/main.py",
+   "line": 412,
+   "fingerprint": "e0e409c3026377a4604f99a61a222494",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/main.py",
+   "line": 437,
+   "fingerprint": "f3725575358d36df5655b533bb4bd121",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "BE012",
+   "file": "flexible-graphrag/main.py",
+   "line": 828,
+   "fingerprint": "4d8de924d59a759f0591dc7c0807daa3",
+   "verdict": "tp",
+   "reason": "CORS allows any origin together with credentials."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/main.py",
+   "line": 1245,
+   "fingerprint": "c89fd2ccedd13641202ebef9f48ec883",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/main.py",
+   "line": 1826,
+   "fingerprint": "e5d40432792fd3b939130bd71769446a",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "BE006",
+   "file": "flexible-graphrag/main.py",
+   "line": 2109,
+   "fingerprint": "1886b231e0b83b5b8ab39d036fd1fad8",
+   "verdict": "fp",
+   "reason": "The path is rejected just above when it resolves outside the upload directory."
+  },
+  {
+   "rule": "BE017",
+   "file": "flexible-graphrag/main.py",
+   "line": 2489,
+   "fingerprint": "e590b38406b0761d9c57c8d5f8a8c7a6",
+   "verdict": "tp",
+   "reason": "str(e) is returned to the client."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/main.py",
+   "line": 2559,
+   "fingerprint": "ce2e996b5cb68498be622b4076a3f151",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "BE017",
+   "file": "flexible-graphrag/main.py",
+   "line": 2643,
+   "fingerprint": "60ea9efae389bd12b14f2cc413515b35",
+   "verdict": "tp",
+   "reason": "str(e) is returned to the client."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "flexible-graphrag/main.py",
+   "line": 2835,
+   "fingerprint": "f9dfa8693bde0f5866c9ab37791604c2",
+   "verdict": "tp",
+   "reason": "The API has no authentication; the route changes scheduler or store state."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "flexible-graphrag/main.py",
+   "line": 2954,
+   "fingerprint": "ff7282cc9256fcbd8772504423a62468",
+   "verdict": "tp",
+   "reason": "The API has no authentication; the route changes scheduler or store state."
+  },
+  {
+   "rule": "DATA001",
+   "file": "flexible-graphrag/main.py",
+   "line": 2979,
+   "fingerprint": "ec10a13610fc034e0c1d31682a60f385",
+   "verdict": "tp",
+   "reason": "One database statement per item in the loop."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "flexible-graphrag/main.py",
+   "line": 3000,
+   "fingerprint": "fec078691956ed9e1e21366d72bf6412",
+   "verdict": "tp",
+   "reason": "The API has no authentication; the route changes scheduler or store state."
+  },
+  {
+   "rule": "DATA001",
+   "file": "flexible-graphrag/main.py",
+   "line": 3028,
+   "fingerprint": "8bcf1c3b574109e97982e22916422a2b",
+   "verdict": "tp",
+   "reason": "One database statement per item in the loop."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "flexible-graphrag/main.py",
+   "line": 3135,
+   "fingerprint": "d914067d8b4e2a19fc1051ccdfd7a264",
+   "verdict": "tp",
+   "reason": "The API has no authentication; the route changes scheduler or store state."
+  },
+  {
+   "rule": "DATA001",
+   "file": "flexible-graphrag/main.py",
+   "line": 3186,
+   "fingerprint": "9d8245fe1643053eda4233fae2f93bc0",
+   "verdict": "tp",
+   "reason": "One database statement per item in the loop."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "flexible-graphrag/main.py",
+   "line": 3215,
+   "fingerprint": "036f28bdb5a128099d50845b73e769fb",
+   "verdict": "tp",
+   "reason": "The API has no authentication; the route changes scheduler or store state."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "flexible-graphrag/main.py",
+   "line": 3241,
+   "fingerprint": "3f9a61afccd8d68129824caa3eb4c24c",
+   "verdict": "tp",
+   "reason": "The API has no authentication; the route changes scheduler or store state."
+  },
+  {
+   "rule": "SEC003",
+   "file": "flexible-graphrag/observability/telemetry_openlit.py",
+   "line": 130,
+   "fingerprint": "5f353f991560e797b089df4874b850a1",
+   "verdict": "fp",
+   "reason": "A metric or navigation label, not a secret."
+  },
+  {
+   "rule": "SEC003",
+   "file": "flexible-graphrag/observability/telemetry_openlit.py",
+   "line": 131,
+   "fingerprint": "a28eed1b39ce66ce5798867f9899c5a5",
+   "verdict": "fp",
+   "reason": "A metric or navigation label, not a secret."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/post_ingestion_state.py",
+   "line": 446,
+   "fingerprint": "2d579b0273a94a368da0c717eb52229b",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/process/kg_extractor.py",
+   "line": 263,
+   "fingerprint": "015616919b536d74baa1bbae59e76851",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/process/kg_extractor.py",
+   "line": 270,
+   "fingerprint": "a89513b65662f49d7b810cfb6fad6e7b",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/process/kg_extractor.py",
+   "line": 276,
+   "fingerprint": "84eb4d81f924b485d35bb6151fd69b37",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "BE014",
+   "file": "flexible-graphrag/query_engine.py",
+   "line": 48,
+   "fingerprint": "e517fc40e2fd214cdd62f84be43228c3",
+   "verdict": "fp",
+   "reason": "sha256 of query text for a cache key, not a password."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "flexible-graphrag/rdf/api_rdf_enhancements.py",
+   "line": 143,
+   "fingerprint": "f323431e234300c2037b4319cff00670",
+   "verdict": "tp",
+   "reason": "The API has no authentication; the route changes scheduler or store state."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "flexible-graphrag/rdf/api_rdf_enhancements.py",
+   "line": 184,
+   "fingerprint": "aa3c96dd4c9b0379f8f435596e901cc5",
+   "verdict": "tp",
+   "reason": "The API has no authentication; the route changes scheduler or store state."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/rdf/kg_to_rdf_converter.py",
+   "line": 176,
+   "fingerprint": "0d882c39bfa78fed6699dd8f90dcc3bc",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA005",
+   "file": "flexible-graphrag/rdf/unified_query_engine.py",
+   "line": 150,
+   "fingerprint": "2a76cb90c793ea29a9473d1498e6fb3e",
+   "verdict": "fp",
+   "reason": "An adapter method that deliberately reports an unsupported operation."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/sources/cmis.py",
+   "line": 231,
+   "fingerprint": "7d69a2ce2966155f9914fc0d0d86d889",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/sources/cmis.py",
+   "line": 312,
+   "fingerprint": "eea30528d9d461eae245045297654678",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/sources/sharepoint.py",
+   "line": 448,
+   "fingerprint": "0d9092561b3088b5ca4656eb01f31287",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA007",
+   "file": "flexible-graphrag/sources/web.py",
+   "line": 76,
+   "fingerprint": "1c787798b08ba545498da5c1c41370b5",
+   "verdict": "tp",
+   "reason": "Imported but not declared in the project's dependencies."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/ssl_compat.py",
+   "line": 80,
+   "fingerprint": "98e18702a649ac1cebb963cf46318427",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/stores/rdf_manager.py",
+   "line": 44,
+   "fingerprint": "2cf6fa3ac0326eb52aae9a6ee516c5ce",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "flexible-graphrag/stores/rdf_manager.py",
+   "line": 105,
+   "fingerprint": "a8df8212a2bbbb75e7a8df7fe841a90d",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "SEC004",
+   "file": "scripts/alfresco/get-user-token.py",
+   "line": 27,
+   "fingerprint": "c56b8deeea07150a1854a9ce3560f621",
+   "verdict": "fp",
+   "reason": "A local-dev default for a Keycloak client secret in a helper script."
+  },
+  {
+   "rule": "QA003",
+   "file": "scripts/cleanup.py",
+   "line": 945,
+   "fingerprint": "5a6eebdb133c1fd907454190fbc350b6",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "scripts/cleanup.py",
+   "line": 965,
+   "fingerprint": "fd936af4ab4f5143e524da2b5d944390",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "scripts/cleanup.py",
+   "line": 1297,
+   "fingerprint": "756b196f061923e1b66fa3d6088a7bf9",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "scripts/cleanup.py",
+   "line": 1449,
+   "fingerprint": "74ba14111181e2163d9c2732c859a872",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "scripts/cleanup.py",
+   "line": 1482,
+   "fingerprint": "db39275a11e757baf4d86a7fa67b4396",
+   "verdict": "tp",
+   "reason": "A broad or bare except with only pass and no comment, in application code."
+  },
+  {
+   "rule": "SEC004",
+   "file": "scripts/mcp/get-transport-token.py",
+   "line": 31,
+   "fingerprint": "6243b5835025dd0ed4a9855ff2af35c3",
+   "verdict": "fp",
+   "reason": "A local-dev default for a Keycloak client secret in a helper script."
+  },
+  {
+   "rule": "SEC010",
+   "file": "scripts/nuxeo/nuxeo_oauth2_headless.py",
+   "line": 58,
+   "fingerprint": "a3aa8c8ff3e997c4d559903622a58fcb",
+   "verdict": "fp",
+   "reason": "A CLI helper whose purpose is to print the token it obtained."
+  },
+  {
+   "rule": "SEC010",
+   "file": "scripts/nuxeo/nuxeo_oauth2_headless.py",
+   "line": 59,
+   "fingerprint": "5ffb4e1fb938801e4f5e4c27e377c6c8",
+   "verdict": "fp",
+   "reason": "A CLI helper whose purpose is to print the token it obtained."
+  },
+  {
+   "rule": "SEC010",
+   "file": "scripts/nuxeo/nuxeo_oauth2_headless.py",
+   "line": 60,
+   "fingerprint": "a029e629958ae7d6edc3535ad80735a4",
+   "verdict": "fp",
+   "reason": "A CLI helper whose purpose is to print the token it obtained."
+  },
+  {
+   "rule": "SEC010",
+   "file": "scripts/nuxeo/nuxeo_oauth2_token.py",
+   "line": 84,
+   "fingerprint": "0d0fc6133f70a3ce926bb0fde66d4e75",
+   "verdict": "fp",
+   "reason": "A CLI helper whose purpose is to print the token it obtained."
+  },
+  {
+   "rule": "SEC010",
+   "file": "scripts/nuxeo/nuxeo_oauth2_token.py",
+   "line": 85,
+   "fingerprint": "59e29d9f665cf9a0c51c0e8201c50879",
+   "verdict": "fp",
+   "reason": "A CLI helper whose purpose is to print the token it obtained."
+  },
+  {
+   "rule": "SEC010",
+   "file": "scripts/nuxeo/nuxeo_oauth2_token.py",
+   "line": 86,
+   "fingerprint": "e12fecac4d0b81d27b6ac6a58f49a49c",
+   "verdict": "fp",
+   "reason": "A CLI helper whose purpose is to print the token it obtained."
+  },
+  {
+   "rule": "QA007",
+   "file": "scripts/patch_langchain_age.py",
+   "line": 66,
+   "fingerprint": "3246da0bca8df9af2b407a8955dba5a1",
+   "verdict": "tp",
+   "reason": "Imported but not declared in the project's dependencies."
+  },
+  {
+   "rule": "SEC003",
+   "file": "zensical.toml",
+   "line": 140,
+   "fingerprint": "0c1c63bc8cfb4c19bb7ba3387fb020b6",
+   "verdict": "fp",
+   "reason": "A metric or navigation label, not a secret."
+  }
+ ]
+}

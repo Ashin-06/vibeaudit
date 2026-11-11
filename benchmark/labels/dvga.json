@@ -1,0 +1,214 @@
+{
+ "repo": "dvga",
+ "commit": "a961308c02d1fb462b192681c336b0739e432da7",
+ "findings": [
+  {
+   "rule": "REL006",
+   "file": "Dockerfile",
+   "line": 1,
+   "fingerprint": "42c1ded61b330f1719db9f78e604d734",
+   "verdict": "tp",
+   "reason": "The service has a Dockerfile, 12 routes and no health route."
+  },
+  {
+   "rule": "SEC004",
+   "file": "app.py",
+   "line": 14,
+   "fingerprint": "50f80846288c20568b95d113cf68dcca",
+   "verdict": "tp",
+   "reason": "The Flask and JWT secrets are hard-coded."
+  },
+  {
+   "rule": "SEC004",
+   "file": "app.py",
+   "line": 15,
+   "fingerprint": "8990304361e51282275b49d0db5a5b38",
+   "verdict": "tp",
+   "reason": "The Flask and JWT secrets are hard-coded."
+  },
+  {
+   "rule": "BE002",
+   "file": "core/helpers.py",
+   "line": 9,
+   "fingerprint": "48b006c6fd3dff66afb7d1edceca8f98",
+   "verdict": "tp",
+   "reason": "run_cmd passes its argument to os.popen; callers hand it request input."
+  },
+  {
+   "rule": "SEC011",
+   "file": "core/models.py",
+   "line": 27,
+   "fingerprint": "48c1c0096de62ef852d8098f68222f46",
+   "verdict": "fp",
+   "reason": "A regex that masks passwords in a logged query, not a password."
+  },
+  {
+   "rule": "BE014",
+   "file": "core/security.py",
+   "line": 52,
+   "fingerprint": "ef92052f3851329fd57223a95ad837b4",
+   "verdict": "tp",
+   "reason": "The password is compared in plaintext."
+  },
+  {
+   "rule": "SEC011",
+   "file": "setup.py",
+   "line": 64,
+   "fingerprint": "44a56e04668b53612fa9e57045afb653",
+   "verdict": "fp",
+   "reason": "Seed users created by the training app's setup script."
+  },
+  {
+   "rule": "UI016",
+   "file": "static/bootstrap/css/bootstrap-reboot.css",
+   "line": 36,
+   "fingerprint": "d274d7924ffd676bc1a298c5d52acaf2",
+   "verdict": "fp",
+   "reason": "Vendored Bootstrap and jQuery files, not application code."
+  },
+  {
+   "rule": "UI016",
+   "file": "static/bootstrap/css/bootstrap.css",
+   "line": 66,
+   "fingerprint": "6c8c98a5ef4ea438cb50ad48267226f5",
+   "verdict": "fp",
+   "reason": "Vendored Bootstrap and jQuery files, not application code."
+  },
+  {
+   "rule": "UI016",
+   "file": "static/bootstrap/css/bootstrap.css",
+   "line": 4050,
+   "fingerprint": "2260cf1b093ad4f84d1266d76b71381f",
+   "verdict": "fp",
+   "reason": "Vendored Bootstrap and jQuery files, not application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "static/bootstrap/js/bootstrap.bundle.js",
+   "line": 1984,
+   "fingerprint": "50a40e97da317613a9ecebbda7aca348",
+   "verdict": "fp",
+   "reason": "Vendored Bootstrap and jQuery files, not application code."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/jquery/jquery.js",
+   "line": 1328,
+   "fingerprint": "6292ae4346ae152e19391ea7cd067d9a",
+   "verdict": "fp",
+   "reason": "Vendored Bootstrap and jQuery files, not application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "static/jquery/jquery.js",
+   "line": 4438,
+   "fingerprint": "3f2bbc28346469e4999c3accfac9de67",
+   "verdict": "fp",
+   "reason": "Vendored Bootstrap and jQuery files, not application code."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/jquery/jquery.js",
+   "line": 5032,
+   "fingerprint": "4063277efbaf4a19ee4829dabeeccacf",
+   "verdict": "fp",
+   "reason": "Vendored Bootstrap and jQuery files, not application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "static/jquery/jquery.js",
+   "line": 5121,
+   "fingerprint": "3f7ab806032dbc5224f67346bbc2d9ea",
+   "verdict": "fp",
+   "reason": "Vendored Bootstrap and jQuery files, not application code."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/jquery/jquery.js",
+   "line": 6347,
+   "fingerprint": "f8ee32ea7abc42643d7b95e7534b0f1d",
+   "verdict": "fp",
+   "reason": "Vendored Bootstrap and jQuery files, not application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "static/jquery/jquery.js",
+   "line": 6354,
+   "fingerprint": "3ac4674f2b465022e1b0e94c662bde25",
+   "verdict": "fp",
+   "reason": "Vendored Bootstrap and jQuery files, not application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "static/jquery/jquery.js",
+   "line": 9960,
+   "fingerprint": "fb7a94c0660076e7e318170ae4873a67",
+   "verdict": "fp",
+   "reason": "Vendored Bootstrap and jQuery files, not application code."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/jquery/jquery.slim.js",
+   "line": 1328,
+   "fingerprint": "497813219510c951ff9f39cd4f139827",
+   "verdict": "fp",
+   "reason": "Vendored Bootstrap and jQuery files, not application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "static/jquery/jquery.slim.js",
+   "line": 4438,
+   "fingerprint": "a26eb3f5c6d4cbb1611e56893991997b",
+   "verdict": "fp",
+   "reason": "Vendored Bootstrap and jQuery files, not application code."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/jquery/jquery.slim.js",
+   "line": 5032,
+   "fingerprint": "4b2054e65dd89f1baca6b2c769cac68e",
+   "verdict": "fp",
+   "reason": "Vendored Bootstrap and jQuery files, not application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "static/jquery/jquery.slim.js",
+   "line": 5121,
+   "fingerprint": "8de014c8c68572f40f19b9df1742f1b2",
+   "verdict": "fp",
+   "reason": "Vendored Bootstrap and jQuery files, not application code."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/jquery/jquery.slim.js",
+   "line": 6347,
+   "fingerprint": "420fc731cbe10b506d14614dbb35f469",
+   "verdict": "fp",
+   "reason": "Vendored Bootstrap and jQuery files, not application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "static/jquery/jquery.slim.js",
+   "line": 6354,
+   "fingerprint": "feefaa921c1378f725c72019e7dd2c2f",
+   "verdict": "fp",
+   "reason": "Vendored Bootstrap and jQuery files, not application code."
+  },
+  {
+   "rule": "UI001",
+   "file": "templates/partials/sidebar.html",
+   "line": 2,
+   "fingerprint": "dfafdf1c4a9412caae73a7421ca88477",
+   "verdict": "tp",
+   "reason": "The img has no alt attribute."
+  },
+  {
+   "rule": "FE007",
+   "file": "templates/partials/solutions/solution_11.html",
+   "line": 8,
+   "fingerprint": "7db54300877094541c5010a99f130dd7",
+   "verdict": "fp",
+   "reason": "A link in the written solution text of the training app."
+  }
+ ]
+}

@@ -1,17 +1,21 @@
 {
  "tool": "vibeaudit benchmark",
- "corpus": 40,
- "scanned": 40,
+ "corpus": 53,
+ "scanned": 53,
  "skipped": {},
  "heldout": [
   "careconnect",
+  "damn-vulnerable-llm-agent",
+  "dvpwa",
   "flasky",
   "langchain-nextjs-template",
+  "nodejs-whisper",
   "openai-assistants-quickstart",
   "podinfo",
   "saas-starter",
   "terragoat",
-  "thynk"
+  "thynk",
+  "waline"
  ],
  "repos": {
   "act-solo-ai": {
@@ -148,18 +152,18 @@
    "fixed_fp": 3
   },
   "djangoproject.com": {
-   "findings": 27,
-   "labelled": 27,
+   "findings": 26,
+   "labelled": 26,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 62
+   "fixed_fp": 63
   },
   "express": {
-   "findings": 1,
-   "labelled": 1,
+   "findings": 0,
+   "labelled": 0,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 9
+   "fixed_fp": 10
   },
   "flask": {
    "findings": 2,
@@ -293,6 +297,97 @@
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
+  },
+  "adx-mcp-server": {
+   "findings": 13,
+   "labelled": 13,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "alerta": {
+   "findings": 80,
+   "labelled": 80,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 35
+  },
+  "damn-vulnerable-llm-agent": {
+   "findings": 8,
+   "labelled": 8,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "dvga": {
+   "findings": 9,
+   "labelled": 9,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 17
+  },
+  "dvna": {
+   "findings": 19,
+   "labelled": 19,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "dvpwa": {
+   "findings": 8,
+   "labelled": 8,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 4
+  },
+  "flexible-graphrag": {
+   "findings": 256,
+   "labelled": 256,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 8
+  },
+  "nodegoat": {
+   "findings": 14,
+   "labelled": 14,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 3
+  },
+  "nodejs-whisper": {
+   "findings": 1,
+   "labelled": 1,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "pygoat": {
+   "findings": 176,
+   "labelled": 176,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "vibe-trading": {
+   "findings": 58,
+   "labelled": 58,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "waline": {
+   "findings": 80,
+   "labelled": 80,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "wsgidav": {
+   "findings": 36,
+   "labelled": 36,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 1
   }
  },
  "rules": {
@@ -347,12 +442,12 @@
   "AUTH001": {
    "title": "State-changing endpoint without authentication",
    "preview": false,
-   "tp": 32,
-   "fp": 0,
+   "tp": 41,
+   "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.9762,
+   "precision_pessimistic": 0.9762,
    "seeded_expected": 7,
    "seeded_found": 7,
    "seeded_recall": 1.0,
@@ -374,6 +469,16 @@
     ],
     "chatbot-ui": [
      1,
+     0,
+     0
+    ],
+    "dvna": [
+     0,
+     1,
+     0
+    ],
+    "flexible-graphrag": [
+     8,
      0,
      0
     ],
@@ -402,6 +507,11 @@
      0,
      0
     ],
+    "pygoat": [
+     1,
+     0,
+     0
+    ],
     "scriptforge-ai": [
      3,
      0,
@@ -422,22 +532,28 @@
   "AUTH002": {
    "title": "Admin endpoint without a role check",
    "preview": false,
-   "tp": 0,
+   "tp": 2,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "dvna": [
+     2,
+     0,
+     0
+    ]
+   }
   },
   "AUTH003": {
    "title": "Possible insecure direct object reference (IDOR)",
    "preview": false,
    "tp": 0,
-   "fp": 2,
+   "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
    "precision": 0.0,
@@ -454,6 +570,11 @@
     "node-express-realworld-example-app": [
      0,
      1,
+     0
+    ],
+    "vibe-trading": [
+     0,
+     2,
      0
     ]
    }
@@ -546,7 +667,7 @@
    "title": "Auth check stub always succeeds",
    "preview": false,
    "tp": 0,
-   "fp": 1,
+   "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
    "precision": 0.0,
@@ -559,30 +680,35 @@
      0,
      1,
      0
+    ],
+    "wsgidav": [
+     0,
+     3,
+     0
     ]
    }
   },
   "AUTH009": {
    "title": "CSRF protection disabled",
    "preview": false,
-   "tp": 0,
-   "fp": 2,
+   "tp": 3,
+   "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.0,
-   "precision_pessimistic": 0.0,
+   "precision": 0.75,
+   "precision_pessimistic": 0.75,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
-    "djangoproject.com": [
+    "flasky": [
      0,
      1,
      0
     ],
-    "flasky": [
+    "pygoat": [
+     3,
      0,
-     1,
      0
     ]
    }
@@ -590,7 +716,7 @@
   "AUTH010": {
    "title": "Login endpoint without rate limiting",
    "preview": false,
-   "tp": 11,
+   "tp": 12,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -606,6 +732,11 @@
      0
     ],
     "chatgpt-your-files": [
+     1,
+     0,
+     0
+    ],
+    "dvna": [
      1,
      0,
      0
@@ -691,12 +822,12 @@
   "BE001": {
    "title": "SQL injection",
    "preview": false,
-   "tp": 1,
-   "fp": 0,
+   "tp": 25,
+   "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.9259,
+   "precision_pessimistic": 0.9259,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -705,18 +836,53 @@
      1,
      0,
      0
+    ],
+    "damn-vulnerable-llm-agent": [
+     2,
+     0,
+     0
+    ],
+    "dvna": [
+     1,
+     0,
+     0
+    ],
+    "dvpwa": [
+     1,
+     0,
+     0
+    ],
+    "flexible-graphrag": [
+     11,
+     1,
+     0
+    ],
+    "pygoat": [
+     1,
+     0,
+     0
+    ],
+    "waline": [
+     0,
+     1,
+     0
+    ],
+    "wsgidav": [
+     8,
+     0,
+     0
     ]
    }
   },
   "BE002": {
    "title": "Command injection",
-   "preview": false,
-   "tp": 0,
-   "fp": 3,
+   "preview": true,
+   "tp": 4,
+   "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.0,
-   "precision_pessimistic": 0.0,
+   "precision": 0.5,
+   "precision_pessimistic": 0.5,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -724,6 +890,16 @@
     "djangoproject.com": [
      0,
      1,
+     0
+    ],
+    "dvga": [
+     1,
+     0,
+     0
+    ],
+    "dvna": [
+     1,
+     0,
      0
     ],
     "microblog": [
@@ -735,18 +911,33 @@
      0,
      1,
      0
+    ],
+    "nodegoat": [
+     0,
+     1,
+     0
+    ],
+    "pygoat": [
+     1,
+     0,
+     0
+    ],
+    "vibe-trading": [
+     1,
+     0,
+     0
     ]
    }
   },
   "BE003": {
    "title": "Dynamic code execution",
-   "preview": false,
-   "tp": 0,
-   "fp": 4,
+   "preview": true,
+   "tp": 4,
+   "fp": 7,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.0,
-   "precision_pessimistic": 0.0,
+   "precision": 0.3636,
+   "precision_pessimistic": 0.3636,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -754,6 +945,16 @@
     "flask": [
      0,
      2,
+     0
+    ],
+    "nodegoat": [
+     3,
+     3,
+     0
+    ],
+    "pygoat": [
+     1,
+     0,
      0
     ],
     "werkzeug": [
@@ -765,13 +966,13 @@
   },
   "BE004": {
    "title": "Unsafe deserialization",
-   "preview": false,
-   "tp": 1,
-   "fp": 1,
+   "preview": true,
+   "tp": 4,
+   "fp": 7,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5,
-   "precision_pessimistic": 0.5,
+   "precision": 0.3636,
+   "precision_pessimistic": 0.3636,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -785,18 +986,28 @@
      0,
      1,
      0
+    ],
+    "pygoat": [
+     3,
+     0,
+     0
+    ],
+    "wsgidav": [
+     0,
+     6,
+     0
     ]
    }
   },
   "BE005": {
    "title": "Server-side request forgery (SSRF)",
    "preview": false,
-   "tp": 0,
+   "tp": 1,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.0,
-   "precision_pessimistic": 0.0,
+   "precision": 0.5,
+   "precision_pessimistic": 0.5,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -805,22 +1016,43 @@
      0,
      1,
      0
+    ],
+    "pygoat": [
+     1,
+     0,
+     0
     ]
    }
   },
   "BE006": {
    "title": "Path traversal",
    "preview": false,
-   "tp": 0,
-   "fp": 0,
+   "tp": 1,
+   "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 0.3333,
+   "precision_pessimistic": 0.3333,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "flexible-graphrag": [
+     0,
+     1,
+     0
+    ],
+    "pygoat": [
+     1,
+     0,
+     0
+    ],
+    "vibe-trading": [
+     0,
+     1,
+     0
+    ]
+   }
   },
   "BE007": {
    "title": "Server-side template injection",
@@ -844,13 +1076,13 @@
   },
   "BE008": {
    "title": "Open redirect",
-   "preview": false,
-   "tp": 1,
+   "preview": true,
+   "tp": 5,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5,
-   "precision_pessimistic": 0.5,
+   "precision": 0.8333,
+   "precision_pessimistic": 0.8333,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -860,9 +1092,24 @@
      0,
      0
     ],
+    "dvna": [
+     1,
+     0,
+     0
+    ],
     "nextjs-subscription-payments": [
      0,
      1,
+     0
+    ],
+    "nodegoat": [
+     1,
+     0,
+     0
+    ],
+    "pygoat": [
+     2,
+     0,
      0
     ]
    }
@@ -870,12 +1117,12 @@
   "BE009": {
    "title": "Mass assignment",
    "preview": false,
-   "tp": 0,
+   "tp": 2,
    "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.0,
-   "precision_pessimistic": 0.0,
+   "precision": 0.5,
+   "precision_pessimistic": 0.5,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -883,6 +1130,11 @@
     "LinguaLearn": [
      0,
      2,
+     0
+    ],
+    "alerta": [
+     2,
+     0,
      0
     ]
    }
@@ -904,19 +1156,29 @@
   "BE011": {
    "title": "Debug mode enabled",
    "preview": false,
-   "tp": 0,
-   "fp": 1,
+   "tp": 23,
+   "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.0,
-   "precision_pessimistic": 0.0,
+   "precision": 0.92,
+   "precision_pessimistic": 0.92,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
    "by_repo": {
+    "alerta": [
+     0,
+     1,
+     0
+    ],
     "flasky": [
      0,
      1,
+     0
+    ],
+    "pygoat": [
+     23,
+     0,
      0
     ]
    }
@@ -924,7 +1186,7 @@
   "BE012": {
    "title": "Insecure CORS policy",
    "preview": false,
-   "tp": 1,
+   "tp": 2,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -938,27 +1200,18 @@
      1,
      0,
      0
+    ],
+    "flexible-graphrag": [
+     1,
+     0,
+     0
     ]
    }
   },
   "BE013": {
    "title": "TLS certificate verification disabled",
    "preview": false,
-   "tp": 0,
-   "fp": 0,
-   "needs_review": 0,
-   "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
-   "seeded_expected": 1,
-   "seeded_found": 1,
-   "seeded_recall": 1.0,
-   "by_repo": {}
-  },
-  "BE014": {
-   "title": "Weak or plaintext password storage",
-   "preview": false,
-   "tp": 1,
+   "tp": 2,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -968,8 +1221,43 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "waline": [
+     2,
+     0,
+     0
+    ]
+   }
+  },
+  "BE014": {
+   "title": "Weak or plaintext password storage",
+   "preview": false,
+   "tp": 11,
+   "fp": 1,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.9167,
+   "precision_pessimistic": 0.9167,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
     "Vulnerable-Flask-App": [
      1,
+     0,
+     0
+    ],
+    "dvga": [
+     1,
+     0,
+     0
+    ],
+    "flexible-graphrag": [
+     0,
+     1,
+     0
+    ],
+    "pygoat": [
+     9,
      0,
      0
     ]
@@ -978,16 +1266,27 @@
   "BE015": {
    "title": "Insecure randomness for secrets",
    "preview": false,
-   "tp": 0,
+   "tp": 3,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "pygoat": [
+     1,
+     0,
+     0
+    ],
+    "waline": [
+     2,
+     0,
+     0
+    ]
+   }
   },
   "BE016": {
    "title": "JWT signature not verified",
@@ -1017,7 +1316,7 @@
   "BE017": {
    "title": "Internal error details sent to the client",
    "preview": false,
-   "tp": 13,
+   "tp": 29,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -1032,6 +1331,21 @@
      0,
      0
     ],
+    "alerta": [
+     8,
+     0,
+     0
+    ],
+    "flexible-graphrag": [
+     2,
+     0,
+     0
+    ],
+    "pygoat": [
+     6,
+     0,
+     0
+    ],
     "thynk": [
      7,
      0,
@@ -1042,12 +1356,12 @@
   "BE018": {
    "title": "No server-side input validation",
    "preview": true,
-   "tp": 8,
-   "fp": 3,
+   "tp": 9,
+   "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.7273,
-   "precision_pessimistic": 0.7273,
+   "precision": 0.6923,
+   "precision_pessimistic": 0.6923,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
@@ -1062,12 +1376,22 @@
      1,
      0
     ],
+    "alerta": [
+     0,
+     1,
+     0
+    ],
     "careconnect": [
      1,
      0,
      0
     ],
     "chatgpt-your-files": [
+     1,
+     0,
+     0
+    ],
+    "dvna": [
      1,
      0,
      0
@@ -1140,7 +1464,7 @@
   "CFG001": {
    "title": "Container runs as root",
    "preview": false,
-   "tp": 19,
+   "tp": 58,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -1170,8 +1494,28 @@
      0,
      0
     ],
+    "damn-vulnerable-llm-agent": [
+     1,
+     0,
+     0
+    ],
     "djangoproject.com": [
      1,
+     0,
+     0
+    ],
+    "dvna": [
+     1,
+     0,
+     0
+    ],
+    "dvpwa": [
+     1,
+     0,
+     0
+    ],
+    "flexible-graphrag": [
+     6,
      0,
      0
     ],
@@ -1200,6 +1544,11 @@
      0,
      0
     ],
+    "pygoat": [
+     25,
+     0,
+     0
+    ],
     "sec-insights": [
      2,
      0,
@@ -1214,13 +1563,28 @@
      1,
      0,
      0
+    ],
+    "vibe-trading": [
+     1,
+     0,
+     0
+    ],
+    "waline": [
+     3,
+     0,
+     0
+    ],
+    "wsgidav": [
+     1,
+     0,
+     0
     ]
    }
   },
   "CFG002": {
    "title": "Unpinned container base image",
    "preview": false,
-   "tp": 2,
+   "tp": 3,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -1230,6 +1594,11 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "flexible-graphrag": [
+     1,
+     0,
+     0
+    ],
     "opengpts": [
      1,
      0,
@@ -1287,7 +1656,7 @@
   "CFG006": {
    "title": "Any Host header accepted",
    "preview": false,
-   "tp": 1,
+   "tp": 2,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -1301,13 +1670,18 @@
      1,
      0,
      0
+    ],
+    "pygoat": [
+     1,
+     0,
+     0
     ]
    }
   },
   "CFG007": {
    "title": "Default database credentials",
    "preview": false,
-   "tp": 5,
+   "tp": 6,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -1332,6 +1706,11 @@
      0,
      0
     ],
+    "dvpwa": [
+     1,
+     0,
+     0
+    ],
     "opengpts": [
      1,
      0,
@@ -1347,7 +1726,7 @@
   "CFG008": {
    "title": "Express app without security headers",
    "preview": false,
-   "tp": 1,
+   "tp": 2,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -1357,6 +1736,11 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "dvna": [
+     1,
+     0,
+     0
+    ],
     "node-express-realworld-example-app": [
      1,
      0,
@@ -1392,7 +1776,7 @@
   "CFG010": {
    "title": "Third-party GitHub Action not pinned to a commit",
    "preview": true,
-   "tp": 23,
+   "tp": 65,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -1412,6 +1796,11 @@
      0,
      0
     ],
+    "adx-mcp-server": [
+     13,
+     0,
+     0
+    ],
     "ai-chatbot": [
      2,
      0,
@@ -1427,6 +1816,11 @@
      0,
      0
     ],
+    "flexible-graphrag": [
+     6,
+     0,
+     0
+    ],
     "llm-examples": [
      2,
      0,
@@ -1437,8 +1831,18 @@
      0,
      0
     ],
+    "nodejs-whisper": [
+     1,
+     0,
+     0
+    ],
     "opengpts": [
      4,
+     0,
+     0
+    ],
+    "pygoat": [
+     1,
      0,
      0
     ],
@@ -1449,6 +1853,16 @@
     ],
     "thynk": [
      1,
+     0,
+     0
+    ],
+    "waline": [
+     19,
+     0,
+     0
+    ],
+    "wsgidav": [
+     2,
      0,
      0
     ]
@@ -1559,12 +1973,12 @@
   "DATA001": {
    "title": "Database query inside a loop (N+1)",
    "preview": true,
-   "tp": 1,
-   "fp": 5,
+   "tp": 12,
+   "fp": 7,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.1667,
-   "precision_pessimistic": 0.1667,
+   "precision": 0.6316,
+   "precision_pessimistic": 0.6316,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -1574,12 +1988,32 @@
      1,
      0
     ],
+    "alerta": [
+     2,
+     0,
+     0
+    ],
     "djangoproject.com": [
      1,
      3,
      0
     ],
     "flasky": [
+     0,
+     1,
+     0
+    ],
+    "flexible-graphrag": [
+     9,
+     0,
+     0
+    ],
+    "pygoat": [
+     0,
+     1,
+     0
+    ],
+    "waline": [
      0,
      1,
      0
@@ -1662,7 +2096,7 @@
   "DATA006": {
    "title": "Timestamp without time zone",
    "preview": false,
-   "tp": 15,
+   "tp": 86,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -1682,8 +2116,23 @@
      0,
      0
     ],
+    "alerta": [
+     38,
+     0,
+     0
+    ],
     "flasky": [
      1,
+     0,
+     0
+    ],
+    "flexible-graphrag": [
+     28,
+     0,
+     0
+    ],
+    "pygoat": [
+     5,
      0,
      0
     ],
@@ -1698,11 +2147,11 @@
    "title": "Environment variable missing from the example env file",
    "preview": true,
    "tp": 7,
-   "fp": 6,
+   "fp": 12,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5385,
-   "precision_pessimistic": 0.5385,
+   "precision": 0.3684,
+   "precision_pessimistic": 0.3684,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -1730,6 +2179,16 @@
     "thynk": [
      1,
      0,
+     0
+    ],
+    "vibe-trading": [
+     0,
+     1,
+     0
+    ],
+    "waline": [
+     0,
+     5,
      0
     ]
    }
@@ -1820,15 +2279,26 @@
    "title": "Package name looks like a typo of a popular package",
    "preview": false,
    "tp": 0,
-   "fp": 0,
+   "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 0.0,
+   "precision_pessimistic": 0.0,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "dvna": [
+     0,
+     1,
+     0
+    ],
+    "waline": [
+     0,
+     1,
+     0
+    ]
+   }
   },
   "DEP003": {
    "title": "Very new package",
@@ -1861,12 +2331,12 @@
   "DEP005": {
    "title": "Dependencies are not locked",
    "preview": false,
-   "tp": 2,
-   "fp": 1,
+   "tp": 8,
+   "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6667,
-   "precision_pessimistic": 0.6667,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -1876,12 +2346,32 @@
      0,
      0
     ],
-    "express": [
+    "alerta": [
+     2,
      0,
+     0
+    ],
+    "damn-vulnerable-llm-agent": [
      1,
+     0,
+     0
+    ],
+    "dvna": [
+     1,
+     0,
      0
     ],
     "llm-examples": [
+     1,
+     0,
+     0
+    ],
+    "pygoat": [
+     1,
+     0,
+     0
+    ],
+    "vibe-trading": [
      1,
      0,
      0
@@ -1933,12 +2423,12 @@
   "FE001": {
    "title": "Cross-site scripting through a raw HTML sink",
    "preview": true,
-   "tp": 23,
-   "fp": 15,
+   "tp": 45,
+   "fp": 39,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6053,
-   "precision_pessimistic": 0.6053,
+   "precision": 0.5357,
+   "precision_pessimistic": 0.5357,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -1961,6 +2451,11 @@
     "commerce": [
      1,
      1,
+     0
+    ],
+    "dvna": [
+     3,
+     0,
      0
     ],
     "flasky": [
@@ -1988,9 +2483,19 @@
      0,
      0
     ],
+    "pygoat": [
+     17,
+     20,
+     0
+    ],
     "thynk": [
      1,
      1,
+     0
+    ],
+    "waline": [
+     2,
+     4,
      0
     ],
     "werkzeug": [
@@ -2031,7 +2536,7 @@
   "FE004": {
    "title": "postMessage handler without origin check",
    "preview": false,
-   "tp": 1,
+   "tp": 3,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2045,13 +2550,18 @@
      1,
      0,
      0
+    ],
+    "waline": [
+     2,
+     0,
+     0
     ]
    }
   },
   "FE005": {
    "title": "Auth token stored in localStorage",
    "preview": false,
-   "tp": 7,
+   "tp": 8,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2075,6 +2585,11 @@
      1,
      0,
      0
+    ],
+    "waline": [
+     1,
+     0,
+     0
     ]
    }
   },
@@ -2095,12 +2610,12 @@
   "FE007": {
    "title": "Hardcoded localhost URL in frontend code",
    "preview": true,
-   "tp": 6,
-   "fp": 1,
+   "tp": 22,
+   "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8571,
-   "precision_pessimistic": 0.8571,
+   "precision": 0.8462,
+   "precision_pessimistic": 0.8462,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -2108,6 +2623,16 @@
     "LinguaLearn": [
      3,
      0,
+     0
+    ],
+    "dvga": [
+     0,
+     1,
+     0
+    ],
+    "flexible-graphrag": [
+     15,
+     2,
      0
     ],
     "langchain-nextjs-template": [
@@ -2122,6 +2647,11 @@
     ],
     "thynk": [
      2,
+     0,
+     0
+    ],
+    "waline": [
+     1,
      0,
      0
     ]
@@ -2158,7 +2688,7 @@
   "LLM003": {
    "title": "LLM call without an output token limit",
    "preview": false,
-   "tp": 26,
+   "tp": 30,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2179,6 +2709,11 @@
      0
     ],
     "chatbot-ui": [
+     4,
+     0,
+     0
+    ],
+    "flexible-graphrag": [
      4,
      0,
      0
@@ -2268,30 +2803,42 @@
   "LLM005": {
    "title": "Agent tool with dangerous capability",
    "preview": false,
-   "tp": 0,
+   "tp": 2,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "vibe-trading": [
+     2,
+     0,
+     0
+    ]
+   }
   },
   "LLM006": {
    "title": "Dangerous agent or framework option enabled",
    "preview": false,
-   "tp": 0,
+   "tp": 23,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "flexible-graphrag": [
+     23,
+     0,
+     0
+    ]
+   }
   },
   "LLM007": {
    "title": "System prompt shipped to the browser",
@@ -2337,15 +2884,21 @@
    "title": "Unbounded agent loop",
    "preview": false,
    "tp": 0,
-   "fp": 0,
+   "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 0.0,
+   "precision_pessimistic": 0.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "vibe-trading": [
+     0,
+     2,
+     0
+    ]
+   }
   },
   "LLM010": {
    "title": "Vector search without a user or tenant filter",
@@ -2384,18 +2937,23 @@
   "LLM012": {
    "title": "Retired or deprecated model hardcoded",
    "preview": false,
-   "tp": 17,
+   "tp": 18,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9444,
-   "precision_pessimistic": 0.9444,
+   "precision": 0.9474,
+   "precision_pessimistic": 0.9474,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
     "chatbot-ui": [
      10,
+     0,
+     0
+    ],
+    "flexible-graphrag": [
+     1,
      0,
      0
     ],
@@ -2461,7 +3019,7 @@
   "QA001": {
    "title": "No automated tests",
    "preview": false,
-   "tp": 11,
+   "tp": 14,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2482,6 +3040,21 @@
      0
     ],
     "commerce": [
+     1,
+     0,
+     0
+    ],
+    "damn-vulnerable-llm-agent": [
+     1,
+     0,
+     0
+    ],
+    "dvna": [
+     1,
+     0,
+     0
+    ],
+    "dvpwa": [
      1,
      0,
      0
@@ -2531,7 +3104,7 @@
   "QA002": {
    "title": "No continuous integration",
    "preview": false,
-   "tp": 20,
+   "tp": 23,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2562,6 +3135,21 @@
      0
     ],
     "commerce": [
+     1,
+     0,
+     0
+    ],
+    "damn-vulnerable-llm-agent": [
+     1,
+     0,
+     0
+    ],
+    "dvna": [
+     1,
+     0,
+     0
+    ],
+    "dvpwa": [
      1,
      0,
      0
@@ -2646,18 +3234,28 @@
   "QA003": {
    "title": "Exception silently swallowed",
    "preview": true,
-   "tp": 2,
-   "fp": 4,
+   "tp": 146,
+   "fp": 11,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.3333,
-   "precision_pessimistic": 0.3333,
+   "precision": 0.9299,
+   "precision_pessimistic": 0.9299,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
    "by_repo": {
+    "alerta": [
+     0,
+     1,
+     0
+    ],
     "chat-langchain": [
      1,
+     0,
+     0
+    ],
+    "flexible-graphrag": [
+     116,
      0,
      0
     ],
@@ -2666,22 +3264,37 @@
      0,
      0
     ],
+    "pygoat": [
+     3,
+     0,
+     0
+    ],
+    "vibe-trading": [
+     24,
+     0,
+     0
+    ],
     "werkzeug": [
      0,
      4,
+     0
+    ],
+    "wsgidav": [
+     1,
+     6,
      0
     ]
    }
   },
   "QA004": {
    "title": "Security placeholder or TODO left in code",
-   "preview": false,
-   "tp": 9,
-   "fp": 0,
+   "preview": true,
+   "tp": 13,
+   "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.8667,
+   "precision_pessimistic": 0.8667,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -2696,6 +3309,16 @@
      0,
      0
     ],
+    "alerta": [
+     1,
+     0,
+     0
+    ],
+    "flexible-graphrag": [
+     0,
+     1,
+     0
+    ],
     "helpdesk-flow-verse": [
      2,
      0,
@@ -2706,8 +3329,23 @@
      0,
      0
     ],
+    "pygoat": [
+     1,
+     0,
+     0
+    ],
     "taxonomy": [
      1,
+     0,
+     0
+    ],
+    "waline": [
+     0,
+     1,
+     0
+    ],
+    "wsgidav": [
+     2,
      0,
      0
     ]
@@ -2715,9 +3353,9 @@
   },
   "QA005": {
    "title": "Unfinished stub left in code",
-   "preview": false,
+   "preview": true,
    "tp": 0,
-   "fp": 1,
+   "fp": 5,
    "needs_review": 0,
    "lost_tp": 0,
    "precision": 0.0,
@@ -2726,7 +3364,17 @@
    "seeded_found": 2,
    "seeded_recall": 1.0,
    "by_repo": {
+    "flexible-graphrag": [
+     0,
+     3,
+     0
+    ],
     "sec-insights": [
+     0,
+     1,
+     0
+    ],
+    "wsgidav": [
      0,
      1,
      0
@@ -2735,13 +3383,13 @@
   },
   "QA006": {
    "title": "Import of a file or name that does not exist",
-   "preview": false,
+   "preview": true,
    "tp": 14,
-   "fp": 0,
+   "fp": 23,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.3784,
+   "precision_pessimistic": 0.3784,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -2770,18 +3418,23 @@
      3,
      0,
      0
+    ],
+    "waline": [
+     0,
+     23,
+     0
     ]
    }
   },
   "QA007": {
    "title": "Package imported but not declared as a dependency",
    "preview": false,
-   "tp": 29,
-   "fp": 0,
+   "tp": 49,
+   "fp": 3,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.9423,
+   "precision_pessimistic": 0.9423,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -2796,8 +3449,28 @@
      0,
      0
     ],
+    "alerta": [
+     4,
+     2,
+     0
+    ],
     "bakerydemo": [
      4,
+     0,
+     0
+    ],
+    "damn-vulnerable-llm-agent": [
+     2,
+     0,
+     0
+    ],
+    "dvna": [
+     1,
+     0,
+     0
+    ],
+    "flexible-graphrag": [
+     7,
      0,
      0
     ],
@@ -2809,6 +3482,11 @@
     "openui": [
      4,
      0,
+     0
+    ],
+    "pygoat": [
+     2,
+     1,
      0
     ],
     "scriptforge-ai": [
@@ -2823,6 +3501,11 @@
     ],
     "thynk": [
      2,
+     0,
+     0
+    ],
+    "vibe-trading": [
+     4,
      0,
      0
     ]
@@ -2851,7 +3534,7 @@
   "REL001": {
    "title": "Outbound HTTP request without a timeout",
    "preview": false,
-   "tp": 20,
+   "tp": 54,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2866,8 +3549,18 @@
      0,
      0
     ],
+    "alerta": [
+     15,
+     0,
+     0
+    ],
     "djangoproject.com": [
      4,
+     0,
+     0
+    ],
+    "flexible-graphrag": [
+     2,
      0,
      0
     ],
@@ -2886,6 +3579,11 @@
      0,
      0
     ],
+    "pygoat": [
+     1,
+     0,
+     0
+    ],
     "sec-insights": [
      6,
      0,
@@ -2893,6 +3591,11 @@
     ],
     "thynk": [
      4,
+     0,
+     0
+    ],
+    "vibe-trading": [
+     16,
      0,
      0
     ]
@@ -2915,16 +3618,21 @@
   "REL003": {
    "title": "Webhook handler is not idempotent",
    "preview": false,
-   "tp": 1,
+   "tp": 2,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5,
-   "precision_pessimistic": 0.5,
+   "precision": 0.6667,
+   "precision_pessimistic": 0.6667,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "alerta": [
+     1,
+     0,
+     0
+    ],
     "scriptforge-ai": [
      1,
      0,
@@ -2979,7 +3687,7 @@
   "REL006": {
    "title": "No health-check endpoint",
    "preview": false,
-   "tp": 7,
+   "tp": 8,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2990,6 +3698,11 @@
    "seeded_recall": 1.0,
    "by_repo": {
     "Vulnerable-Flask-App": [
+     1,
+     0,
+     0
+    ],
+    "dvga": [
      1,
      0,
      0
@@ -3064,26 +3777,37 @@
   "SEC002": {
    "title": "Private key committed",
    "preview": false,
-   "tp": 0,
+   "tp": 2,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "nodegoat": [
+     1,
+     0,
+     0
+    ],
+    "wsgidav": [
+     1,
+     0,
+     0
+    ]
+   }
   },
   "SEC003": {
    "title": "High-entropy secret assigned in code",
    "preview": true,
-   "tp": 16,
-   "fp": 3,
+   "tp": 22,
+   "fp": 12,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8421,
-   "precision_pessimistic": 0.8421,
+   "precision": 0.6471,
+   "precision_pessimistic": 0.6471,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -3091,6 +3815,16 @@
     "bakerydemo": [
      0,
      1,
+     0
+    ],
+    "flexible-graphrag": [
+     0,
+     3,
+     0
+    ],
+    "nodegoat": [
+     2,
+     0,
      0
     ],
     "openui": [
@@ -3108,9 +3842,24 @@
      0,
      0
     ],
+    "pygoat": [
+     4,
+     1,
+     0
+    ],
     "terragoat": [
      7,
      0,
+     0
+    ],
+    "waline": [
+     0,
+     3,
+     0
+    ],
+    "wsgidav": [
+     0,
+     2,
      0
     ]
    }
@@ -3118,12 +3867,12 @@
   "SEC004": {
    "title": "Hardcoded or default signing secret",
    "preview": false,
-   "tp": 4,
-   "fp": 0,
+   "tp": 29,
+   "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.9355,
+   "precision_pessimistic": 0.9355,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
@@ -3133,8 +3882,33 @@
      0,
      0
     ],
+    "alerta": [
+     2,
+     0,
+     0
+    ],
+    "dvga": [
+     2,
+     0,
+     0
+    ],
+    "dvna": [
+     1,
+     0,
+     0
+    ],
     "node-express-realworld-example-app": [
      3,
+     0,
+     0
+    ],
+    "nodegoat": [
+     0,
+     2,
+     0
+    ],
+    "pygoat": [
+     20,
      0,
      0
     ]
@@ -3143,7 +3917,7 @@
   "SEC005": {
    "title": "Database URL with embedded password",
    "preview": false,
-   "tp": 2,
+   "tp": 3,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -3155,6 +3929,11 @@
    "by_repo": {
     "prompt-sculptor-49": [
      2,
+     0,
+     0
+    ],
+    "pygoat": [
+     1,
      0,
      0
     ]
@@ -3253,11 +4032,11 @@
    "title": "Secret written to logs",
    "preview": false,
    "tp": 1,
-   "fp": 0,
+   "fp": 3,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.25,
+   "precision_pessimistic": 0.25,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -3266,18 +4045,23 @@
      1,
      0,
      0
+    ],
+    "wsgidav": [
+     0,
+     3,
+     0
     ]
    }
   },
   "SEC011": {
    "title": "Hardcoded password",
-   "preview": false,
-   "tp": 3,
-   "fp": 1,
+   "preview": true,
+   "tp": 24,
+   "fp": 3,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.75,
-   "precision_pessimistic": 0.75,
+   "precision": 0.8889,
+   "precision_pessimistic": 0.8889,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -3297,9 +4081,24 @@
      0,
      0
     ],
+    "dvga": [
+     0,
+     2,
+     0
+    ],
+    "flexible-graphrag": [
+     4,
+     0,
+     0
+    ],
     "helpdesk-flow-verse": [
      0,
      1,
+     0
+    ],
+    "pygoat": [
+     17,
+     0,
      0
     ]
    }
@@ -3307,7 +4106,7 @@
   "UI001": {
    "title": "Image without alt text",
    "preview": false,
-   "tp": 24,
+   "tp": 31,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -3322,6 +4121,16 @@
      0,
      0
     ],
+    "dvga": [
+     1,
+     0,
+     0
+    ],
+    "dvpwa": [
+     3,
+     0,
+     0
+    ],
     "flasky": [
      5,
      0,
@@ -3332,13 +4141,28 @@
      0,
      0
     ],
+    "nodegoat": [
+     1,
+     0,
+     0
+    ],
     "podinfo": [
+     1,
+     0,
+     0
+    ],
+    "pygoat": [
      1,
      0,
      0
     ],
     "sec-insights": [
      12,
+     0,
+     0
+    ],
+    "waline": [
+     1,
      0,
      0
     ]
@@ -3407,12 +4231,12 @@
   "UI003": {
    "title": "Form field without a label",
    "preview": false,
-   "tp": 46,
+   "tp": 52,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9787,
-   "precision_pessimistic": 0.9787,
+   "precision": 0.9811,
+   "precision_pessimistic": 0.9811,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -3489,6 +4313,16 @@
     ],
     "sync-plan-flow": [
      4,
+     0,
+     0
+    ],
+    "vibe-trading": [
+     3,
+     0,
+     0
+    ],
+    "waline": [
+     3,
      0,
      0
     ]
@@ -3609,7 +4443,7 @@
   "UI009": {
    "title": "Data loaded without loading or error state",
    "preview": false,
-   "tp": 6,
+   "tp": 7,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -3635,6 +4469,11 @@
      0
     ],
     "scriptforge-ai": [
+     1,
+     0,
+     0
+    ],
+    "waline": [
      1,
      0,
      0
@@ -3742,12 +4581,12 @@
   "UI014": {
    "title": "Image without width and height",
    "preview": true,
-   "tp": 12,
+   "tp": 16,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9231,
-   "precision_pessimistic": 0.9231,
+   "precision": 0.9412,
+   "precision_pessimistic": 0.9412,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -3774,6 +4613,11 @@
     ],
     "openai-assistants-quickstart": [
      1,
+     0,
+     0
+    ],
+    "waline": [
+     4,
      0,
      0
     ]

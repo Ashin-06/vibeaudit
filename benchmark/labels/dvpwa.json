@@ -1,0 +1,102 @@
+{
+ "repo": "dvpwa",
+ "commit": "4a8f4a43fafcc1b304f1b97d0f0a8dea755a7756",
+ "findings": [
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile.app",
+   "line": 1,
+   "fingerprint": "95657dcd42a6e1fc403e0adfc0e7927a",
+   "verdict": "tp",
+   "reason": "The image runs as root."
+  },
+  {
+   "rule": "CFG007",
+   "file": "docker-compose.yml",
+   "line": 7,
+   "fingerprint": "7a944ebd944a807294159d6d1ddbd55c",
+   "verdict": "tp",
+   "reason": "docker-compose sets the default postgres password."
+  },
+  {
+   "rule": "QA001",
+   "file": "requirements.txt",
+   "line": 1,
+   "fingerprint": "82270deecb62edc27cc679a9b451753b",
+   "verdict": "tp",
+   "reason": "No tests and no CI."
+  },
+  {
+   "rule": "QA002",
+   "file": "requirements.txt",
+   "line": 1,
+   "fingerprint": "8f1afebca71600c2a69df99615fe770e",
+   "verdict": "tp",
+   "reason": "No tests and no CI."
+  },
+  {
+   "rule": "BE001",
+   "file": "sqli/dao/student.py",
+   "line": 45,
+   "fingerprint": "b96f3e47535853bc60ea6fb11d88bd49",
+   "verdict": "tp",
+   "reason": "The query string is built with string formatting from the student name (the app's intended SQL injection)."
+  },
+  {
+   "rule": "FE001",
+   "file": "sqli/static/js/materialize.js",
+   "line": 396,
+   "fingerprint": "215d8836011181ae8d2624f51e119289",
+   "verdict": "fp",
+   "reason": "Vendored Materialize library (unminified copy), not application code."
+  },
+  {
+   "rule": "FE001",
+   "file": "sqli/static/js/materialize.js",
+   "line": 3444,
+   "fingerprint": "4d949259c4b462c5a1d5925daca769c6",
+   "verdict": "fp",
+   "reason": "Vendored Materialize library (unminified copy), not application code."
+  },
+  {
+   "rule": "BE003",
+   "file": "sqli/static/js/materialize.js",
+   "line": 6283,
+   "fingerprint": "6134ca3f4e11aa16e61904b0aa6b8b6b",
+   "verdict": "fp",
+   "reason": "Vendored Materialize library (unminified copy), not application code."
+  },
+  {
+   "rule": "QA003",
+   "file": "sqli/static/js/materialize.js",
+   "line": 7335,
+   "fingerprint": "4717bf54b0589f0d5009e7f09b58045d",
+   "verdict": "fp",
+   "reason": "Vendored Materialize library (unminified copy), not application code."
+  },
+  {
+   "rule": "UI001",
+   "file": "sqli/templates/errors/40x.jinja2",
+   "line": 5,
+   "fingerprint": "20fe780629713c4b9e13fbf96fde2bea",
+   "verdict": "tp",
+   "reason": "The img has no alt attribute."
+  },
+  {
+   "rule": "UI001",
+   "file": "sqli/templates/errors/50x.jinja2",
+   "line": 5,
+   "fingerprint": "368df61e6015558a7414c83000a89778",
+   "verdict": "tp",
+   "reason": "The img has no alt attribute."
+  },
+  {
+   "rule": "UI001",
+   "file": "sqli/templates/evaluate.jinja2",
+   "line": 19,
+   "fingerprint": "ae992a8966b5c4aa0af612c151936e75",
+   "verdict": "tp",
+   "reason": "The img has no alt attribute."
+  }
+ ]
+}

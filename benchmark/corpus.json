@@ -288,6 +288,108 @@
    "licence": "Apache-2.0",
    "kind": "known-vulnerable",
    "split": "heldout"
+  },
+  {
+   "name": "adx-mcp-server",
+   "url": "https://github.com/pab1it0/adx-mcp-server",
+   "commit": "48b29339522c5a53dff1d193b29f6cd778eae5ac",
+   "licence": "MIT",
+   "kind": "pre-fix",
+   "advisory": "GHSA-vphc-468g-8rfp"
+  },
+  {
+   "name": "alerta",
+   "url": "https://github.com/alerta/alerta",
+   "commit": "cc0993d0b245dbeaa19e8ec30c9992ec06fa293e",
+   "licence": "Apache-2.0",
+   "kind": "pre-fix",
+   "advisory": "GHSA-8prr-286p-4w7j"
+  },
+  {
+   "name": "damn-vulnerable-llm-agent",
+   "url": "https://github.com/ReversecLabs/damn-vulnerable-llm-agent",
+   "commit": "c0cf9a14adad76e9d6a53c41741f625334bd9971",
+   "licence": "Apache-2.0",
+   "kind": "training",
+   "split": "heldout"
+  },
+  {
+   "name": "dvga",
+   "url": "https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application",
+   "commit": "a961308c02d1fb462b192681c336b0739e432da7",
+   "licence": "MIT",
+   "kind": "training"
+  },
+  {
+   "name": "dvna",
+   "url": "https://github.com/appsecco/dvna",
+   "commit": "9ba473add536f66ac9007966acb2a775dd31277a",
+   "licence": "MIT",
+   "kind": "training"
+  },
+  {
+   "name": "dvpwa",
+   "url": "https://github.com/anxolerd/dvpwa",
+   "commit": "4a8f4a43fafcc1b304f1b97d0f0a8dea755a7756",
+   "licence": "MIT",
+   "kind": "training",
+   "split": "heldout"
+  },
+  {
+   "name": "flexible-graphrag",
+   "url": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "licence": "Apache-2.0",
+   "kind": "pre-fix",
+   "advisory": "GHSA-vqrg-773h-4wxc"
+  },
+  {
+   "name": "nodegoat",
+   "url": "https://github.com/OWASP/NodeGoat",
+   "commit": "c5cb68a7084e4ae7dcc60e6a98768720a81841e8",
+   "licence": "Apache-2.0",
+   "kind": "training"
+  },
+  {
+   "name": "nodejs-whisper",
+   "url": "https://github.com/ChetanXpro/nodejs-whisper",
+   "commit": "4337ad7790688de3895ae633ea2df040c16952ca",
+   "licence": "MIT",
+   "kind": "pre-fix",
+   "advisory": "GHSA-2f48-3555-fpx6",
+   "split": "heldout"
+  },
+  {
+   "name": "pygoat",
+   "url": "https://github.com/adeyosemanputra/pygoat",
+   "commit": "2aa4cc14f251e4a780e94e200aed6b36a5b15c21",
+   "licence": "MIT",
+   "kind": "training"
+  },
+  {
+   "name": "vibe-trading",
+   "url": "https://github.com/HKUDS/Vibe-Trading",
+   "commit": "fd767f5c29c72cffe8e3f89c7ff006cb3041397f",
+   "licence": "MIT",
+   "kind": "pre-fix",
+   "advisory": "GHSA-jqmf-mx4f-hfr6"
+  },
+  {
+   "name": "waline",
+   "url": "https://github.com/walinejs/waline",
+   "commit": "e9d4f6cd5d567d95349c3a28d0dcce99c1866a23",
+   "licence": "GPL-2.0",
+   "kind": "pre-fix",
+   "advisory": "GHSA-jf75-q64q-g65r",
+   "split": "heldout"
+  },
+  {
+   "name": "wsgidav",
+   "url": "https://github.com/mar10/wsgidav",
+   "commit": "67abdbd7d622fcf29aefdfbd0c9910de9e0c8b3d",
+   "licence": "MIT",
+   "kind": "pre-fix",
+   "advisory": "GHSA-p6gw-4frg-j7jw"
   }
  ]
 }

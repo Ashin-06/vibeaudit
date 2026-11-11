@@ -1,0 +1,142 @@
+{
+ "repo": "nodegoat",
+ "commit": "c5cb68a7084e4ae7dcc60e6a98768720a81841e8",
+ "findings": [
+  {
+   "rule": "BE002",
+   "file": "Gruntfile.js",
+   "line": 165,
+   "fingerprint": "acf4c94d234b62b10cbb50a923c52096",
+   "verdict": "fp",
+   "reason": "A Grunt build task run by the developer."
+  },
+  {
+   "rule": "BE003",
+   "file": "app/routes/contributions.js",
+   "line": 32,
+   "fingerprint": "349d6900322b713ab273bbc6b1e58c4a",
+   "verdict": "tp",
+   "reason": "eval() on request body fields."
+  },
+  {
+   "rule": "BE003",
+   "file": "app/routes/contributions.js",
+   "line": 33,
+   "fingerprint": "56442c223e9949f5bb4247d7e7754c5a",
+   "verdict": "tp",
+   "reason": "eval() on request body fields."
+  },
+  {
+   "rule": "BE003",
+   "file": "app/routes/contributions.js",
+   "line": 34,
+   "fingerprint": "a98ae07efa4e952e6d16dadd7c917caf",
+   "verdict": "tp",
+   "reason": "eval() on request body fields."
+  },
+  {
+   "rule": "BE008",
+   "file": "app/routes/index.js",
+   "line": 72,
+   "fingerprint": "331d4407e2d02166bd97c80b930e08db",
+   "verdict": "tp",
+   "reason": "The redirect target is the url query parameter."
+  },
+  {
+   "rule": "UI001",
+   "file": "app/views/login.html",
+   "line": 67,
+   "fingerprint": "3ec50a2555b7dd5031db5cc4551f1ec9",
+   "verdict": "tp",
+   "reason": "The img has no alt attribute."
+  },
+  {
+   "rule": "BE003",
+   "file": "app/views/tutorial/a1.html",
+   "line": 157,
+   "fingerprint": "9939d6528ed488d55d49037e8f60df77",
+   "verdict": "fp",
+   "reason": "A code sample inside a <pre> block of the tutorial page, not code that runs."
+  },
+  {
+   "rule": "BE003",
+   "file": "app/views/tutorial/a1.html",
+   "line": 158,
+   "fingerprint": "2bba121062f5cb48892753ccbb9e3795",
+   "verdict": "fp",
+   "reason": "A code sample inside a <pre> block of the tutorial page, not code that runs."
+  },
+  {
+   "rule": "BE003",
+   "file": "app/views/tutorial/a1.html",
+   "line": 159,
+   "fingerprint": "71774402a227b445a6c9126041dfa6f8",
+   "verdict": "fp",
+   "reason": "A code sample inside a <pre> block of the tutorial page, not code that runs."
+  },
+  {
+   "rule": "SEC004",
+   "file": "app/views/tutorial/a2.html",
+   "line": 152,
+   "fingerprint": "e64427753499010fafa4aaeb57720aba",
+   "verdict": "fp",
+   "reason": "A code sample inside a <pre> block of the tutorial page, not code that runs."
+  },
+  {
+   "rule": "SEC004",
+   "file": "app/views/tutorial/a3.html",
+   "line": 175,
+   "fingerprint": "e8cb807056b42dd28c997c1a0137b62e",
+   "verdict": "fp",
+   "reason": "A code sample inside a <pre> block of the tutorial page, not code that runs."
+  },
+  {
+   "rule": "SEC002",
+   "file": "artifacts/cert/server.key",
+   "line": 1,
+   "fingerprint": "05131c0150896fb119af5359daa13183",
+   "verdict": "tp",
+   "reason": "A private key is committed."
+  },
+  {
+   "rule": "SEC011",
+   "file": "artifacts/db-reset.js",
+   "line": 18,
+   "fingerprint": "da7151e65aab73359560e23590e2e89b",
+   "verdict": "fp",
+   "reason": "Seed users of the training database in a reset script."
+  },
+  {
+   "rule": "SEC011",
+   "file": "artifacts/db-reset.js",
+   "line": 27,
+   "fingerprint": "3a02a42d705ad29aa3ee723ff234e4b2",
+   "verdict": "fp",
+   "reason": "Seed users of the training database in a reset script."
+  },
+  {
+   "rule": "SEC011",
+   "file": "artifacts/db-reset.js",
+   "line": 35,
+   "fingerprint": "62eba52caf028f35c6976aff9d57863c",
+   "verdict": "fp",
+   "reason": "Seed users of the training database in a reset script."
+  },
+  {
+   "rule": "SEC003",
+   "file": "config/env/development.js",
+   "line": 6,
+   "fingerprint": "e31b630979df6fa434e3c6161b7b290e",
+   "verdict": "tp",
+   "reason": "A real-looking API key is committed in the config."
+  },
+  {
+   "rule": "SEC003",
+   "file": "config/env/test.js",
+   "line": 6,
+   "fingerprint": "d9469d063002dd4d2f09a8f80d74412f",
+   "verdict": "tp",
+   "reason": "A real-looking API key is committed in the config."
+  }
+ ]
+}

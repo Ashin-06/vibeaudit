@@ -1,0 +1,14 @@
+{
+ "repo": "nodejs-whisper",
+ "commit": "4337ad7790688de3895ae633ea2df040c16952ca",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 41,
+   "fingerprint": "7fdd7a974e3cd6d1c7f25f3f675454f5",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag or branch, not a commit SHA."
+  }
+ ]
+}

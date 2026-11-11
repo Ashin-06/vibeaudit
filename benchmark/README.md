@@ -7,7 +7,7 @@ table per rule) and [results.json](results.json). The policy that uses them: [ST
 
 | Path | What it is |
 | --- | --- |
-| `corpus.json` | 40 public repositories, each pinned to an exact commit, with its licence, kind and split (8 are held out). |
+| `corpus.json` | 53 public repositories, each pinned to an exact commit, with its licence, kind, split (12 are held out) and, for pre-fix commits, the advisory. |
 | `labels/<repo>.json` | One entry per reviewed finding: rule, file, line, fingerprint, `tp` or `fp`, and a one-line reason. |
 | `seeded/` | Small known-vulnerable apps with `expect: RULE` markers, for rules that real projects rarely trigger. |
 | `baseline.json` | Per-rule precision and seeded recall (and per-repository counts) that the CI gate compares against. |
@@ -72,10 +72,11 @@ are doing:
 Fixing a rule while looking at its false positives, and then measuring it on the same findings, flatters
 the rule. So the corpus has two parts:
 
-- **Tuned (32 repositories):** used to find and fix false positives. Its precision shows that known causes
+- **Tuned (41 repositories):** used to find and fix false positives. Its precision shows that known causes
   are fixed, nothing more.
-- **Held-out (8 repositories, `"split": "heldout"` in corpus.json):** careconnect, thynk,
-  langchain-nextjs-template, openai-assistants-quickstart, saas-starter, flasky, podinfo and terragoat.
+- **Held-out (12 repositories, `"split": "heldout"` in corpus.json):** careconnect, thynk,
+  langchain-nextjs-template, openai-assistants-quickstart, saas-starter, flasky, podinfo, terragoat and,
+  since 0.7.3, damn-vulnerable-llm-agent, dvpwa, nodejs-whisper and waline.
   Their findings are labelled the same way, but **no rule is changed because of them**. Held-out precision
   is what decides whether a rule may leave preview ([STABILITY.md](../STABILITY.md)).
 
@@ -91,6 +92,24 @@ Known held-out false positives (not fixed, by the rule above): API001 does not r
 next line (podinfo); `_test.go` files are not treated as tests (podinfo, SEC003); DEBUG and CSRF settings
 inside development and testing config classes (flasky, BE011 and AUTH009); `|safe` on HTML already cleaned
 with bleach (flasky, FE001).
+
+Since 0.7.3 also not fixed: QA006 reports a TypeScript import ending in `.js` that resolves to a `.d.ts`
+file (waline, 23 findings; QA006 is preview because of it); FE001 on comment HTML that the project
+sanitizes before storing (waline).
+
+## Pre-fix commits and training apps (0.7.3)
+
+Real vulnerabilities are rare in the original corpus, so 13 repositories were added in 0.7.3:
+
+- **Pre-fix commits (7):** a project pinned to the parent of the commit that fixed a published GitHub
+  advisory: adx-mcp-server, alerta, flexible-graphrag, nodejs-whisper, vibe-trading, waline and wsgidav
+  (`"kind": "pre-fix"`, with the advisory id in corpus.json). This is the strongest evidence: the bug is
+  real and was there at that commit.
+- **Training apps (6):** deliberately vulnerable apps (NodeGoat, DVNA, pygoat, dvpwa, Damn Vulnerable
+  GraphQL Application, damn-vulnerable-llm-agent), `"kind": "training"`. They are full of true positives by
+  design, so RESULTS.md also reports precision without them (and without the older known-vulnerable app).
+- The held-out four were chosen before any of the new repositories was scanned: every third one in
+  alphabetical order.
 
 [RESULTS.md](RESULTS.md) shows both precisions for every rule. First held-out measurement (0.7.1 rules):
 146 findings, 131 true and 15 false, 89.7%, against 88.8% on the tuned split.

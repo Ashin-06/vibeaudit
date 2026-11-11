@@ -1,0 +1,70 @@
+{
+ "repo": "damn-vulnerable-llm-agent",
+ "commit": "c0cf9a14adad76e9d6a53c41741f625334bd9971",
+ "findings": [
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile",
+   "line": 1,
+   "fingerprint": "05d952254ab67f49ae135b6bb24d53da",
+   "verdict": "tp",
+   "reason": "The image runs as root."
+  },
+  {
+   "rule": "QA007",
+   "file": "main.py",
+   "line": 4,
+   "fingerprint": "aa995084b5eb896ca354878a30d3246f",
+   "verdict": "tp",
+   "reason": "Imported directly but not in requirements.txt."
+  },
+  {
+   "rule": "DEP005",
+   "file": "requirements.txt",
+   "line": 1,
+   "fingerprint": "64e05a78618cd14b8cff26a1e62ec7fe",
+   "verdict": "tp",
+   "reason": "Four of five requirements are unpinned."
+  },
+  {
+   "rule": "QA001",
+   "file": "requirements.txt",
+   "line": 1,
+   "fingerprint": "5f916e5e73738c5b16ca98b7bd5803ad",
+   "verdict": "tp",
+   "reason": "No tests and no CI."
+  },
+  {
+   "rule": "QA002",
+   "file": "requirements.txt",
+   "line": 1,
+   "fingerprint": "ba7878de1a9c30b8e55f42358360cbd5",
+   "verdict": "tp",
+   "reason": "No tests and no CI."
+  },
+  {
+   "rule": "BE001",
+   "file": "transaction_db.py",
+   "line": 62,
+   "fingerprint": "37efc36edf02a05979103eac1690a07e",
+   "verdict": "tp",
+   "reason": "The id is formatted into the SQL text; it comes from the agent's tool input."
+  },
+  {
+   "rule": "BE001",
+   "file": "transaction_db.py",
+   "line": 76,
+   "fingerprint": "f79774e73d11aff44d558851a16bfa8e",
+   "verdict": "tp",
+   "reason": "The id is formatted into the SQL text; it comes from the agent's tool input."
+  },
+  {
+   "rule": "QA007",
+   "file": "utils.py",
+   "line": 3,
+   "fingerprint": "2f0982a8a0783974668c1dd8165c6ae1",
+   "verdict": "tp",
+   "reason": "Imported directly but not in requirements.txt."
+  }
+ ]
+}
