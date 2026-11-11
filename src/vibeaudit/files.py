@@ -138,6 +138,14 @@ class SourceFile:
         self.is_client = False  # set by the JS scanner
         self.cache: Dict[str, object] = {}  # per-file scratch space for scanners
 
+    @classmethod
+    def from_text(cls, root: Path, rel: str, text: str) -> "SourceFile":
+        """A file whose content is given (staged content from git) rather than read from disk."""
+        sf = cls(root, rel)
+        sf._loaded = True
+        sf._text = text.replace("\r\n", "\n").replace("\r", "\n")
+        return sf
+
     @property
     def text(self) -> Optional[str]:
         if not self._loaded:

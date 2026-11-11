@@ -5,3 +5,10 @@
   language: python
   pass_filenames: false
   always_run: true
+- id: vibeaudit-secrets
+  name: vibeaudit (secrets, fast)
+  description: Block commits that add secrets, checking only the staged lines (well under a second).
+  entry: vibeaudit-hook
+  language: python
+  pass_filenames: false
+  always_run: true

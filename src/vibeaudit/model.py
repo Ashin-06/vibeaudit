@@ -7,6 +7,8 @@ from dataclasses import dataclass, field
 from typing import List, Optional
 
 SEVERITIES = ["critical", "high", "medium", "low", "info"]
+SUPPRESS = re.compile(r"vibeaudit\s*:\s*ignore(?:\[([A-Za-z0-9_:,\s-]+)\])?", re.I)
+TEST_FILE_RULES = {"SEC001", "SEC002", "SEC009"}  # real credentials matter even in tests and examples
 SEVERITY_RANK = {s: i for i, s in enumerate(SEVERITIES)}  # lower is worse
 
 

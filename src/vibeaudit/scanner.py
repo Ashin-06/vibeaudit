@@ -17,7 +17,7 @@ from . import heuristics as H
 from .files import Project
 from .guard import GUARD
 from .jsscan import JsScanner
-from .model import SEVERITY_RANK, Finding, at_least
+from .model import SEVERITY_RANK, SUPPRESS, TEST_FILE_RULES, Finding, at_least
 from .projectscan import ProjectScanner
 from .pyscan import PyScanner
 from .qualityscan import QualityScanner
@@ -30,8 +30,6 @@ from .report import Result
 from .rules import RULES
 from .secretscan import SecretScanner
 
-SUPPRESS = re.compile(r"vibeaudit\s*:\s*ignore(?:\[([A-Za-z0-9_:,\s-]+)\])?", re.I)
-TEST_FILE_RULES = {"SEC001", "SEC002", "SEC009"}  # real credentials matter even in tests and examples
 STACK_MARKERS = {
     "flask": "Flask", "fastapi": "FastAPI", "django": "Django", "streamlit": "Streamlit", "gradio": "Gradio",
     "openai": "OpenAI SDK", "anthropic": "Anthropic SDK", "google-genai": "Google GenAI SDK",

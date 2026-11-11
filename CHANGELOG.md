@@ -4,6 +4,15 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- `vibeaudit-hook` and the `vibeaudit-secrets` pre-commit hook: the fast path. It checks only the staged lines
+  for secrets, from the staged content and one `git diff` call, without scanning the rest of the project.
+  CI holds it under 150 ms on a 3-file commit in a 300-file repository; `tools/hook_latency.py` compares it
+  with the full `vibeaudit` hook on corpus repositories.
+
 ## [0.8.0] - 2026-11-11
 
 Phase 2 starts: `vibeaudit fix` repairs findings that have one obvious fix. The benchmark grows to 53
