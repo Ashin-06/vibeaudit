@@ -1,0 +1,38 @@
+{
+ "repo": "podinfo",
+ "commit": "fd3a834ed8d14b80ea334cf8a2fddd4597924da6",
+ "findings": [
+  {
+   "rule": "CFG013",
+   "file": "charts/podinfo/templates/deployment.yaml",
+   "line": 46,
+   "fingerprint": "583bbd5dd2db0cc7f5486f858bec67e4",
+   "verdict": "fp",
+   "reason": "The chart templates the block: resources: with toYaml .Values.resources on the next line."
+  },
+  {
+   "rule": "CFG013",
+   "file": "charts/podinfo/templates/hooks/job.yaml",
+   "line": 22,
+   "fingerprint": "98e3f181020c07f07e76c1e7556895b4",
+   "verdict": "tp",
+   "reason": "The hook job's container sets no resources."
+  },
+  {
+   "rule": "SEC003",
+   "file": "pkg/api/grpc/token_test.go",
+   "line": 27,
+   "fingerprint": "bb296d06f9cbff5a481eb077e6b284ff",
+   "verdict": "fp",
+   "reason": "A fixed secret in a Go unit test (token_test.go)."
+  },
+  {
+   "rule": "UI001",
+   "file": "ui/vue.html",
+   "line": 32,
+   "fingerprint": "44c61f6e879b17a98d4985fdc7b17fd6",
+   "verdict": "tp",
+   "reason": "The img has no alt (static or bound)."
+  }
+ ]
+}

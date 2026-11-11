@@ -1,0 +1,206 @@
+{
+ "repo": "terragoat",
+ "commit": "729f8da62c6a85ce4af5ad3d123de97776d954c4",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/build.yaml",
+   "line": 15,
+   "fingerprint": "6b69838a3aebbccd4bf8d6f584674d42",
+   "verdict": "tp",
+   "reason": "A third-party action used by branch or tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/pull_request.yaml",
+   "line": 14,
+   "fingerprint": "f249bf727d37fbedc76ed98b2b7a35cf",
+   "verdict": "tp",
+   "reason": "A third-party action used by branch or tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/semgrep.yml",
+   "line": 14,
+   "fingerprint": "0a057d0f8bc38c8533d8eb686b8f4ba8",
+   "verdict": "tp",
+   "reason": "A third-party action used by branch or tag."
+  },
+  {
+   "rule": "CFG016",
+   "file": "terraform/aws/db-app.tf",
+   "line": 1,
+   "fingerprint": "7ea6d0572b1d627da0cbe7bee0d9a350",
+   "verdict": "tp",
+   "reason": "The RDS instance sets storage_encrypted = false."
+  },
+  {
+   "rule": "SEC001",
+   "file": "terraform/aws/ec2.tf",
+   "line": 15,
+   "fingerprint": "52721a8294a88c99700b61eea54caabb",
+   "verdict": "tp",
+   "reason": "An AWS key pair is written into the instance user data."
+  },
+  {
+   "rule": "SEC001",
+   "file": "terraform/aws/ec2.tf",
+   "line": 16,
+   "fingerprint": "789c15fa325d693e4ab2a088cf25dd34",
+   "verdict": "tp",
+   "reason": "An AWS key pair is written into the instance user data."
+  },
+  {
+   "rule": "CFG016",
+   "file": "terraform/aws/ec2.tf",
+   "line": 34,
+   "fingerprint": "19c44697e5b8667c8789e2e350ee59dd",
+   "verdict": "tp",
+   "reason": "The EBS volume is unencrypted (the comment says so)."
+  },
+  {
+   "rule": "CFG015",
+   "file": "terraform/aws/ec2.tf",
+   "line": 90,
+   "fingerprint": "d4f89d6d0e568a2e811a2ece20f9cd61",
+   "verdict": "tp",
+   "reason": "SSH is open to 0.0.0.0/0."
+  },
+  {
+   "rule": "CFG016",
+   "file": "terraform/aws/rds.tf",
+   "line": 1,
+   "fingerprint": "0990ee31c83131ab43de2c790020ba5d",
+   "verdict": "tp",
+   "reason": "The RDS cluster does not enable storage encryption."
+  },
+  {
+   "rule": "CFG016",
+   "file": "terraform/aws/rds.tf",
+   "line": 17,
+   "fingerprint": "2580e5b6993864e30baf858a16032f69",
+   "verdict": "tp",
+   "reason": "The RDS cluster does not enable storage encryption."
+  },
+  {
+   "rule": "CFG016",
+   "file": "terraform/aws/rds.tf",
+   "line": 33,
+   "fingerprint": "a71ebfc281994794e0e1318db08f0968",
+   "verdict": "tp",
+   "reason": "The RDS cluster does not enable storage encryption."
+  },
+  {
+   "rule": "CFG016",
+   "file": "terraform/aws/rds.tf",
+   "line": 49,
+   "fingerprint": "14508c8310f95fb5e41640d87c2972b0",
+   "verdict": "tp",
+   "reason": "The RDS cluster does not enable storage encryption."
+  },
+  {
+   "rule": "CFG016",
+   "file": "terraform/aws/rds.tf",
+   "line": 65,
+   "fingerprint": "85eeb17bdaeb2ef4f939c30b7b9a35c6",
+   "verdict": "tp",
+   "reason": "The RDS cluster does not enable storage encryption."
+  },
+  {
+   "rule": "CFG016",
+   "file": "terraform/aws/rds.tf",
+   "line": 81,
+   "fingerprint": "a0f3fab80478a1c2f03b87c3472d8b1b",
+   "verdict": "tp",
+   "reason": "The RDS cluster does not enable storage encryption."
+  },
+  {
+   "rule": "CFG016",
+   "file": "terraform/aws/rds.tf",
+   "line": 97,
+   "fingerprint": "ec43c1d7f4a318249c2e3f1e592f362e",
+   "verdict": "tp",
+   "reason": "The RDS cluster does not enable storage encryption."
+  },
+  {
+   "rule": "CFG016",
+   "file": "terraform/aws/rds.tf",
+   "line": 113,
+   "fingerprint": "644ebec958a931e26b88423734158bfa",
+   "verdict": "tp",
+   "reason": "The RDS cluster does not enable storage encryption."
+  },
+  {
+   "rule": "CFG016",
+   "file": "terraform/aws/rds.tf",
+   "line": 130,
+   "fingerprint": "d29c792b4c1a987649c5dbb282c83688",
+   "verdict": "tp",
+   "reason": "The RDS cluster does not enable storage encryption."
+  },
+  {
+   "rule": "CFG001",
+   "file": "terraform/aws/resources/Dockerfile",
+   "line": 1,
+   "fingerprint": "e9c0856ce58ca0c7238d54fa7f7b5072",
+   "verdict": "tp",
+   "reason": "The image runs as root."
+  },
+  {
+   "rule": "SEC003",
+   "file": "terraform/azure/mssql.tf",
+   "line": 26,
+   "fingerprint": "d116d09826c50b1303fdfc931a5e6764",
+   "verdict": "tp",
+   "reason": "The SQL Server administrator password is hard-coded."
+  },
+  {
+   "rule": "SEC003",
+   "file": "terraform/azure/mssql.tf",
+   "line": 45,
+   "fingerprint": "59c442427add8bd32d7173a38f037957",
+   "verdict": "tp",
+   "reason": "The SQL Server administrator password is hard-coded."
+  },
+  {
+   "rule": "SEC003",
+   "file": "terraform/azure/mssql.tf",
+   "line": 64,
+   "fingerprint": "8fe225b5f267e9d0f52b8e677a748acc",
+   "verdict": "tp",
+   "reason": "The SQL Server administrator password is hard-coded."
+  },
+  {
+   "rule": "SEC003",
+   "file": "terraform/azure/mssql.tf",
+   "line": 83,
+   "fingerprint": "3e572e5354c2665dbadf38dcba5b3917",
+   "verdict": "tp",
+   "reason": "The SQL Server administrator password is hard-coded."
+  },
+  {
+   "rule": "SEC003",
+   "file": "terraform/azure/mssql.tf",
+   "line": 102,
+   "fingerprint": "93de583c1c84f709afe551aed6feb0a3",
+   "verdict": "tp",
+   "reason": "The SQL Server administrator password is hard-coded."
+  },
+  {
+   "rule": "SEC003",
+   "file": "terraform/azure/mssql.tf",
+   "line": 121,
+   "fingerprint": "58b8bc48a37bb405ee7e51fa2b3cdcdb",
+   "verdict": "tp",
+   "reason": "The SQL Server administrator password is hard-coded."
+  },
+  {
+   "rule": "SEC003",
+   "file": "terraform/azure/mssql.tf",
+   "line": 140,
+   "fingerprint": "8f88ed504743132e66a8c204b0eb734a",
+   "verdict": "tp",
+   "reason": "The SQL Server administrator password is hard-coded."
+  }
+ ]
+}

@@ -422,12 +422,14 @@ Not covered (see [ROADMAP.md](ROADMAP.md); contributions welcome):
 
 ## Accuracy
 
-Every rule is measured on a labelled benchmark: 32 public repositories pinned to exact commits (AI-built
-Lovable/Supabase apps, LLM apps, well-maintained Python and JavaScript projects and one deliberately
-vulnerable app), where each of the 570 findings was read in the code and labelled true or false, plus
-seeded examples for recall. Precision per rule, seeded recall and the status of every rule are in
-[benchmark/RESULTS.md](benchmark/RESULTS.md): 88% of findings are true positives overall, and every
-stable rule with at least 5 labelled findings is at 90% or above. Rules below that are in preview.
+Every rule is measured on a labelled benchmark: 40 public repositories pinned to exact commits (AI-built
+Lovable/Supabase apps, LLM apps, well-maintained Python and JavaScript projects, infrastructure code and
+two deliberately vulnerable projects), where each of the 716 findings was read in the code and labelled
+true or false, plus seeded examples for recall. 32 repositories were used to find and fix false positives
+(89% of their findings are true); 8 are held out and never used for tuning (90% true). Precision per rule
+on both splits, seeded recall and the status of every rule are in
+[benchmark/RESULTS.md](benchmark/RESULTS.md). Every stable rule with at least 5 labelled findings is at
+90% or above; rules below that are in preview, and a rule leaves preview only on its held-out precision.
 CI fails when a rule's precision drops, a labelled true positive disappears or seeded recall drops.
 
 Reproduce it (the repositories are cloned into `~/.cache/vibeaudit-bench`, never into this one):

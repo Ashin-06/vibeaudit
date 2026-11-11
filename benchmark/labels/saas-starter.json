@@ -1,0 +1,30 @@
+{
+ "repo": "saas-starter",
+ "commit": "6e33e58b1e553a41fe22e6b941a7229a002de361",
+ "findings": [
+  {
+   "rule": "UI011",
+   "file": "app/layout.tsx",
+   "line": 1,
+   "fingerprint": "616e6a7e28860edd004ea2fcb628c15c",
+   "verdict": "tp",
+   "reason": "The app directory has no error.tsx."
+  },
+  {
+   "rule": "QA001",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "6ebc345ae714486cf41d50d631704e0c",
+   "verdict": "tp",
+   "reason": "No tests and no CI in the project."
+  },
+  {
+   "rule": "QA002",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
+   "verdict": "tp",
+   "reason": "No tests and no CI in the project."
+  }
+ ]
+}

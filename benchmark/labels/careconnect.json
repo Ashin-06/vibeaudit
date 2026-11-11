@@ -1,0 +1,286 @@
+{
+ "repo": "careconnect",
+ "commit": "e515b3df4d59b7caab3a8aa4c0ebf7e2e8b1e1e3",
+ "findings": [
+  {
+   "rule": "QA001",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "6ebc345ae714486cf41d50d631704e0c",
+   "verdict": "tp",
+   "reason": "No tests and no CI in the project."
+  },
+  {
+   "rule": "QA002",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
+   "verdict": "tp",
+   "reason": "No tests and no CI in the project."
+  },
+  {
+   "rule": "FE001",
+   "file": "src/components/ChatbotWidget.tsx",
+   "line": 444,
+   "fingerprint": "8f4e1dc7a070ba1644c922774929e8ee",
+   "verdict": "tp",
+   "reason": "Chat message text goes through a bold/newline replace only and is rendered as HTML."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/components/admin/EditCuidadorModal.tsx",
+   "line": 270,
+   "fingerprint": "7c56bfa1ad5212b994dd44d764f0be02",
+   "verdict": "tp",
+   "reason": "The select has no id, aria-label or wrapping label; the visible label has no htmlFor."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/components/admin/EditCuidadorModal.tsx",
+   "line": 323,
+   "fingerprint": "ff8f72b87710606d930a2ba28fbdb89a",
+   "verdict": "tp",
+   "reason": "The select has no id, aria-label or wrapping label; the visible label has no htmlFor."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/components/admin/EditCuidadorModal.tsx",
+   "line": 344,
+   "fingerprint": "5f8d91ba8db2b12443f89b536b87f5e3",
+   "verdict": "tp",
+   "reason": "The select has no id, aria-label or wrapping label; the visible label has no htmlFor."
+  },
+  {
+   "rule": "UI006",
+   "file": "src/components/admin/ImageGallery.tsx",
+   "line": 222,
+   "fingerprint": "01ec1275072263e78941a0d5214849dd",
+   "verdict": "tp",
+   "reason": "The image is deleted straight from the click; the file has no confirmation."
+  },
+  {
+   "rule": "FE001",
+   "file": "src/components/admin/RichTextEditor.tsx",
+   "line": 60,
+   "fingerprint": "37731a5a516d2daba54ab6865f6f274e",
+   "verdict": "fp",
+   "reason": "A rich text editor loading its own stored HTML into its contentEditable area."
+  },
+  {
+   "rule": "FE001",
+   "file": "src/components/admin/RichTextEditor.tsx",
+   "line": 64,
+   "fingerprint": "c17a8d50b70f588d6a024964db9ac6b7",
+   "verdict": "fp",
+   "reason": "A rich text editor loading its own stored HTML into its contentEditable area."
+  },
+  {
+   "rule": "FE001",
+   "file": "src/components/admin/RichTextEditor.tsx",
+   "line": 112,
+   "fingerprint": "8309b0784a08769aa5720aa2dce6e8ca",
+   "verdict": "tp",
+   "reason": "Model output (improvedText) is written to innerHTML."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/components/caregiver-dashboard/PersonalDataSection.tsx",
+   "line": 160,
+   "fingerprint": "abb87e48e8e5827c0a093adf0f68f246",
+   "verdict": "tp",
+   "reason": "The select has no id, aria-label or wrapping label; the visible label has no htmlFor."
+  },
+  {
+   "rule": "UI017",
+   "file": "src/components/home/Partners.tsx",
+   "line": 141,
+   "fingerprint": "3fa475c347aea7144ac80c65d36d8b46",
+   "verdict": "tp",
+   "reason": "public/ has no placeholder.svg."
+  },
+  {
+   "rule": "QA006",
+   "file": "src/components/ui/sidebar.tsx",
+   "line": 6,
+   "fingerprint": "9726d27f6c83ebf5d7b387831df6c716",
+   "verdict": "tp",
+   "reason": "src/hooks has no use-mobile file."
+  },
+  {
+   "rule": "FE001",
+   "file": "src/pages/BlogPost.tsx",
+   "line": 240,
+   "fingerprint": "326563f9e7336a4d73713af5eaf57a5e",
+   "verdict": "fp",
+   "reason": "Blog post markdown authored by the site's admins, rendered as HTML by design."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/pages/CadastrarCuidador.tsx",
+   "line": 410,
+   "fingerprint": "c3daa0eb8ce07e4e684855b2f6b0b766",
+   "verdict": "tp",
+   "reason": "The select has no id, aria-label or wrapping label; the visible label has no htmlFor."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/pages/CadastrarCuidador.tsx",
+   "line": 727,
+   "fingerprint": "d393f10c9739ed379f8063ac974ab460",
+   "verdict": "tp",
+   "reason": "The select has no id, aria-label or wrapping label; the visible label has no htmlFor."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/pages/CadastrarCuidador.tsx",
+   "line": 757,
+   "fingerprint": "641386c701a48735efebbcb2c91c1c48",
+   "verdict": "tp",
+   "reason": "The select has no id, aria-label or wrapping label; the visible label has no htmlFor."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/pages/ClientDashboard.tsx",
+   "line": 965,
+   "fingerprint": "365230cdb94ed60cb8d0d7f07193c6ee",
+   "verdict": "tp",
+   "reason": "The select has no id, aria-label or wrapping label; the visible label has no htmlFor."
+  },
+  {
+   "rule": "UI009",
+   "file": "src/pages/PreCadastro.tsx",
+   "line": 131,
+   "fingerprint": "efdf5880e1b4c104a0fcc6e49b355fa0",
+   "verdict": "tp",
+   "reason": "The effect fetches data and the component shows no loading state."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/pages/PreCadastro.tsx",
+   "line": 549,
+   "fingerprint": "94174951f319c48f22f968ae7995a8a1",
+   "verdict": "fp",
+   "reason": "The checkbox is inside a shadcn FormControl, which gives it the id its FormLabel points to."
+  },
+  {
+   "rule": "UI009",
+   "file": "src/pages/admin/Dashboard.tsx",
+   "line": 25,
+   "fingerprint": "c07d122e53fe109299b88958a75ab92c",
+   "verdict": "tp",
+   "reason": "The effect fetches data and the component shows no loading state."
+  },
+  {
+   "rule": "FE005",
+   "file": "src/pages/admin/Login.tsx",
+   "line": 96,
+   "fingerprint": "8a7edccef908ed61a4dc0846c62d07da",
+   "verdict": "tp",
+   "reason": "The admin session token is stored in localStorage."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/pages/admin/PartnersManagement.tsx",
+   "line": 235,
+   "fingerprint": "d816d5a398a3096a3ca221bcd85d7aef",
+   "verdict": "tp",
+   "reason": "The select has no id, aria-label or wrapping label; the visible label has no htmlFor."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/pages/admin/PartnersManagement.tsx",
+   "line": 247,
+   "fingerprint": "74cf7c86060101da879c9bc4396293b6",
+   "verdict": "tp",
+   "reason": "The select has no id, aria-label or wrapping label; the visible label has no htmlFor."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/pages/admin/TestimonialsManagement.tsx",
+   "line": 338,
+   "fingerprint": "6fad1905411011adfafc24ef83a1620b",
+   "verdict": "tp",
+   "reason": "The select has no id, aria-label or wrapping label; the visible label has no htmlFor."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/pages/admin/UsersManagement.tsx",
+   "line": 511,
+   "fingerprint": "d665dacbcf28eaaa5cb256a04bf56c5f",
+   "verdict": "tp",
+   "reason": "The select has no id, aria-label or wrapping label; the visible label has no htmlFor."
+  },
+  {
+   "rule": "UI003",
+   "file": "src/pages/admin/UsersManagement.tsx",
+   "line": 525,
+   "fingerprint": "19cb054d94e2452c0b3aa817dd67c6f9",
+   "verdict": "tp",
+   "reason": "The select has no id, aria-label or wrapping label; the visible label has no htmlFor."
+  },
+  {
+   "rule": "DATA005",
+   "file": "supabase/create_customer_table.sql",
+   "line": 28,
+   "fingerprint": "c37ec04a2e61ecfb54692dc5622d227e",
+   "verdict": "tp",
+   "reason": "The customer table policies allow every visitor to read, insert and update all rows."
+  },
+  {
+   "rule": "AUTH006",
+   "file": "supabase/create_customer_table.sql",
+   "line": 34,
+   "fingerprint": "1fb48f25f227a235e80aabe0e109d6d3",
+   "verdict": "tp",
+   "reason": "The customer table policies allow every visitor to read, insert and update all rows."
+  },
+  {
+   "rule": "AUTH006",
+   "file": "supabase/create_customer_table.sql",
+   "line": 40,
+   "fingerprint": "11749f76862b7ec1d8ec57f39f5214e0",
+   "verdict": "tp",
+   "reason": "The customer table policies allow every visitor to read, insert and update all rows."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "supabase/functions/blog-ai-assistant/index.ts",
+   "line": 14,
+   "fingerprint": "2297b6652d11a170b0db57f3f31c3997",
+   "verdict": "tp",
+   "reason": "The function calls OpenAI with no auth check and no rate limit."
+  },
+  {
+   "rule": "BE018",
+   "file": "supabase/functions/blog-ai-assistant/index.ts",
+   "line": 14,
+   "fingerprint": "b4453072f8b76b60539b0fbcc097d6a7",
+   "verdict": "tp",
+   "reason": "The request body is used without validation."
+  },
+  {
+   "rule": "LLM004",
+   "file": "supabase/functions/blog-ai-assistant/index.ts",
+   "line": 14,
+   "fingerprint": "f1d08b91bc400e2c9783d7dbaecddafc",
+   "verdict": "tp",
+   "reason": "The function calls OpenAI with no auth check and no rate limit."
+  },
+  {
+   "rule": "LLM003",
+   "file": "supabase/functions/blog-ai-assistant/index.ts",
+   "line": 75,
+   "fingerprint": "dc8b07bb9cf6d1f13324af2a553e326e",
+   "verdict": "tp",
+   "reason": "The completion request sets no token limit."
+  },
+  {
+   "rule": "SEC011",
+   "file": "test-rls.js",
+   "line": 11,
+   "fingerprint": "6a4491b54612ad3a3ad8c1157fb79551",
+   "verdict": "tp",
+   "reason": "A test script with a hard-coded account password."
+  }
+ ]
+}

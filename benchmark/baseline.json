@@ -6,9 +6,14 @@
    "by_repo": {}
   },
   "API001": {
-   "precision": null,
+   "precision": 0.0,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "openai-assistants-quickstart": [
+     0,
+     3
+    ]
+   }
   },
   "API002": {
    "precision": null,
@@ -27,12 +32,20 @@
      2,
      0
     ],
+    "careconnect": [
+     1,
+     0
+    ],
     "chatbot-ui": [
      1,
      0
     ],
     "helpdesk-flow-verse": [
      5,
+     0
+    ],
+    "langchain-nextjs-template": [
+     7,
      0
     ],
     "learnathon-leaderboard": [
@@ -43,12 +56,20 @@
      3,
      0
     ],
+    "openai-assistants-quickstart": [
+     3,
+     0
+    ],
     "scriptforge-ai": [
      3,
      0
     ],
     "sec-insights": [
      1,
+     0
+    ],
+    "thynk": [
+     3,
      0
     ]
    }
@@ -93,9 +114,13 @@
    }
   },
   "AUTH006": {
-   "precision": 0.9231,
+   "precision": 0.9333,
    "seeded_recall": 1.0,
    "by_repo": {
+    "careconnect": [
+     2,
+     0
+    ],
     "prompt-sculptor-49": [
      2,
      1
@@ -128,6 +153,10 @@
     "djangoproject.com": [
      0,
      1
+    ],
+    "flasky": [
+     0,
+     1
     ]
    }
   },
@@ -141,6 +170,10 @@
     ],
     "chatgpt-your-files": [
      1,
+     0
+    ],
+    "flasky": [
+     3,
      0
     ],
     "full-stack-fastapi-template": [
@@ -268,9 +301,14 @@
    "by_repo": {}
   },
   "BE011": {
-   "precision": null,
+   "precision": 0.0,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "flasky": [
+     0,
+     1
+    ]
+   }
   },
   "BE012": {
    "precision": 1.0,
@@ -323,11 +361,15 @@
     "LinguaLearn": [
      6,
      0
+    ],
+    "thynk": [
+     7,
+     0
     ]
    }
   },
   "BE018": {
-   "precision": 0.6667,
+   "precision": 0.7273,
    "seeded_recall": 1.0,
    "by_repo": {
     "Vulnerable-Flask-App": [
@@ -337,6 +379,10 @@
     "act-solo-ai": [
      0,
      1
+    ],
+    "careconnect": [
+     1,
+     0
     ],
     "chatgpt-your-files": [
      1,
@@ -353,6 +399,10 @@
     "node-express-realworld-example-app": [
      0,
      1
+    ],
+    "openai-assistants-quickstart": [
+     1,
+     0
     ],
     "physicalmediavault": [
      1,
@@ -415,6 +465,14 @@
     "sec-insights": [
      2,
      0
+    ],
+    "terragoat": [
+     1,
+     0
+    ],
+    "thynk": [
+     1,
+     0
     ]
    }
   },
@@ -423,6 +481,10 @@
    "seeded_recall": 1.0,
    "by_repo": {
     "opengpts": [
+     1,
+     0
+    ],
+    "thynk": [
      1,
      0
     ]
@@ -538,6 +600,14 @@
     "opengpts": [
      4,
      0
+    ],
+    "terragoat": [
+     3,
+     0
+    ],
+    "thynk": [
+     1,
+     0
     ]
    }
   },
@@ -552,9 +622,14 @@
    "by_repo": {}
   },
   "CFG013": {
-   "precision": null,
+   "precision": 0.5,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "podinfo": [
+     1,
+     1
+    ]
+   }
   },
   "CFG014": {
    "precision": null,
@@ -562,17 +637,27 @@
    "by_repo": {}
   },
   "CFG015": {
-   "precision": null,
+   "precision": 1.0,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "terragoat": [
+     1,
+     0
+    ]
+   }
   },
   "CFG016": {
-   "precision": null,
+   "precision": 1.0,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "terragoat": [
+     11,
+     0
+    ]
+   }
   },
   "DATA001": {
-   "precision": 0.2,
+   "precision": 0.1667,
    "seeded_recall": 1.0,
    "by_repo": {
     "Django-Styleguide-Example": [
@@ -582,6 +667,10 @@
     "djangoproject.com": [
      1,
      3
+    ],
+    "flasky": [
+     0,
+     1
     ]
    }
   },
@@ -610,9 +699,14 @@
    "by_repo": {}
   },
   "DATA005": {
-   "precision": null,
+   "precision": 1.0,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "careconnect": [
+     1,
+     0
+    ]
+   }
   },
   "DATA006": {
    "precision": 1.0,
@@ -626,6 +720,10 @@
      2,
      0
     ],
+    "flasky": [
+     1,
+     0
+    ],
     "sec-insights": [
      4,
      0
@@ -633,7 +731,7 @@
    }
   },
   "DATA007": {
-   "precision": 0.5,
+   "precision": 0.5385,
    "seeded_recall": 1.0,
    "by_repo": {
     "bakerydemo": [
@@ -649,6 +747,10 @@
      2
     ],
     "prompt-sculptor-49": [
+     1,
+     0
+    ],
+    "thynk": [
      1,
      0
     ]
@@ -744,7 +846,7 @@
    "by_repo": {}
   },
   "FE001": {
-   "precision": 0.6667,
+   "precision": 0.6053,
    "seeded_recall": 1.0,
    "by_repo": {
     "act-solo-ai": [
@@ -755,8 +857,16 @@
      3,
      1
     ],
+    "careconnect": [
+     2,
+     3
+    ],
     "commerce": [
      1,
+     1
+    ],
+    "flasky": [
+     0,
      1
     ],
     "microblog": [
@@ -774,6 +884,10 @@
     "openui": [
      3,
      0
+    ],
+    "thynk": [
+     1,
+     1
     ],
     "werkzeug": [
      0,
@@ -809,6 +923,10 @@
      5,
      0
     ],
+    "careconnect": [
+     1,
+     0
+    ],
     "full-stack-fastapi-template": [
      1,
      0
@@ -821,16 +939,24 @@
    "by_repo": {}
   },
   "FE007": {
-   "precision": 0.75,
+   "precision": 0.8571,
    "seeded_recall": 1.0,
    "by_repo": {
     "LinguaLearn": [
      3,
      0
     ],
+    "langchain-nextjs-template": [
+     1,
+     0
+    ],
     "openui": [
      0,
      1
+    ],
+    "thynk": [
+     2,
+     0
     ]
    }
   },
@@ -850,6 +976,10 @@
    "by_repo": {
     "ai-chatbot": [
      9,
+     0
+    ],
+    "careconnect": [
+     1,
      0
     ],
     "chatbot-ui": [
@@ -878,6 +1008,10 @@
    "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
+    "careconnect": [
+     1,
+     0
+    ],
     "chatbot-ui": [
      11,
      0
@@ -890,12 +1024,24 @@
      4,
      0
     ],
+    "langchain-nextjs-template": [
+     7,
+     0
+    ],
+    "openai-assistants-quickstart": [
+     1,
+     0
+    ],
     "opengpts": [
      1,
      0
     ],
     "scriptforge-ai": [
      3,
+     0
+    ],
+    "thynk": [
+     2,
      0
     ]
    }
@@ -991,6 +1137,10 @@
    "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
+    "careconnect": [
+     1,
+     0
+    ],
     "chatgpt-your-files": [
      1,
      0
@@ -1015,7 +1165,15 @@
      1,
      0
     ],
+    "openai-assistants-quickstart": [
+     1,
+     0
+    ],
     "prompt-sculptor-49": [
+     1,
+     0
+    ],
+    "saas-starter": [
      1,
      0
     ],
@@ -1033,6 +1191,10 @@
      1,
      0
     ],
+    "careconnect": [
+     1,
+     0
+    ],
     "chatbot-ui": [
      1,
      0
@@ -1045,7 +1207,15 @@
      1,
      0
     ],
+    "flasky": [
+     1,
+     0
+    ],
     "helpdesk-flow-verse": [
+     1,
+     0
+    ],
+    "langchain-nextjs-template": [
      1,
      0
     ],
@@ -1065,11 +1235,19 @@
      1,
      0
     ],
+    "openai-assistants-quickstart": [
+     1,
+     0
+    ],
     "physicalmediavault": [
      1,
      0
     ],
     "prompt-sculptor-49": [
+     1,
+     0
+    ],
+    "saas-starter": [
      1,
      0
     ],
@@ -1149,6 +1327,10 @@
    "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
+    "careconnect": [
+     1,
+     0
+    ],
     "chatbot-ui": [
      1,
      0
@@ -1159,6 +1341,10 @@
     ],
     "sync-plan-flow": [
      2,
+     0
+    ],
+    "thynk": [
+     3,
      0
     ]
    }
@@ -1193,6 +1379,10 @@
     ],
     "sec-insights": [
      4,
+     0
+    ],
+    "thynk": [
+     2,
      0
     ]
    }
@@ -1233,6 +1423,10 @@
     ],
     "sec-insights": [
      6,
+     0
+    ],
+    "thynk": [
+     4,
      0
     ]
    }
@@ -1283,6 +1477,10 @@
      1,
      0
     ],
+    "flasky": [
+     1,
+     0
+    ],
     "microblog": [
      1,
      0
@@ -1306,7 +1504,7 @@
    }
   },
   "SEC001": {
-   "precision": 0.9615,
+   "precision": 0.9643,
    "seeded_recall": 1.0,
    "by_repo": {
     "Django-Styleguide-Example": [
@@ -1320,6 +1518,10 @@
     "prompt-sculptor-49": [
      24,
      0
+    ],
+    "terragoat": [
+     2,
+     0
     ]
    }
   },
@@ -1329,7 +1531,7 @@
    "by_repo": {}
   },
   "SEC003": {
-   "precision": 0.8182,
+   "precision": 0.8421,
    "seeded_recall": 1.0,
    "by_repo": {
     "bakerydemo": [
@@ -1340,8 +1542,16 @@
      0,
      1
     ],
+    "podinfo": [
+     0,
+     1
+    ],
     "prompt-sculptor-49": [
      9,
+     0
+    ],
+    "terragoat": [
+     7,
      0
     ]
    }
@@ -1428,7 +1638,7 @@
    }
   },
   "SEC011": {
-   "precision": 0.6667,
+   "precision": 0.75,
    "seeded_recall": 1.0,
    "by_repo": {
     "LinguaLearn": [
@@ -1436,6 +1646,10 @@
      0
     ],
     "Vulnerable-Flask-App": [
+     1,
+     0
+    ],
+    "careconnect": [
      1,
      0
     ],
@@ -1453,8 +1667,16 @@
      2,
      0
     ],
+    "flasky": [
+     5,
+     0
+    ],
     "microblog": [
      4,
+     0
+    ],
+    "podinfo": [
+     1,
      0
     ],
     "sec-insights": [
@@ -1464,7 +1686,7 @@
    }
   },
   "UI002": {
-   "precision": 0.9722,
+   "precision": 0.973,
    "seeded_recall": 1.0,
    "by_repo": {
     "chatbot-ui": [
@@ -1478,6 +1700,10 @@
     "commerce": [
      1,
      1
+    ],
+    "openai-assistants-quickstart": [
+     1,
+     0
     ],
     "opengpts": [
      11,
@@ -1502,12 +1728,16 @@
    }
   },
   "UI003": {
-   "precision": 1.0,
+   "precision": 0.9787,
    "seeded_recall": 1.0,
    "by_repo": {
     "LinguaLearn": [
      1,
      0
+    ],
+    "careconnect": [
+     13,
+     1
     ],
     "chatgpt-your-files": [
      2,
@@ -1521,12 +1751,20 @@
      3,
      0
     ],
+    "langchain-nextjs-template": [
+     1,
+     0
+    ],
     "next-learn": [
      3,
      0
     ],
     "nextjs-subscription-payments": [
      2,
+     0
+    ],
+    "openai-assistants-quickstart": [
+     1,
      0
     ],
     "opengpts": [
@@ -1571,10 +1809,14 @@
    "by_repo": {}
   },
   "UI006": {
-   "precision": 0.7143,
+   "precision": 0.6667,
    "seeded_recall": 1.0,
    "by_repo": {
     "act-solo-ai": [
+     1,
+     0
+    ],
+    "careconnect": [
      1,
      0
     ],
@@ -1591,6 +1833,10 @@
      1
     ],
     "sync-plan-flow": [
+     0,
+     1
+    ],
+    "thynk": [
      0,
      1
     ]
@@ -1610,6 +1856,14 @@
    "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
+    "careconnect": [
+     2,
+     0
+    ],
+    "openai-assistants-quickstart": [
+     1,
+     0
+    ],
     "opengpts": [
      2,
      0
@@ -1637,7 +1891,19 @@
      1,
      0
     ],
+    "langchain-nextjs-template": [
+     1,
+     0
+    ],
     "nextjs-subscription-payments": [
+     1,
+     0
+    ],
+    "openai-assistants-quickstart": [
+     1,
+     0
+    ],
+    "saas-starter": [
      1,
      0
     ],
@@ -1663,12 +1929,16 @@
    "by_repo": {}
   },
   "UI014": {
-   "precision": 0.9091,
+   "precision": 0.9231,
    "seeded_recall": 1.0,
    "by_repo": {
     "djangoproject.com": [
      5,
      1
+    ],
+    "flasky": [
+     1,
+     0
     ],
     "microblog": [
      3,
@@ -1676,6 +1946,10 @@
     ],
     "next-learn": [
      2,
+     0
+    ],
+    "openai-assistants-quickstart": [
+     1,
      0
     ]
    }
@@ -1724,6 +1998,10 @@
    "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
+    "careconnect": [
+     1,
+     0
+    ],
     "full-stack-fastapi-template": [
      1,
      0

@@ -7,7 +7,7 @@ table per rule) and [results.json](results.json). The policy that uses them: [ST
 
 | Path | What it is |
 | --- | --- |
-| `corpus.json` | 32 public repositories, each pinned to an exact commit, with its licence and kind. |
+| `corpus.json` | 40 public repositories, each pinned to an exact commit, with its licence, kind and split (8 are held out). |
 | `labels/<repo>.json` | One entry per reviewed finding: rule, file, line, fingerprint, `tp` or `fp`, and a one-line reason. |
 | `seeded/` | Small known-vulnerable apps with `expect: RULE` markers, for rules that real projects rarely trigger. |
 | `baseline.json` | Per-rule precision and seeded recall (and per-repository counts) that the CI gate compares against. |
@@ -66,6 +66,34 @@ are doing:
 | taxonomy | well-maintained | shadcn-ui/taxonomy | 298a8857c712 | MIT |
 | werkzeug | well-maintained | pallets/werkzeug | 0f43c6ebd426 | BSD-3-Clause |
 | Vulnerable-Flask-App | known-vulnerable | we45/Vulnerable-Flask-App | b6a4f97afd46 | none declared |
+
+## Tuned and held-out splits
+
+Fixing a rule while looking at its false positives, and then measuring it on the same findings, flatters
+the rule. So the corpus has two parts:
+
+- **Tuned (32 repositories):** used to find and fix false positives. Its precision shows that known causes
+  are fixed, nothing more.
+- **Held-out (8 repositories, `"split": "heldout"` in corpus.json):** careconnect, thynk,
+  langchain-nextjs-template, openai-assistants-quickstart, saas-starter, flasky, podinfo and terragoat.
+  Their findings are labelled the same way, but **no rule is changed because of them**. Held-out precision
+  is what decides whether a rule may leave preview ([STABILITY.md](../STABILITY.md)).
+
+Rules for keeping the held-out split honest:
+
+- A false positive seen only on held-out repositories is written down (below), not fixed.
+- If one is worth fixing anyway, the repository it came from moves to the tuned split in the same change,
+  and a new repository replaces it in the held-out split before any rule graduates on the new numbers.
+- New rules are developed and tuned on the tuned split and on seeded cases only.
+
+Known held-out false positives (not fixed, by the rule above): API001 does not recognise `route.tsx` files
+(openai-assistants-quickstart); CFG013 misses a templated Helm `resources:` block whose template is on the
+next line (podinfo); `_test.go` files are not treated as tests (podinfo, SEC003); DEBUG and CSRF settings
+inside development and testing config classes (flasky, BE011 and AUTH009); `|safe` on HTML already cleaned
+with bleach (flasky, FE001).
+
+[RESULTS.md](RESULTS.md) shows both precisions for every rule. First held-out measurement (0.7.1 rules):
+146 findings, 131 true and 15 false, 89.7%, against 88.8% on the tuned split.
 
 ## How findings are labelled
 

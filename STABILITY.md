@@ -20,10 +20,11 @@ A rule is in **preview** when it is new or when its measured precision is not go
 - They do not count toward `--fail-on`, the score or the grade, unless you pass `--include-preview` (or set
   `include-preview = true` in the configuration).
 - **Every new rule starts as preview** and stays in preview for at least one release.
-- A rule leaves preview when its precision on the [benchmark](benchmark/README.md) is at least 90%,
-  measured on at least 5 labelled real-world findings, or, when real projects give too few findings, when
-  it has seeded cases and no labelled false positive. The release that promotes it says so in the
-  CHANGELOG.
+- A rule leaves preview when its precision on the **held-out** split of the
+  [benchmark](benchmark/README.md) is at least 90%, measured on at least 5 labelled findings. Held-out
+  repositories are never used to tune a rule, so this number is not flattered by fixes made while looking
+  at the findings. Precision on the tuned split and seeded recall are necessary but not enough. The
+  release that promotes a rule says so in the CHANGELOG.
 - A stable rule whose precision falls below 90% is moved back to preview with the measured reason in its
   `preview_reason`, until it is fixed. `vibeaudit rules --format json` and docs/RULES.md show the status and
   the reason of every rule.

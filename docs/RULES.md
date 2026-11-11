@@ -5,7 +5,7 @@ Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do n
 
 129 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-20 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+21 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -445,7 +445,7 @@ References: CWE-602, A04:2021
 | [FE004](#fe004) | medium | stable | postMessage handler without origin check |
 | [FE005](#fe005) | low | stable | Auth token stored in localStorage |
 | [FE006](#fe006) | low | stable | Production source maps enabled |
-| [FE007](#fe007) | low | stable | Hardcoded localhost URL in frontend code |
+| [FE007](#fe007) | low | preview | Hardcoded localhost URL in frontend code |
 
 ### FE001
 
@@ -511,7 +511,9 @@ References: CWE-540, A05:2021
 
 ### FE007
 
-**Hardcoded localhost URL in frontend code** (low)
+**Hardcoded localhost URL in frontend code** (low, preview)
+
+Preview: Benchmark precision 86% (6 of 7): a localhost URL used only when the app itself runs on localhost is reported too.
 
 Why it matters: A localhost API URL works on the developer's machine and silently breaks (or calls the visitor's own machine) in production.
 

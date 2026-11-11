@@ -1,8 +1,18 @@
 {
  "tool": "vibeaudit benchmark",
- "corpus": 32,
- "scanned": 32,
+ "corpus": 40,
+ "scanned": 40,
  "skipped": {},
+ "heldout": [
+  "careconnect",
+  "flasky",
+  "langchain-nextjs-template",
+  "openai-assistants-quickstart",
+  "podinfo",
+  "saas-starter",
+  "terragoat",
+  "thynk"
+ ],
  "repos": {
   "act-solo-ai": {
    "findings": 19,
@@ -227,6 +237,62 @@
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 17
+  },
+  "careconnect": {
+   "findings": 35,
+   "labelled": 35,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "thynk": {
+   "findings": 30,
+   "labelled": 30,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "langchain-nextjs-template": {
+   "findings": 18,
+   "labelled": 18,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "openai-assistants-quickstart": {
+   "findings": 15,
+   "labelled": 15,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "saas-starter": {
+   "findings": 3,
+   "labelled": 3,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "flasky": {
+   "findings": 16,
+   "labelled": 16,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "podinfo": {
+   "findings": 4,
+   "labelled": 4,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "terragoat": {
+   "findings": 25,
+   "labelled": 25,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
   }
  },
  "rules": {
@@ -248,15 +314,21 @@
    "title": "Frontend calls an API path that no route handles",
    "preview": false,
    "tp": 0,
-   "fp": 0,
+   "fp": 3,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 0.0,
+   "precision_pessimistic": 0.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "openai-assistants-quickstart": [
+     0,
+     3,
+     0
+    ]
+   }
   },
   "API002": {
    "title": "Frontend calls an API route with the wrong method",
@@ -275,7 +347,7 @@
   "AUTH001": {
    "title": "State-changing endpoint without authentication",
    "preview": false,
-   "tp": 18,
+   "tp": 32,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -295,6 +367,11 @@
      0,
      0
     ],
+    "careconnect": [
+     1,
+     0,
+     0
+    ],
     "chatbot-ui": [
      1,
      0,
@@ -302,6 +379,11 @@
     ],
     "helpdesk-flow-verse": [
      5,
+     0,
+     0
+    ],
+    "langchain-nextjs-template": [
+     7,
      0,
      0
     ],
@@ -315,6 +397,11 @@
      0,
      0
     ],
+    "openai-assistants-quickstart": [
+     3,
+     0,
+     0
+    ],
     "scriptforge-ai": [
      3,
      0,
@@ -322,6 +409,11 @@
     ],
     "sec-insights": [
      1,
+     0,
+     0
+    ],
+    "thynk": [
+     3,
      0,
      0
     ]
@@ -409,16 +501,21 @@
   "AUTH006": {
    "title": "Permissive Supabase policy",
    "preview": false,
-   "tp": 12,
+   "tp": 14,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9231,
-   "precision_pessimistic": 0.9231,
+   "precision": 0.9333,
+   "precision_pessimistic": 0.9333,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "careconnect": [
+     2,
+     0,
+     0
+    ],
     "prompt-sculptor-49": [
      2,
      1,
@@ -469,7 +566,7 @@
    "title": "CSRF protection disabled",
    "preview": false,
    "tp": 0,
-   "fp": 1,
+   "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
    "precision": 0.0,
@@ -482,13 +579,18 @@
      0,
      1,
      0
+    ],
+    "flasky": [
+     0,
+     1,
+     0
     ]
    }
   },
   "AUTH010": {
    "title": "Login endpoint without rate limiting",
    "preview": false,
-   "tp": 8,
+   "tp": 11,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -505,6 +607,11 @@
     ],
     "chatgpt-your-files": [
      1,
+     0,
+     0
+    ],
+    "flasky": [
+     3,
      0,
      0
     ],
@@ -742,15 +849,21 @@
    "title": "Debug mode enabled",
    "preview": false,
    "tp": 0,
-   "fp": 0,
+   "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 0.0,
+   "precision_pessimistic": 0.0,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "flasky": [
+     0,
+     1,
+     0
+    ]
+   }
   },
   "BE012": {
    "title": "Insecure CORS policy",
@@ -848,7 +961,7 @@
   "BE017": {
    "title": "Internal error details sent to the client",
    "preview": false,
-   "tp": 6,
+   "tp": 13,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -862,18 +975,23 @@
      6,
      0,
      0
+    ],
+    "thynk": [
+     7,
+     0,
+     0
     ]
    }
   },
   "BE018": {
    "title": "No server-side input validation",
    "preview": true,
-   "tp": 6,
+   "tp": 8,
    "fp": 3,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6667,
-   "precision_pessimistic": 0.6667,
+   "precision": 0.7273,
+   "precision_pessimistic": 0.7273,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
@@ -886,6 +1004,11 @@
     "act-solo-ai": [
      0,
      1,
+     0
+    ],
+    "careconnect": [
+     1,
+     0,
      0
     ],
     "chatgpt-your-files": [
@@ -908,6 +1031,11 @@
      1,
      0
     ],
+    "openai-assistants-quickstart": [
+     1,
+     0,
+     0
+    ],
     "physicalmediavault": [
      1,
      0,
@@ -928,7 +1056,7 @@
   "CFG001": {
    "title": "Container runs as root",
    "preview": false,
-   "tp": 17,
+   "tp": 19,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -992,13 +1120,23 @@
      2,
      0,
      0
+    ],
+    "terragoat": [
+     1,
+     0,
+     0
+    ],
+    "thynk": [
+     1,
+     0,
+     0
     ]
    }
   },
   "CFG002": {
    "title": "Unpinned container base image",
    "preview": false,
-   "tp": 1,
+   "tp": 2,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -1009,6 +1147,11 @@
    "seeded_recall": 1.0,
    "by_repo": {
     "opengpts": [
+     1,
+     0,
+     0
+    ],
+    "thynk": [
      1,
      0,
      0
@@ -1165,7 +1308,7 @@
   "CFG010": {
    "title": "Third-party GitHub Action not pinned to a commit",
    "preview": true,
-   "tp": 19,
+   "tp": 23,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -1214,6 +1357,16 @@
      4,
      0,
      0
+    ],
+    "terragoat": [
+     3,
+     0,
+     0
+    ],
+    "thynk": [
+     1,
+     0,
+     0
     ]
    }
   },
@@ -1248,16 +1401,22 @@
   "CFG013": {
    "title": "Kubernetes container without resource limits",
    "preview": true,
-   "tp": 0,
-   "fp": 0,
+   "tp": 1,
+   "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 0.5,
+   "precision_pessimistic": 0.5,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "podinfo": [
+     1,
+     1,
+     0
+    ]
+   }
   },
   "CFG014": {
    "title": "Public S3 bucket",
@@ -1276,40 +1435,52 @@
   "CFG015": {
    "title": "Admin or database port open to the internet",
    "preview": true,
-   "tp": 0,
+   "tp": 1,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "terragoat": [
+     1,
+     0,
+     0
+    ]
+   }
   },
   "CFG016": {
    "title": "Unencrypted database or disk storage",
    "preview": true,
-   "tp": 0,
+   "tp": 11,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "terragoat": [
+     11,
+     0,
+     0
+    ]
+   }
   },
   "DATA001": {
    "title": "Database query inside a loop (N+1)",
    "preview": true,
    "tp": 1,
-   "fp": 4,
+   "fp": 5,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.2,
-   "precision_pessimistic": 0.2,
+   "precision": 0.1667,
+   "precision_pessimistic": 0.1667,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -1322,6 +1493,11 @@
     "djangoproject.com": [
      1,
      3,
+     0
+    ],
+    "flasky": [
+     0,
+     1,
      0
     ]
    }
@@ -1382,21 +1558,27 @@
   "DATA005": {
    "title": "Private table readable by everyone",
    "preview": false,
-   "tp": 0,
+   "tp": 1,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "careconnect": [
+     1,
+     0,
+     0
+    ]
+   }
   },
   "DATA006": {
    "title": "Timestamp without time zone",
    "preview": false,
-   "tp": 14,
+   "tp": 15,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -1416,6 +1598,11 @@
      0,
      0
     ],
+    "flasky": [
+     1,
+     0,
+     0
+    ],
     "sec-insights": [
      4,
      0,
@@ -1426,12 +1613,12 @@
   "DATA007": {
    "title": "Environment variable missing from the example env file",
    "preview": true,
-   "tp": 6,
+   "tp": 7,
    "fp": 6,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5,
-   "precision_pessimistic": 0.5,
+   "precision": 0.5385,
+   "precision_pessimistic": 0.5385,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -1452,6 +1639,11 @@
      0
     ],
     "prompt-sculptor-49": [
+     1,
+     0,
+     0
+    ],
+    "thynk": [
      1,
      0,
      0
@@ -1657,12 +1849,12 @@
   "FE001": {
    "title": "Cross-site scripting through a raw HTML sink",
    "preview": true,
-   "tp": 20,
-   "fp": 10,
+   "tp": 23,
+   "fp": 15,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6667,
-   "precision_pessimistic": 0.6667,
+   "precision": 0.6053,
+   "precision_pessimistic": 0.6053,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -1677,8 +1869,18 @@
      1,
      0
     ],
+    "careconnect": [
+     2,
+     3,
+     0
+    ],
     "commerce": [
      1,
+     1,
+     0
+    ],
+    "flasky": [
+     0,
      1,
      0
     ],
@@ -1700,6 +1902,11 @@
     "openui": [
      3,
      0,
+     0
+    ],
+    "thynk": [
+     1,
+     1,
      0
     ],
     "werkzeug": [
@@ -1760,7 +1967,7 @@
   "FE005": {
    "title": "Auth token stored in localStorage",
    "preview": false,
-   "tp": 6,
+   "tp": 7,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -1772,6 +1979,11 @@
    "by_repo": {
     "LinguaLearn": [
      5,
+     0,
+     0
+    ],
+    "careconnect": [
+     1,
      0,
      0
     ],
@@ -1798,13 +2010,13 @@
   },
   "FE007": {
    "title": "Hardcoded localhost URL in frontend code",
-   "preview": false,
-   "tp": 3,
+   "preview": true,
+   "tp": 6,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.75,
-   "precision_pessimistic": 0.75,
+   "precision": 0.8571,
+   "precision_pessimistic": 0.8571,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -1814,9 +2026,19 @@
      0,
      0
     ],
+    "langchain-nextjs-template": [
+     1,
+     0,
+     0
+    ],
     "openui": [
      0,
      1,
+     0
+    ],
+    "thynk": [
+     2,
+     0,
      0
     ]
    }
@@ -1852,7 +2074,7 @@
   "LLM003": {
    "title": "LLM call without an output token limit",
    "preview": false,
-   "tp": 25,
+   "tp": 26,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -1864,6 +2086,11 @@
    "by_repo": {
     "ai-chatbot": [
      9,
+     0,
+     0
+    ],
+    "careconnect": [
+     1,
      0,
      0
     ],
@@ -1897,7 +2124,7 @@
   "LLM004": {
    "title": "LLM endpoint without rate limiting",
    "preview": false,
-   "tp": 20,
+   "tp": 31,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -1907,6 +2134,11 @@
    "seeded_found": 4,
    "seeded_recall": 1.0,
    "by_repo": {
+    "careconnect": [
+     1,
+     0,
+     0
+    ],
     "chatbot-ui": [
      11,
      0,
@@ -1922,6 +2154,16 @@
      0,
      0
     ],
+    "langchain-nextjs-template": [
+     7,
+     0,
+     0
+    ],
+    "openai-assistants-quickstart": [
+     1,
+     0,
+     0
+    ],
     "opengpts": [
      1,
      0,
@@ -1929,6 +2171,11 @@
     ],
     "scriptforge-ai": [
      3,
+     0,
+     0
+    ],
+    "thynk": [
+     2,
      0,
      0
     ]
@@ -2130,7 +2377,7 @@
   "QA001": {
    "title": "No automated tests",
    "preview": false,
-   "tp": 8,
+   "tp": 11,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2140,6 +2387,11 @@
    "seeded_found": 2,
    "seeded_recall": 1.0,
    "by_repo": {
+    "careconnect": [
+     1,
+     0,
+     0
+    ],
     "chatgpt-your-files": [
      1,
      0,
@@ -2170,7 +2422,17 @@
      0,
      0
     ],
+    "openai-assistants-quickstart": [
+     1,
+     0,
+     0
+    ],
     "prompt-sculptor-49": [
+     1,
+     0,
+     0
+    ],
+    "saas-starter": [
      1,
      0,
      0
@@ -2185,7 +2447,7 @@
   "QA002": {
    "title": "No continuous integration",
    "preview": false,
-   "tp": 15,
+   "tp": 20,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2196,6 +2458,11 @@
    "seeded_recall": 1.0,
    "by_repo": {
     "LinguaLearn": [
+     1,
+     0,
+     0
+    ],
+    "careconnect": [
      1,
      0,
      0
@@ -2215,7 +2482,17 @@
      0,
      0
     ],
+    "flasky": [
+     1,
+     0,
+     0
+    ],
     "helpdesk-flow-verse": [
+     1,
+     0,
+     0
+    ],
+    "langchain-nextjs-template": [
      1,
      0,
      0
@@ -2240,12 +2517,22 @@
      0,
      0
     ],
+    "openai-assistants-quickstart": [
+     1,
+     0,
+     0
+    ],
     "physicalmediavault": [
      1,
      0,
      0
     ],
     "prompt-sculptor-49": [
+     1,
+     0,
+     0
+    ],
+    "saas-starter": [
      1,
      0,
      0
@@ -2365,7 +2652,7 @@
   "QA006": {
    "title": "Import of a file or name that does not exist",
    "preview": false,
-   "tp": 10,
+   "tp": 14,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2375,6 +2662,11 @@
    "seeded_found": 4,
    "seeded_recall": 1.0,
    "by_repo": {
+    "careconnect": [
+     1,
+     0,
+     0
+    ],
     "chatbot-ui": [
      1,
      0,
@@ -2389,13 +2681,18 @@
      2,
      0,
      0
+    ],
+    "thynk": [
+     3,
+     0,
+     0
     ]
    }
   },
   "QA007": {
    "title": "Package imported but not declared as a dependency",
    "preview": false,
-   "tp": 27,
+   "tp": 29,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2439,6 +2736,11 @@
      4,
      0,
      0
+    ],
+    "thynk": [
+     2,
+     0,
+     0
     ]
    }
   },
@@ -2465,7 +2767,7 @@
   "REL001": {
    "title": "Outbound HTTP request without a timeout",
    "preview": false,
-   "tp": 16,
+   "tp": 20,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2502,6 +2804,11 @@
     ],
     "sec-insights": [
      6,
+     0,
+     0
+    ],
+    "thynk": [
+     4,
      0,
      0
     ]
@@ -2588,7 +2895,7 @@
   "REL006": {
    "title": "No health-check endpoint",
    "preview": false,
-   "tp": 6,
+   "tp": 7,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2599,6 +2906,11 @@
    "seeded_recall": 1.0,
    "by_repo": {
     "Vulnerable-Flask-App": [
+     1,
+     0,
+     0
+    ],
+    "flasky": [
      1,
      0,
      0
@@ -2633,12 +2945,12 @@
   "SEC001": {
    "title": "Hardcoded API key or access token",
    "preview": false,
-   "tp": 25,
+   "tp": 27,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9615,
-   "precision_pessimistic": 0.9615,
+   "precision": 0.9643,
+   "precision_pessimistic": 0.9643,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
@@ -2655,6 +2967,11 @@
     ],
     "prompt-sculptor-49": [
      24,
+     0,
+     0
+    ],
+    "terragoat": [
+     2,
      0,
      0
     ]
@@ -2677,12 +2994,12 @@
   "SEC003": {
    "title": "High-entropy secret assigned in code",
    "preview": true,
-   "tp": 9,
-   "fp": 2,
+   "tp": 16,
+   "fp": 3,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8182,
-   "precision_pessimistic": 0.8182,
+   "precision": 0.8421,
+   "precision_pessimistic": 0.8421,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -2697,8 +3014,18 @@
      1,
      0
     ],
+    "podinfo": [
+     0,
+     1,
+     0
+    ],
     "prompt-sculptor-49": [
      9,
+     0,
+     0
+    ],
+    "terragoat": [
+     7,
      0,
      0
     ]
@@ -2861,12 +3188,12 @@
   "SEC011": {
    "title": "Hardcoded password",
    "preview": false,
-   "tp": 2,
+   "tp": 3,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6667,
-   "precision_pessimistic": 0.6667,
+   "precision": 0.75,
+   "precision_pessimistic": 0.75,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -2881,6 +3208,11 @@
      0,
      0
     ],
+    "careconnect": [
+     1,
+     0,
+     0
+    ],
     "helpdesk-flow-verse": [
      0,
      1,
@@ -2891,7 +3223,7 @@
   "UI001": {
    "title": "Image without alt text",
    "preview": false,
-   "tp": 18,
+   "tp": 24,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2906,8 +3238,18 @@
      0,
      0
     ],
+    "flasky": [
+     5,
+     0,
+     0
+    ],
     "microblog": [
      4,
+     0,
+     0
+    ],
+    "podinfo": [
+     1,
      0,
      0
     ],
@@ -2921,12 +3263,12 @@
   "UI002": {
    "title": "Click handler on a non-interactive element",
    "preview": false,
-   "tp": 35,
+   "tp": 36,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9722,
-   "precision_pessimistic": 0.9722,
+   "precision": 0.973,
+   "precision_pessimistic": 0.973,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -2944,6 +3286,11 @@
     "commerce": [
      1,
      1,
+     0
+    ],
+    "openai-assistants-quickstart": [
+     1,
+     0,
      0
     ],
     "opengpts": [
@@ -2976,12 +3323,12 @@
   "UI003": {
    "title": "Form field without a label",
    "preview": false,
-   "tp": 31,
-   "fp": 0,
+   "tp": 46,
+   "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.9787,
+   "precision_pessimistic": 0.9787,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -2989,6 +3336,11 @@
     "LinguaLearn": [
      1,
      0,
+     0
+    ],
+    "careconnect": [
+     13,
+     1,
      0
     ],
     "chatgpt-your-files": [
@@ -3006,6 +3358,11 @@
      0,
      0
     ],
+    "langchain-nextjs-template": [
+     1,
+     0,
+     0
+    ],
     "next-learn": [
      3,
      0,
@@ -3013,6 +3370,11 @@
     ],
     "nextjs-subscription-payments": [
      2,
+     0,
+     0
+    ],
+    "openai-assistants-quickstart": [
+     1,
      0,
      0
     ],
@@ -3085,17 +3447,22 @@
   "UI006": {
    "title": "Destructive action without confirmation",
    "preview": true,
-   "tp": 5,
-   "fp": 2,
+   "tp": 6,
+   "fp": 3,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.7143,
-   "precision_pessimistic": 0.7143,
+   "precision": 0.6667,
+   "precision_pessimistic": 0.6667,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
     "act-solo-ai": [
+     1,
+     0,
+     0
+    ],
+    "careconnect": [
      1,
      0,
      0
@@ -3116,6 +3483,11 @@
      0
     ],
     "sync-plan-flow": [
+     0,
+     1,
+     0
+    ],
+    "thynk": [
      0,
      1,
      0
@@ -3153,7 +3525,7 @@
   "UI009": {
    "title": "Data loaded without loading or error state",
    "preview": false,
-   "tp": 3,
+   "tp": 6,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -3163,6 +3535,16 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "careconnect": [
+     2,
+     0,
+     0
+    ],
+    "openai-assistants-quickstart": [
+     1,
+     0,
+     0
+    ],
     "opengpts": [
      2,
      0,
@@ -3192,7 +3574,7 @@
   "UI011": {
    "title": "No error page",
    "preview": false,
-   "tp": 4,
+   "tp": 7,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -3212,7 +3594,22 @@
      0,
      0
     ],
+    "langchain-nextjs-template": [
+     1,
+     0,
+     0
+    ],
     "nextjs-subscription-payments": [
+     1,
+     0,
+     0
+    ],
+    "openai-assistants-quickstart": [
+     1,
+     0,
+     0
+    ],
+    "saas-starter": [
      1,
      0,
      0
@@ -3261,12 +3658,12 @@
   "UI014": {
    "title": "Image without width and height",
    "preview": true,
-   "tp": 10,
+   "tp": 12,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9091,
-   "precision_pessimistic": 0.9091,
+   "precision": 0.9231,
+   "precision_pessimistic": 0.9231,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -3276,6 +3673,11 @@
      1,
      0
     ],
+    "flasky": [
+     1,
+     0,
+     0
+    ],
     "microblog": [
      3,
      0,
@@ -3283,6 +3685,11 @@
     ],
     "next-learn": [
      2,
+     0,
+     0
+    ],
+    "openai-assistants-quickstart": [
+     1,
      0,
      0
     ]
@@ -3356,7 +3763,7 @@
   "UI017": {
    "title": "Link to an asset that does not exist",
    "preview": true,
-   "tp": 2,
+   "tp": 3,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -3366,6 +3773,11 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "careconnect": [
+     1,
+     0,
+     0
+    ],
     "full-stack-fastapi-template": [
      1,
      0,

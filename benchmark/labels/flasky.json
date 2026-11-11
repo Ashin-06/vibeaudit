@@ -1,0 +1,134 @@
+{
+ "repo": "flasky",
+ "commit": "3beedd640b9146b0bd65c8c2ecf402b01798bc33",
+ "findings": [
+  {
+   "rule": "REL006",
+   "file": "Dockerfile",
+   "line": 1,
+   "fingerprint": "1010611db209d457e7ea707297d3c5e4",
+   "verdict": "tp",
+   "reason": "The service has a Dockerfile, 39 routes and no health route."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "app/auth/views.py",
+   "line": 31,
+   "fingerprint": "582b96a3c553d58b85ab11e8fe3d097b",
+   "verdict": "tp",
+   "reason": "The password login, password change and reset request have no rate limit."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "app/auth/views.py",
+   "line": 95,
+   "fingerprint": "e076d3fbfb46021d8cc44525a062ad5f",
+   "verdict": "tp",
+   "reason": "The password login, password change and reset request have no rate limit."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "app/auth/views.py",
+   "line": 110,
+   "fingerprint": "1248bf3b193add8d64e70678ccd6bcd9",
+   "verdict": "tp",
+   "reason": "The password login, password change and reset request have no rate limit."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/models.py",
+   "line": 46,
+   "fingerprint": "452e746bae62017648cfb3f7dcecc0ff",
+   "verdict": "fp",
+   "reason": "A setup method looping over a fixed dict of three roles."
+  },
+  {
+   "rule": "DATA006",
+   "file": "app/models.py",
+   "line": 204,
+   "fingerprint": "18a06247cb4a8a9ec7c23e14d081a203",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() is stored as last_seen."
+  },
+  {
+   "rule": "UI001",
+   "file": "app/templates/_comments.html",
+   "line": 6,
+   "fingerprint": "64abe8c9899a0a92b7c7d8e14794f6da",
+   "verdict": "tp",
+   "reason": "The avatar img has no alt attribute."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/templates/_comments.html",
+   "line": 18,
+   "fingerprint": "6f4f040a617be0ea315b2d342ea92c93",
+   "verdict": "fp",
+   "reason": "body_html is produced server-side with bleach.clean from the markdown body."
+  },
+  {
+   "rule": "UI001",
+   "file": "app/templates/_posts.html",
+   "line": 6,
+   "fingerprint": "24bfff0e677f388235db4c6798b63f2d",
+   "verdict": "tp",
+   "reason": "The avatar img has no alt attribute."
+  },
+  {
+   "rule": "UI001",
+   "file": "app/templates/base.html",
+   "line": 38,
+   "fingerprint": "6bbfb894e096f2693db7343eccd8ac24",
+   "verdict": "tp",
+   "reason": "The avatar img has no alt attribute."
+  },
+  {
+   "rule": "UI014",
+   "file": "app/templates/base.html",
+   "line": 38,
+   "fingerprint": "fae6e11659d04b16a9ca9abc54c5b061",
+   "verdict": "tp",
+   "reason": "The avatar img has no width or height."
+  },
+  {
+   "rule": "UI001",
+   "file": "app/templates/followers.html",
+   "line": 17,
+   "fingerprint": "14899b9c098e40a2149546afe92fde99",
+   "verdict": "tp",
+   "reason": "The avatar img has no alt attribute."
+  },
+  {
+   "rule": "UI001",
+   "file": "app/templates/user.html",
+   "line": 8,
+   "fingerprint": "fca9526df7554309a49113812f9b0bb1",
+   "verdict": "tp",
+   "reason": "The avatar img has no alt attribute."
+  },
+  {
+   "rule": "BE011",
+   "file": "config.py",
+   "line": 30,
+   "fingerprint": "f1cd8a896922c6e6ebe7036627a3b0b0",
+   "verdict": "fp",
+   "reason": "DEBUG = True is set in DevelopmentConfig only."
+  },
+  {
+   "rule": "AUTH009",
+   "file": "config.py",
+   "line": 39,
+   "fingerprint": "87036cb88bd01b7662e4f03669860a8c",
+   "verdict": "fp",
+   "reason": "CSRF is disabled in TestingConfig only."
+  },
+  {
+   "rule": "QA002",
+   "file": "requirements.txt",
+   "line": 1,
+   "fingerprint": "8858e05324c37a83cbebdd2624c42d3e",
+   "verdict": "tp",
+   "reason": "No CI configuration."
+  }
+ ]
+}

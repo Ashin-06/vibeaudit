@@ -1,0 +1,150 @@
+{
+ "repo": "langchain-nextjs-template",
+ "commit": "07f6fa1287f03be0d8e79871ba29850159a9245f",
+ "findings": [
+  {
+   "rule": "AUTH001",
+   "file": "app/ai_sdk/agent/action.ts",
+   "line": 13,
+   "fingerprint": "415444e7bb1e5f5fa01a321e55063e3b",
+   "verdict": "tp",
+   "reason": "The route or server action calls a paid model with no authentication."
+  },
+  {
+   "rule": "LLM004",
+   "file": "app/ai_sdk/agent/action.ts",
+   "line": 13,
+   "fingerprint": "3cda3d90e5138b2170c3ac2bd8ab5a9a",
+   "verdict": "tp",
+   "reason": "The route calls a model and nothing rate-limits it."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/api/chat/agents/route.ts",
+   "line": 56,
+   "fingerprint": "ba9602904c18405248d493ddb68b2573",
+   "verdict": "tp",
+   "reason": "The route or server action calls a paid model with no authentication."
+  },
+  {
+   "rule": "LLM004",
+   "file": "app/api/chat/agents/route.ts",
+   "line": 56,
+   "fingerprint": "a88741b6729d1f047876c64b9c6e1bba",
+   "verdict": "tp",
+   "reason": "The route calls a model and nothing rate-limits it."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/api/chat/retrieval/route.ts",
+   "line": 73,
+   "fingerprint": "ebd9bd5fda7e352082869b192c4a5aaa",
+   "verdict": "tp",
+   "reason": "The route or server action calls a paid model with no authentication."
+  },
+  {
+   "rule": "LLM004",
+   "file": "app/api/chat/retrieval/route.ts",
+   "line": 73,
+   "fingerprint": "21c31acad67d4565246c8ec91f7e5f0d",
+   "verdict": "tp",
+   "reason": "The route calls a model and nothing rate-limits it."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/api/chat/retrieval_agents/route.ts",
+   "line": 61,
+   "fingerprint": "1b5b79dd14995e0859c5ad5d2c3fad8c",
+   "verdict": "tp",
+   "reason": "The route or server action calls a paid model with no authentication."
+  },
+  {
+   "rule": "LLM004",
+   "file": "app/api/chat/retrieval_agents/route.ts",
+   "line": 61,
+   "fingerprint": "ae0de8f5ff9957f089745baf41b78b81",
+   "verdict": "tp",
+   "reason": "The route calls a model and nothing rate-limits it."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/api/chat/route.ts",
+   "line": 34,
+   "fingerprint": "fea5ed38f82ff52872a35224d963f9f1",
+   "verdict": "tp",
+   "reason": "The route or server action calls a paid model with no authentication."
+  },
+  {
+   "rule": "LLM004",
+   "file": "app/api/chat/route.ts",
+   "line": 34,
+   "fingerprint": "89b71d655e2a9ecdd37d6e4d42ec260c",
+   "verdict": "tp",
+   "reason": "The route calls a model and nothing rate-limits it."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/api/chat/structured_output/route.ts",
+   "line": 24,
+   "fingerprint": "e084dc36203dacc03c10e6f9dbaa6147",
+   "verdict": "tp",
+   "reason": "The route or server action calls a paid model with no authentication."
+  },
+  {
+   "rule": "LLM004",
+   "file": "app/api/chat/structured_output/route.ts",
+   "line": 24,
+   "fingerprint": "a8909fcdd736d1abe353736794fba73b",
+   "verdict": "tp",
+   "reason": "The route calls a model and nothing rate-limits it."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/api/retrieval/ingest/route.ts",
+   "line": 20,
+   "fingerprint": "30a7b8096a508853ac47534ce1f074b6",
+   "verdict": "tp",
+   "reason": "The route or server action calls a paid model with no authentication."
+  },
+  {
+   "rule": "LLM004",
+   "file": "app/api/retrieval/ingest/route.ts",
+   "line": 20,
+   "fingerprint": "5555eadffee32d0c872502a6b48b3bf0",
+   "verdict": "tp",
+   "reason": "The route calls a model and nothing rate-limits it."
+  },
+  {
+   "rule": "FE007",
+   "file": "app/langgraph/page.tsx",
+   "line": 185,
+   "fingerprint": "4792fa374e28a27835756364544537fe",
+   "verdict": "tp",
+   "reason": "A hard-coded localhost API URL in browser code."
+  },
+  {
+   "rule": "UI011",
+   "file": "app/layout.tsx",
+   "line": 1,
+   "fingerprint": "d9bc4c890773e8c3c81be9cc1f32f226",
+   "verdict": "tp",
+   "reason": "The app directory has no error.tsx."
+  },
+  {
+   "rule": "UI003",
+   "file": "components/ChatWindow.tsx",
+   "line": 81,
+   "fingerprint": "8f0935e8fe907f71a82b13213cbb925e",
+   "verdict": "tp",
+   "reason": "The chat input has only a placeholder, no label or aria-label."
+  },
+  {
+   "rule": "QA002",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
+   "verdict": "tp",
+   "reason": "No CI workflow (only a dependabot.yml)."
+  }
+ ]
+}

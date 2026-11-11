@@ -1,0 +1,126 @@
+{
+ "repo": "openai-assistants-quickstart",
+ "commit": "06fc2d444a5d41b574082080f4c7b2e48156b84f",
+ "findings": [
+  {
+   "rule": "AUTH001",
+   "file": "app/api/assistants/route.ts",
+   "line": 6,
+   "fingerprint": "526d17281ca61d65256c4fe9102a2a28",
+   "verdict": "tp",
+   "reason": "The route creates OpenAI resources with no authentication."
+  },
+  {
+   "rule": "BE018",
+   "file": "app/api/assistants/threads/[threadId]/actions/route.ts",
+   "line": 4,
+   "fingerprint": "643dc9ab5246d9c3e42c1ffdb04bca5b",
+   "verdict": "tp",
+   "reason": "The request body is used without validation."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/api/assistants/threads/[threadId]/messages/route.ts",
+   "line": 7,
+   "fingerprint": "96574a05823d3496cd78bf8ff7873d1e",
+   "verdict": "tp",
+   "reason": "The route creates OpenAI resources with no authentication."
+  },
+  {
+   "rule": "LLM004",
+   "file": "app/api/assistants/threads/[threadId]/messages/route.ts",
+   "line": 7,
+   "fingerprint": "048bb664ae82cc7340d6e739333819cb",
+   "verdict": "tp",
+   "reason": "The route calls a model and nothing rate-limits it."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/api/assistants/threads/route.ts",
+   "line": 6,
+   "fingerprint": "198b17b48419533fd066fcd488809ef6",
+   "verdict": "tp",
+   "reason": "The route creates OpenAI resources with no authentication."
+  },
+  {
+   "rule": "UI009",
+   "file": "app/components/chat.tsx",
+   "line": 78,
+   "fingerprint": "e62d9966f5cbcd547b1db453efdb08d4",
+   "verdict": "tp",
+   "reason": "The effect creates a thread with no loading or error state."
+  },
+  {
+   "rule": "UI003",
+   "file": "app/components/chat.tsx",
+   "line": 263,
+   "fingerprint": "e76372099559d4f4ee8e52e03a2eb952",
+   "verdict": "tp",
+   "reason": "The chat input has no label or aria-label."
+  },
+  {
+   "rule": "API001",
+   "file": "app/components/file-viewer.tsx",
+   "line": 33,
+   "fingerprint": "3b167a595477cb8e59b42abfabd8955d",
+   "verdict": "fp",
+   "reason": "app/api/assistants/files/route.tsx handles this path; routes in .tsx files are not recognised."
+  },
+  {
+   "rule": "API001",
+   "file": "app/components/file-viewer.tsx",
+   "line": 41,
+   "fingerprint": "e840e5193ab7de8d8da75d06ee9bdf20",
+   "verdict": "fp",
+   "reason": "app/api/assistants/files/route.tsx handles this path; routes in .tsx files are not recognised."
+  },
+  {
+   "rule": "API001",
+   "file": "app/components/file-viewer.tsx",
+   "line": 51,
+   "fingerprint": "7dd8b8e529f21f0deb2b89670159b7bd",
+   "verdict": "fp",
+   "reason": "app/api/assistants/files/route.tsx handles this path; routes in .tsx files are not recognised."
+  },
+  {
+   "rule": "UI002",
+   "file": "app/components/file-viewer.tsx",
+   "line": 73,
+   "fingerprint": "c2d887dd32fa5b206ad0d63a6a65638a",
+   "verdict": "tp",
+   "reason": "A span with onClick deletes a file and cannot be used from the keyboard."
+  },
+  {
+   "rule": "UI011",
+   "file": "app/layout.tsx",
+   "line": 1,
+   "fingerprint": "08559bea5e4937770719f6aa1d2a670b",
+   "verdict": "tp",
+   "reason": "The app directory has no error.tsx."
+  },
+  {
+   "rule": "UI014",
+   "file": "app/layout.tsx",
+   "line": 20,
+   "fingerprint": "0beca0440a8cee006141979cfb0de04a",
+   "verdict": "tp",
+   "reason": "The logo img has no width or height."
+  },
+  {
+   "rule": "QA001",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "6ebc345ae714486cf41d50d631704e0c",
+   "verdict": "tp",
+   "reason": "No tests and no CI."
+  },
+  {
+   "rule": "QA002",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
+   "verdict": "tp",
+   "reason": "No tests and no CI."
+  }
+ ]
+}

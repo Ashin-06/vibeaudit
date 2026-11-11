@@ -263,7 +263,10 @@ _R = [
     Rule("FE007", "Hardcoded localhost URL in frontend code", "frontend", "low",
          "A localhost API URL works on the developer's machine and silently breaks (or calls the visitor's "
          "own machine) in production.",
-         "Read the API base URL from configuration or use relative paths.", "CWE-1188", ""),
+         "Read the API base URL from configuration or use relative paths.", "CWE-1188", "",
+         preview=True,
+         preview_reason="Benchmark precision 86% (6 of 7): a localhost URL used only when the app itself runs on "
+                        "localhost is reported too."),
     # ------------------------------------------------------------------- auth
     Rule("AUTH001", "State-changing endpoint without authentication", "auth", "high",
          "This endpoint creates, changes or deletes data but no authentication check was found, so anyone "

@@ -1,0 +1,246 @@
+{
+ "repo": "thynk",
+ "commit": "4957ee4b9d7009e29d0519a6a1673d612c95b061",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/porter_app_camera-photo-example_4689.yml",
+   "line": 16,
+   "fingerprint": "0587e65431e2f2fc610726e12985ebc6",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "REL001",
+   "file": "backend/example_usage.py",
+   "line": 57,
+   "fingerprint": "ff1256ec867e1818dd74a3299e9f74f1",
+   "verdict": "tp",
+   "reason": "requests call has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "backend/example_usage.py",
+   "line": 63,
+   "fingerprint": "7ab308edbf1a9af06f9bb3e19117480a",
+   "verdict": "tp",
+   "reason": "requests call has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "backend/example_usage.py",
+   "line": 91,
+   "fingerprint": "73bb5ac27fb3f4aee94ba1c29599f8e6",
+   "verdict": "tp",
+   "reason": "requests call has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "backend/example_usage.py",
+   "line": 98,
+   "fingerprint": "6744258fed8d5f13245a7216dc9ddf62",
+   "verdict": "tp",
+   "reason": "requests call has no timeout."
+  },
+  {
+   "rule": "QA007",
+   "file": "backend/main.py",
+   "line": 13,
+   "fingerprint": "c1f0dbd2eb9d1dd0f13c7b411fe92fe7",
+   "verdict": "tp",
+   "reason": "Imported but not in backend/requirements.txt."
+  },
+  {
+   "rule": "QA006",
+   "file": "backend/main.py",
+   "line": 27,
+   "fingerprint": "f86aa7c45508fb1e5b67d900186244ef",
+   "verdict": "tp",
+   "reason": "thynk_functions.py defines no lecture_context_compression."
+  },
+  {
+   "rule": "QA006",
+   "file": "backend/main.py",
+   "line": 35,
+   "fingerprint": "fd02badfff5e8ff1e328e1c6a516502a",
+   "verdict": "tp",
+   "reason": "backend/ has no audio_transcription module."
+  },
+  {
+   "rule": "BE017",
+   "file": "backend/main.py",
+   "line": 274,
+   "fingerprint": "c3404136a0142fdcb5bda298260049f8",
+   "verdict": "tp",
+   "reason": "str(e) is returned to the client."
+  },
+  {
+   "rule": "BE017",
+   "file": "backend/main.py",
+   "line": 290,
+   "fingerprint": "2a54fae66f5ffb1f8988f457a8a40dac",
+   "verdict": "tp",
+   "reason": "str(e) is returned to the client."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "backend/main.py",
+   "line": 295,
+   "fingerprint": "edee99240c354ca9b1bc813a704e576e",
+   "verdict": "tp",
+   "reason": "The route has no authentication."
+  },
+  {
+   "rule": "LLM004",
+   "file": "backend/main.py",
+   "line": 295,
+   "fingerprint": "f30ba195259ffce2b69dd4ab4b3bfbbd",
+   "verdict": "tp",
+   "reason": "The route calls a model and nothing rate-limits it."
+  },
+  {
+   "rule": "BE017",
+   "file": "backend/main.py",
+   "line": 304,
+   "fingerprint": "c2aa32ad991cc593dab3d2424fd6009b",
+   "verdict": "tp",
+   "reason": "str(e) is returned to the client."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "backend/main.py",
+   "line": 307,
+   "fingerprint": "f401803b3529c79d764a423789dfabdb",
+   "verdict": "tp",
+   "reason": "The route has no authentication."
+  },
+  {
+   "rule": "LLM004",
+   "file": "backend/main.py",
+   "line": 307,
+   "fingerprint": "a799cba0a985e076071345d7251df02b",
+   "verdict": "tp",
+   "reason": "The route calls a model and nothing rate-limits it."
+  },
+  {
+   "rule": "BE017",
+   "file": "backend/main.py",
+   "line": 316,
+   "fingerprint": "464c2e8de77687e7ad8b6341043fc685",
+   "verdict": "tp",
+   "reason": "str(e) is returned to the client."
+  },
+  {
+   "rule": "BE017",
+   "file": "backend/main.py",
+   "line": 331,
+   "fingerprint": "42e91c820564425eb22937d3a48e833e",
+   "verdict": "tp",
+   "reason": "str(e) is returned to the client."
+  },
+  {
+   "rule": "BE017",
+   "file": "backend/main.py",
+   "line": 347,
+   "fingerprint": "c4dae45266f7218c151db6fc984f761d",
+   "verdict": "tp",
+   "reason": "str(e) is returned to the client."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "backend/main.py",
+   "line": 350,
+   "fingerprint": "7d226c323d51bb6111308e9f4ab3468f",
+   "verdict": "tp",
+   "reason": "The route has no authentication."
+  },
+  {
+   "rule": "BE017",
+   "file": "backend/main.py",
+   "line": 361,
+   "fingerprint": "c625ddda58ac3fedb1cc75ae07ea2364",
+   "verdict": "tp",
+   "reason": "str(e) is returned to the client."
+  },
+  {
+   "rule": "QA007",
+   "file": "backend/ocr_models/cerebras_model.py",
+   "line": 8,
+   "fingerprint": "50ec9006ad50b400df0bd847ffa5071f",
+   "verdict": "tp",
+   "reason": "Imported but not in backend/requirements.txt."
+  },
+  {
+   "rule": "DATA007",
+   "file": "backend/ocr_models/cerebras_model.py",
+   "line": 45,
+   "fingerprint": "2dffa34e6bab01e595ce2e71bcc5165d",
+   "verdict": "tp",
+   "reason": "Without CEREBRAS_API_KEY the model is silently unavailable; it is not documented."
+  },
+  {
+   "rule": "CFG001",
+   "file": "docker/Dockerfile",
+   "line": 1,
+   "fingerprint": "77d215d2fb5f1314d9f8754846413049",
+   "verdict": "tp",
+   "reason": "The image runs as root from the latest tag."
+  },
+  {
+   "rule": "CFG002",
+   "file": "docker/Dockerfile",
+   "line": 1,
+   "fingerprint": "01dfc6ec734be1f8f7c9f3b0009845a1",
+   "verdict": "tp",
+   "reason": "The image runs as root from the latest tag."
+  },
+  {
+   "rule": "FE007",
+   "file": "src/components/ChatInterface.tsx",
+   "line": 193,
+   "fingerprint": "a7c4c92064e62c74ed2a8e8ffbd50a2f",
+   "verdict": "tp",
+   "reason": "A hard-coded localhost backend URL in browser code."
+  },
+  {
+   "rule": "UI006",
+   "file": "src/components/ChatInterface.tsx",
+   "line": 440,
+   "fingerprint": "48729cb7255cd3ee7dcd36c2def80705",
+   "verdict": "fp",
+   "reason": "deleteNote only removes the note from local state."
+  },
+  {
+   "rule": "QA006",
+   "file": "src/hooks/use-toast.ts",
+   "line": 3,
+   "fingerprint": "39eda322cfab823aacff8ab5ea92f3ac",
+   "verdict": "tp",
+   "reason": "src/components/ui has no toast file."
+  },
+  {
+   "rule": "FE001",
+   "file": "views/chat-interface.ejs",
+   "line": 473,
+   "fingerprint": "82078d09b951bfb690abc07d51e8753f",
+   "verdict": "tp",
+   "reason": "The model's hint text is turned into HTML without escaping and written to innerHTML."
+  },
+  {
+   "rule": "FE007",
+   "file": "views/chat-interface.ejs",
+   "line": 578,
+   "fingerprint": "a28adb7241fe6c61e3974e9660097212",
+   "verdict": "tp",
+   "reason": "A hard-coded localhost backend URL in browser code."
+  },
+  {
+   "rule": "FE001",
+   "file": "views/photo-viewer.ejs",
+   "line": 80,
+   "fingerprint": "a685675378fbf9670564d7378104d9f3",
+   "verdict": "fp",
+   "reason": "The id comes from the app's own photo API and only fills an img src."
+  }
+ ]
+}

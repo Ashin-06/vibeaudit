@@ -32,3 +32,14 @@ def test_a_repository_that_could_not_be_fetched_does_not_fail_the_gate(tmp_path,
     # only "a" was scanned: its baseline precision (3 of 4) is the bar, not the corpus-wide 3 of 7
     assert _gate(tmp_path, monkeypatch, _results({"a": [3, 1, 0]})) == []
     assert _gate(tmp_path, monkeypatch, _results({})) == []
+
+
+def test_seeded_manifests_pin_no_versions():
+    # A pinned version in a seeded sample enters GitHub's dependency graph: Dependabot then opens alerts and
+    # security-update jobs for an app that is never installed (and fails on its made-up package index).
+    import re
+
+    seeded = Path(__file__).resolve().parent.parent / "benchmark" / "seeded"
+    for path in list(seeded.rglob("requirements*.txt")) + list(seeded.rglob("package.json")):
+        text = path.read_text(encoding="utf-8")
+        assert not re.search(r"==\s*\d|\"[~^]?\d+\.\d+", text), f"{path} pins a version"
