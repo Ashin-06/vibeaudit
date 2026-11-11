@@ -71,7 +71,7 @@ def test_ignores_config_and_tests(repo, capsys):
 
 
 def test_crlf_unicode_and_renames(repo, capsys):
-    (repo / "w.py").write_bytes(("# é中\r\n" + LEAK.replace("\n", "\r\n")).encode("utf-8"))
+    (repo / "w.py").write_bytes(("# \u00e9\u4e2d\r\n" + LEAK.replace("\n", "\r\n")).encode("utf-8"))
     git(repo, "add", "w.py")
     code, out, _ = run(repo, capsys)
     assert code == 1 and "w.py:2:" in out
