@@ -18,7 +18,21 @@ from vibeaudit.report import render_html, render_json, render_markdown, render_s
 from vibeaudit.scanner import Options, scan
 
 ROUNDS = int(os.environ.get("VIBEAUDIT_FUZZ_ROUNDS", "6"))
-PER_SCAN_SECONDS = 30.0
+
+
+def _budget() -> float:
+    """Seconds one scan may take, scaled to this machine. The slowest shape (120,000 statements on one line)
+    is linear but costs about 80 times this calibration loop; shared CI runners (macOS) are 3 to 4 times
+    slower than a laptop and ran it in 31 to 32 s against a fixed 30 s limit. A super-linear path takes
+    minutes, so 250 calibration units still catch it."""
+    import ast
+
+    start = time.perf_counter()
+    sum(1 for _ in ast.walk(ast.parse("x = 1; " * 20000)))
+    return max(30.0, 250 * (time.perf_counter() - start))
+
+
+PER_SCAN_SECONDS = _budget()
 
 CODE_NAMES = [
     "app.py", "main.py", "server.js", "index.ts", "route.ts", "page.tsx", "Comp.vue", "Page.svelte", "index.html",

@@ -1,0 +1,12 @@
+# Only the real manifests. The sample apps under tests/fixtures and benchmark/seeded are vulnerable or
+# unpinned on purpose and are never installed, so they get no update pull requests.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: weekly
