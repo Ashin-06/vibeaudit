@@ -5,8 +5,8 @@
  "skipped": {},
  "repos": {
   "act-solo-ai": {
-   "findings": 18,
-   "labelled": 18,
+   "findings": 19,
+   "labelled": 19,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 4
@@ -19,8 +19,8 @@
    "fixed_fp": 8
   },
   "learnathon-leaderboard": {
-   "findings": 7,
-   "labelled": 7,
+   "findings": 9,
+   "labelled": 9,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 4
@@ -40,8 +40,8 @@
    "fixed_fp": 4
   },
   "prompt-sculptor-49": {
-   "findings": 59,
-   "labelled": 59,
+   "findings": 65,
+   "labelled": 65,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 17
@@ -61,8 +61,8 @@
    "fixed_fp": 8
   },
   "ai-chatbot": {
-   "findings": 19,
-   "labelled": 19,
+   "findings": 20,
+   "labelled": 20,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
@@ -75,8 +75,8 @@
    "fixed_fp": 4
   },
   "chatbot-ui": {
-   "findings": 47,
-   "labelled": 47,
+   "findings": 49,
+   "labelled": 49,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 1
@@ -138,8 +138,8 @@
    "fixed_fp": 3
   },
   "djangoproject.com": {
-   "findings": 21,
-   "labelled": 21,
+   "findings": 27,
+   "labelled": 27,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 62
@@ -159,22 +159,22 @@
    "fixed_fp": 6
   },
   "full-stack-fastapi-template": {
-   "findings": 6,
-   "labelled": 6,
+   "findings": 8,
+   "labelled": 8,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 4
   },
   "microblog": {
-   "findings": 13,
-   "labelled": 13,
+   "findings": 16,
+   "labelled": 16,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 7
   },
   "next-learn": {
-   "findings": 20,
-   "labelled": 20,
+   "findings": 22,
+   "labelled": 22,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 10
@@ -208,8 +208,8 @@
    "fixed_fp": 9
   },
   "taxonomy": {
-   "findings": 7,
-   "labelled": 7,
+   "findings": 9,
+   "labelled": 9,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
@@ -3257,6 +3257,126 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {}
+  },
+  "UI014": {
+   "title": "Image without width and height",
+   "preview": true,
+   "tp": 10,
+   "fp": 1,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.9091,
+   "precision_pessimistic": 0.9091,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "djangoproject.com": [
+     5,
+     1,
+     0
+    ],
+    "microblog": [
+     3,
+     0,
+     0
+    ],
+    "next-learn": [
+     2,
+     0,
+     0
+    ]
+   }
+  },
+  "UI015": {
+   "title": "Form error not announced to screen readers",
+   "preview": true,
+   "tp": 8,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "act-solo-ai": [
+     1,
+     0,
+     0
+    ],
+    "prompt-sculptor-49": [
+     5,
+     0,
+     0
+    ],
+    "taxonomy": [
+     2,
+     0,
+     0
+    ]
+   }
+  },
+  "UI016": {
+   "title": "Focus outline removed",
+   "preview": true,
+   "tp": 6,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "ai-chatbot": [
+     1,
+     0,
+     0
+    ],
+    "chatbot-ui": [
+     2,
+     0,
+     0
+    ],
+    "full-stack-fastapi-template": [
+     1,
+     0,
+     0
+    ],
+    "learnathon-leaderboard": [
+     2,
+     0,
+     0
+    ]
+   }
+  },
+  "UI017": {
+   "title": "Link to an asset that does not exist",
+   "preview": true,
+   "tp": 2,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "full-stack-fastapi-template": [
+     1,
+     0,
+     0
+    ],
+    "prompt-sculptor-49": [
+     1,
+     0,
+     0
+    ]
+   }
   }
  }
 }

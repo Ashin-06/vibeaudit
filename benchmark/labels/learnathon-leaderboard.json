@@ -89,6 +89,22 @@
    "fingerprint": "163cb41f627ad393989d95c23dab4324",
    "verdict": "tp",
    "reason": "The webhook handler never verifies a signature or shared secret."
+  },
+  {
+   "rule": "UI016",
+   "file": "src/components/dashboard/leaderboard-settings/components/CurrentTechStacks.tsx",
+   "line": 30,
+   "fingerprint": "f1aab4453fa5c9148e6d05211078286f",
+   "verdict": "tp",
+   "reason": "A button with focus:outline-none and no other focus style."
+  },
+  {
+   "rule": "UI016",
+   "file": "src/pages/settings/TechStacksConfig.tsx",
+   "line": 304,
+   "fingerprint": "b9f6f58f7585b46cce98a648d82d1acc",
+   "verdict": "tp",
+   "reason": "A button with focus:outline-none and no other focus style."
   }
  ]
 }

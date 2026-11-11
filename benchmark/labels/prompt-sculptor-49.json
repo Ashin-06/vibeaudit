@@ -609,6 +609,54 @@
    "fingerprint": "06a388cfe8030c42edbdee7b9cf07be7",
    "verdict": "tp",
    "reason": "INSERT WITH CHECK (true) with no TO clause lets any role insert notifications or audit-log rows."
+  },
+  {
+   "rule": "UI015",
+   "file": "src/components/crm/ClientDialog.tsx",
+   "line": 147,
+   "fingerprint": "5b0d9b4481567183fac3f301a49dcc2f",
+   "verdict": "tp",
+   "reason": "The field error is rendered as plain text; nothing links it to the input or announces it."
+  },
+  {
+   "rule": "UI015",
+   "file": "src/components/crm/DealDialog.tsx",
+   "line": 198,
+   "fingerprint": "d613b8595b61921f0490d5658ddbe6d8",
+   "verdict": "tp",
+   "reason": "The field error is rendered as plain text; nothing links it to the input or announces it."
+  },
+  {
+   "rule": "UI015",
+   "file": "src/components/crm/InvoiceDialog.tsx",
+   "line": 238,
+   "fingerprint": "c2d4a25be11526d821ef129af77dad13",
+   "verdict": "tp",
+   "reason": "The field error is rendered as plain text; nothing links it to the input or announces it."
+  },
+  {
+   "rule": "UI017",
+   "file": "src/components/sections/AIBriefTool.tsx",
+   "line": 85,
+   "fingerprint": "be9c6dca49b7b52dcae94d3d8e855077",
+   "verdict": "tp",
+   "reason": "A /src/assets path only resolves on the Vite dev server; the production build has no such URL."
+  },
+  {
+   "rule": "UI015",
+   "file": "src/pages/crm/LoginPage.tsx",
+   "line": 61,
+   "fingerprint": "55850d5470fa72d6fe3a7b6871dbbfc7",
+   "verdict": "tp",
+   "reason": "The field error is rendered as plain text; nothing links it to the input or announces it."
+  },
+  {
+   "rule": "UI015",
+   "file": "src/pages/crm/SignupPage.tsx",
+   "line": 71,
+   "fingerprint": "ca1c89b0804cb3da8d7aa2ed9afe89e5",
+   "verdict": "tp",
+   "reason": "The field error is rendered as plain text; nothing links it to the input or announces it."
   }
  ]
 }

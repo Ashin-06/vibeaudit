@@ -57,6 +57,22 @@
    "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
    "verdict": "tp",
    "reason": "No CI configuration."
+  },
+  {
+   "rule": "UI015",
+   "file": "components/user-auth-form.tsx",
+   "line": 77,
+   "fingerprint": "990bd8684ad2313941cd606c571fae13",
+   "verdict": "tp",
+   "reason": "The field error is rendered as plain text; nothing links it to the input or announces it."
+  },
+  {
+   "rule": "UI015",
+   "file": "components/user-name-form.tsx",
+   "line": 101,
+   "fingerprint": "b2fe1c974f6977c23cfbd4988895b73d",
+   "verdict": "tp",
+   "reason": "The field error is rendered as plain text; nothing links it to the input or announces it."
   }
  ]
 }

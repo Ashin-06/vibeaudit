@@ -153,6 +153,14 @@
    "fingerprint": "0be0cd24f5579b3e9cca5c5524b9d9c0",
    "verdict": "tp",
    "reason": "Rendered markdown (model output) is parsed with innerHTML on a detached div; img onerror handlers still run."
+  },
+  {
+   "rule": "UI016",
+   "file": "components/ui/button.tsx",
+   "line": 8,
+   "fingerprint": "95826ff03f448534a3b7cb494b120094",
+   "verdict": "tp",
+   "reason": "The base button classes remove the outline and no variant adds a focus style."
   }
  ]
 }

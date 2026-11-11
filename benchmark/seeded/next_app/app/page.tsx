@@ -22,6 +22,9 @@ export default function Home(props) {
       <p>Lorem ipsum dolor sit amet</p> {/* expect: UI010 */}
       <Link href="/pricing">Pricing</Link> {/* expect: UI013 */}
       <p>{rows.length}</p>
+      <img src="/logo.png" alt="Logo" /> {/* expect: UI014, UI017 */}
+      {errors.email && <p className="text-red-600">{errors.email}</p>} {/* expect: UI015 */}
+      <button className="rounded px-2 focus:outline-none">Send</button> {/* expect: UI016 */}
     </main>
   );
 }

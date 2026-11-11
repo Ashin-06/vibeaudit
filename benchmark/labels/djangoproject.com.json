@@ -665,6 +665,54 @@
    "fingerprint": "3ec4d64b6a4a474af4f9b6a7e0699d3a",
    "verdict": "fp",
    "reason": "Test setup creating fixture rows in a loop."
+  },
+  {
+   "rule": "UI014",
+   "file": "djangoproject/templates/fundraising/includes/_hero_with_logo.html",
+   "line": 20,
+   "fingerprint": "31d5387e300f98a31452adb7399c7779",
+   "verdict": "tp",
+   "reason": "The img has no width, height or sizing class or style."
+  },
+  {
+   "rule": "UI014",
+   "file": "djangoproject/templates/fundraising/includes/donation_form_with_heart.html",
+   "line": 16,
+   "fingerprint": "24f810ddf7c58705211fd217bc230f90",
+   "verdict": "fp",
+   "reason": "The img is a fallback inside an SVG foreignObject with a fixed size."
+  },
+  {
+   "rule": "UI014",
+   "file": "djangoproject/templates/fundraising/includes/donation_snippet.html",
+   "line": 8,
+   "fingerprint": "36f9dbdfa4056af6c2ffee4222709e73",
+   "verdict": "tp",
+   "reason": "The img has no width, height or sizing class or style."
+  },
+  {
+   "rule": "UI014",
+   "file": "djangoproject/templates/fundraising/includes/top_corporate_members.html",
+   "line": 10,
+   "fingerprint": "a82bdedeff0bd0e3d97a509061470c41",
+   "verdict": "tp",
+   "reason": "The img has no width, height or sizing class or style."
+  },
+  {
+   "rule": "UI014",
+   "file": "djangoproject/templates/members/corporate_member_badges.html",
+   "line": 44,
+   "fingerprint": "27e0394ac7525d3cd62a6dbaad091e5c",
+   "verdict": "tp",
+   "reason": "The img has no width, height or sizing class or style."
+  },
+  {
+   "rule": "UI014",
+   "file": "djangoproject/templates/sponsor/plan.html",
+   "line": 71,
+   "fingerprint": "b20f50526ede897365a6a4ebd9c8aa72",
+   "verdict": "tp",
+   "reason": "The img has no width, height or sizing class or style."
   }
  ]
 }

@@ -81,6 +81,22 @@
    "fingerprint": "045e9334cb82070b254ba6deee0a1f4f",
    "verdict": "tp",
    "reason": "The access token is stored in localStorage."
+  },
+  {
+   "rule": "UI017",
+   "file": "frontend/index.html",
+   "line": 5,
+   "fingerprint": "60cead9a5db9f4b7fac5d83adde49a9f",
+   "verdict": "tp",
+   "reason": "/vite.svg is not in frontend/public (only assets/images is), so the icon link is a 404."
+  },
+  {
+   "rule": "UI016",
+   "file": "frontend/src/components/ui/tabs.tsx",
+   "line": 58,
+   "fingerprint": "6c95138a801a0d8b41e3f93e3eded390",
+   "verdict": "tp",
+   "reason": "The focusable tab panel removes the outline with no replacement."
   }
  ]
 }

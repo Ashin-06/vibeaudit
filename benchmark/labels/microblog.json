@@ -161,6 +161,30 @@
    "fingerprint": "7601f314655aa1d1c6ad34d072e89de7",
    "verdict": "tp",
    "reason": "No CI configuration."
+  },
+  {
+   "rule": "UI014",
+   "file": "app/templates/_post.html",
+   "line": 5,
+   "fingerprint": "ad0d4576e5aa20e08272921665c897d6",
+   "verdict": "tp",
+   "reason": "The img has no width, height or sizing class or style."
+  },
+  {
+   "rule": "UI014",
+   "file": "app/templates/base.html",
+   "line": 100,
+   "fingerprint": "5fbe659b2a887033b14662d7e5746dee",
+   "verdict": "tp",
+   "reason": "The img has no width, height or sizing class or style."
+  },
+  {
+   "rule": "UI014",
+   "file": "app/templates/user.html",
+   "line": 6,
+   "fingerprint": "9d39df5f76d0e5224dde6667e18b6a48",
+   "verdict": "tp",
+   "reason": "The img has no width, height or sizing class or style."
   }
  ]
 }

@@ -241,6 +241,22 @@
    "fingerprint": "b5509927339683a778dfc3cb553f1665",
    "verdict": "tp",
    "reason": "The search input has only a placeholder, no label or aria-label."
+  },
+  {
+   "rule": "UI014",
+   "file": "seo/pages/index.js",
+   "line": 37,
+   "fingerprint": "e586ea5fffa120c5a148f1640789b356",
+   "verdict": "tp",
+   "reason": "The img has no width, height or sizing class or style."
+  },
+  {
+   "rule": "UI014",
+   "file": "seo/pages/index.js",
+   "line": 95,
+   "fingerprint": "cc19f50bfb4b3b17a410869781dde117",
+   "verdict": "tp",
+   "reason": "The img has no width, height or sizing class or style."
   }
  ]
 }

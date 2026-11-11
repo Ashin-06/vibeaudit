@@ -385,6 +385,22 @@
    "fingerprint": "d8ef2d80089f231b1cd92f092337a1d8",
    "verdict": "tp",
    "reason": "The migration drops the request_in_body column."
+  },
+  {
+   "rule": "UI016",
+   "file": "components/sidebar/items/all/sidebar-display-item.tsx",
+   "line": 97,
+   "fingerprint": "881896b1eb38fc55d961aa80a8fcee4d",
+   "verdict": "tp",
+   "reason": "A tabIndex=0 item with focus:outline-none and no other focus style."
+  },
+  {
+   "rule": "UI016",
+   "file": "components/sidebar/items/folders/folder-item.tsx",
+   "line": 66,
+   "fingerprint": "9784d0d9d36df2bd123081e192611d21",
+   "verdict": "tp",
+   "reason": "A keyboard-focusable folder row with focus:outline-none and no other focus style."
   }
  ]
 }

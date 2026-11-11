@@ -1661,6 +1661,78 @@
    "precision": null,
    "seeded_recall": 1.0,
    "by_repo": {}
+  },
+  "UI014": {
+   "precision": 0.9091,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "djangoproject.com": [
+     5,
+     1
+    ],
+    "microblog": [
+     3,
+     0
+    ],
+    "next-learn": [
+     2,
+     0
+    ]
+   }
+  },
+  "UI015": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "act-solo-ai": [
+     1,
+     0
+    ],
+    "prompt-sculptor-49": [
+     5,
+     0
+    ],
+    "taxonomy": [
+     2,
+     0
+    ]
+   }
+  },
+  "UI016": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "ai-chatbot": [
+     1,
+     0
+    ],
+    "chatbot-ui": [
+     2,
+     0
+    ],
+    "full-stack-fastapi-template": [
+     1,
+     0
+    ],
+    "learnathon-leaderboard": [
+     2,
+     0
+    ]
+   }
+  },
+  "UI017": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "full-stack-fastapi-template": [
+     1,
+     0
+    ],
+    "prompt-sculptor-49": [
+     1,
+     0
+    ]
+   }
   }
  }
 }
