@@ -105,6 +105,14 @@
    "fingerprint": "5ce2213177447ac87110e0c072aec4ab",
    "verdict": "tp",
    "reason": "The chat function calls OpenAI and nothing rate-limits it."
+  },
+  {
+   "rule": "LLM017",
+   "file": "supabase/functions/chat/index.ts",
+   "line": 21,
+   "fingerprint": "d2d8f25a0a2782a7855c1d2b250edafb",
+   "verdict": "tp",
+   "reason": "The streamed completion is created without the request abort signal."
   }
  ]
 }

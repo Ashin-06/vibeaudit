@@ -401,6 +401,14 @@
    "fingerprint": "8eed477b7fa816d1d8de6a876c4e89c1",
    "verdict": "tp",
    "reason": "Form control with no label, aria-label or id."
+  },
+  {
+   "rule": "LLM018",
+   "file": "backend/app/chat/engine.py",
+   "line": 281,
+   "fingerprint": "18220e58d084f147d8ec46a6b0d5b16a",
+   "verdict": "tp",
+   "reason": "The full chat history is written to the debug log."
   }
  ]
 }

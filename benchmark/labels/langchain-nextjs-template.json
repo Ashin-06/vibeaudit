@@ -145,6 +145,22 @@
    "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
    "verdict": "tp",
    "reason": "No CI workflow (only a dependabot.yml)."
+  },
+  {
+   "rule": "LLM017",
+   "file": "app/api/chat/retrieval/route.ts",
+   "line": 73,
+   "fingerprint": "8eeb038ab3ccfd687dd6a56428367f4b",
+   "verdict": "tp",
+   "reason": "The streamed completion is created without the request abort signal."
+  },
+  {
+   "rule": "LLM017",
+   "file": "app/api/chat/route.ts",
+   "line": 34,
+   "fingerprint": "fcece458b4856cefcefafb4e2ad57f7c",
+   "verdict": "tp",
+   "reason": "The streamed completion is created without the request abort signal."
   }
  ]
 }
