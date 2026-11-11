@@ -1,7 +1,8 @@
 """`vibeaudit mcp`: a Model Context Protocol server over stdio, so coding agents can audit their own work.
 
 Transport: newline-delimited JSON-RPC 2.0 on stdin/stdout (the MCP stdio transport). Logs go to stderr.
-Tools: scan_project, scan_file, list_routes, check_package, explain_rule. All are read-only.
+Tools: scan_project, scan_file, list_routes, check_package, explain_rule, auto_repair. All are read-only:
+auto_repair returns a diff and never writes a file.
 """
 from __future__ import annotations
 
@@ -69,6 +70,22 @@ TOOLS = [
         "name": "explain_rule",
         "description": "Explain a vibeaudit rule id (for example AUTH001): what it means, why it matters and how to fix it.",
         "inputSchema": {"type": "object", "properties": {"rule_id": {"type": "string"}}, "required": ["rule_id"]},
+    },
+    {
+        "name": "auto_repair",
+        "description": ("Propose deterministic fixes as a unified diff for findings that have one obvious repair "
+                        "(request timeouts, output token limits, guarded JSON parsing of model output, pinned JWT "
+                        "algorithms, Decimal money columns, CORS origins with credentials). Nothing is written: "
+                        "review the diff and apply it yourself. Findings it cannot rewrite are listed with the reason."),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "Project directory."},
+                "file": {"type": "string", "description": "Only fix this file (relative to the project, or absolute)."},
+                "rules": {"type": "array", "items": {"type": "string"}, "description": "Only fix these rule ids."},
+            },
+            "required": ["path"],
+        },
     },
 ]
 
@@ -207,9 +224,41 @@ def tool_explain_rule(args: Dict[str, Any]) -> Dict[str, Any]:
             "why": rule.why, "fix": rule.fix, "cwe": rule.cwe, "owasp": rule.owasp}
 
 
+def tool_auto_repair(args: Dict[str, Any]) -> Dict[str, Any]:
+    from . import fix
+    from .rules import RULES
+
+    root = _dir(args.get("path"))
+    rules = args.get("rules", [])
+    if not isinstance(rules, list) or not all(isinstance(r, str) for r in rules):
+        raise ToolError("rules must be a list of rule ids")
+    unknown = [r for r in rules if r.upper() not in RULES]
+    if unknown:
+        raise ToolError(f"unknown rule: {', '.join(unknown)}")
+    only = args.get("file")
+    if only is not None:
+        if not isinstance(only, str) or not only:
+            raise ToolError("file must be a non-empty string")
+        target = Path(only) if Path(only).is_absolute() else Path(root) / only
+        try:
+            only = target.resolve().relative_to(Path(root).resolve()).as_posix()
+        except ValueError:
+            raise ToolError("the file is not inside the project") from None
+    plan = fix.plan(root, rules, _options(root, offline=True, external="none"))
+    if only is not None:
+        plan.changes = [c for c in plan.changes if c.file == only]
+        plan.skipped = [(f, r) for f, r in plan.skipped if f.file == only]
+
+    def brief(f) -> Dict[str, Any]:
+        return {"rule_id": f.rule_id, "file": f.file, "line": f.line, "message": f.message}
+
+    return {"diff": plan.diff(), "files": [c.file for c in plan.changes], "fixed": [brief(f) for f in plan.fixed][:MAX_FINDINGS],
+            "not_fixed": [dict(brief(f), reason=r) for f, r in plan.skipped if f.rule_id in fix.FIXERS][:MAX_FINDINGS]}
+
+
 HANDLERS: Dict[str, Callable[[Dict[str, Any]], Dict[str, Any]]] = {
     "scan_project": tool_scan_project, "scan_file": tool_scan_file, "list_routes": tool_list_routes,
-    "check_package": tool_check_package, "explain_rule": tool_explain_rule,
+    "check_package": tool_check_package, "explain_rule": tool_explain_rule, "auto_repair": tool_auto_repair,
 }
 
 
