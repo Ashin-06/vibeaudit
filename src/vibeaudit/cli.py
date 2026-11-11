@@ -104,6 +104,7 @@ def build_parser() -> argparse.ArgumentParser:
     x.add_argument("-q", "--quiet", action="store_true", help="do not list skipped findings")
 
     sub.add_parser("mcp", help="run a Model Context Protocol server on stdio for coding agents")
+    sub.add_parser("lsp", help="run a Language Server Protocol server on stdio (diagnostics and fix code actions for editors)")
 
     r = sub.add_parser("rules", help="list every rule")
     r.add_argument("--format", choices=["text", "json", "md"], default="text")
@@ -394,6 +395,10 @@ def main(argv: Optional[List[str]] = None) -> int:
         return cmd_rules(a.format)
     if a.command == "routes":
         return cmd_routes(a)
+    if a.command == "lsp":
+        from .lsp import main as lsp_main
+
+        return lsp_main()
     if a.command == "mcp":
         from .mcp_server import main as mcp_main
 

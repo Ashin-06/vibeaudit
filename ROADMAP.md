@@ -78,8 +78,8 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | Item | Status |
 | --- | --- |
 | `vibeaudit watch` (incremental re-scan) | done (0.8.1; unchanged files and per-file checks are reused) |
-| Language server with diagnostics and code actions | planned |
-| VS Code / Cursor extension (.vsix built in CI, not published) | planned |
+| Language server with diagnostics and code actions | done, unreleased (`vibeaudit lsp`) |
+| VS Code / Cursor extension (.vsix built in CI, not published) | done, unreleased (`editors/vscode`) |
 | `vibeaudit studio` local web UI (127.0.0.1 only) | planned |
 | PR review bot and `--fail-on-regression N` | planned |
 | Pre-commit fast path under 150 ms | planned |
