@@ -26,7 +26,7 @@ nothing, inaccessible forms and frontend calls to API routes that do not exist.
 - Fits into CI (GitHub Action, `--diff`), pre-commit (`--staged`) and coding agents (an MCP server).
 
 Contents: [Quickstart](#quickstart) - [Example output](#example-output) - [What it checks](#what-it-checks) -
-[Install](#install) - [Commands](#commands) - [Configuration](#configuration) - [CI and pre-commit](#ci-and-pre-commit) -
+[Install](#install) - [Commands](#commands) - [Automatic fixes](#automatic-fixes-vibeaudit-fix) - [Configuration](#configuration) - [CI and pre-commit](#ci-and-pre-commit) -
 [MCP server](#mcp-server-for-coding-agents) - [Scoring](#scoring) - [False positives](#false-positives-and-suppressing-findings) -
 [Limits](#limits-and-what-is-not-covered) - [Contributing](#contributing-security-and-license)
 
@@ -133,6 +133,7 @@ your `PATH`, their findings are merged into the report and de-duplicated.
 | Command | What it does |
 | --- | --- |
 | `vibeaudit scan [PATH]` | Audit a project (default: the current directory). |
+| `vibeaudit fix [PATH]` | Print a diff that fixes the findings with one obvious repair; `--apply` writes it (see [Automatic fixes](#automatic-fixes-vibeaudit-fix)). |
 | `vibeaudit routes [PATH]` | List every HTTP entry point with method, path, location and whether it has a visible auth check, writes data or calls a paid AI API (`--format text\|json\|md`). |
 | `vibeaudit rules` | List every rule (`--format text\|json\|md`; JSON includes the why and fix text). |
 | `vibeaudit feedback` | Record that a finding is a false positive or confirmed, or list recorded feedback (see [False positives](#false-positives-and-suppressing-findings)). |
@@ -196,6 +197,42 @@ GEMINI_API_KEY=... vibeaudit scan . --llm gemini --llm-review --llm-max-requests
 - Providers: `gemini` (`GEMINI_API_KEY` or `GOOGLE_API_KEY`), `openai` (`OPENAI_API_KEY`; `OPENAI_BASE_URL`
   for any compatible server such as Ollama) and `anthropic` (`ANTHROPIC_API_KEY`). Verdicts are cached, so
   an unchanged finding costs no request the next time.
+
+## Automatic fixes (`vibeaudit fix`)
+
+```bash
+vibeaudit fix .                  # print a unified diff, change nothing
+vibeaudit fix . --apply          # write the changes
+vibeaudit fix . --rule REL001    # only some rules (repeatable)
+vibeaudit fix . > fixes.patch && git apply fixes.patch
+```
+
+`fix` scans the project the same way `scan` does (configuration, suppressions, baseline and feedback apply)
+and rewrites the findings that have one obvious, deterministic repair:
+
+| Rule | Codemod |
+| --- | --- |
+| REL001 | Adds `timeout=10` to `requests` and `urlopen` calls. |
+| LLM003 | Adds an output token limit of 4096: `max_completion_tokens` (Chat Completions), `max_output_tokens` (Responses, Gemini config, `ChatGoogleGenerativeAI`), `max_tokens` (LangChain and LiteLLM), `maxOutputTokens` or `maxTokens` for the AI SDK by its major version in package.json. |
+| LLM011 | Wraps the assignment or `return` that parses model output in `try`/`except ValueError` (Python) or `try`/`catch` (JavaScript); the fallback value is `None` / `null`, which the caller must handle. |
+| BE016, AUTH011 | Removes `'none'` from an algorithms list, turns `ignoreExpiration: true` off, adds `algorithms=[...]` to PyJWT `jwt.decode()` (the algorithm the file signs with, else HS256), and narrows a mixed HMAC and RSA list to the algorithm the file signs with. |
+| DATA004 | Float money columns become `Numeric(12, 2)` (SQLAlchemy), `DecimalField(max_digits=12, decimal_places=2)` (Django), `Decimal` (Prisma) or `numeric(12, 2)` (SQL). Create a migration afterwards; SQL files in migration folders are never edited. |
+| BE012 | Replaces the wildcard or reflected CORS origin with an allow-list read from the `CORS_ORIGINS` environment variable (comma-separated), keeping credentials. |
+
+A file's change is kept only when the file still parses (`ast.parse` for Python, balanced brackets for
+JavaScript and TypeScript). Files keep their line endings and byte order mark; files that are not UTF-8 or
+mix line endings are left alone, and so is a file that changed on disk after it was read. Running `fix`
+twice changes nothing the second time. Every finding a codemod could not rewrite is listed with the reason.
+
+**Patches from a model (optional).** For findings without a codemod (auth checks, transactions, unverified
+tokens), `--llm` asks the provider (see [LLM-assisted checks](#llm-assisted-checks-optional)) for the smallest
+fix and writes it to `--patch` (default `vibeaudit-fix.patch`). It is never applied: a patch that does not
+parse, reaches outside the lines the model was shown or contains redacted text is dropped, and the rest are
+marked model-generated and unverified. `--llm-model` and `--llm-max-requests` work as for `scan`.
+
+```bash
+ANTHROPIC_API_KEY=... vibeaudit fix . --llm anthropic --patch auth-fixes.patch
+```
 
 ## Configuration
 
@@ -282,6 +319,7 @@ read-only:
 | `list_routes` | The routes inventory. |
 | `check_package` | Before adding a dependency: does it exist, is it brand new, is it a typosquat, known vulnerabilities. |
 | `explain_rule` | What a rule means and how to fix it. |
+| `auto_repair` | The `vibeaudit fix` diff for a directory (optionally one `file` or some `rules`); it writes nothing. |
 
 ```json
 { "mcpServers": { "vibeaudit": { "command": "vibeaudit", "args": ["mcp"] } } }

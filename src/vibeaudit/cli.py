@@ -73,6 +73,26 @@ def build_parser() -> argparse.ArgumentParser:
     m.add_argument("--format", choices=["text", "json", "md"], default="text")
     m.add_argument("--exclude", action="append", default=[], metavar="GLOB", help="skip paths matching GLOB (repeatable)")
 
+    x = sub.add_parser("fix", help="show (or --apply) deterministic fixes for findings that have one obvious repair",
+                       description="Print a unified diff that fixes every finding a codemod covers: request timeouts "
+                                   "(REL001), output token limits (LLM003), guarded JSON parsing of model output (LLM011), "
+                                   "pinned JWT algorithms (BE016, AUTH011), Decimal money columns (DATA004) and CORS "
+                                   "origins with credentials (BE012). Nothing is written without --apply. With --llm, "
+                                   "findings without a codemod get a model-written patch in a .patch file, never applied.")
+    x.add_argument("path", nargs="?", default=".", help="project directory (default: current directory)")
+    x.add_argument("--apply", action="store_true", help="write the fixes to the files instead of printing the diff")
+    x.add_argument("--rule", action="append", default=[], metavar="RULE",
+                   help="fix only these rules (repeatable, comma lists allowed)")
+    x.add_argument("--exclude", action="append", default=[], metavar="GLOB", help="skip paths matching GLOB (repeatable)")
+    x.add_argument("--config", metavar="FILE", help="read settings from this TOML file, as for scan")
+    x.add_argument("--llm", choices=["gemini", "openai", "anthropic"],
+                   help="ask an LLM for patches for findings without a codemod (auth, transactions, ...); needs an API key")
+    x.add_argument("--llm-model", help="model name for the LLM provider")
+    x.add_argument("--llm-max-requests", type=int, default=10, help="hard cap on LLM requests (default: 10)")
+    x.add_argument("--patch", default="vibeaudit-fix.patch", metavar="FILE",
+                   help="where --llm writes its patch (default: vibeaudit-fix.patch); it is never applied")
+    x.add_argument("-q", "--quiet", action="store_true", help="do not list skipped findings")
+
     sub.add_parser("mcp", help="run a Model Context Protocol server on stdio for coding agents")
 
     r = sub.add_parser("rules", help="list every rule")
@@ -199,6 +219,68 @@ def cmd_routes(a: argparse.Namespace) -> int:
     return 0
 
 
+def write_raw(text: str) -> None:
+    """Write a diff byte for byte: text-mode stdout on Windows would turn every LF into CRLF."""
+    buf = getattr(sys.stdout, "buffer", None)
+    if buf is None:
+        sys.stdout.write(text)
+        return
+    sys.stdout.flush()
+    buf.write(text.encode("utf-8"))
+    buf.flush()
+
+
+def cmd_fix(a: argparse.Namespace) -> int:
+    from . import fix
+    from .config import project_options
+
+    if not os.path.isdir(a.path):
+        print(f"vibeaudit: not a directory: {a.path}", file=sys.stderr)
+        return 2
+    rules = [r.strip().upper() for spec in a.rule for r in spec.split(",") if r.strip()]
+    unknown = [r for r in rules if r not in RULES]
+    if unknown:
+        print(f"vibeaudit: unknown rule: {', '.join(unknown)}", file=sys.stderr)
+        return 2
+    try:
+        opts = project_options(a.path, a.config, offline=True, external="none")
+    except ConfigError as e:
+        print(f"vibeaudit: {e}", file=sys.stderr)
+        return 2
+    opts.excludes += a.exclude
+    plan = fix.plan(a.path, rules, opts)
+    if a.apply:
+        written = plan.apply()
+        for rel in written:
+            print(f"vibeaudit: fixed {rel}", file=sys.stderr)
+    else:
+        write_raw(plan.diff())
+    fixable = [(f, r) for f, r in plan.skipped if f.rule_id in fix.FIXERS]
+    if not a.quiet:
+        for f, reason in fixable:
+            print(f"vibeaudit: not fixed: {f.rule_id} {f.file}:{f.line}: {reason}", file=sys.stderr)
+    verb = "applied" if a.apply else "proposed"
+    print(f"vibeaudit: {len(plan.fixed)} fixes {verb} in {len(plan.changes)} files; {len(fixable)} findings of fixable "
+          f"rules could not be rewritten; {len(plan.skipped) - len(fixable)} findings have no codemod.", file=sys.stderr)
+    if a.llm:
+        from .llm import LLMError, Provider
+
+        try:
+            provider = Provider(a.llm, a.llm_model)
+        except LLMError as e:
+            print(f"vibeaudit: {e}", file=sys.stderr)
+            return 2
+        text, n = fix.patches(Path(a.path), plan.skipped, provider, max(0, a.llm_max_requests),
+                              lambda m: print(f"vibeaudit: {m}", file=sys.stderr))
+        if n:
+            Path(a.patch).write_bytes(text.encode("utf-8"))
+            print(f"vibeaudit: wrote {n} model-generated patches to {a.patch}; review it, then `git apply {a.patch}`",
+                  file=sys.stderr)
+        else:
+            print("vibeaudit: the model produced no usable patch", file=sys.stderr)
+    return 0
+
+
 def cmd_scan(a: argparse.Namespace) -> int:
     from .scanner import Options, scan
 
@@ -308,6 +390,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         return mcp_main()
     if a.command == "scan":
         return cmd_scan(a)
+    if a.command == "fix":
+        return cmd_fix(a)
     if a.command == "update":
         return cmd_update(a)
     if a.command == "feedback":

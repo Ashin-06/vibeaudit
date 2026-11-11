@@ -68,9 +68,10 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 
 | Item | Status |
 | --- | --- |
-| Codemods (diff by default, `--apply`): request timeouts, `rel="noopener noreferrer"`, guarded `JSON.parse` of model output, pinned JWT algorithms, Decimal money columns, CORS credentials, Redis TTL | planned |
-| Agentic patch generator for complex findings (writes a `.patch`, never applies it) | planned |
-| MCP `auto_repair` tool returning the diff | planned |
+| Codemods (diff by default, `--apply`): request timeouts, output token limits, guarded `JSON.parse` of model output, pinned JWT algorithms, Decimal money columns, CORS credentials | done, unreleased (REL001, LLM003, LLM011, BE016, AUTH011, DATA004, BE012) |
+| Codemods for `rel="noopener noreferrer"` and Redis TTL | planned (waits for a rule that reports them) |
+| Agentic patch generator for complex findings (writes a `.patch`, never applies it) | done, unreleased (`vibeaudit fix --llm`) |
+| MCP `auto_repair` tool returning the diff | done, unreleased |
 
 ## Phase 3: everywhere it runs
 
@@ -82,7 +83,7 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | `vibeaudit studio` local web UI (127.0.0.1 only) | planned |
 | PR review bot and `--fail-on-regression N` | planned |
 | Pre-commit fast path under 150 ms | planned |
-| MCP tools: audit_current_file, verify_package, simulate_migration, auto_repair | planned |
+| MCP tools: audit_current_file, verify_package, simulate_migration | planned (auto_repair: done in Phase 2) |
 | GitLab CI and CircleCI templates | planned |
 | Monorepo mode | planned |
 | Offline / air-gapped mode with bundled data | planned |
