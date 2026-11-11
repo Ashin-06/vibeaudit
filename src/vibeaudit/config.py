@@ -24,6 +24,7 @@ KEYS: Dict[str, str] = {
     "fail_on": "severity or none", "min_severity": "severity", "external": "string", "baseline": "string",
     "llm": "string", "llm_model": "string", "offline": "boolean", "max_file_size": "integer",
     "llm_max_requests": "integer", "file_timeout": "number", "include_preview": "boolean",
+    "gate_severe_preview": "boolean",
 }
 
 
@@ -111,6 +112,7 @@ def project_options(root: str, config: Optional[str] = None, **overrides):
         "auth_helpers": list(cfg.get("auth_helpers", [])), "sanitizers": list(cfg.get("sanitizers", [])),  # type: ignore[call-overload]
         "public_paths": list(cfg.get("public_paths", [])),  # type: ignore[call-overload]
         "include_preview": bool(cfg.get("include_preview", False)),
+        "gate_severe_preview": bool(cfg.get("gate_severe_preview", True)),
     }
     values.update(overrides)
     return Options(**values)

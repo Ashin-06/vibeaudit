@@ -36,10 +36,12 @@ class Result:
     @property
     def gating(self) -> List[Finding]:
         """Findings that count for --fail-on, the score and the grade: preview rules are left out unless
-        the scan was run with --include-preview."""
+        the scan was run with --include-preview, except severe preview rules (injection, XSS), which count
+        unless the scan was run with --no-gate-severe-preview."""
         if self.meta.get("include_preview"):
             return list(self.findings)
-        return [f for f in self.findings if not f.preview]
+        severe = self.meta.get("gate_severe_preview", True)
+        return [f for f in self.findings if not f.preview or (severe and f.gates_in_preview)]
 
     @property
     def counts(self) -> Dict[str, int]:
@@ -108,6 +110,10 @@ def render_text(res: Result, color: bool, verbose: bool = True) -> str:
     if previews:
         out.append(f"  {previews} findings come from preview rules and do not count toward --fail-on or the score "
                    "(use --include-preview to count them).")
+    severe = sum(1 for f in res.gating if f.preview)
+    if severe and not res.meta.get("include_preview"):
+        out.append(f"  {severe} findings come from severe preview rules (injection, eval, deserialization, open "
+                   "redirect, XSS) and do count (use --no-gate-severe-preview to leave them out).")
     for note in res.meta.get("notes", []):
         out.append(f"  Note: {note}")
     return "\n".join(out) + "\n"

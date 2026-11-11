@@ -65,6 +65,9 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--no-cache", action="store_true", help="do not read or write cached registry, vulnerability and LLM answers")
     s.add_argument("--include-preview", action="store_true", default=None,
                    help="count findings of preview rules toward --fail-on and the score (they are always reported)")
+    s.add_argument("--no-gate-severe-preview", action="store_true", default=None,
+                   help="do not count severe preview rules (injection, eval, deserialization, open redirect, XSS) "
+                        "toward --fail-on and the score; by default they count")
     s.add_argument("-q", "--quiet", action="store_true", help="print only the summary")
     s.add_argument("--no-color", action="store_true", help="disable colored output")
 
@@ -363,7 +366,8 @@ def cmd_scan(a: argparse.Namespace) -> int:
                    auth_helpers=list(cfg.get("auth_helpers", [])), sanitizers=list(cfg.get("sanitizers", [])),
                    public_paths=list(cfg.get("public_paths", [])), changes=changes, log=log,
                    feedback=not a.no_config,  # the feedback file lives in the repository, like the config
-                   cache=not a.no_cache, include_preview=bool(pick(a.include_preview, "include_preview", False)))
+                   cache=not a.no_cache, include_preview=bool(pick(a.include_preview, "include_preview", False)),
+                   gate_severe_preview=False if a.no_gate_severe_preview else bool(cfg.get("gate_severe_preview", True)))
     if cfg_path:
         log(f"using settings from {cfg_path}")
     try:
