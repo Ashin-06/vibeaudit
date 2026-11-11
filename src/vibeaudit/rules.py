@@ -38,6 +38,7 @@ class Rule:
     preview_reason: str = ""
 
 
+NEW_IN_081 = "New in 0.8.1: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_072 = "New in 0.7.2: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_071 = "New in 0.7.1: not yet measured on enough real-world findings in the benchmark."
 NEW_IN_070 = "New in 0.7.0: not yet measured on enough real-world findings in the benchmark."
@@ -633,6 +634,24 @@ _R = [
          "can be steered by instructions hidden in that content (indirect prompt injection).",
          "Split reading and acting into separate agents, require human approval for actions, and never give an "
          "agent that reads untrusted content access to secrets or destructive tools.", "CWE-77", "LLM01:2025"),
+    Rule("LLM016", "Coding agent allowed to act without asking", "llm", "high",
+         "An agent configuration that auto-approves shell commands or every tool, or a script that starts an "
+         "agent with permission checks switched off, lets one prompt injection in a file, issue or web page "
+         "run commands on the machine with the developer's credentials.",
+         "Approve tools one by one, allow only the narrow commands the task needs (`Bash(npm test)`), and keep "
+         "`--dangerously-skip-permissions` and similar flags for throwaway sandboxes.", "CWE-250", "LLM06:2025",
+         preview=True, preview_reason=NEW_IN_081),
+    Rule("LLM017", "Streamed completion not cancelled on disconnect", "llm", "medium",
+         "When the user closes the tab, a stream that is not cancelled keeps the model generating, and paying, "
+         "until the full answer is done.",
+         "Pass the request's abort signal to the model call (`abortSignal: req.signal`), or check "
+         "`await request.is_disconnected()` in the stream generator and stop.", "CWE-404", "LLM10:2025",
+         preview=True, preview_reason=NEW_IN_081),
+    Rule("LLM018", "Prompts or completions written to logs", "llm", "medium",
+         "Prompts and model answers often contain what users typed: names, emails, health or financial "
+         "details. Logging them copies that data into log storage with weaker access control and retention.",
+         "Log ids, token counts and timings instead of the text, or redact it before logging.", "CWE-532",
+         "LLM02:2025", preview=True, preview_reason=NEW_IN_081),
     # ------------------------------------------------------- UI, UX and a11y
     Rule("UI001", "Image without alt text", "ui", "low",
          "Screen-reader users get the file name or nothing, and the image is invisible to search engines.",

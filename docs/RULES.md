@@ -3,9 +3,9 @@
 Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do not edit by hand.
 `vibeaudit rules` prints the same list, and `vibeaudit rules --format json` includes every field.
 
-135 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
+138 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-35 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+38 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -938,6 +938,9 @@ References: CWE-311, A02:2021
 | [LLM013](#llm013) | high | stable | MCP server with broad access |
 | [LLM014](#llm014) | high | stable | Secret in an MCP configuration |
 | [LLM015](#llm015) | high | stable | Agent combines untrusted input with dangerous tools |
+| [LLM016](#llm016) | high | preview | Coding agent allowed to act without asking |
+| [LLM017](#llm017) | medium | preview | Streamed completion not cancelled on disconnect |
+| [LLM018](#llm018) | medium | preview | Prompts or completions written to logs |
 
 ### LLM001
 
@@ -1086,6 +1089,42 @@ Why it matters: An agent that reads web pages, emails or files and can also run 
 How to fix: Split reading and acting into separate agents, require human approval for actions, and never give an agent that reads untrusted content access to secrets or destructive tools.
 
 References: CWE-77, LLM01:2025
+
+### LLM016
+
+**Coding agent allowed to act without asking** (high, preview)
+
+Preview: New in 0.8.1: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: An agent configuration that auto-approves shell commands or every tool, or a script that starts an agent with permission checks switched off, lets one prompt injection in a file, issue or web page run commands on the machine with the developer's credentials.
+
+How to fix: Approve tools one by one, allow only the narrow commands the task needs (`Bash(npm test)`), and keep `--dangerously-skip-permissions` and similar flags for throwaway sandboxes.
+
+References: CWE-250, LLM06:2025
+
+### LLM017
+
+**Streamed completion not cancelled on disconnect** (medium, preview)
+
+Preview: New in 0.8.1: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: When the user closes the tab, a stream that is not cancelled keeps the model generating, and paying, until the full answer is done.
+
+How to fix: Pass the request's abort signal to the model call (`abortSignal: req.signal`), or check `await request.is_disconnected()` in the stream generator and stop.
+
+References: CWE-404, LLM10:2025
+
+### LLM018
+
+**Prompts or completions written to logs** (medium, preview)
+
+Preview: New in 0.8.1: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: Prompts and model answers often contain what users typed: names, emails, health or financial details. Logging them copies that data into log storage with weaker access control and retention.
+
+How to fix: Log ids, token counts and timings instead of the text, or redact it before logging.
+
+References: CWE-532, LLM02:2025
 
 ## Code quality and tests
 
