@@ -39,12 +39,12 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | User text in prompts without delimiters (extends LLM001) | planned |
 | RAG ingestion storing unsanitised text or instructions (chunk poisoning) | planned |
 | Agent tool loops without a max iteration limit (extends LLM009) | planned |
-| Streaming completions not cancelled when the client disconnects | planned |
+| Streaming completions not cancelled when the client disconnects | preview (LLM017; 0.8.1, 13 of 13 true on the corpus) |
 | No per-user or per-request cost limit | planned |
-| Prompts or completions with personal data written to logs | planned |
+| Prompts or completions with personal data written to logs | preview (LLM018; 0.8.1) |
 | Model output used as SQL, a shell argument or a file path (extends LLM002) | planned |
 | LLM features without a test or eval of their prompt | planned |
-| Agent config files granting auto-approve or broad shell and file access | planned |
+| Agent config files granting auto-approve or broad shell and file access | preview (LLM016: Claude Code, Cursor, VS Code, Gemini and Codex settings, MCP autoApprove, skip-permission flags; 0.8.1) |
 | Foreign keys without an index | planned |
 | Postgres `CREATE INDEX` without `CONCURRENTLY` in migrations | planned |
 | Vector stores keeping raw personal data in metadata | planned |
@@ -77,7 +77,7 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 
 | Item | Status |
 | --- | --- |
-| `vibeaudit watch` (incremental re-scan) | done, unreleased (unchanged files and per-file checks are reused) |
+| `vibeaudit watch` (incremental re-scan) | done (0.8.1; unchanged files and per-file checks are reused) |
 | Language server with diagnostics and code actions | planned |
 | VS Code / Cursor extension (.vsix built in CI, not published) | planned |
 | `vibeaudit studio` local web UI (127.0.0.1 only) | planned |

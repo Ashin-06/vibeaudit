@@ -4,6 +4,29 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.8.1] - 2026-11-11
+
+Phase 3 starts with `vibeaudit watch`; also AI agent and LLM checks. The new rules are preview.
+
+### Added
+
+- `vibeaudit watch [PATH]`: scans once, then re-scans when files change and prints the findings that
+  appeared (`+`) or were fixed (`-`). Unchanged files keep their parse trees, and per-file checks whose
+  inputs did not change replay their findings, so a re-scan matches a fresh scan at a fraction of the cost.
+  QA006 also computes a module's exported names once per module, which makes every scan faster.
+- LLM016: a coding agent allowed to act without asking: `bypassPermissions` or a bare `Bash` grant in
+  `.claude/settings.json`, auto-approve settings for VS Code, Cursor and Gemini, MCP servers with every tool
+  pre-approved, Codex `approval_policy = "never"` or `danger-full-access`, and scripts that start an agent
+  with `--dangerously-skip-permissions`, `--yolo` and similar flags.
+- LLM017: a streamed completion in a route that never passes the request's abort signal (JavaScript) or
+  checks for a disconnected client (Python), so the model keeps generating after the user leaves.
+  All 13 corpus findings are true (10 tuned, 3 held-out).
+- LLM018: prompts, chat history or completions written to logs in files that call a model.
+
+### Fixed
+
+- Files in `.vscode/` were skipped, so the MCP check never read `.vscode/mcp.json`. They are scanned now.
+
 ## [0.8.0] - 2026-11-11
 
 Phase 2 starts: `vibeaudit fix` repairs findings that have one obvious fix. The benchmark grows to 53
