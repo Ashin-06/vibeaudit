@@ -322,10 +322,12 @@ class PyScanner:
         return self.routes
 
     def _parse(self, sf: SourceFile) -> None:
-        try:
-            tree = ast.parse(sf.text or "", filename=sf.rel)
-        except (SyntaxError, ValueError):
-            return  # not valid Python (templates, Python 2, partial files): nothing to analyse
+        tree = sf.cache.get("ast")  # kept between scans of a long-lived Project (vibeaudit watch); never mutated
+        if not isinstance(tree, ast.Module):
+            try:
+                tree = ast.parse(sf.text or "", filename=sf.rel)
+            except (SyntaxError, ValueError):
+                return  # not valid Python (templates, Python 2, partial files): nothing to analyse
         sf.cache["ast"] = tree
         self.trees.append((sf, tree))
 
@@ -386,8 +388,8 @@ class PyScanner:
     def check_comments(self, sf: SourceFile) -> None:
         from .jsscan import SECURITY_TODO
 
-        views = py_views(sf.text or "")
-        sf.cache["views"] = views
+        views = sf.cache.get("py_views") or py_views(sf.text or "")
+        sf.cache["views"] = sf.cache["py_views"] = views
         for a, b in views.comments:
             text = sf.text[a:b]
             m = SECURITY_TODO.search(text)

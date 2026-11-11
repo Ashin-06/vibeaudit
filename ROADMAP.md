@@ -77,7 +77,7 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 
 | Item | Status |
 | --- | --- |
-| `vibeaudit watch` (incremental re-scan) | planned |
+| `vibeaudit watch` (incremental re-scan) | done, unreleased (unchanged files and per-file checks are reused) |
 | Language server with diagnostics and code actions | planned |
 | VS Code / Cursor extension (.vsix built in CI, not published) | planned |
 | `vibeaudit studio` local web UI (127.0.0.1 only) | planned |

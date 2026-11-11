@@ -6,9 +6,10 @@ import fnmatch
 import json
 import os
 import re
+import stat
 import subprocess
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Set
+from typing import Dict, Iterable, List, Optional, Set, Tuple
 
 SKIP_DIRS = {
     ".git", ".hg", ".svn", "node_modules", "bower_components", "jspm_packages", "vendor",
@@ -86,6 +87,16 @@ def kind_of(rel: str) -> str:
     return "other"
 
 
+# While a replayable scan step runs (guard.StepMemo), every file it reads is recorded here, so the step can be
+# skipped on the next scan of the same Project when none of those files changed.
+READS: Optional[Dict[str, "SourceFile"]] = None
+
+
+def _read(sf: "SourceFile") -> None:
+    if READS is not None:
+        READS[sf.rel] = sf
+
+
 DEV_SETTINGS_RE = re.compile(r"(?:^|/)(?:settings/(?:dev|development|local|test|testing)|settings_(?:dev|local|test))\.py$")
 
 
@@ -132,9 +143,11 @@ class SourceFile:
         self._lines: Optional[List[str]] = None
         self.is_client = False  # set by the JS scanner
         self.cache: Dict[str, object] = {}  # per-file scratch space for scanners
+        self.signature: Optional[Tuple[int, int]] = None  # (mtime_ns, size) when discovered; see Project.refresh
 
     @property
     def text(self) -> Optional[str]:
+        _read(self)
         if not self._loaded:
             self._loaded = True
             try:
@@ -247,8 +260,7 @@ def gitignore_covers(root: Path, rel: str) -> bool:
 class Project:
     def __init__(self, root: Path, excludes: Iterable[str] = (), max_bytes: int = DEFAULT_MAX_BYTES):
         self.root = root.resolve()
-        self.excludes = list(excludes) + read_ignore_file(self.root / ".vibeauditignore")
-        self.excludes.append("vibeaudit-report*")
+        self._base_excludes = list(excludes)
         self.max_bytes = max_bytes
         self.is_git = False
         self.tracked: Set[str] = set()
@@ -256,11 +268,32 @@ class Project:
         self.untracked: Set[str] = set()
         self.files: List[SourceFile] = []
         self._by_rel: Dict[str, SourceFile] = {}
+        self.step_memo = None  # a guard.StepMemo when a long-lived caller (vibeaudit watch) wants steps replayed
         self._pkg_cache: Dict[str, Optional[dict]] = {}
         self._venv_cache: Dict[str, bool] = {}
         self._discover()
 
-    def _discover(self) -> None:
+    def refresh(self) -> Set[str]:
+        """Look at the files again and keep every file whose size and modification time are unchanged, with
+        what scanners cached for it (text, parse trees, lexer views). Returns the paths that were added,
+        changed or removed. Used by long-lived callers such as `vibeaudit watch`."""
+        old = self._by_rel
+        self._discover(old)
+        changed = {rel for rel, sf in self._by_rel.items() if old.get(rel) is not sf} | (set(old) - set(self._by_rel))
+        if self.step_memo is not None and (set(old) != set(self._by_rel) or any(
+                kind_of(rel) not in ("py", "js", "html") for rel in changed)):
+            # a file added or removed, or a manifest or config file changed: settings read outside the replayable
+            # steps (the file list, git status, deployment config) may have changed, so nothing is replayed
+            self.step_memo.clear()
+        return changed
+
+    def _discover(self, previous: Optional[Dict[str, "SourceFile"]] = None) -> None:
+        self.excludes = self._base_excludes + read_ignore_file(self.root / ".vibeauditignore") + ["vibeaudit-report*"]
+        self.tracked, self.untracked, self.binary = set(), set(), set()
+        self.files, self._by_rel = [], {}
+        self._pkg_cache, self._venv_cache = {}, {}
+        self.__dict__.pop("_deps", None)  # deps.collect() caches the parsed manifests on the project
+        self.is_git = False
         rels: List[str] = []
         inside = _git(self.root, "rev-parse", "--is-inside-work-tree")
         if inside and inside.strip() == "true":
@@ -295,11 +328,19 @@ class Project:
             if not self.is_git and ENV_FILE_RE.search(rel) and gitignore_covers(self.root, rel):
                 continue  # a local, ignored .env is how secrets are supposed to live
             path = self.root / rel
-            if not path.is_file():
+            try:
+                st = path.stat()
+            except OSError:
+                continue
+            if not stat.S_ISREG(st.st_mode):
                 continue
             if path.is_symlink() and not _inside(path, self.root):
                 continue  # a link out of the repository (for example to ~/.ssh) is not part of the project
-            sf = SourceFile(self.root, rel, self.max_bytes)
+            sig = (st.st_mtime_ns, st.st_size)
+            sf = previous.get(rel) if previous else None
+            if sf is None or sf.signature != sig or sf.secrets_only != bundle:
+                sf = SourceFile(self.root, rel, self.max_bytes)
+                sf.signature = sig
             sf.secrets_only = bundle
             self.files.append(sf)
             self._by_rel[rel] = sf
@@ -315,12 +356,16 @@ class Project:
         return False
 
     def get(self, rel: str) -> Optional[SourceFile]:
-        return self._by_rel.get(rel)
+        sf = self._by_rel.get(rel)
+        if sf is not None:
+            _read(sf)
+        return sf
 
     def of_kind(self, *kinds: str) -> List[SourceFile]:
         return [f for f in self.files if f.kind in kinds]
 
     def package_json(self, rel_dir: str) -> Optional[dict]:
+        self.get((rel_dir + "/" if rel_dir else "") + "package.json")  # records the read, also when cached below
         if rel_dir not in self._pkg_cache:
             sf = self.get((rel_dir + "/" if rel_dir else "") + "package.json")
             data = None

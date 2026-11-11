@@ -100,11 +100,14 @@ def suppressed(project: Project, f: Finding) -> bool:
 _SCAN_LOCK = threading.RLock()
 
 
-def scan(root: str, opts: Optional[Options] = None) -> Result:
+def scan(root: str, opts: Optional[Options] = None, project: Optional[Project] = None) -> Result:
     """Scan `root`. Without `opts`, the project's own .vibeaudit.toml / [tool.vibeaudit] settings apply.
 
     Safe to call from several threads: scans run one at a time, because the time budget, the custom auth
-    helpers and the cache switch are process-wide (scans are CPU-bound, so threads would not speed them up)."""
+    helpers and the cache switch are process-wide (scans are CPU-bound, so threads would not speed them up).
+
+    `project` lets a long-lived caller (`vibeaudit watch`, the language server) reuse files it already read and
+    parsed: pass the same Project again after `Project.refresh()`."""
     if opts is None:
         from .config import project_options
 
@@ -114,23 +117,41 @@ def scan(root: str, opts: Optional[Options] = None) -> Result:
         warnings.simplefilter("ignore", SyntaxWarning)
         warnings.filterwarnings("ignore", "invalid escape sequence", DeprecationWarning)  # the same before 3.12
         if opts.cache:
-            return _scan(root, opts)
+            return _scan(root, opts, project)
         from . import store
 
         previous, store.ENABLED = store.ENABLED, False
         try:  # only this scan skips the cache; a long-lived caller keeps its own setting
-            return _scan(root, opts)
+            return _scan(root, opts, project)
         finally:
             store.ENABLED = previous
 
 
-def _scan(root: str, opts: Options) -> Result:
+def _scan(root: str, opts: Options, project: Optional[Project] = None) -> Result:
     start = time.time()
     GUARD.reset(opts.file_timeout)
     H.CUSTOM.reset(opts.auth_helpers, opts.sanitizers, opts.public_paths)
-    project = Project(Path(root), opts.excludes, opts.max_file_bytes)
+    if project is None:
+        project = Project(Path(root), opts.excludes, opts.max_file_bytes)
     raw: List[Finding] = []
-    emit = raw.append
+    memo = project.step_memo
+    if memo is None:
+        emit = raw.append
+    else:
+        def emit(f: Finding) -> None:
+            raw.append(f)
+            memo.record(f)
+
+        memo.emit, memo.project, memo.replayed, memo.ran = raw.append, project, 0, 0
+    GUARD.memo = memo
+    try:
+        return _scan_project(root, opts, project, raw, emit, start)
+    finally:
+        GUARD.memo = None
+
+
+def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding], emit: Callable[[Finding], None],
+                  start: float) -> Result:
     notes: List[str] = []
 
     js_routes = JsScanner(project, emit).run()
