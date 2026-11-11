@@ -635,6 +635,13 @@ class PyScanner:
             return False
         return True
 
+    def _literal_loop_name(self, node: ast.AST, call: ast.AST) -> bool:
+        """The name is the variable of a `for x in ['a', 'b']:` loop over string literals just above the call."""
+        above = "\n".join(self.sf.lines[max(0, getattr(call, "lineno", 1) - 8):getattr(call, "lineno", 1)])
+        above = re.split(r"(?m)^\s*(?:async\s+)?def\s", above)[-1]  # not a loop in the function before this one
+        return isinstance(node, ast.Name) and bool(re.search(
+            r"\bfor\s+%s\s+in\s+[\[(]\s*(?:['\"][\w.-]{1,60}['\"]\s*,?\s*){1,60}[\])]\s*:" % re.escape(node.id), above))
+
     def _own_functions(self) -> Set[str]:
         """Names of functions defined in the current file, computed once per file."""
         names = self.sf.cache.get("own_functions")
@@ -664,6 +671,8 @@ class PyScanner:
                     pass  # only bind markers are formatted in; the values are passed as parameters
                 elif t0 and (formatted or ctx.kind == "tool" or not isinstance(src, (ast.Constant, ast.JoinedStr, ast.BinOp))):
                     self.sink(call, t0, "BE001", "a SQL query", "high", True)
+                elif formatted and all(self._literal_loop_name(p, call) for p in interpolated(src)):
+                    pass  # for table in ['alerts', 'users']: execute('DROP TABLE %s' % table): fixed names
                 elif formatted and not self.sf.is_one_off:  # a migration formats in its own constant identifiers
                     self.add("BE001", call, "SQL query built with string formatting; use parameters even for values you think are safe.", "medium")
         # shell
@@ -869,6 +878,8 @@ class PyScanner:
     def check_log_secret(self, call: ast.Call, d: str) -> None:
         if not (d == "print" or re.match(r"(?:logging|logger|log|_logger|LOGGER|self\.logger|app\.logger)\.(?:debug|info|warning|warn|error|exception|critical)$", d)):
             return
+        if self.sf.is_one_off and d == "print":
+            return  # a helper script that fetches a token prints it on purpose
         for arg in call.args:
             sliced = {id(n.value) for n in ast.walk(arg) if isinstance(n, ast.Subscript) and isinstance(n.slice, ast.Slice)}
             for n in ast.walk(arg):
@@ -961,6 +972,9 @@ class PyScanner:
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
                 for d in node.decorator_list:
                     if last_name(d.func if isinstance(d, ast.Call) else d) in ("csrf_exempt",) or dotted(d).endswith("csrf.exempt"):
+                        seg = ast.get_source_segment(sf.text or "", node) or ""
+                        if "webhook" in getattr(node, "name", "").lower() and H.WEBHOOK_VERIFY.search(seg):
+                            continue  # a webhook that verifies its sender's signature cannot carry a CSRF token
                         self.add("AUTH009", d, "CSRF protection disabled for this view.")
             if isinstance(node, ast.Assign):
                 tgt = " ".join(ast.unparse(t) for t in node.targets)

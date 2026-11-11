@@ -28,7 +28,7 @@ AUTH_EVIDENCE = re.compile(
     | \bHTTP_40[13]
     | @\s*(?:\w+\s*\.\s*)?(?:login_required|jwt_required|auth_required|token_required|requires_auth|admin_required
         |roles_required|roles_accepted|permission_required|fresh_jwt_required|user_required|staff_member_required
-        |permission_classes|authentication_classes)
+        |permission_classes|authentication_classes|permission\s*\()
     | Depends\s*\(\s*[\w.]*(?:user|auth|token|verify|current|admin|security|session|api_key|apikey|scheme)
     | \bSecurity\s*\(
     | \bpassport\s*\.\s*authenticate\b

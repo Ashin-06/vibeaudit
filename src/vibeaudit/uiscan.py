@@ -87,7 +87,7 @@ class UiScanner:
                 GUARD.run(sf.rel, "UI checks", self._jsx, sf)
             elif MARKUP_EXT.search(sf.rel):
                 GUARD.run(sf.rel, "UI checks", self._markup, sf)
-            elif sf.rel.endswith((".css", ".scss")) and not sf.rel.endswith(".min.css"):
+            elif sf.rel.endswith((".css", ".scss")) and not sf.rel.endswith(".min.css") and not sf.is_vendored:
                 GUARD.run(sf.rel, "UI checks", self._css, sf)
         GUARD.run("<project>", "asset links", self._assets)
         GUARD.run("<project>", "Next.js pages", self._next)

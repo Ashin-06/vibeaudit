@@ -5,7 +5,7 @@ Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do n
 
 135 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-27 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+35 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -21,7 +21,7 @@ Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do n
 | [SEC008](#sec008) | critical | stable | Secret exposed to the browser through a public env var |
 | [SEC009](#sec009) | critical | stable | Supabase service_role key outside the server |
 | [SEC010](#sec010) | medium | stable | Secret written to logs |
-| [SEC011](#sec011) | high | stable | Hardcoded password |
+| [SEC011](#sec011) | high | preview | Hardcoded password |
 
 ### SEC001
 
@@ -127,7 +127,9 @@ References: CWE-532, A09:2021
 
 ### SEC011
 
-**Hardcoded password** (high)
+**Hardcoded password** (high, preview)
+
+Preview: Benchmark precision 89% (24 of 27): field values and patterns that only mention a password are reported too.
 
 Why it matters: A password literal in code (often an admin or database password) is shared with everyone who can read the repo and cannot be rotated without a deploy.
 
@@ -235,13 +237,13 @@ References: CWE-427, A08:2021
 | ID | Severity | Status | Rule |
 | --- | --- | --- | --- |
 | [BE001](#be001) | high | stable | SQL injection |
-| [BE002](#be002) | critical | stable | Command injection |
-| [BE003](#be003) | critical | stable | Dynamic code execution |
-| [BE004](#be004) | high | stable | Unsafe deserialization |
+| [BE002](#be002) | critical | preview | Command injection |
+| [BE003](#be003) | critical | preview | Dynamic code execution |
+| [BE004](#be004) | high | preview | Unsafe deserialization |
 | [BE005](#be005) | high | stable | Server-side request forgery (SSRF) |
 | [BE006](#be006) | high | stable | Path traversal |
 | [BE007](#be007) | high | stable | Server-side template injection |
-| [BE008](#be008) | medium | stable | Open redirect |
+| [BE008](#be008) | medium | preview | Open redirect |
 | [BE009](#be009) | high | stable | Mass assignment |
 | [BE010](#be010) | high | stable | NoSQL injection |
 | [BE011](#be011) | medium | stable | Debug mode enabled |
@@ -267,7 +269,9 @@ References: CWE-89, A03:2021
 
 ### BE002
 
-**Command injection** (critical)
+**Command injection** (critical, preview)
+
+Preview: Benchmark precision 50% (4 of 8): build scripts and developer CLIs that run their own commands are reported too.
 
 Why it matters: User-controlled data reaches a shell command, giving the attacker remote code execution on the server.
 
@@ -277,7 +281,9 @@ References: CWE-78, A03:2021
 
 ### BE003
 
-**Dynamic code execution** (critical)
+**Dynamic code execution** (critical, preview)
+
+Preview: Benchmark precision 36% (4 of 11): code a library or tool executes by design (config files, a debugger console, code samples in a tutorial page) is reported too.
 
 Why it matters: eval/exec/new Function runs strings as code. With attacker-influenced input it is remote code execution.
 
@@ -287,7 +293,9 @@ References: CWE-95, A03:2021
 
 ### BE004
 
-**Unsafe deserialization** (high)
+**Unsafe deserialization** (high, preview)
+
+Preview: Benchmark precision 36% (4 of 11): pickle or shelve reading the application's own stored data looks the same as reading untrusted input.
 
 Why it matters: pickle, marshal, dill and yaml.load can execute code while loading. Loading untrusted data is remote code execution.
 
@@ -327,7 +335,9 @@ References: CWE-1336, A03:2021
 
 ### BE008
 
-**Open redirect** (medium)
+**Open redirect** (medium, preview)
+
+Preview: Benchmark precision 83% (5 of 6): a redirect target that comes from the application's own results is reported too.
 
 Why it matters: Redirecting to a user-supplied URL lets phishing links borrow your domain.
 
@@ -1084,9 +1094,9 @@ References: CWE-77, LLM01:2025
 | [QA001](#qa001) | medium | stable | No automated tests |
 | [QA002](#qa002) | low | stable | No continuous integration |
 | [QA003](#qa003) | low | preview | Exception silently swallowed |
-| [QA004](#qa004) | medium | stable | Security placeholder or TODO left in code |
-| [QA005](#qa005) | medium | stable | Unfinished stub left in code |
-| [QA006](#qa006) | high | stable | Import of a file or name that does not exist |
+| [QA004](#qa004) | medium | preview | Security placeholder or TODO left in code |
+| [QA005](#qa005) | medium | preview | Unfinished stub left in code |
+| [QA006](#qa006) | high | preview | Import of a file or name that does not exist |
 | [QA007](#qa007) | medium | stable | Package imported but not declared as a dependency |
 | [QA008](#qa008) | low | stable | TypeScript checking disabled for a whole file |
 
@@ -1120,7 +1130,9 @@ References: CWE-390, A09:2021
 
 ### QA004
 
-**Security placeholder or TODO left in code** (medium)
+**Security placeholder or TODO left in code** (medium, preview)
+
+Preview: Benchmark precision 87% (13 of 15): TODO and FIXME notes that are not about security are reported too.
 
 Why it matters: Comments like "TODO: add auth" or "in production, use..." are where assistants leave unfinished security work that then ships.
 
@@ -1130,7 +1142,9 @@ References: CWE-1188
 
 ### QA005
 
-**Unfinished stub left in code** (medium)
+**Unfinished stub left in code** (medium, preview)
+
+Preview: Benchmark precision 0% (0 of 5): methods that deliberately report an unsupported operation are reported as unfinished stubs.
 
 Why it matters: A route handler or function that only passes, raises NotImplementedError or throws 'not implemented' is a placeholder an assistant left behind. The feature silently does nothing or crashes when used.
 
@@ -1140,7 +1154,9 @@ References: CWE-1164
 
 ### QA006
 
-**Import of a file or name that does not exist** (high)
+**Import of a file or name that does not exist** (high, preview)
+
+Preview: Held-out precision 15% (4 of 27): a TypeScript import ending in .js that resolves to a .d.ts file is reported as missing.
 
 Why it matters: The code imports a local module, file or function that is not in the project. Assistants invent helper names that sound right; the app crashes on start-up or when that code path runs.
 

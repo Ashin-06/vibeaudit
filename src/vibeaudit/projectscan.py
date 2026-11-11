@@ -344,10 +344,12 @@ class ProjectScanner:
                 except ValueError:
                     continue
                 deps = data.get("dependencies") if isinstance(data, dict) else None
-                if isinstance(deps, dict) and deps and not any((d / lk).exists() for lk in LOCKS):
+                # a published library (it lists the files it ships and is not private) leaves the lockfile out on purpose
+                library = isinstance(data, dict) and not data.get("private") and isinstance(data.get("files"), list)
+                if isinstance(deps, dict) and deps and not library and not any((d / lk).exists() for lk in LOCKS):
                     if not any((p / lk).exists() for p in d.parents for lk in LOCKS if self.p.root in (p, *p.parents)):
                         self.add(f, 1, "DEP005", "package.json has dependencies but no lockfile is committed.")
-            elif re.fullmatch(r"requirements[\w.-]*\.txt", name) and not f.is_test:
+            elif re.fullmatch(r"requirements[\w.-]*\.txt", name) and not f.is_test and not re.search(r"(?:^|/)docs?/", f.rel):
                 reqs = [ln.strip() for ln in f.lines if ln.strip() and not ln.strip().startswith(("#", "-"))]
                 unpinned = [r for r in reqs if "==" not in r and "@" not in r]
                 if reqs and len(unpinned) * 2 > len(reqs) and not any((d / lk).exists() for lk in PY_LOCKS):
@@ -392,7 +394,8 @@ class ProjectScanner:
             mutating = r.mutating and (writes or r.calls_llm)
             is_admin = bool(re.search(r"(?i)(?:^|/)admin(?:/|$|[-_])", path) or re.search(r"(?i)(?:^|/)admin(?:/|\.|$)", r.file))
             if H.WEBHOOK_PATH.search(path):
-                if not H.WEBHOOK_VERIFY.search(r.body):
+                # an API key or login check on the route (alerta's @permission('write:webhooks')) replaces a signature
+                if not H.WEBHOOK_VERIFY.search(r.body) and not r.has_auth:
                     self.add(r.file, r.line, "AUTH004", f"Webhook {path} does not verify the sender's signature.")
             elif is_admin and not H.ADMIN_ROLE_EVIDENCE.search(r.body):
                 msg = "has no authentication or role check" if not r.has_auth else "checks login but not the admin role"

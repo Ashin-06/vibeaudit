@@ -290,6 +290,28 @@ def check(results: dict) -> List[str]:
     return problems
 
 
+def _stable_only(results: dict) -> str:
+    """Stable rules are the ones that fail builds, so their precision is what a user of --fail-on sees."""
+    stable = [r for r in results["rules"].values() if not r["preview"]]
+    t = [sum(x) for x in zip(*(_split(results, r, False) for r in stable))]
+    h = [sum(x) for x in zip(*(_split(results, r, True) for r in stable))]
+    return (f"- Stable rules only (what `--fail-on` acts on): tuned {t[0] / max(1, sum(t)):.1%} ({t[0]}/{sum(t)}), "
+            f"held-out {h[0] / max(1, sum(h)):.1%} ({h[0]}/{sum(h)}). Most false positives are in preview rules.")
+
+
+def _without_training(results: dict) -> str:
+    """Deliberately vulnerable training apps are full of true positives by design, so the precision without
+    them is reported next to the overall one."""
+    training = {r["name"] for r in corpus() if r.get("kind") in ("training", "known-vulnerable")}
+    tp = fp = 0
+    for r in results["rules"].values():
+        for repo, v in r["by_repo"].items():
+            if repo not in training:
+                tp, fp = tp + v[0], fp + v[1]
+    return (f"- Without the {len(training)} deliberately vulnerable training apps: {tp + fp} findings, {tp} true and "
+            f"{fp} false ({tp / max(1, tp + fp):.1%}).")
+
+
 def results_markdown(results: dict) -> str:
     rules = list(results["rules"].values())
     tuned = [sum(x) for x in zip(*(_split(results, r, False) for r in rules))]
@@ -306,6 +328,8 @@ def results_markdown(results: dict) -> str:
         f"- Held-out split: {sum(held)} labelled findings, {held[0]} true and {held[1]} false "
         f"({held[0] / max(1, sum(held)):.1%}). No rule is changed because of these findings; this is the number "
         "that decides whether a rule may leave preview.",
+        _stable_only(results),
+        _without_training(results),
         f"- Unlabelled findings: {sum(r['needs_review'] for r in rules)}.",
         f"- A precision needs at least {MIN_LABELLED} labelled findings; below that the table says `not enough data`.",
         "- Seeded recall counts the `expect:` cases in tests/fixtures and benchmark/seeded that each rule reports.", "",

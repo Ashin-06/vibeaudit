@@ -101,7 +101,10 @@ _R = [
          "A password literal in code (often an admin or database password) is shared with everyone who can "
          "read the repo and cannot be rotated without a deploy.",
          "Read it from an environment variable or secret manager. For user accounts, store only "
-         "bcrypt/argon2 hashes.", "CWE-259", "A07:2021"),
+         "bcrypt/argon2 hashes.", "CWE-259", "A07:2021",
+         preview=True,
+         preview_reason="Benchmark precision 89% (24 of 27): field values and patterns that only mention a "
+                        "password are reported too."),
     # ------------------------------------------------------------- supply chain
     Rule("DEP001", "Dependency does not exist on the registry", "supply-chain", "critical",
          "AI assistants regularly invent plausible package names. Attackers register those names "
@@ -151,17 +154,26 @@ _R = [
          "User-controlled data reaches a shell command, giving the attacker remote code execution on the "
          "server.",
          "Avoid the shell: pass an argument list (`subprocess.run([\"tool\", arg])`, `execFile`) and "
-         "validate the input against an allow-list.", "CWE-78", "A03:2021"),
+         "validate the input against an allow-list.", "CWE-78", "A03:2021",
+         preview=True,
+         preview_reason="Benchmark precision 50% (4 of 8): build scripts and developer CLIs that run their own "
+                        "commands are reported too."),
     Rule("BE003", "Dynamic code execution", "backend", "critical",
          "eval/exec/new Function runs strings as code. With attacker-influenced input it is remote code "
          "execution.",
          "Remove eval. Parse data with json.loads / JSON.parse or ast.literal_eval, and dispatch through an "
-         "explicit allow-list of functions.", "CWE-95", "A03:2021"),
+         "explicit allow-list of functions.", "CWE-95", "A03:2021",
+         preview=True,
+         preview_reason="Benchmark precision 36% (4 of 11): code a library or tool executes by design (config "
+                        "files, a debugger console, code samples in a tutorial page) is reported too."),
     Rule("BE004", "Unsafe deserialization", "backend", "high",
          "pickle, marshal, dill and yaml.load can execute code while loading. Loading untrusted data is "
          "remote code execution.",
          "Use JSON, or yaml.safe_load. Only unpickle files you created yourself and that nobody else can "
-         "write.", "CWE-502", "A08:2021"),
+         "write.", "CWE-502", "A08:2021",
+         preview=True,
+         preview_reason="Benchmark precision 36% (4 of 11): pickle or shelve reading the application's own "
+                        "stored data looks the same as reading untrusted input."),
     Rule("BE005", "Server-side request forgery (SSRF)", "backend", "high",
          "The server fetches a URL chosen by the user, which can reach internal services and cloud metadata "
          "endpoints (credentials).",
@@ -177,7 +189,10 @@ _R = [
          "Render a fixed template file and pass user data as variables.", "CWE-1336", "A03:2021"),
     Rule("BE008", "Open redirect", "backend", "medium",
          "Redirecting to a user-supplied URL lets phishing links borrow your domain.",
-         "Only redirect to relative paths or an allow-list of hosts.", "CWE-601", "A01:2021"),
+         "Only redirect to relative paths or an allow-list of hosts.", "CWE-601", "A01:2021",
+         preview=True,
+         preview_reason="Benchmark precision 83% (5 of 6): a redirect target that comes from the application's "
+                        "own results is reported too."),
     Rule("BE009", "Mass assignment", "backend", "high",
          "The whole request body is written into a database model, so a user can set fields like `role`, "
          "`is_admin` or `credits` by adding them to the request.",
@@ -490,15 +505,24 @@ _R = [
     Rule("QA004", "Security placeholder or TODO left in code", "quality", "medium",
          "Comments like \"TODO: add auth\" or \"in production, use...\" are where assistants leave "
          "unfinished security work that then ships.",
-         "Implement the missing control now, or track it as a blocking issue before launch.", "CWE-1188", ""),
+         "Implement the missing control now, or track it as a blocking issue before launch.", "CWE-1188", "",
+         preview=True,
+         preview_reason="Benchmark precision 87% (13 of 15): TODO and FIXME notes that are not about security "
+                        "are reported too."),
     Rule("QA005", "Unfinished stub left in code", "quality", "medium",
          "A route handler or function that only passes, raises NotImplementedError or throws 'not implemented' is "
          "a placeholder an assistant left behind. The feature silently does nothing or crashes when used.",
-         "Implement the function, or remove it and every caller until it is ready.", "CWE-1164", ""),
+         "Implement the function, or remove it and every caller until it is ready.", "CWE-1164", "",
+         preview=True,
+         preview_reason="Benchmark precision 0% (0 of 5): methods that deliberately report an unsupported "
+                        "operation are reported as unfinished stubs."),
     Rule("QA006", "Import of a file or name that does not exist", "quality", "high",
          "The code imports a local module, file or function that is not in the project. Assistants invent helper "
          "names that sound right; the app crashes on start-up or when that code path runs.",
-         "Create the missing module or function, or import the one that actually exists.", "CWE-1164", ""),
+         "Create the missing module or function, or import the one that actually exists.", "CWE-1164", "",
+         preview=True,
+         preview_reason="Held-out precision 15% (4 of 27): a TypeScript import ending in .js that resolves to a "
+                        ".d.ts file is reported as missing."),
     Rule("QA007", "Package imported but not declared as a dependency", "quality", "medium",
          "The package is installed on the author's machine but missing from requirements.txt, pyproject.toml or "
          "package.json, so a clean install (CI, Docker, production) fails with an import error.",

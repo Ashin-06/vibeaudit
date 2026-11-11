@@ -49,8 +49,12 @@ EXAMPLE_PATH_RE = re.compile(r"(^|/)examples?/", re.I)
 # iteration or an f-string of constant identifiers there is not a request-time N+1 or an injection
 ONE_OFF_PATH_RE = re.compile(
     r"(^|/)(migrations|alembic|management/commands|scripts?|seeds?|seeders|bin)/"
-    r"|(^|/)(seed|seeds|create[-_]tables?|setup[-_]db|migrate[\w-]*|(?:placeholder|sample|seed|mock|dummy)[-_]?data)"
+    r"|(^|/)(seed|seeds|create[-_]tables?|setup[-_]db|db[-_]reset|reset[-_]db|migrate[\w-]*|(?:placeholder|sample|seed|mock|dummy)[-_]?data)"
     r"\.(?:py|[cm]?[jt]s)$", re.I)
+# well-known libraries copied into the project unminified (static/jquery/jquery.js, bootstrap.css)
+VENDORED_NAME_RE = re.compile(
+    r"(^|/)(?:jquery|bootstrap|materialize|popper|lodash|underscore|moment|angular|d3|chart|fontawesome|font-awesome"
+    r"|select2|datatables|tinymce|codemirror|highlight|prism|swagger-ui)[\w.-]*\.(?:js|css)$", re.I)
 # a vendored copy of a built library kept readable: "// Original source: .../dist/x-min.js"
 VENDORED_HEADER_RE = re.compile(r"(?im)^[ \t]*(?://|/\*|\*)[^\n]*(?:original source:|\bdist/[\w.-]+\.js\b|\w[.-]min\.js\b)")
 ENV_FILE_RE = re.compile(r"(^|/)\.env(\.[\w.-]+)?$")
@@ -122,6 +126,7 @@ class SourceFile:
         self.is_test = bool(TEST_PATH_RE.search(rel))
         self.is_example = bool(EXAMPLE_PATH_RE.search(rel))
         self.is_one_off = bool(ONE_OFF_PATH_RE.search(rel))
+        self.is_vendored = bool(VENDORED_NAME_RE.search(rel))
         self.is_lockfile = rel.rsplit("/", 1)[-1] in LOCKFILES
         self.max_bytes = max_bytes
         self._text: Optional[str] = None
@@ -154,7 +159,7 @@ class SourceFile:
             text = data.decode("utf-8-sig", errors="replace").replace("\r\n", "\n").replace("\r", "\n")
             # Minified bundles and committed build output are generated code: code findings there are noise,
             # but a key baked into a bundle is still a leak, so the text stays available as `raw_text`.
-            if self.secrets_only or (self.kind in ("js", "html") and len(text) > 5000 and _generated(text, self.kind)):
+            if self.secrets_only or (self.kind in ("js", "html") and len(text) > 5000 and (self.is_vendored or _generated(text, self.kind))):
                 self._raw = text
                 return None
             self._text = text

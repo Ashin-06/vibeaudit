@@ -32,6 +32,7 @@ def test_include_preview_from_the_config_file(tmp_path, capsys):
 
 def test_stable_findings_still_fail_next_to_preview_ones(tmp_path, capsys):
     (tmp_path / "show.js").write_text(PREVIEW_ONLY)
-    (tmp_path / "a.py").write_text("import os\nos.system('ls ' + x)\n")  # BE002, stable
+    (tmp_path / "a.py").write_text("def find(db, name):\n    db.execute(f'SELECT * FROM t WHERE n = {name}')\n")
+    assert not RULES["BE001"].preview  # the stable rule this test relies on
     code, out = _scan(tmp_path, capsys)
-    assert code == 1 and sorted(f["rule_id"] for f in out["findings"]) == ["BE002", "FE001"]
+    assert code == 1 and sorted(f["rule_id"] for f in out["findings"]) == ["BE001", "FE001"]

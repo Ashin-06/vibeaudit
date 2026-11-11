@@ -205,6 +205,8 @@ class SecretScanner:
                     self.add(sf, "SEC004", m.start(), "Session/JWT signing secret is hard-coded.", val if len(val) > 8 else "")
         for rx in SIGNING_FALLBACK:
             for m in finditer(rx, code):
+                if sf.is_one_off:
+                    continue  # a local helper script with a development default
                 if once(m.start()):
                     self.add(sf, "SEC004", m.start(), "Signing secret falls back to a hard-coded default when the env var is missing.", "", "medium")
         if sf.kind == "env":
