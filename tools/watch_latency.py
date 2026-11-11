@@ -41,6 +41,8 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("name")
     ap.add_argument("--edits", type=int, default=10)
+    ap.add_argument("--lsp", action="store_true",
+                    help="edit through the language server (unsaved buffers, didChange) instead of on disk")
     a = ap.parse_args(argv)
     repo = next(r for r in corpus() if r["name"] == a.name)
     with tempfile.TemporaryDirectory() as tmp:
@@ -59,6 +61,15 @@ def main(argv=None) -> int:
         files = sorted((p for p in root.rglob("*") if p.suffix in COMMENT and "node_modules" not in p.parts),
                        key=lambda p: -p.stat().st_size)[:a.edits]
         times, mismatches = [], 0
+        server = None
+        if a.lsp:
+            import io
+
+            from vibeaudit import lsp
+
+            server = lsp.Server(io.BytesIO())
+            server.handle({"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"rootUri": root.as_uri()}})
+            server.scan()
         key = "API_KEY = " + repr("q8Zr" + "Lw2Xv9Tn4Pk7Hs1Jd6Fy3Bm5Gc0")  # built here: no secret-shaped literal in the repo
         steps = []
         for p in files:  # per file: add a comment, add a hard-coded key (a new finding), then remove the key again
@@ -67,6 +78,20 @@ def main(argv=None) -> int:
                       (p, original + COMMENT[p.suffix] + ("const " if p.suffix != ".py" else "") + key + "\n"),
                       (p, original + COMMENT[p.suffix])]
         for p, text in steps:
+            if server is not None:
+                rel = p.relative_to(root).as_posix()
+                method = "textDocument/didChange" if rel in server.docs else "textDocument/didOpen"
+                server.handle({"jsonrpc": "2.0", "method": method, "params": {
+                    "textDocument": {"uri": p.as_uri(), "version": 1, "text": text}, "contentChanges": [{"text": text}]}})
+                t = time.perf_counter()
+                server.scan()
+                times.append(time.perf_counter() - t)
+                got = sorted((f.rule_id, f.file, f.line, f.message) for fs in server.findings.values() for f in fs)
+                p.write_text(text, encoding="utf-8")  # the same content on disk, for the fresh scan
+                if got != keyset(scan(str(root), server.watcher.opts)):
+                    mismatches += 1
+                    print(f"MISMATCH after editing {rel} in the language server", file=sys.stderr)
+                continue
             p.write_text(text, encoding="utf-8")
             t = time.perf_counter()
             changed = project.refresh()
@@ -80,7 +105,7 @@ def main(argv=None) -> int:
         print(f"{a.name}: {cold.meta['files_scanned']} files, {len(cold.findings)} findings")
         print(f"cold scan {cold_s * 1000:.0f} ms; re-scan with no change {idle_s * 1000:.0f} ms")
         if times:
-            print(f"re-scan after one edit: median {statistics.median(times) * 1000:.0f} ms, "
+            print(f"{'language server ' if a.lsp else ''}re-scan after one edit: median {statistics.median(times) * 1000:.0f} ms, "
                   f"max {max(times) * 1000:.0f} ms over {len(times)} edits of {len(files)} files; mismatches with a fresh scan: {mismatches}")
     return 1 if mismatches else 0
 

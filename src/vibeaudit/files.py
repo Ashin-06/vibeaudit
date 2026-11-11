@@ -143,7 +143,8 @@ class SourceFile:
         self._lines: Optional[List[str]] = None
         self.is_client = False  # set by the JS scanner
         self.cache: Dict[str, object] = {}  # per-file scratch space for scanners
-        self.signature: Optional[Tuple[int, int]] = None  # (mtime_ns, size) when discovered; see Project.refresh
+        self.signature: Optional[tuple] = None  # (mtime_ns, size) when discovered; see Project.refresh
+        self.overlay: Optional[bytes] = None  # unsaved editor content used instead of the file (language server)
 
     @property
     def text(self) -> Optional[str]:
@@ -151,11 +152,15 @@ class SourceFile:
         if not self._loaded:
             self._loaded = True
             try:
-                size = self.path.stat().st_size
-                if size > self.max_bytes:
+                if self.overlay is not None:
+                    data = self.overlay
+                elif self.path.stat().st_size > self.max_bytes:
                     return None
-                data = self.path.read_bytes()
+                else:
+                    data = self.path.read_bytes()
             except OSError:
+                return None
+            if len(data) > self.max_bytes:
                 return None
             if data[:2] in (b"\xff\xfe", b"\xfe\xff"):
                 try:
@@ -200,7 +205,7 @@ class SourceFile:
 def _git(root: Path, *args: str) -> Optional[str]:
     try:
         out = subprocess.run(
-            ["git", "-C", str(root), *args], capture_output=True, timeout=60, check=False
+            ["git", "-C", str(root), *args], capture_output=True, stdin=subprocess.DEVNULL, timeout=60, check=False
         )
     except (OSError, subprocess.SubprocessError):
         return None
@@ -269,6 +274,7 @@ class Project:
         self.files: List[SourceFile] = []
         self._by_rel: Dict[str, SourceFile] = {}
         self.step_memo = None  # a guard.StepMemo when a long-lived caller (vibeaudit watch) wants steps replayed
+        self.overlays: Dict[str, bytes] = {}  # rel -> unsaved editor content, applied on the next refresh()
         self._pkg_cache: Dict[str, Optional[dict]] = {}
         self._venv_cache: Dict[str, bool] = {}
         self._discover()
@@ -336,11 +342,13 @@ class Project:
                 continue
             if path.is_symlink() and not _inside(path, self.root):
                 continue  # a link out of the repository (for example to ~/.ssh) is not part of the project
-            sig = (st.st_mtime_ns, st.st_size)
+            overlay = self.overlays.get(rel)
+            sig = (st.st_mtime_ns, st.st_size) if overlay is None else ("overlay", len(overlay), hash(overlay))
             sf = previous.get(rel) if previous else None
             if sf is None or sf.signature != sig or sf.secrets_only != bundle:
                 sf = SourceFile(self.root, rel, self.max_bytes)
                 sf.signature = sig
+                sf.overlay = overlay
             sf.secrets_only = bundle
             self.files.append(sf)
             self._by_rel[rel] = sf
