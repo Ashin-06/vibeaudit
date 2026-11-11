@@ -27,13 +27,13 @@ nothing, inaccessible forms and frontend calls to API routes that do not exist.
 
 Contents: [Quickstart](#quickstart) - [Example output](#example-output) - [What it checks](#what-it-checks) -
 [Install](#install) - [Commands](#commands) - [Automatic fixes](#automatic-fixes-vibeaudit-fix) - [Configuration](#configuration) - [CI and pre-commit](#ci-and-pre-commit) -
-[MCP server](#mcp-server-for-coding-agents) - [Scoring](#scoring) - [False positives](#false-positives-and-suppressing-findings) -
+[Editors](#editors-vs-code-cursor-and-other-lsp-clients) - [MCP server](#mcp-server-for-coding-agents) - [Scoring](#scoring) - [False positives](#false-positives-and-suppressing-findings) -
 [Limits](#limits-and-what-is-not-covered) - [Contributing](#contributing-security-and-license)
 
 ## Quickstart
 
 ```bash
-pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.8.1"
+pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.8.2"
 ```
 
 ```bash
@@ -115,13 +115,13 @@ Good tools exist, and vibeaudit runs them when they are installed instead of rep
 vibeaudit is installed from this repository (it is not on PyPI yet). Python 3.9 or newer:
 
 ```bash
-pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.8.1"
+pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.8.2"
 ```
 
 or, to keep it in its own environment:
 
 ```bash
-pipx install "git+https://github.com/Ashin-06/vibeaudit.git@v0.8.1"
+pipx install "git+https://github.com/Ashin-06/vibeaudit.git@v0.8.2"
 ```
 
 Optional: if [gitleaks](https://github.com/gitleaks/gitleaks), [bandit](https://github.com/PyCQA/bandit),
@@ -140,6 +140,7 @@ your `PATH`, their findings are merged into the report and de-duplicated.
 | `vibeaudit rules` | List every rule (`--format text\|json\|md`; JSON includes the why and fix text). |
 | `vibeaudit feedback` | Record that a finding is a false positive or confirmed, or list recorded feedback (see [False positives](#false-positives-and-suppressing-findings)). |
 | `vibeaudit update` | Refresh the popular-package lists and the retired-model list; `--self` upgrades vibeaudit with pip. |
+| `vibeaudit lsp` | Run the language server for editors: diagnostics and fix code actions (see [Editors](#editors-vs-code-cursor-and-other-lsp-clients)). |
 | `vibeaudit mcp` | Run the MCP server for coding agents (see [MCP server](#mcp-server-for-coding-agents)). |
 
 Every command has `--help`.
@@ -152,6 +153,7 @@ Every command has `--help`.
 | `--fail-on SEVERITY` | Exit 1 when a finding is at least `critical`, `high` (default), `medium` or `low`; `none` never fails. |
 | `--min-severity SEVERITY` | Hide findings below this severity (default `low`). |
 | `--include-preview` | Count findings of preview rules toward `--fail-on` and the score; they are always reported (see [STABILITY.md](STABILITY.md)). |
+| `--no-gate-severe-preview` | Leave out the severe preview rules (command injection, `eval`, unsafe deserialization, open redirect, XSS), which by default count toward `--fail-on` and the score. |
 | `--offline` | No network: skip registry, new-package and vulnerability lookups (the typosquat check still runs). |
 | `--exclude GLOB` | Skip matching paths (repeatable). A `.vibeauditignore` file with one glob per line works too. |
 | `--disable RULE_OR_CATEGORY` | Switch off a rule (`QA002`) or a category (`quality`); repeatable, comma lists allowed. |
@@ -273,7 +275,7 @@ sanitizers = ["clean_sql_input"]                               # their output is
 public-paths = ["/api/public/*", "/api/survey-*"]              # intentionally unauthenticated routes
 ```
 
-Other keys: `include-preview`, `llm`, `llm-model`, `llm-max-requests`, `max-file-size`, `file-timeout`. The same settings apply
+Other keys: `include-preview`, `gate-severe-preview`, `llm`, `llm-model`, `llm-max-requests`, `max-file-size`, `file-timeout`. The same settings apply
 to `vibeaudit scan`, `vibeaudit routes`, `vibeaudit feedback`, the MCP server and the Python API. The file is
 part of the scanned repository and can switch rules off: when you audit code you do not trust, use
 `--no-config`.
@@ -298,7 +300,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0                  # needed for --diff
-      - uses: Ashin-06/vibeaudit@v0.8.1
+      - uses: Ashin-06/vibeaudit@v0.8.2
         with:
           fail-on: high
           args: --diff origin/main        # optional: only changed lines
@@ -333,7 +335,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - uses: Ashin-06/vibeaudit@v0.8.1
+      - uses: Ashin-06/vibeaudit@v0.8.2
         with:
           review: "true"
           args: --diff origin/${{ github.base_ref }} --baseline .vibeaudit-baseline.json --fail-on-regression 5
@@ -352,9 +354,29 @@ below the baseline's, even if every new finding is below `--fail-on`.
 # .pre-commit-config.yaml
 repos:
   - repo: https://github.com/Ashin-06/vibeaudit
-    rev: v0.8.1
+    rev: v0.8.2
     hooks:
       - id: vibeaudit
+```
+
+## Editors (VS Code, Cursor and other LSP clients)
+
+`vibeaudit lsp` is a [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) server
+on stdio, written with the standard library only. It scans the workspace like `vibeaudit scan` (offline,
+no external tools, with the workspace's configuration) and publishes every finding as a diagnostic, also for
+unsaved changes. It keeps unchanged files between scans as `watch` does, and re-scans 0.25 seconds after the
+last edit. The `vibeaudit fix` codemods are offered as quick fixes, plus a "fix all" action per file. The
+server never writes a file: the editor applies the edits you accept. It accepts only `file:` URIs inside
+the workspace folder and caps message sizes.
+
+`editors/vscode` is a thin VS Code / Cursor extension that starts the server. CI builds it as a `.vsix`
+artifact (it is not published); install it with **Extensions: Install from VSIX...**. Its
+`vibeaudit.serverCommand` and `vibeaudit.serverArgs` settings are machine-scoped and it does not run in
+untrusted workspaces, so a cloned repository cannot make it start another program. Other editors can run
+`vibeaudit lsp` directly, for example in Neovim:
+
+```lua
+vim.lsp.start({ name = "vibeaudit", cmd = { "vibeaudit", "lsp" }, root_dir = vim.fn.getcwd() })
 ```
 
 ## MCP server for coding agents
@@ -440,7 +462,10 @@ The terminal, JSON (`summary.domains`), Markdown and HTML reports all show them.
 tracking progress, not a security guarantee: read the findings.
 
 Findings of **preview** rules (marked `(preview)`, `"preview": true` in JSON) are reported but left out of
-the score, the grade and `--fail-on`, unless you pass `--include-preview`. A rule is in preview while its
+the score, the grade and `--fail-on`, unless you pass `--include-preview`. The exception is the severe
+preview rules (command injection, `eval`, unsafe deserialization, open redirect and XSS, marked
+`"gates_in_preview": true`): a miss there costs more than a false alarm, so they count by default;
+`--no-gate-severe-preview` leaves them out. A rule is in preview while its
 measured precision is below 90% or it is new; see [STABILITY.md](STABILITY.md).
 
 ## False positives and suppressing findings
@@ -565,14 +590,14 @@ CycloneDX SBOM (`vibeaudit-VERSION.cdx.json`), built by the release workflow fro
 build provenance is signed with GitHub artifact attestations (Sigstore). With the GitHub CLI:
 
 ```bash
-gh attestation verify vibeaudit-0.8.1-py3-none-any.whl --repo Ashin-06/vibeaudit
+gh attestation verify vibeaudit-0.8.2-py3-none-any.whl --repo Ashin-06/vibeaudit
 ```
 
 Run the same for the `.tar.gz` and the `.cdx.json` file. The check passes only if the file was built by
 this repository's release workflow; `--format json` shows the commit and workflow it came from. The SBOM
 lists what the wheel installs (vibeaudit has no runtime dependencies on Python 3.11 and later, and
 `tomli` before that). vibeaudit is not published to PyPI by this project yet; install a verified wheel
-with `pip install vibeaudit-0.8.1-py3-none-any.whl`.
+with `pip install vibeaudit-0.8.2-py3-none-any.whl`.
 
 ## Contributing, security and license
 

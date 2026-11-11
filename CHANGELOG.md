@@ -15,6 +15,33 @@ All notable changes to this project are documented here. The format follows
 - `--fail-on-regression N`: fail when the whole project's score drops more than N points below the score in
   the `--baseline` report, computed before `--baseline`, `--diff` and `--staged` hide findings.
 
+## [0.8.2] - 2026-11-12
+
+Phase 3 continues with the language server and the editor extension; severe preview rules gate again.
+
+### Changed
+
+- Severe preview rules gate again. Command injection (BE002), dynamic code execution (BE003), unsafe
+  deserialization (BE004), open redirect (BE008) and XSS (FE001) stay in preview with their measured
+  precision, but their findings count toward `--fail-on`, the score and the grade by default: for these bug
+  classes a miss costs more than a false alarm ([STABILITY.md](STABILITY.md)). This undoes, for these five
+  rules, the default introduced when they moved to preview in 0.6.0 and 0.8.0.
+- QA007 no longer reports `require("vscode")` in an editor extension (a package.json with `engines.vscode`).
+- Git and external tools now run with stdin closed, so a scan started by a server that reads stdin on
+  another thread cannot hang on Windows.
+
+### Added
+
+- `vibeaudit lsp`: a Language Server Protocol server (standard library only) with diagnostics, also for
+  unsaved buffers, and the `vibeaudit fix` codemods as quick fixes. It never writes files and accepts only
+  files inside the workspace.
+- `editors/vscode`: a thin VS Code / Cursor extension that starts `vibeaudit lsp`, built as a `.vsix` in CI
+  and not published. It runs only in trusted workspaces, and its server settings are machine-scoped.
+- `--no-gate-severe-preview` and the configuration key `gate-severe-preview = false` leave the severe preview
+  rules out of `--fail-on` and the score. `--include-preview` is unchanged.
+- The `gates_in_preview` rule property, shown in `vibeaudit rules --format json`, docs/RULES.md
+  (`preview, gates`) and as `"gates_in_preview": true` on findings in the JSON report.
+
 ## [0.8.1] - 2026-11-11
 
 Phase 3 starts with `vibeaudit watch`; also AI agent and LLM checks. The new rules are preview.
@@ -53,9 +80,6 @@ preview. No new rules.
 - `vibeaudit fix --llm`: model-written patches for findings without a codemod, written to a `.patch` file
   and never applied.
 - MCP tool `auto_repair`: the `fix` diff for a project or one file; it writes nothing.
-- `vibeaudit watch`: re-scans after every change and prints new (`+`) and fixed (`-`) findings. Unchanged files
-  keep their parse trees, and per-file checks whose inputs did not change are replayed; the result always
-  equals a fresh scan. `tools/watch_latency.py` measures the re-scan time and checks it against a fresh scan.
 - `tools/fix_corpus.py`: runs every codemod over the benchmark corpus and checks that the finding goes away,
   the file parses, nothing new is reported and a second run changes nothing.
 - 13 benchmark repositories: 7 pinned to the commit before the fix of a published GitHub advisory
@@ -85,11 +109,6 @@ False positives on the tuned split, each with a regression test that fails on 0.
   database reset or seed files with demo users (SEC011) are not reported.
 - A webhook view that verifies its sender's signature may be `csrf_exempt` (AUTH009).
 - Published npm libraries (with a `files` list) and documentation requirement files need no lockfile (DEP005).
-
-### Changed
-
-- Faster QA006 checks: the names a JavaScript module exports are computed once per module instead of once
-  per import.
 
 ## [0.7.2] - 2026-11-11
 

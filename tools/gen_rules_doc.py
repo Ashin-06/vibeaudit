@@ -21,19 +21,21 @@ def render() -> str:
            f"{len(RULES)} rules. Severity is the default; a finding can be reported lower (for example a "
            "pattern without user input reaching it) or higher (model output instead of user input).", "",
            f"{sum(r.preview for r in RULES.values())} rules are in preview: they are reported but do not count toward "
-           "`--fail-on` or the score unless you pass `--include-preview`. See [STABILITY.md](../STABILITY.md) for the "
+           "`--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` "
+           "(injection-class bugs), which count unless you pass `--no-gate-severe-preview`. "
+           "See [STABILITY.md](../STABILITY.md) for the "
            "policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.", ""]
     for cat, label in CATEGORIES.items():
         rules = sorted((r for r in RULES.values() if r.category == cat), key=lambda r: r.id)
         if not rules:
             continue
         out += [f"## {label}", "", "| ID | Severity | Status | Rule |", "| --- | --- | --- | --- |"]
-        out += [f"| [{r.id}](#{r.id.lower()}) | {r.severity} | {'preview' if r.preview else 'stable'} | {r.title} |"
+        out += [f"| [{r.id}](#{r.id.lower()}) | {r.severity} | {('preview, gates' if r.gates_in_preview else 'preview') if r.preview else 'stable'} | {r.title} |"
                 for r in rules]
         out.append("")
         for r in rules:
             refs = ", ".join(x for x in (r.cwe, r.owasp) if x)
-            out += [f"### {r.id}", "", f"**{r.title}** ({r.severity}{', preview' if r.preview else ''})", ""]
+            out += [f"### {r.id}", "", f"**{r.title}** ({r.severity}{(', preview, gates' if r.gates_in_preview else ', preview') if r.preview else ''})", ""]
             if r.preview:
                 out += [f"Preview: {r.preview_reason}", ""]
             out += [f"Why it matters: {r.why}", "", f"How to fix: {r.fix}", ""]

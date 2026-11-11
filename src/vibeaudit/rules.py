@@ -36,6 +36,9 @@ class Rule:
     # See STABILITY.md: new rules start as preview, and a rule can be moved back to preview with a reason.
     preview: bool = False
     preview_reason: str = ""
+    # A preview rule for a bug class where a miss costs more than a false alarm (injection, XSS): its findings
+    # still count toward --fail-on and the score unless --no-gate-severe-preview. See STABILITY.md.
+    gates_in_preview: bool = False
 
 
 NEW_IN_081 = "New in 0.8.1: not yet measured on enough held-out findings in the benchmark."
@@ -158,7 +161,8 @@ _R = [
          "validate the input against an allow-list.", "CWE-78", "A03:2021",
          preview=True,
          preview_reason="Benchmark precision 50% (4 of 8): build scripts and developer CLIs that run their own "
-                        "commands are reported too."),
+                        "commands are reported too.",
+         gates_in_preview=True),
     Rule("BE003", "Dynamic code execution", "backend", "critical",
          "eval/exec/new Function runs strings as code. With attacker-influenced input it is remote code "
          "execution.",
@@ -166,7 +170,8 @@ _R = [
          "explicit allow-list of functions.", "CWE-95", "A03:2021",
          preview=True,
          preview_reason="Benchmark precision 36% (4 of 11): code a library or tool executes by design (config "
-                        "files, a debugger console, code samples in a tutorial page) is reported too."),
+                        "files, a debugger console, code samples in a tutorial page) is reported too.",
+         gates_in_preview=True),
     Rule("BE004", "Unsafe deserialization", "backend", "high",
          "pickle, marshal, dill and yaml.load can execute code while loading. Loading untrusted data is "
          "remote code execution.",
@@ -174,7 +179,8 @@ _R = [
          "write.", "CWE-502", "A08:2021",
          preview=True,
          preview_reason="Benchmark precision 36% (4 of 11): pickle or shelve reading the application's own "
-                        "stored data looks the same as reading untrusted input."),
+                        "stored data looks the same as reading untrusted input.",
+         gates_in_preview=True),
     Rule("BE005", "Server-side request forgery (SSRF)", "backend", "high",
          "The server fetches a URL chosen by the user, which can reach internal services and cloud metadata "
          "endpoints (credentials).",
@@ -193,7 +199,8 @@ _R = [
          "Only redirect to relative paths or an allow-list of hosts.", "CWE-601", "A01:2021",
          preview=True,
          preview_reason="Benchmark precision 83% (5 of 6): a redirect target that comes from the application's "
-                        "own results is reported too."),
+                        "own results is reported too.",
+         gates_in_preview=True),
     Rule("BE009", "Mass assignment", "backend", "high",
          "The whole request body is written into a database model, so a user can set fields like `role`, "
          "`is_admin` or `credits` by adding them to the request.",
@@ -265,7 +272,8 @@ _R = [
          "CWE-79", "A03:2021",
          preview=True,
          preview_reason="Benchmark precision 67% (20 of 30): the source of the HTML is often not visible in the "
-                       "file (markdown from the repo, CMS content, constants), so trusted content is reported too."),
+                       "file (markdown from the repo, CMS content, constants), so trusted content is reported too.",
+         gates_in_preview=True),
     Rule("FE002", "LLM or secret API called directly from the browser", "frontend", "critical",
          "Calling OpenAI, Anthropic, Gemini and similar APIs from client code ships the API key to every "
          "visitor, who can then run up your bill or abuse the account.",

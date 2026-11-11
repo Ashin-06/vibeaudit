@@ -1,0 +1,69 @@
+{
+  "name": "vibeaudit",
+  "displayName": "vibeaudit",
+  "description": "Security and quality findings for AI-built and LLM apps, with one-click fixes, from the vibeaudit language server.",
+  "version": "0.8.2",
+  "publisher": "vibeaudit",
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ashin-06/vibeaudit"
+  },
+  "engines": {
+    "vscode": "^1.82.0"
+  },
+  "categories": ["Linters"],
+  "main": "./extension.js",
+  "activationEvents": [
+    "onLanguage:python",
+    "onLanguage:javascript",
+    "onLanguage:javascriptreact",
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact",
+    "workspaceContains:**/package.json",
+    "workspaceContains:**/pyproject.toml",
+    "workspaceContains:**/requirements.txt"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false,
+      "description": "vibeaudit starts a local program to scan the workspace, so it only runs in trusted workspaces."
+    }
+  },
+  "contributes": {
+    "configuration": {
+      "title": "vibeaudit",
+      "properties": {
+        "vibeaudit.serverCommand": {
+          "type": "string",
+          "default": "vibeaudit",
+          "scope": "machine",
+          "description": "The vibeaudit executable (or a Python interpreter, with serverArgs [\"-m\", \"vibeaudit\", \"lsp\"])."
+        },
+        "vibeaudit.serverArgs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": ["lsp"],
+          "scope": "machine",
+          "description": "Arguments that start the language server."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "vibeaudit.restart",
+        "title": "vibeaudit: Restart language server"
+      }
+    ]
+  },
+  "dependencies": {
+    "vscode-languageclient": "9.0.1"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "3.9.2"
+  },
+  "scripts": {
+    "package": "vsce package --out vibeaudit.vsix"
+  }
+}

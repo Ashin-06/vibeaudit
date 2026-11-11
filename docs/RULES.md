@@ -5,7 +5,7 @@ Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do n
 
 138 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-38 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+38 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -237,13 +237,13 @@ References: CWE-427, A08:2021
 | ID | Severity | Status | Rule |
 | --- | --- | --- | --- |
 | [BE001](#be001) | high | stable | SQL injection |
-| [BE002](#be002) | critical | preview | Command injection |
-| [BE003](#be003) | critical | preview | Dynamic code execution |
-| [BE004](#be004) | high | preview | Unsafe deserialization |
+| [BE002](#be002) | critical | preview, gates | Command injection |
+| [BE003](#be003) | critical | preview, gates | Dynamic code execution |
+| [BE004](#be004) | high | preview, gates | Unsafe deserialization |
 | [BE005](#be005) | high | stable | Server-side request forgery (SSRF) |
 | [BE006](#be006) | high | stable | Path traversal |
 | [BE007](#be007) | high | stable | Server-side template injection |
-| [BE008](#be008) | medium | preview | Open redirect |
+| [BE008](#be008) | medium | preview, gates | Open redirect |
 | [BE009](#be009) | high | stable | Mass assignment |
 | [BE010](#be010) | high | stable | NoSQL injection |
 | [BE011](#be011) | medium | stable | Debug mode enabled |
@@ -269,7 +269,7 @@ References: CWE-89, A03:2021
 
 ### BE002
 
-**Command injection** (critical, preview)
+**Command injection** (critical, preview, gates)
 
 Preview: Benchmark precision 50% (4 of 8): build scripts and developer CLIs that run their own commands are reported too.
 
@@ -281,7 +281,7 @@ References: CWE-78, A03:2021
 
 ### BE003
 
-**Dynamic code execution** (critical, preview)
+**Dynamic code execution** (critical, preview, gates)
 
 Preview: Benchmark precision 36% (4 of 11): code a library or tool executes by design (config files, a debugger console, code samples in a tutorial page) is reported too.
 
@@ -293,7 +293,7 @@ References: CWE-95, A03:2021
 
 ### BE004
 
-**Unsafe deserialization** (high, preview)
+**Unsafe deserialization** (high, preview, gates)
 
 Preview: Benchmark precision 36% (4 of 11): pickle or shelve reading the application's own stored data looks the same as reading untrusted input.
 
@@ -335,7 +335,7 @@ References: CWE-1336, A03:2021
 
 ### BE008
 
-**Open redirect** (medium, preview)
+**Open redirect** (medium, preview, gates)
 
 Preview: Benchmark precision 83% (5 of 6): a redirect target that comes from the application's own results is reported too.
 
@@ -475,7 +475,7 @@ References: CWE-93, A03:2021
 
 | ID | Severity | Status | Rule |
 | --- | --- | --- | --- |
-| [FE001](#fe001) | high | preview | Cross-site scripting through a raw HTML sink |
+| [FE001](#fe001) | high | preview, gates | Cross-site scripting through a raw HTML sink |
 | [FE002](#fe002) | critical | stable | LLM or secret API called directly from the browser |
 | [FE003](#fe003) | high | stable | Authorization state kept in browser storage |
 | [FE004](#fe004) | medium | stable | postMessage handler without origin check |
@@ -485,7 +485,7 @@ References: CWE-93, A03:2021
 
 ### FE001
 
-**Cross-site scripting through a raw HTML sink** (high, preview)
+**Cross-site scripting through a raw HTML sink** (high, preview, gates)
 
 Preview: Benchmark precision 67% (20 of 30): the source of the HTML is often not visible in the file (markdown from the repo, CMS content, constants), so trusted content is reported too.
 

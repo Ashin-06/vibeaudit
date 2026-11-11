@@ -1,0 +1,5 @@
+*.vsix
+.vscode/**
+**/*.map
+**/*.ts
+!**/*.d.ts

@@ -68,6 +68,9 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--no-cache", action="store_true", help="do not read or write cached registry, vulnerability and LLM answers")
     s.add_argument("--include-preview", action="store_true", default=None,
                    help="count findings of preview rules toward --fail-on and the score (they are always reported)")
+    s.add_argument("--no-gate-severe-preview", action="store_true", default=None,
+                   help="do not count severe preview rules (injection, eval, deserialization, open redirect, XSS) "
+                        "toward --fail-on and the score; by default they count")
     s.add_argument("-q", "--quiet", action="store_true", help="print only the summary")
     s.add_argument("--no-color", action="store_true", help="disable colored output")
 
@@ -119,6 +122,7 @@ def build_parser() -> argparse.ArgumentParser:
     x.add_argument("-q", "--quiet", action="store_true", help="do not list skipped findings")
 
     sub.add_parser("mcp", help="run a Model Context Protocol server on stdio for coding agents")
+    sub.add_parser("lsp", help="run a Language Server Protocol server on stdio (diagnostics and fix code actions for editors)")
 
     r = sub.add_parser("rules", help="list every rule")
     r.add_argument("--format", choices=["text", "json", "md"], default="text")
@@ -377,7 +381,8 @@ def cmd_scan(a: argparse.Namespace) -> int:
                    auth_helpers=list(cfg.get("auth_helpers", [])), sanitizers=list(cfg.get("sanitizers", [])),
                    public_paths=list(cfg.get("public_paths", [])), changes=changes, log=log,
                    feedback=not a.no_config,  # the feedback file lives in the repository, like the config
-                   cache=not a.no_cache, include_preview=bool(pick(a.include_preview, "include_preview", False)))
+                   cache=not a.no_cache, include_preview=bool(pick(a.include_preview, "include_preview", False)),
+                   gate_severe_preview=False if a.no_gate_severe_preview else bool(cfg.get("gate_severe_preview", True)))
     if cfg_path:
         log(f"using settings from {cfg_path}")
     regression = None
@@ -435,6 +440,10 @@ def main(argv: Optional[List[str]] = None) -> int:
         return cmd_rules(a.format)
     if a.command == "routes":
         return cmd_routes(a)
+    if a.command == "lsp":
+        from .lsp import main as lsp_main
+
+        return lsp_main()
     if a.command == "mcp":
         from .mcp_server import main as mcp_main
 

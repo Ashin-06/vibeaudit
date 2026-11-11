@@ -37,6 +37,7 @@ class Finding:
     owasp: str = ""
     fingerprint: str = ""
     preview: bool = False  # from a preview rule: reported, but not counted in --fail-on or the score by default
+    gates_in_preview: bool = False  # ...except severe preview rules, which count unless --no-gate-severe-preview
     llm_verdict: Optional[str] = None
     llm_reason: Optional[str] = None
 
@@ -67,6 +68,8 @@ class Finding:
         }
         if self.preview:
             d["preview"] = True
+            if self.gates_in_preview:
+                d["gates_in_preview"] = True
         if self.llm_verdict:
             d["llm_verdict"] = self.llm_verdict
             d["llm_reason"] = self.llm_reason or ""

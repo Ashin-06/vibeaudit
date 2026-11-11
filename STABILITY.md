@@ -29,6 +29,20 @@ A rule is in **preview** when it is new or when its measured precision is not go
   `preview_reason`, until it is fixed. `vibeaudit rules --format json` and docs/RULES.md show the status and
   the reason of every rule.
 
+### Severe preview rules still gate
+
+A few preview rules cover bug classes where a missed finding costs far more than a false alarm: command
+injection (BE002), dynamic code execution (BE003), unsafe deserialization (BE004), open redirect (BE008)
+and cross-site scripting (FE001). One missed instance can mean remote code execution or account takeover,
+while a false alarm costs a reviewer a few minutes and an inline `vibeaudit: ignore`. So these rules are
+marked `gates_in_preview`:
+
+- Their findings are still marked `(preview)` and still show their measured precision in docs/RULES.md.
+- They **do** count toward `--fail-on`, the score and the grade by default.
+- `--no-gate-severe-preview` (or `gate-severe-preview = false` in the configuration) leaves them out, like
+  any other preview rule. `--include-preview` keeps counting every preview rule, these included.
+- New rules never start with `gates_in_preview`; a rule gets it only by a decision recorded in the CHANGELOG.
+
 ## What the benchmark guards
 
 CI runs `python tools/benchmark.py check` on every push. It fails when, compared with

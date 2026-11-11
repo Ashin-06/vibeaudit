@@ -4,7 +4,7 @@ import json
 from vibeaudit.cli import main
 from vibeaudit.rules import RULES
 
-PREVIEW_ONLY = "export function show(el, data) {\n  el.innerHTML = data;\n}\n"  # FE001, a preview rule
+PREVIEW_ONLY = "API_SECRET = 'q8Zr2Lm9Xv4Tn7Kp3Wd6Bs1Hc5Jf0Ga'\n"  # SEC003: a preview rule that does not gate
 
 
 def _scan(tmp_path, capsys, *args):
@@ -14,25 +14,25 @@ def _scan(tmp_path, capsys, *args):
 
 
 def test_preview_findings_are_reported_but_do_not_fail_or_lower_the_score(tmp_path, capsys):
-    assert RULES["FE001"].preview and RULES["FE001"].preview_reason
-    (tmp_path / "show.js").write_text(PREVIEW_ONLY)
+    assert RULES["SEC003"].preview and RULES["SEC003"].preview_reason and not RULES["SEC003"].gates_in_preview
+    (tmp_path / "config.py").write_text(PREVIEW_ONLY)
     code, out = _scan(tmp_path, capsys)
-    assert [(f["rule_id"], f.get("preview")) for f in out["findings"]] == [("FE001", True)]
+    assert [(f["rule_id"], f.get("preview")) for f in out["findings"]] == [("SEC003", True)]
     assert code == 0 and out["summary"]["score"] == 100
     code, out = _scan(tmp_path, capsys, "--include-preview")
     assert code == 1 and out["summary"]["score"] < 100
 
 
 def test_include_preview_from_the_config_file(tmp_path, capsys):
-    (tmp_path / "show.js").write_text(PREVIEW_ONLY)
+    (tmp_path / "config.py").write_text(PREVIEW_ONLY)
     (tmp_path / ".vibeaudit.toml").write_text("include-preview = true\n")
     assert _scan(tmp_path, capsys)[0] == 1
     assert _scan(tmp_path, capsys, "--no-config")[0] == 0
 
 
 def test_stable_findings_still_fail_next_to_preview_ones(tmp_path, capsys):
-    (tmp_path / "show.js").write_text(PREVIEW_ONLY)
+    (tmp_path / "config.py").write_text(PREVIEW_ONLY)
     (tmp_path / "a.py").write_text("def find(db, name):\n    db.execute(f'SELECT * FROM t WHERE n = {name}')\n")
     assert not RULES["BE001"].preview  # the stable rule this test relies on
     code, out = _scan(tmp_path, capsys)
-    assert code == 1 and sorted(f["rule_id"] for f in out["findings"]) == ["BE001", "FE001"]
+    assert code == 1 and sorted(f["rule_id"] for f in out["findings"]) == ["BE001", "SEC003"]

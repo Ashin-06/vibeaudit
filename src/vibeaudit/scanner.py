@@ -66,6 +66,7 @@ class Options:
     feedback: bool = True  # hide findings marked false positive in .vibeaudit/feedback.json
     cache: bool = True  # read and write the user cache (registry, OSV, LLM verdicts) during this scan
     include_preview: bool = False  # count findings of preview rules toward --fail-on and the score
+    gate_severe_preview: bool = True  # count severe preview rules (injection, XSS) even without include_preview
     log: Callable[[str], None] = lambda s: None
 
 
@@ -230,6 +231,7 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
         "routes_found": len(js_routes) + len(py_routes), "git": project.is_git,
         "skipped": list(GUARD.skipped), "internal_errors": list(GUARD.internal_errors),
         "feedback_hidden": hidden, "include_preview": opts.include_preview,
+        "gate_severe_preview": opts.gate_severe_preview,
     }
     if opts.changes is not None:
         meta["changed_files"] = len(opts.changes)
@@ -286,6 +288,7 @@ def finalize(project: Project, raw: List[Finding], opts: Options, already: bool 
             f.owasp = f.owasp or meta.owasp
         if meta is not None:
             f.preview = meta.preview
+            f.gates_in_preview = meta.preview and meta.gates_in_preview
         f.severity = f.severity or "medium"
         f.category = f.category or "backend"
         if f.rule_id in opts.disabled or (meta and meta.category in opts.disabled) or f.category in opts.disabled:
