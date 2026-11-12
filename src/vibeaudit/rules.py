@@ -709,7 +709,7 @@ _R = [
          "details. Logging them copies that data into log storage with weaker access control and retention.",
          "Log ids, token counts and timings instead of the text, or redact it before logging.", "CWE-532",
          "LLM02:2025", preview=True, preview_reason=NEW_IN_081),
-    Rule("LLM019", "Prompt-injection text in an agent instruction file", "llm", "high",
+    Rule("LLM025", "Prompt-injection text in an agent instruction file", "llm", "high",
          "Coding agents follow CLAUDE.md, AGENTS.md, .cursorrules and similar files as if the developer wrote them. "
          "Text that tells the agent to ignore its instructions or to hide what it does, or characters a reviewer "
          "cannot see, turns a pull request or a copied rules file into control of the agent. The patterns come "

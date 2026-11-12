@@ -614,7 +614,7 @@ hit GitHub's rate limit.
 
 It also downloads the signed threat feed: slopsquatted package names (DEP001, also offline), a model sunset
 calendar with retirement dates and replacements (LLM012) and prompt-injection patterns for agent instruction
-files such as CLAUDE.md and .cursorrules (LLM019). The same data ships with vibeaudit, so every check works
+files such as CLAUDE.md and .cursorrules (LLM025). The same data ships with vibeaudit, so every check works
 offline; the feed only adds what was published since the release. A feed is used only when its signature
 verifies against the key shipped with vibeaudit and it has not expired (30 days); otherwise vibeaudit warns and
 uses the shipped data. Bundles made with `--export` carry the feed too. How to submit an entry, and how the

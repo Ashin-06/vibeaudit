@@ -1,5 +1,5 @@
 """The signed threat-intel feed: slopsquatted package names (DEP001), a model sunset calendar (LLM012) and
-prompt-injection patterns for agent instruction files (LLM019).
+prompt-injection patterns for agent instruction files (LLM025).
 
 The data ships with the package (data/threat_data.json), so every check works offline. `vibeaudit update`
 also downloads threat_feed.json, which a scheduled workflow builds from the same file on main and signs daily:

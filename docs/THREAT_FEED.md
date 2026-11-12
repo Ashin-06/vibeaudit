@@ -6,7 +6,7 @@ vibeaudit's threat data lives in [`src/vibeaudit/data/threat_data.json`](../src/
 | --- | --- | --- |
 | `slopsquatted` | DEP001 | `ecosystem` (`PyPI` or `npm`), `name`, `note` (what it is and the real package), `source` |
 | `model_sunsets` | LLM012 | `id`, `date` (retirement, `YYYY-MM-DD`), `replacement` (optional), `source` |
-| `prompt_injection` | LLM019 | `id` (`PI` and a number), `pattern` (a Python regular expression), `description`, `source` |
+| `prompt_injection` | LLM025 | `id` (`PI` and a number), `pattern` (a Python regular expression), `description`, `source` |
 
 The file ships with every release, so all three checks work offline. Between releases, a scheduled workflow
 ([`.github/workflows/feed.yml`](../.github/workflows/feed.yml)) signs the file as it is on `main` every day and
@@ -73,7 +73,9 @@ The repository secret holds the private key. The public key is committed. To set
 5. Run the "Threat feed" workflow once by hand (Actions, Threat feed, Run workflow) and check that the
    `threat-feed` branch has a `threat_feed.json`.
 
-Releases made before step 4 have no public key. Their `vibeaudit update` says so and they use their shipped
+Until the secret exists, the daily run logs "feed signing key not configured", publishes nothing and
+succeeds. Once it exists, a key that does not match the committed public key, or any other error, fails the
+run. Releases made before step 4 have no public key. Their `vibeaudit update` says so and they use their shipped
 data.
 
 To rotate the key, run the script again with `--force`, replace the secret, and commit the new public key.

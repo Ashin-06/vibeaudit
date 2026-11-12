@@ -1,4 +1,4 @@
-"""AI agent and LLM checks: LLM016-LLM018 (added in 0.8.1) and LLM019 (all preview)."""
+"""AI agent and LLM checks: LLM016-LLM018 (added in 0.8.1) and LLM025 (all preview)."""
 from __future__ import annotations
 
 import json
@@ -73,7 +73,7 @@ def _injection(sf: SourceFile, add: Add) -> None:
     for entry, pattern in feed.injection_patterns():
         m = next(iter(finditer(pattern, sf.text or "")), None)  # one finding per pattern and file
         if m is not None:
-            add(sf, sf.line_at(m.start()), "LLM019",
+            add(sf, sf.line_at(m.start()), "LLM025",
                 f"{entry['description']} ({entry['id']}): the agent reads this file as the developer's instructions.")
 
 

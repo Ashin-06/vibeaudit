@@ -967,7 +967,7 @@ References: CWE-538, A05:2021
 | [LLM016](#llm016) | high | preview | Coding agent allowed to act without asking |
 | [LLM017](#llm017) | medium | preview | Streamed completion not cancelled on disconnect |
 | [LLM018](#llm018) | medium | preview | Prompts or completions written to logs |
-| [LLM019](#llm019) | high | preview | Prompt-injection text in an agent instruction file |
+| [LLM025](#llm025) | high | preview | Prompt-injection text in an agent instruction file |
 
 ### LLM001
 
@@ -1153,7 +1153,7 @@ How to fix: Log ids, token counts and timings instead of the text, or redact it 
 
 References: CWE-532, LLM02:2025
 
-### LLM019
+### LLM025
 
 **Prompt-injection text in an agent instruction file** (high, preview)
 

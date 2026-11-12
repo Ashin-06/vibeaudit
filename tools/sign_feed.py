@@ -5,6 +5,9 @@
 The private key is read from the environment only, never from or to a file, and is never printed. The signed
 feed is checked against the public key in the package before it is written, so a secret that does not match
 the committed key fails here instead of publishing a feed no installation accepts.
+
+With no key in the environment (before the one-time setup) it prints a notice, writes nothing and exits 0, so
+the scheduled workflow stays green and publishes nothing. Any other problem exits 1.
 """
 from __future__ import annotations
 
@@ -23,12 +26,15 @@ def main() -> int:
     if len(sys.argv) != 2:
         print(__doc__, file=sys.stderr)
         return 2
+    if not os.environ.get("VIBEAUDIT_FEED_KEY", "").strip():
+        print("::notice::feed signing key not configured; see docs/THREAT_FEED.md")
+        return 0
     try:
-        key = json.loads(os.environ.get("VIBEAUDIT_FEED_KEY") or "null")
+        key = json.loads(os.environ["VIBEAUDIT_FEED_KEY"])
         if not isinstance(key, dict) or not all(isinstance(key.get(k), str) for k in ("n", "d")):
             raise ValueError
     except ValueError:
-        print("VIBEAUDIT_FEED_KEY is not set or is not a key made by tools/gen_feed_key.py", file=sys.stderr)
+        print("VIBEAUDIT_FEED_KEY is not a key made by tools/gen_feed_key.py", file=sys.stderr)
         return 1
     if feed.public_key() is None:
         print("src/vibeaudit/data/feed_key.json is missing: run tools/gen_feed_key.py first", file=sys.stderr)
@@ -36,6 +42,9 @@ def main() -> int:
     try:
         raw = feed.build(feed.shipped(), key)
         doc = feed.open_feed(raw)
+    except (ValueError, KeyError, TypeError):  # their messages can quote part of the key, so say only this
+        print("VIBEAUDIT_FEED_KEY is not a key made by tools/gen_feed_key.py", file=sys.stderr)
+        return 1
     except feed.FeedError as e:
         print(f"the feed could not be signed or does not verify against the committed public key: {e}", file=sys.stderr)
         return 1
