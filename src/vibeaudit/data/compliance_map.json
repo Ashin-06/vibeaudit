@@ -37,6 +37,7 @@
   "name": "EU AI Act themes",
   "version": "Regulation (EU) 2024/1689",
   "controls": {
+   "Art. 9": "Risk management system",
    "Art. 10": "Data and data governance",
    "Art. 14": "Human oversight",
    "Art. 15": "Accuracy, robustness and cybersecurity"
@@ -216,6 +217,12 @@
   "LLM016": {"owasp": [], "owasp-llm": ["LLM06:2025"], "eu-ai-act": ["Art. 14", "Art. 15"], "soc2": ["CC6.3"], "hipaa": [], "gdpr": ["Art. 32"]},
   "LLM017": {"owasp": [], "owasp-llm": ["LLM10:2025"], "eu-ai-act": ["Art. 15"], "soc2": ["A1.1"], "hipaa": [], "gdpr": []},
   "LLM018": {"owasp": ["A09:2021"], "owasp-llm": ["LLM02:2025"], "eu-ai-act": [], "soc2": ["C1.1"], "hipaa": ["164.502(b)"], "gdpr": ["Art. 5(1)(c)", "Art. 32"]},
+  "LLM019": {"owasp": ["A03:2021"], "owasp-llm": ["LLM05:2025"], "eu-ai-act": ["Art. 15"], "soc2": ["CC6.6"], "hipaa": ["164.312(c)(1)"], "gdpr": ["Art. 32"]},
+  "LLM020": {"owasp": [], "owasp-llm": ["LLM10:2025"], "eu-ai-act": ["Art. 14", "Art. 15"], "soc2": ["A1.1"], "hipaa": [], "gdpr": []},
+  "LLM021": {"owasp": [], "owasp-llm": ["LLM01:2025"], "eu-ai-act": ["Art. 15"], "soc2": ["CC6.6"], "hipaa": [], "gdpr": []},
+  "LLM022": {"owasp": [], "owasp-llm": ["LLM04:2025", "LLM08:2025"], "eu-ai-act": ["Art. 10", "Art. 15"], "soc2": ["CC6.6", "PI1.3"], "hipaa": [], "gdpr": []},
+  "LLM023": {"owasp": [], "owasp-llm": ["LLM10:2025"], "eu-ai-act": [], "soc2": ["A1.1"], "hipaa": [], "gdpr": []},
+  "LLM024": {"owasp": [], "owasp-llm": ["LLM09:2025"], "eu-ai-act": ["Art. 9", "Art. 15"], "soc2": ["CC8.1"], "hipaa": [], "gdpr": []},
   "LLM025": {"owasp": [], "owasp-llm": ["LLM01:2025"], "eu-ai-act": ["Art. 15"], "soc2": ["CC6.6", "CC8.1"], "hipaa": [], "gdpr": ["Art. 32"]},
   "UI001": {"owasp": [], "owasp-llm": [], "eu-ai-act": [], "soc2": [], "hipaa": [], "gdpr": [], "note": "Accessibility check: outside these frameworks (accessibility is covered by WCAG 2.2 and EN 301 549)."},
   "UI002": {"owasp": [], "owasp-llm": [], "eu-ai-act": [], "soc2": [], "hipaa": [], "gdpr": [], "note": "Accessibility check: outside these frameworks (accessibility is covered by WCAG 2.2 and EN 301 549)."},

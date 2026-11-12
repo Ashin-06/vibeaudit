@@ -62,10 +62,15 @@ def test_report_is_self_contained_printable_and_linked(result, framework):
         assert "findings" in statuses and links, framework  # the sample app has injection and secrets findings
 
 
-def test_statuses(result):
+def test_statuses(result, monkeypatch):
+    import copy
+
+    data = copy.deepcopy(compliance.mapping())
+    data["frameworks"]["owasp-llm"]["controls"]["LLM99:2025"] = "A control no rule maps to"
+    monkeypatch.setattr(compliance, "_MAP", [data])
     llm = compliance.render(result, "owasp-llm")
-    row = re.search(r'<tr class="(\w+)"><td><b>LLM04:2025</b>', llm)
-    assert row and row.group(1) == "uncovered"  # no rule maps to data and model poisoning
+    assert re.search(r'<tr class="uncovered"><td><b>LLM99:2025</b>', llm)
+    monkeypatch.undo()
     sql = [f for f in result.findings if f.rule_id == "BE001"]
     assert sql, "the sample app should have a SQL injection finding"
     soc2 = compliance.render(result, "soc2")

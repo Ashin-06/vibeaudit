@@ -532,7 +532,7 @@ then run one at a time.
 
 Every rule is mapped to the controls its findings are evidence for, in
 [`src/vibeaudit/data/compliance_map.json`](src/vibeaudit/data/compliance_map.json): the OWASP Top 10 2021, the
-OWASP Top 10 for LLM Applications 2025, themes of the EU AI Act (Art. 10, 14 and 15), the SOC 2 Trust Services
+OWASP Top 10 for LLM Applications 2025, themes of the EU AI Act (Art. 9, 10, 14 and 15), the SOC 2 Trust Services
 Criteria and, where they apply, the HIPAA Security and Privacy Rules and the GDPR (Art. 5, 25 and 32). Rules
 that no control fits (accessibility and other user-experience checks, for example) say so in a note.
 
