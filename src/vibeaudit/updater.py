@@ -78,10 +78,11 @@ def _download(url: str) -> bytes:
 
 def forget_loaded_data() -> None:
     """Drop what was built from the data files, so a long-lived process (the MCP server) uses fresh copies."""
-    from . import aiscan, deps
+    from . import aiscan, bundle, deps
 
     aiscan._RETIRED.clear()
     deps._POPULAR.clear()
+    bundle._LOADED.clear()
 
 
 def update_data(log: Callable[[str], None], fetch: Callable[[str], bytes] = _download) -> int:

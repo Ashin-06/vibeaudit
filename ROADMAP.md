@@ -86,7 +86,7 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | MCP tools: audit_current_file, verify_package, simulate_migration | done (0.8.3; auto_repair: done in Phase 2) |
 | GitLab CI and CircleCI templates | planned |
 | Monorepo mode | done, unreleased (`--monorepo`: one project per package, a score per package) |
-| Offline / air-gapped mode with bundled data | planned |
+| Offline / air-gapped mode with bundled data | done, unreleased (`update --export/--import`, offline OSV index; no network in `--offline`) |
 | `vibeaudit explain <finding>` | done, unreleased (rule, code and the data flow traced back from the line) |
 
 ## Phase 4: compliance and threat intelligence
