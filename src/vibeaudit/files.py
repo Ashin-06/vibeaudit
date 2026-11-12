@@ -9,7 +9,7 @@ import re
 import stat
 import subprocess
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Set, Tuple
+from typing import Callable, Dict, Iterable, List, Optional, Set, Tuple
 
 SKIP_DIRS = {
     ".git", ".hg", ".svn", "node_modules", "bower_components", "jspm_packages", "vendor",
@@ -99,6 +99,82 @@ READS: Optional[Dict[str, "SourceFile"]] = None
 def _read(sf: "SourceFile") -> None:
     if READS is not None:
         READS[sf.rel] = sf
+
+
+# Value dependencies: a replayable step that needs one fact about another file (or the disk) rather than the
+# whole file records ("kind", args...) -> value in READS; before a replay, VALUES[kind](project, *args) must
+# give the same value again.
+VALUES: Dict[str, Callable[..., object]] = {}
+
+
+def untracked(fn: Callable[..., object], *args: object) -> object:
+    """fn(*args) without recording the files it reads (for computing a value dependency)."""
+    global READS
+    saved, READS = READS, None
+    try:
+        return fn(*args)
+    finally:
+        READS = saved
+
+
+def depend(key: tuple, value: object) -> None:
+    if READS is not None:
+        READS[key] = value  # type: ignore[index]
+
+
+def _disk(path: Path, what: str) -> bool:
+    return path.is_file() if what == "file" else path.is_dir() if what == "dir" else path.exists()
+
+
+def probe(path: Path, what: str) -> bool:
+    """path.is_file() / is_dir() / exists() for a path that may be outside the scanned files (excluded or
+    generated). A replayable step records the answer, and is replayed only while the answer is the same."""
+    got = _disk(path, what)
+    depend(("disk", str(path), what), got)
+    return got
+
+
+VALUES["disk"] = lambda project, path, what: _disk(Path(path), what)
+
+
+def file_signature(path: Path) -> Optional[Tuple[int, int]]:
+    """(mtime_ns, size) of a file read straight from disk (lockfiles), recorded as a value dependency."""
+    try:
+        st = path.stat()
+    except OSError:
+        sig = None
+    else:
+        sig = (st.st_mtime_ns, st.st_size) if stat.S_ISREG(st.st_mode) else None
+    depend(("file", str(path)), sig)
+    return sig
+
+
+VALUES["file"] = lambda project, path: _signature_of(Path(path))
+
+
+def _signature_of(path: Path) -> Optional[Tuple[int, int]]:
+    try:
+        st = path.stat()
+    except OSError:
+        return None
+    return (st.st_mtime_ns, st.st_size) if stat.S_ISREG(st.st_mode) else None
+
+
+def still_valid(project: "Project", reads: Dict[object, object]) -> bool:
+    """Every file (or value) a cached result was computed from is unchanged."""
+    return all(VALUES[k[0]](project, *k[1:]) == v if isinstance(k, tuple) else project._by_rel.get(k) is v  # type: ignore[index]
+               for k, v in reads.items())
+
+
+def has(sf: "SourceFile", rx: "re.Pattern[str]", text: Optional[str] = None) -> bool:
+    """rx.search() on the file's text (or on `text`, a view of it), remembered in sf.cache: a long-lived
+    Project (vibeaudit watch, lsp) then searches only changed files for project-wide evidence."""
+    key = ("has", rx.pattern, rx.flags, text is not None)
+    hit = sf.cache.get(key)
+    _read(sf)
+    if hit is None:
+        hit = sf.cache[key] = bool(rx.search(sf.text or "" if text is None else text))
+    return hit  # type: ignore[return-value]
 
 
 DEV_SETTINGS_RE = re.compile(r"(?:^|/)(?:settings/(?:dev|development|local|test|testing)|settings_(?:dev|local|test))\.py$")
@@ -299,6 +375,8 @@ class Project:
         old = self._by_rel
         self._discover(old)
         changed = {rel for rel, sf in self._by_rel.items() if old.get(rel) is not sf} | (set(old) - set(self._by_rel))
+        if set(old) != set(self._by_rel):
+            self.__dict__.pop("_deps", None)  # deps.collect() looks for manifests among the files
         if self.step_memo is not None and (set(old) != set(self._by_rel) or any(
                 kind_of(rel) not in ("py", "js", "html") for rel in changed)):
             # a file added or removed, or a manifest or config file changed: settings read outside the replayable
@@ -311,18 +389,17 @@ class Project:
         self.tracked, self.untracked, self.binary = set(), set(), set()
         self.files, self._by_rel = [], {}
         self._pkg_cache, self._venv_cache = {}, {}
-        self.__dict__.pop("_deps", None)  # deps.collect() caches the parsed manifests on the project
         self.is_git = False
         rels: List[str] = []
-        inside = _git(self.root, "rev-parse", "--is-inside-work-tree")
-        if inside and inside.strip() == "true":
-            cached = _git(self.root, "ls-files", "-z", "--cached")
-            others = _git(self.root, "ls-files", "-z", "--others", "--exclude-standard")
-            if cached is not None and others is not None:
-                self.is_git = True
-                self.tracked = {p for p in cached.split("\0") if p}
-                self.untracked = {p for p in others.split("\0") if p}
-                rels = sorted(self.tracked | self.untracked)
+        # one git call (a re-scan in `vibeaudit watch` pays for every process): -t tags untracked files "?";
+        # outside a repository it fails and the folder is walked instead
+        listed = _git(self.root, "ls-files", "-z", "-t", "--cached", "--others", "--exclude-standard")
+        if listed is not None:
+            self.is_git = True
+            for entry in listed.split("\0"):
+                if len(entry) > 2:
+                    (self.untracked if entry[0] == "?" else self.tracked).add(entry[2:])
+            rels = sorted(self.tracked | self.untracked)
         if not self.is_git:
             for dirpath, dirnames, filenames in os.walk(self.root):
                 dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS and not d.endswith(".egg-info")
@@ -348,13 +425,15 @@ class Project:
                 continue  # a local, ignored .env is how secrets are supposed to live
             path = self.root / rel
             try:
-                st = path.stat()
+                st = os.lstat(path)  # one system call per file; a second one only for links
+                if stat.S_ISLNK(st.st_mode):
+                    if not _inside(path, self.root):
+                        continue  # a link out of the repository (for example to ~/.ssh) is not part of the project
+                    st = os.stat(path)
             except OSError:
                 continue
             if not stat.S_ISREG(st.st_mode):
                 continue
-            if path.is_symlink() and not _inside(path, self.root):
-                continue  # a link out of the repository (for example to ~/.ssh) is not part of the project
             overlay = self.overlays.get(rel)
             sig = (st.st_mtime_ns, st.st_size) if overlay is None else ("overlay", len(overlay), hash(overlay))
             sf = previous.get(rel) if previous else None

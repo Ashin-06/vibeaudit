@@ -114,6 +114,9 @@ def is_static_string(code: str) -> bool:
     return bool(re.fullmatch(r"-?\d+(?:\.\d+)?", s))
 
 
+CALLED = re.compile(r"(?<![\w$])([A-Za-z_$][\w$]*)\s*\(")  # names a function body calls
+
+
 def ident_re(name: str) -> "re.Pattern[str]":
     return re.compile(r"(?<![\w$.])" + re.escape(name) + r"(?![\w$])")
 
@@ -131,6 +134,11 @@ class FileState:
         self.decl_rhs: Dict[str, str] = {}
         self.handled: Set[int] = set()  # sink offsets already reported
         self.is_framework = bool(FRAMEWORK_FILE.search(views.code))
+        # computed once per file content and kept in sf.cache by a long-lived Project (vibeaudit watch, lsp):
+        # both depend only on this file (and the configured sanitizers, part of the cache key)
+        self.defs: Optional[List[Tuple[str, int, int]]] = None  # functions found by index_functions
+        self.tainted = False  # compute_taint has run
+        self.facts: Dict[Tuple[int, int], Tuple[bool, frozenset]] = {}  # see JsScanner.compute_llm_funcs
 
     def scope_of(self, at: int) -> Tuple[int, int]:
         best = (0, 10 ** 12)
@@ -274,6 +282,11 @@ class JsScanner:
         for fs in self.files:
             GUARD.run(fs.sf.rel, "data flow", self.compute_taint, fs)
         GUARD.run("<project>", "middleware and router mounts", self.compute_mount_auth)
+        if GUARD.memo is not None:  # what the checks read besides their own file (see guard.NEEDS_CONTEXT)
+            GUARD.sink("js routes", self.routes)
+            GUARD.memo.context["JavaScript checks"] = (
+                frozenset(self.llm_funcs), frozenset(self.authed_files), self.mongo, self.mongo_sanitized,
+                H.CUSTOM.signature())
         for fs in self.files:
             if not fs.sf.is_test:
                 GUARD.run(fs.sf.rel, "JavaScript checks", self._check_file, fs)
@@ -283,7 +296,15 @@ class JsScanner:
         v = sf.cache.get("js_views") or js_views(sf.text or "")
         sf.cache["views"] = sf.cache["js_views"] = v
         sf.is_client = self.is_client(sf, v)
-        self.files.append(FileState(sf, v))
+        cached = sf.cache.get("js_state")
+        signature = H.CUSTOM.signature()
+        if isinstance(cached, tuple) and cached[0] == signature:
+            fs = cached[1]
+            fs.handled = set()  # per scan: which sinks this scan already reported
+        else:
+            fs = FileState(sf, v)
+            sf.cache["js_state"] = (signature, fs)
+        self.files.append(fs)
 
     def _check_file(self, fs: FileState) -> None:
         self.check_tools(fs)
@@ -296,6 +317,17 @@ class JsScanner:
 
     # ------------------------------------------------------------- indexing
     def index_functions(self, fs: FileState) -> None:
+        if fs.defs is not None:
+            for name, a, b in fs.defs:
+                self.func_index.setdefault(name, []).append((fs, a, b))
+            return
+        defs: List[Tuple[str, int, int]] = []
+        self._index_functions(fs, defs)
+        fs.defs = defs
+        for name, a, b in defs:
+            self.func_index.setdefault(name, []).append((fs, a, b))
+
+    def _index_functions(self, fs: FileState, defs: List[Tuple[str, int, int]]) -> None:
         bare = fs.v.bare
         for rx in FUNC_DEFS:
             for m in finditer(rx, bare):
@@ -324,13 +356,17 @@ class JsScanner:
                 else:
                     end = stmt_end(bare, k)
                 if end > m.start():
-                    self.func_index.setdefault(name, []).append((fs, m.start(), end + 1))
+                    defs.append((name, m.start(), end + 1))
                     fs.scopes.append((m.start(), end + 1))
 
     def body_of(self, name: str, near: Optional[FileState] = None) -> Optional[str]:
         defs = self.func_index.get(name.split(".")[-1])
         if not defs:
             return None
+        from .files import _read
+
+        for fs, _a, _b in defs:
+            _read(fs.sf)  # which definition is picked depends on every file that defines the name
         if near is not None:
             for fs, a, b in defs:
                 if fs is near:
@@ -347,17 +383,28 @@ class JsScanner:
         return None
 
     def compute_llm_funcs(self) -> None:
-        bodies = {}
-        for name, defs in self.func_index.items():
-            bodies[name] = " ".join(fs.v.code[a:b] for fs, a, b in defs)
+        """Functions that call a model, directly or through up to three levels of other such functions.
+        Each function's own facts (calls a model itself; which names it calls) are kept in its file's state,
+        so a long-lived Project only looks at the bodies of changed files."""
         generic = {"GET", "POST", "PUT", "PATCH", "DELETE", "default", "handler", "main", "run", "fetch"}
-        bodies = {n: b for n, b in bodies.items() if n not in generic}
-        self.llm_funcs = {n for n, b in bodies.items() if H.LLM_CALL_JS.search(b)}
+        facts: Dict[str, Tuple[bool, Set[str]]] = {}
+        for name, defs in self.func_index.items():
+            if name in generic:
+                continue
+            direct, calls = False, set()
+            for fs, a, b in defs:
+                got = fs.facts.get((a, b))
+                if got is None:
+                    body = fs.v.code[a:b]
+                    got = fs.facts[(a, b)] = (bool(H.LLM_CALL_JS.search(body)), frozenset(CALLED.findall(body)))
+                direct = direct or got[0]
+                calls |= got[1]
+            facts[name] = (direct, calls)
+        self.llm_funcs = {n for n, (direct, _c) in facts.items() if direct}
         for _ in range(3):
             if not self.llm_funcs:
                 break
-            rx = re.compile(r"(?<![\w$])(?:" + "|".join(map(re.escape, sorted(self.llm_funcs))) + r")\s*\(")
-            new = {n for n, b in bodies.items() if n not in self.llm_funcs and rx.search(b)}
+            new = {n for n, (_d, calls) in facts.items() if n not in self.llm_funcs and calls & self.llm_funcs}
             if not new:
                 break
             self.llm_funcs |= new
@@ -368,6 +415,9 @@ class JsScanner:
         return any(re.search(r"(?<![\w$])" + re.escape(n) + r"\s*\(", code) for n in self.llm_funcs)
 
     def compute_taint(self, fs: FileState) -> None:
+        if fs.tainted:
+            return
+        fs.tainted = True
         code, bare = fs.v.code, fs.v.bare
         assigns: List[Tuple[List[str], int, int, bool]] = []
         for m in finditer(DECL, bare):
@@ -895,7 +945,7 @@ class JsScanner:
         if not known:
             auth = True  # handler body not found; do not guess
         params = re.findall(r"(?:<(?:\w+:)?(\w+)>|\{(\w+)\}|:(\w+)|\[(?:\.\.\.)?(\w+)\])", path)
-        self.routes.append(Route(
+        GUARD.publish("js routes", self.routes, Route(
             file=sf.rel, line=sf.line_at(off), path=path, methods=methods, body=middleware + "\n" + body,
             framework=framework, lang="js", has_auth=auth, calls_llm=known and self.calls_llm(body),
             reads_body=bool(re.search(r"\b(?:req|request)\s*\.\s*body\b|\b(?:req|request)\s*\.\s*(?:json|formData)\s*\(|\bc\s*\.\s*req\s*\.\s*(?:json|parseBody)\s*\(|\bevent\s*\.\s*body\b", body)),

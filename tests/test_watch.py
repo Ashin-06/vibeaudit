@@ -113,3 +113,117 @@ def test_cli_rejects_a_missing_directory(tmp_path):
     from vibeaudit.cli import main
 
     assert main(["watch", str(tmp_path / "nope")]) == 2
+
+
+# ------------------------------------------------------------ replayed checks and their dependencies
+def routes_of(res):
+    return sorted((r.file, r.line, r.path, tuple(r.methods), r.has_auth, r.calls_llm) for r in res.routes)
+
+
+def incremental(tmp_path, files, edits, expect=None):
+    """Apply `edits` one by one; after each, the incremental scan must equal a fresh scan (findings and
+    routes). `expect` maps an edit index to a (rule, file) that must then be reported, proving the edit
+    changed the result (so equality is not trivially true)."""
+    for rel, text in files.items():
+        write(tmp_path / rel, text)
+    p = Project(tmp_path)
+    p.step_memo = StepMemo()
+    scan(str(tmp_path), opts(), p)
+    p.refresh()
+    first = scan(str(tmp_path), opts(), p)
+    assert p.step_memo.replayed > 0
+    assert keys(first) == keys(scan(str(tmp_path), opts()))
+    for i, (rel, text) in enumerate(edits):
+        if text is None:
+            (tmp_path / rel).unlink()
+        else:
+            write(tmp_path / rel, text)
+        p.refresh()
+        warm, fresh = scan(str(tmp_path), opts(), p), scan(str(tmp_path), opts())
+        assert keys(warm) == keys(fresh), (i, rel)
+        assert routes_of(warm) == routes_of(fresh), (i, rel)
+        if expect and i in expect:
+            rule, file = expect[i]
+            assert (rule, file) in {(f.rule_id, f.file) for f in warm.findings}, (i, keys(warm))
+    return p
+
+
+def test_js_checks_rerun_when_the_call_graph_changes(tmp_path):
+    """The route in api.js calls ask() from lib.js. Once ask() calls a model, the route calls a paid API
+    with no rate limit (LLM004), although api.js itself did not change."""
+    files = {
+        "package.json": '{"dependencies": {"express": "4.0.0", "openai": "4.0.0"}}',
+        "lib.js": "function ask(q) {\n  return q.trim();\n}\nmodule.exports = { ask };\n",
+        "api.js": ("const express = require('express');\nconst { ask } = require('./lib');\nconst app = express();\n"
+                   "app.post('/api/ask', async (req, res) => {\n  res.json(await ask(req.body.q));\n});\n"),
+    }
+    llm = ("const OpenAI = require('openai');\nconst openai = new OpenAI();\n"
+           "async function ask(q) {\n  return openai.chat.completions.create({ model: 'm', messages: [], max_tokens: 5 });\n}\n"
+           "module.exports = { ask };\n")
+    incremental(tmp_path, files, [("lib.js", llm), ("lib.js", files["lib.js"])], expect={0: ("LLM004", "api.js")})
+
+
+def test_js_import_checks_follow_the_exported_names(tmp_path):
+    files = {
+        "package.json": '{"dependencies": {}}',
+        "a.ts": "export function foo() {\n  return 1;\n}\nexport const bar = 2;\n",
+        "b.ts": "import { foo, bar } from './a';\nexport const x = foo() + bar;\n",
+    }
+    step = ("JavaScript completeness checks", "b.ts")
+    p = incremental(tmp_path, files, [("a.ts", files["a.ts"] + "// a comment changes no export\n")])
+    assert step not in p.step_memo.ran_steps  # same exports: b.ts's import checks are replayed
+    p = incremental(tmp_path / "x", files, [("a.ts", "export function foo() {\n  return 1;\n}\n")],  # bar is gone
+                    expect={0: ("QA006", "b.ts")})
+    assert step in p.step_memo.ran_steps
+
+
+def test_missing_package_reported_once_per_package_after_edits(tmp_path):
+    files = {
+        "package.json": '{"dependencies": {}}',
+        "a.js": "const lp = require('left-pad');\nmodule.exports = lp;\n",
+        "b.js": "const lp = require('left-pad');\nmodule.exports = lp;\n",
+    }
+    incremental(tmp_path, files, [("a.js", "module.exports = 1;\n"), ("a.js", files["a.js"])],
+                expect={0: ("QA007", "b.js"), 1: ("QA007", "a.js")})
+
+
+def test_import_of_a_file_outside_the_scan_follows_the_disk(tmp_path):
+    """gen.ts is excluded from the scan but exists on disk, so `./gen` resolves. When it is deleted the
+    import no longer resolves, though no scanned file changed: the recorded disk probe catches it."""
+    files = {"package.json": '{"dependencies": {}}', ".vibeauditignore": "gen.ts\n",
+             "gen.ts": "export const g = 1;\n", "use.ts": "import { g } from './gen';\nexport const h = g;\n"}
+    p = incremental(tmp_path, files, [])
+    (tmp_path / "gen.ts").unlink()
+    p.refresh()
+    warm = scan(str(tmp_path), opts(), p)
+    assert keys(warm) == keys(scan(str(tmp_path), opts()))
+    assert ("QA006", "use.ts") in {(f.rule_id, f.file) for f in warm.findings}
+
+
+def test_python_checks_rerun_when_project_auth_changes(tmp_path):
+    files = {
+        "main.py": ("from fastapi import FastAPI, Depends\nfrom routes import router\nfrom auth import current_user\n"
+                    "app = FastAPI()\napp.include_router(router, dependencies=[Depends(current_user)])\n"),
+        "auth.py": "def current_user():\n    return 1\n",
+        "routes.py": ("from fastapi import APIRouter\nrouter = APIRouter()\n\n\n@router.delete('/items/{item_id}')\n"
+                      "def delete_item(item_id: int):\n    db.execute('DELETE FROM items WHERE id = %s', (item_id,))\n"),
+    }
+    unprotected = files["main.py"].replace(", dependencies=[Depends(current_user)]", "")
+    incremental(tmp_path, files, [("main.py", unprotected), ("main.py", files["main.py"])],
+                expect={0: ("AUTH001", "routes.py")})
+
+
+def test_git_listing_marks_untracked_files(tmp_path):
+    import shutil
+    import subprocess
+
+    if shutil.which("git") is None:
+        return
+    write(tmp_path / "sub" / "a.py", "x = 1\n")
+    subprocess.run(["git", "init", "-q"], cwd=tmp_path, check=True)
+    subprocess.run(["git", "add", "sub/a.py"], cwd=tmp_path, check=True)
+    write(tmp_path / "b.py", "y = 1\n")
+    p = Project(tmp_path)
+    assert p.is_git and p.tracked == {"sub/a.py"} and p.untracked == {"b.py"}
+    sub = Project(tmp_path / "sub")
+    assert sub.tracked == {"a.py"} and sub.untracked == set()

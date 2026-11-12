@@ -7,7 +7,7 @@ from typing import Callable, Iterable, List, Tuple
 
 from . import heuristics as H
 from .files import Project, SourceFile
-from .guard import finditer
+from .guard import GUARD, finditer
 from .model import Route
 
 Add = Callable[..., None]  # ProjectScanner.add(sf_or_rel, line, rule, message, severity="")
@@ -42,18 +42,22 @@ def run(project: Project, routes: List[Route], add: Add) -> None:
     for sf in project.files:
         if sf.text is None or sf.is_test:
             continue
-        if AGENT_SETTINGS.search(sf.rel):
-            _agent_settings(sf, add)
-        # files that run commands (not docs that only mention the flag)
-        if sf.kind in ("yaml", "workflow", "docker", "compose") or RUNS_COMMANDS.search(sf.rel) \
-                or sf.rel.rsplit("/", 1)[-1] in ("package.json", "Makefile", "justfile", "Procfile"):
-            for m in finditer(SKIP_PERMISSION_FLAGS, sf.text):
-                add(sf, sf.line_at(m.start()), "LLM016", f"A coding agent is started with `{m.group(0)}`, so it runs every tool without asking.")
-        v = sf.cache.get("views")
-        if v is not None and sf.kind in ("py", "js"):
-            _logged_llm_text(sf, v.code, v.bare, add)  # type: ignore[attr-defined]
+        GUARD.run(sf.rel, "agent file checks", _file, sf, add)
     for r in routes:
         _stream_cancel(r, add)
+
+
+def _file(sf: SourceFile, add: Add) -> None:
+    if AGENT_SETTINGS.search(sf.rel):
+        _agent_settings(sf, add)
+    # files that run commands (not docs that only mention the flag)
+    if sf.kind in ("yaml", "workflow", "docker", "compose") or RUNS_COMMANDS.search(sf.rel) \
+            or sf.rel.rsplit("/", 1)[-1] in ("package.json", "Makefile", "justfile", "Procfile"):
+        for m in finditer(SKIP_PERMISSION_FLAGS, sf.text or ""):
+            add(sf, sf.line_at(m.start()), "LLM016", f"A coding agent is started with `{m.group(0)}`, so it runs every tool without asking.")
+    v = sf.cache.get("views")
+    if v is not None and sf.kind in ("py", "js"):
+        _logged_llm_text(sf, v.code, v.bare, add)  # type: ignore[attr-defined]
 
 
 def _agent_settings(sf: SourceFile, add: Add) -> None:

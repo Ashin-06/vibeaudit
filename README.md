@@ -209,11 +209,14 @@ vibeaudit watch . --interval 2 --min-severity medium
 ```
 
 `watch` scans once, then checks for changed files every `--interval` seconds (default 1) and re-scans. It
-keeps every unchanged file's text, parse trees and lexer state between scans, and replays the findings of
-per-file checks whose inputs did not change (the files each check read are recorded, so a check that
-depends on another file runs again when that file changes). Checks that build project-wide state (routes,
-call graphs, auth middleware) run on every change, so the result is always the same as a fresh `scan`. A
-changed manifest or config file, or an added or removed file, replays nothing. It runs offline, without
+keeps every unchanged file's text, parse trees, lexer state and per-file analysis between scans, and replays
+the findings (and the routes) of per-file checks when nothing they depend on changed: the files they read,
+the facts about other files they use (the names a module exports, whether an excluded path exists on disk)
+and the project-wide facts they rely on (which functions call a model, which files sit behind auth
+middleware, the configured helpers). Everything else runs again, so the result is always the same as a
+fresh `scan`. A changed manifest or config file, or an added or removed file, replays nothing. On the
+benchmark repositories a re-scan after one edit takes 0.13 to 0.46 s (median per repository; under 0.3 s on
+four of five), against 0.5 to 4 s for a cold scan (`tools/watch_latency.py`). It runs offline, without
 external tools, and honours the configuration, `--exclude` and `--config` like `scan`.
 
 ## Automatic fixes (`vibeaudit fix`)
