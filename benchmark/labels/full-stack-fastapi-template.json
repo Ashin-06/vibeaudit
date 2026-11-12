@@ -97,6 +97,22 @@
    "fingerprint": "6c95138a801a0d8b41e3f93e3eded390",
    "verdict": "tp",
    "reason": "The focusable tab panel removes the outline with no replacement."
+  },
+  {
+   "rule": "AUTH015",
+   "file": "backend/app/api/routes/login.py",
+   "line": 78,
+   "fingerprint": "e4d67926d861bd2c55490de55f007925",
+   "verdict": "tp",
+   "reason": "The password changes but issued JWTs (8-day expiry) are not revoked; nothing tracks a token version or password change time."
+  },
+  {
+   "rule": "AUTH015",
+   "file": "backend/app/api/routes/users.py",
+   "line": 104,
+   "fingerprint": "cb5b15886f24b0797814f3a95cdd4ac9",
+   "verdict": "tp",
+   "reason": "The password changes but issued JWTs (8-day expiry) are not revoked; nothing tracks a token version or password change time."
   }
  ]
 }

@@ -1,7 +1,7 @@
 # vibeaudit for GitLab CI. Include it from your .gitlab-ci.yml (pinned to a release):
 #
 #   include:
-#     - remote: https://raw.githubusercontent.com/Ashin-06/vibeaudit/v0.8.6/ci/gitlab-ci.yml
+#     - remote: https://raw.githubusercontent.com/Ashin-06/vibeaudit/v0.8.7/ci/gitlab-ci.yml
 #
 # or copy the job below. In merge request pipelines only findings on changed lines are reported (the whole
 # project is still analysed, so auth middleware and helpers in unchanged files count); other pipelines report
@@ -9,7 +9,7 @@
 # Override the variables in your own .gitlab-ci.yml, for example VIBEAUDIT_ARGS: "--exclude legacy/*".
 
 variables:
-  VIBEAUDIT_VERSION: "v0.8.6"
+  VIBEAUDIT_VERSION: "v0.8.7"
   VIBEAUDIT_FAIL_ON: "high"
   VIBEAUDIT_ARGS: ""
 

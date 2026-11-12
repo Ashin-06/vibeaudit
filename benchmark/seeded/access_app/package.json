@@ -1,0 +1,1 @@
+{"name": "seeded-access-app", "private": true, "dependencies": {"express": "latest", "bcrypt": "latest", "@prisma/client": "latest", "next": "latest"}}

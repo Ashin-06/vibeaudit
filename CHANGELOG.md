@@ -4,6 +4,22 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.8.7] - 2026-11-13
+
+Phase 1 adds the remaining access-control checks.
+
+### Added
+
+- Four preview rules:
+  - AUTH015: a password change or reset that keeps the other sessions and refresh tokens valid. Projects
+    that revoke sessions or tokens somewhere, and frameworks that do it themselves (Django, Firebase,
+    Clerk), are skipped.
+  - AUTH016: a signed-in route that queries a table with a tenant column (org_id, team_id, workspace_id)
+    without filtering by tenant. Supabase tables under row level security are skipped.
+  - AUTH017: an admin, feature-flag or maintenance endpoint that any signed-in user can call (no role check).
+    Endpoints with no authentication at all remain AUTH001.
+  - FE008: a server action that returns a server secret, or an inline server action that closes over one.
+
 ## [0.8.6] - 2026-11-12
 
 Phase 1 adds the remaining LLM checks; Phases 2 and 3 are complete with `vibeaudit studio` and the Redis TTL codemod.
