@@ -92,7 +92,7 @@ def test_action_inputs_hook_and_versions_match():
     assert inputs and all(f"`{i}`" in documented for i in inputs), (inputs, documented)
     hooks = (ROOT / ".pre-commit-hooks.yaml").read_text(encoding="utf-8")
     assert re.search(r"- id: (\S+)", hooks).group(1) == "vibeaudit" and "- id: vibeaudit" in README  # type: ignore[union-attr]
-    versions = set(re.findall(r"(?:@|rev: )v(\d+\.\d+\.\d+)", README))
+    versions = set(re.findall(r"(?:@|rev: |/)v(\d+\.\d+\.\d+)", README))  # / for the GitLab include URL
     assert versions == {vibeaudit.__version__}, versions
 
 

@@ -1,0 +1,43 @@
+# vibeaudit for GitLab CI. Include it from your .gitlab-ci.yml (pinned to a release):
+#
+#   include:
+#     - remote: https://raw.githubusercontent.com/Ashin-06/vibeaudit/v0.8.2/ci/gitlab-ci.yml
+#
+# or copy the job below. In merge request pipelines only findings on changed lines are reported (the whole
+# project is still analysed, so auth middleware and helpers in unchanged files count); other pipelines report
+# everything. Findings show in the merge request's Code Quality widget and in the pipeline's Tests tab.
+# Override the variables in your own .gitlab-ci.yml, for example VIBEAUDIT_ARGS: "--exclude legacy/*".
+
+variables:
+  VIBEAUDIT_VERSION: "v0.8.2"
+  VIBEAUDIT_FAIL_ON: "high"
+  VIBEAUDIT_ARGS: ""
+
+vibeaudit:
+  stage: test
+  image: python:3.12
+  variables:
+    GIT_DEPTH: "0"  # --diff needs the merge base with the target branch
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never  # the merge request pipeline runs instead
+    - if: $CI_COMMIT_BRANCH
+  script:
+    - python -m pip install --quiet --disable-pip-version-check "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@${VIBEAUDIT_VERSION}"
+    - |
+      set -f  # VIBEAUDIT_ARGS is split on spaces but never expanded as a glob by the shell
+      DIFF=""
+      if [ -n "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" ]; then
+        git fetch --quiet origin "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+        DIFF="--diff origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+      fi
+      vibeaudit scan . --fail-on "$VIBEAUDIT_FAIL_ON" --no-color --report codeclimate:gl-code-quality-report.json --report junit:vibeaudit-junit.xml $DIFF $VIBEAUDIT_ARGS
+  artifacts:
+    when: always  # also when findings fail the job, so they show in the merge request
+    reports:
+      codequality: gl-code-quality-report.json
+      junit: vibeaudit-junit.xml
+    paths:
+      - gl-code-quality-report.json
+      - vibeaudit-junit.xml

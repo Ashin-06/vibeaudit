@@ -148,7 +148,7 @@ Every command has `--help`.
 
 | Option | Meaning |
 | --- | --- |
-| `-r`, `--report FORMAT[:PATH]` | Also write a report: `json`, `sarif`, `md`, `html`, `prompt` (a fix brief for AI assistants) or `badge` (SVG). Repeatable; `-` as the path writes to stdout, as in `-r json:-`. Default path `vibeaudit-report.<ext>`. |
+| `-r`, `--report FORMAT[:PATH]` | Also write a report: `json`, `sarif`, `md`, `html`, `prompt` (a fix brief for AI assistants), `badge` (SVG), `junit` (test report XML for GitLab, CircleCI, Jenkins) or `codeclimate` (GitLab Code Quality). Repeatable; `-` as the path writes to stdout, as in `-r json:-`. Default path `vibeaudit-report.<ext>`. |
 | `--fail-on SEVERITY` | Exit 1 when a finding is at least `critical`, `high` (default), `medium` or `low`; `none` never fails. |
 | `--min-severity SEVERITY` | Hide findings below this severity (default `low`). |
 | `--include-preview` | Count findings of preview rules toward `--fail-on` and the score; they are always reported (see [STABILITY.md](STABILITY.md)). |
@@ -311,7 +311,21 @@ jobs:
 Inputs: `path` (default `.`), `fail-on` (default `high`), `sarif` (default `vibeaudit.sarif`), `args` (extra
 flags, split on spaces), `setup-python` (`true`/`false`) and `python-version`.
 
-**Any other CI**: run `vibeaudit scan . --fail-on high -r sarif:results.sarif` and keep the exit code.
+**GitLab CI**: include the template, pinned to a release. Merge request pipelines report only changed lines;
+findings show in the merge request's Code Quality widget and in the pipeline's Tests tab. Set
+`VIBEAUDIT_FAIL_ON` or `VIBEAUDIT_ARGS` in your own `variables:` to change it.
+
+```yaml
+include:
+  - remote: https://raw.githubusercontent.com/Ashin-06/vibeaudit/v0.8.2/ci/gitlab-ci.yml
+```
+
+**CircleCI**: copy [ci/circleci.yml](ci/circleci.yml) into `.circleci/config.yml` (or merge its job into
+yours). Branches other than `VIBEAUDIT_BASE` (default `main`) report only changed lines; findings show in the
+Tests tab, and the reports are stored even when findings fail the job.
+
+**Any other CI**: run `vibeaudit scan . --fail-on high -r sarif:results.sarif` (or `-r junit:vibeaudit.xml`
+for a test report) and keep the exit code.
 
 **pre-commit**:
 
