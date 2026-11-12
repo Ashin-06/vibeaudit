@@ -3,9 +3,9 @@
 Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do not edit by hand.
 `vibeaudit rules` prints the same list, and `vibeaudit rules --format json` includes every field.
 
-146 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
+152 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-46 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+52 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -967,6 +967,12 @@ References: CWE-538, A05:2021
 | [LLM016](#llm016) | high | preview | Coding agent allowed to act without asking |
 | [LLM017](#llm017) | medium | preview | Streamed completion not cancelled on disconnect |
 | [LLM018](#llm018) | medium | preview | Prompts or completions written to logs |
+| [LLM019](#llm019) | high | preview | Model output passed as a command argument |
+| [LLM020](#llm020) | medium | preview | Agent tool loop without a step limit |
+| [LLM021](#llm021) | low | preview | User text in a prompt without delimiters |
+| [LLM022](#llm022) | medium | preview | Retrieved documents stored without cleaning (chunk poisoning) |
+| [LLM023](#llm023) | low | preview | No per-user usage or cost limit for model calls |
+| [LLM024](#llm024) | low | preview | LLM code without tests or evals |
 
 ### LLM001
 
@@ -1151,6 +1157,78 @@ Why it matters: Prompts and model answers often contain what users typed: names,
 How to fix: Log ids, token counts and timings instead of the text, or redact it before logging.
 
 References: CWE-532, LLM02:2025
+
+### LLM019
+
+**Model output passed as a command argument** (high, preview)
+
+Preview: New in 0.8.6: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: Running a program without a shell stops command injection, not option injection: a model told by a prompt injection to answer `--upload-pack=sh -c ...` (git) or `-oProxyCommand=...` (ssh) runs code.
+
+How to fix: Validate the value against an allow-list or a strict pattern, and put `--` before model-chosen operands so they cannot be read as options.
+
+References: CWE-88, LLM05:2025
+
+### LLM020
+
+**Agent tool loop without a step limit** (medium, preview)
+
+Preview: New in 0.8.6: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: The loop calls the model again for as long as it asks for tools (or until it says it is done). A confused or injected model can keep asking forever, burning tokens and repeating tool side effects.
+
+How to fix: Count the steps and stop at a fixed maximum (for example 10), and cap the total tokens or cost per run.
+
+References: CWE-834, LLM10:2025
+
+### LLM021
+
+**User text in a prompt without delimiters** (low, preview)
+
+Preview: New in 0.8.6: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: When user text is pasted into the instructions with nothing marking where it starts and ends, the model cannot tell your instructions from instructions hidden in the text.
+
+How to fix: Wrap user text in clear delimiters (for example `<user_input>...</user_input>` or a fenced block), say in the instructions that it is data, and keep it in its own user message where you can.
+
+References: CWE-77, LLM01:2025
+
+### LLM022
+
+**Retrieved documents stored without cleaning (chunk poisoning)** (medium, preview)
+
+Preview: New in 0.8.6: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: Web pages and uploaded files are split and stored in the vector store as they are. Text hidden in them ("ignore previous instructions...") comes back later as trusted context for every user who retrieves it.
+
+How to fix: Clean documents before indexing (strip HTML and hidden text, drop instruction-like passages or run an injection classifier) and keep where each chunk came from, so retrieved text can be shown as data.
+
+References: CWE-1426, LLM08:2025
+
+### LLM023
+
+**No per-user usage or cost limit for model calls** (low, preview)
+
+Preview: New in 0.8.6: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: Signed-in users can call the model as often as they like, and nothing records tokens or cost per user, so one account (or a stolen one) can run up the whole bill.
+
+How to fix: Record `usage` tokens per user and stop or slow users who pass a daily or monthly budget.
+
+References: CWE-770, LLM10:2025
+
+### LLM024
+
+**LLM code without tests or evals** (low, preview)
+
+Preview: New in 0.8.6: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: The project has tests, but none of them touches the code that builds prompts or calls the model, and there is no eval setup. A changed prompt or model can quietly break answers.
+
+How to fix: Add tests that run the prompt code with a stubbed model, and a small eval set (promptfoo, deepeval, ragas or your own) that checks real answers before a prompt or model change ships.
+
+References: CWE-1164
 
 ## Code quality and tests
 

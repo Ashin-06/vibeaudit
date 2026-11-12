@@ -185,6 +185,14 @@
    "fingerprint": "b69869fa27c7f44475bdbede383b084c",
    "verdict": "tp",
    "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "LLM024",
+   "file": "supabase/functions/_shared/ai.ts",
+   "line": 43,
+   "fingerprint": "d554ea109952ef95bb8c779de5c6fa34",
+   "verdict": "tp",
+   "reason": "The only test is an example test; nothing tests the prompt code or evaluates answers."
   }
  ]
 }

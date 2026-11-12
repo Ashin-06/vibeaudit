@@ -601,6 +601,14 @@
    "fingerprint": "ac96b88d27ac8a7a593c7a18c8f419c0",
    "verdict": "tp",
    "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "LLM024",
+   "file": "app/api/chat/anthropic/route.ts",
+   "line": 63,
+   "fingerprint": "1ae55f4e6184f89cc4e9293943a7e3b6",
+   "verdict": "tp",
+   "reason": "Tests cover OpenAPI conversion only; no test or eval touches the chat routes or prompts."
   }
  ]
 }

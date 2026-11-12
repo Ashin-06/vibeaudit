@@ -75,6 +75,8 @@ FUNC_DEFS = [
 ]
 NOT_FUNC = {"if", "for", "while", "switch", "catch", "function", "return", "with", "else", "do", "try", "constructor"}
 MAXTOK = re.compile(r"max_tokens|max_completion_tokens|max_output_tokens|maxTokens|maxOutputTokens|maxCompletionTokens|max_new_tokens")
+AGENT_LOOP_TEST = re.compile(r"(?i)tool_?calls?|tool_?use|stop_?reason|finish_?reason|function_?call|requires_action"
+                             r"|!\s*(?:done|finished|isDone|isFinished|complete)\b")
 BOUND = re.compile(
     r"(?i)\b\w*(?:max|limit|step|iter|turn|count|attempt|round|budget|tries|retries)\w*\s*(?:[<>]=?|===?|!==?)"
     r"|(?:[<>]=?|===?|!==?)\s*\w*(?:max|limit|step|iter|turn|count|attempt|round|budget|tries|retries)"
@@ -569,6 +571,9 @@ class JsScanner:
                     k = fs.kinds(args[0][0], args[0][1], m.start())  # without a shell only the program name is dangerous
                     if k & {"user", "llm"}:
                         report("BE002", m.start(), k, "the program a process runs", "high")
+                    elif len(args) > 1 and args[1][1].lstrip().startswith("[") and "'--'" not in args[1][0]                             and '"--"' not in args[1][0] and "llm" in fs.kinds(args[1][0], args[1][1], m.start()):
+                        self.add(fs, "LLM019", m.start(), "Model output is passed as an argument of a spawned process; "
+                                                          "a value such as `--upload-pack=...` becomes an option.", "high")
         # dynamic code
         for m in finditer(r"(?<![\w$.])eval\s*\(|\bnew\s+Function\s*\(|\bvm\s*\.\s*(?:runInNewContext|runInThisContext|runInContext|compileFunction)\s*\(", bare):
             args = self.call_args(fs, m.end() - 1)
@@ -784,6 +789,22 @@ class JsScanner:
             body = code[brace:match_close(bare, brace)]
             if self.calls_llm(body) and not BOUND.search(body):
                 self.add(fs, "LLM009", m.start(), "Loop calls a model with no step or budget limit.")
+        # agent loops: run while the model keeps asking for tools (LLM020)
+        for m in finditer(r"\bwhile\s*\(", bare):
+            if re.match(r"\s*true\s*\)", bare[m.end():m.end() + 10]):
+                continue  # LLM009's
+            close = match_close(bare, m.end() - 1)
+            if close < 0 or not AGENT_LOOP_TEST.search(code[m.end():close]):
+                continue
+            after = bare[close + 1:close + 40].lstrip()
+            if after.startswith("{"):
+                brace = close + 1 + bare[close + 1:].find("{")
+                body = code[brace:match_close(bare, brace)]
+            else:  # `do { ... } while (cond);`
+                start = bare.rfind("do", 0, m.start())
+                body = code[start:m.start()] if start >= 0 and m.start() - start < 20000 else ""
+            if body and self.calls_llm(body) and not BOUND.search(code[m.end():close] + body):
+                self.add(fs, "LLM020", m.start(), "Agent loop calls the model until it stops asking for tools, with no step limit.")
         for m in finditer(H.DANGEROUS_AGENT_OPTIONS, code):
             if bare[m.start()] != code[m.start()]:
                 continue  # inside a string literal

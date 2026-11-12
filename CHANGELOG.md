@@ -4,6 +4,34 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.8.6] - 2026-11-12
+
+Phase 1 adds the remaining LLM checks; Phases 2 and 3 are complete with `vibeaudit studio` and the Redis TTL codemod.
+
+### Added
+
+- Six preview rules for LLM features:
+  - LLM019: model output passed as an argument of a program run without a shell (`git checkout <answer>`),
+    where a value such as `--upload-pack=...` becomes an option. Arguments after `--` are not reported.
+  - LLM020: an agent loop that calls the model for as long as it asks for tools, with no step limit.
+  - LLM021: user text placed in a prompt without delimiters, so instructions inside it read like yours.
+  - LLM022: web pages or files loaded into a vector store with no cleaning step (chunk poisoning).
+  - LLM023: model calls for signed-in users with nothing tracking tokens or cost per user (apps where users
+    bring their own API key are skipped).
+  - LLM024: a project with tests, none of which touches its LLM code, and no eval setup.
+- Tests that pin down two Phase 1 items existing rules already cover: model output used as SQL, a shell
+  command or a file path (LLM002), and "fetch this URL" features and redirects fed by request data (BE005,
+  BE008).
+- `vibeaudit studio`: a local web UI (127.0.0.1 only, token-protected) with routes, data flows and a score
+  drill-down.
+- `vibeaudit fix` adds an expiry to Redis keys (DATA013): `ex=3600` / `EX` on `set`, or an
+  `expire(key, 3600)` after hash, list, set and sorted-set writes.
+
+### Changed
+
+- The fuzz test's time budget uses the median of three calibration runs, so slow shared CI runners no longer
+  fail it; it still catches super-linear paths.
+
 ## [0.8.5] - 2026-11-12
 
 Phase 1 adds vulnerable transitive dependencies; Phase 3 adds `vibeaudit explain` and CI templates.
