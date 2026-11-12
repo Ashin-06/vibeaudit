@@ -1,4 +1,5 @@
 """CI, supply-chain and infrastructure-as-code rules added in 0.7.0 (CFG010-CFG016, DEP008)."""
+from test_graduation_090 import GRADUATED
 from vibeaudit.rules import RULES
 from vibeaudit.scanner import Options, scan
 
@@ -17,7 +18,8 @@ def found(root, *rules):
 
 
 def test_new_rules_start_as_preview():
-    assert all(RULES[r].preview and RULES[r].preview_reason for r in NEW)
+    # rules that later met the bar (STABILITY.md) left preview in 0.9.0; see test_graduation_090.py
+    assert all(RULES[r].preview and RULES[r].preview_reason for r in NEW if r not in GRADUATED)
 
 
 def test_unpinned_third_party_actions_and_write_all_tokens(tmp_path):

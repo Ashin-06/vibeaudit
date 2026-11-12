@@ -1823,7 +1823,7 @@
   },
   "CFG010": {
    "title": "Third-party GitHub Action not pinned to a commit",
-   "preview": true,
+   "preview": false,
    "tp": 65,
    "fp": 0,
    "needs_review": 0,
@@ -2000,7 +2000,7 @@
   },
   "CFG016": {
    "title": "Unencrypted database or disk storage",
-   "preview": true,
+   "preview": false,
    "tp": 11,
    "fp": 0,
    "needs_review": 0,
@@ -2359,7 +2359,7 @@
   },
   "DATA012": {
    "title": "Foreign key without an index",
-   "preview": true,
+   "preview": false,
    "tp": 70,
    "fp": 0,
    "needs_review": 0,
@@ -4032,7 +4032,7 @@
   },
   "QA011": {
    "title": "Same function copied into several files",
-   "preview": true,
+   "preview": false,
    "tp": 14,
    "fp": 0,
    "needs_review": 0,
@@ -5124,7 +5124,7 @@
   },
   "UI014": {
    "title": "Image without width and height",
-   "preview": true,
+   "preview": false,
    "tp": 16,
    "fp": 1,
    "needs_review": 0,

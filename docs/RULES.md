@@ -5,7 +5,7 @@ Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do n
 
 161 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-61 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+56 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -802,13 +802,13 @@ References: CWE-285, A01:2021
 | [CFG007](#cfg007) | medium | stable | Default database credentials |
 | [CFG008](#cfg008) | low | stable | Express app without security headers |
 | [CFG009](#cfg009) | medium | stable | .env file copied into the container image |
-| [CFG010](#cfg010) | medium | preview | Third-party GitHub Action not pinned to a commit |
+| [CFG010](#cfg010) | medium | stable | Third-party GitHub Action not pinned to a commit |
 | [CFG011](#cfg011) | medium | preview | Workflow token with write access to everything |
 | [CFG012](#cfg012) | high | preview | Privileged or host-mounted Kubernetes container |
 | [CFG013](#cfg013) | low | preview | Kubernetes container without resource limits |
 | [CFG014](#cfg014) | high | preview | Public S3 bucket |
 | [CFG015](#cfg015) | high | preview | Admin or database port open to the internet |
-| [CFG016](#cfg016) | medium | preview | Unencrypted database or disk storage |
+| [CFG016](#cfg016) | medium | stable | Unencrypted database or disk storage |
 | [CFG017](#cfg017) | high | preview | Secret file or build argument in the final image |
 | [CFG018](#cfg018) | critical | preview | Pull request code run with secrets (pull_request_target) |
 
@@ -904,9 +904,7 @@ References: CWE-538, A05:2021
 
 ### CFG010
 
-**Third-party GitHub Action not pinned to a commit** (medium, preview)
-
-Preview: New in 0.7.0: not yet measured on enough real-world findings in the benchmark.
+**Third-party GitHub Action not pinned to a commit** (medium)
 
 Why it matters: A tag like `@v3` can be moved by whoever controls the action's repository; if it is compromised, your workflow runs their code with your secrets and token (as in the tj-actions/changed-files attack).
 
@@ -976,9 +974,7 @@ References: CWE-284, A05:2021
 
 ### CFG016
 
-**Unencrypted database or disk storage** (medium, preview)
-
-Preview: New in 0.7.0: not yet measured on enough real-world findings in the benchmark.
+**Unencrypted database or disk storage** (medium)
 
 Why it matters: A database or volume without encryption at rest exposes its data in snapshots, backups and discarded disks.
 
@@ -1322,7 +1318,7 @@ References: CWE-77, LLM01:2025
 | [QA008](#qa008) | low | stable | TypeScript checking disabled for a whole file |
 | [QA009](#qa009) | medium | preview | Pages Router code in an App Router file |
 | [QA010](#qa010) | medium | preview | Made-up data used as a fallback |
-| [QA011](#qa011) | low | preview | Same function copied into several files |
+| [QA011](#qa011) | low | stable | Same function copied into several files |
 
 ### QA001
 
@@ -1432,9 +1428,7 @@ References: CWE-754
 
 ### QA011
 
-**Same function copied into several files** (low, preview)
-
-Preview: New in 0.8.4: not yet measured on enough held-out findings in the benchmark.
+**Same function copied into several files** (low)
 
 Why it matters: A function with the same name and the same code is defined in more than one file of a package. A fix made in one copy does not reach the others, which then drift apart.
 
@@ -1471,7 +1465,7 @@ How to fix: Check the issue by hand before acting on it; suppress or disable AI0
 | [DATA009](#data009) | medium | stable | SQLite file database on a serverless host |
 | [DATA010](#data010) | low | preview | Several writes without a transaction |
 | [DATA011](#data011) | low | preview | Index built without CONCURRENTLY on an existing table |
-| [DATA012](#data012) | low | preview | Foreign key without an index |
+| [DATA012](#data012) | low | stable | Foreign key without an index |
 | [DATA013](#data013) | low | preview | Redis key without an expiry |
 | [DATA014](#data014) | medium | preview | Personal data in vector store metadata |
 | [DATA015](#data015) | low | preview | Cache refilled without a lock (stampede) |
@@ -1589,9 +1583,7 @@ References: CWE-833
 
 ### DATA012
 
-**Foreign key without an index** (low, preview)
-
-Preview: New in 0.8.3: not yet measured on enough held-out findings in the benchmark.
+**Foreign key without an index** (low)
 
 Why it matters: Postgres does not index foreign key columns. Every delete or key update in the referenced table, and every join on the key, scans the referencing table; with ON DELETE CASCADE it also locks it.
 
@@ -1603,7 +1595,7 @@ References: CWE-1050
 
 **Redis key without an expiry** (low, preview)
 
-Preview: New in 0.8.3: not yet measured on enough held-out findings in the benchmark.
+Preview: Held-out 6 of 6, but 6 of 8 over the whole corpus (75%): kept in preview until more held-out findings are labelled.
 
 Why it matters: Keys written without a TTL stay until something deletes them; caches, sessions and rate-limit counters then grow until Redis runs out of memory or starts evicting keys you need.
 
@@ -1731,7 +1723,7 @@ How to fix: Add GET /health (or /healthz) that returns 200 when the app and its 
 | [UI011](#ui011) | low | stable | No error page |
 | [UI012](#ui012) | low | stable | Missing page metadata or viewport |
 | [UI013](#ui013) | medium | stable | Link to a page that does not exist |
-| [UI014](#ui014) | low | preview | Image without width and height |
+| [UI014](#ui014) | low | stable | Image without width and height |
 | [UI015](#ui015) | low | preview | Form error not announced to screen readers |
 | [UI016](#ui016) | medium | preview | Focus outline removed |
 | [UI017](#ui017) | medium | preview | Link to an asset that does not exist |
@@ -1852,9 +1844,7 @@ How to fix: Fix the path, or create the page.
 
 ### UI014
 
-**Image without width and height** (low, preview)
-
-Preview: New in 0.7.1: not yet measured on enough real-world findings in the benchmark.
+**Image without width and height** (low)
 
 Why it matters: The browser cannot reserve space for an image without dimensions, so the content below jumps when it loads (cumulative layout shift, a Core Web Vital).
 

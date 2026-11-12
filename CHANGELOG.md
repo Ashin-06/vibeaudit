@@ -4,6 +4,32 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- Five rules leave preview. Each has at least 5 held-out findings at 90% or more and has been released in
+  preview at least once ([STABILITY.md](STABILITY.md)), and now counts toward `--fail-on`, the score and the
+  grade:
+  - CFG010 Third-party GitHub Action not pinned to a commit (held-out 24/24, tuned 65/65)
+  - CFG016 Unencrypted database or disk storage (held-out 11/11, tuned 11/11)
+  - DATA012 Foreign key without an index (held-out 9/9, tuned 70/70)
+  - QA011 Same function copied into several files (held-out 8/8, tuned 14/14)
+  - UI014 Image without width and height (held-out 6/6, tuned 16/17)
+- DATA013 (Redis key without an expiry) meets the held-out bar (6/6) but is 6 of 8 over the whole corpus
+  (75%), so it stays in preview with that reason.
+
+### Added
+
+- Every rule is mapped to the OWASP Top 10 2021, the OWASP Top 10 for LLM Applications 2025, EU AI Act
+  themes, SOC 2 and, where they apply, HIPAA and GDPR (`data/compliance_map.json`).
+  `--report compliance:FRAMEWORK` writes a self-contained, printable HTML page with each control's status and
+  links to the evidence. This is an aid for reviewers, not a certification or legal advice.
+- `vibeaudit update` downloads a signed threat feed: slopsquatted package names (DEP001, also offline), a model
+  sunset calendar with retirement dates and replacements (LLM012), and prompt-injection patterns for agent
+  instruction files (new preview rule LLM025). The same data ships with vibeaudit; a feed is used only when its
+  signature verifies and it has not expired. See docs/THREAT_FEED.md.
+
 ## [0.8.8] - 2026-11-13
 
 Phase 1 is complete: the last data, operations and CI checks.

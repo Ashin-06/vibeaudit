@@ -451,7 +451,7 @@ _R = [
          "attack).",
          "Pin the full commit SHA and keep the version in a comment: "
          "`uses: owner/action@<40-character sha>  # v3.1.0`. Dependabot can update pinned SHAs.",
-         "CWE-829", "A08:2021", preview=True, preview_reason=NEW_IN_070),
+         "CWE-829", "A08:2021"),
     Rule("CFG011", "Workflow token with write access to everything", "config", "medium",
          "`permissions: write-all` gives every step, including third-party actions, write access to the "
          "code, releases, packages and settings the GITHUB_TOKEN can reach.",
@@ -481,7 +481,7 @@ _R = [
     Rule("CFG016", "Unencrypted database or disk storage", "config", "medium",
          "A database or volume without encryption at rest exposes its data in snapshots, backups and "
          "discarded disks.", "Set `storage_encrypted = true` (RDS) or `encrypted = true` (EBS), with a KMS "
-         "key you control.", "CWE-311", "A02:2021", preview=True, preview_reason=NEW_IN_070),
+         "key you control.", "CWE-311", "A02:2021"),
     Rule("CFG017", "Secret file or build argument in the final image", "config", "high",
          "A secret file copied into the final image, or a secret passed as a build argument, can be read by "
          "anyone who pulls the image (`docker history` shows build arguments).",
@@ -600,8 +600,7 @@ _R = [
     Rule("QA011", "Same function copied into several files", "quality", "low",
          "A function with the same name and the same code is defined in more than one file of a package. A fix "
          "made in one copy does not reach the others, which then drift apart.",
-         "Keep one copy in a shared module and import it everywhere.", "CWE-1041", "",
-         preview=True, preview_reason=NEW_IN_084),
+         "Keep one copy in a shared module and import it everywhere.", "CWE-1041", ""),
     Rule("DATA001", "Database query inside a loop (N+1)", "data", "medium",
          "One query per item turns a page with 100 rows into 101 round trips: slow pages, timeouts and database "
          "load that grows with your data.",
@@ -663,12 +662,14 @@ _R = [
          "Postgres does not index foreign key columns. Every delete or key update in the referenced table, and "
          "every join on the key, scans the referencing table; with ON DELETE CASCADE it also locks it.",
          "Add an index on the foreign key column, for example `CREATE INDEX ON orders (user_id)`.", "CWE-1050",
-         "", preview=True, preview_reason=NEW_IN_083),
+         ""),
     Rule("DATA013", "Redis key without an expiry", "data", "low",
          "Keys written without a TTL stay until something deletes them; caches, sessions and rate-limit "
          "counters then grow until Redis runs out of memory or starts evicting keys you need.",
          "Set an expiry when writing (`set(key, value, ex=3600)`, `set(key, value, { EX: 3600 })`) or call "
-         "`expire` right after.", "CWE-401", "", preview=True, preview_reason=NEW_IN_083),
+         "`expire` right after.", "CWE-401", "", preview=True,
+         preview_reason="Held-out 6 of 6, but 6 of 8 over the whole corpus (75%): kept in preview until more "
+                       "held-out findings are labelled."),
     Rule("DATA014", "Personal data in vector store metadata", "data", "medium",
          "Emails, phone numbers, names or addresses are stored as vector metadata. Metadata comes back with every "
          "search hit (and can reach the model and other users), and most vector stores make it hard to find and "
@@ -853,7 +854,7 @@ _R = [
          "The browser cannot reserve space for an image without dimensions, so the content below jumps when "
          "it loads (cumulative layout shift, a Core Web Vital).",
          "Set `width` and `height` (the intrinsic size is enough; CSS can still scale it), or give the image "
-         "a fixed box with CSS such as `aspect-ratio`.", preview=True, preview_reason=NEW_IN_071),
+         "a fixed box with CSS such as `aspect-ratio`."),
     Rule("UI015", "Form error not announced to screen readers", "ui", "low",
          "An error message that only appears next to the field is invisible to a screen reader user, who "
          "hears nothing when the form is rejected.",

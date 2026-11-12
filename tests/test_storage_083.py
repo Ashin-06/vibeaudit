@@ -1,6 +1,7 @@
 """Data, storage and container rules added in 0.8.3 (DATA011-DATA013, CFG017)."""
 import time
 
+from test_graduation_090 import GRADUATED
 from vibeaudit.rules import RULES
 from vibeaudit.scanner import Options, scan
 
@@ -20,7 +21,8 @@ def found(root, *rules):
 
 
 def test_new_rules_start_as_preview():
-    assert all(RULES[r].preview and RULES[r].preview_reason for r in NEW)
+    # rules that later met the bar (STABILITY.md) left preview in 0.9.0; see test_graduation_090.py
+    assert all(RULES[r].preview and RULES[r].preview_reason for r in NEW if r not in GRADUATED)
 
 
 def test_index_without_concurrently_and_foreign_keys_without_index(tmp_path):
