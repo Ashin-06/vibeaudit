@@ -524,9 +524,18 @@ class DepScanner:
         deps = collect(self.p)
         if not deps:
             return
+        from . import feed
+
+        known_slop = feed.slopsquatted()  # works offline: the list ships with the package
+        slopped = set()
+        for d in deps:
+            entry = known_slop.get((d.ecosystem, feed.norm(d.name, d.ecosystem))) if d.checkable else None
+            if entry is not None:
+                self.add(d, "DEP001", f"`{d.name}` is a known slopsquatted name: {entry['note']}.")
+                slopped.add((d.ecosystem, d.name))
         squats: Dict[Tuple[str, str], str] = {}
         for d in deps:
-            if not d.checkable:
+            if not d.checkable or (d.ecosystem, d.name) in slopped:
                 continue
             target = typosquat_target(d.name, d.ecosystem)
             if target:
@@ -551,7 +560,7 @@ class DepScanner:
             return
         known_pypi, _ = popular("PyPI")
         known_npm, _ = popular("npm")
-        to_check = sorted({(d.ecosystem, d.name) for d in deps if d.checkable and not (
+        to_check = sorted({(d.ecosystem, d.name) for d in deps if d.checkable and (d.ecosystem, d.name) not in slopped and not (
             (d.ecosystem == "PyPI" and pep503(d.name) in known_pypi) or (d.ecosystem == "npm" and d.name.lower() in known_npm))})
         by_key = {(d.ecosystem, d.name): d for d in deps}
         BREAKER.reset()
@@ -563,6 +572,8 @@ class DepScanner:
         now = dt.datetime.now(dt.timezone.utc)
         for d in deps:
             key = (d.ecosystem, d.name)
+            if key in slopped:
+                continue
             status, first, note = infos.get(key, ("ok", None, ""))
             if status == "missing":
                 self.add(d, "DEP001", f"`{d.name}` does not exist on {'PyPI' if d.ecosystem == 'PyPI' else 'npm'}.")

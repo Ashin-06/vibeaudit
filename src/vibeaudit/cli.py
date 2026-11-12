@@ -138,7 +138,7 @@ def build_parser() -> argparse.ArgumentParser:
     r = sub.add_parser("rules", help="list every rule")
     r.add_argument("--format", choices=["text", "json", "md"], default="text")
 
-    u = sub.add_parser("update", help="refresh package lists and retired model ids, or upgrade vibeaudit itself")
+    u = sub.add_parser("update", help="refresh package lists, retired model ids and the signed threat feed, or upgrade vibeaudit itself")
     u.add_argument("--self", dest="upgrade_self", action="store_true", help="upgrade the installed package with pip")
     u.add_argument("--export", metavar="FILE",
                    help="write a data bundle for a machine without network (see --osv), instead of refreshing")

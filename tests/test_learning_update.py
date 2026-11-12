@@ -111,7 +111,7 @@ def test_update_validates_before_replacing(tmp_path, monkeypatch):
     assert failed == 1 and any("npm_top.txt.gz: downloaded file failed validation" in m for m in logs)
     assert updater.data_bytes("pypi_top.txt.gz") == files["pypi_top.txt.gz"]
     assert len(gzip.decompress(updater.data_bytes("npm_top.txt.gz")).split()) > 1000  # packaged copy kept
-    assert aiscan.retired_models().search('"legacy-v2"') and not aiscan.retired_models().search('"claude-2.1"')
+    assert aiscan.retired_models().search('"legacy-v2"') and not aiscan.retired_models().search('"gemini-pro"')  # the sunset calendar still adds its own ids
 
 
 def test_corrupt_refreshed_file_falls_back_to_the_packaged_copy(tmp_path, monkeypatch):
@@ -129,7 +129,7 @@ def test_update_network_failure_and_self_upgrade(tmp_path, monkeypatch):
 
     logs = []
     assert updater.update_data(logs.append, fetch=offline) == 3
-    assert all("download failed" in m for m in logs)
+    assert all("download failed" in m or "no feed key" in m for m in logs)
     ran = []
     assert updater.update_self(logs.append, run=lambda cmd: ran.append(cmd) or 0) == 0
     assert ran[0][1:4] == ["-m", "pip", "install"] and ran[0][-1] == updater.REPO_URL

@@ -2,6 +2,7 @@
 input with dangerous tools (the "lethal trifecta")."""
 from __future__ import annotations
 
+import datetime as dt
 import re
 from typing import Callable, List
 
@@ -21,12 +22,14 @@ _RETIRED: List["re.Pattern[str]"] = []
 
 
 def retired_models() -> "re.Pattern[str]":
-    """A quoted model id from data/retired_models.txt (refreshed by `vibeaudit update`); `*` is any id suffix."""
+    """A quoted model id from data/retired_models.txt or the threat feed's sunset calendar (both refreshed by
+    `vibeaudit update`); `*` is any id suffix."""
     if not _RETIRED:
+        from . import feed
         from .updater import data_bytes, model_ids
 
-        alts = sorted((re.escape(i[:-1]) + r"[\w.@-]*" if i.endswith("*") else re.escape(i)
-                       for i in model_ids(data_bytes("retired_models.txt"))), key=len, reverse=True)
+        ids = set(model_ids(data_bytes("retired_models.txt"))) | set(feed.sunsets())
+        alts = sorted((re.escape(i[:-1]) + r"[\w.@-]*" if i.endswith("*") else re.escape(i) for i in ids), key=len, reverse=True)
         _RETIRED.append(re.compile(r"""['"`](""" + "|".join(alts) + r""")['"`]"""))
     return _RETIRED[0]
 AGENT = re.compile(r"\b(?:create_react_agent|initialize_agent|AgentExecutor|create_openai_tools_agent|create_tool_calling_agent"
@@ -35,6 +38,17 @@ TOOL_NAME = re.compile(r"""@tool(?:\(\s*['"]([\w-]+)['"])?\s*\n\s*(?:async\s+)?d
                        r"""|\b(\w+)\s*:\s*tool\s*\(|name\s*:\s*['"]([\w-]+)['"]\s*,\s*description""")
 UNTRUSTED_TOOL = re.compile(r"(?i)search|browse|browser|fetch|scrape|crawl|web|url|read_page|read_?email|inbox|rss|youtube|wikipedia|tavily|serp|duckduckgo|http_get|requests_get|read_file|download")
 DANGEROUS_TOOL = re.compile(r"(?i)shell|bash|terminal|exec|python|run_code|run_command|send_?email|email_?send|write_?file|delete|remove|sql|query_?db|transfer|pay|post_|tweet|slack_?send|create_?issue|git_?push|deploy")
+
+
+def _retired_message(model: str) -> str:
+    from . import feed
+
+    entry = feed.sunsets().get(model)
+    if entry is None:
+        return f"Model `{model}` has been retired or deprecated by its provider."
+    when = "was retired on" if entry["date"] <= dt.date.today().isoformat() else "is scheduled for retirement on"
+    instead = f"; the provider recommends `{entry['replacement']}`" if entry.get("replacement") else ""
+    return f"Model `{model}` {when} {entry['date']}{instead}."
 
 
 class AiScanner:
@@ -89,7 +103,7 @@ class AiScanner:
         for m in finditer(retired_models(), code):
             if m.group(1) not in self.retired_seen:  # model lists repeat ids across files; once per project is enough
                 self.retired_seen.add(m.group(1))
-                self.add(sf, "LLM012", sf.line_at(m.start()), f"Model `{m.group(1)}` has been retired or deprecated by its provider.")
+                self.add(sf, "LLM012", sf.line_at(m.start()), _retired_message(m.group(1)))
         agent = AGENT.search(code)
         if agent is None:
             return

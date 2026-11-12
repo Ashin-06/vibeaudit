@@ -20,7 +20,7 @@ nothing, inaccessible forms and frontend calls to API routes that do not exist.
 - Works offline with no API key. The network is used only for package-registry and vulnerability
   lookups (`--offline` turns that off); an LLM is used only if you ask for it.
 - Pure Python, no dependencies on 3.11+ (`tomli` on 3.9 and 3.10). Linux, macOS and Windows.
-- 145 rules in 12 categories, mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
+- 146 rules in 12 categories, mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
 - Terminal output plus JSON, SARIF 2.1.0 (GitHub code scanning), Markdown, HTML, an SVG badge and a fix
   brief you can paste into an AI assistant.
 - Fits into CI (GitHub Action, `--diff`), pre-commit (`--staged`) and coding agents (an MCP server).
@@ -140,7 +140,7 @@ your `PATH`, their findings are merged into the report and de-duplicated.
 | `vibeaudit routes [PATH]` | List every HTTP entry point with method, path, location and whether it has a visible auth check, writes data or calls a paid AI API (`--format text\|json\|md`). |
 | `vibeaudit rules` | List every rule (`--format text\|json\|md`; JSON includes the why and fix text). |
 | `vibeaudit feedback` | Record that a finding is a false positive or confirmed, or list recorded feedback (see [False positives](#false-positives-and-suppressing-findings)). |
-| `vibeaudit update` | Refresh the popular-package lists and the retired-model list; `--self` upgrades vibeaudit with pip; `--export FILE [--osv PyPI,npm]` and `--import FILE` carry the data to a machine without network (see [Offline and air-gapped use](#offline-and-air-gapped-use)). |
+| `vibeaudit update` | Refresh the popular-package lists, the retired-model list and the signed threat feed; `--self` upgrades vibeaudit with pip; `--export FILE [--osv PyPI,npm]` and `--import FILE` carry the data to a machine without network (see [Offline and air-gapped use](#offline-and-air-gapped-use)). |
 | `vibeaudit lsp` | Run the language server for editors: diagnostics and fix code actions (see [Editors](#editors-vs-code-cursor-and-other-lsp-clients)). |
 | `vibeaudit mcp` | Run the MCP server for coding agents (see [MCP server](#mcp-server-for-coding-agents)). |
 
@@ -593,6 +593,14 @@ overrides it). `--no-cache` or `VIBEAUDIT_NO_CACHE=1` turns it off.
 `vibeaudit update` downloads the latest popular-package lists (used for typosquat checks) and retired-model
 list (LLM012) from this repository; a file is used only if it passes validation. Set `GITHUB_TOKEN` if you
 hit GitHub's rate limit.
+
+It also downloads the signed threat feed: slopsquatted package names (DEP001, also offline), a model sunset
+calendar with retirement dates and replacements (LLM012) and prompt-injection patterns for agent instruction
+files such as CLAUDE.md and .cursorrules (LLM019). The same data ships with vibeaudit, so every check works
+offline; the feed only adds what was published since the release. A feed is used only when its signature
+verifies against the key shipped with vibeaudit and it has not expired (30 days); otherwise vibeaudit warns and
+uses the shipped data. Bundles made with `--export` carry the feed too. How to submit an entry, and how the
+feed is signed: [docs/THREAT_FEED.md](docs/THREAT_FEED.md).
 
 ## Limits and what is not covered
 

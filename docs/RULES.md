@@ -3,9 +3,9 @@
 Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do not edit by hand.
 `vibeaudit rules` prints the same list, and `vibeaudit rules --format json` includes every field.
 
-146 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
+147 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-46 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+47 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -967,6 +967,7 @@ References: CWE-538, A05:2021
 | [LLM016](#llm016) | high | preview | Coding agent allowed to act without asking |
 | [LLM017](#llm017) | medium | preview | Streamed completion not cancelled on disconnect |
 | [LLM018](#llm018) | medium | preview | Prompts or completions written to logs |
+| [LLM019](#llm019) | high | preview | Prompt-injection text in an agent instruction file |
 
 ### LLM001
 
@@ -1151,6 +1152,18 @@ Why it matters: Prompts and model answers often contain what users typed: names,
 How to fix: Log ids, token counts and timings instead of the text, or redact it before logging.
 
 References: CWE-532, LLM02:2025
+
+### LLM019
+
+**Prompt-injection text in an agent instruction file** (high, preview)
+
+Preview: New in 0.8.6: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: Coding agents follow CLAUDE.md, AGENTS.md, .cursorrules and similar files as if the developer wrote them. Text that tells the agent to ignore its instructions or to hide what it does, or characters a reviewer cannot see, turns a pull request or a copied rules file into control of the agent. The patterns come from vibeaudit's threat feed (refreshed by `vibeaudit update`).
+
+How to fix: Read the file in a viewer that shows hidden characters, remove the injected text, and review who changed the file.
+
+References: CWE-77, LLM01:2025
 
 ## Code quality and tests
 

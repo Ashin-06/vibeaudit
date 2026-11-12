@@ -1,4 +1,4 @@
-"""AI agent and LLM checks added in 0.8.1: LLM016-LLM018 (all preview)."""
+"""AI agent and LLM checks: LLM016-LLM018 (added in 0.8.1) and LLM019 (all preview)."""
 from __future__ import annotations
 
 import json
@@ -15,6 +15,11 @@ Add = Callable[..., None]  # ProjectScanner.add(sf_or_rel, line, rule, message, 
 AGENT_SETTINGS = re.compile(
     r"(?:^|/)(?:\.claude/settings(?:\.local)?\.json|\.cursor/(?:mcp|settings|cli)\.json|\.vscode/(?:settings|mcp)\.json"
     r"|\.gemini/settings\.json|\.mcp\.json|mcp\.json|\.codex/config\.toml|\.windsurf/[\w.-]+\.json|\.roo/mcp\.json)$")
+# files a coding agent reads as instructions from the developer
+AGENT_INSTRUCTIONS = re.compile(
+    r"(?:^|/)(?:(?:CLAUDE|AGENTS|GEMINI)(?:\.local)?\.md|\.cursorrules|\.windsurfrules|\.clinerules"
+    r"|\.github/copilot-instructions\.md|\.github/instructions/[^/]+\.md|\.cursor/rules/[^/]+\.mdc?"
+    r"|\.windsurf/rules/[^/]+\.md|\.claude/(?:commands|agents)/[^/]+\.md|\.claude/skills/.+/SKILL\.md)$")
 SKIP_PERMISSION_FLAGS = re.compile(
     r"--dangerously-skip-permissions\b|--dangerously-bypass-approvals-and-sandbox\b|--yolo\b"
     r"|--permission-mode[ =]+bypassPermissions\b|--approval-mode[ =]+yolo\b")
@@ -50,6 +55,8 @@ def run(project: Project, routes: List[Route], add: Add) -> None:
 def _file(sf: SourceFile, add: Add) -> None:
     if AGENT_SETTINGS.search(sf.rel):
         _agent_settings(sf, add)
+    if AGENT_INSTRUCTIONS.search(sf.rel):
+        _injection(sf, add)
     # files that run commands (not docs that only mention the flag)
     if sf.kind in ("yaml", "workflow", "docker", "compose") or RUNS_COMMANDS.search(sf.rel) \
             or sf.rel.rsplit("/", 1)[-1] in ("package.json", "Makefile", "justfile", "Procfile"):
@@ -58,6 +65,16 @@ def _file(sf: SourceFile, add: Add) -> None:
     v = sf.cache.get("views")
     if v is not None and sf.kind in ("py", "js"):
         _logged_llm_text(sf, v.code, v.bare, add)  # type: ignore[attr-defined]
+
+
+def _injection(sf: SourceFile, add: Add) -> None:
+    from . import feed
+
+    for entry, pattern in feed.injection_patterns():
+        m = next(iter(finditer(pattern, sf.text or "")), None)  # one finding per pattern and file
+        if m is not None:
+            add(sf, sf.line_at(m.start()), "LLM019",
+                f"{entry['description']} ({entry['id']}): the agent reads this file as the developer's instructions.")
 
 
 def _agent_settings(sf: SourceFile, add: Add) -> None:

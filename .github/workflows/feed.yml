@@ -1,0 +1,41 @@
+name: Threat feed
+
+# Daily: sign src/vibeaudit/data/threat_data.json as it is on main and publish it as threat_feed.json on the
+# threat-feed branch, where `vibeaudit update` downloads it. The signing key is the VIBEAUDIT_FEED_KEY secret of
+# the "feed" environment, which only main may use. One-time setup: docs/THREAT_FEED.md.
+
+on:
+  schedule:
+    - cron: "17 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: threat-feed
+
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: feed
+    permissions:
+      contents: write   # push the threat-feed branch
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+        with:
+          python-version: "3.12"
+      - name: Sign the feed
+        env:
+          VIBEAUDIT_FEED_KEY: ${{ secrets.VIBEAUDIT_FEED_KEY }}   # read from the environment only, never written to disk
+        run: python tools/sign_feed.py "$RUNNER_TEMP/threat_feed.json"
+      - name: Publish it on the threat-feed branch
+        run: |
+          blob=$(git hash-object -w "$RUNNER_TEMP/threat_feed.json")
+          tree=$(printf '100644 blob %s\tthreat_feed.json\n' "$blob" | git mktree)
+          commit=$(GIT_AUTHOR_NAME="github-actions[bot]" GIT_AUTHOR_EMAIL="41898282+github-actions[bot]@users.noreply.github.com" \
+                   GIT_COMMITTER_NAME="github-actions[bot]" GIT_COMMITTER_EMAIL="41898282+github-actions[bot]@users.noreply.github.com" \
+                   git commit-tree "$tree" -m "Threat feed from ${GITHUB_SHA}")
+          git push --force origin "$commit:refs/heads/threat-feed"
