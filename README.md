@@ -362,8 +362,11 @@ read-only:
 | --- | --- |
 | `scan_project` | Audit a directory (optionally only changed lines: `changes: "staged"` or a git revision). |
 | `scan_file` | Audit one file in the context of its project. |
+| `audit_current_file` | Audit the file being edited, also from unsaved or not yet written `content`; repeated calls reuse unchanged files. |
 | `list_routes` | The routes inventory. |
 | `check_package` | Before adding a dependency: does it exist, is it brand new, is it a typosquat, known vulnerabilities. |
+| `verify_package` | `check_package` plus a verdict (ok, caution, block) with reasons, the real package for a Python import name (`cv2` is `opencv-python`) and whether the `project` already declares it. |
+| `simulate_migration` | Dry-run a PostgreSQL migration (`path` to a .sql file, or `sql`): per statement the lock, what it blocks, table rewrites, data loss and a safer alternative. |
 | `explain_rule` | What a rule means and how to fix it. |
 | `auto_repair` | The `vibeaudit fix` diff for a directory (optionally one `file` or some `rules`); it writes nothing. |
 
