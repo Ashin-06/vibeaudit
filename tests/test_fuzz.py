@@ -21,15 +21,19 @@ ROUNDS = int(os.environ.get("VIBEAUDIT_FUZZ_ROUNDS", "6"))
 
 
 def _budget() -> float:
-    """Seconds one scan may take, scaled to this machine. The slowest shape (120,000 statements on one line)
-    is linear but costs about 80 times this calibration loop; shared CI runners (macOS) are 3 to 4 times
-    slower than a laptop and ran it in 31 to 32 s against a fixed 30 s limit. A super-linear path takes
-    minutes, so 250 calibration units still catch it."""
+    """Seconds one scan may take, scaled to this machine. The pathological shapes are linear but cost about
+    75 times this calibration loop on a laptop and more than 250 times on shared macOS runners, where the
+    scan took 30 to 32 s against a 30 s floor. A super-linear path takes minutes, so a 60 s floor and 400
+    calibration units (the median of three runs, against timer noise) still catch it."""
     import ast
+    import statistics
 
-    start = time.perf_counter()
-    sum(1 for _ in ast.walk(ast.parse("x = 1; " * 20000)))
-    return max(30.0, 250 * (time.perf_counter() - start))
+    runs = []
+    for _ in range(3):
+        start = time.perf_counter()
+        sum(1 for _ in ast.walk(ast.parse("x = 1; " * 20000)))
+        runs.append(time.perf_counter() - start)
+    return max(60.0, 400 * statistics.median(runs))
 
 
 PER_SCAN_SECONDS = _budget()
