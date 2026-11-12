@@ -87,7 +87,7 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | GitLab CI and CircleCI templates | planned |
 | Monorepo mode | done, unreleased (`--monorepo`: one project per package, a score per package) |
 | Offline / air-gapped mode with bundled data | planned |
-| `vibeaudit explain <finding>` | planned |
+| `vibeaudit explain <finding>` | done, unreleased (rule, code and the data flow traced back from the line) |
 
 ## Phase 4: compliance and threat intelligence
 

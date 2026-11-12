@@ -127,6 +127,14 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("mcp", help="run a Model Context Protocol server on stdio for coding agents")
     sub.add_parser("lsp", help="run a Language Server Protocol server on stdio (diagnostics and fix code actions for editors)")
 
+    e = sub.add_parser("explain", help="explain one finding: the rule, the code and the data flow that led to it",
+                       description="Scan the project and explain the findings that match FINDING: FILE:LINE, "
+                                   "FILE:LINE:RULE or a fingerprint prefix (from a JSON or SARIF report).")
+    e.add_argument("finding", help="FILE:LINE, FILE:LINE:RULE or a fingerprint prefix")
+    e.add_argument("--path", default=".", help="project directory (default: current directory)")
+    e.add_argument("--format", choices=["text", "json"], default="text")
+    e.add_argument("--config", metavar="FILE", help="read settings from this TOML file, as for scan")
+
     r = sub.add_parser("rules", help="list every rule")
     r.add_argument("--format", choices=["text", "json", "md"], default="text")
 
@@ -194,6 +202,40 @@ def cmd_feedback(a: argparse.Namespace) -> int:
         print(f"vibeaudit: no {a.rule.upper()} finding at {file}:{line}", file=sys.stderr)
         return 1
     print(f"recorded {a.verdict} for {entry['rule']} at {entry['file']}:{entry['line']} in {root / feedback.FILE}")
+    return 0
+
+
+def cmd_explain(a: argparse.Namespace) -> int:
+    from . import explain
+    from .config import project_options
+    from .scanner import scan
+
+    if not os.path.isdir(a.path):
+        print(f"vibeaudit: not a directory: {a.path}", file=sys.stderr)
+        return 2
+    try:
+        opts = project_options(a.path, a.config, offline=True, external="none", min_severity="info", include_preview=True)
+    except ConfigError as e:
+        print(f"vibeaudit: {e}", file=sys.stderr)
+        return 2
+    res = scan(a.path, opts)
+    chosen = explain.select(res.findings, a.finding)
+    if not chosen:
+        print(f"vibeaudit: no finding matches {a.finding!r} (use FILE:LINE, FILE:LINE:RULE or a fingerprint prefix "
+              "from `vibeaudit scan`)", file=sys.stderr)
+        return 1
+    out = []
+    for f in chosen[:10]:
+        sf_path = Path(res.root) / f.file
+        try:
+            text = sf_path.read_text(encoding="utf-8", errors="replace").replace("\r\n", "\n")
+        except OSError:
+            text = ""
+        out.append(explain.explain(f, text))
+    if a.format == "json":
+        print(json.dumps(out, indent=2))
+    else:
+        print("\n\n".join(explain.render(e) for e in out))
     return 0
 
 
@@ -446,6 +488,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     a = parser.parse_args(argv)
     if a.command == "rules":
         return cmd_rules(a.format)
+    if a.command == "explain":
+        return cmd_explain(a)
     if a.command == "routes":
         return cmd_routes(a)
     if a.command == "lsp":

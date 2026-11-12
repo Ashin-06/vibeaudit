@@ -136,6 +136,7 @@ your `PATH`, their findings are merged into the report and de-duplicated.
 | `vibeaudit watch [PATH]` | Scan, then re-scan after every change and print the findings that appeared (`+`) or were fixed (`-`); see [Watch mode](#watch-mode). |
 | `vibeaudit review [PATH] --diff REV` | Pull request review comments, with suggested fixes, for the findings on changed lines; `--post` sends them to GitHub (see [Pull request review](#pull-request-review)). |
 | `vibeaudit fix [PATH]` | Print a diff that fixes the findings with one obvious repair; `--apply` writes it (see [Automatic fixes](#automatic-fixes-vibeaudit-fix)). |
+| `vibeaudit explain FINDING` | Explain one finding (`FILE:LINE`, `FILE:LINE:RULE` or a fingerprint prefix): the rule, the code and the data flow that led to it (`--format json`). |
 | `vibeaudit routes [PATH]` | List every HTTP entry point with method, path, location and whether it has a visible auth check, writes data or calls a paid AI API (`--format text\|json\|md`). |
 | `vibeaudit rules` | List every rule (`--format text\|json\|md`; JSON includes the why and fix text). |
 | `vibeaudit feedback` | Record that a finding is a false positive or confirmed, or list recorded feedback (see [False positives](#false-positives-and-suppressing-findings)). |
@@ -219,6 +220,26 @@ the repository, not a package (CI configuration QA002, the example env file DATA
 DEP005), so they come from one scan of the whole repository; the mode costs about two normal scans. Findings
 keep their repository paths and fingerprints (baselines and feedback carry over), and the report adds a score
 per package.
+
+### Explaining a finding
+
+```bash
+vibeaudit explain app.py:19            # or app.py:19:LLM002, or a fingerprint prefix from a JSON report
+```
+
+`explain` shows the rule (what it means, why it matters, how to fix it), the code around the line and, when
+the line uses request data or model output, the data flow traced back from it: each assignment the value
+went through, up to where it came from (a request field, a route parameter, a model call, or in Python the
+parameter of an ordinary function, whose callers are not followed). The trace follows
+variables within the function (Python) or the file (JavaScript and TypeScript), not calls into other
+functions, and shows only the steps that lead to a source.
+
+```
+Data flow (traced back from the line, best effort):
+  from  app.py:15  plan = client.chat.completions.create(...)   (`plan` comes from model output)
+  via   app.py:18  script = plan.choices[0].message.content     (`script`)
+  to    app.py:19  exec(script)
+```
 
 ### Watch mode
 
