@@ -193,6 +193,22 @@
    "fingerprint": "f44859067fdfae8b2a90f90ca9687380",
    "verdict": "tp",
    "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "QA011",
+   "file": "supabase/functions/rehearsal-log/index.ts",
+   "line": 62,
+   "fingerprint": "e68e5c6d070b9b3f17e940dd691df917",
+   "verdict": "tp",
+   "reason": "The same function body is copied into another file of the same package."
+  },
+  {
+   "rule": "QA011",
+   "file": "supabase/functions/text-to-speech/index.ts",
+   "line": 4,
+   "fingerprint": "845bd2a04230ead06a631ed39a6cd5aa",
+   "verdict": "tp",
+   "reason": "The same function body is copied into another file of the same package."
   }
  ]
 }

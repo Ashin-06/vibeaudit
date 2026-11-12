@@ -161,6 +161,22 @@
    "fingerprint": "fcece458b4856cefcefafb4e2ad57f7c",
    "verdict": "tp",
    "reason": "The streamed completion is created without the request abort signal."
+  },
+  {
+   "rule": "QA011",
+   "file": "app/api/chat/retrieval_agents/route.ts",
+   "line": 26,
+   "fingerprint": "0533f58c8411cac181701055afae0a79",
+   "verdict": "tp",
+   "reason": "The same function body is copied into another file of the same package."
+  },
+  {
+   "rule": "QA011",
+   "file": "app/api/chat/retrieval_agents/route.ts",
+   "line": 36,
+   "fingerprint": "e785fdb343bd6777574db5b054363404",
+   "verdict": "tp",
+   "reason": "The same function body is copied into another file of the same package."
   }
  ]
 }

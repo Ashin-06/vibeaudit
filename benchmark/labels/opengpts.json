@@ -601,6 +601,14 @@
    "fingerprint": "7f628011a0cea2f4b83466a152c29334",
    "verdict": "tp",
    "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "QA011",
+   "file": "frontend/src/hooks/useChatMessages.ts",
+   "line": 14,
+   "fingerprint": "608cc1518a2cf7eaecf9ed5f62e59375",
+   "verdict": "tp",
+   "reason": "The same function body is copied into another file of the same package."
   }
  ]
 }

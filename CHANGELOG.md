@@ -4,6 +4,27 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.8.4] - 2026-11-12
+
+Phase 1 adds the AI-slop checks; Phase 3 adds monorepo mode and offline use.
+
+### Added
+
+- Three preview rules for code that AI assistants tend to leave behind:
+  - QA009: Pages Router code in an App Router file: `getServerSideProps` and the other Pages Router data
+    functions (never called there), `next/router` (throws there), and metadata exported from a
+    "use client" file.
+  - QA010: mock, fake or dummy data returned when a request fails, or used when a response is empty
+    (`?? mockPosts`, `or get_fake_items()`). Mocks behind an explicit switch (`USE_MOCKS`, `NODE_ENV`) and
+    stand-ins for optional imports are not reported.
+  - QA011: the same function, with the same code, in several files of one package. Benchmark and eval
+    scripts, agent skills and separately deployed Supabase functions are each treated as standalone.
+- `--monorepo`: every package is scanned as a project of its own, against its own manifest and evidence, with
+  a score per package.
+- Offline and air-gapped use: `vibeaudit update --export/--import` carry the data, including an OSV
+  vulnerability index, to a machine without network; `scan --offline` then checks known vulnerabilities
+  against it.
+
 ## [0.8.3] - 2026-11-12
 
 Phase 1 continues with data, storage and container checks; Phase 3 adds the pre-commit fast path, the PR review bot, three MCP tools and faster re-scans.

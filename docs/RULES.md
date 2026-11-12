@@ -3,9 +3,9 @@
 Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do not edit by hand.
 `vibeaudit rules` prints the same list, and `vibeaudit rules --format json` includes every field.
 
-142 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
+145 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-42 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+45 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -1151,6 +1151,9 @@ References: CWE-532, LLM02:2025
 | [QA006](#qa006) | high | preview | Import of a file or name that does not exist |
 | [QA007](#qa007) | medium | stable | Package imported but not declared as a dependency |
 | [QA008](#qa008) | low | stable | TypeScript checking disabled for a whole file |
+| [QA009](#qa009) | medium | preview | Pages Router code in an App Router file |
+| [QA010](#qa010) | medium | preview | Made-up data used as a fallback |
+| [QA011](#qa011) | low | preview | Same function copied into several files |
 
 ### QA001
 
@@ -1233,6 +1236,42 @@ References: CWE-1104
 Why it matters: `// @ts-nocheck` hides every type error in the file, including the ones that would catch broken AI edits.
 
 How to fix: Remove @ts-nocheck and fix or narrowly suppress the individual errors.
+
+### QA009
+
+**Pages Router code in an App Router file** (medium, preview)
+
+Preview: New in 0.8.4: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: `getServerSideProps` and the other Pages Router data functions are never called in the App Router, so the page renders without the data or checks they hold; `next/router` throws there, and a "use client" file cannot export metadata. AI assistants mix the two routers because their training data does.
+
+How to fix: In the App Router fetch data in the server component or a route handler, import `useRouter` from `next/navigation`, and export metadata from a server component.
+
+References: CWE-1164
+
+### QA010
+
+**Made-up data used as a fallback** (medium, preview)
+
+Preview: New in 0.8.4: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: When a request or query fails, the code returns mock, fake or dummy data instead of an error. Users see invented content, and the outage never shows up in monitoring.
+
+How to fix: Show an error or empty state, log the failure, and keep mock data in tests, stories or behind an explicit development switch.
+
+References: CWE-754
+
+### QA011
+
+**Same function copied into several files** (low, preview)
+
+Preview: New in 0.8.4: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: A function with the same name and the same code is defined in more than one file of a package. A fix made in one copy does not reach the others, which then drift apart.
+
+How to fix: Keep one copy in a shared module and import it everywhere.
+
+References: CWE-1041
 
 ## LLM review (model-generated, unverified)
 
