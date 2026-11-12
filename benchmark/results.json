@@ -19,8 +19,8 @@
  ],
  "repos": {
   "act-solo-ai": {
-   "findings": 20,
-   "labelled": 20,
+   "findings": 22,
+   "labelled": 22,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 4
@@ -110,8 +110,8 @@
    "fixed_fp": 0
   },
   "opengpts": {
-   "findings": 48,
-   "labelled": 48,
+   "findings": 49,
+   "labelled": 49,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 27
@@ -166,8 +166,8 @@
    "fixed_fp": 10
   },
   "flask": {
-   "findings": 2,
-   "labelled": 2,
+   "findings": 3,
+   "labelled": 3,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 6
@@ -243,8 +243,8 @@
    "fixed_fp": 17
   },
   "careconnect": {
-   "findings": 35,
-   "labelled": 35,
+   "findings": 41,
+   "labelled": 41,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
@@ -257,8 +257,8 @@
    "fixed_fp": 0
   },
   "langchain-nextjs-template": {
-   "findings": 20,
-   "labelled": 20,
+   "findings": 22,
+   "labelled": 22,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
@@ -383,8 +383,8 @@
    "fixed_fp": 0
   },
   "wsgidav": {
-   "findings": 38,
-   "labelled": 38,
+   "findings": 40,
+   "labelled": 40,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 1
@@ -3733,6 +3733,79 @@
    "seeded_recall": 1.0,
    "by_repo": {
     "taxonomy": [
+     2,
+     0,
+     0
+    ]
+   }
+  },
+  "QA009": {
+   "title": "Pages Router code in an App Router file",
+   "preview": true,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "QA010": {
+   "title": "Made-up data used as a fallback",
+   "preview": true,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "QA011": {
+   "title": "Same function copied into several files",
+   "preview": true,
+   "tp": 14,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "act-solo-ai": [
+     2,
+     0,
+     0
+    ],
+    "careconnect": [
+     6,
+     0,
+     0
+    ],
+    "flask": [
+     1,
+     0,
+     0
+    ],
+    "langchain-nextjs-template": [
+     2,
+     0,
+     0
+    ],
+    "opengpts": [
+     1,
+     0,
+     0
+    ],
+    "wsgidav": [
      2,
      0,
      0

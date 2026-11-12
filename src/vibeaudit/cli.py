@@ -140,6 +140,12 @@ def build_parser() -> argparse.ArgumentParser:
 
     u = sub.add_parser("update", help="refresh package lists and retired model ids, or upgrade vibeaudit itself")
     u.add_argument("--self", dest="upgrade_self", action="store_true", help="upgrade the installed package with pip")
+    u.add_argument("--export", metavar="FILE",
+                   help="write a data bundle for a machine without network (see --osv), instead of refreshing")
+    u.add_argument("--osv", metavar="ECOSYSTEMS", default="",
+                   help="with --export: also bundle a vulnerability index built from OSV's dumps, e.g. PyPI,npm")
+    u.add_argument("--import", dest="import_bundle", metavar="FILE",
+                   help="install a bundle made with --export (no network needed); then scan with --offline")
 
     f = sub.add_parser("feedback", help="record that a finding is a false positive or confirmed, or list feedback")
     f.add_argument("verdict", nargs="?", choices=["false-positive", "confirmed", "list"], default="list")
@@ -161,6 +167,21 @@ def cmd_update(a: argparse.Namespace) -> int:
 
     if a.upgrade_self:
         return 0 if updater.update_self(log) == 0 else 1
+    if a.export or a.import_bundle:
+        from . import bundle
+
+        try:
+            if a.export:
+                bundle.export(Path(a.export), [e.strip() for e in a.osv.split(",") if e.strip()], log)
+            if a.import_bundle:
+                bundle.import_bundle(Path(a.import_bundle), log)
+        except (bundle.BundleError, OSError, ValueError) as e:
+            print(f"vibeaudit: {e}", file=sys.stderr)
+            return 1
+        return 0
+    if a.osv:
+        print("vibeaudit: --osv goes with --export", file=sys.stderr)
+        return 2
     return 0 if updater.update_data(log) == 0 else 1
 
 

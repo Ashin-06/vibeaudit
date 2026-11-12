@@ -41,6 +41,7 @@ class Rule:
     gates_in_preview: bool = False
 
 
+NEW_IN_084 = "New in 0.8.4: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_083 = "New in 0.8.3: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_081 = "New in 0.8.1: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_072 = "New in 0.7.2: not yet measured on enough held-out findings in the benchmark."
@@ -546,6 +547,23 @@ _R = [
     Rule("QA008", "TypeScript checking disabled for a whole file", "quality", "low",
          "`// @ts-nocheck` hides every type error in the file, including the ones that would catch broken AI edits.",
          "Remove @ts-nocheck and fix or narrowly suppress the individual errors.", "", ""),
+    Rule("QA009", "Pages Router code in an App Router file", "quality", "medium",
+         "`getServerSideProps` and the other Pages Router data functions are never called in the App Router, so "
+         "the page renders without the data or checks they hold; `next/router` throws there, and a \"use client\" "
+         "file cannot export metadata. AI assistants mix the two routers because their training data does.",
+         "In the App Router fetch data in the server component or a route handler, import `useRouter` from "
+         "`next/navigation`, and export metadata from a server component.", "CWE-1164", "",
+         preview=True, preview_reason=NEW_IN_084),
+    Rule("QA010", "Made-up data used as a fallback", "quality", "medium",
+         "When a request or query fails, the code returns mock, fake or dummy data instead of an error. Users see "
+         "invented content, and the outage never shows up in monitoring.",
+         "Show an error or empty state, log the failure, and keep mock data in tests, stories or behind an "
+         "explicit development switch.", "CWE-754", "", preview=True, preview_reason=NEW_IN_084),
+    Rule("QA011", "Same function copied into several files", "quality", "low",
+         "A function with the same name and the same code is defined in more than one file of a package. A fix "
+         "made in one copy does not reach the others, which then drift apart.",
+         "Keep one copy in a shared module and import it everywhere.", "CWE-1041", "",
+         preview=True, preview_reason=NEW_IN_084),
     Rule("DATA001", "Database query inside a loop (N+1)", "data", "medium",
          "One query per item turns a page with 100 rows into 101 round trips: slow pages, timeouts and database "
          "load that grows with your data.",

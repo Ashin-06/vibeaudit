@@ -20,7 +20,7 @@ nothing, inaccessible forms and frontend calls to API routes that do not exist.
 - Works offline with no API key. The network is used only for package-registry and vulnerability
   lookups (`--offline` turns that off); an LLM is used only if you ask for it.
 - Pure Python, no dependencies on 3.11+ (`tomli` on 3.9 and 3.10). Linux, macOS and Windows.
-- 141 rules in 12 categories, mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
+- 144 rules in 12 categories, mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
 - Terminal output plus JSON, SARIF 2.1.0 (GitHub code scanning), Markdown, HTML, an SVG badge and a fix
   brief you can paste into an AI assistant.
 - Fits into CI (GitHub Action, `--diff`), pre-commit (`--staged`) and coding agents (an MCP server).
@@ -33,7 +33,7 @@ Contents: [Quickstart](#quickstart) - [Example output](#example-output) - [What 
 ## Quickstart
 
 ```bash
-pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.8.3"
+pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.8.4"
 ```
 
 ```bash
@@ -115,13 +115,13 @@ Good tools exist, and vibeaudit runs them when they are installed instead of rep
 vibeaudit is installed from this repository (it is not on PyPI yet). Python 3.9 or newer:
 
 ```bash
-pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.8.3"
+pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.8.4"
 ```
 
 or, to keep it in its own environment:
 
 ```bash
-pipx install "git+https://github.com/Ashin-06/vibeaudit.git@v0.8.3"
+pipx install "git+https://github.com/Ashin-06/vibeaudit.git@v0.8.4"
 ```
 
 Optional: if [gitleaks](https://github.com/gitleaks/gitleaks), [bandit](https://github.com/PyCQA/bandit),
@@ -140,7 +140,7 @@ your `PATH`, their findings are merged into the report and de-duplicated.
 | `vibeaudit routes [PATH]` | List every HTTP entry point with method, path, location and whether it has a visible auth check, writes data or calls a paid AI API (`--format text\|json\|md`). |
 | `vibeaudit rules` | List every rule (`--format text\|json\|md`; JSON includes the why and fix text). |
 | `vibeaudit feedback` | Record that a finding is a false positive or confirmed, or list recorded feedback (see [False positives](#false-positives-and-suppressing-findings)). |
-| `vibeaudit update` | Refresh the popular-package lists and the retired-model list; `--self` upgrades vibeaudit with pip. |
+| `vibeaudit update` | Refresh the popular-package lists and the retired-model list; `--self` upgrades vibeaudit with pip; `--export FILE [--osv PyPI,npm]` and `--import FILE` carry the data to a machine without network (see [Offline and air-gapped use](#offline-and-air-gapped-use)). |
 | `vibeaudit lsp` | Run the language server for editors: diagnostics and fix code actions (see [Editors](#editors-vs-code-cursor-and-other-lsp-clients)). |
 | `vibeaudit mcp` | Run the MCP server for coding agents (see [MCP server](#mcp-server-for-coding-agents)). |
 
@@ -156,7 +156,7 @@ Every command has `--help`.
 | `--monorepo` | Scan every package as a project of its own, against its own manifest, with a score per package (see [Monorepos](#monorepos)). |
 | `--include-preview` | Count findings of preview rules toward `--fail-on` and the score; they are always reported (see [STABILITY.md](STABILITY.md)). |
 | `--no-gate-severe-preview` | Leave out the severe preview rules (command injection, `eval`, unsafe deserialization, open redirect, XSS), which by default count toward `--fail-on` and the score. |
-| `--offline` | No network: skip registry, new-package and vulnerability lookups (the typosquat check still runs). |
+| `--offline` | No network: skip registry and new-package lookups, and check known vulnerabilities against an imported OSV index if there is one (the typosquat check still runs). |
 | `--exclude GLOB` | Skip matching paths (repeatable). A `.vibeauditignore` file with one glob per line works too. |
 | `--disable RULE_OR_CATEGORY` | Switch off a rule (`QA002`) or a category (`quality`); repeatable, comma lists allowed. |
 | `--baseline FILE` | Hide findings already present in an earlier JSON report. |
@@ -341,7 +341,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0                  # needed for --diff
-      - uses: Ashin-06/vibeaudit@v0.8.3
+      - uses: Ashin-06/vibeaudit@v0.8.4
         with:
           fail-on: high
           args: --diff origin/main        # optional: only changed lines
@@ -376,7 +376,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - uses: Ashin-06/vibeaudit@v0.8.3
+      - uses: Ashin-06/vibeaudit@v0.8.4
         with:
           review: "true"
           args: --diff origin/${{ github.base_ref }} --baseline .vibeaudit-baseline.json --fail-on-regression 5
@@ -395,7 +395,7 @@ below the baseline's, even if every new finding is below `--fail-on`.
 # .pre-commit-config.yaml
 repos:
   - repo: https://github.com/Ashin-06/vibeaudit
-    rev: v0.8.3
+    rev: v0.8.4
     hooks:
       - id: vibeaudit
 ```
@@ -547,6 +547,27 @@ Static analysis guesses, and some findings will be wrong for your project. In or
 An empty `except`/`catch` with an explanatory comment is treated as deliberate. If a rule is wrong in a way
 that is not specific to your code, please open an issue with a minimal example.
 
+## Offline and air-gapped use
+
+`--offline` makes no network connection (a test runs every offline command with the network disabled). Only
+`--llm`, which you ask for explicitly, still sends code to its model provider. The popular-package lists used
+by the typosquat check ship with vibeaudit. To use fresh data and check known vulnerabilities without network,
+make a bundle on a connected machine and import it:
+
+```bash
+vibeaudit update --export vibeaudit-data.zip --osv PyPI,npm   # connected machine (downloads OSV's dumps)
+vibeaudit update --import vibeaudit-data.zip                  # air-gapped machine
+vibeaudit scan . --offline
+```
+
+The bundle has the data files and, with `--osv`, a vulnerability index per ecosystem built from
+[OSV](https://osv.dev)'s public dumps: for every package, each advisory's listed affected versions and fixed
+ranges. An offline scan reports a pinned version that an advisory lists (DEP004, with the version to upgrade
+to) and says in its notes which index date it used, or that vulnerabilities were not checked. Advisories that
+give only version ranges and no version list are left out of the index (the export says how many). `--import`
+checks every file against the SHA-256 in the bundle's manifest, accepts only vibeaudit's own data files and
+validates their contents before it writes anything.
+
 ## Caching and updates
 
 Registry answers and vulnerability advisories are cached for a day ("package does not exist" for an hour,
@@ -642,14 +663,14 @@ CycloneDX SBOM (`vibeaudit-VERSION.cdx.json`), built by the release workflow fro
 build provenance is signed with GitHub artifact attestations (Sigstore). With the GitHub CLI:
 
 ```bash
-gh attestation verify vibeaudit-0.8.3-py3-none-any.whl --repo Ashin-06/vibeaudit
+gh attestation verify vibeaudit-0.8.4-py3-none-any.whl --repo Ashin-06/vibeaudit
 ```
 
 Run the same for the `.tar.gz` and the `.cdx.json` file. The check passes only if the file was built by
 this repository's release workflow; `--format json` shows the commit and workflow it came from. The SBOM
 lists what the wheel installs (vibeaudit has no runtime dependencies on Python 3.11 and later, and
 `tomli` before that). vibeaudit is not published to PyPI by this project yet; install a verified wheel
-with `pip install vibeaudit-0.8.3-py3-none-any.whl`.
+with `pip install vibeaudit-0.8.4-py3-none-any.whl`.
 
 ## Contributing, security and license
 
