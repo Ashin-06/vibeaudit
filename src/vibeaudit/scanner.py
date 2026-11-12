@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import hashlib
-import json
 import re
 import threading
 import time
@@ -29,6 +28,7 @@ from .contracts import ContractScanner
 from .report import Result
 from .rules import RULES
 from .secretscan import SecretScanner
+from .store import loads_json
 
 STACK_MARKERS = {
     "flask": "Flask", "fastapi": "FastAPI", "django": "Django", "streamlit": "Streamlit", "gradio": "Gradio",
@@ -249,7 +249,7 @@ def _risky_files(project: Project, findings: List[Finding], routes) -> List[str]
 def read_baseline(path: str) -> "Optional[tuple[Set[str], Optional[int]]]":
     """The fingerprints in a JSON report used as a baseline, and its score (None in reports without one)."""
     try:
-        data = json.loads(Path(path).read_text(encoding="utf-8"))
+        data = loads_json(Path(path).read_text(encoding="utf-8"))
         fingerprints = {f["fingerprint"] for f in data.get("findings", []) if "fingerprint" in f}
     except (OSError, ValueError, AttributeError, TypeError):
         return None

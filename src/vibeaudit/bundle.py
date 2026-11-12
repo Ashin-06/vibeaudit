@@ -27,7 +27,7 @@ from pathlib import Path
 from typing import Callable, Dict, List, Optional, Tuple
 
 from . import __version__
-from .store import cache_dir, write_atomic
+from .store import cache_dir, loads_json, write_atomic
 
 OSV_DUMP = "https://osv-vulnerabilities.storage.googleapis.com/{}/all.zip"
 ECOSYSTEMS = ("PyPI", "npm")
@@ -55,7 +55,7 @@ def build_index(dump: bytes, ecosystem: str) -> Tuple[bytes, Dict[str, int]]:
             if not info.filename.endswith(".json") or info.file_size > 20_000_000:
                 continue
             try:
-                doc = json.loads(z.read(info))
+                doc = loads_json(z.read(info))
             except ValueError:
                 continue
             if not isinstance(doc, dict) or doc.get("withdrawn"):
@@ -90,7 +90,7 @@ def _check_index(data: bytes, ecosystem: str) -> dict:
     if len(raw) > MAX_INDEX:
         raise BundleError(f"the {ecosystem} index is larger than {MAX_INDEX} bytes")
     try:
-        index = json.loads(raw)
+        index = loads_json(raw)
     except ValueError:
         raise BundleError(f"the {ecosystem} index is not JSON") from None
     if not (isinstance(index, dict) and index.get("format") == FORMAT and index.get("ecosystem") == ecosystem
@@ -204,7 +204,7 @@ def import_bundle(path: Path, log: Callable[[str], None]) -> None:
         raise BundleError(f"not a bundle: {e}") from None
     with z:
         try:
-            manifest = json.loads(z.read("manifest.json"))
+            manifest = loads_json(z.read("manifest.json"))
         except (KeyError, ValueError):
             raise BundleError("the bundle has no valid manifest.json") from None
         listed = manifest.get("files") if isinstance(manifest, dict) and manifest.get("format") == FORMAT else None

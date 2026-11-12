@@ -1,7 +1,6 @@
 """Project-wide checks: config files, deployment, database rules, routes/auth and missing tests or CI."""
 from __future__ import annotations
 
-import json
 import re
 from pathlib import Path
 from typing import Callable, Dict, List, Optional
@@ -12,6 +11,7 @@ from .guard import GUARD, finditer
 from .files import ENV_EXAMPLE_RE, ENV_FILE_RE, TEST_PATH_RE, Project, SourceFile, read_ignore_file, _matches
 from .lexer import py_views
 from .model import Finding, Route
+from .store import loads_json
 
 SUPABASE = re.compile(r"supabase", re.I)
 
@@ -250,7 +250,7 @@ class ProjectScanner:
     # --------------------------------------------------------------- mcp
     def mcp(self, sf: SourceFile) -> None:
         try:
-            data = json.loads(sf.text or "")
+            data = loads_json(sf.text or "")
         except ValueError:
             return
         if not isinstance(data, dict):
@@ -304,7 +304,7 @@ class ProjectScanner:
 
     def package_json(self, sf: SourceFile) -> None:
         try:
-            data = json.loads(sf.text or "")
+            data = loads_json(sf.text or "")
         except ValueError:
             return
         scripts = data.get("scripts") if isinstance(data, dict) else None
@@ -358,7 +358,7 @@ class ProjectScanner:
             d = f.path.parent
             if name == "package.json" and not f.is_test:
                 try:
-                    data = json.loads(f.text or "")
+                    data = loads_json(f.text or "")
                 except ValueError:
                     continue
                 deps = data.get("dependencies") if isinstance(data, dict) else None

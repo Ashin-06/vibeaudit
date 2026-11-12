@@ -26,9 +26,30 @@ def cache_dir() -> Path:
     return Path(os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache") / "vibeaudit"
 
 
+def loads_json(text: Any) -> Any:
+    """json.loads for untrusted text: nesting too deep for the parser (a RecursionError) is reported as the
+    ValueError every caller already handles, instead of crashing the scan, the LSP or the MCP server."""
+    try:
+        return json.loads(text)
+    except RecursionError:
+        raise ValueError("JSON nested too deeply") from None
+
+
+def loads_toml(text: str) -> Any:
+    """tomllib.loads with the same guarantee as loads_json (TOMLDecodeError is a ValueError too)."""
+    try:
+        import tomllib  # type: ignore[import-not-found]
+    except ImportError:  # pragma: no cover - exercised on 3.9 / 3.10
+        import tomli as tomllib  # type: ignore[no-redef]
+    try:
+        return tomllib.loads(text)
+    except RecursionError:
+        raise ValueError("TOML nested too deeply") from None
+
+
 def read_json(path: Path) -> Any:
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        return loads_json(path.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         return None
 

@@ -3,7 +3,6 @@ imported but never declared (they work on the author's machine and crash on depl
 from __future__ import annotations
 
 import ast
-import json
 import os
 import posixpath
 import re
@@ -14,6 +13,7 @@ from .files import VALUES, Project, SourceFile, depend, probe, untracked
 from .guard import GUARD, finditer
 from .model import Finding
 from .stdlib import NODE_BUILTINS, PYTHON_STDLIB
+from .store import loads_json
 
 Emit = Callable[[Finding], None]
 
@@ -394,7 +394,7 @@ class QualityScanner:
             if not re.fullmatch(r"(?:ts|js)config(?:\.[\w-]+)?\.json", name) or not f.text:
                 continue
             try:
-                data = json.loads(_strip_jsonc(f.text))
+                data = loads_json(_strip_jsonc(f.text))
             except ValueError:
                 continue
             opts = data.get("compilerOptions") if isinstance(data, dict) else None

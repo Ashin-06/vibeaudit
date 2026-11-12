@@ -1,7 +1,6 @@
 """AI agent and LLM checks: LLM016-LLM018 (added in 0.8.1) and LLM025 (all preview)."""
 from __future__ import annotations
 
-import json
 import re
 from typing import Callable, Iterable, List, Tuple
 
@@ -9,6 +8,7 @@ from . import heuristics as H
 from .files import Project, SourceFile
 from .guard import GUARD, finditer
 from .model import Route
+from .store import loads_json
 
 Add = Callable[..., None]  # ProjectScanner.add(sf_or_rel, line, rule, message, severity="")
 
@@ -84,7 +84,7 @@ def _agent_settings(sf: SourceFile, add: Add) -> None:
             add(sf, sf.line_at(m.start()), "LLM016", "The Codex agent runs commands without approval or outside its sandbox.")
         return
     try:
-        data = json.loads(text)
+        data = loads_json(text)
     except ValueError:
         return
     if not isinstance(data, dict):

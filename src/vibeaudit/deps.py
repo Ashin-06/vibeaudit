@@ -18,12 +18,7 @@ from typing import Callable, Dict, List, Optional, Set, Tuple
 
 from .files import Project, SourceFile
 from .model import Finding
-from .store import TimedCache
-
-try:  # Python 3.11+
-    import tomllib  # type: ignore[import-not-found]
-except ImportError:  # pragma: no cover - exercised on 3.9 / 3.10
-    import tomli as tomllib  # type: ignore[no-redef]
+from .store import TimedCache, loads_json, loads_toml
 
 Emit = Callable[[Finding], None]
 USER_AGENT = "vibeaudit (+https://github.com/Ashin-06/vibeaudit)"
@@ -162,7 +157,7 @@ def _collect(project: Project) -> List[Dep]:
                     deps.append(Dep(parsed[0], "PyPI", f.rel, i, parsed[1], not private))
         elif name == "pyproject.toml":
             try:
-                data = tomllib.loads(f.text)
+                data = loads_toml(f.text)
             except (ValueError, TypeError):
                 continue
             # Every level is checked for its type: a hand-edited or broken pyproject must not stop the scan.
@@ -187,7 +182,7 @@ def _collect(project: Project) -> List[Dep]:
                     deps.append(Dep(parsed[0], "PyPI", f.rel, _line_of(f, parsed[0]), parsed[1]))
         elif name == "package.json":
             try:
-                data = json.loads(f.text)
+                data = loads_json(f.text)
             except ValueError:
                 continue
             if not isinstance(data, dict):
@@ -243,7 +238,7 @@ def _fill_from_lockfiles(project: Project, deps: List[Dep]) -> None:
 def _parsed_toml(text: str) -> Optional[dict]:
     """A lockfile parsed once, not once per dependency looked up in it (a poetry.lock takes seconds)."""
     try:
-        return tomllib.loads(text)
+        return loads_toml(text)
     except (ValueError, TypeError):
         return None
 
@@ -251,7 +246,7 @@ def _parsed_toml(text: str) -> Optional[dict]:
 @functools.lru_cache(maxsize=8)
 def _parsed_json(text: str) -> object:
     try:
-        return json.loads(text)
+        return loads_json(text)
     except ValueError:
         return None
 
@@ -298,7 +293,7 @@ def _npm_lock_versions(project: Project, pkg: SourceFile) -> Dict[str, str]:
     base = pkg.rel.rsplit("/", 1)[0] + "/" if "/" in pkg.rel else ""
     path = project.root / (base + "package-lock.json")
     try:
-        data = json.loads(path.read_text(encoding="utf-8"))
+        data = loads_json(path.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         return {}
     out: Dict[str, str] = {}
@@ -369,7 +364,7 @@ def _get_json(url: str, data: Optional[bytes] = None) -> Tuple[int, Optional[dic
         try:
             with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:  # noqa: S310 - fixed https hosts
                 status = getattr(resp, "status", 200)
-                doc = json.loads(resp.read().decode("utf-8"))
+                doc = loads_json(resp.read().decode("utf-8"))
             BREAKER.record(host, True)
             if status == 200 and isinstance(doc, dict):
                 return status, doc

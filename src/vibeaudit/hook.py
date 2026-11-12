@@ -23,6 +23,7 @@ from .files import (BINARY_EXTS, LOCKFILES, SKIP_DIRS, SourceFile, _generated, _
                     read_ignore_file)
 from .guard import GUARD
 from .model import SEVERITIES, SUPPRESS, TEST_FILE_RULES, Finding, at_least
+from .store import loads_json
 
 HUNK = re.compile(r"^@@ -\d+(?:,\d+)? \+(\d+)(?:,\d+)? @@")
 Staged = Dict[str, Tuple[str, Set[int]]]  # rel -> (staged text, added line numbers)
@@ -162,14 +163,12 @@ def _suppressed(sf: SourceFile, f: Finding) -> bool:
 
 def _known(root: Path, cfg: dict) -> Set[str]:
     """Fingerprints to hide: the baseline file and findings marked as false positives."""
-    import json
-
     from .feedback import false_positives
 
     hidden = set(false_positives(root))
     if cfg.get("baseline"):
         try:
-            data = json.loads((root / str(cfg["baseline"])).read_text(encoding="utf-8"))
+            data = loads_json((root / str(cfg["baseline"])).read_text(encoding="utf-8"))
             hidden |= {f["fingerprint"] for f in data.get("findings", []) if isinstance(f, dict) and "fingerprint" in f}
         except (OSError, ValueError, AttributeError, TypeError):
             pass

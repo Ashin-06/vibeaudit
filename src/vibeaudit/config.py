@@ -11,12 +11,13 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Dict, Optional, Tuple
 
-try:  # Python 3.11+
-    import tomllib  # type: ignore[import-not-found]
+try:  # Python 3.11+ (tests and the README example use config.tomllib)
+    import tomllib  # type: ignore[import-not-found]  # noqa: F401
 except ImportError:  # pragma: no cover - exercised on 3.9 / 3.10
-    import tomli as tomllib  # type: ignore[no-redef]
+    import tomli as tomllib  # type: ignore[no-redef]  # noqa: F401
 
 from .model import SEVERITIES
+from .store import loads_toml
 
 LIST = "list of strings"
 KEYS: Dict[str, str] = {
@@ -75,7 +76,7 @@ def load(root: Path, explicit: Optional[str] = None) -> Tuple[Dict[str, object],
         if not path.is_file():
             continue
         try:
-            data = tomllib.loads(path.read_text(encoding="utf-8"))
+            data = loads_toml(path.read_text(encoding="utf-8"))
         except (ValueError, OSError, UnicodeDecodeError) as e:
             if path.name == "pyproject.toml" and not explicit:
                 continue  # someone else's broken pyproject is not our problem
