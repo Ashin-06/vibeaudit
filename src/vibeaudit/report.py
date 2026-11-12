@@ -345,9 +345,55 @@ def render_badge(res: Result) -> str:
     )
 
 
+CODECLIMATE_SEVERITY = {"critical": "blocker", "high": "critical", "medium": "major", "low": "minor", "info": "info"}
+
+
+def render_codeclimate(res: Result) -> str:
+    """GitLab Code Quality (the CodeClimate issue format): shown in merge requests and the pipeline."""
+    issues = []
+    for f in res.findings:
+        security = any(f.category in cats for name, cats in DOMAINS.items() if name in ("Security", "AI"))
+        issues.append({
+            "type": "issue", "check_name": f.rule_id, "description": f"{f.title or f.rule_id}: {f.message}",
+            "content": {"body": f"**Why:** {f.why}\n\n**Fix:** {f.fix}"}, "categories": ["Security" if security else "Bug Risk"],
+            "severity": CODECLIMATE_SEVERITY.get(f.severity, "major"), "fingerprint": f.fingerprint,
+            "location": {"path": f.file, "lines": {"begin": max(1, f.line)}}})
+    return json.dumps(issues, indent=2)
+
+
+def render_junit(res: Result) -> str:
+    """JUnit XML for test-report views (GitLab, CircleCI, Jenkins): one test case per finding. Findings of
+    preview rules that do not gate the build are reported as skipped; a clean scan is one passing case."""
+    import xml.etree.ElementTree as ET
+
+    gating = {id(f) for f in res.gating}
+    suite = ET.Element("testsuite", name="vibeaudit", tests="0", failures="0", skipped="0")
+    failures = skipped = 0
+    for f in res.findings:
+        case = ET.SubElement(suite, "testcase", classname=f"vibeaudit.{f.category}.{f.rule_id}",
+                             name=f"{f.rule_id} {f.file}:{f.line}", file=f.file, line=str(max(1, f.line)))
+        text = f"{f.message}\n{f.file}:{f.line}\n\nWhy: {f.why}\nFix: {f.fix}"
+        if id(f) in gating:
+            failures += 1
+            ET.SubElement(case, "failure", message=f"{f.title}: {f.message}"[:500], type=f.severity).text = text
+        else:
+            skipped += 1
+            ET.SubElement(case, "skipped", message=f"preview rule ({f.severity}): {f.message}"[:500])
+    if not res.findings:
+        ET.SubElement(suite, "testcase", classname="vibeaudit", name="no findings")
+    suite.set("tests", str(max(1, len(res.findings))))
+    suite.set("failures", str(failures))
+    suite.set("skipped", str(skipped))
+    root = ET.Element("testsuites", name="vibeaudit", tests=suite.get("tests", "1"), failures=str(failures))
+    root.append(suite)
+    return '<?xml version="1.0" encoding="UTF-8"?>\n' + ET.tostring(root, encoding="unicode") + "\n"
+
+
 RENDERERS = {"json": render_json, "sarif": render_sarif, "md": render_markdown, "markdown": render_markdown,
-             "html": render_html, "prompt": render_prompt, "badge": render_badge}
-EXTENSIONS = {"json": "json", "sarif": "sarif", "md": "md", "markdown": "md", "html": "html", "prompt": "txt", "badge": "svg"}
+             "html": render_html, "prompt": render_prompt, "badge": render_badge, "codeclimate": render_codeclimate,
+             "junit": render_junit}
+EXTENSIONS = {"json": "json", "sarif": "sarif", "md": "md", "markdown": "md", "html": "html", "prompt": "txt", "badge": "svg",
+              "codeclimate": "json", "junit": "xml"}
 
 
 def write_report(res: Result, fmt: str, path: str) -> None:

@@ -1,0 +1,48 @@
+# vibeaudit for CircleCI. Copy this into .circleci/config.yml, or merge the job and workflow into yours.
+#
+# On branches other than VIBEAUDIT_BASE only findings on changed lines are reported (the whole project is
+# still analysed); on the base branch everything is. Findings show in the job's Tests tab (JUnit), and the
+# SARIF and JSON reports are kept as artifacts.
+
+version: 2.1
+
+jobs:
+  vibeaudit:
+    docker:
+      - image: cimg/python:3.12
+    environment:
+      VIBEAUDIT_VERSION: v0.8.4
+      VIBEAUDIT_BASE: main  # the branch pull requests merge into
+      VIBEAUDIT_FAIL_ON: high
+      VIBEAUDIT_ARGS: ""
+    steps:
+      - checkout
+      - run:
+          name: Install vibeaudit
+          command: python -m pip install --quiet --disable-pip-version-check "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@${VIBEAUDIT_VERSION}"
+      - run:
+          name: Scan
+          command: |
+            set -f  # VIBEAUDIT_ARGS is split on spaces but never expanded as a glob by the shell
+            mkdir -p vibeaudit-reports
+            DIFF=""
+            if [ "$CIRCLE_BRANCH" != "$VIBEAUDIT_BASE" ]; then
+              git fetch --quiet origin "$VIBEAUDIT_BASE"
+              DIFF="--diff origin/$VIBEAUDIT_BASE"
+            fi
+            # the exit code is kept for the last step, so the reports are stored also when findings fail the job
+            status=0
+            vibeaudit scan . --fail-on "$VIBEAUDIT_FAIL_ON" --no-color --report junit:vibeaudit-reports/vibeaudit.xml --report sarif:vibeaudit-reports/vibeaudit.sarif --report json:vibeaudit-reports/vibeaudit.json $DIFF $VIBEAUDIT_ARGS || status=$?
+            echo "$status" > vibeaudit-exit-code
+      - store_test_results:
+          path: vibeaudit-reports
+      - store_artifacts:
+          path: vibeaudit-reports
+      - run:
+          name: Fail on findings
+          command: exit "$(cat vibeaudit-exit-code)"
+
+workflows:
+  audit:
+    jobs:
+      - vibeaudit

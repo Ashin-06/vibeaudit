@@ -84,7 +84,7 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | PR review bot and `--fail-on-regression N` | done (`vibeaudit review`, action input `review`; 0.8.3) |
 | Pre-commit fast path under 150 ms | done (`vibeaudit-secrets` hook, 0.8.3; budget enforced in CI on Linux) |
 | MCP tools: audit_current_file, verify_package, simulate_migration | done (0.8.3; auto_repair: done in Phase 2) |
-| GitLab CI and CircleCI templates | planned |
+| GitLab CI and CircleCI templates | done, unreleased (`ci/`; `junit` and `codeclimate` reports) |
 | Monorepo mode | done (`--monorepo`: one project per package, a score per package; 0.8.4) |
 | Offline / air-gapped mode with bundled data | done (`update --export/--import`, offline OSV index, no network in `--offline`; 0.8.4) |
 | `vibeaudit explain <finding>` | done, unreleased (rule, code and the data flow traced back from the line) |
