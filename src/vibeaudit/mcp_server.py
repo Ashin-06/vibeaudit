@@ -1,8 +1,9 @@
 """`vibeaudit mcp`: a Model Context Protocol server over stdio, so coding agents can audit their own work.
 
 Transport: newline-delimited JSON-RPC 2.0 on stdin/stdout (the MCP stdio transport). Logs go to stderr.
-Tools: scan_project, scan_file, list_routes, check_package, explain_rule, auto_repair. All are read-only:
-auto_repair returns a diff and never writes a file.
+Tools: scan_project, scan_file, audit_current_file, list_routes, check_package, verify_package,
+simulate_migration, explain_rule, auto_repair. All are read-only: auto_repair returns a diff and never writes
+a file, and audit_current_file scans unsaved content in memory.
 """
 from __future__ import annotations
 
@@ -11,7 +12,7 @@ import os
 import sys
 import traceback
 from pathlib import Path
-from typing import IO, Any, Callable, Dict, Optional
+from typing import IO, Any, Callable, Dict, List, Optional
 
 from . import __version__
 
@@ -87,6 +88,50 @@ TOOLS = [
             "required": ["path"],
         },
     },
+    {
+        "name": "audit_current_file",
+        "description": ("Audit the file you are editing, optionally from its unsaved or not yet written content, in "
+                        "the context of its project. Fast on repeated calls: unchanged files are not analysed again."),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "file": {"type": "string", "description": "The file (it may not exist yet when content is given)."},
+                "content": {"type": "string", "description": "The file's current text, used instead of what is on disk."},
+                "project": {"type": "string", "description": "Project root; defaults to the git repository containing the file."},
+            },
+            "required": ["file"],
+        },
+    },
+    {
+        "name": "verify_package",
+        "description": ("Before installing or importing a package: whether it exists, is brand new, looks like a "
+                        "typosquat, has known vulnerabilities (with a version), whether a Python import name belongs to "
+                        "a differently named package (cv2 is opencv-python), and whether the project already declares "
+                        "it. Ends with a verdict: ok, caution or block."),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "name": {"type": "string", "description": "Package name, or a Python import name."},
+                "ecosystem": {"type": "string", "enum": ["PyPI", "npm"]},
+                "version": {"type": "string", "description": "Exact version to check against OSV (optional)."},
+                "project": {"type": "string", "description": "Project directory, to report whether it already declares the package."},
+            },
+            "required": ["name", "ecosystem"],
+        },
+    },
+    {
+        "name": "simulate_migration",
+        "description": ("Dry-run a PostgreSQL migration without a database: for each statement, the table lock it "
+                        "takes, what that lock blocks, whether it rewrites the table or destroys data, and a safer way "
+                        "to do it (CREATE INDEX CONCURRENTLY, NOT VALID constraints, batched backfills)."),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "A .sql migration file."},
+                "sql": {"type": "string", "description": "The SQL itself, instead of a path."},
+            },
+        },
+    },
 ]
 
 
@@ -160,13 +205,7 @@ def tool_scan_file(args: Dict[str, Any]) -> Dict[str, Any]:
     if not isinstance(file, str) or not Path(file).is_file():
         raise ToolError(f"not a file: {file}")
     target = Path(file).resolve()
-    project = args.get("project")
-    if project:
-        root = Path(_dir(project)).resolve()
-    else:
-        # the nearest folder that looks like a project root; a git root wins over a nested manifest
-        root = next((p for p in target.parents if (p / ".git").exists()), None) or \
-            next((p for p in target.parents if any((p / m).exists() for m in PROJECT_MARKERS)), target.parent)
+    root = _root_for(target, args.get("project"))
     try:
         rel = target.relative_to(root).as_posix()
     except ValueError:
@@ -184,6 +223,10 @@ def tool_list_routes(args: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def tool_check_package(args: Dict[str, Any]) -> Dict[str, Any]:
+    return _package_report(args)
+
+
+def _package_report(args: Dict[str, Any]) -> Dict[str, Any]:
     from . import deps
 
     name, eco = args.get("name"), args.get("ecosystem")
@@ -256,9 +299,133 @@ def tool_auto_repair(args: Dict[str, Any]) -> Dict[str, Any]:
             "not_fixed": [dict(brief(f), reason=r) for f, r in plan.skipped if f.rule_id in fix.FIXERS][:MAX_FINDINGS]}
 
 
+def _root_for(target: Path, project: Any) -> Path:
+    if project:
+        return Path(_dir(project)).resolve()
+    # the nearest folder that looks like a project root; a git root wins over a nested manifest
+    return next((p for p in target.parents if (p / ".git").exists()), None) or \
+        next((p for p in target.parents if any((p / m).exists() for m in PROJECT_MARKERS)), target.parent)
+
+
+MAX_CONTENT = 2_000_000
+_WATCHERS: Dict[str, Any] = {}  # project root -> watch.Watcher, so repeated calls reuse unchanged files
+MAX_WATCHERS = 4
+
+
+def tool_audit_current_file(args: Dict[str, Any]) -> Dict[str, Any]:
+    from .watch import Watcher
+
+    file, content = args.get("file"), args.get("content")
+    if content is not None and (not isinstance(content, str) or len(content) > MAX_CONTENT):
+        raise ToolError(f"content must be a string of at most {MAX_CONTENT} characters")
+    if not isinstance(file, str) or not file or (content is None and not Path(file).is_file()):
+        raise ToolError(f"not a file: {file}")
+    target = Path(file).resolve()
+    if target.exists() and not target.is_file():
+        raise ToolError(f"not a file: {file}")
+    root = _root_for(target, args.get("project"))
+    try:
+        rel = target.relative_to(root).as_posix()
+    except ValueError:
+        raise ToolError("the file is not inside the project") from None
+    opts = _options(str(root), offline=True, external="none")
+    w = _WATCHERS.pop(str(root), None)
+    if w is None or w.opts != opts:  # a changed configuration file changes the options: start again
+        w = Watcher(str(root), opts)
+    _WATCHERS[str(root)] = w  # most recently used last
+    while len(_WATCHERS) > MAX_WATCHERS:
+        _WATCHERS.pop(next(iter(_WATCHERS)))
+    w.project.overlays = {rel: content.encode("utf-8")} if content is not None else {}
+    w.changed()
+    if w.project.get(rel) is None:
+        raise ToolError("the file is excluded from the scan (configuration, .vibeauditignore or a skipped folder)")
+    from .scanner import scan
+
+    res = scan(str(root), opts, w.project)
+    w.findings = {f.fingerprint: f for f in res.findings}
+    out = _summary(res, [f for f in res.findings if f.file == rel])
+    out["file"], out["unsaved_content"] = rel, content is not None
+    return out
+
+
+def tool_verify_package(args: Dict[str, Any]) -> Dict[str, Any]:
+    from . import deps
+    from .qualityscan import IMPORT_TO_DIST
+
+    name, eco = args.get("name"), args.get("ecosystem")
+    if not isinstance(name, str) or not name or eco not in ("PyPI", "npm"):
+        raise ToolError("name (string) and ecosystem (PyPI or npm) are required")
+    out: Dict[str, Any] = {"requested": name}
+    reasons: List[str] = []
+    checked = name
+    dists = IMPORT_TO_DIST.get(name) if eco == "PyPI" else None
+    if dists and deps.pep503(name) not in dists:
+        checked = dists[0]
+        out["import_name_of"] = list(dists)
+        reasons.append(f"`{name}` is an import name; the package to install is `{dists[0]}`"
+                       + (f" (or {', '.join(dists[1:])})" if len(dists) > 1 else "") + ".")
+    out.update(_package_report({"name": checked, "ecosystem": eco, "version": args.get("version")}))
+    verdict = "ok"
+    if out.get("registry") == "missing":
+        verdict = "block"
+        reasons.append("It does not exist on the registry: an attacker could register the name.")
+    if out.get("vulnerabilities"):
+        verdict = "block"
+        reasons.append(f"This version has known vulnerabilities: {', '.join(out['vulnerabilities'])}.")
+    first = out.get("first_release")
+    if first:
+        import datetime as dt
+
+        age = (dt.datetime.now(dt.timezone.utc) - dt.datetime.fromisoformat(first)).days
+        if age < deps.NEW_PACKAGE_DAYS:
+            verdict = "block" if verdict == "block" else "caution"
+            reasons.append(f"Its first release is only {age} days old.")
+    if out.get("similar_popular_package"):
+        verdict = "block" if verdict == "block" else "caution"
+        reasons.append(f"The name is one keystroke away from the popular `{out['similar_popular_package']}`.")
+    if out.get("registry") == "error":
+        verdict = "block" if verdict == "block" else "caution"
+        reasons.append("The registry could not be reached; the package was not verified.")
+    if args.get("project"):
+        from .files import Project
+
+        root = Path(_dir(args["project"]))
+        key = deps.pep503(checked) if eco == "PyPI" else checked
+        out["declared_in_project"] = [
+            {"file": d.file, "line": d.line, "version": d.version}
+            for d in deps.collect(Project(root)) if d.ecosystem == eco and (deps.pep503(d.name) if eco == "PyPI" else d.name) == key]
+    out["verdict"], out["reasons"] = verdict, reasons
+    return out
+
+
+def tool_simulate_migration(args: Dict[str, Any]) -> Dict[str, Any]:
+    from . import migrations
+
+    path, sql = args.get("path"), args.get("sql")
+    if (path is None) == (sql is None):
+        raise ToolError("give either path (a .sql file) or sql")
+    if path is not None:
+        if not isinstance(path, str) or not path.lower().endswith(".sql") or not Path(path).is_file():
+            raise ToolError("path must be an existing .sql file")
+        if Path(path).stat().st_size > migrations.MAX_SQL:
+            raise ToolError(f"the migration is larger than {migrations.MAX_SQL} bytes")
+        sql = Path(path).read_text(encoding="utf-8", errors="replace")
+    if not isinstance(sql, str):
+        raise ToolError("sql must be a string")
+    try:
+        out = migrations.analyse(sql)
+    except ValueError as e:
+        raise ToolError(str(e)) from None
+    if path is not None:
+        out["path"] = path
+    return out
+
+
 HANDLERS: Dict[str, Callable[[Dict[str, Any]], Dict[str, Any]]] = {
     "scan_project": tool_scan_project, "scan_file": tool_scan_file, "list_routes": tool_list_routes,
     "check_package": tool_check_package, "explain_rule": tool_explain_rule, "auto_repair": tool_auto_repair,
+    "audit_current_file": tool_audit_current_file, "verify_package": tool_verify_package,
+    "simulate_migration": tool_simulate_migration,
 }
 
 
