@@ -281,6 +281,54 @@
    "fingerprint": "6a4491b54612ad3a3ad8c1157fb79551",
    "verdict": "tp",
    "reason": "A test script with a hard-coded account password."
+  },
+  {
+   "rule": "QA011",
+   "file": "api/lp-render.mjs",
+   "line": 106,
+   "fingerprint": "7a8e11c46c291cbed3a4e91068707352",
+   "verdict": "tp",
+   "reason": "The same function body is copied into another file of the same package."
+  },
+  {
+   "rule": "QA011",
+   "file": "src/hooks/use-toast.ts",
+   "line": 61,
+   "fingerprint": "4482c1e3a8f49a5354dd2ae1225f2577",
+   "verdict": "tp",
+   "reason": "The same function body is copied into another file of the same package."
+  },
+  {
+   "rule": "QA011",
+   "file": "src/hooks/use-toast.ts",
+   "line": 77,
+   "fingerprint": "6aa3e875f98a9b1d546f3e797836a90a",
+   "verdict": "tp",
+   "reason": "The same function body is copied into another file of the same package."
+  },
+  {
+   "rule": "QA011",
+   "file": "src/hooks/use-toast.ts",
+   "line": 136,
+   "fingerprint": "127cfad5b4d7a2b3914480be909026e0",
+   "verdict": "tp",
+   "reason": "The same function body is copied into another file of the same package."
+  },
+  {
+   "rule": "QA011",
+   "file": "src/hooks/use-toast.ts",
+   "line": 145,
+   "fingerprint": "eea19175479ed3cdc36d91cafdfbc2d8",
+   "verdict": "tp",
+   "reason": "The same function body is copied into another file of the same package."
+  },
+  {
+   "rule": "QA011",
+   "file": "src/hooks/use-toast.ts",
+   "line": 174,
+   "fingerprint": "1fb51b6c588e77698216f90f80d01eb8",
+   "verdict": "tp",
+   "reason": "The same function body is copied into another file of the same package."
   }
  ]
 }

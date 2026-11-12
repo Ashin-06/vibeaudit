@@ -60,9 +60,9 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | Transitive vulnerabilities from lockfiles, with OSV offline data | planned |
 | Phantom JS dependencies (only transitive in the lockfile) | done (QA007 reports every import missing from package.json) |
 | Registry confusion (private scopes without a registry, `extra-index-url`) | preview (DEP008, pip extra indexes; 0.7.0). npm scopes: planned |
-| Duplicate utility functions across files | planned |
-| Mixed framework idioms (App Router and Pages Router in one app) | planned |
-| Fake fallbacks and mock relics in production code | planned |
+| Duplicate utility functions across files | preview (QA011; 0.8.4) |
+| Mixed framework idioms (App Router and Pages Router in one app) | preview (QA009; 0.8.4) |
+| Fake fallbacks and mock relics in production code | preview (QA010; 0.8.4) |
 
 ## Phase 2: `vibeaudit fix`
 
@@ -85,8 +85,8 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | Pre-commit fast path under 150 ms | done (`vibeaudit-secrets` hook, 0.8.3; budget enforced in CI on Linux) |
 | MCP tools: audit_current_file, verify_package, simulate_migration | done (0.8.3; auto_repair: done in Phase 2) |
 | GitLab CI and CircleCI templates | planned |
-| Monorepo mode | done, unreleased (`--monorepo`: one project per package, a score per package) |
-| Offline / air-gapped mode with bundled data | done, unreleased (`update --export/--import`, offline OSV index; no network in `--offline`) |
+| Monorepo mode | done (`--monorepo`: one project per package, a score per package; 0.8.4) |
+| Offline / air-gapped mode with bundled data | done (`update --export/--import`, offline OSV index, no network in `--offline`; 0.8.4) |
 | `vibeaudit explain <finding>` | planned |
 
 ## Phase 4: compliance and threat intelligence
@@ -97,7 +97,20 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | `--report compliance:<framework>` (HTML and printable output) | planned |
 | Signed threat-intel feed in `vibeaudit update`: slopsquatted names, model sunset calendar, prompt-injection patterns, community submissions; works offline | planned |
 
-## Phase 5: more languages (planned, not started)
+## Completion gate: 0.9.0, "Phases 0-4 complete" (planned)
+
+Phases 5 and 6 start only after this gate holds. Order until then: finish Phase 1, then Phase 4 (compliance
+mapping and reports first; the threat feed after the Phase 3 items).
+
+| Condition | Status |
+| --- | --- |
+| Every Phase 0-4 item is done, or marked preview with its measured reason; nothing left planned without a reason | planned |
+| Full audit: correctness, adversarial inputs, false-positive sweep on the corpus, docs versus behaviour | planned |
+| Packaging: the built wheel in a fresh virtual environment, every command; Python 3.9-3.13 on Linux, macOS and Windows | planned |
+| No reproducible high or medium audit finding | planned |
+| Green CI and benchmark gate, then a verified signed release (0.9.0) | planned |
+
+## Phase 5: more languages (planned, not started; after the 0.9.0 gate, one language per release)
 
 | Item | Status |
 | --- | --- |
@@ -107,7 +120,7 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | Rust (Actix, Axum) | planned |
 | PHP (Laravel, Symfony) | planned |
 
-## Phase 6: opt-in extras (planned, not started)
+## Phase 6: opt-in extras (planned, not started; after Phase 5)
 
 | Item | Status |
 | --- | --- |

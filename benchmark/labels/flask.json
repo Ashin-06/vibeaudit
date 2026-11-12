@@ -65,6 +65,14 @@
    "fingerprint": "1f8834ef0a4d546d8d6ab5f3683b57fe",
    "verdict": "fp",
    "reason": "Config.from_pyfile executes the app's own config file by design."
+  },
+  {
+   "rule": "QA011",
+   "file": "src/flask/sansio/app.py",
+   "line": 53,
+   "fingerprint": "74dbc77b19b76178071a5f8e450b24f2",
+   "verdict": "tp",
+   "reason": "The same function body is copied into another file of the same package."
   }
  ]
 }

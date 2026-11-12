@@ -313,6 +313,22 @@
    "fingerprint": "6c1517088d11401a7b7f400e1fd09c86",
    "verdict": "fp",
    "reason": "Lock index lists are deleted together with their lock; they do not grow without bound."
+  },
+  {
+   "rule": "QA011",
+   "file": "wsgidav/util.py",
+   "line": 100,
+   "fingerprint": "7c224e1f24756f47095460d10f637c81",
+   "verdict": "tp",
+   "reason": "The same function body is copied into another file of the same package."
+  },
+  {
+   "rule": "QA011",
+   "file": "wsgidav/util.py",
+   "line": 107,
+   "fingerprint": "1f85d464c57172222cc84e4489b75996",
+   "verdict": "tp",
+   "reason": "The same function body is copied into another file of the same package."
   }
  ]
 }

@@ -2023,6 +2023,46 @@
     ]
    }
   },
+  "QA009": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "QA010": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "QA011": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "act-solo-ai": [
+     2,
+     0
+    ],
+    "careconnect": [
+     6,
+     0
+    ],
+    "flask": [
+     1,
+     0
+    ],
+    "langchain-nextjs-template": [
+     2,
+     0
+    ],
+    "opengpts": [
+     1,
+     0
+    ],
+    "wsgidav": [
+     2,
+     0
+    ]
+   }
+  },
   "REL001": {
    "precision": 1.0,
    "seeded_recall": 1.0,
