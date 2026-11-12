@@ -93,9 +93,10 @@ jobs:
         env:
           VIBEAUDIT_FUZZ_ROUNDS: "60"
           VIBEAUDIT_PERF_FILES: "10000"
+          VIBEAUDIT_HOOK_BUDGET_MS: "150"  # the pre-commit fast path on a typical commit
         run: |
           python -m pip install -e ".[dev]"
-          python -m pytest -q -s tests/test_fuzz.py tests/test_performance.py
+          python -m pytest -q -s tests/test_fuzz.py tests/test_performance.py tests/test_hook.py
 
   action-and-hook:
     runs-on: ubuntu-latest
@@ -127,6 +128,7 @@ jobs:
         run: |
           python -m pip install --quiet pre-commit
           pre-commit try-repo . vibeaudit --all-files
+          pre-commit try-repo . vibeaudit-secrets --all-files
 
   bandit-integration:
     runs-on: ubuntu-latest
