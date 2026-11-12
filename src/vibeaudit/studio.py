@@ -5,7 +5,8 @@ model, database, shell, HTTP and HTML sinks, and the score broken down by domain
 the code and explanation of every finding.
 
 The server is for the person running it and nobody else:
-- it binds 127.0.0.1 only (there is no option to listen elsewhere);
+- it binds 127.0.0.1 only (there is no option to listen elsewhere), exclusively: no other process can bind the
+  same port and answer in its place;
 - every data request needs the random token printed in the URL at start (compared in constant time), so other
   local users and web pages cannot read the results;
 - the Host header must be 127.0.0.1 or localhost with this port, which stops DNS-rebinding pages;
@@ -20,6 +21,7 @@ import hmac
 import json
 import re
 import secrets
+import socket
 import sys
 import threading
 import webbrowser
@@ -212,10 +214,22 @@ class Handler(BaseHTTPRequestHandler):
     do_DELETE = do_PATCH = do_PUT  # noqa: N815
 
 
+class ExclusiveServer(ThreadingHTTPServer):
+    """http.server sets SO_REUSEADDR, which on Windows lets another local process bind the same address and port
+    and receive the browser's requests (and the token in the page it serves). Bind exclusively instead."""
+    allow_reuse_address = False
+    daemon_threads = True
+
+    def server_bind(self) -> None:
+        if hasattr(socket, "SO_EXCLUSIVEADDRUSE"):  # Windows
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
+        super().server_bind()
+
+
 def make_server(studio: Studio, port: int = 0, token: Optional[str] = None) -> ThreadingHTTPServer:
     """A server bound to 127.0.0.1 (port 0: any free port). The token is attached to the handler class."""
     handler = type("StudioHandler", (Handler,), {"studio": studio, "token": token or secrets.token_urlsafe(24)})
-    server = ThreadingHTTPServer((HOST, port), handler)
+    server = ExclusiveServer((HOST, port), handler)
     handler.port = server.server_address[1]
     return server
 
