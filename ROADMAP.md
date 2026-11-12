@@ -69,7 +69,8 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | Item | Status |
 | --- | --- |
 | Codemods (diff by default, `--apply`): request timeouts, output token limits, guarded `JSON.parse` of model output, pinned JWT algorithms, Decimal money columns, CORS credentials | done (0.8.0; REL001, LLM003, LLM011, BE016, AUTH011, DATA004, BE012) |
-| Codemods for `rel="noopener noreferrer"` and Redis TTL | planned (DATA013 now reports missing TTLs) |
+| Codemod for Redis TTL | done, unreleased (DATA013) |
+| Codemod for `rel="noopener noreferrer"` | not planned: browsers apply noopener to target=_blank by default since 2021 |
 | Agentic patch generator for complex findings (writes a `.patch`, never applies it) | done (`vibeaudit fix --llm`; 0.8.0) |
 | MCP `auto_repair` tool returning the diff | done (0.8.0) |
 

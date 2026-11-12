@@ -297,6 +297,7 @@ and rewrites the findings that have one obvious, deterministic repair:
 | BE016, AUTH011 | Removes `'none'` from an algorithms list, turns `ignoreExpiration: true` off, adds `algorithms=[...]` to PyJWT `jwt.decode()` (the algorithm the file signs with, else HS256), and narrows a mixed HMAC and RSA list to the algorithm the file signs with. |
 | DATA004 | Float money columns become `Numeric(12, 2)` (SQLAlchemy), `DecimalField(max_digits=12, decimal_places=2)` (Django), `Decimal` (Prisma) or `numeric(12, 2)` (SQL). Create a migration afterwards; SQL files in migration folders are never edited. |
 | BE012 | Replaces the wildcard or reflected CORS origin with an allow-list read from the `CORS_ORIGINS` environment variable (comma-separated), keeping credentials. |
+| DATA013 | Gives a Redis key an expiry of one hour: `ex=3600` (redis-py), `{ EX: 3600 }` (node-redis), `"EX", 3600` (ioredis) or `{ ex: 3600 }` (Upstash) on `set`, added to an existing options object; for `hset`, `lpush`, `sadd` and the like, an `expire(key, 3600)` on the next line when the key is a plain name or string. Review the expiry in the diff. |
 
 A file's change is kept only when the file still parses (`ast.parse` for Python, balanced brackets for
 JavaScript and TypeScript). Files keep their line endings and byte order mark; files that are not UTF-8 or

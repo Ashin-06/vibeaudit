@@ -76,7 +76,7 @@ TOOLS = [
         "name": "auto_repair",
         "description": ("Propose deterministic fixes as a unified diff for findings that have one obvious repair "
                         "(request timeouts, output token limits, guarded JSON parsing of model output, pinned JWT "
-                        "algorithms, Decimal money columns, CORS origins with credentials). Nothing is written: "
+                        "algorithms, Decimal money columns, CORS origins with credentials, Redis key expiries). Nothing is written: "
                         "review the diff and apply it yourself. Findings it cannot rewrite are listed with the reason."),
         "inputSchema": {
             "type": "object",
