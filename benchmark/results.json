@@ -89,8 +89,8 @@
    "fixed_fp": 4
   },
   "chatbot-ui": {
-   "findings": 74,
-   "labelled": 74,
+   "findings": 75,
+   "labelled": 75,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 1
@@ -110,15 +110,15 @@
    "fixed_fp": 0
   },
   "opengpts": {
-   "findings": 49,
-   "labelled": 49,
+   "findings": 50,
+   "labelled": 50,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 27
   },
   "openui": {
-   "findings": 25,
-   "labelled": 25,
+   "findings": 26,
+   "labelled": 26,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 4
@@ -250,8 +250,8 @@
    "fixed_fp": 0
   },
   "thynk": {
-   "findings": 36,
-   "labelled": 36,
+   "findings": 38,
+   "labelled": 38,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
@@ -341,8 +341,8 @@
    "fixed_fp": 4
   },
   "flexible-graphrag": {
-   "findings": 256,
-   "labelled": 256,
+   "findings": 257,
+   "labelled": 257,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 8
@@ -3090,23 +3090,23 @@
   "LLM012": {
    "title": "Retired or deprecated model hardcoded",
    "preview": false,
-   "tp": 18,
+   "tp": 24,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9474,
-   "precision_pessimistic": 0.9474,
+   "precision": 0.96,
+   "precision_pessimistic": 0.96,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
     "chatbot-ui": [
-     10,
+     11,
      0,
      0
     ],
     "flexible-graphrag": [
-     1,
+     2,
      0,
      0
     ],
@@ -3116,13 +3116,18 @@
      0
     ],
     "opengpts": [
-     1,
+     2,
      0,
      0
     ],
     "openui": [
-     5,
+     6,
      1,
+     0
+    ],
+    "thynk": [
+     2,
+     0,
      0
     ]
    }
@@ -3237,6 +3242,20 @@
      0
     ]
    }
+  },
+  "LLM025": {
+   "title": "Prompt-injection text in an agent instruction file",
+   "preview": true,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
   },
   "QA001": {
    "title": "No automated tests",

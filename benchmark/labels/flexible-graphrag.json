@@ -2113,6 +2113,14 @@
    "fingerprint": "0c1c63bc8cfb4c19bb7ba3387fb020b6",
    "verdict": "fp",
    "reason": "A metric or navigation label, not a secret."
+  },
+  {
+   "rule": "LLM012",
+   "file": "flexible-graphrag/llamaindex/llm/llm_factory.py",
+   "line": 196,
+   "fingerprint": "05cc79affcf1e4d8a45fed5e6617620c",
+   "verdict": "tp",
+   "reason": "claude-sonnet-4-5-20250929 is the default Anthropic model; its retirement on 2026-11-30 is announced, which the rule reports."
   }
  ]
 }

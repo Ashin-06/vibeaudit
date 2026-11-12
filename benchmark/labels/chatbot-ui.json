@@ -601,6 +601,14 @@
    "fingerprint": "ac96b88d27ac8a7a593c7a18c8f419c0",
    "verdict": "tp",
    "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "LLM012",
+   "file": "lib/chat-setting-limits.ts",
+   "line": 24,
+   "fingerprint": "c4f85d3f2aa524a078be280872c30e96",
+   "verdict": "tp",
+   "reason": "claude-3-haiku-20240307 was retired on 2026-04-20; it is still offered as a selectable model."
   }
  ]
 }

@@ -233,6 +233,14 @@
    "fingerprint": "a1973da95fc651054f86b149af1f692b",
    "verdict": "tp",
    "reason": "The WebAuthn assertion is never verified (TODO)."
+  },
+  {
+   "rule": "LLM012",
+   "file": "backend/openui/litellm.py",
+   "line": 46,
+   "fingerprint": "ede52922f50e0c13071af4b598ed2e29",
+   "verdict": "tp",
+   "reason": "claude-3-haiku-20240307 (retired 2026-04-20) is the target of a litellm model route."
   }
  ]
 }
