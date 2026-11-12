@@ -136,6 +136,7 @@ your `PATH`, their findings are merged into the report and de-duplicated.
 | `vibeaudit watch [PATH]` | Scan, then re-scan after every change and print the findings that appeared (`+`) or were fixed (`-`); see [Watch mode](#watch-mode). |
 | `vibeaudit review [PATH] --diff REV` | Pull request review comments, with suggested fixes, for the findings on changed lines; `--post` sends them to GitHub (see [Pull request review](#pull-request-review)). |
 | `vibeaudit fix [PATH]` | Print a diff that fixes the findings with one obvious repair; `--apply` writes it (see [Automatic fixes](#automatic-fixes-vibeaudit-fix)). |
+| `vibeaudit studio [PATH]` | A local web UI: routes with auth and write badges, data flows, and the score by domain, category and rule (see [Studio](#studio)). |
 | `vibeaudit explain FINDING` | Explain one finding (`FILE:LINE`, `FILE:LINE:RULE` or a fingerprint prefix): the rule, the code and the data flow that led to it (`--format json`). |
 | `vibeaudit routes [PATH]` | List every HTTP entry point with method, path, location and whether it has a visible auth check, writes data or calls a paid AI API (`--format text\|json\|md`). |
 | `vibeaudit rules` | List every rule (`--format text\|json\|md`; JSON includes the why and fix text). |
@@ -220,6 +221,23 @@ the repository, not a package (CI configuration QA002, the example env file DATA
 DEP005), so they come from one scan of the whole repository; the mode costs about two normal scans. Findings
 keep their repository paths and fingerprints (baselines and feedback carry over), and the report adds a score
 per package.
+
+### Studio
+
+```bash
+vibeaudit studio .                     # opens the browser; --no-browser prints the link, --port picks the port
+```
+
+`studio` scans the project and serves a web UI on this computer only: every route with its auth, write and
+AI badges, the data flows from user input and model output to model prompts, databases, shells, HTML and
+outgoing requests (traced as in `explain`), the score broken down by domain, category and rule, and the
+code and explanation of every finding. "Re-scan" re-runs the scan, reusing what did not change.
+
+The server binds 127.0.0.1 only and uses no external assets. Data requests need the random token from the
+printed link (it is in the URL fragment, so it never reaches a log or a Referer header), the Host header must
+be 127.0.0.1 or localhost (against DNS rebinding), the code view serves only files the scan listed, and a
+strict Content-Security-Policy lets only the page's own script run; repository text is never rendered as
+HTML. It reads the project and never writes to it.
 
 ### Explaining a finding
 
