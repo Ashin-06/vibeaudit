@@ -152,6 +152,7 @@ Every command has `--help`.
 | `-r`, `--report FORMAT[:PATH]` | Also write a report: `json`, `sarif`, `md`, `html`, `prompt` (a fix brief for AI assistants) or `badge` (SVG). Repeatable; `-` as the path writes to stdout, as in `-r json:-`. Default path `vibeaudit-report.<ext>`. |
 | `--fail-on SEVERITY` | Exit 1 when a finding is at least `critical`, `high` (default), `medium` or `low`; `none` never fails. |
 | `--min-severity SEVERITY` | Hide findings below this severity (default `low`). |
+| `--monorepo` | Scan every package as a project of its own, against its own manifest, with a score per package (see [Monorepos](#monorepos)). |
 | `--include-preview` | Count findings of preview rules toward `--fail-on` and the score; they are always reported (see [STABILITY.md](STABILITY.md)). |
 | `--no-gate-severe-preview` | Leave out the severe preview rules (command injection, `eval`, unsafe deserialization, open redirect, XSS), which by default count toward `--fail-on` and the score. |
 | `--offline` | No network: skip registry, new-package and vulnerability lookups (the typosquat check still runs). |
@@ -202,6 +203,22 @@ GEMINI_API_KEY=... vibeaudit scan . --llm gemini --llm-review --llm-max-requests
 - Providers: `gemini` (`GEMINI_API_KEY` or `GOOGLE_API_KEY`), `openai` (`OPENAI_API_KEY`; `OPENAI_BASE_URL`
   for any compatible server such as Ollama) and `anthropic` (`ANTHROPIC_API_KEY`). Verdicts are cached, so
   an unchanged finding costs no request the next time.
+
+### Monorepos
+
+```bash
+vibeaudit scan . --monorepo          # or `monorepo = true` in .vibeaudit.toml
+```
+
+By default the whole repository is one project, so a rate limiter, CSRF middleware or a dependency declared in
+one package counts for every package. With `--monorepo` every folder with its own manifest (`package.json`,
+`pyproject.toml`, `requirements*.txt`, `setup.py`, `setup.cfg`, `Pipfile`) is scanned on its own, against
+its own manifest and with only its own code as evidence; files outside every package (root scripts, CI,
+infrastructure) are one more unit, and folders under tests or examples stay test code. Three rules are about
+the repository, not a package (CI configuration QA002, the example env file DATA007 and a workspace lockfile
+DEP005), so they come from one scan of the whole repository; the mode costs about two normal scans. Findings
+keep their repository paths and fingerprints (baselines and feedback carry over), and the report adds a score
+per package.
 
 ### Watch mode
 
@@ -278,7 +295,7 @@ sanitizers = ["clean_sql_input"]                               # their output is
 public-paths = ["/api/public/*", "/api/survey-*"]              # intentionally unauthenticated routes
 ```
 
-Other keys: `include-preview`, `gate-severe-preview`, `llm`, `llm-model`, `llm-max-requests`, `max-file-size`, `file-timeout`. The same settings apply
+Other keys: `include-preview`, `gate-severe-preview`, `monorepo`, `llm`, `llm-model`, `llm-max-requests`, `max-file-size`, `file-timeout`. The same settings apply
 to `vibeaudit scan`, `vibeaudit routes`, `vibeaudit feedback`, the MCP server and the Python API. The file is
 part of the scanned repository and can switch rules off: when you audit code you do not trust, use
 `--no-config`.
