@@ -297,6 +297,22 @@
    "fingerprint": "a725618c5439ec8b6cf49be7d1ae097b",
    "verdict": "tp",
    "reason": "A security TODO left in the code."
+  },
+  {
+   "rule": "DATA013",
+   "file": "wsgidav/lock_man/lock_storage_redis.py",
+   "line": 144,
+   "fingerprint": "b889c4031f651fc8a77ff223f2edf672",
+   "verdict": "fp",
+   "reason": "Lock index lists are deleted together with their lock; they do not grow without bound."
+  },
+  {
+   "rule": "DATA013",
+   "file": "wsgidav/lock_man/lock_storage_redis.py",
+   "line": 146,
+   "fingerprint": "6c1517088d11401a7b7f400e1fd09c86",
+   "verdict": "fp",
+   "reason": "Lock index lists are deleted together with their lock; they do not grow without bound."
   }
  ]
 }

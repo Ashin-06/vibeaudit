@@ -113,6 +113,38 @@
    "fingerprint": "d2d8f25a0a2782a7855c1d2b250edafb",
    "verdict": "tp",
    "reason": "The streamed completion is created without the request abort signal."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20231006212813_documents.sql",
+   "line": 7,
+   "fingerprint": "c0e81622cf6966326a3b1003a030e73a",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20231006212813_documents.sql",
+   "line": 8,
+   "fingerprint": "d4bdb80fe25dd77160e4ac7c500f0bce",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20231006212813_documents.sql",
+   "line": 22,
+   "fingerprint": "5686c5cb85a8220b462a3bd2d0e7e63e",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20240223144537_cascade.sql",
+   "line": 1,
+   "fingerprint": "821de57801f030b42cc07205f82df11f",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
   }
  ]
 }

@@ -1,1 +1,2 @@
 --extra-index-url https://pkgs.example.com/simple
+redis

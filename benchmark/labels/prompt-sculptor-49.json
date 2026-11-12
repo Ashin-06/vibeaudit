@@ -657,6 +657,142 @@
    "fingerprint": "ca1c89b0804cb3da8d7aa2ed9afe89e5",
    "verdict": "tp",
    "reason": "The field error is rendered as plain text; nothing links it to the input or announces it."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 216,
+   "fingerprint": "44bc38aae65a583d792baff68227ea99",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 238,
+   "fingerprint": "e3433227e1ea64fc1769d3ae56f2b38c",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 244,
+   "fingerprint": "40dc761c0b0653ebff2331f71a956fc2",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 260,
+   "fingerprint": "7bcd451a504cf82d47e17bf210bb5ae3",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 261,
+   "fingerprint": "218e796af90d73fc0ceac5371380ee3c",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 298,
+   "fingerprint": "6c80576b7c9d7a2204dd0681e32e7330",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 321,
+   "fingerprint": "a3e1f089aa2354a883134e50bda2ffa7",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 348,
+   "fingerprint": "31636fd10a3f84bad1a36d5859d6a770",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 364,
+   "fingerprint": "9a7e8259366fc69072445e589ed9a486",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 411,
+   "fingerprint": "f205387c152a94c7b88d658abc5ab7d4",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 432,
+   "fingerprint": "383777c2c97345ad5c1f7aaade9c2d3d",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 440,
+   "fingerprint": "94c4045d55c4078454b3ea9152f99746",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 441,
+   "fingerprint": "52d187f132ad64160635ea3bc7a9f533",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 467,
+   "fingerprint": "b6fe5fd2a632823973ddb4f6e2aac1d0",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20251006054217_f3a5b796-77d4-4ef5-854a-82d0560ece28.sql",
+   "line": 128,
+   "fingerprint": "1ebec97c31af7c655931de4b8986450e",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20251006054217_f3a5b796-77d4-4ef5-854a-82d0560ece28.sql",
+   "line": 142,
+   "fingerprint": "7eb475dd83f529f3961ad34873da970e",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20251006054217_f3a5b796-77d4-4ef5-854a-82d0560ece28.sql",
+   "line": 167,
+   "fingerprint": "07758cd65672dbaa3f1e5fd9d0046a88",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
   }
  ]
 }

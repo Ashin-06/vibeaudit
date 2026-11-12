@@ -161,6 +161,54 @@
    "fingerprint": "95826ff03f448534a3b7cb494b120094",
    "verdict": "tp",
    "reason": "The base button classes remove the outline and no variant adds a focus style."
+  },
+  {
+   "rule": "DATA012",
+   "file": "lib/db/migrations/0000_initial.sql",
+   "line": 17,
+   "fingerprint": "f7fed486ea5937d2be0240f308951fe2",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "lib/db/migrations/0000_initial.sql",
+   "line": 23,
+   "fingerprint": "8b8afc55c27ffaa69516a6caeefc3319",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "lib/db/migrations/0000_initial.sql",
+   "line": 32,
+   "fingerprint": "c9433e993f588c76ed1b839ef0e112f6",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "lib/db/migrations/0000_initial.sql",
+   "line": 43,
+   "fingerprint": "c13bb2e1ca0e557e34afb8c0665e9835",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "lib/db/migrations/0000_initial.sql",
+   "line": 55,
+   "fingerprint": "1c6cf40530ce3a23dc610363e8f4349f",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "lib/db/migrations/0000_initial.sql",
+   "line": 66,
+   "fingerprint": "d1c1eb7cacea984e16f70676249d8d21",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
   }
  ]
 }

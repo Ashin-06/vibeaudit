@@ -12,7 +12,7 @@ An explicit `Options(...)` is used exactly as given, without the project's confi
 Custom rules: see `vibeaudit.plugins` (`rule`, `route_rule`, `file_rule`).
 """
 
-__version__ = "0.8.2"
+__version__ = "0.8.3"
 
 __all__ = ["__version__", "scan", "Options", "project_options", "Result", "Finding", "Route", "rule", "route_rule", "file_rule"]
 

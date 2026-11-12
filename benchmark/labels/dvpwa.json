@@ -97,6 +97,30 @@
    "fingerprint": "ae992a8966b5c4aa0af612c151936e75",
    "verdict": "tp",
    "reason": "The img has no alt attribute."
+  },
+  {
+   "rule": "DATA012",
+   "file": "migrations/000-init-schema.sql",
+   "line": 35,
+   "fingerprint": "b7b4b80f301a152f60027a22247f2b35",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "migrations/000-init-schema.sql",
+   "line": 36,
+   "fingerprint": "2beef947267f3eca734fd4d43e6f1070",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "migrations/000-init-schema.sql",
+   "line": 45,
+   "fingerprint": "ffdb645c521beaad13b701b9b67125c4",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
   }
  ]
 }

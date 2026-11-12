@@ -1,3 +1,4 @@
 # Findings without a line to carry an `expect:` comment (path:line:RULE)
 requirements.txt:1:DEP008
 .claude/settings.json:3:LLM016
+Dockerfile:8:CFG017

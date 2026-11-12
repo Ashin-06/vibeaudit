@@ -185,6 +185,14 @@
    "fingerprint": "ac40fd91a90dd9f9b93c49d9c21fbee8",
    "verdict": "tp",
    "reason": "The field error is rendered as plain text; nothing links it to the input or announces it."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20250704024750-95df3f63-9d74-4101-8189-3e7a386045ab.sql",
+   "line": 15,
+   "fingerprint": "f44859067fdfae8b2a90f90ca9687380",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
   }
  ]
 }

@@ -409,6 +409,14 @@
    "fingerprint": "18220e58d084f147d8ec46a6b0d5b16a",
    "verdict": "tp",
    "reason": "The full chat history is written to the debug log."
+  },
+  {
+   "rule": "CFG017",
+   "file": "backend/Dockerfile",
+   "line": 16,
+   "fingerprint": "c8bbd277816174dd50563ef2bc184161",
+   "verdict": "tp",
+   "reason": "The OpenAI key is a build argument copied into ENV, so it is in the image and its history."
   }
  ]
 }

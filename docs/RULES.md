@@ -3,9 +3,9 @@
 Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do not edit by hand.
 `vibeaudit rules` prints the same list, and `vibeaudit rules --format json` includes every field.
 
-138 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
+142 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-38 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+42 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -744,6 +744,7 @@ References: CWE-348, A04:2021
 | [CFG014](#cfg014) | high | preview | Public S3 bucket |
 | [CFG015](#cfg015) | high | preview | Admin or database port open to the internet |
 | [CFG016](#cfg016) | medium | preview | Unencrypted database or disk storage |
+| [CFG017](#cfg017) | high | preview | Secret file or build argument in the final image |
 
 ### CFG001
 
@@ -918,6 +919,18 @@ Why it matters: A database or volume without encryption at rest exposes its data
 How to fix: Set `storage_encrypted = true` (RDS) or `encrypted = true` (EBS), with a KMS key you control.
 
 References: CWE-311, A02:2021
+
+### CFG017
+
+**Secret file or build argument in the final image** (high, preview)
+
+Preview: New in 0.8.3: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: A secret file copied into the final image, or a secret passed as a build argument, can be read by anyone who pulls the image (`docker history` shows build arguments).
+
+How to fix: Use build secrets (`RUN --mount=type=secret,id=npmrc ...`), keep secret files out of the final stage, and copy only build output from earlier stages.
+
+References: CWE-538, A05:2021
 
 ## LLM and AI-specific risks
 
@@ -1249,6 +1262,9 @@ How to fix: Check the issue by hand before acting on it; suppress or disable AI0
 | [DATA008](#data008) | medium | stable | Database client created per request |
 | [DATA009](#data009) | medium | stable | SQLite file database on a serverless host |
 | [DATA010](#data010) | low | preview | Several writes without a transaction |
+| [DATA011](#data011) | low | preview | Index built without CONCURRENTLY on an existing table |
+| [DATA012](#data012) | low | preview | Foreign key without an index |
+| [DATA013](#data013) | low | preview | Redis key without an expiry |
 
 ### DATA001
 
@@ -1347,6 +1363,42 @@ Why it matters: When one of several related writes fails halfway (for example ch
 How to fix: Wrap related writes in a transaction (prisma.$transaction, db.transaction, BEGIN/COMMIT).
 
 References: CWE-662
+
+### DATA011
+
+**Index built without CONCURRENTLY on an existing table** (low, preview)
+
+Preview: New in 0.8.3: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: A plain CREATE INDEX on a table that already holds data blocks every insert, update and delete on it until the index is built, which can take minutes on a large table.
+
+How to fix: Use `CREATE INDEX CONCURRENTLY` in its own migration that does not run in a transaction (Alembic: `autocommit_block()`; Django: `AddIndexConcurrently`).
+
+References: CWE-833
+
+### DATA012
+
+**Foreign key without an index** (low, preview)
+
+Preview: New in 0.8.3: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: Postgres does not index foreign key columns. Every delete or key update in the referenced table, and every join on the key, scans the referencing table; with ON DELETE CASCADE it also locks it.
+
+How to fix: Add an index on the foreign key column, for example `CREATE INDEX ON orders (user_id)`.
+
+References: CWE-1050
+
+### DATA013
+
+**Redis key without an expiry** (low, preview)
+
+Preview: New in 0.8.3: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: Keys written without a TTL stay until something deletes them; caches, sessions and rate-limit counters then grow until Redis runs out of memory or starts evicting keys you need.
+
+How to fix: Set an expiry when writing (`set(key, value, ex=3600)`, `set(key, value, { EX: 3600 })`) or call `expire` right after.
+
+References: CWE-401
 
 ## Reliability and performance
 

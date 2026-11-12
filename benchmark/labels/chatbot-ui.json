@@ -473,6 +473,134 @@
    "fingerprint": "cd34d079b28fa35736a31c73505883bd",
    "verdict": "tp",
    "reason": "The streamed completion is created without the request abort signal."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20240108234544_add_files.sql",
+   "line": 13,
+   "fingerprint": "ca7070f3a29f06594f4d69c2f86ec5d1",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20240108234545_add_file_items.sql",
+   "line": 9,
+   "fingerprint": "6d5cd73bf1083b86d5c4c7856c76a7ad",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20240108234546_add_presets.sql",
+   "line": 13,
+   "fingerprint": "6b553c392f3d309f8dc3676611e17236",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20240108234547_add_assistants.sql",
+   "line": 13,
+   "fingerprint": "b3be96d2b47c05fe43cdd95443bf2745",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20240108234548_add_chats.sql",
+   "line": 14,
+   "fingerprint": "9ceb93423d0164b5b575ac8e52b2bd86",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20240108234548_add_chats.sql",
+   "line": 15,
+   "fingerprint": "24d6fad07c8bfc4babb9eed8df3c5f22",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20240108234548_add_chats.sql",
+   "line": 67,
+   "fingerprint": "edf24c306f1f31df97b9deb28db9a81d",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20240108234548_add_chats.sql",
+   "line": 69,
+   "fingerprint": "ed272bc4b250398c600d82e9d15ded56",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20240108234549_add_messages.sql",
+   "line": 11,
+   "fingerprint": "e7b5e1a0fecfbabf608e7a43bf59fd98",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20240108234549_add_messages.sql",
+   "line": 144,
+   "fingerprint": "28a1141340c269bd17a5f7f2ca75c808",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20240108234549_add_messages.sql",
+   "line": 146,
+   "fingerprint": "f2dd1ef3052db119a651d86c5b6ff3c0",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20240108234550_add_prompts.sql",
+   "line": 13,
+   "fingerprint": "0c3b866b2ea975f6378c5b059cb5c9fe",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20240108234551_add_collections.sql",
+   "line": 13,
+   "fingerprint": "8217a10e832d966ff2b6799ace17a06c",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20240108234551_add_collections.sql",
+   "line": 97,
+   "fingerprint": "8b7ee389ab6afd5a2bf07f35cded19b2",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20240115171524_add_tools.sql",
+   "line": 13,
+   "fingerprint": "4139cc61a8f488655b987ecad6dab01e",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20240125194719_add_custom_models.sql",
+   "line": 13,
+   "fingerprint": "ac96b88d27ac8a7a593c7a18c8f419c0",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
   }
  ]
 }

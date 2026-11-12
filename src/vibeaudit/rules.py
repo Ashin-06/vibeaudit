@@ -41,6 +41,7 @@ class Rule:
     gates_in_preview: bool = False
 
 
+NEW_IN_083 = "New in 0.8.3: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_081 = "New in 0.8.1: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_072 = "New in 0.7.2: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_071 = "New in 0.7.1: not yet measured on enough real-world findings in the benchmark."
@@ -448,6 +449,12 @@ _R = [
          "A database or volume without encryption at rest exposes its data in snapshots, backups and "
          "discarded disks.", "Set `storage_encrypted = true` (RDS) or `encrypted = true` (EBS), with a KMS "
          "key you control.", "CWE-311", "A02:2021", preview=True, preview_reason=NEW_IN_070),
+    Rule("CFG017", "Secret file or build argument in the final image", "config", "high",
+         "A secret file copied into the final image, or a secret passed as a build argument, can be read by "
+         "anyone who pulls the image (`docker history` shows build arguments).",
+         "Use build secrets (`RUN --mount=type=secret,id=npmrc ...`), keep secret files out of the final stage, "
+         "and copy only build output from earlier stages.", "CWE-538", "A05:2021",
+         preview=True, preview_reason=NEW_IN_083),
     # -------------------------------------------------------------------- llm
     Rule("LLM001", "Untrusted input placed in the system prompt", "llm", "high",
          "User text inside the system prompt gets system-level authority, which makes prompt injection "
@@ -590,6 +597,22 @@ _R = [
          preview=True,
          preview_reason="Benchmark precision 89% (8 of 9): writes in separate webhook event branches or helpers "
                        "are counted as one handler's writes."),
+    Rule("DATA011", "Index built without CONCURRENTLY on an existing table", "data", "low",
+         "A plain CREATE INDEX on a table that already holds data blocks every insert, update and delete on it "
+         "until the index is built, which can take minutes on a large table.",
+         "Use `CREATE INDEX CONCURRENTLY` in its own migration that does not run in a transaction (Alembic: "
+         "`autocommit_block()`; Django: `AddIndexConcurrently`).", "CWE-833", "",
+         preview=True, preview_reason=NEW_IN_083),
+    Rule("DATA012", "Foreign key without an index", "data", "low",
+         "Postgres does not index foreign key columns. Every delete or key update in the referenced table, and "
+         "every join on the key, scans the referencing table; with ON DELETE CASCADE it also locks it.",
+         "Add an index on the foreign key column, for example `CREATE INDEX ON orders (user_id)`.", "CWE-1050",
+         "", preview=True, preview_reason=NEW_IN_083),
+    Rule("DATA013", "Redis key without an expiry", "data", "low",
+         "Keys written without a TTL stay until something deletes them; caches, sessions and rate-limit "
+         "counters then grow until Redis runs out of memory or starts evicting keys you need.",
+         "Set an expiry when writing (`set(key, value, ex=3600)`, `set(key, value, { EX: 3600 })`) or call "
+         "`expire` right after.", "CWE-401", "", preview=True, preview_reason=NEW_IN_083),
     Rule("REL001", "Outbound HTTP request without a timeout", "reliability", "medium",
          "`requests` and `urlopen` wait forever by default. One slow or dead upstream API ties up a worker per "
          "request until the whole service stops responding.",
