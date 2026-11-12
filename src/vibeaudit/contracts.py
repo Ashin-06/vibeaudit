@@ -63,7 +63,9 @@ class ContractScanner:
     def __init__(self, project: Project, emit: Emit, routes: List[Route]):
         self.p = project
         self.emit = emit
-        no_prefixes = not any(PREFIXES.search(f.text or "") for f in project.files if f.kind in ("py", "js") and not f.is_test)
+        from .files import has
+
+        no_prefixes = not any(has(f, PREFIXES) for f in project.files if f.kind in ("py", "js") and not f.is_test)
         self.routes: List[Tuple[List[str], Route]] = [
             (segments(r.path), r) for r in routes
             if r.path.startswith("/") and (r.framework in FILE_BASED or no_prefixes)]

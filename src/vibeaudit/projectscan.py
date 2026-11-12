@@ -13,6 +13,8 @@ from .files import ENV_EXAMPLE_RE, ENV_FILE_RE, TEST_PATH_RE, Project, SourceFil
 from .lexer import py_views
 from .model import Finding, Route
 
+SUPABASE = re.compile(r"supabase", re.I)
+
 Emit = Callable[[Finding], None]
 
 LOCKS = ("package-lock.json", "yarn.lock", "pnpm-lock.yaml", "bun.lockb", "bun.lock", "npm-shrinkwrap.json")
@@ -40,14 +42,30 @@ class ProjectScanner:
         self.p = project
         self.emit = emit
         self.routes = routes
-        texts = []
-        for f in project.files:
-            if f.kind in ("py", "js", "html"):
-                views = f.cache.get("views")
-                texts.append(views.code if views is not None else (f.text or ""))  # type: ignore[attr-defined]
-            elif f.rel.endswith(("package.json", "requirements.txt", "pyproject.toml")):
-                texts.append(f.text or "")
-        self.all_code = "\n".join(texts)
+        # project-wide evidence is searched file by file (code with comments blanked, plus the manifests), and
+        # each file's answer is kept in its cache, so a long-lived Project searches only the files that changed
+        self.code_files = [f for f in project.files if f.kind in ("py", "js", "html")
+                           or f.rel.endswith(("package.json", "requirements.txt", "pyproject.toml"))]
+
+    def _piece(self, f: SourceFile) -> str:
+        views = f.cache.get("views") if f.kind in ("py", "js", "html") else None
+        return views.code if views is not None else (f.text or "")  # type: ignore[attr-defined]
+
+    def any_code(self, rx: "re.Pattern[str]") -> bool:
+        from .files import has
+
+        return any(has(f, rx, self._piece(f)) for f in self.code_files)
+
+    def code_matches(self, rx: "re.Pattern[str]") -> List[str]:
+        """group(1) of every match of rx, file by file (kept per file like any_code)."""
+        out: List[str] = []
+        for f in self.code_files:
+            key = ("groups", rx.pattern, rx.flags)
+            hit = f.cache.get(key)
+            if hit is None:
+                hit = f.cache[key] = [m.group(1) for m in finditer(rx, self._piece(f))]
+            out += hit  # type: ignore[arg-type]
+        return out
 
     def add(self, sf_or_rel, line: int, rule: str, msg: str, sev: str = "") -> None:
         sf = self.p.get(sf_or_rel) if isinstance(sf_or_rel, str) else sf_or_rel
@@ -195,7 +213,7 @@ class ProjectScanner:
         if not sql_files:
             return
         joined = "\n".join(f.text or "" for f in sql_files)
-        uses_supabase = bool(re.search(r"supabase", self.all_code, re.I)) or any("supabase" in f.rel for f in sql_files) \
+        uses_supabase = self.any_code(SUPABASE) or any("supabase" in f.rel for f in sql_files) \
             or re.search(r"auth\.uid\(\)|auth\.users", joined)
         if not uses_supabase:
             return
@@ -207,7 +225,7 @@ class ProjectScanner:
         created: Dict[str, tuple] = {}
         enable = r"(?i)\balter\s+table\s+(?:if\s+exists\s+)?(?:only\s+)?((?:\"?\w+\"?\.)?\"?\w+\"?)\s+enable\s+row\s+level\s+security"
         # RLS can also be switched on by a setup script that runs the SQL (scripts/implement-rls-security.js)
-        rls = {norm(m.group(1)) for m in finditer(enable, self.all_code)}
+        rls = {norm(name) for name in self.code_matches(re.compile(enable))}
         for sf in sql_files:
             text = sf.text or ""
             clean = re.sub(r"--[^\n]*|/\*[\s\S]*?\*/", lambda m: re.sub(r"[^\n]", " ", m.group(0)), text)
@@ -379,11 +397,11 @@ class ProjectScanner:
 
     # -------------------------------------------------------------- routes
     def api_checks(self) -> None:
-        apiscan.run(self.p, self.routes, self.all_code, self.add)
+        apiscan.run(self.p, self.routes, self.any_code(apiscan.CSRF_EVIDENCE), self.add)
         agentscan.run(self.p, self.routes, self.add)
 
     def route_checks(self) -> None:
-        rate_limited = bool(H.RATE_LIMIT_EVIDENCE.search(self.all_code))
+        rate_limited = self.any_code(H.RATE_LIMIT_EVIDENCE)
         reads_body: Optional[Route] = None
         for r in self.routes:
             path = r.path
@@ -422,10 +440,12 @@ class ProjectScanner:
             if r.reads_body and reads_body is None:
                 reads_body = r
         if reads_body is not None:
+            from .files import has
+
             server_validation = any(
-                H.SERVER_VALIDATION_EVIDENCE.search(f.text or "") for f in self.p.files
+                has(f, H.SERVER_VALIDATION_EVIDENCE) for f in self.p.files
                 if f.kind in ("py", "js") and not f.is_client and not f.is_test)
             if not server_validation:
-                client = next((f.rel for f in self.p.files if f.is_client and H.CLIENT_VALIDATION.search(f.text or "")), None)
+                client = next((f.rel for f in self.p.files if f.is_client and has(f, H.CLIENT_VALIDATION)), None)
                 extra = f" Validation exists only in browser code ({client})." if client else ""
                 self.add(reads_body.file, reads_body.line, "BE018", "Request bodies are read without a server-side validation library." + extra)

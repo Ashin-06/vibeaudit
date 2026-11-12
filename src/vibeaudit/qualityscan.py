@@ -10,7 +10,7 @@ import re
 from typing import Callable, Dict, List, Optional, Set, Tuple
 
 from .deps import collect, pep503
-from .files import Project, SourceFile
+from .files import VALUES, Project, SourceFile, depend, probe, untracked
 from .guard import GUARD, finditer
 from .model import Finding
 from .stdlib import NODE_BUILTINS, PYTHON_STDLIB
@@ -138,6 +138,18 @@ def _module_names(tree: ast.Module) -> Optional[Set[str]]:
     return names if block(tree.body) else None
 
 
+def _exports_of(project: Project, rel: str) -> object:
+    """What _check_js_names needs from an imported module (see files.VALUES): its exported names."""
+    tf = project._by_rel.get(rel)
+    if tf is None or not tf.text or rel.endswith((".vue", ".svelte", ".astro", ".json")):
+        return "skipped"
+    names = QualityScanner._js_exports(tf)
+    return None if names is None else frozenset(names)
+
+
+VALUES["js exports"] = _exports_of
+
+
 class QualityScanner:
     def __init__(self, project: Project, emit: Emit):
         self.p = project
@@ -155,13 +167,23 @@ class QualityScanner:
         GUARD.run("<project>", "dependency declarations", self._load_declared)
         self.local_py = self._local_python_names()
         self.ts_configs = self._ts_configs()
+        # QA007 is reported once per package.json: the JavaScript step publishes every candidate (so it can be
+        # replayed) and the first one per package and folder is reported after the loop, in file order
+        self.missing_js: List[Tuple[str, str, str, int]] = []
+        GUARD.sink("missing js packages", self.missing_js)
         for sf in self.p.files:
             if sf.text is None or sf.is_test:
                 continue
             if sf.kind == "py":
                 GUARD.run(sf.rel, "completeness checks", self._python, sf)
             elif sf.kind == "js":
-                GUARD.run(sf.rel, "completeness checks", self._javascript, sf)
+                GUARD.run(sf.rel, "JavaScript completeness checks", self._javascript, sf)
+        for package_dir, pkg, rel, line in self.missing_js:
+            reported = self.reported_js.setdefault(package_dir, set())
+            sf = self.p.get(rel)
+            if pkg not in reported and sf is not None:
+                reported.add(pkg)
+                self.add(sf, "QA007", line, f"`{pkg}` is imported but not listed in package.json.")
 
     # ----------------------------------------------------------- declared
     def _load_declared(self) -> None:
@@ -411,7 +433,7 @@ class QualityScanner:
             if alias is None and base_url is not None:
                 alias = ("", base_url + "/" if base_url else "")
             if alias is None:
-                if spec.startswith(("@/", "~/")) and (self.p.root / "src").is_dir():
+                if spec.startswith(("@/", "~/")) and probe(self.p.root / "src", "dir"):
                     alias = (spec[:2], "src/")
                 else:
                     return None, True
@@ -424,9 +446,9 @@ class QualityScanner:
             candidates += [stem + e for e in (".ts", ".tsx", ".mts", ".cts")]  # ESM TypeScript: './a.js' is a.ts
         candidates += [base + e for e in JS_EXTS] + [posixpath.join(base, "index" + e) for e in JS_EXTS]
         for c in candidates:
-            if self.p.get(c):
+            if c in self.p._by_rel:  # existence only (an added or removed file resets the step memo)
                 return c, True
-            if (self.p.root / c).is_file():
+            if probe(self.p.root / c, "file"):
                 return None, True  # exists but excluded from the scan (generated code, too large)
         return None, False
 
@@ -447,7 +469,8 @@ class QualityScanner:
             self.add(sf, "QA005", sf.line_at(m.start()), "Code throws a 'not implemented' error; this path is unfinished.")
         deno = "/supabase/functions/" in "/" + rel or self._near(rel, ("deno.json", "deno.jsonc", "import_map.json"))
         declared = None if deno else self._js_declared(rel)
-        reported = self.reported_js.setdefault(self._package_dir(rel), set())  # once per package.json, not per file
+        package_dir = self._package_dir(rel)
+        published: Set[str] = set()  # once per file here; once per package.json after the loop in run()
         for m in finditer(JS_IMPORT, code):
             spec = m.group(3) or m.group(4) or m.group(5) or m.group(6)
             if not spec or "?" in spec or "!" in spec or "*" in spec or ":" in spec.split("/")[0] or spec.startswith("/"):
@@ -457,7 +480,8 @@ class QualityScanner:
             aliases, base_url = self._ts_config_for(rel)
             first = spec.split("/")[0]
             via_base_url = base_url is not None and not spec.startswith("@") and (
-                (self.p.root / (base_url or ".") / first).exists() or any((self.p.root / (base_url or ".") / (first + e)).exists() for e in JS_EXTS))
+                probe(self.p.root / (base_url or ".") / first, "exists")
+                or any(probe(self.p.root / (base_url or ".") / (first + e), "exists") for e in JS_EXTS))
             if spec.startswith(".") or any(spec.startswith(p) for p, _t in aliases) or spec.startswith(("@/", "~/")) or via_base_url:
                 target, exists = self._resolve_js(sf, spec)
                 if not exists:
@@ -468,14 +492,14 @@ class QualityScanner:
             if declared is None or spec.startswith(("#", "$", "virtual:", "~")):
                 continue
             pkg = "/".join(spec.split("/")[:2]) if spec.startswith("@") else spec.split("/")[0]
-            if pkg in NODE_BUILTINS or pkg.startswith("node:") or pkg in declared or pkg in reported or m.group(1) or NOT_DEPLOYED.search(rel):
+            if pkg in NODE_BUILTINS or pkg.startswith("node:") or pkg in declared or pkg in published or m.group(1) or NOT_DEPLOYED.search(rel):
                 continue
             if pkg.startswith("@types/") or ("@types/" + pkg) in declared:
                 continue
             if pkg.startswith("@") and any(d.startswith(pkg.split("/")[0] + "/") for d in declared):
                 continue  # a sibling of a declared package from the same scope (installed together)
-            reported.add(pkg)
-            self.add(sf, "QA007", line, f"`{pkg}` is imported but not listed in package.json.")
+            published.add(pkg)
+            GUARD.publish("missing js packages", self.missing_js, (package_dir, pkg, rel, line))
 
     def _package_dir(self, rel: str) -> str:
         """Folder of the nearest package.json above `rel` ("" when there is none)."""
@@ -553,12 +577,11 @@ class QualityScanner:
         return names
 
     def _check_js_names(self, sf: SourceFile, line: int, spec: str, target: str, clause: str) -> None:
-        tf = self.p.get(target)
-        if tf is None or not tf.text or target.endswith((".vue", ".svelte", ".astro", ".json")):
-            return
-        exports = self._js_exports(tf)
-        if exports is None:
-            return  # re-exports or CommonJS: too dynamic to check by name
+        # not a read of the whole file: the step depends only on the names it exports
+        exports = untracked(_exports_of, self.p, target)
+        depend(("js exports", target), exports)
+        if not isinstance(exports, frozenset):
+            return  # not checkable by name (re-exports, CommonJS, other kinds of modules)
         m = re.search(r"\{([^}]*)\}", clause)
         if not m:
             return

@@ -144,6 +144,7 @@ def _scan(root: str, opts: Options, project: Optional[Project] = None) -> Result
             memo.record(f)
 
         memo.emit, memo.project, memo.replayed, memo.ran = raw.append, project, 0, 0
+        memo.start_scan()
     GUARD.memo = memo
     try:
         return _scan_project(root, opts, project, raw, emit, start)
