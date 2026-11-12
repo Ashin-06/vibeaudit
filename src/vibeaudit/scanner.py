@@ -230,7 +230,7 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
         "routes_found": len(js_routes) + len(py_routes), "git": project.is_git,
         "skipped": list(GUARD.skipped), "internal_errors": list(GUARD.internal_errors),
         "feedback_hidden": hidden, "include_preview": opts.include_preview,
-        "gate_severe_preview": opts.gate_severe_preview,
+        "gate_severe_preview": opts.gate_severe_preview, "disabled": sorted(opts.disabled),
     }
     if opts.changes is not None:
         meta["changed_files"] = len(opts.changes)

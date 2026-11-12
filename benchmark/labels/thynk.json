@@ -289,6 +289,22 @@
    "fingerprint": "47b07c5312da7113e3572cea957f9e81",
    "verdict": "tp",
    "reason": "The key is written with no expiry and nothing in the file expires it."
+  },
+  {
+   "rule": "LLM012",
+   "file": "backend/ocr_models/claude_model.py",
+   "line": 77,
+   "fingerprint": "0a989f76b6d29d4d04b1e7e72aba25cc",
+   "verdict": "tp",
+   "reason": "claude-opus-4-1-20250805 (retired 2026-08-05) is passed to messages.create."
+  },
+  {
+   "rule": "LLM012",
+   "file": "backend/ocr_models/jury_model.py",
+   "line": 127,
+   "fingerprint": "1b2210fa476815913d78bda7ef89dc37",
+   "verdict": "tp",
+   "reason": "claude-sonnet-4-20250514 (retired 2026-06-15) is passed to messages.create."
   }
  ]
 }

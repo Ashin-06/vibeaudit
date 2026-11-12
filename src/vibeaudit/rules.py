@@ -41,6 +41,7 @@ class Rule:
     gates_in_preview: bool = False
 
 
+NEW_IN_089 = "New in 0.8.9: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_088 = "New in 0.8.8: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_087 = "New in 0.8.7: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_086 = "New in 0.8.6: not yet measured on enough held-out findings in the benchmark."
@@ -788,6 +789,13 @@ _R = [
          "Add tests that run the prompt code with a stubbed model, and a small eval set (promptfoo, deepeval, "
          "ragas or your own) that checks real answers before a prompt or model change ships.", "CWE-1164", "",
          preview=True, preview_reason=NEW_IN_086),
+    Rule("LLM025", "Prompt-injection text in an agent instruction file", "llm", "high",
+         "Coding agents follow CLAUDE.md, AGENTS.md, .cursorrules and similar files as if the developer wrote them. "
+         "Text that tells the agent to ignore its instructions or to hide what it does, or characters a reviewer "
+         "cannot see, turns a pull request or a copied rules file into control of the agent. The patterns come "
+         "from vibeaudit's threat feed (refreshed by `vibeaudit update`).",
+         "Read the file in a viewer that shows hidden characters, remove the injected text, and review who changed "
+         "the file.", "CWE-77", "LLM01:2025", preview=True, preview_reason=NEW_IN_089),
     # ------------------------------------------------------- UI, UX and a11y
     Rule("UI001", "Image without alt text", "ui", "low",
          "Screen-reader users get the file name or nothing, and the image is invisible to search engines.",

@@ -54,7 +54,7 @@ version = { attr = "vibeaudit.__version__" }
 where = ["src"]
 
 [tool.setuptools.package-data]
-vibeaudit = ["data/*.gz", "data/*.txt", "studio_assets/*"]
+vibeaudit = ["data/*.gz", "data/*.txt", "data/*.json", "studio_assets/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

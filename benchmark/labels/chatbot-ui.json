@@ -609,6 +609,14 @@
    "fingerprint": "1ae55f4e6184f89cc4e9293943a7e3b6",
    "verdict": "tp",
    "reason": "Tests cover OpenAPI conversion only; no test or eval touches the chat routes or prompts."
+  },
+  {
+   "rule": "LLM012",
+   "file": "lib/chat-setting-limits.ts",
+   "line": 24,
+   "fingerprint": "c4f85d3f2aa524a078be280872c30e96",
+   "verdict": "tp",
+   "reason": "claude-3-haiku-20240307 was retired on 2026-04-20; it is still offered as a selectable model."
   }
  ]
 }

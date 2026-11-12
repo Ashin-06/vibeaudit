@@ -94,9 +94,9 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 
 | Item | Status |
 | --- | --- |
-| Rule mapping to OWASP Top 10 2021, OWASP LLM Top 10 2025, EU AI Act themes, SOC 2, HIPAA, GDPR (a mapping, not certification or legal advice) | planned |
-| `--report compliance:<framework>` (HTML and printable output) | planned |
-| Signed threat-intel feed in `vibeaudit update`: slopsquatted names, model sunset calendar, prompt-injection patterns, community submissions; works offline | planned |
+| Rule mapping to OWASP Top 10 2021, OWASP LLM Top 10 2025, EU AI Act themes, SOC 2, HIPAA, GDPR (a mapping, not certification or legal advice) | done, unreleased (data/compliance_map.json; a test requires every rule to have an entry) |
+| `--report compliance:<framework>` (HTML and printable output) | done, unreleased |
+| Signed threat-intel feed in `vibeaudit update`: slopsquatted names, model sunset calendar, prompt-injection patterns, community submissions; works offline | done, unreleased (DEP001, LLM012, LLM025) |
 
 ## Completion gate: 0.9.0, "Phases 0-4 complete" (planned)
 

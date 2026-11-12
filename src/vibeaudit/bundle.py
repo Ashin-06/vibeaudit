@@ -3,7 +3,8 @@
     vibeaudit update --export bundle.zip --osv PyPI,npm    # connected machine
     vibeaudit update --import bundle.zip                    # air-gapped machine, then: vibeaudit scan --offline
 
-The bundle holds the data files `vibeaudit update` refreshes (popular-package lists, retired model ids) and,
+The bundle holds the data files `vibeaudit update` refreshes (popular-package lists, retired model ids, the
+signed threat feed when one is installed) and,
 with --osv, a compact vulnerability index per ecosystem built from OSV's public dumps. Every member is listed
 with its SHA-256 in manifest.json; an import accepts only known member names, checks sizes, hashes and
 contents, and writes nothing until the whole bundle is valid.
@@ -165,7 +166,11 @@ def export(path: Path, osv: List[str], log: Callable[[str], None], fetch: Option
     """Write a bundle with the current data files and, for each ecosystem in `osv`, a freshly built index."""
     from .updater import FILES, data_bytes
 
+    from . import feed
+
     members: Dict[str, bytes] = {f"data/{name}": data_bytes(name) for name in FILES}
+    if feed.cached() is not None:  # signed, so the air-gapped machine checks it the same way
+        members[f"data/{feed.FEED}"] = (cache_dir() / "data" / feed.FEED).read_bytes()
     for eco in osv:
         if eco not in ECOSYSTEMS:
             raise BundleError(f"unknown ecosystem {eco!r} (use {', '.join(ECOSYSTEMS)})")
@@ -189,9 +194,10 @@ def export(path: Path, osv: List[str], log: Callable[[str], None], fetch: Option
 
 def import_bundle(path: Path, log: Callable[[str], None]) -> None:
     """Validate the whole bundle, then install it into the user cache."""
+    from . import feed
     from .updater import FILES, forget_loaded_data
 
-    allowed = {f"data/{n}" for n in FILES} | {f"osv/{e}.json.gz" for e in ECOSYSTEMS}
+    allowed = {f"data/{n}" for n in FILES} | {f"data/{feed.FEED}"} | {f"osv/{e}.json.gz" for e in ECOSYSTEMS}
     try:
         z = zipfile.ZipFile(path)
     except (OSError, zipfile.BadZipFile) as e:
@@ -219,7 +225,12 @@ def import_bundle(path: Path, log: Callable[[str], None]) -> None:
             meta = listed[info.filename]
             if not isinstance(meta, dict) or hashlib.sha256(data).hexdigest() != meta.get("sha256"):
                 raise BundleError(f"{info.filename} does not match the SHA-256 in the manifest")
-            if info.filename.startswith("data/"):
+            if info.filename == f"data/{feed.FEED}":
+                try:
+                    feed.open_feed(data)  # an expired feed is still installed; scans warn and use the shipped data
+                except feed.FeedError as e:
+                    raise BundleError(f"{info.filename}: {e}") from None
+            elif info.filename.startswith("data/"):
                 if not FILES[info.filename[5:]](data):
                     raise BundleError(f"{info.filename} failed validation")
             else:

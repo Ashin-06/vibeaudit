@@ -8,7 +8,7 @@ import sys
 from collections import Counter
 from typing import Dict, List, Optional
 
-from . import __version__
+from . import __version__, compliance
 from .model import SEVERITIES, Finding
 from .rules import CATEGORIES, RULES, SECURITY_SEVERITY
 
@@ -394,6 +394,9 @@ RENDERERS = {"json": render_json, "sarif": render_sarif, "md": render_markdown, 
              "junit": render_junit}
 EXTENSIONS = {"json": "json", "sarif": "sarif", "md": "md", "markdown": "md", "html": "html", "prompt": "txt", "badge": "svg",
               "codeclimate": "json", "junit": "xml"}
+for _fw in compliance.FRAMEWORKS:  # --report compliance:soc2 and so on
+    RENDERERS[f"compliance:{_fw}"] = lambda res, _fw=_fw: compliance.render(res, _fw)
+    EXTENSIONS[f"compliance:{_fw}"] = "html"
 
 
 def write_report(res: Result, fmt: str, path: str) -> None:

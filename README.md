@@ -20,7 +20,7 @@ nothing, inaccessible forms and frontend calls to API routes that do not exist.
 - Works offline with no API key. The network is used only for package-registry and vulnerability
   lookups (`--offline` turns that off); an LLM is used only if you ask for it.
 - Pure Python, no dependencies on 3.11+ (`tomli` on 3.9 and 3.10). Linux, macOS and Windows.
-- 159 rules in 12 categories, mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
+- 160 rules in 12 categories, mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
 - Terminal output plus JSON, SARIF 2.1.0 (GitHub code scanning), Markdown, HTML, an SVG badge and a fix
   brief you can paste into an AI assistant.
 - Fits into CI (GitHub Action, `--diff`), pre-commit (`--staged`) and coding agents (an MCP server).
@@ -141,7 +141,7 @@ your `PATH`, their findings are merged into the report and de-duplicated.
 | `vibeaudit routes [PATH]` | List every HTTP entry point with method, path, location and whether it has a visible auth check, writes data or calls a paid AI API (`--format text\|json\|md`). |
 | `vibeaudit rules` | List every rule (`--format text\|json\|md`; JSON includes the why and fix text). |
 | `vibeaudit feedback` | Record that a finding is a false positive or confirmed, or list recorded feedback (see [False positives](#false-positives-and-suppressing-findings)). |
-| `vibeaudit update` | Refresh the popular-package lists and the retired-model list; `--self` upgrades vibeaudit with pip; `--export FILE [--osv PyPI,npm]` and `--import FILE` carry the data to a machine without network (see [Offline and air-gapped use](#offline-and-air-gapped-use)). |
+| `vibeaudit update` | Refresh the popular-package lists, the retired-model list and the signed threat feed; `--self` upgrades vibeaudit with pip; `--export FILE [--osv PyPI,npm]` and `--import FILE` carry the data to a machine without network (see [Offline and air-gapped use](#offline-and-air-gapped-use)). |
 | `vibeaudit lsp` | Run the language server for editors: diagnostics and fix code actions (see [Editors](#editors-vs-code-cursor-and-other-lsp-clients)). |
 | `vibeaudit mcp` | Run the MCP server for coding agents (see [MCP server](#mcp-server-for-coding-agents)). |
 
@@ -151,7 +151,7 @@ Every command has `--help`.
 
 | Option | Meaning |
 | --- | --- |
-| `-r`, `--report FORMAT[:PATH]` | Also write a report: `json`, `sarif`, `md`, `html`, `prompt` (a fix brief for AI assistants), `badge` (SVG), `junit` (test report XML for GitLab, CircleCI, Jenkins) or `codeclimate` (GitLab Code Quality). Repeatable; `-` as the path writes to stdout, as in `-r json:-`. Default path `vibeaudit-report.<ext>`. |
+| `-r`, `--report FORMAT[:PATH]` | Also write a report: `json`, `sarif`, `md`, `html`, `prompt` (a fix brief for AI assistants), `badge` (SVG), `junit` (test report XML for GitLab, CircleCI, Jenkins), `codeclimate` (GitLab Code Quality) or `compliance:FRAMEWORK` (see [Compliance mapping](#compliance-mapping)). Repeatable; `-` as the path writes to stdout, as in `-r json:-`. Default path `vibeaudit-report.<ext>` (`vibeaudit-compliance-FRAMEWORK.html`). |
 | `--fail-on SEVERITY` | Exit 1 when a finding is at least `critical`, `high` (default), `medium` or `low`; `none` never fails. |
 | `--min-severity SEVERITY` | Hide findings below this severity (default `low`). |
 | `--monorepo` | Scan every package as a project of its own, against its own manifest, with a score per package (see [Monorepos](#monorepos)). |
@@ -528,6 +528,29 @@ for r in result.routes:
 an explicit `Options(...)` is used exactly as given. `scan()` may be called from several threads; scans
 then run one at a time.
 
+## Compliance mapping
+
+Every rule is mapped to the controls its findings are evidence for, in
+[`src/vibeaudit/data/compliance_map.json`](src/vibeaudit/data/compliance_map.json): the OWASP Top 10 2021, the
+OWASP Top 10 for LLM Applications 2025, themes of the EU AI Act (Art. 9, 10, 14 and 15), the SOC 2 Trust Services
+Criteria and, where they apply, the HIPAA Security and Privacy Rules and the GDPR (Art. 5, 25 and 32). Rules
+that no control fits (accessibility and other user-experience checks, for example) say so in a note.
+
+```bash
+vibeaudit scan . -r compliance:soc2                 # writes vibeaudit-compliance-soc2.html
+vibeaudit scan . -r compliance:gdpr:reports/gdpr.html
+```
+
+Frameworks: `owasp`, `owasp-llm`, `eu-ai-act`, `soc2`, `hipaa`, `gdpr`. The report is one self-contained HTML
+file (no scripts, fonts or other external assets) with a print stylesheet, so it prints or saves to PDF as
+is. For every control it shows a status (findings, no findings, not checked because the mapped rules were
+disabled, or not covered by any rule) and links each piece of evidence to its finding.
+
+**This is an aid for reviewers, not a certification, an audit result or legal advice.** "No findings" means
+the automated checks found nothing, not that the control is met, and most controls need evidence that code
+scanning cannot provide. The SOC 2, HIPAA, GDPR and EU AI Act reports list only the controls code scanning can
+speak to.
+
 ## Scoring
 
 Each finding has a severity. The overall score is 100 minus 25 per critical, 10 per high, 3 per medium and
@@ -611,6 +634,14 @@ overrides it). `--no-cache` or `VIBEAUDIT_NO_CACHE=1` turns it off.
 `vibeaudit update` downloads the latest popular-package lists (used for typosquat checks) and retired-model
 list (LLM012) from this repository; a file is used only if it passes validation. Set `GITHUB_TOKEN` if you
 hit GitHub's rate limit.
+
+It also downloads the signed threat feed: slopsquatted package names (DEP001, also offline), a model sunset
+calendar with retirement dates and replacements (LLM012) and prompt-injection patterns for agent instruction
+files such as CLAUDE.md and .cursorrules (LLM025). The same data ships with vibeaudit, so every check works
+offline; the feed only adds what was published since the release. A feed is used only when its signature
+verifies against the key shipped with vibeaudit and it has not expired (30 days); otherwise vibeaudit warns and
+uses the shipped data. Bundles made with `--export` carry the feed too. How to submit an entry, and how the
+feed is signed: [docs/THREAT_FEED.md](docs/THREAT_FEED.md).
 
 ## Limits and what is not covered
 

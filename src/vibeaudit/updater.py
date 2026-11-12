@@ -1,6 +1,6 @@
-"""Data files that age (popular-package lists, retired model ids) and `vibeaudit update`, which refreshes them
-from the vibeaudit repository into the user cache. A refreshed file is used only if it passes validation;
-otherwise the copy shipped with the package is used."""
+"""Data files that age (popular-package lists, retired model ids, the threat feed) and `vibeaudit update`, which
+refreshes them from the vibeaudit repository into the user cache. A refreshed file is used only if it passes
+validation (the threat feed: its signature, see feed.py); otherwise the copy shipped with the package is used."""
 from __future__ import annotations
 
 import gzip
@@ -16,6 +16,7 @@ from typing import Callable, Dict, List, Optional
 from .store import cache_dir, write_atomic
 
 DATA_URL = os.environ.get("VIBEAUDIT_DATA_URL", "https://raw.githubusercontent.com/Ashin-06/vibeaudit/main/src/vibeaudit/data/")
+FEED_URL = os.environ.get("VIBEAUDIT_FEED_URL", "https://raw.githubusercontent.com/Ashin-06/vibeaudit/threat-feed/threat_feed.json")
 REPO_URL = "git+https://github.com/Ashin-06/vibeaudit.git"
 MAX_BYTES = 10_000_000
 PACKAGE_NAME = re.compile(r"(?i)[@a-z0-9][\w.@/-]{0,213}")
@@ -78,8 +79,9 @@ def _download(url: str) -> bytes:
 
 def forget_loaded_data() -> None:
     """Drop what was built from the data files, so a long-lived process (the MCP server) uses fresh copies."""
-    from . import aiscan, bundle, deps
+    from . import aiscan, bundle, deps, feed
 
+    feed.forget()
     aiscan._RETIRED.clear()
     deps._POPULAR.clear()
     bundle._LOADED.clear()
@@ -104,8 +106,40 @@ def update_data(log: Callable[[str], None], fetch: Callable[[str], bytes] = _dow
         else:
             count = len(_names(data)) if name.endswith(".gz") else len(model_ids(data))
             log(f"{name}: updated ({count} entries)")
+    failed += _update_feed(log, fetch)
     forget_loaded_data()
     return failed
+
+
+def _update_feed(log: Callable[[str], None], fetch: Callable[[str], bytes]) -> int:
+    """Install the signed threat feed if it verifies, has not expired and is not older than the installed one."""
+    from . import feed
+
+    if feed.public_key() is None:
+        log(f"{feed.FEED}: this build has no feed key; using the threat data shipped with vibeaudit")
+        return 0
+    try:
+        raw = fetch(FEED_URL)
+    except (urllib.error.URLError, OSError, ValueError) as e:
+        log(f"{feed.FEED}: download failed ({e}); keeping the current copy")
+        return 1
+    try:
+        doc = feed.open_feed(raw)
+        if feed.expired(doc):
+            raise feed.FeedError(f"it expired on {doc['expires'][:10]}")
+        current = feed.cached()
+        if current is not None and doc["version"] < current["version"]:
+            raise feed.FeedError("it is older than the installed feed")
+    except feed.FeedError as e:
+        log(f"{feed.FEED}: downloaded feed rejected ({e}); keeping the current copy")
+        return 1
+    if not write_atomic(cache_dir() / "data" / feed.FEED, raw):
+        log(f"{feed.FEED}: could not write to {cache_dir() / 'data'}")
+        return 1
+    d = doc["data"]
+    log(f"{feed.FEED}: updated (signed {doc['created'][:10]}, {len(d.get('slopsquatted', []))} slopsquatted names, "
+        f"{len(d.get('model_sunsets', []))} model sunsets, {len(d.get('prompt_injection', []))} injection patterns)")
+    return 0
 
 
 def update_self(log: Callable[[str], None], run: Optional[Callable[..., int]] = None) -> int:

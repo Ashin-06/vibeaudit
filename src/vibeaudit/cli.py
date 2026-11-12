@@ -9,7 +9,7 @@ from typing import List, Optional
 
 from pathlib import Path
 
-from . import __version__
+from . import __version__, compliance
 from .config import ConfigError
 from .config import load as load_config
 from .model import SEVERITIES, at_least
@@ -35,7 +35,7 @@ def build_parser() -> argparse.ArgumentParser:
     s = sub.add_parser("scan", help="scan a project directory")
     s.add_argument("path", nargs="?", default=".", help="project directory (default: current directory)")
     s.add_argument("-r", "--report", action="append", default=[], metavar="FORMAT[:PATH]",
-                   help="write a report: json, sarif, md, html, prompt (a fix brief for AI assistants), badge (SVG), junit (test report XML) or codeclimate (GitLab Code Quality), optionally with a path ('-' for stdout). Repeatable.")
+                   help="write a report: json, sarif, md, html, prompt (a fix brief for AI assistants), badge (SVG), junit (test report XML), codeclimate (GitLab Code Quality) or compliance:FRAMEWORK (an HTML compliance aid for owasp, owasp-llm, eu-ai-act, soc2, hipaa or gdpr; not a certification), optionally with a path ('-' for stdout). Repeatable.")
     s.add_argument("--fail-on", default=None, choices=SEVERITIES[:4] + ["none"],
                    help="exit with code 1 if any finding is at least this severe (default: high)")
     s.add_argument("--min-severity", default=None, choices=SEVERITIES, help="hide findings below this severity (default: low)")
@@ -147,7 +147,7 @@ def build_parser() -> argparse.ArgumentParser:
     r = sub.add_parser("rules", help="list every rule")
     r.add_argument("--format", choices=["text", "json", "md"], default="text")
 
-    u = sub.add_parser("update", help="refresh package lists and retired model ids, or upgrade vibeaudit itself")
+    u = sub.add_parser("update", help="refresh package lists, retired model ids and the signed threat feed, or upgrade vibeaudit itself")
     u.add_argument("--self", dest="upgrade_self", action="store_true", help="upgrade the installed package with pip")
     u.add_argument("--export", metavar="FILE",
                    help="write a data bundle for a machine without network (see --osv), instead of refreshing")
@@ -427,10 +427,17 @@ def cmd_scan(a: argparse.Namespace) -> int:
         if len(fmt) == 1 and path.startswith(("\\", "/")):  # a bare Windows path like C:\x.json is not a format
             fmt, path = "", spec
         fmt = fmt.lower()
+        default = f"vibeaudit-report.{EXTENSIONS.get(fmt, '')}"
+        if fmt == "compliance":
+            framework, _, path = path.partition(":")
+            fmt, default = f"compliance:{framework.lower()}", f"vibeaudit-compliance-{framework.lower()}.html"
+            if fmt not in RENDERERS:
+                print(f"vibeaudit: unknown compliance framework {framework!r} (use {', '.join(compliance.FRAMEWORKS)})", file=sys.stderr)
+                return 2
         if fmt not in RENDERERS:
-            print(f"vibeaudit: unknown report format {fmt!r} (use json, sarif, md, html, prompt, badge, junit, codeclimate)", file=sys.stderr)
+            print(f"vibeaudit: unknown report format {fmt!r} (use json, sarif, md, html, prompt, badge, junit, codeclimate, compliance:FRAMEWORK)", file=sys.stderr)
             return 2
-        reports.append((fmt, path or f"vibeaudit-report.{EXTENSIONS[fmt]}"))
+        reports.append((fmt, path or default))
     disabled = {x.strip() for d in list(a.disable) + list(cfg.get("disable", [])) for x in d.split(",") if x.strip()}
     unknown = [d for d in disabled if d not in RULES and d not in CATEGORIES and ":" not in d]
     if unknown:
