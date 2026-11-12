@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>vibeaudit studio</title>
+<link rel="stylesheet" href="/app.css">
+<script src="/app.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>vibeaudit studio</h1>
+  <p id="summary" class="muted">Loading ...</p>
+  <button id="rescan" type="button">Re-scan</button>
+</header>
+<nav aria-label="Views">
+  <button type="button" data-view="score" aria-pressed="true">Score</button>
+  <button type="button" data-view="routes" aria-pressed="false">Routes</button>
+  <button type="button" data-view="flows" aria-pressed="false">Data flows</button>
+  <button type="button" data-view="findings" aria-pressed="false">Findings</button>
+</nav>
+<main>
+  <section id="view" aria-live="polite"></section>
+  <aside id="detail" aria-label="Finding detail" hidden></aside>
+</main>
+<p id="error" role="alert" hidden></p>
+</body>
+</html>
