@@ -22,6 +22,12 @@ inputs:
   python-version:
     description: Python version for actions/setup-python.
     default: "3.12"
+  review:
+    description: 'On pull requests, post review comments with suggested fixes on changed lines ("true" or "false"). Needs `permissions: pull-requests: write`.'
+    default: "false"
+  github-token:
+    description: Token used to post the review.
+    default: ${{ github.token }}
 outputs:
   sarif:
     description: Path of the SARIF report.
@@ -50,3 +56,16 @@ runs:
       run: |
         set -f
         vibeaudit scan "$VIBEAUDIT_PATH" --fail-on "$VIBEAUDIT_FAIL_ON" --report "sarif:$VIBEAUDIT_SARIF" $VIBEAUDIT_ARGS
+    - name: Post review comments
+      # runs even when the scan step failed the build, so the author sees where; only for pull requests
+      if: always() && inputs.review == 'true' && github.event_name == 'pull_request'
+      shell: bash
+      env:
+        VIBEAUDIT_PATH: ${{ inputs.path }}
+        VIBEAUDIT_BASE: ${{ github.base_ref }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+      run: |
+        # the comments must sit on lines of the pull request's own diff (from the merge base), which needs history
+        if [ "$(git rev-parse --is-shallow-repository)" = "true" ]; then git fetch --no-tags --quiet --unshallow origin; fi
+        git fetch --no-tags --quiet origin "+refs/heads/$VIBEAUDIT_BASE:refs/remotes/origin/$VIBEAUDIT_BASE"
+        vibeaudit review "$VIBEAUDIT_PATH" --diff "origin/$VIBEAUDIT_BASE" --post

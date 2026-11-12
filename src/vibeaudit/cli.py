@@ -47,6 +47,9 @@ def build_parser() -> argparse.ArgumentParser:
                    help="third-party scanners to run: auto (those installed), none, or a list like gitleaks,bandit")
     s.add_argument("--baseline", metavar="FILE", help="hide findings already present in this JSON report")
     s.add_argument("--write-baseline", metavar="FILE", help="save all current findings as a baseline and exit 0")
+    s.add_argument("--fail-on-regression", type=int, default=None, metavar="N",
+                   help="exit with code 1 if the whole project's score is more than N points below the score in the "
+                        "--baseline report (computed before --baseline, --diff and --staged hide findings)")
     s.add_argument("--max-file-size", type=int, default=None, help="skip files larger than this many bytes (default: 1000000)")
     s.add_argument("--file-timeout", type=float, default=None,
                    help="seconds each analysis step may spend on one file before it is stopped (default: 30)")
@@ -85,6 +88,18 @@ def build_parser() -> argparse.ArgumentParser:
     w.add_argument("--min-severity", default=None, choices=SEVERITIES, help="hide findings below this severity")
     w.add_argument("--exclude", action="append", default=[], metavar="GLOB", help="skip paths matching GLOB (repeatable)")
     w.add_argument("--config", metavar="FILE", help="read settings from this TOML file, as for scan")
+
+    v = sub.add_parser("review", help="pull request review comments (with suggested fixes) for findings on changed lines",
+                       description="Scan as `scan --diff BASE` does and turn each finding on a changed line into a "
+                                   "review comment, with a GitHub suggestion when a `vibeaudit fix` codemod applies. "
+                                   "Prints the review as JSON; --post sends it to the pull request (GitHub Actions, "
+                                   "GITHUB_TOKEN with pull-requests: write).")
+    v.add_argument("path", nargs="?", default=".", help="project directory (default: current directory)")
+    v.add_argument("--diff", required=True, metavar="REV", help="base revision of the pull request, e.g. origin/main")
+    v.add_argument("--post", action="store_true", help="post the review to the pull request instead of printing it")
+    v.add_argument("--max-comments", type=int, default=30, help="most severe findings to comment on (default: 30)")
+    v.add_argument("--exclude", action="append", default=[], metavar="GLOB", help="skip paths matching GLOB (repeatable)")
+    v.add_argument("--config", metavar="FILE", help="read settings from this TOML file, as for scan")
 
     x = sub.add_parser("fix", help="show (or --apply) deterministic fixes for findings that have one obvious repair",
                        description="Print a unified diff that fixes every finding a codemod covers: request timeouts "
@@ -370,10 +385,34 @@ def cmd_scan(a: argparse.Namespace) -> int:
                    gate_severe_preview=False if a.no_gate_severe_preview else bool(cfg.get("gate_severe_preview", True)))
     if cfg_path:
         log(f"using settings from {cfg_path}")
+    regression = None
+    if a.fail_on_regression is not None:
+        from .scanner import read_baseline
+
+        got = read_baseline(baseline) if baseline else None
+        if a.fail_on_regression < 0 or got is None or got[1] is None:
+            print("vibeaudit: --fail-on-regression needs N >= 0 and a --baseline JSON report with a score "
+                  "(write one with --write-baseline or --report json)", file=sys.stderr)
+            return 2
+        # the score is the whole project's: scan without hiding anything, then hide for the report
+        regression = (got[0], got[1], opts.changes)
+        opts.baseline, opts.changes = None, None
     try:
         res: Result = scan(a.path, opts)
     except KeyboardInterrupt:
         return 130
+    if regression is not None:
+        from .gitdiff import keep
+
+        known, base_score, only = regression
+        full_score = res.score
+        res.findings = [f for f in res.findings if f.fingerprint not in known and (only is None or keep(only, f.file, f.line))]
+        res.meta["score_whole_project"], res.meta["baseline_score"] = full_score, base_score
+        if only is not None:
+            res.meta["changed_files"] = len(only)
+        drop = base_score - full_score
+        print(f"vibeaudit: whole-project score {full_score}, baseline {base_score} "
+              f"({'down ' + str(drop) if drop > 0 else 'no drop'}; allowed {a.fail_on_regression})", file=sys.stderr)
     if a.write_baseline:
         write_report(res, "json", a.write_baseline)
         print(f"vibeaudit: baseline with {len(res.findings)} findings written to {a.write_baseline}", file=sys.stderr)
@@ -387,6 +426,8 @@ def cmd_scan(a: argparse.Namespace) -> int:
         if path != "-":
             print(f"vibeaudit: wrote {fmt} report to {path}", file=sys.stderr)
     if fail_on != "none" and any(at_least(f.severity, fail_on) for f in res.gating):  # preview rules excluded
+        return 1
+    if regression is not None and res.meta["baseline_score"] - res.meta["score_whole_project"] > a.fail_on_regression:
         return 1
     return 0
 
@@ -411,6 +452,21 @@ def main(argv: Optional[List[str]] = None) -> int:
         return cmd_scan(a)
     if a.command == "fix":
         return cmd_fix(a)
+    if a.command == "review":
+        from . import review
+        from .config import project_options
+
+        if not os.path.isdir(a.path):
+            print(f"vibeaudit: not a directory: {a.path}", file=sys.stderr)
+            return 2
+        try:
+            opts = project_options(a.path, a.config, offline=True, external="none")
+        except ConfigError as e:
+            print(f"vibeaudit: {e}", file=sys.stderr)
+            return 2
+        opts.excludes += a.exclude
+        return review.run(a.path, a.diff, opts, a.post, max(0, a.max_comments), print,
+                          lambda m: print(f"vibeaudit: {m}", file=sys.stderr))
     if a.command == "watch":
         from . import watch
 

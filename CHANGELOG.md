@@ -12,6 +12,12 @@ All notable changes to this project are documented here. The format follows
   for secrets, from the staged content and one `git diff` call, without scanning the rest of the project.
   CI holds it under 150 ms on a 3-file commit in a 300-file repository; `tools/hook_latency.py` compares it
   with the full `vibeaudit` hook on corpus repositories.
+- `vibeaudit review --diff REV`: pull request review comments for the findings on changed lines, with a
+  one-click GitHub suggestion when a `vibeaudit fix` codemod rewrites the line inside the diff. `--post`
+  sends them with GITHUB_TOKEN and skips comments an earlier run already posted; the action posts them with
+  `review: "true"`. Text from the repository is neutralised (no @mentions, no injected markers).
+- `--fail-on-regression N`: fail when the whole project's score drops more than N points below the score in
+  the `--baseline` report, computed before `--baseline`, `--diff` and `--staged` hide findings.
 
 ## [0.8.2] - 2026-11-12
 
