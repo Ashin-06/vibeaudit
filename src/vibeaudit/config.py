@@ -95,7 +95,12 @@ def load(root: Path, explicit: Optional[str] = None) -> Tuple[Dict[str, object],
 def project_options(root: str, config: Optional[str] = None, **overrides):
     """Options for scanning `root` with its own configuration file (or `config`) applied, then `overrides` on
     top. Used by the Python API, the MCP server, `vibeaudit routes` and `vibeaudit feedback`, so every entry
-    point sees the same auth helpers, sanitizers, exclusions and disabled rules as `vibeaudit scan`."""
+    point sees the same auth helpers, sanitizers, exclusions and disabled rules as `vibeaudit scan`.
+
+    The file's `llm` keys are left out: the config is part of the scanned repository, and these entry points
+    (the LSP server and watch re-scan on every edit, an agent calls the MCP tools often) have no --no-config,
+    so a repository must not be able to make them send its code to a model provider on the user's key. Only
+    `vibeaudit scan` reads them; pass llm= here to turn it on."""
     from .scanner import Options
 
     cfg, cfg_path = load(Path(root), config)
@@ -106,7 +111,7 @@ def project_options(root: str, config: Optional[str] = None, **overrides):
     values = {
         "offline": bool(cfg.get("offline", False)), "excludes": list(cfg.get("exclude", [])),  # type: ignore[call-overload]
         "disabled": disabled, "min_severity": cfg.get("min_severity", "low"),  # as the CLI "external": cfg.get("external", "auto"),
-        "baseline": baseline, "max_file_bytes": cfg.get("max_file_size", 1_000_000), "llm": cfg.get("llm"),
+        "baseline": baseline, "max_file_bytes": cfg.get("max_file_size", 1_000_000), "llm": None,
         "llm_model": cfg.get("llm_model"), "llm_max_requests": cfg.get("llm_max_requests", 10),
         "file_timeout": float(cfg.get("file_timeout", 30.0)),  # type: ignore[arg-type]
         "auth_helpers": list(cfg.get("auth_helpers", [])), "sanitizers": list(cfg.get("sanitizers", [])),  # type: ignore[call-overload]

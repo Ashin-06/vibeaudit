@@ -336,9 +336,10 @@ public-paths = ["/api/public/*", "/api/survey-*"]              # intentionally u
 ```
 
 Other keys: `include-preview`, `gate-severe-preview`, `monorepo`, `llm`, `llm-model`, `llm-max-requests`, `max-file-size`, `file-timeout`. The same settings apply
-to `vibeaudit scan`, `vibeaudit routes`, `vibeaudit feedback`, the MCP server and the Python API. The file is
-part of the scanned repository and can switch rules off: when you audit code you do not trust, use
-`--no-config`.
+to `vibeaudit scan`, `vibeaudit routes`, `vibeaudit feedback`, the MCP server and the Python API, except `llm`,
+which only `vibeaudit scan` reads: the LSP server, watch, studio, the MCP server and the API never send code to a
+model provider because a repository's config asks for it. The file is part of the scanned repository and can
+switch rules off: when you audit code you do not trust, use `--no-config`.
 
 ## CI and pre-commit
 
