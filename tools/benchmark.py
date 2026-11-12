@@ -52,7 +52,7 @@ BASELINE = BENCH / "baseline.json"
 SEEDED_DIRS = [ROOT / "tests" / "fixtures", BENCH / "seeded"]
 MARKER = re.compile(r"expect:\s*([A-Z]+[0-9]+(?:\s*,\s*[A-Z]+[0-9]+)*)")
 # rules whose result depends on the network (registry, OSV) are measured on seeded cases only
-NETWORK_RULES = {"DEP001", "DEP003", "DEP004"}
+NETWORK_RULES = {"DEP001", "DEP003", "DEP004", "DEP009"}
 
 
 def cache_dir() -> Path:

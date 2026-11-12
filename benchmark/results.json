@@ -2559,6 +2559,20 @@
    "seeded_recall": 1.0,
    "by_repo": {}
   },
+  "DEP009": {
+   "title": "Transitive dependency with known vulnerabilities",
+   "preview": true,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 0,
+   "seeded_found": 0,
+   "seeded_recall": null,
+   "by_repo": {}
+  },
   "FE001": {
    "title": "Cross-site scripting through a raw HTML sink",
    "preview": true,

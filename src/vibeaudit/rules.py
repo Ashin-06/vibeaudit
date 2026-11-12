@@ -41,6 +41,7 @@ class Rule:
     gates_in_preview: bool = False
 
 
+NEW_IN_085 = "New in 0.8.5: measured on seeded cases only, since it depends on OSV data."
 NEW_IN_084 = "New in 0.8.4: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_083 = "New in 0.8.3: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_081 = "New in 0.8.1: not yet measured on enough held-out findings in the benchmark."
@@ -150,6 +151,12 @@ _R = [
          "Use a single index that proxies PyPI (--index-url), or pin each private package to its index "
          "(uv `[[tool.uv.index]]` with `explicit = true`) and use hashes.", "CWE-427", "A08:2021",
          preview=True, preview_reason=NEW_IN_070),
+    Rule("DEP009", "Transitive dependency with known vulnerabilities", "supply-chain", "high",
+         "A package installed through the lockfile, though no manifest names it, has published vulnerabilities. "
+         "It ships with the app like any direct dependency.",
+         "Update the direct dependency that pulls it in, or pin a fixed version with an override (npm "
+         "`overrides`, pnpm or yarn `resolutions`, a constraint file for Python).", "CWE-1395", "A06:2021",
+         preview=True, preview_reason=NEW_IN_085),
     # ---------------------------------------------------------------- backend
     Rule("BE001", "SQL injection", "backend", "high",
          "Building SQL with string formatting lets an attacker change the query: read other users' data, "
