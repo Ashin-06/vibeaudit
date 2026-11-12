@@ -227,6 +227,14 @@ class SourceFile:
         self.signature: Optional[tuple] = None  # (mtime_ns, size) when discovered; see Project.refresh
         self.overlay: Optional[bytes] = None  # unsaved editor content used instead of the file (language server)
 
+    @classmethod
+    def from_text(cls, root: Path, rel: str, text: str) -> "SourceFile":
+        """A file whose content is given (staged content from git) rather than read from disk."""
+        sf = cls(root, rel)
+        sf._loaded = True
+        sf._text = text.replace("\r\n", "\n").replace("\r", "\n")
+        return sf
+
     @property
     def text(self) -> Optional[str]:
         _read(self)
@@ -434,6 +442,20 @@ class Project:
                 sf.signature = sig
                 sf.overlay = overlay
             sf.secrets_only = bundle
+            self.files.append(sf)
+            self._by_rel[rel] = sf
+        # unsaved content for a file that does not exist yet (an agent about to write it): same rules as above
+        for rel in sorted(set(self.overlays) - set(self._by_rel)):
+            parts = rel.split("/")
+            if (self.root / rel).exists() or any(p in SKIP_DIRS for p in parts[:-1]) or self._in_venv(parts) \
+                    or _matches(rel, self.excludes) or os.path.splitext(rel)[1].lower() in BINARY_EXTS:
+                continue  # on disk, but left out by the rules above
+            overlay = self.overlays[rel]
+            sig = ("overlay", len(overlay), hash(overlay))
+            sf = previous.get(rel) if previous else None
+            if sf is None or sf.signature != sig:
+                sf = SourceFile(self.root, rel, self.max_bytes)
+                sf.signature, sf.overlay = sig, overlay
             self.files.append(sf)
             self._by_rel[rel] = sf
 

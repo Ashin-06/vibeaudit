@@ -327,6 +327,14 @@ repos:
       - id: vibeaudit
 ```
 
+The `vibeaudit` hook analyses the whole project and reports findings on the staged lines, which takes a
+few seconds on a medium project. For a hook that never slows a commit down, use `vibeaudit-secrets`
+instead (or as well, with `vibeaudit` in CI): it runs only the secret checks, which need nothing but the
+file itself, on the staged content of the changed files, with one `git diff` call and without scanning the
+rest of the project. On a 300-file repository it takes about 0.2 s on Windows, most of it Python and git
+starting, against 1 to 5.5 s for the full hook on medium corpus repositories (`tools/hook_latency.py`). The
+same command is `vibeaudit-hook`. Settings, `vibeaudit: ignore` comments, the baseline and feedback apply.
+
 ## Editors (VS Code, Cursor and other LSP clients)
 
 `vibeaudit lsp` is a [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) server
@@ -357,8 +365,11 @@ read-only:
 | --- | --- |
 | `scan_project` | Audit a directory (optionally only changed lines: `changes: "staged"` or a git revision). |
 | `scan_file` | Audit one file in the context of its project. |
+| `audit_current_file` | Audit the file being edited, also from unsaved or not yet written `content`; repeated calls reuse unchanged files. |
 | `list_routes` | The routes inventory. |
 | `check_package` | Before adding a dependency: does it exist, is it brand new, is it a typosquat, known vulnerabilities. |
+| `verify_package` | `check_package` plus a verdict (ok, caution, block) with reasons, the real package for a Python import name (`cv2` is `opencv-python`) and whether the `project` already declares it. |
+| `simulate_migration` | Dry-run a PostgreSQL migration (`path` to a .sql file, or `sql`): per statement the lock, what it blocks, table rewrites, data loss and a safer alternative. |
 | `explain_rule` | What a rule means and how to fix it. |
 | `auto_repair` | The `vibeaudit fix` diff for a directory (optionally one `file` or some `rules`); it writes nothing. |
 

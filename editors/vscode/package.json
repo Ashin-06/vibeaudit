@@ -13,7 +13,9 @@
   "engines": {
     "vscode": "^1.82.0"
   },
-  "categories": ["Linters"],
+  "categories": [
+    "Linters"
+  ],
   "main": "./extension.js",
   "activationEvents": [
     "onLanguage:python",
@@ -43,8 +45,12 @@
         },
         "vibeaudit.serverArgs": {
           "type": "array",
-          "items": { "type": "string" },
-          "default": ["lsp"],
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "lsp"
+          ],
           "scope": "machine",
           "description": "Arguments that start the language server."
         }
@@ -65,5 +71,11 @@
   },
   "scripts": {
     "package": "vsce package --out vibeaudit.vsix"
+  },
+  "overrides": {
+    "@vscode/vsce": {
+      "glob": "14.0.3",
+      "minimatch": "11.0.3"
+    }
   }
 }

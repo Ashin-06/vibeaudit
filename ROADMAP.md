@@ -82,8 +82,8 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | VS Code / Cursor extension (.vsix built in CI, not published) | done (`editors/vscode`; 0.8.2) |
 | `vibeaudit studio` local web UI (127.0.0.1 only) | planned |
 | PR review bot and `--fail-on-regression N` | planned |
-| Pre-commit fast path under 150 ms | planned |
-| MCP tools: audit_current_file, verify_package, simulate_migration | planned (auto_repair: done in Phase 2) |
+| Pre-commit fast path under 150 ms | done, unreleased (`vibeaudit-secrets` hook; budget enforced in CI on Linux) |
+| MCP tools: audit_current_file, verify_package, simulate_migration | done, unreleased (auto_repair: done in Phase 2) |
 | GitLab CI and CircleCI templates | planned |
 | Monorepo mode | planned |
 | Offline / air-gapped mode with bundled data | planned |
