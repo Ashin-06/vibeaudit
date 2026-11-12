@@ -535,6 +535,17 @@ class DepScanner:
             for d in deps:
                 if (d.ecosystem, d.name) in squats:
                     self.add(d, "DEP002", f"`{d.name}` is one character away from the popular package `{squats[(d.ecosystem, d.name)]}`.")
+            from . import bundle
+
+            found, missing = bundle.offline_vulns(deps)
+            used = sorted({d.ecosystem for d in deps if d.version and d.checkable} - set(missing))
+            if used:
+                self.notes.append("Offline: known vulnerabilities checked against the imported OSV index ("
+                                  + ", ".join(f"{e} from {bundle.index_age(e)}" for e in used) + ").")
+            if missing:
+                self.notes.append(f"Offline: known vulnerabilities of {', '.join(missing)} packages were not checked "
+                                  "(import a bundle made with `vibeaudit update --export FILE --osv ...`).")
+            self._report_vulns(deps, found)
             return
         known_pypi, _ = popular("PyPI")
         known_npm, _ = popular("npm")
@@ -568,6 +579,9 @@ class DepScanner:
         except ConnectionError:
             self.notes.append("OSV vulnerability lookup failed (network); known CVEs were not checked.")
             return
+        self._report_vulns(deps, vulns)
+
+    def _report_vulns(self, deps: List[Dep], vulns: Dict[Tuple[str, str, str], List[dict]]) -> None:
         reported = set()
         for d in deps:
             key = (d.ecosystem, d.name, d.version or "")
