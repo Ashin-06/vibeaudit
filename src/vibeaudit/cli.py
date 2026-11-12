@@ -127,6 +127,15 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("mcp", help="run a Model Context Protocol server on stdio for coding agents")
     sub.add_parser("lsp", help="run a Language Server Protocol server on stdio (diagnostics and fix code actions for editors)")
 
+    st = sub.add_parser("studio", help="open a local web UI: routes, data flows and the score of one project",
+                        description="Scan the project and serve a web UI on 127.0.0.1 only, with a random token in "
+                                    "the link: routes with auth, write and AI badges, data flows from user input and "
+                                    "model output to sinks, and the score by domain, category and rule.")
+    st.add_argument("path", nargs="?", default=".", help="project directory (default: current directory)")
+    st.add_argument("--port", type=int, default=0, help="port on 127.0.0.1 (default: any free port)")
+    st.add_argument("--no-browser", action="store_true", help="print the link instead of opening a browser")
+    st.add_argument("--config", metavar="FILE", help="read settings from this TOML file, as for scan")
+
     e = sub.add_parser("explain", help="explain one finding: the rule, the code and the data flow that led to it",
                        description="Scan the project and explain the findings that match FINDING: FILE:LINE, "
                                    "FILE:LINE:RULE or a fingerprint prefix (from a JSON or SARIF report).")
@@ -511,6 +520,22 @@ def main(argv: Optional[List[str]] = None) -> int:
         return cmd_rules(a.format)
     if a.command == "explain":
         return cmd_explain(a)
+    if a.command == "studio":
+        from . import studio
+        from .config import project_options
+
+        if not os.path.isdir(a.path):
+            print(f"vibeaudit: not a directory: {a.path}", file=sys.stderr)
+            return 2
+        if not 0 <= a.port <= 65535:
+            print("vibeaudit: --port must be between 0 and 65535", file=sys.stderr)
+            return 2
+        try:
+            opts = project_options(a.path, a.config, offline=True, external="none")
+        except ConfigError as e:
+            print(f"vibeaudit: {e}", file=sys.stderr)
+            return 2
+        return studio.main(a.path, opts, a.port, not a.no_browser)
     if a.command == "routes":
         return cmd_routes(a)
     if a.command == "lsp":
