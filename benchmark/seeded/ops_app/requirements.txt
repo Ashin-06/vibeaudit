@@ -1,0 +1,4 @@
+pinecone
+redis
+stripe
+celery

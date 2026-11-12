@@ -713,6 +713,14 @@
    "fingerprint": "b20f50526ede897365a6a4ebd9c8aa72",
    "verdict": "tp",
    "reason": "The img has no width, height or sizing class or style."
+  },
+  {
+   "rule": "DATA015",
+   "file": "dashboard/views.py",
+   "line": 18,
+   "fingerprint": "56d81824740ddf585dc8c70c5c110c92",
+   "verdict": "tp",
+   "reason": "Cache-aside read: on a miss every concurrent request rebuilds the dashboard metrics; no lock or single-flight."
   }
  ]
 }

@@ -4,6 +4,26 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.8.8] - 2026-11-13
+
+Phase 1 is complete: the last data, operations and CI checks.
+
+### Added
+
+- Four preview rules:
+  - DATA014: personal data (email, phone, name, address, date of birth) stored in vector store metadata.
+  - DATA015: a cache-aside read that recomputes on a miss with no lock or single-flight (cache stampede).
+  - DATA016: a queue or scheduled job that charges, emails or inserts with nothing that makes a retry safe
+    (no idempotency key, processed-job record, upsert or unique constraint).
+  - CFG018: a `pull_request_target` workflow that checks out the pull request's code while secrets are
+    available.
+
+### Fixed
+
+- Files with thousands of unclosed brackets no longer slow the JavaScript analysis down quadratically:
+  bracket matching and statement ends now use one pairing pass per file (a hostile file took 30 to 90
+  seconds, now a few). Results on well-formed code are unchanged, which tests check against the old scan.
+
 ## [0.8.7] - 2026-11-13
 
 Phase 1 adds the remaining access-control checks.

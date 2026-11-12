@@ -41,6 +41,7 @@ class Rule:
     gates_in_preview: bool = False
 
 
+NEW_IN_088 = "New in 0.8.8: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_087 = "New in 0.8.7: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_086 = "New in 0.8.6: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_085 = "New in 0.8.5: measured on seeded cases only, since it depends on OSV data."
@@ -486,6 +487,12 @@ _R = [
          "Use build secrets (`RUN --mount=type=secret,id=npmrc ...`), keep secret files out of the final stage, "
          "and copy only build output from earlier stages.", "CWE-538", "A05:2021",
          preview=True, preview_reason=NEW_IN_083),
+    Rule("CFG018", "Pull request code run with secrets (pull_request_target)", "config", "critical",
+         "A pull_request_target workflow runs with this repository's secrets and a write token, and this one checks "
+         "out the pull request's code. Anyone who opens a pull request from a fork can run code with your secrets.",
+         "Use the pull_request trigger for code from forks, or keep pull_request_target jobs to the base branch's code "
+         "and pass untrusted data only as inputs or artifacts.", "CWE-829", "A08:2021",
+         preview=True, preview_reason=NEW_IN_088),
     # -------------------------------------------------------------------- llm
     Rule("LLM001", "Untrusted input placed in the system prompt", "llm", "high",
          "User text inside the system prompt gets system-level authority, which makes prompt injection "
@@ -661,6 +668,23 @@ _R = [
          "counters then grow until Redis runs out of memory or starts evicting keys you need.",
          "Set an expiry when writing (`set(key, value, ex=3600)`, `set(key, value, { EX: 3600 })`) or call "
          "`expire` right after.", "CWE-401", "", preview=True, preview_reason=NEW_IN_083),
+    Rule("DATA014", "Personal data in vector store metadata", "data", "medium",
+         "Emails, phone numbers, names or addresses are stored as vector metadata. Metadata comes back with every "
+         "search hit (and can reach the model and other users), and most vector stores make it hard to find and "
+         "delete one person's data.",
+         "Store an opaque id in the metadata and keep personal data in your database, where access rules and "
+         "deletion requests apply.", "CWE-359", "LLM02:2025", preview=True, preview_reason=NEW_IN_088),
+    Rule("DATA015", "Cache refilled without a lock (stampede)", "data", "low",
+         "On a cache miss each request recomputes the value itself. When a hot key expires, every request in that "
+         "moment runs the same expensive query or call at once.",
+         "Let one request refill the key while the others wait or serve the stale value (a lock with SET NX, "
+         "single-flight, stale-while-revalidate, or a caching library that does this).", "CWE-400", "",
+         preview=True, preview_reason=NEW_IN_088),
+    Rule("DATA016", "Background job not safe to retry", "data", "medium",
+         "Queues and schedulers retry jobs after errors and timeouts, and sometimes deliver a job twice. This job "
+         "charges, emails or inserts with nothing that makes a second run harmless.",
+         "Make the job idempotent: pass an idempotency key to payment APIs, record processed job ids, or use an "
+         "upsert or a unique constraint.", "CWE-837", "", preview=True, preview_reason=NEW_IN_088),
     Rule("REL001", "Outbound HTTP request without a timeout", "reliability", "medium",
          "`requests` and `urlopen` wait forever by default. One slow or dead upstream API ties up a worker per "
          "request until the whole service stops responding.",

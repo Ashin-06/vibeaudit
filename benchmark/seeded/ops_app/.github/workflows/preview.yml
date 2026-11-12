@@ -1,0 +1,15 @@
+on:
+  pull_request_target:
+    types: [opened, synchronize]
+permissions:
+  contents: read
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }} # expect: CFG018
+      - run: npm ci && npm run build
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}

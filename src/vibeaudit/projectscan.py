@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Callable, Dict, List, Optional
 
 from . import heuristics as H
-from . import accessscan, agentscan, apiscan, iacscan as iac, promptscan, slopscan, storagescan
+from . import accessscan, agentscan, apiscan, iacscan as iac, opsscan, promptscan, slopscan, storagescan
 from .guard import GUARD, finditer
 from .files import ENV_EXAMPLE_RE, ENV_FILE_RE, TEST_PATH_RE, Project, SourceFile, read_ignore_file, _matches
 from .lexer import py_views
@@ -401,6 +401,7 @@ class ProjectScanner:
         agentscan.run(self.p, self.routes, self.add)
         promptscan.run(self.p, self.routes, self.add)
         accessscan.run(self.p, self.routes, self.add)
+        opsscan.run(self.p, self.add)
         storagescan.run(self.p, self.add)
         slopscan.run(self.p, self.add)
 

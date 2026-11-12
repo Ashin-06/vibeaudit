@@ -152,8 +152,8 @@
    "fixed_fp": 3
   },
   "djangoproject.com": {
-   "findings": 26,
-   "labelled": 26,
+   "findings": 27,
+   "labelled": 27,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 63
@@ -2038,6 +2038,20 @@
     ]
    }
   },
+  "CFG018": {
+   "title": "Pull request code run with secrets (pull_request_target)",
+   "preview": true,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
   "DATA001": {
    "title": "Database query inside a loop (N+1)",
    "preview": true,
@@ -2447,6 +2461,54 @@
      0
     ]
    }
+  },
+  "DATA014": {
+   "title": "Personal data in vector store metadata",
+   "preview": true,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "DATA015": {
+   "title": "Cache refilled without a lock (stampede)",
+   "preview": true,
+   "tp": 1,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "djangoproject.com": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "DATA016": {
+   "title": "Background job not safe to retry",
+   "preview": true,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
   },
   "DEP001": {
    "title": "Dependency does not exist on the registry",
