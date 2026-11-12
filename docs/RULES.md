@@ -3,9 +3,9 @@
 Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do not edit by hand.
 `vibeaudit rules` prints the same list, and `vibeaudit rules --format json` includes every field.
 
-153 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
+157 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-53 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+57 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -495,6 +495,7 @@ References: CWE-93, A03:2021
 | [FE005](#fe005) | low | stable | Auth token stored in localStorage |
 | [FE006](#fe006) | low | stable | Production source maps enabled |
 | [FE007](#fe007) | low | preview | Hardcoded localhost URL in frontend code |
+| [FE008](#fe008) | high | preview | Server action exposes a server secret |
 
 ### FE001
 
@@ -570,6 +571,18 @@ How to fix: Read the API base URL from configuration or use relative paths.
 
 References: CWE-1188
 
+### FE008
+
+**Server action exposes a server secret** (high, preview)
+
+Preview: New in 0.8.7: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: A server action returns a secret from the server environment, or an inline server action closes over one. Return values go to the browser, and Next.js sends closed-over values to the browser (encrypted) too.
+
+How to fix: Never return secrets from server actions, and read secrets inside the action body instead of closing over them.
+
+References: CWE-200, A02:2021
+
 ## Authentication and authorization
 
 | ID | Severity | Status | Rule |
@@ -588,6 +601,9 @@ References: CWE-1188
 | [AUTH012](#auth012) | medium | preview | Session cookie without SameSite and no CSRF protection |
 | [AUTH013](#auth013) | medium | preview | Webhook signature without replay protection |
 | [AUTH014](#auth014) | medium | preview | Rate limit keyed on a client-controlled header |
+| [AUTH015](#auth015) | medium | preview | Password change keeps old sessions valid |
+| [AUTH016](#auth016) | high | preview | Query not scoped to the current tenant |
+| [AUTH017](#auth017) | high | preview | Admin or feature-flag endpoint without a role check |
 
 ### AUTH001
 
@@ -736,6 +752,42 @@ Why it matters: X-Forwarded-For is whatever the client sends unless a trusted pr
 How to fix: Use the address your proxy sets (configure `trust proxy` / ProxyFix and read `req.ip`), take the last hop, or key the limit on the authenticated user.
 
 References: CWE-348, A04:2021
+
+### AUTH015
+
+**Password change keeps old sessions valid** (medium, preview)
+
+Preview: New in 0.8.7: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: After a password change or reset, every existing session and refresh token still works. Someone who stole the account stays signed in after the owner changes the password.
+
+How to fix: Revoke the user's other sessions and refresh tokens when the password changes (delete them, bump a token version, or sign out with a global scope).
+
+References: CWE-613, A07:2021
+
+### AUTH016
+
+**Query not scoped to the current tenant** (high, preview)
+
+Preview: New in 0.8.7: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: The table has a tenant column (org_id, team_id, workspace_id), but this signed-in route reads or changes it without filtering by the user's tenant, so users can reach other organizations' data.
+
+How to fix: Filter every query on tenant-scoped tables by the current user's tenant, or enforce it in the database (row level security).
+
+References: CWE-639, A01:2021
+
+### AUTH017
+
+**Admin or feature-flag endpoint without a role check** (high, preview)
+
+Preview: New in 0.8.7: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: An admin, feature-flag or maintenance endpoint changes state for everyone, and any signed-in user can call it. (Endpoints with no authentication at all are AUTH001.)
+
+How to fix: Check an admin role or permission in the handler or in middleware on the admin routes.
+
+References: CWE-285, A01:2021
 
 ## Configuration and deployment
 
@@ -1235,7 +1287,7 @@ References: CWE-1164
 
 **Prompt-injection text in an agent instruction file** (high, preview)
 
-Preview: New in 0.8.7: not yet measured on enough held-out findings in the benchmark.
+Preview: New in 0.8.8: not yet measured on enough held-out findings in the benchmark.
 
 Why it matters: Coding agents follow CLAUDE.md, AGENTS.md, .cursorrules and similar files as if the developer wrote them. Text that tells the agent to ignore its instructions or to hide what it does, or characters a reviewer cannot see, turns a pull request or a copied rules file into control of the agent. The patterns come from vibeaudit's threat feed (refreshed by `vibeaudit update`).
 

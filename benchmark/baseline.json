@@ -239,6 +239,26 @@
    "seeded_recall": 1.0,
    "by_repo": {}
   },
+  "AUTH015": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "full-stack-fastapi-template": [
+     2,
+     0
+    ]
+   }
+  },
+  "AUTH016": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "AUTH017": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
   "BE001": {
    "precision": 0.9259,
    "seeded_recall": 1.0,
@@ -1430,6 +1450,11 @@
      0
     ]
    }
+  },
+  "FE008": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
   },
   "LLM001": {
    "precision": null,

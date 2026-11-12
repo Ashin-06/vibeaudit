@@ -19,7 +19,7 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 
 | Item | Status |
 | --- | --- |
-| React server actions leaking secrets or server closures to the client | planned |
+| React server actions leaking secrets or server closures to the client | preview (FE008; 0.8.7) |
 | Hydration mismatches: window sizes, `new Date()`, random ids during render (extends UI007) | done (UI007 also covers `window.innerWidth`/`innerHeight` and `crypto.randomUUID()`; 0.7.1) |
 | Images without width and height (layout shift) | preview (UI014; 0.7.1, 10 of 11 true on the corpus) |
 | Form errors without `aria-describedby` | preview (UI015; 0.7.1, 8 of 8) |
@@ -33,9 +33,9 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | Email header injection | preview (BE020; 0.7.2) |
 | Open redirects and SSRF in "fetch this URL" features (extends BE005/BE008) | done (BE005 and BE008 report request data in outbound URLs and redirects; regression tests in 0.8.6) |
 | JWT verified without pinned algorithms (alg none, HMAC/RSA confusion) | preview (AUTH011; alg none is BE016; 0.7.2) |
-| Password change or reset not revoking sessions and refresh tokens | planned |
-| Queries not scoped to the current tenant or org (extends AUTH003) | planned |
-| Feature flags or admin toggles reachable without auth | planned |
+| Password change or reset not revoking sessions and refresh tokens | preview (AUTH015; 0.8.7) |
+| Queries not scoped to the current tenant or org (extends AUTH003) | preview (AUTH016; 0.8.7) |
+| Feature flags or admin toggles reachable without auth | done for no auth at all (AUTH001); preview for no role check (AUTH017; 0.8.7) |
 | User text in prompts without delimiters (extends LLM001) | preview (LLM021; 0.8.6) |
 | RAG ingestion storing unsanitised text or instructions (chunk poisoning) | preview (LLM022; 0.8.6) |
 | Agent tool loops without a max iteration limit (extends LLM009) | preview (LLM020; 0.8.6) |

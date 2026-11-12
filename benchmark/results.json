@@ -173,8 +173,8 @@
    "fixed_fp": 6
   },
   "full-stack-fastapi-template": {
-   "findings": 8,
-   "labelled": 8,
+   "findings": 10,
+   "labelled": 10,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 4
@@ -807,6 +807,54 @@
   },
   "AUTH014": {
    "title": "Rate limit keyed on a client-controlled header",
+   "preview": true,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "AUTH015": {
+   "title": "Password change keeps old sessions valid",
+   "preview": true,
+   "tp": 2,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "full-stack-fastapi-template": [
+     2,
+     0,
+     0
+    ]
+   }
+  },
+  "AUTH016": {
+   "title": "Query not scoped to the current tenant",
+   "preview": true,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "AUTH017": {
+   "title": "Admin or feature-flag endpoint without a role check",
    "preview": true,
    "tp": 0,
    "fp": 0,
@@ -2809,6 +2857,20 @@
      0
     ]
    }
+  },
+  "FE008": {
+   "title": "Server action exposes a server secret",
+   "preview": true,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
   },
   "LLM001": {
    "title": "Untrusted input placed in the system prompt",

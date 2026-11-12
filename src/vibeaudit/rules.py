@@ -41,6 +41,7 @@ class Rule:
     gates_in_preview: bool = False
 
 
+NEW_IN_088 = "New in 0.8.8: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_087 = "New in 0.8.7: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_086 = "New in 0.8.6: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_085 = "New in 0.8.5: measured on seeded cases only, since it depends on OSV data."
@@ -314,6 +315,11 @@ _R = [
          preview=True,
          preview_reason="Benchmark precision 86% (6 of 7): a localhost URL used only when the app itself runs on "
                         "localhost is reported too."),
+    Rule("FE008", "Server action exposes a server secret", "frontend", "high",
+         "A server action returns a secret from the server environment, or an inline server action closes over one. "
+         "Return values go to the browser, and Next.js sends closed-over values to the browser (encrypted) too.",
+         "Never return secrets from server actions, and read secrets inside the action body instead of closing over "
+         "them.", "CWE-200", "A02:2021", preview=True, preview_reason=NEW_IN_087),
     # ------------------------------------------------------------------- auth
     Rule("AUTH001", "State-changing endpoint without authentication", "auth", "high",
          "This endpoint creates, changes or deletes data but no authentication check was found, so anyone "
@@ -385,6 +391,22 @@ _R = [
          "Use the address your proxy sets (configure `trust proxy` / ProxyFix and read `req.ip`), take the "
          "last hop, or key the limit on the authenticated user.", "CWE-348", "A04:2021",
          preview=True, preview_reason=NEW_IN_072),
+    Rule("AUTH015", "Password change keeps old sessions valid", "auth", "medium",
+         "After a password change or reset, every existing session and refresh token still works. Someone who "
+         "stole the account stays signed in after the owner changes the password.",
+         "Revoke the user's other sessions and refresh tokens when the password changes (delete them, bump a "
+         "token version, or sign out with a global scope).", "CWE-613", "A07:2021",
+         preview=True, preview_reason=NEW_IN_087),
+    Rule("AUTH016", "Query not scoped to the current tenant", "auth", "high",
+         "The table has a tenant column (org_id, team_id, workspace_id), but this signed-in route reads or changes it "
+         "without filtering by the user's tenant, so users can reach other organizations' data.",
+         "Filter every query on tenant-scoped tables by the current user's tenant, or enforce it in the database "
+         "(row level security).", "CWE-639", "A01:2021", preview=True, preview_reason=NEW_IN_087),
+    Rule("AUTH017", "Admin or feature-flag endpoint without a role check", "auth", "high",
+         "An admin, feature-flag or maintenance endpoint changes state for everyone, and any signed-in user can call "
+         "it. (Endpoints with no authentication at all are AUTH001.)",
+         "Check an admin role or permission in the handler or in middleware on the admin routes.", "CWE-285",
+         "A01:2021", preview=True, preview_reason=NEW_IN_087),
     # ----------------------------------------------------------------- config
     Rule("CFG001", "Container runs as root", "config", "low",
          "If the app is compromised the attacker is root inside the container, which makes escaping and "
@@ -749,7 +771,7 @@ _R = [
          "cannot see, turns a pull request or a copied rules file into control of the agent. The patterns come "
          "from vibeaudit's threat feed (refreshed by `vibeaudit update`).",
          "Read the file in a viewer that shows hidden characters, remove the injected text, and review who changed "
-         "the file.", "CWE-77", "LLM01:2025", preview=True, preview_reason=NEW_IN_087),
+         "the file.", "CWE-77", "LLM01:2025", preview=True, preview_reason=NEW_IN_088),
     # ------------------------------------------------------- UI, UX and a11y
     Rule("UI001", "Image without alt text", "ui", "low",
          "Screen-reader users get the file name or nothing, and the image is invisible to search engines.",
