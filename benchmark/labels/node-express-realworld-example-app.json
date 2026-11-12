@@ -121,6 +121,38 @@
    "fingerprint": "c661b8cf49ab0d646483e635f15588f0",
    "verdict": "tp",
    "reason": "The migration drops ArticleTags without copying its rows into _ArticleToTag; Prisma warns the data is lost."
+  },
+  {
+   "rule": "DATA012",
+   "file": "src/prisma/migrations/20210924225358_initial/migration.sql",
+   "line": 90,
+   "fingerprint": "eb7097061d58d575bc7d6ddfb824fb57",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "src/prisma/migrations/20210924225358_initial/migration.sql",
+   "line": 96,
+   "fingerprint": "df1c9675b054465e8b95c9ac2b9a7fec",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "src/prisma/migrations/20210924225358_initial/migration.sql",
+   "line": 99,
+   "fingerprint": "fb1a790c214124a82abb964fc33002ac",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "src/prisma/migrations/20210924225358_initial/migration.sql",
+   "line": 102,
+   "fingerprint": "c171c1edf71743f2d18206d12a0a1f75",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
   }
  ]
 }

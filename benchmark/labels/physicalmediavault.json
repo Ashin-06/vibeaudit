@@ -97,6 +97,14 @@
    "fingerprint": "4cd1888bbb6b32ff68f08fdf09322680",
    "verdict": "fp",
    "reason": "Wildcard CORS without credentials: browsers send no cookies, so no call as the logged-in user."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20260303090555_13653d91-5a3d-4492-9692-3e0af18ad426.sql",
+   "line": 5,
+   "fingerprint": "1868850a6ed1a926c63c796b279678be",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
   }
  ]
 }

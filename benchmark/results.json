@@ -19,8 +19,8 @@
  ],
  "repos": {
   "act-solo-ai": {
-   "findings": 19,
-   "labelled": 19,
+   "findings": 20,
+   "labelled": 20,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 4
@@ -40,29 +40,29 @@
    "fixed_fp": 4
   },
   "LinguaLearn": {
-   "findings": 48,
-   "labelled": 48,
+   "findings": 50,
+   "labelled": 50,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 6
   },
   "physicalmediavault": {
-   "findings": 8,
-   "labelled": 8,
+   "findings": 9,
+   "labelled": 9,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 4
   },
   "prompt-sculptor-49": {
-   "findings": 65,
-   "labelled": 65,
+   "findings": 82,
+   "labelled": 82,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 17
   },
   "scriptforge-ai": {
-   "findings": 15,
-   "labelled": 15,
+   "findings": 16,
+   "labelled": 16,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 7
@@ -75,8 +75,8 @@
    "fixed_fp": 8
   },
   "ai-chatbot": {
-   "findings": 20,
-   "labelled": 20,
+   "findings": 26,
+   "labelled": 26,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
@@ -89,15 +89,15 @@
    "fixed_fp": 4
   },
   "chatbot-ui": {
-   "findings": 58,
-   "labelled": 58,
+   "findings": 74,
+   "labelled": 74,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 1
   },
   "chatgpt-your-files": {
-   "findings": 10,
-   "labelled": 10,
+   "findings": 14,
+   "labelled": 14,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 4
@@ -110,8 +110,8 @@
    "fixed_fp": 0
   },
   "opengpts": {
-   "findings": 45,
-   "labelled": 45,
+   "findings": 48,
+   "labelled": 48,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 27
@@ -124,8 +124,8 @@
    "fixed_fp": 4
   },
   "sec-insights": {
-   "findings": 41,
-   "labelled": 41,
+   "findings": 42,
+   "labelled": 42,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 10
@@ -194,8 +194,8 @@
    "fixed_fp": 10
   },
   "nextjs-subscription-payments": {
-   "findings": 7,
-   "labelled": 7,
+   "findings": 13,
+   "labelled": 13,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 2
@@ -208,8 +208,8 @@
    "fixed_fp": 2
   },
   "node-express-realworld-example-app": {
-   "findings": 11,
-   "labelled": 11,
+   "findings": 15,
+   "labelled": 15,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 4
@@ -250,8 +250,8 @@
    "fixed_fp": 0
   },
   "thynk": {
-   "findings": 30,
-   "labelled": 30,
+   "findings": 36,
+   "labelled": 36,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
@@ -271,8 +271,8 @@
    "fixed_fp": 0
   },
   "saas-starter": {
-   "findings": 3,
-   "labelled": 3,
+   "findings": 9,
+   "labelled": 9,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
@@ -334,8 +334,8 @@
    "fixed_fp": 0
   },
   "dvpwa": {
-   "findings": 8,
-   "labelled": 8,
+   "findings": 11,
+   "labelled": 11,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 4
@@ -383,8 +383,8 @@
    "fixed_fp": 0
   },
   "wsgidav": {
-   "findings": 36,
-   "labelled": 36,
+   "findings": 38,
+   "labelled": 38,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 1
@@ -1970,6 +1970,26 @@
     ]
    }
   },
+  "CFG017": {
+   "title": "Secret file or build argument in the final image",
+   "preview": true,
+   "tp": 1,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "sec-insights": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
   "DATA001": {
    "title": "Database query inside a loop (N+1)",
    "preview": true,
@@ -2257,6 +2277,125 @@
     "nextjs-subscription-payments": [
      0,
      1,
+     0
+    ]
+   }
+  },
+  "DATA011": {
+   "title": "Index built without CONCURRENTLY on an existing table",
+   "preview": true,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "DATA012": {
+   "title": "Foreign key without an index",
+   "preview": true,
+   "tp": 70,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 2,
+   "seeded_found": 2,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     2,
+     0,
+     0
+    ],
+    "act-solo-ai": [
+     1,
+     0,
+     0
+    ],
+    "ai-chatbot": [
+     6,
+     0,
+     0
+    ],
+    "chatbot-ui": [
+     16,
+     0,
+     0
+    ],
+    "chatgpt-your-files": [
+     4,
+     0,
+     0
+    ],
+    "dvpwa": [
+     3,
+     0,
+     0
+    ],
+    "nextjs-subscription-payments": [
+     6,
+     0,
+     0
+    ],
+    "node-express-realworld-example-app": [
+     4,
+     0,
+     0
+    ],
+    "opengpts": [
+     3,
+     0,
+     0
+    ],
+    "physicalmediavault": [
+     1,
+     0,
+     0
+    ],
+    "prompt-sculptor-49": [
+     17,
+     0,
+     0
+    ],
+    "saas-starter": [
+     6,
+     0,
+     0
+    ],
+    "scriptforge-ai": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "DATA013": {
+   "title": "Redis key without an expiry",
+   "preview": true,
+   "tp": 6,
+   "fp": 2,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.75,
+   "precision_pessimistic": 0.75,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "thynk": [
+     6,
+     0,
+     0
+    ],
+    "wsgidav": [
+     0,
+     2,
      0
     ]
    }

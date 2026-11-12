@@ -25,6 +25,54 @@
    "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
    "verdict": "tp",
    "reason": "No tests and no CI in the project."
+  },
+  {
+   "rule": "DATA012",
+   "file": "lib/db/migrations/0000_soft_the_anarchist.sql",
+   "line": 55,
+   "fingerprint": "73eee35abeed66f18f702fc88a99e6ad",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "lib/db/migrations/0000_soft_the_anarchist.sql",
+   "line": 61,
+   "fingerprint": "9f95f12f0e7e5b65887f198b6ddd61af",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "lib/db/migrations/0000_soft_the_anarchist.sql",
+   "line": 67,
+   "fingerprint": "bf4dd6485e1899a4403d1c1b3557c415",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "lib/db/migrations/0000_soft_the_anarchist.sql",
+   "line": 73,
+   "fingerprint": "980bc988ee6a8a9aed683aca8d3758b9",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "lib/db/migrations/0000_soft_the_anarchist.sql",
+   "line": 79,
+   "fingerprint": "0be41b187fd751d3599ead44e3baf1bb",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "lib/db/migrations/0000_soft_the_anarchist.sql",
+   "line": 85,
+   "fingerprint": "25add55d2ce003204a961bffaa7bc2f6",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
   }
  ]
 }

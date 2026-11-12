@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import functools
 import gzip
 import http.client
 import json
@@ -120,11 +121,25 @@ def parse_requirement(spec: str) -> Optional[Tuple[str, Optional[str]]]:
 
 
 def collect(project: Project) -> List[Dep]:
-    """Every declared dependency. Computed once per project: the quality and dependency scanners both need it."""
+    """Every declared dependency. Computed once per project (the quality and dependency scanners both need
+    it), and kept by a long-lived Project while the manifests and lockfiles it read are unchanged."""
+    from . import files
+
     cached = getattr(project, "_deps", None)
-    if cached is None:
-        cached = project._deps = _collect(project)  # type: ignore[attr-defined]
-    return list(cached)
+    if cached is not None and files.still_valid(project, cached[0]):
+        if files.READS is not None:
+            files.READS.update(cached[0])  # a step that uses the result depends on what it was computed from
+        return list(cached[1])
+    reads: dict = {}
+    saved, files.READS = files.READS, reads
+    try:
+        result = _collect(project)
+    finally:
+        files.READS = saved
+    if saved is not None:
+        saved.update(reads)
+    project._deps = (reads, result)  # type: ignore[attr-defined]
+    return list(result)
 
 
 def _collect(project: Project) -> List[Dep]:
@@ -134,10 +149,12 @@ def _collect(project: Project) -> List[Dep]:
         if f.rel.rsplit("/", 1)[-1] == ".npmrc" and f.text:
             npm_private_scopes |= set(re.findall(r"^\s*(@[\w-]+):registry\s*=", f.text, re.M))
     for f in project.files:
-        if f.text is None or f.is_test:
-            continue
         name = f.rel.rsplit("/", 1)[-1]
-        if re.fullmatch(r"requirements[\w.-]*\.(?:txt|in)", name) or re.search(r"(?:^|/)requirements/[^/]+\.txt$", f.rel):
+        requirements = bool(re.fullmatch(r"requirements[\w.-]*\.(?:txt|in)", name) or re.search(r"(?:^|/)requirements/[^/]+\.txt$", f.rel))
+        # the name first: only manifests are read, so a long-lived Project keeps the result while code changes
+        if not (requirements or name in ("pyproject.toml", "package.json")) or f.is_test or f.text is None:
+            continue
+        if requirements:
             private = bool(re.search(r"^\s*(?:--index-url\b|-i\s)", f.text, re.M))  # PyPI replaced by another index
             for i, line in enumerate(f.lines, 1):
                 parsed = parse_requirement(line)
@@ -211,7 +228,9 @@ def _fill_from_lockfiles(project: Project, deps: List[Dep]) -> None:
             if key not in cache:
                 path = project.root / folder / lock if folder else project.root / lock
                 try:
-                    cache[key] = (lock, path.read_text(encoding="utf-8", errors="replace") if path.is_file() else "")
+                    from .files import file_signature
+
+                    cache[key] = (lock, path.read_text(encoding="utf-8", errors="replace") if file_signature(path) else "")
                 except OSError:
                     cache[key] = (lock, "")
             version = _locked_version(*cache[key], d)
@@ -220,23 +239,38 @@ def _fill_from_lockfiles(project: Project, deps: List[Dep]) -> None:
                 break
 
 
+@functools.lru_cache(maxsize=8)
+def _parsed_toml(text: str) -> Optional[dict]:
+    """A lockfile parsed once, not once per dependency looked up in it (a poetry.lock takes seconds)."""
+    try:
+        return tomllib.loads(text)
+    except (ValueError, TypeError):
+        return None
+
+
+@functools.lru_cache(maxsize=8)
+def _parsed_json(text: str) -> object:
+    try:
+        return json.loads(text)
+    except ValueError:
+        return None
+
+
 def _locked_version(lock: str, text: str, d: Dep) -> Optional[str]:
     if not text:
         return None
     name = re.escape(d.name)
     if lock in ("poetry.lock", "uv.lock", "pdm.lock"):
-        try:
-            data = tomllib.loads(text)
-        except (ValueError, TypeError):
+        data = _parsed_toml(text)
+        if data is None:
             return None
         for pkg in data.get("package", []) if isinstance(data.get("package"), list) else []:
             if isinstance(pkg, dict) and pep503(str(pkg.get("name", ""))) == pep503(d.name) and isinstance(pkg.get("version"), str):
                 return pkg["version"]
         return None
     if lock == "Pipfile.lock":
-        try:
-            data = json.loads(text)
-        except ValueError:
+        data = _parsed_json(text)
+        if data is None:
             return None
         for section in ("default", "develop"):
             for pkg, info in _dict(_dict(data).get(section)).items():
@@ -501,6 +535,17 @@ class DepScanner:
             for d in deps:
                 if (d.ecosystem, d.name) in squats:
                     self.add(d, "DEP002", f"`{d.name}` is one character away from the popular package `{squats[(d.ecosystem, d.name)]}`.")
+            from . import bundle
+
+            found, missing = bundle.offline_vulns(deps)
+            used = sorted({d.ecosystem for d in deps if d.version and d.checkable} - set(missing))
+            if used:
+                self.notes.append("Offline: known vulnerabilities checked against the imported OSV index ("
+                                  + ", ".join(f"{e} from {bundle.index_age(e)}" for e in used) + ").")
+            if missing:
+                self.notes.append(f"Offline: known vulnerabilities of {', '.join(missing)} packages were not checked "
+                                  "(import a bundle made with `vibeaudit update --export FILE --osv ...`).")
+            self._report_vulns(deps, found)
             return
         known_pypi, _ = popular("PyPI")
         known_npm, _ = popular("npm")
@@ -534,6 +579,9 @@ class DepScanner:
         except ConnectionError:
             self.notes.append("OSV vulnerability lookup failed (network); known CVEs were not checked.")
             return
+        self._report_vulns(deps, vulns)
+
+    def _report_vulns(self, deps: List[Dep], vulns: Dict[Tuple[str, str, str], List[dict]]) -> None:
         reported = set()
         for d in deps:
             key = (d.ecosystem, d.name, d.version or "")

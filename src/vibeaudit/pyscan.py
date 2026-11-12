@@ -316,6 +316,11 @@ class PyScanner:
             if sf.text is not None:
                 GUARD.run(sf.rel, "Python parsing", self._parse, sf)
         GUARD.run("<project>", "Python call graph", self.index)
+        if GUARD.memo is not None:  # what the checks read besides their own file (see guard.NEEDS_CONTEXT)
+            GUARD.sink("py routes", self.routes)
+            GUARD.memo.context["Python checks"] = (
+                frozenset(self.llm_funcs), self.global_auth, frozenset(self.file_auth), self.drf_default_auth,
+                frozenset(self.auth_aliases), H.CUSTOM.signature())
         for sf, tree in self.trees:
             self.sf = sf
             GUARD.run(sf.rel, "Python checks", self._check_file, sf, tree)
@@ -485,7 +490,7 @@ class PyScanner:
         if framework == "drf" and self.drf_default_auth and "AllowAny" not in body:
             auth = True
         params = re.findall(r"<(?:\w+:)?(\w+)>|\{(\w+)\}", path)
-        self.routes.append(Route(
+        GUARD.publish("py routes", self.routes, Route(
             file=self.sf.rel, line=fn.lineno, path=path, methods=methods, body=body,  # type: ignore[attr-defined]
             framework=framework, lang="py", has_auth=auth, calls_llm=calls_llm,
             reads_body=bool(re.search(r"\brequest\s*\.\s*(?:json|get_json|form|data|values|POST|body)\b", body)),

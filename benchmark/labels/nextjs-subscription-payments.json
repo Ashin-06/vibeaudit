@@ -73,6 +73,54 @@
    "fingerprint": "2835cb8be80853ba8bbb6df82acdfd4b",
    "verdict": "fp",
    "reason": "The path comes from the app's own server action results, not from the request."
+  },
+  {
+   "rule": "DATA012",
+   "file": "schema.sql",
+   "line": 78,
+   "fingerprint": "5b659b0c98fb7b38a519ff4df1c7d493",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "schema.sql",
+   "line": 109,
+   "fingerprint": "f2fd3dc1fa93813ec3bb5643973018f7",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "schema.sql",
+   "line": 115,
+   "fingerprint": "56c12aac8da72b02361336b2f5d16029",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20230530034630_init.sql",
+   "line": 78,
+   "fingerprint": "6be6aaf2c57a87348372a013577b2239",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20230530034630_init.sql",
+   "line": 109,
+   "fingerprint": "5c74254172a840c564a76a36f02783cc",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20230530034630_init.sql",
+   "line": 115,
+   "fingerprint": "7db58056c5b2512abab23fd2079bdb10",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
   }
  ]
 }

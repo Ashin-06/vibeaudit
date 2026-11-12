@@ -33,7 +33,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=7"]
+dev = ["pytest>=7", "pyyaml>=6"]  # pyyaml: tools/check_yaml.py only, never imported by vibeaudit
 
 [project.scripts]
 vibeaudit = "vibeaudit.cli:main"

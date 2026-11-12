@@ -106,6 +106,11 @@ def render_text(res: Result, color: bool, verbose: bool = True) -> str:
         out.append(f"  {_cat(cat)}: {n}")
     out.append(f"  Score: {res.score}/100  Grade: {res.grade}")
     out.append("  Domains: " + "  ".join(f"{k} {v}" for k, v in res.domain_scores.items()))
+    if res.meta.get("packages"):
+        width = max(len(p["path"]) for p in res.meta["packages"])
+        out.append("  Packages (monorepo mode, each scanned against its own manifest):")
+        for p in res.meta["packages"]:
+            out.append(f"    {p['path']:{width}}  score {p['score']:3} {p['grade']}  {p['findings']} findings, {p['files_scanned']} files")
     previews = len(res.findings) - len(res.gating)
     if previews:
         out.append(f"  {previews} findings come from preview rules and do not count toward --fail-on or the score "
@@ -183,6 +188,10 @@ def render_markdown(res: Result) -> str:
     out += [f"**Score: {res.score}/100 (grade {res.grade})**", "", "| Severity | Count |", "| --- | --- |"]
     out += [f"| {s} | {c[s]} |" for s in SEVERITIES if s != "info"]
     out += ["", "| Domain | Score |", "| --- | --- |"] + [f"| {k} | {v}/100 |" for k, v in res.domain_scores.items()]
+    if res.meta.get("packages"):
+        out += ["", "| Package | Score | Findings | Files |", "| --- | --- | --- | --- |"]
+        out += [f"| `{p['path']}` | {p['score']}/100 ({p['grade']}) | {p['findings']} | {p['files_scanned']} |"
+                for p in res.meta["packages"]]
     out += ["", "| Category | Count |", "| --- | --- |"]
     out += [f"| {_cat(k)} | {v} |" for k, v in Counter(f.category for f in res.findings).most_common()]
     for note in res.meta.get("notes", []):

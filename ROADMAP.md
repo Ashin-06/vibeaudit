@@ -45,13 +45,13 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | Model output used as SQL, a shell argument or a file path (extends LLM002) | planned |
 | LLM features without a test or eval of their prompt | planned |
 | Agent config files granting auto-approve or broad shell and file access | preview (LLM016: Claude Code, Cursor, VS Code, Gemini and Codex settings, MCP autoApprove, skip-permission flags; 0.8.1) |
-| Foreign keys without an index | planned |
-| Postgres `CREATE INDEX` without `CONCURRENTLY` in migrations | planned |
+| Foreign keys without an index | preview (DATA012; 0.8.3) |
+| Postgres `CREATE INDEX` without `CONCURRENTLY` in migrations | preview (DATA011; 0.8.3) |
 | Vector stores keeping raw personal data in metadata | planned |
-| Redis keys without a TTL | planned |
+| Redis keys without a TTL | preview (DATA013; 0.8.3) |
 | Multi-step cache invalidation without a lock (stampede) | planned |
 | Cron and queue jobs that are not idempotent | planned |
-| Dockerfile multi-stage builds copying secrets into layers | planned |
+| Dockerfile multi-stage builds copying secrets into layers | preview (CFG017; 0.8.3) |
 | Kubernetes: no resource limits, privileged containers, hostPath | preview (CFG012, CFG013; 0.7.0) |
 | Terraform and CloudFormation: public S3, open security groups, unencrypted storage | preview (CFG014, CFG015, CFG016; 0.7.0, AWS) |
 | Third-party GitHub Actions not pinned to a SHA | preview (CFG010; 0.7.0, 19 of 19 true on the corpus) |
@@ -69,7 +69,7 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | Item | Status |
 | --- | --- |
 | Codemods (diff by default, `--apply`): request timeouts, output token limits, guarded `JSON.parse` of model output, pinned JWT algorithms, Decimal money columns, CORS credentials | done (0.8.0; REL001, LLM003, LLM011, BE016, AUTH011, DATA004, BE012) |
-| Codemods for `rel="noopener noreferrer"` and Redis TTL | planned (waits for a rule that reports them) |
+| Codemods for `rel="noopener noreferrer"` and Redis TTL | planned (DATA013 now reports missing TTLs) |
 | Agentic patch generator for complex findings (writes a `.patch`, never applies it) | done (`vibeaudit fix --llm`; 0.8.0) |
 | MCP `auto_repair` tool returning the diff | done (0.8.0) |
 
@@ -81,12 +81,12 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | Language server with diagnostics and code actions | done (`vibeaudit lsp`; 0.8.2) |
 | VS Code / Cursor extension (.vsix built in CI, not published) | done (`editors/vscode`; 0.8.2) |
 | `vibeaudit studio` local web UI (127.0.0.1 only) | planned |
-| PR review bot and `--fail-on-regression N` | planned |
-| Pre-commit fast path under 150 ms | done, unreleased (`vibeaudit-secrets` hook; budget enforced in CI on Linux) |
-| MCP tools: audit_current_file, verify_package, simulate_migration | done, unreleased (auto_repair: done in Phase 2) |
+| PR review bot and `--fail-on-regression N` | done (`vibeaudit review`, action input `review`; 0.8.3) |
+| Pre-commit fast path under 150 ms | done (`vibeaudit-secrets` hook, 0.8.3; budget enforced in CI on Linux) |
+| MCP tools: audit_current_file, verify_package, simulate_migration | done (0.8.3; auto_repair: done in Phase 2) |
 | GitLab CI and CircleCI templates | done, unreleased (`ci/`; `junit` and `codeclimate` reports) |
-| Monorepo mode | planned |
-| Offline / air-gapped mode with bundled data | planned |
+| Monorepo mode | done, unreleased (`--monorepo`: one project per package, a score per package) |
+| Offline / air-gapped mode with bundled data | done, unreleased (`update --export/--import`, offline OSV index; no network in `--offline`) |
 | `vibeaudit explain <finding>` | planned |
 
 ## Phase 4: compliance and threat intelligence

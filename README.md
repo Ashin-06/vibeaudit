@@ -20,7 +20,7 @@ nothing, inaccessible forms and frontend calls to API routes that do not exist.
 - Works offline with no API key. The network is used only for package-registry and vulnerability
   lookups (`--offline` turns that off); an LLM is used only if you ask for it.
 - Pure Python, no dependencies on 3.11+ (`tomli` on 3.9 and 3.10). Linux, macOS and Windows.
-- 137 rules in 12 categories, mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
+- 141 rules in 12 categories, mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
 - Terminal output plus JSON, SARIF 2.1.0 (GitHub code scanning), Markdown, HTML, an SVG badge and a fix
   brief you can paste into an AI assistant.
 - Fits into CI (GitHub Action, `--diff`), pre-commit (`--staged`) and coding agents (an MCP server).
@@ -33,7 +33,7 @@ Contents: [Quickstart](#quickstart) - [Example output](#example-output) - [What 
 ## Quickstart
 
 ```bash
-pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.8.2"
+pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.8.3"
 ```
 
 ```bash
@@ -115,13 +115,13 @@ Good tools exist, and vibeaudit runs them when they are installed instead of rep
 vibeaudit is installed from this repository (it is not on PyPI yet). Python 3.9 or newer:
 
 ```bash
-pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.8.2"
+pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.8.3"
 ```
 
 or, to keep it in its own environment:
 
 ```bash
-pipx install "git+https://github.com/Ashin-06/vibeaudit.git@v0.8.2"
+pipx install "git+https://github.com/Ashin-06/vibeaudit.git@v0.8.3"
 ```
 
 Optional: if [gitleaks](https://github.com/gitleaks/gitleaks), [bandit](https://github.com/PyCQA/bandit),
@@ -134,11 +134,12 @@ your `PATH`, their findings are merged into the report and de-duplicated.
 | --- | --- |
 | `vibeaudit scan [PATH]` | Audit a project (default: the current directory). |
 | `vibeaudit watch [PATH]` | Scan, then re-scan after every change and print the findings that appeared (`+`) or were fixed (`-`); see [Watch mode](#watch-mode). |
+| `vibeaudit review [PATH] --diff REV` | Pull request review comments, with suggested fixes, for the findings on changed lines; `--post` sends them to GitHub (see [Pull request review](#pull-request-review)). |
 | `vibeaudit fix [PATH]` | Print a diff that fixes the findings with one obvious repair; `--apply` writes it (see [Automatic fixes](#automatic-fixes-vibeaudit-fix)). |
 | `vibeaudit routes [PATH]` | List every HTTP entry point with method, path, location and whether it has a visible auth check, writes data or calls a paid AI API (`--format text\|json\|md`). |
 | `vibeaudit rules` | List every rule (`--format text\|json\|md`; JSON includes the why and fix text). |
 | `vibeaudit feedback` | Record that a finding is a false positive or confirmed, or list recorded feedback (see [False positives](#false-positives-and-suppressing-findings)). |
-| `vibeaudit update` | Refresh the popular-package lists and the retired-model list; `--self` upgrades vibeaudit with pip. |
+| `vibeaudit update` | Refresh the popular-package lists and the retired-model list; `--self` upgrades vibeaudit with pip; `--export FILE [--osv PyPI,npm]` and `--import FILE` carry the data to a machine without network (see [Offline and air-gapped use](#offline-and-air-gapped-use)). |
 | `vibeaudit lsp` | Run the language server for editors: diagnostics and fix code actions (see [Editors](#editors-vs-code-cursor-and-other-lsp-clients)). |
 | `vibeaudit mcp` | Run the MCP server for coding agents (see [MCP server](#mcp-server-for-coding-agents)). |
 
@@ -151,13 +152,15 @@ Every command has `--help`.
 | `-r`, `--report FORMAT[:PATH]` | Also write a report: `json`, `sarif`, `md`, `html`, `prompt` (a fix brief for AI assistants), `badge` (SVG), `junit` (test report XML for GitLab, CircleCI, Jenkins) or `codeclimate` (GitLab Code Quality). Repeatable; `-` as the path writes to stdout, as in `-r json:-`. Default path `vibeaudit-report.<ext>`. |
 | `--fail-on SEVERITY` | Exit 1 when a finding is at least `critical`, `high` (default), `medium` or `low`; `none` never fails. |
 | `--min-severity SEVERITY` | Hide findings below this severity (default `low`). |
+| `--monorepo` | Scan every package as a project of its own, against its own manifest, with a score per package (see [Monorepos](#monorepos)). |
 | `--include-preview` | Count findings of preview rules toward `--fail-on` and the score; they are always reported (see [STABILITY.md](STABILITY.md)). |
 | `--no-gate-severe-preview` | Leave out the severe preview rules (command injection, `eval`, unsafe deserialization, open redirect, XSS), which by default count toward `--fail-on` and the score. |
-| `--offline` | No network: skip registry, new-package and vulnerability lookups (the typosquat check still runs). |
+| `--offline` | No network: skip registry and new-package lookups, and check known vulnerabilities against an imported OSV index if there is one (the typosquat check still runs). |
 | `--exclude GLOB` | Skip matching paths (repeatable). A `.vibeauditignore` file with one glob per line works too. |
 | `--disable RULE_OR_CATEGORY` | Switch off a rule (`QA002`) or a category (`quality`); repeatable, comma lists allowed. |
 | `--baseline FILE` | Hide findings already present in an earlier JSON report. |
 | `--write-baseline FILE` | Save all current findings as a baseline and exit 0. |
+| `--fail-on-regression N` | Exit 1 if the whole project's score is more than N points below the score in the `--baseline` report. The score is computed before `--baseline`, `--diff` and `--staged` hide findings. |
 | `--external auto\|none\|LIST` | Third-party scanners to run: those installed (default), none, or a list such as `gitleaks,bandit`. |
 | `--staged` | Report only findings on lines staged for commit (pre-commit hooks). |
 | `--diff REV` | Report only findings on lines changed since `REV`, for example `origin/main` (pull requests). |
@@ -201,6 +204,22 @@ GEMINI_API_KEY=... vibeaudit scan . --llm gemini --llm-review --llm-max-requests
   for any compatible server such as Ollama) and `anthropic` (`ANTHROPIC_API_KEY`). Verdicts are cached, so
   an unchanged finding costs no request the next time.
 
+### Monorepos
+
+```bash
+vibeaudit scan . --monorepo          # or `monorepo = true` in .vibeaudit.toml
+```
+
+By default the whole repository is one project, so a rate limiter, CSRF middleware or a dependency declared in
+one package counts for every package. With `--monorepo` every folder with its own manifest (`package.json`,
+`pyproject.toml`, `requirements*.txt`, `setup.py`, `setup.cfg`, `Pipfile`) is scanned on its own, against
+its own manifest and with only its own code as evidence; files outside every package (root scripts, CI,
+infrastructure) are one more unit, and folders under tests or examples stay test code. Three rules are about
+the repository, not a package (CI configuration QA002, the example env file DATA007 and a workspace lockfile
+DEP005), so they come from one scan of the whole repository; the mode costs about two normal scans. Findings
+keep their repository paths and fingerprints (baselines and feedback carry over), and the report adds a score
+per package.
+
 ### Watch mode
 
 ```bash
@@ -209,11 +228,14 @@ vibeaudit watch . --interval 2 --min-severity medium
 ```
 
 `watch` scans once, then checks for changed files every `--interval` seconds (default 1) and re-scans. It
-keeps every unchanged file's text, parse trees and lexer state between scans, and replays the findings of
-per-file checks whose inputs did not change (the files each check read are recorded, so a check that
-depends on another file runs again when that file changes). Checks that build project-wide state (routes,
-call graphs, auth middleware) run on every change, so the result is always the same as a fresh `scan`. A
-changed manifest or config file, or an added or removed file, replays nothing. It runs offline, without
+keeps every unchanged file's text, parse trees, lexer state and per-file analysis between scans, and replays
+the findings (and the routes) of per-file checks when nothing they depend on changed: the files they read,
+the facts about other files they use (the names a module exports, whether an excluded path exists on disk)
+and the project-wide facts they rely on (which functions call a model, which files sit behind auth
+middleware, the configured helpers). Everything else runs again, so the result is always the same as a
+fresh `scan`. A changed manifest or config file, or an added or removed file, replays nothing. On the
+benchmark repositories a re-scan after one edit takes 0.13 to 0.46 s (median per repository; under 0.3 s on
+four of five), against 0.5 to 4 s for a cold scan (`tools/watch_latency.py`). It runs offline, without
 external tools, and honours the configuration, `--exclude` and `--config` like `scan`.
 
 ## Automatic fixes (`vibeaudit fix`)
@@ -273,7 +295,7 @@ sanitizers = ["clean_sql_input"]                               # their output is
 public-paths = ["/api/public/*", "/api/survey-*"]              # intentionally unauthenticated routes
 ```
 
-Other keys: `include-preview`, `gate-severe-preview`, `llm`, `llm-model`, `llm-max-requests`, `max-file-size`, `file-timeout`. The same settings apply
+Other keys: `include-preview`, `gate-severe-preview`, `monorepo`, `llm`, `llm-model`, `llm-max-requests`, `max-file-size`, `file-timeout`. The same settings apply
 to `vibeaudit scan`, `vibeaudit routes`, `vibeaudit feedback`, the MCP server and the Python API. The file is
 part of the scanned repository and can switch rules off: when you audit code you do not trust, use
 `--no-config`.
@@ -298,7 +320,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0                  # needed for --diff
-      - uses: Ashin-06/vibeaudit@v0.8.2
+      - uses: Ashin-06/vibeaudit@v0.8.3
         with:
           fail-on: high
           args: --diff origin/main        # optional: only changed lines
@@ -309,7 +331,40 @@ jobs:
 ```
 
 Inputs: `path` (default `.`), `fail-on` (default `high`), `sarif` (default `vibeaudit.sarif`), `args` (extra
-flags, split on spaces), `setup-python` (`true`/`false`) and `python-version`.
+flags, split on spaces), `setup-python` (`true`/`false`), `python-version`, `review` (`true` posts review
+comments on pull requests) and `github-token` (default: the workflow token).
+
+### Pull request review
+
+With `review: "true"` the action also comments on the pull request: one review comment per finding on a
+changed line (the 30 most severe), with why it matters, and a one-click GitHub suggestion when a
+`vibeaudit fix` codemod rewrites it inside the diff. A re-run does not repeat comments it already posted.
+The job needs `pull-requests: write`; on pull requests from forks the token is read-only and the review is
+skipped with a warning. Use `pull_request`, not `pull_request_target`, so the pull request's code never runs
+with a write token.
+
+```yaml
+on: pull_request
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: Ashin-06/vibeaudit@v0.8.3
+        with:
+          review: "true"
+          args: --diff origin/${{ github.base_ref }} --baseline .vibeaudit-baseline.json --fail-on-regression 5
+```
+
+`vibeaudit review . --diff origin/main` prints the same review as JSON without posting it. To keep the
+overall score from slipping, commit a baseline (`vibeaudit scan . --write-baseline .vibeaudit-baseline.json`)
+and pass `--fail-on-regression N`: the build fails when the whole project's score drops more than N points
+below the baseline's, even if every new finding is below `--fail-on`.
 
 **GitLab CI**: include the template, pinned to a release. Merge request pipelines report only changed lines;
 findings show in the merge request's Code Quality widget and in the pipeline's Tests tab. Set
@@ -317,7 +372,7 @@ findings show in the merge request's Code Quality widget and in the pipeline's T
 
 ```yaml
 include:
-  - remote: https://raw.githubusercontent.com/Ashin-06/vibeaudit/v0.8.2/ci/gitlab-ci.yml
+  - remote: https://raw.githubusercontent.com/Ashin-06/vibeaudit/v0.8.3/ci/gitlab-ci.yml
 ```
 
 **CircleCI**: copy [ci/circleci.yml](ci/circleci.yml) into `.circleci/config.yml` (or merge its job into
@@ -333,7 +388,7 @@ for a test report) and keep the exit code.
 # .pre-commit-config.yaml
 repos:
   - repo: https://github.com/Ashin-06/vibeaudit
-    rev: v0.8.2
+    rev: v0.8.3
     hooks:
       - id: vibeaudit
 ```
@@ -485,6 +540,27 @@ Static analysis guesses, and some findings will be wrong for your project. In or
 An empty `except`/`catch` with an explanatory comment is treated as deliberate. If a rule is wrong in a way
 that is not specific to your code, please open an issue with a minimal example.
 
+## Offline and air-gapped use
+
+`--offline` makes no network connection (a test runs every offline command with the network disabled). Only
+`--llm`, which you ask for explicitly, still sends code to its model provider. The popular-package lists used
+by the typosquat check ship with vibeaudit. To use fresh data and check known vulnerabilities without network,
+make a bundle on a connected machine and import it:
+
+```bash
+vibeaudit update --export vibeaudit-data.zip --osv PyPI,npm   # connected machine (downloads OSV's dumps)
+vibeaudit update --import vibeaudit-data.zip                  # air-gapped machine
+vibeaudit scan . --offline
+```
+
+The bundle has the data files and, with `--osv`, a vulnerability index per ecosystem built from
+[OSV](https://osv.dev)'s public dumps: for every package, each advisory's listed affected versions and fixed
+ranges. An offline scan reports a pinned version that an advisory lists (DEP004, with the version to upgrade
+to) and says in its notes which index date it used, or that vulnerabilities were not checked. Advisories that
+give only version ranges and no version list are left out of the index (the export says how many). `--import`
+checks every file against the SHA-256 in the bundle's manifest, accepts only vibeaudit's own data files and
+validates their contents before it writes anything.
+
 ## Caching and updates
 
 Registry answers and vulnerability advisories are cached for a day ("package does not exist" for an hour,
@@ -580,14 +656,14 @@ CycloneDX SBOM (`vibeaudit-VERSION.cdx.json`), built by the release workflow fro
 build provenance is signed with GitHub artifact attestations (Sigstore). With the GitHub CLI:
 
 ```bash
-gh attestation verify vibeaudit-0.8.2-py3-none-any.whl --repo Ashin-06/vibeaudit
+gh attestation verify vibeaudit-0.8.3-py3-none-any.whl --repo Ashin-06/vibeaudit
 ```
 
 Run the same for the `.tar.gz` and the `.cdx.json` file. The check passes only if the file was built by
 this repository's release workflow; `--format json` shows the commit and workflow it came from. The SBOM
 lists what the wheel installs (vibeaudit has no runtime dependencies on Python 3.11 and later, and
 `tomli` before that). vibeaudit is not published to PyPI by this project yet; install a verified wheel
-with `pip install vibeaudit-0.8.2-py3-none-any.whl`.
+with `pip install vibeaudit-0.8.3-py3-none-any.whl`.
 
 ## Contributing, security and license
 

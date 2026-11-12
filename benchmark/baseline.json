@@ -942,6 +942,16 @@
     ]
    }
   },
+  "CFG017": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "sec-insights": [
+     1,
+     0
+    ]
+   }
+  },
   "DATA001": {
    "precision": 0.6316,
    "seeded_recall": 1.0,
@@ -1111,6 +1121,83 @@
     "nextjs-subscription-payments": [
      0,
      1
+    ]
+   }
+  },
+  "DATA011": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "DATA012": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "LinguaLearn": [
+     2,
+     0
+    ],
+    "act-solo-ai": [
+     1,
+     0
+    ],
+    "ai-chatbot": [
+     6,
+     0
+    ],
+    "chatbot-ui": [
+     16,
+     0
+    ],
+    "chatgpt-your-files": [
+     4,
+     0
+    ],
+    "dvpwa": [
+     3,
+     0
+    ],
+    "nextjs-subscription-payments": [
+     6,
+     0
+    ],
+    "node-express-realworld-example-app": [
+     4,
+     0
+    ],
+    "opengpts": [
+     3,
+     0
+    ],
+    "physicalmediavault": [
+     1,
+     0
+    ],
+    "prompt-sculptor-49": [
+     17,
+     0
+    ],
+    "saas-starter": [
+     6,
+     0
+    ],
+    "scriptforge-ai": [
+     1,
+     0
+    ]
+   }
+  },
+  "DATA013": {
+   "precision": 0.75,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "thynk": [
+     6,
+     0
+    ],
+    "wsgidav": [
+     0,
+     2
     ]
    }
   },

@@ -196,6 +196,10 @@ class Custom:
         self.sanitizer_rx = re.compile(r"(?<![\w$])(?:" + "|".join(map(re.escape, sanitizers)) + r")\s*\(") if sanitizers else None
         self.public_paths = list(public_paths)
 
+    def signature(self) -> tuple:
+        """What the configuration contributes, for caches that must not outlive a configuration change."""
+        return (self.auth_rx.pattern if self.auth_rx else "", tuple(sorted(self.sanitizers)), tuple(self.public_paths))
+
     def is_auth(self, text: str) -> bool:
         return bool(self.auth_rx and self.auth_rx.search(text))
 

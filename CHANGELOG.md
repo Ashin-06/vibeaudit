@@ -4,14 +4,45 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.8.3] - 2026-11-12
+
+Phase 1 continues with data, storage and container checks; Phase 3 adds the pre-commit fast path, the PR review bot, three MCP tools and faster re-scans.
 
 ### Added
 
+- Four preview rules for data, storage and containers:
+  - DATA011: `CREATE INDEX` without `CONCURRENTLY` on a table that already exists, in a migration that can use
+    it (Supabase and Prisma migrations run in a transaction and are skipped).
+  - DATA012: a Postgres foreign key column with no index that starts with it. MySQL projects are skipped,
+    since InnoDB indexes foreign keys by itself.
+  - DATA013: a Redis key written with no expiry (`set`, `hset`, `lpush`, `sadd`, `zadd` and similar on a
+    Redis client, with no `ex`/`EX` argument and no `expire` call for the key).
+  - CFG017: a secret file (`.npmrc`, `.env`, private keys, cloud credentials) copied into the final image, a
+    secret build argument used in the final stage, or a whole folder copied from a stage that held a secret.
 - `vibeaudit-hook` and the `vibeaudit-secrets` pre-commit hook: the fast path. It checks only the staged lines
   for secrets, from the staged content and one `git diff` call, without scanning the rest of the project.
   CI holds it under 150 ms on a 3-file commit in a 300-file repository; `tools/hook_latency.py` compares it
   with the full `vibeaudit` hook on corpus repositories.
+- `vibeaudit review --diff REV`: pull request review comments for the findings on changed lines, with a
+  one-click GitHub suggestion when a `vibeaudit fix` codemod rewrites the line inside the diff. `--post`
+  sends them with GITHUB_TOKEN and skips comments an earlier run already posted; the action posts them with
+  `review: "true"`. Text from the repository is neutralised (no @mentions, no injected markers).
+- `--fail-on-regression N`: fail when the whole project's score drops more than N points below the score in
+  the `--baseline` report, computed before `--baseline`, `--diff` and `--staged` hide findings.
+- MCP tools `audit_current_file` (unsaved content, incremental), `verify_package` (a block, caution or ok
+  verdict, import-name mapping, where the project declares the package) and `simulate_migration` (a static
+  PostgreSQL dry run: the lock each statement takes, table rewrites and data loss, with a safer alternative).
+
+### Changed
+
+- `watch`, `vibeaudit lsp` and the MCP `audit_current_file` re-scan only what changed: per-file checks are
+  replayed when nothing they depend on changed, and the result still equals a fresh scan. A re-scan after
+  one edit takes 0.13 to 0.46 s on the benchmark repositories (was 0.33 to 2.8 s).
+- Faster scans of Poetry, uv and PDM projects: a lockfile is parsed once, not once per dependency.
+- Dependabot also updates the editor extension's npm build tools; minimatch and glob are pinned to
+  patched versions.
+- The benchmark labels the new findings on the 53-repository corpus, and the seeded infrastructure app
+  has a case for each new rule.
 
 ## [0.8.2] - 2026-11-12
 

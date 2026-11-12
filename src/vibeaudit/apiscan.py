@@ -6,7 +6,7 @@ from typing import Callable, List
 
 from . import heuristics as H
 from .files import Project, SourceFile
-from .guard import finditer
+from .guard import GUARD, finditer
 from .lexer import match_close
 from .model import Route
 
@@ -45,13 +45,13 @@ def _args(bare: str, code: str, open_paren: int) -> str:
     return code[open_paren + 1:close]
 
 
-def run(project: Project, routes: List[Route], all_code: str, add: Add) -> None:
-    csrf = bool(CSRF_EVIDENCE.search(all_code))
+def run(project: Project, routes: List[Route], csrf: bool, add: Add) -> None:
+    """`csrf`: the project has CSRF protection somewhere (CSRF_EVIDENCE in its code)."""
     for sf in project.files:
         v = sf.cache.get("views")
         if v is None or sf.is_test or sf.kind not in ("py", "js"):
             continue
-        _file(sf, v.code, v.bare, csrf, add)  # type: ignore[attr-defined]
+        GUARD.run(sf.rel, "API file checks", _file, sf, v.code, v.bare, csrf, add)  # type: ignore[attr-defined]
     for r in routes:
         _route(r, add)
 

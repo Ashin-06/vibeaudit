@@ -7,6 +7,6 @@ create policy "anyone can update" on public.profiles for update using (true); --
 
 create table public.orders ( -- expect: AUTH005
   id bigint generated always as identity primary key,
-  user_id uuid references auth.users,
+  user_id uuid references auth.users, -- expect: DATA012
   total numeric
 );

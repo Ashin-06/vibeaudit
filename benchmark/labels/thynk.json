@@ -241,6 +241,54 @@
    "fingerprint": "a685675378fbf9670564d7378104d9f3",
    "verdict": "fp",
    "reason": "The id comes from the app's own photo API and only fills an img src."
+  },
+  {
+   "rule": "DATA013",
+   "file": "backend/redis_client.py",
+   "line": 63,
+   "fingerprint": "a02f7bfdeab512aa73d3671f48cbaf9a",
+   "verdict": "tp",
+   "reason": "The key is written with no expiry and nothing in the file expires it."
+  },
+  {
+   "rule": "DATA013",
+   "file": "backend/redis_client.py",
+   "line": 67,
+   "fingerprint": "445294dac6bc29473c9e850edb2ab919",
+   "verdict": "tp",
+   "reason": "The key is written with no expiry and nothing in the file expires it."
+  },
+  {
+   "rule": "DATA013",
+   "file": "backend/redis_client.py",
+   "line": 72,
+   "fingerprint": "bac7a8aedaf04c53dd1ddf6c6126ee7f",
+   "verdict": "tp",
+   "reason": "The key is written with no expiry and nothing in the file expires it."
+  },
+  {
+   "rule": "DATA013",
+   "file": "backend/redis_client.py",
+   "line": 97,
+   "fingerprint": "53f7cf763694992e861ddca1f52a1ae8",
+   "verdict": "tp",
+   "reason": "The key is written with no expiry and nothing in the file expires it."
+  },
+  {
+   "rule": "DATA013",
+   "file": "backend/redis_client.py",
+   "line": 101,
+   "fingerprint": "fa47a35ae6d9b129d1bd8926e7ce0eed",
+   "verdict": "tp",
+   "reason": "The key is written with no expiry and nothing in the file expires it."
+  },
+  {
+   "rule": "DATA013",
+   "file": "backend/redis_client.py",
+   "line": 106,
+   "fingerprint": "47b07c5312da7113e3572cea957f9e81",
+   "verdict": "tp",
+   "reason": "The key is written with no expiry and nothing in the file expires it."
   }
  ]
 }

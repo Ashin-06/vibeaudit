@@ -41,6 +41,8 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("name")
     ap.add_argument("--edits", type=int, default=10)
+    ap.add_argument("--pick", choices=["largest", "median"], default="largest",
+                    help="edit the largest source files (worst case) or files of median size (a typical edit)")
     ap.add_argument("--lsp", action="store_true",
                     help="edit through the language server (unsaved buffers, didChange) instead of on disk")
     a = ap.parse_args(argv)
@@ -59,7 +61,9 @@ def main(argv=None) -> int:
         scan(str(root), options(), project)
         idle_s = time.perf_counter() - t
         files = sorted((p for p in root.rglob("*") if p.suffix in COMMENT and "node_modules" not in p.parts),
-                       key=lambda p: -p.stat().st_size)[:a.edits]
+                       key=lambda p: -p.stat().st_size)
+        mid = max(0, len(files) // 2 - a.edits // 2)
+        files = files[:a.edits] if a.pick == "largest" else files[mid:mid + a.edits]
         times, mismatches = [], 0
         server = None
         if a.lsp:
@@ -106,7 +110,7 @@ def main(argv=None) -> int:
         print(f"cold scan {cold_s * 1000:.0f} ms; re-scan with no change {idle_s * 1000:.0f} ms")
         if times:
             print(f"{'language server ' if a.lsp else ''}re-scan after one edit: median {statistics.median(times) * 1000:.0f} ms, "
-                  f"max {max(times) * 1000:.0f} ms over {len(times)} edits of {len(files)} files; mismatches with a fresh scan: {mismatches}")
+                  f"max {max(times) * 1000:.0f} ms over {len(times)} edits of {len(files)} {a.pick} files; mismatches with a fresh scan: {mismatches}")
     return 1 if mismatches else 0
 
 

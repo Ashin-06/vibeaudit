@@ -577,6 +577,30 @@
    "fingerprint": "31c6766e7e6949aa92c66a210fa70695",
    "verdict": "fp",
    "reason": "A one-off migration script copies rows one by one; not request-time N+1."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/000001_create_extensions_and_first_tables.up.sql",
+   "line": 15,
+   "fingerprint": "e96bb877b5da01f7073ac4c036144a07",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/000003_create_user.up.sql",
+   "line": 19,
+   "fingerprint": "619a4bac403bd4003ddf124ca878db03",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/000003_create_user.up.sql",
+   "line": 23,
+   "fingerprint": "7f628011a0cea2f4b83466a152c29334",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
   }
  ]
 }

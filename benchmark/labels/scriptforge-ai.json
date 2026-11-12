@@ -177,6 +177,14 @@
    "fingerprint": "f89b0a868e3a9a15a2cbfe0b040a741a",
    "verdict": "tp",
    "reason": "The webhook updates subscriptions without checking whether the event was already processed."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20260321003030_3a65b9e5-8eb0-4c5b-994d-2d459d004bb4.sql",
+   "line": 47,
+   "fingerprint": "b69869fa27c7f44475bdbede383b084c",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index in any migration or schema file."
   }
  ]
 }

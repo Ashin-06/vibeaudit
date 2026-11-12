@@ -24,7 +24,7 @@ KEYS: Dict[str, str] = {
     "fail_on": "severity or none", "min_severity": "severity", "external": "string", "baseline": "string",
     "llm": "string", "llm_model": "string", "offline": "boolean", "max_file_size": "integer",
     "llm_max_requests": "integer", "file_timeout": "number", "include_preview": "boolean",
-    "gate_severe_preview": "boolean",
+    "gate_severe_preview": "boolean", "monorepo": "boolean",
 }
 
 
