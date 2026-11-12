@@ -151,7 +151,7 @@ Every command has `--help`.
 
 | Option | Meaning |
 | --- | --- |
-| `-r`, `--report FORMAT[:PATH]` | Also write a report: `json`, `sarif`, `md`, `html`, `prompt` (a fix brief for AI assistants), `badge` (SVG), `junit` (test report XML for GitLab, CircleCI, Jenkins) or `codeclimate` (GitLab Code Quality). Repeatable; `-` as the path writes to stdout, as in `-r json:-`. Default path `vibeaudit-report.<ext>`. |
+| `-r`, `--report FORMAT[:PATH]` | Also write a report: `json`, `sarif`, `md`, `html`, `prompt` (a fix brief for AI assistants), `badge` (SVG), `junit` (test report XML for GitLab, CircleCI, Jenkins), `codeclimate` (GitLab Code Quality) or `compliance:FRAMEWORK` (see [Compliance mapping](#compliance-mapping)). Repeatable; `-` as the path writes to stdout, as in `-r json:-`. Default path `vibeaudit-report.<ext>` (`vibeaudit-compliance-FRAMEWORK.html`). |
 | `--fail-on SEVERITY` | Exit 1 when a finding is at least `critical`, `high` (default), `medium` or `low`; `none` never fails. |
 | `--min-severity SEVERITY` | Hide findings below this severity (default `low`). |
 | `--monorepo` | Scan every package as a project of its own, against its own manifest, with a score per package (see [Monorepos](#monorepos)). |
@@ -527,6 +527,29 @@ for r in result.routes:
 `scan(path)` without options, and `project_options(path, **overrides)`, apply the project's configuration;
 an explicit `Options(...)` is used exactly as given. `scan()` may be called from several threads; scans
 then run one at a time.
+
+## Compliance mapping
+
+Every rule is mapped to the controls its findings are evidence for, in
+[`src/vibeaudit/data/compliance_map.json`](src/vibeaudit/data/compliance_map.json): the OWASP Top 10 2021, the
+OWASP Top 10 for LLM Applications 2025, themes of the EU AI Act (Art. 10, 14 and 15), the SOC 2 Trust Services
+Criteria and, where they apply, the HIPAA Security and Privacy Rules and the GDPR (Art. 5, 25 and 32). Rules
+that no control fits (accessibility and other user-experience checks, for example) say so in a note.
+
+```bash
+vibeaudit scan . -r compliance:soc2                 # writes vibeaudit-compliance-soc2.html
+vibeaudit scan . -r compliance:gdpr:reports/gdpr.html
+```
+
+Frameworks: `owasp`, `owasp-llm`, `eu-ai-act`, `soc2`, `hipaa`, `gdpr`. The report is one self-contained HTML
+file (no scripts, fonts or other external assets) with a print stylesheet, so it prints or saves to PDF as
+is. For every control it shows a status (findings, no findings, not checked because the mapped rules were
+disabled, or not covered by any rule) and links each piece of evidence to its finding.
+
+**This is an aid for reviewers, not a certification, an audit result or legal advice.** "No findings" means
+the automated checks found nothing, not that the control is met, and most controls need evidence that code
+scanning cannot provide. The SOC 2, HIPAA, GDPR and EU AI Act reports list only the controls code scanning can
+speak to.
 
 ## Scoring
 
