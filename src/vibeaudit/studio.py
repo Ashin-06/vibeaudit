@@ -179,7 +179,10 @@ class Handler(BaseHTTPRequestHandler):
             return self._json(404, {"error": "not found"})
         if not self._token_ok():
             return self._json(403, {"error": "missing or wrong token"})
-        q = parse_qs(url.query, max_num_fields=10)
+        try:
+            q = parse_qs(url.query, max_num_fields=10)
+        except ValueError:
+            return self._json(400, {"error": "too many query parameters"})
         if url.path == "/api/scan":
             return self._json(200, self.studio.data)
         if url.path == "/api/code":

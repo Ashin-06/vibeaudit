@@ -91,6 +91,13 @@ def test_no_other_process_can_bind_the_same_port(server):
         other.close()
 
 
+def test_too_many_query_parameters_get_a_400(server):
+    srv, _ = server
+    query = "&".join(f"a{i}=1" for i in range(50))
+    status, _headers, body = request(srv, "GET", f"/api/code?{query}")
+    assert status == 400 and b"too many" in body
+
+
 def test_api_needs_the_token_and_a_local_host(server):
     srv, _ = server
     assert request(srv, "GET", "/api/scan", token=None)[0] == 403

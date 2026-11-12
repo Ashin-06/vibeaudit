@@ -500,12 +500,16 @@ def cmd_scan(a: argparse.Namespace) -> int:
         drop = base_score - full_score
         print(f"vibeaudit: whole-project score {full_score}, baseline {base_score} "
               f"({'down ' + str(drop) if drop > 0 else 'no drop'}; allowed {a.fail_on_regression})", file=sys.stderr)
-    if a.write_baseline:
-        write_report(res, "json", a.write_baseline)
-        print(f"vibeaudit: baseline with {len(res.findings)} findings written to {a.write_baseline}", file=sys.stderr)
-        return 0
-    for fmt, path in reports:
-        write_report(res, fmt, path)
+    try:
+        if a.write_baseline:
+            write_report(res, "json", a.write_baseline)
+            print(f"vibeaudit: baseline with {len(res.findings)} findings written to {a.write_baseline}", file=sys.stderr)
+            return 0
+        for fmt, path in reports:
+            write_report(res, fmt, path)
+    except OSError as e:  # a path that cannot be created (too long, a file in the way, no permission)
+        print(f"vibeaudit: cannot write the report: {e}", file=sys.stderr)
+        return 2
     color = not a.no_color and not os.environ.get("NO_COLOR") and (sys.stderr if to_stdout else sys.stdout).isatty()
     text = render_text(res, color, verbose=not a.quiet)
     (sys.stderr if to_stdout else sys.stdout).write(text)
