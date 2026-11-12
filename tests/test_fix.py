@@ -376,3 +376,56 @@ def test_cors_origin_in_a_string_is_not_rewritten():
 
     src = "app.use(cors({ note: 'origin: true', credentials: true }));\n"
     assert isinstance(fix.fix_cors(fix.FileCtx("a.js", src), Finding("BE012", "a.js", 1, "m")), str)
+
+
+# ------------------------------------------------------------ DATA013 Redis expiry
+def test_redis_ttl_python(tmp_path):
+    src = ("import redis\nr = redis.Redis()\n\n\ndef save(k, v, user):\n    r.set(k, v)\n"
+           "    r.hset(f\"user:{user}\", \"seen\", 1)  # profile\n    r.sadd('active', user)\n")
+    out = roundtrip(tmp_path, {"cache.py": src}, "DATA013")["cache.py"]
+    assert "    r.set(k, v, ex=3600)\n" in out
+    assert "    r.hset(f\"user:{user}\", \"seen\", 1)  # profile\n    r.expire(f\"user:{user}\", 3600)\n" in out
+    assert "    r.sadd('active', user)\n    r.expire('active', 3600)" in out
+
+
+def test_redis_ttl_async_python(tmp_path):
+    src = ("import redis.asyncio as aioredis\nr = aioredis.from_url('redis://x')\n\n\n"
+           "async def save(k):\n    await r.lpush(k, 1)\n")
+    out = roundtrip(tmp_path, {"q.py": src}, "DATA013")["q.py"]
+    assert "    await r.lpush(k, 1)\n    await r.expire(k, 3600)" in out
+
+
+def test_redis_ttl_node_redis_and_options(tmp_path):
+    src = ("import { createClient } from 'redis';\nconst client = createClient();\n"
+           "export async function put(k: string, v: string) {\n  await client.set(k, v);\n"
+           "  await client.set(`lock:${k}`, v, { NX: true });\n  await client.hset(k, 'a', '1');\n}\n")
+    out = roundtrip(tmp_path, {"cache.ts": src}, "DATA013")["cache.ts"]
+    assert "await client.set(k, v, { EX: 3600 });" in out and "{ NX: true, EX: 3600 }" in out
+    assert "  await client.hset(k, 'a', '1');\n  await client.expire(k, 3600);\n" in out
+
+
+def test_redis_ttl_ioredis_and_upstash(tmp_path):
+    files = {"a.js": "const Redis = require('ioredis');\nconst redis = new Redis();\nfunction f(k, v) {\n  return redis.set(k, v);\n}\nmodule.exports = f;\n",
+             "b.ts": "import { Redis } from '@upstash/redis';\nconst redis = Redis.fromEnv();\nexport const g = (k: string) => redis.set(k, 1);\n"}
+    out = roundtrip(tmp_path, files, "DATA013")
+    assert 'redis.set(k, v, "EX", 3600)' in out["a.js"] and "redis.set(k, 1, { ex: 3600 })" in out["b.ts"]
+
+
+def test_redis_ttl_skips_what_it_cannot_rewrite(tmp_path):
+    src = ("import redis\nr = redis.Redis()\n\n\ndef f(u, v):\n    r.hset(key_for(u), 'a', 1)\n"
+           "    r.set(u, v, None, None, True)\n    x = r.hset('h', 'a', 1)\n")
+    write(tmp_path, {"c.py": src})
+    plan = fix.plan(str(tmp_path))
+    assert not plan.changes
+    reasons = sorted(r for f, r in plan.skipped if f.rule_id == "DATA013")
+    assert reasons == ["the call has more arguments than a key and a value", "the key is computed by a call; evaluating it twice could differ",
+                       "the write is not a statement of its own"]
+
+
+def test_redis_ttl_attribute_clients(tmp_path):
+    src = ("import redis.asyncio as redis\n\n\nclass Store:\n    def __init__(self):\n        self.client = redis.Redis()\n\n"
+           "    async def put(self, key, value, ts):\n        await self.client.hset(key, 'v', value)\n"
+           "        await self.client.zadd('recent', {key: ts})\n")
+    out = roundtrip(tmp_path, {"store.py": src}, "DATA013")["store.py"]
+    assert "        await self.client.hset(key, 'v', value)\n        await self.client.expire(key, 3600)\n" in out
+    assert "        await self.client.zadd('recent', {key: ts})\n        await self.client.expire('recent', 3600)" in out

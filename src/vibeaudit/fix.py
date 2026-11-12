@@ -515,7 +515,77 @@ def fix_cors(ctx: FileCtx, f: Finding) -> Result:
     return [(o.start(1), o.end(1), JS_CORS_ORIGINS)]
 
 
+# --------------------------------------------------------------------- DATA013
+REDIS_TTL = 3600
+# the receiver is the whole dotted path (`self.client.hset(...)`), so the statement check sees all of it
+REDIS_WRITE = re.compile(r"(?<![\w$.])([A-Za-z_$][\w$]*(?:\s*\.\s*[A-Za-z_$][\w$]*)*?)\s*\.\s*(set|hset|hmset|lpush|rpush|sadd|zadd)\s*\(")
+SIMPLE_KEY = re.compile(r"""[A-Za-z_$][\w$.]*|'[^'\\\n]*'|"[^"\\\n]*"|f'[^'\\()\n]*'|f"[^"\\()\n]*"|`[^`\\()\n]*`""")
+
+
+def _redis_library(ctx: FileCtx) -> str:
+    if ctx.kind == "py":
+        return "redis-py"
+    if re.search(r"""['"]ioredis['"]""", ctx.text):
+        return "ioredis"
+    if re.search(r"""['"]@upstash/redis['"]""", ctx.text):
+        return "upstash"
+    return "node-redis"
+
+
+def fix_redis_ttl(ctx: FileCtx, f: Finding) -> Result:
+    if ctx.kind not in ("py", "js"):
+        return "unsupported file type"
+    bare, text = ctx.views.bare, ctx.text
+    a, b = ctx.line_start(f.line), ctx.line_end(f.line)
+    m = next((m for m in REDIS_WRITE.finditer(bare, a, b) if m.start() not in ctx.used), None)
+    if m is None:
+        return "no Redis write on this line"
+    ctx.used.add(m.start())
+    client, method = m.group(1), m.group(2)
+    open_idx = m.end() - 1
+    close = match_close(bare, open_idx)
+    if close < 0:
+        return "the call does not close"
+    args = split_args(bare, open_idx + 1, close)
+    lib = _redis_library(ctx)
+    if method == "set":
+        if len(args) < 2 or "**" in bare[open_idx:close] or "..." in bare[open_idx:close]:
+            return "the arguments are not a plain key and value"
+        if len(args) == 2:
+            item = {"redis-py": f"ex={REDIS_TTL}", "node-redis": f"{{ EX: {REDIS_TTL} }}",
+                    "upstash": f"{{ ex: {REDIS_TTL} }}", "ioredis": f'"EX", {REDIS_TTL}'}[lib]
+            return append_item(ctx, open_idx, close, args[-1][1], item)
+        third = text[args[2][0]:args[2][1]].strip()
+        if len(args) == 3 and lib in ("node-redis", "upstash") and third.startswith("{"):
+            o = bare.index("{", args[2][0])
+            oc = match_close(bare, o)
+            if oc > 0:  # an options object without an expiry ({ NX: true }): add one to it
+                return append_item(ctx, o, oc, js_last_end(bare, o, oc), f"{'EX' if lib == 'node-redis' else 'ex'}: {REDIS_TTL}")
+        return "the call has more arguments than a key and a value"
+    # hset, lpush, sadd ...: no expiry in the same call; expire the key on the next line
+    if not args:
+        return "the call has no key"
+    key = text[args[0][0]:args[0][1]].strip()
+    if not SIMPLE_KEY.fullmatch(key):
+        return "the key is computed by a call; evaluating it twice could differ"
+    head = text[a:m.start()]
+    awaited = re.fullmatch(r"[ \t]*(await\s+)?", head)
+    if awaited is None:
+        return "the write is not a statement of its own"
+    end = close + 1
+    if ctx.kind == "js" and bare[end:end + 1] == ";":
+        end += 1
+    last = ctx.line_of(end)
+    if bare[end:ctx.line_end(last)].strip():
+        return "the statement shares its line with other code"
+    indent = ctx.indent_of(a)
+    semi = ";" if ctx.kind == "js" and text[end - 1:end] == ";" else ""
+    at = ctx.line_end(last)
+    return [(at, at, f"\n{indent}{awaited.group(1) or ''}{client}.expire({key}, {REDIS_TTL}){semi}")]
+
+
 FIXERS: Dict[str, Callable[[FileCtx, Finding], Result]] = {
+    "DATA013": fix_redis_ttl,
     "REL001": fix_timeout,
     "LLM003": fix_token_limit,
     "LLM011": fix_json_parse,

@@ -108,7 +108,7 @@ def build_parser() -> argparse.ArgumentParser:
                        description="Print a unified diff that fixes every finding a codemod covers: request timeouts "
                                    "(REL001), output token limits (LLM003), guarded JSON parsing of model output (LLM011), "
                                    "pinned JWT algorithms (BE016, AUTH011), Decimal money columns (DATA004) and CORS "
-                                   "origins with credentials (BE012). Nothing is written without --apply. With --llm, "
+                                   "origins with credentials (BE012) and Redis key expiries (DATA013). Nothing is written without --apply. With --llm, "
                                    "findings without a codemod get a model-written patch in a .patch file, never applied.")
     x.add_argument("path", nargs="?", default=".", help="project directory (default: current directory)")
     x.add_argument("--apply", action="store_true", help="write the fixes to the files instead of printing the diff")
