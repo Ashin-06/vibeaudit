@@ -1279,6 +1279,11 @@
    "seeded_recall": 1.0,
    "by_repo": {}
   },
+  "DEP009": {
+   "precision": null,
+   "seeded_recall": null,
+   "by_repo": {}
+  },
   "FE001": {
    "precision": 0.5357,
    "seeded_recall": 1.0,

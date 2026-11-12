@@ -3,9 +3,9 @@
 Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do not edit by hand.
 `vibeaudit rules` prints the same list, and `vibeaudit rules --format json` includes every field.
 
-145 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
+146 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-45 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+46 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -149,6 +149,7 @@ References: CWE-259, A07:2021
 | [DEP006](#dep006) | high | stable | Install script downloads and runs remote code |
 | [DEP007](#dep007) | medium | stable | MCP server launched from an unpinned package |
 | [DEP008](#dep008) | medium | preview | Extra package index (dependency confusion) |
+| [DEP009](#dep009) | high | preview | Transitive dependency with known vulnerabilities |
 
 ### DEP001
 
@@ -231,6 +232,18 @@ Why it matters: With --extra-index-url pip takes the highest version of a name f
 How to fix: Use a single index that proxies PyPI (--index-url), or pin each private package to its index (uv `[[tool.uv.index]]` with `explicit = true`) and use hashes.
 
 References: CWE-427, A08:2021
+
+### DEP009
+
+**Transitive dependency with known vulnerabilities** (high, preview)
+
+Preview: New in 0.8.5: measured on seeded cases only, since it depends on OSV data.
+
+Why it matters: A package installed through the lockfile, though no manifest names it, has published vulnerabilities. It ships with the app like any direct dependency.
+
+How to fix: Update the direct dependency that pulls it in, or pin a fixed version with an override (npm `overrides`, pnpm or yarn `resolutions`, a constraint file for Python).
+
+References: CWE-1395, A06:2021
 
 ## Backend security
 

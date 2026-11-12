@@ -57,7 +57,7 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | Third-party GitHub Actions not pinned to a SHA | preview (CFG010; 0.7.0, 19 of 19 true on the corpus) |
 | Secrets passed to untrusted steps or forks | planned |
 | Over-broad `GITHUB_TOKEN` | preview (CFG011, `write-all`; 0.7.0) |
-| Transitive vulnerabilities from lockfiles, with OSV offline data | planned |
+| Transitive vulnerabilities from lockfiles, with OSV offline data | preview (DEP009; 0.8.5) |
 | Phantom JS dependencies (only transitive in the lockfile) | done (QA007 reports every import missing from package.json) |
 | Registry confusion (private scopes without a registry, `extra-index-url`) | preview (DEP008, pip extra indexes; 0.7.0). npm scopes: planned |
 | Duplicate utility functions across files | preview (QA011; 0.8.4) |
@@ -85,10 +85,10 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | PR review bot and `--fail-on-regression N` | done (`vibeaudit review`, action input `review`; 0.8.3) |
 | Pre-commit fast path under 150 ms | done (`vibeaudit-secrets` hook, 0.8.3; budget enforced in CI on Linux) |
 | MCP tools: audit_current_file, verify_package, simulate_migration | done (0.8.3; auto_repair: done in Phase 2) |
-| GitLab CI and CircleCI templates | planned |
+| GitLab CI and CircleCI templates | done (`ci/`; `junit` and `codeclimate` reports; 0.8.5) |
 | Monorepo mode | done (`--monorepo`: one project per package, a score per package; 0.8.4) |
 | Offline / air-gapped mode with bundled data | done (`update --export/--import`, offline OSV index, no network in `--offline`; 0.8.4) |
-| `vibeaudit explain <finding>` | done, unreleased (rule, code and the data flow traced back from the line) |
+| `vibeaudit explain <finding>` | done (rule, code and the data flow traced back from the line; 0.8.5) |
 
 ## Phase 4: compliance and threat intelligence
 

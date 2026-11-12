@@ -4,6 +4,23 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.8.5] - 2026-11-12
+
+Phase 1 adds vulnerable transitive dependencies; Phase 3 adds `vibeaudit explain` and CI templates.
+
+### Added
+
+- DEP009 (preview): packages installed through a lockfile that no manifest names, checked for known
+  vulnerabilities: npm, pnpm, yarn and bun lockfiles, and poetry, uv, pdm and Pipfile lockfiles. Packages the
+  lockfile marks as development-only are left out. With `--offline` it uses the imported OSV index; online it
+  makes its own OSV query, so a failure there never hides the direct dependencies' results.
+- `vibeaudit explain FINDING`: the rule, the code and the data flow traced back from the finding's line.
+- GitLab CI and CircleCI templates (`ci/`), and `junit` and `codeclimate` report formats.
+
+### Changed
+
+- Vulnerability messages say "1 known vulnerability" instead of "1 known vulnerabilities".
+
 ## [0.8.4] - 2026-11-12
 
 Phase 1 adds the AI-slop checks; Phase 3 adds monorepo mode and offline use.

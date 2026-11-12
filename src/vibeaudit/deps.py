@@ -537,7 +537,8 @@ class DepScanner:
                     self.add(d, "DEP002", f"`{d.name}` is one character away from the popular package `{squats[(d.ecosystem, d.name)]}`.")
             from . import bundle
 
-            found, missing = bundle.offline_vulns(deps)
+            trans = locked_packages(self.p, deps)
+            found, missing = bundle.offline_vulns(deps + trans)
             used = sorted({d.ecosystem for d in deps if d.version and d.checkable} - set(missing))
             if used:
                 self.notes.append("Offline: known vulnerabilities checked against the imported OSV index ("
@@ -546,6 +547,7 @@ class DepScanner:
                 self.notes.append(f"Offline: known vulnerabilities of {', '.join(missing)} packages were not checked "
                                   "(import a bundle made with `vibeaudit update --export FILE --osv ...`).")
             self._report_vulns(deps, found)
+            self._report_vulns(trans, found, transitive=True)
             return
         known_pypi, _ = popular("PyPI")
         known_npm, _ = popular("npm")
@@ -580,8 +582,15 @@ class DepScanner:
             self.notes.append("OSV vulnerability lookup failed (network); known CVEs were not checked.")
             return
         self._report_vulns(deps, vulns)
+        trans = locked_packages(self.p, deps)
+        try:
+            vulns = osv_lookup(trans) if trans else {}
+        except ConnectionError:
+            self.notes.append("OSV lookup of the lockfiles' transitive dependencies failed (network); they were not checked.")
+            return
+        self._report_vulns(trans, vulns, transitive=True)
 
-    def _report_vulns(self, deps: List[Dep], vulns: Dict[Tuple[str, str, str], List[dict]]) -> None:
+    def _report_vulns(self, deps: List[Dep], vulns: Dict[Tuple[str, str, str], List[dict]], transitive: bool = False) -> None:
         reported = set()
         for d in deps:
             key = (d.ecosystem, d.name, d.version or "")
@@ -595,8 +604,19 @@ class DepScanner:
                 sev = s if ["critical", "high", "medium", "low"].index(s) < ["critical", "high", "medium", "low"].index(sev) else sev
             ids = ", ".join(sorted(v.get("id", "?") for v in items)[:6]) + (" ..." if len(items) > 6 else "")
             fix = _upgrade_target(items, d)
+            if transitive:
+                fix = f" Version {fix} fixes them." if fix else ""
+                self.add(d, "DEP009", f"{d.name} {d.version}, installed as a dependency of another package, has {len(items)} "
+                                      f"known {_vulns(len(items))} ({ids}).{fix} Update the package that pulls it in, or pin "
+                                      "a fixed version with an override (npm `overrides`, pnpm/yarn `resolutions`, a "
+                                      "constraint for Python).", sev)
+                continue
             fix = f" Upgrade to at least {fix}." if fix else ""
-            self.add(d, "DEP004", f"{d.name} {d.version} has {len(items)} known vulnerabilities ({ids}).{fix}", sev)
+            self.add(d, "DEP004", f"{d.name} {d.version} has {len(items)} known {_vulns(len(items))} ({ids}).{fix}", sev)
+
+
+def _vulns(n: int) -> str:
+    return "vulnerability" if n == 1 else "vulnerabilities"
 
 
 def _upgrade_target(items: List[dict], d: Dep) -> Optional[str]:
@@ -615,3 +635,97 @@ def _upgrade_target(items: List[dict], d: Dep) -> Optional[str]:
 
 def _vkey(v: str) -> Tuple:
     return tuple(int(x) if x.isdigit() else 0 for x in re.split(r"[.+-]", v))
+
+
+# ------------------------------------------------------------------ transitive dependencies (DEP009)
+LOCK_MANIFESTS = {"package.json": "npm", "pyproject.toml": "PyPI", "Pipfile": "PyPI"}
+LOCKS = {"npm": ("package-lock.json", "pnpm-lock.yaml", "yarn.lock", "bun.lock"),
+         "PyPI": ("poetry.lock", "uv.lock", "pdm.lock", "Pipfile.lock")}
+MAX_LOCK_BYTES = 30_000_000
+
+
+def locked_packages(project: Project, direct: List[Dep]) -> List[Dep]:
+    """Packages installed through a lockfile that no manifest names: the transitive dependencies. Packages the
+    lockfile marks as development-only are left out. One Dep per (lockfile, name, version)."""
+    from .files import file_signature
+
+    direct_names = {(d.ecosystem, pep503(d.name) if d.ecosystem == "PyPI" else d.name) for d in direct}
+    out: List[Dep] = []
+    folders = sorted({(f.rel.rsplit("/", 1)[0] if "/" in f.rel else "", LOCK_MANIFESTS[f.rel.rsplit("/", 1)[-1]])
+                      for f in project.files if f.rel.rsplit("/", 1)[-1] in LOCK_MANIFESTS})
+    for folder, eco in folders:
+        for lock in LOCKS[eco]:
+            path = project.root / folder / lock if folder else project.root / lock
+            try:
+                if not file_signature(path) or path.stat().st_size > MAX_LOCK_BYTES:
+                    continue
+                text = path.read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                continue
+            rel = f"{folder}/{lock}" if folder else lock
+            seen: Set[Tuple[str, str]] = set()
+            for name, version, line in _lock_entries(lock, text):
+                key = pep503(name) if eco == "PyPI" else name
+                if (eco, key) in direct_names or (key, version) in seen or not re.match(r"\d", version):
+                    continue
+                seen.add((key, version))
+                out.append(Dep(name, eco, rel, line, version))
+            break  # one lockfile per folder, as the package manager uses
+    return out
+
+
+def _line_at(offsets: List[int], off: int) -> int:
+    import bisect
+
+    return bisect.bisect_right(offsets, off) + 1
+
+
+def _lock_entries(lock: str, text: str) -> List[Tuple[str, str, int]]:
+    """(name, version, line) of every non-development package in a lockfile."""
+    newlines = [m.start() for m in re.finditer("\n", text)]
+    line = functools.partial(_line_at, newlines)
+    out: List[Tuple[str, str, int]] = []
+    if lock == "package-lock.json":
+        data = _dict(_parsed_json(text))
+        where = {m.group(1): m.start() for m in re.finditer(r'(?m)^\s*"((?:[^"\n]*/)?node_modules/[^"\n]+)":\s*\{', text)}
+        for key, val in _dict(data.get("packages")).items():
+            if "node_modules/" not in key or not isinstance(val, dict) or val.get("dev") or val.get("devOptional") or val.get("link"):
+                continue
+            version = val.get("version")
+            if isinstance(version, str):
+                out.append((key.rsplit("node_modules/", 1)[1], version, line(where.get(key, 0))))
+    elif lock in ("poetry.lock", "uv.lock", "pdm.lock"):
+        data = _parsed_toml(text) or {}
+        starts = [m.start() for m in re.finditer(r"(?m)^\[\[package\]\]", text)]
+        for i, pkg in enumerate(data.get("package", []) if isinstance(data.get("package"), list) else []):
+            if not isinstance(pkg, dict) or not isinstance(pkg.get("name"), str) or not isinstance(pkg.get("version"), str):
+                continue
+            groups = pkg.get("groups")
+            if pkg.get("category") == "dev" or (isinstance(groups, list) and groups and not {"main", "default"} & set(groups)):
+                continue
+            out.append((pkg["name"], pkg["version"], line(starts[i]) if i < len(starts) else 1))
+    elif lock == "Pipfile.lock":
+        default_at = max(text.find('"default"'), 0)
+        for name, info in _dict(_dict(_parsed_json(text)).get("default")).items():
+            version = _dict(info).get("version")
+            if isinstance(version, str):
+                m = re.compile(r'(?m)^\s*"%s":\s*\{' % re.escape(name)).search(text, default_at)
+                out.append((name, version.lstrip("="), line(m.start()) if m else 1))
+    elif lock == "pnpm-lock.yaml":
+        start = re.search(r"(?m)^packages:\s*$", text)
+        if start:
+            end = re.search(r"(?m)^\S", text[start.end():])
+            section = start.end() + (end.start() if end else len(text) - start.end())
+            for m in re.finditer(r"(?m)^  '?/?((?:@[^@/\s']+/)?[^@/\s'(]+)[@/](\d[^\s:'()]*)[^\n]*:[ \t]*\n((?:    [^\n]*\n){0,40})",
+                                 text[start.end():section]):
+                if re.search(r"(?m)^    dev: true$", m.group(3)):
+                    continue
+                out.append((m.group(1), m.group(2), line(start.end() + m.start())))
+    elif lock == "yarn.lock":
+        for m in re.finditer(r'(?m)^"?((?:@[^@/\s"]+/)?[^@\s"]+)@[^\n]*:\n(?:  [^\n]*\n){0,3}?  version:? "?(\d[^"\s]*)', text):
+            if "use.local" not in m.group(2):  # a workspace package
+                out.append((m.group(1), m.group(2), line(m.start())))
+    elif lock == "bun.lock":
+        for m in re.finditer(r'(?m)^\s*"[^"\n]+":\s*\[\s*"((?:@[^@/"]+/)?[^@"]+)@(\d[^"]*)"', text):
+            out.append((m.group(1), m.group(2), line(m.start())))
+    return out
