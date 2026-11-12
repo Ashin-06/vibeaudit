@@ -972,6 +972,11 @@
     ]
    }
   },
+  "CFG018": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
   "DATA001": {
    "precision": 0.6316,
    "seeded_recall": 1.0,
@@ -1220,6 +1225,26 @@
      2
     ]
    }
+  },
+  "DATA014": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "DATA015": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "djangoproject.com": [
+     1,
+     0
+    ]
+   }
+  },
+  "DATA016": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
   },
   "DEP001": {
    "precision": null,

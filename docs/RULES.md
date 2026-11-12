@@ -3,9 +3,9 @@
 Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do not edit by hand.
 `vibeaudit rules` prints the same list, and `vibeaudit rules --format json` includes every field.
 
-157 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
+161 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-57 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+61 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -810,6 +810,7 @@ References: CWE-285, A01:2021
 | [CFG015](#cfg015) | high | preview | Admin or database port open to the internet |
 | [CFG016](#cfg016) | medium | preview | Unencrypted database or disk storage |
 | [CFG017](#cfg017) | high | preview | Secret file or build argument in the final image |
+| [CFG018](#cfg018) | critical | preview | Pull request code run with secrets (pull_request_target) |
 
 ### CFG001
 
@@ -996,6 +997,18 @@ Why it matters: A secret file copied into the final image, or a secret passed as
 How to fix: Use build secrets (`RUN --mount=type=secret,id=npmrc ...`), keep secret files out of the final stage, and copy only build output from earlier stages.
 
 References: CWE-538, A05:2021
+
+### CFG018
+
+**Pull request code run with secrets (pull_request_target)** (critical, preview)
+
+Preview: New in 0.8.8: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: A pull_request_target workflow runs with this repository's secrets and a write token, and this one checks out the pull request's code. Anyone who opens a pull request from a fork can run code with your secrets.
+
+How to fix: Use the pull_request trigger for code from forks, or keep pull_request_target jobs to the base branch's code and pass untrusted data only as inputs or artifacts.
+
+References: CWE-829, A08:2021
 
 ## LLM and AI-specific risks
 
@@ -1287,7 +1300,7 @@ References: CWE-1164
 
 **Prompt-injection text in an agent instruction file** (high, preview)
 
-Preview: New in 0.8.8: not yet measured on enough held-out findings in the benchmark.
+Preview: New in 0.8.9: not yet measured on enough held-out findings in the benchmark.
 
 Why it matters: Coding agents follow CLAUDE.md, AGENTS.md, .cursorrules and similar files as if the developer wrote them. Text that tells the agent to ignore its instructions or to hide what it does, or characters a reviewer cannot see, turns a pull request or a copied rules file into control of the agent. The patterns come from vibeaudit's threat feed (refreshed by `vibeaudit update`).
 
@@ -1460,6 +1473,9 @@ How to fix: Check the issue by hand before acting on it; suppress or disable AI0
 | [DATA011](#data011) | low | preview | Index built without CONCURRENTLY on an existing table |
 | [DATA012](#data012) | low | preview | Foreign key without an index |
 | [DATA013](#data013) | low | preview | Redis key without an expiry |
+| [DATA014](#data014) | medium | preview | Personal data in vector store metadata |
+| [DATA015](#data015) | low | preview | Cache refilled without a lock (stampede) |
+| [DATA016](#data016) | medium | preview | Background job not safe to retry |
 
 ### DATA001
 
@@ -1594,6 +1610,42 @@ Why it matters: Keys written without a TTL stay until something deletes them; ca
 How to fix: Set an expiry when writing (`set(key, value, ex=3600)`, `set(key, value, { EX: 3600 })`) or call `expire` right after.
 
 References: CWE-401
+
+### DATA014
+
+**Personal data in vector store metadata** (medium, preview)
+
+Preview: New in 0.8.8: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: Emails, phone numbers, names or addresses are stored as vector metadata. Metadata comes back with every search hit (and can reach the model and other users), and most vector stores make it hard to find and delete one person's data.
+
+How to fix: Store an opaque id in the metadata and keep personal data in your database, where access rules and deletion requests apply.
+
+References: CWE-359, LLM02:2025
+
+### DATA015
+
+**Cache refilled without a lock (stampede)** (low, preview)
+
+Preview: New in 0.8.8: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: On a cache miss each request recomputes the value itself. When a hot key expires, every request in that moment runs the same expensive query or call at once.
+
+How to fix: Let one request refill the key while the others wait or serve the stale value (a lock with SET NX, single-flight, stale-while-revalidate, or a caching library that does this).
+
+References: CWE-400
+
+### DATA016
+
+**Background job not safe to retry** (medium, preview)
+
+Preview: New in 0.8.8: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: Queues and schedulers retry jobs after errors and timeouts, and sometimes deliver a job twice. This job charges, emails or inserts with nothing that makes a second run harmless.
+
+How to fix: Make the job idempotent: pass an idempotency key to payment APIs, record processed job ids, or use an upsert or a unique constraint.
+
+References: CWE-837
 
 ## Reliability and performance
 

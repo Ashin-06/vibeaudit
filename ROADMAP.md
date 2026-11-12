@@ -15,7 +15,7 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | Signed build provenance and CycloneDX SBOM on every release | done |
 | Accuracy section in the README | done |
 
-## Phase 1: new checks (0.7.x)
+## Phase 1: new checks (done, 0.7.0 to 0.8.8)
 
 | Item | Status |
 | --- | --- |
@@ -47,15 +47,15 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | Agent config files granting auto-approve or broad shell and file access | preview (LLM016: Claude Code, Cursor, VS Code, Gemini and Codex settings, MCP autoApprove, skip-permission flags; 0.8.1) |
 | Foreign keys without an index | preview (DATA012; 0.8.3) |
 | Postgres `CREATE INDEX` without `CONCURRENTLY` in migrations | preview (DATA011; 0.8.3) |
-| Vector stores keeping raw personal data in metadata | planned |
+| Vector stores keeping raw personal data in metadata | preview (DATA014; 0.8.8) |
 | Redis keys without a TTL | preview (DATA013; 0.8.3) |
-| Multi-step cache invalidation without a lock (stampede) | planned |
-| Cron and queue jobs that are not idempotent | planned |
+| Multi-step cache invalidation without a lock (stampede) | preview (DATA015; 0.8.8) |
+| Cron and queue jobs that are not idempotent | preview (DATA016; 0.8.8) |
 | Dockerfile multi-stage builds copying secrets into layers | preview (CFG017; 0.8.3) |
 | Kubernetes: no resource limits, privileged containers, hostPath | preview (CFG012, CFG013; 0.7.0) |
 | Terraform and CloudFormation: public S3, open security groups, unencrypted storage | preview (CFG014, CFG015, CFG016; 0.7.0, AWS) |
 | Third-party GitHub Actions not pinned to a SHA | preview (CFG010; 0.7.0, 19 of 19 true on the corpus) |
-| Secrets passed to untrusted steps or forks | planned |
+| Secrets passed to untrusted steps or forks | preview (CFG018, pull_request_target with the head checked out; 0.8.8) |
 | Over-broad `GITHUB_TOKEN` | preview (CFG011, `write-all`; 0.7.0) |
 | Transitive vulnerabilities from lockfiles, with OSV offline data | preview (DEP009; 0.8.5) |
 | Phantom JS dependencies (only transitive in the lockfile) | done (QA007 reports every import missing from package.json) |

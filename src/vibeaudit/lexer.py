@@ -10,7 +10,9 @@ plain depth count.
 from __future__ import annotations
 
 import re
-from typing import List, Optional, Tuple
+import threading
+from collections import OrderedDict
+from typing import Dict, List, Optional, Tuple
 
 REGEX_PREV = set("(,=:[!&|?{};+-*%>~^")
 REGEX_KEYWORDS = {"return", "typeof", "case", "do", "else", "in", "of", "new", "delete", "void", "throw", "yield",
@@ -191,8 +193,38 @@ OPEN = {"(": ")", "[": "]", "{": "}"}
 CLOSE = {")", "]", "}"}
 
 
+_BRACKET = re.compile(r"[()\[\]{}]")
+_PAIRS: "OrderedDict[int, Tuple[str, Dict[int, int]]]" = OrderedDict()
+_PAIRS_LOCK = threading.Lock()
+
+
+def _pairs(bare: str) -> Dict[int, int]:
+    """Every bracket of `bare` -> its closing bracket, in one pass. Brackets of all kinds share one depth, as in
+    match_close's loop. Cached for the last few strings, so many lookups in one file stay linear."""
+    with _PAIRS_LOCK:
+        hit = _PAIRS.get(id(bare))
+        if hit is not None and hit[0] is bare:
+            _PAIRS.move_to_end(id(bare))
+            return hit[1]
+    stack: List[int] = []
+    pairs: Dict[int, int] = {}
+    for m in _BRACKET.finditer(bare):
+        if m.group() in OPEN:
+            stack.append(m.start())
+        elif stack:
+            pairs[stack.pop()] = m.start()
+    with _PAIRS_LOCK:
+        _PAIRS[id(bare)] = (bare, pairs)
+        while len(_PAIRS) > 16:
+            _PAIRS.popitem(last=False)
+    return pairs
+
+
 def match_close(bare: str, i: int) -> int:
     """Index of the bracket closing the one at `i`, or -1."""
+    if len(bare) > 4000 and 0 <= i < len(bare) and bare[i] in OPEN:
+        # one pass for the whole string: an unclosed bracket would otherwise cost a scan to the end each time
+        return _pairs(bare).get(i, -1)
     depth = 0
     n = len(bare)
     j = i
@@ -234,10 +266,18 @@ def stmt_end(bare: str, i: int) -> int:
     """End offset of the expression/statement starting at `i` (JS-ish rules)."""
     depth = 0
     n = len(bare)
+    pairs = _pairs(bare) if n > 4000 else None
     j = i
     while j < n:
         ch = bare[j]
         if ch in OPEN:
+            if pairs is not None and depth == 0:
+                close = pairs.get(j)
+                if close is None:  # an unclosed bracket: broken code, so end at the line instead of the file
+                    nl = bare.find("\n", j)
+                    return nl if nl >= 0 else n
+                j = close + 1  # the same as counting through the group: nothing inside it can end the statement
+                continue
             depth += 1
         elif ch in CLOSE:
             if depth == 0:
