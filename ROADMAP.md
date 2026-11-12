@@ -31,19 +31,19 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | Webhooks without a timestamp or replay window | preview (AUTH013; 0.7.2) |
 | Payment amounts or prices taken from the client | preview (BE019; 0.7.2) |
 | Email header injection | preview (BE020; 0.7.2) |
-| Open redirects and SSRF in "fetch this URL" features (extends BE005/BE008) | planned |
+| Open redirects and SSRF in "fetch this URL" features (extends BE005/BE008) | done (BE005 and BE008 report request data in outbound URLs and redirects; regression tests in 0.8.6) |
 | JWT verified without pinned algorithms (alg none, HMAC/RSA confusion) | preview (AUTH011; alg none is BE016; 0.7.2) |
 | Password change or reset not revoking sessions and refresh tokens | planned |
 | Queries not scoped to the current tenant or org (extends AUTH003) | planned |
 | Feature flags or admin toggles reachable without auth | planned |
-| User text in prompts without delimiters (extends LLM001) | planned |
-| RAG ingestion storing unsanitised text or instructions (chunk poisoning) | planned |
-| Agent tool loops without a max iteration limit (extends LLM009) | planned |
+| User text in prompts without delimiters (extends LLM001) | preview (LLM021; 0.8.6) |
+| RAG ingestion storing unsanitised text or instructions (chunk poisoning) | preview (LLM022; 0.8.6) |
+| Agent tool loops without a max iteration limit (extends LLM009) | preview (LLM020; 0.8.6) |
 | Streaming completions not cancelled when the client disconnects | preview (LLM017; 0.8.1, 13 of 13 true on the corpus) |
-| No per-user or per-request cost limit | planned |
+| No per-user or per-request cost limit | preview (LLM023 per user; the per-request token cap is LLM003; 0.8.6) |
 | Prompts or completions with personal data written to logs | preview (LLM018; 0.8.1) |
-| Model output used as SQL, a shell argument or a file path (extends LLM002) | planned |
-| LLM features without a test or eval of their prompt | planned |
+| Model output used as SQL, a shell argument or a file path (extends LLM002) | done (LLM002: SQL, shell commands, file paths); preview (LLM019: arguments of programs run without a shell; 0.8.6) |
+| LLM features without a test or eval of their prompt | preview (LLM024; 0.8.6) |
 | Agent config files granting auto-approve or broad shell and file access | preview (LLM016: Claude Code, Cursor, VS Code, Gemini and Codex settings, MCP autoApprove, skip-permission flags; 0.8.1) |
 | Foreign keys without an index | preview (DATA012; 0.8.3) |
 | Postgres `CREATE INDEX` without `CONCURRENTLY` in migrations | preview (DATA011; 0.8.3) |
@@ -64,24 +64,24 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | Mixed framework idioms (App Router and Pages Router in one app) | preview (QA009; 0.8.4) |
 | Fake fallbacks and mock relics in production code | preview (QA010; 0.8.4) |
 
-## Phase 2: `vibeaudit fix`
+## Phase 2: `vibeaudit fix` (done, 0.8.6)
 
 | Item | Status |
 | --- | --- |
 | Codemods (diff by default, `--apply`): request timeouts, output token limits, guarded `JSON.parse` of model output, pinned JWT algorithms, Decimal money columns, CORS credentials | done (0.8.0; REL001, LLM003, LLM011, BE016, AUTH011, DATA004, BE012) |
-| Codemod for Redis TTL | done, unreleased (DATA013) |
+| Codemod for Redis TTL | done (DATA013; 0.8.6) |
 | Codemod for `rel="noopener noreferrer"` | not planned: browsers apply noopener to target=_blank by default since 2021 |
 | Agentic patch generator for complex findings (writes a `.patch`, never applies it) | done (`vibeaudit fix --llm`; 0.8.0) |
 | MCP `auto_repair` tool returning the diff | done (0.8.0) |
 
-## Phase 3: everywhere it runs
+## Phase 3: everywhere it runs (done, 0.8.6)
 
 | Item | Status |
 | --- | --- |
 | `vibeaudit watch` (incremental re-scan) | done (0.8.1; unchanged files and per-file checks are reused) |
 | Language server with diagnostics and code actions | done (`vibeaudit lsp`; 0.8.2) |
 | VS Code / Cursor extension (.vsix built in CI, not published) | done (`editors/vscode`; 0.8.2) |
-| `vibeaudit studio` local web UI (127.0.0.1 only) | done, unreleased (routes, data flows, score drill-down; token, Host check, CSP) |
+| `vibeaudit studio` local web UI (127.0.0.1 only) | done (routes, data flows, score drill-down; token, Host check, CSP; 0.8.6) |
 | PR review bot and `--fail-on-regression N` | done (`vibeaudit review`, action input `review`; 0.8.3) |
 | Pre-commit fast path under 150 ms | done (`vibeaudit-secrets` hook, 0.8.3; budget enforced in CI on Linux) |
 | MCP tools: audit_current_file, verify_package, simulate_migration | done (0.8.3; auto_repair: done in Phase 2) |

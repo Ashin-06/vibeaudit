@@ -145,6 +145,14 @@
    "fingerprint": "821de57801f030b42cc07205f82df11f",
    "verdict": "tp",
    "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "LLM023",
+   "file": "supabase/functions/chat/index.ts",
+   "line": 21,
+   "fingerprint": "798ef5667609407e7224de05ea86bb2d",
+   "verdict": "tp",
+   "reason": "Signed-in users call the chat function with the server's OpenAI key; no usage or quota tracking anywhere."
   }
  ]
 }

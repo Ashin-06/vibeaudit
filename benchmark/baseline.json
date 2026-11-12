@@ -1668,6 +1668,54 @@
     ]
    }
   },
+  "LLM019": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "LLM020": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "LLM021": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "LLM022": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "LLM023": {
+   "precision": 1.0,
+   "seeded_recall": null,
+   "by_repo": {
+    "chatgpt-your-files": [
+     1,
+     0
+    ],
+    "opengpts": [
+     1,
+     0
+    ]
+   }
+  },
+  "LLM024": {
+   "precision": 1.0,
+   "seeded_recall": null,
+   "by_repo": {
+    "chatbot-ui": [
+     1,
+     0
+    ],
+    "scriptforge-ai": [
+     1,
+     0
+    ]
+   }
+  },
   "LLM025": {
    "precision": null,
    "seeded_recall": 1.0,

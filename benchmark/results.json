@@ -61,8 +61,8 @@
    "fixed_fp": 17
   },
   "scriptforge-ai": {
-   "findings": 16,
-   "labelled": 16,
+   "findings": 17,
+   "labelled": 17,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 7
@@ -89,15 +89,15 @@
    "fixed_fp": 4
   },
   "chatbot-ui": {
-   "findings": 75,
-   "labelled": 75,
+   "findings": 76,
+   "labelled": 76,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 1
   },
   "chatgpt-your-files": {
-   "findings": 14,
-   "labelled": 14,
+   "findings": 15,
+   "labelled": 15,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 4
@@ -110,8 +110,8 @@
    "fixed_fp": 0
   },
   "opengpts": {
-   "findings": 50,
-   "labelled": 50,
+   "findings": 51,
+   "labelled": 51,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 27
@@ -3237,6 +3237,112 @@
    "seeded_recall": 1.0,
    "by_repo": {
     "sec-insights": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "LLM019": {
+   "title": "Model output passed as a command argument",
+   "preview": true,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "LLM020": {
+   "title": "Agent tool loop without a step limit",
+   "preview": true,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "LLM021": {
+   "title": "User text in a prompt without delimiters",
+   "preview": true,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "LLM022": {
+   "title": "Retrieved documents stored without cleaning (chunk poisoning)",
+   "preview": true,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
+  "LLM023": {
+   "title": "No per-user usage or cost limit for model calls",
+   "preview": true,
+   "tp": 2,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 0,
+   "seeded_found": 0,
+   "seeded_recall": null,
+   "by_repo": {
+    "chatgpt-your-files": [
+     1,
+     0,
+     0
+    ],
+    "opengpts": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "LLM024": {
+   "title": "LLM code without tests or evals",
+   "preview": true,
+   "tp": 2,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 0,
+   "seeded_found": 0,
+   "seeded_recall": null,
+   "by_repo": {
+    "chatbot-ui": [
+     1,
+     0,
+     0
+    ],
+    "scriptforge-ai": [
      1,
      0,
      0

@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Callable, Dict, List, Optional
 
 from . import heuristics as H
-from . import agentscan, apiscan, iacscan as iac, slopscan, storagescan
+from . import agentscan, apiscan, iacscan as iac, promptscan, slopscan, storagescan
 from .guard import GUARD, finditer
 from .files import ENV_EXAMPLE_RE, ENV_FILE_RE, TEST_PATH_RE, Project, SourceFile, read_ignore_file, _matches
 from .lexer import py_views
@@ -399,6 +399,7 @@ class ProjectScanner:
     def api_checks(self) -> None:
         apiscan.run(self.p, self.routes, self.any_code(apiscan.CSRF_EVIDENCE), self.add)
         agentscan.run(self.p, self.routes, self.add)
+        promptscan.run(self.p, self.routes, self.add)
         storagescan.run(self.p, self.add)
         slopscan.run(self.p, self.add)
 

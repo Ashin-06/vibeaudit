@@ -41,6 +41,7 @@ class Rule:
     gates_in_preview: bool = False
 
 
+NEW_IN_087 = "New in 0.8.7: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_086 = "New in 0.8.6: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_085 = "New in 0.8.5: measured on seeded cases only, since it depends on OSV data."
 NEW_IN_084 = "New in 0.8.4: not yet measured on enough held-out findings in the benchmark."
@@ -709,13 +710,46 @@ _R = [
          "details. Logging them copies that data into log storage with weaker access control and retention.",
          "Log ids, token counts and timings instead of the text, or redact it before logging.", "CWE-532",
          "LLM02:2025", preview=True, preview_reason=NEW_IN_081),
+    Rule("LLM019", "Model output passed as a command argument", "llm", "high",
+         "Running a program without a shell stops command injection, not option injection: a model told by a "
+         "prompt injection to answer `--upload-pack=sh -c ...` (git) or `-oProxyCommand=...` (ssh) runs code.",
+         "Validate the value against an allow-list or a strict pattern, and put `--` before model-chosen operands "
+         "so they cannot be read as options.", "CWE-88", "LLM05:2025", preview=True, preview_reason=NEW_IN_086),
+    Rule("LLM020", "Agent tool loop without a step limit", "llm", "medium",
+         "The loop calls the model again for as long as it asks for tools (or until it says it is done). A "
+         "confused or injected model can keep asking forever, burning tokens and repeating tool side effects.",
+         "Count the steps and stop at a fixed maximum (for example 10), and cap the total tokens or cost per run.",
+         "CWE-834", "LLM10:2025", preview=True, preview_reason=NEW_IN_086),
+    Rule("LLM021", "User text in a prompt without delimiters", "llm", "low",
+         "When user text is pasted into the instructions with nothing marking where it starts and ends, the model "
+         "cannot tell your instructions from instructions hidden in the text.",
+         "Wrap user text in clear delimiters (for example `<user_input>...</user_input>` or a fenced block), say "
+         "in the instructions that it is data, and keep it in its own user message where you can.", "CWE-77",
+         "LLM01:2025", preview=True, preview_reason=NEW_IN_086),
+    Rule("LLM022", "Retrieved documents stored without cleaning (chunk poisoning)", "llm", "medium",
+         "Web pages and uploaded files are split and stored in the vector store as they are. Text hidden in them "
+         "(\"ignore previous instructions...\") comes back later as trusted context for every user who retrieves it.",
+         "Clean documents before indexing (strip HTML and hidden text, drop instruction-like passages or run an "
+         "injection classifier) and keep where each chunk came from, so retrieved text can be shown as data.",
+         "CWE-1426", "LLM08:2025", preview=True, preview_reason=NEW_IN_086),
+    Rule("LLM023", "No per-user usage or cost limit for model calls", "llm", "low",
+         "Signed-in users can call the model as often as they like, and nothing records tokens or cost per user, "
+         "so one account (or a stolen one) can run up the whole bill.",
+         "Record `usage` tokens per user and stop or slow users who pass a daily or monthly budget.", "CWE-770",
+         "LLM10:2025", preview=True, preview_reason=NEW_IN_086),
+    Rule("LLM024", "LLM code without tests or evals", "llm", "low",
+         "The project has tests, but none of them touches the code that builds prompts or calls the model, and "
+         "there is no eval setup. A changed prompt or model can quietly break answers.",
+         "Add tests that run the prompt code with a stubbed model, and a small eval set (promptfoo, deepeval, "
+         "ragas or your own) that checks real answers before a prompt or model change ships.", "CWE-1164", "",
+         preview=True, preview_reason=NEW_IN_086),
     Rule("LLM025", "Prompt-injection text in an agent instruction file", "llm", "high",
          "Coding agents follow CLAUDE.md, AGENTS.md, .cursorrules and similar files as if the developer wrote them. "
          "Text that tells the agent to ignore its instructions or to hide what it does, or characters a reviewer "
          "cannot see, turns a pull request or a copied rules file into control of the agent. The patterns come "
          "from vibeaudit's threat feed (refreshed by `vibeaudit update`).",
          "Read the file in a viewer that shows hidden characters, remove the injected text, and review who changed "
-         "the file.", "CWE-77", "LLM01:2025", preview=True, preview_reason=NEW_IN_086),
+         "the file.", "CWE-77", "LLM01:2025", preview=True, preview_reason=NEW_IN_087),
     # ------------------------------------------------------- UI, UX and a11y
     Rule("UI001", "Image without alt text", "ui", "low",
          "Screen-reader users get the file name or nothing, and the image is invisible to search engines.",

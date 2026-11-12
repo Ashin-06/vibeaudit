@@ -611,6 +611,14 @@
    "reason": "The same function body is copied into another file of the same package."
   },
   {
+   "rule": "LLM023",
+   "file": "backend/app/server.py",
+   "line": 29,
+   "fingerprint": "6115a92b1b83bcebd36a01c4ddaea0ca",
+   "verdict": "tp",
+   "reason": "Ingestion and chat run on the server's keys for any signed-in user; no per-user token or cost tracking."
+  },
+  {
    "rule": "LLM012",
    "file": "backend/app/llms.py",
    "line": 72,

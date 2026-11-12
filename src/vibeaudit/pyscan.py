@@ -60,6 +60,9 @@ SECRET_VAR = re.compile(
 )
 AUTH_ANNOTATION = re.compile(r"(?i)^(?:Authed|Authenticated|Current|Verified|LoggedIn|Logged_in|Admin)\w*$|Depends\(\s*[\w.]*(?:auth|user|token|current|admin|verify)")
 BOUND_NAME = re.compile(r"(?i)(max|limit|step|iter|turn|count|attempt|round|budget|tries|retries|n_)")
+# a loop that runs until the model stops asking for tools (or says it is done): an agent loop
+AGENT_LOOP_TEST = re.compile(r"(?i)tool_?calls?|tool_?use|stop_?reason|finish_?reason|function_?call|requires_?action"
+                             r"|\b(?:not\s+)?(?:done|finished|is_done|is_finished|complete|completed)\b")
 
 
 def dotted(node: ast.AST) -> str:
@@ -698,6 +701,8 @@ class PyScanner:
                     program = self.taint(arg0.elts[0], ctx)
                     if program:
                         self.sink(call, program, "BE002", "the program a subprocess runs", "high", True)
+                    else:
+                        self.check_model_argument(call, arg0.elts, ctx)
                 elif t0:
                     self.sink(call, t0, "BE002", "a subprocess command", "high", True)
         # dynamic code
@@ -960,8 +965,21 @@ class PyScanner:
             return  # naming a specific exception (KeyError, OSError) means this failure was expected
         self.add("QA003", h, f"`except {typ or ''}` silently ignores the error.".replace("except :", "except:"))
 
+    def check_model_argument(self, call: ast.Call, argv: list, ctx) -> None:
+        """LLM019: model output as an argument (not the program) of a subprocess run without a shell."""
+        prog = const_str(argv[0]) or "the program"
+        for e in argv[1:]:
+            if isinstance(e, ast.Constant) and e.value == "--":
+                return  # everything after `--` is an operand, never an option
+            te = self.taint(e, ctx)
+            if te and "llm" in te and "tool" not in te:
+                self.add("LLM019", call, f"Model output (from the call on line {te['llm']}) is passed as an argument to "
+                                         f"`{prog}`; a value such as `--upload-pack=...` becomes an option.", "high")
+                return
+
     def check_loop(self, node: ast.While) -> None:
-        if not (isinstance(node.test, ast.Constant) and node.test.value is True):
+        forever = isinstance(node.test, ast.Constant) and node.test.value is True
+        if not forever and not AGENT_LOOP_TEST.search(ast.unparse(node.test)):
             return
         calls = any(isinstance(n, ast.Call) and is_llm_call(n, self.llm_funcs) for n in ast.walk(node))
         if not calls:
@@ -969,9 +987,12 @@ class PyScanner:
         for n in ast.walk(node):
             if isinstance(n, ast.Compare):
                 names = [x.id for x in ast.walk(n) if isinstance(x, ast.Name)] + [x.attr for x in ast.walk(n) if isinstance(x, ast.Attribute)]
-                if any(BOUND_NAME.search(x) for x in names):
+                if any(BOUND_NAME.search(x) and not AGENT_LOOP_TEST.search(x) for x in names):
                     return
-        self.add("LLM009", node, "while True loop calls a model with no step or budget limit.")
+        if forever:
+            self.add("LLM009", node, "while True loop calls a model with no step or budget limit.")
+        else:
+            self.add("LLM020", node, "Agent loop calls the model until it stops asking for tools, with no step limit.")
 
     def check_module_text(self, tree: ast.Module) -> None:
         sf = self.sf
