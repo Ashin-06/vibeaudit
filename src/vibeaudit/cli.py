@@ -66,6 +66,9 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--no-config", action="store_true",
                    help="ignore configuration and feedback files in the scanned project")
     s.add_argument("--no-cache", action="store_true", help="do not read or write cached registry, vulnerability and LLM answers")
+    s.add_argument("--monorepo", action="store_true", default=None,
+                   help="scan every package (a folder with its own package.json, pyproject.toml or requirements file) "
+                        "as a project of its own, against its own manifest, with a score per package")
     s.add_argument("--include-preview", action="store_true", default=None,
                    help="count findings of preview rules toward --fail-on and the score (they are always reported)")
     s.add_argument("--no-gate-severe-preview", action="store_true", default=None,
@@ -398,7 +401,12 @@ def cmd_scan(a: argparse.Namespace) -> int:
         regression = (got[0], got[1], opts.changes)
         opts.baseline, opts.changes = None, None
     try:
-        res: Result = scan(a.path, opts)
+        if pick(a.monorepo, "monorepo", False):
+            from . import monorepo
+
+            res: Result = monorepo.scan(a.path, opts)
+        else:
+            res = scan(a.path, opts)
     except KeyboardInterrupt:
         return 130
     if regression is not None:

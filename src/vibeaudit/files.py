@@ -352,9 +352,13 @@ def gitignore_covers(root: Path, rel: str) -> bool:
 
 
 class Project:
-    def __init__(self, root: Path, excludes: Iterable[str] = (), max_bytes: int = DEFAULT_MAX_BYTES):
+    def __init__(self, root: Path, excludes: Iterable[str] = (), max_bytes: int = DEFAULT_MAX_BYTES,
+                 outer: Optional[Tuple[str, List[str]]] = None):
+        """`outer`: (this folder's path in an enclosing repository + "/", that repository's exclude patterns),
+        for one package of a monorepo scanned on its own (see monorepo.py)."""
         self.root = root.resolve()
         self._base_excludes = list(excludes)
+        self._outer = outer
         self.max_bytes = max_bytes
         self.is_git = False
         self.tracked: Set[str] = set()
@@ -416,7 +420,7 @@ class Project:
                 and os.path.splitext(rel)[1].lower() in BUNDLE_EXTS
             if (skipped and not bundle) or self._in_venv(parts):
                 continue
-            if _matches(rel, self.excludes):
+            if _matches(rel, self.excludes) or (self._outer is not None and _matches(self._outer[0] + rel, self._outer[1])):
                 continue
             if os.path.splitext(rel)[1].lower() in BINARY_EXTS:
                 self.binary.add(rel)  # not read, but checks on asset links need to know it exists

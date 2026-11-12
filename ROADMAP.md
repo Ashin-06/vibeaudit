@@ -85,7 +85,7 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | Pre-commit fast path under 150 ms | done (`vibeaudit-secrets` hook, 0.8.3; budget enforced in CI on Linux) |
 | MCP tools: audit_current_file, verify_package, simulate_migration | done (0.8.3; auto_repair: done in Phase 2) |
 | GitLab CI and CircleCI templates | planned |
-| Monorepo mode | planned |
+| Monorepo mode | done, unreleased (`--monorepo`: one project per package, a score per package) |
 | Offline / air-gapped mode with bundled data | planned |
 | `vibeaudit explain <finding>` | planned |
 
