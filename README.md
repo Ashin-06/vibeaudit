@@ -68,7 +68,7 @@ Summary
   critical: 3  high: 20  medium: 15  low: 7   total: 45
   ...
   Score: 0/100  Grade: F
-  Domains: Security 0  AI 42  Quality 66  Data 93  Reliability 99  UI 100
+  Domains: Security 0  AI 42  Quality 93  Data 96  Reliability 99  UI 100
 ```
 
 That project is one of the deliberately vulnerable sample apps in `tests/fixtures/`.
@@ -134,13 +134,13 @@ your `PATH`, their findings are merged into the report and de-duplicated.
 | --- | --- |
 | `vibeaudit scan [PATH]` | Audit a project (default: the current directory). |
 | `vibeaudit watch [PATH]` | Scan, then re-scan after every change and print the findings that appeared (`+`) or were fixed (`-`); see [Watch mode](#watch-mode). |
-| `vibeaudit review [PATH] --diff REV` | Pull request review comments, with suggested fixes, for the findings on changed lines; `--post` sends them to GitHub (see [Pull request review](#pull-request-review)). |
+| `vibeaudit review [PATH] --diff REV` | Pull request review comments, with suggested fixes, for the findings on changed lines; `--post` sends them to GitHub, `--max-comments N` caps them (see [Pull request review](#pull-request-review)). |
 | `vibeaudit fix [PATH]` | Print a diff that fixes the findings with one obvious repair; `--apply` writes it (see [Automatic fixes](#automatic-fixes-vibeaudit-fix)). |
 | `vibeaudit studio [PATH]` | A local web UI: routes with auth and write badges, data flows, and the score by domain, category and rule (see [Studio](#studio)). |
-| `vibeaudit explain FINDING` | Explain one finding (`FILE:LINE`, `FILE:LINE:RULE` or a fingerprint prefix): the rule, the code and the data flow that led to it (`--format json`). |
+| `vibeaudit explain FINDING` | Explain one finding (`FILE:LINE`, `FILE:LINE:RULE` or a fingerprint prefix): the rule, the code and the data flow that led to it (`--format json`, `--path DIR` for another project). |
 | `vibeaudit routes [PATH]` | List every HTTP entry point with method, path, location and whether it has a visible auth check, writes data or calls a paid AI API (`--format text\|json\|md`). |
 | `vibeaudit rules` | List every rule (`--format text\|json\|md`; JSON includes the why and fix text). |
-| `vibeaudit feedback` | Record that a finding is a false positive or confirmed, or list recorded feedback (see [False positives](#false-positives-and-suppressing-findings)). |
+| `vibeaudit feedback` | Record that a finding is a false positive or confirmed, or list recorded feedback (`--path DIR` for another project; see [False positives](#false-positives-and-suppressing-findings)). |
 | `vibeaudit update` | Refresh the popular-package lists, the retired-model list and the signed threat feed; `--self` upgrades vibeaudit with pip; `--export FILE [--osv PyPI,npm]` and `--import FILE` carry the data to a machine without network (see [Offline and air-gapped use](#offline-and-air-gapped-use)). |
 | `vibeaudit lsp` | Run the language server for editors: diagnostics and fix code actions (see [Editors](#editors-vs-code-cursor-and-other-lsp-clients)). |
 | `vibeaudit mcp` | Run the MCP server for coding agents (see [MCP server](#mcp-server-for-coding-agents)). |

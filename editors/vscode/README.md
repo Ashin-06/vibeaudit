@@ -7,8 +7,11 @@ This extension is a thin client: it starts `vibeaudit lsp`, the language server 
 `vibeaudit` Python package. Install that first:
 
 ```bash
-pip install vibeaudit
+pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.8.8"
 ```
+
+vibeaudit is not published on PyPI: a package called `vibeaudit` there is not this project, so install from the
+repository as above.
 
 ## Settings
 
