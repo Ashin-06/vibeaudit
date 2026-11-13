@@ -4,7 +4,29 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.9.0] - 2026-11-13
+
+Phases 0 to 4 of the roadmap are complete: a measured benchmark, the new checks, `vibeaudit fix`, the
+integrations, and compliance mapping with the threat feed. The release passed the completion gate: a full audit
+([docs/AUDIT-0.9.0.md](docs/AUDIT-0.9.0.md)) with every high and medium finding fixed, packaging checked in a
+fresh environment on Python 3.9 to 3.13 on Linux, macOS and Windows, and a green benchmark gate.
+
+### Security
+
+- A project's `llm` setting is read only by `vibeaudit scan`: the LSP server, watch, studio, the MCP tools and the
+  Python API never send code to a model provider because a repository's config asks for it.
+- `vibeaudit studio` binds its port exclusively, so on Windows no other local process can bind the same port and
+  answer in its place.
+
+### Fixed
+
+- Files and messages nested too deeply to parse (package.json, tsconfig, pyproject, config, feedback and baseline
+  files, LSP and MCP messages, bundles, the threat feed, cache files) are treated as malformed instead of crashing
+  the scan or hanging the LSP server.
+- A damaged or forged bundle, a report path that cannot be written and an oversized studio query now fail with a
+  clear error instead of a traceback.
+- The VS Code extension's README installs the language server from the repository at the matching version;
+  vibeaudit is not on PyPI.
 
 ### Changed
 

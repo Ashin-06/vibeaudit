@@ -59,7 +59,7 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | Over-broad `GITHUB_TOKEN` | preview (CFG011, `write-all`; 0.7.0) |
 | Transitive vulnerabilities from lockfiles, with OSV offline data | preview (DEP009; 0.8.5) |
 | Phantom JS dependencies (only transitive in the lockfile) | done (QA007 reports every import missing from package.json) |
-| Registry confusion (private scopes without a registry, `extra-index-url`) | preview (DEP008, pip extra indexes; 0.7.0). npm scopes: planned |
+| Registry confusion (private scopes without a registry, `extra-index-url`) | preview (DEP008, pip extra indexes; 0.7.0). npm scopes: done (DEP001 reports a scoped package that is not on npm and has no registry in .npmrc; online; regression test in 0.9.0) |
 | Duplicate utility functions across files | preview (QA011; 0.8.4) |
 | Mixed framework idioms (App Router and Pages Router in one app) | preview (QA009; 0.8.4) |
 | Fake fallbacks and mock relics in production code | preview (QA010; 0.8.4) |
@@ -90,26 +90,26 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | Offline / air-gapped mode with bundled data | done (`update --export/--import`, offline OSV index, no network in `--offline`; 0.8.4) |
 | `vibeaudit explain <finding>` | done (rule, code and the data flow traced back from the line; 0.8.5) |
 
-## Phase 4: compliance and threat intelligence
+## Phase 4: compliance and threat intelligence (done, 0.9.0)
 
 | Item | Status |
 | --- | --- |
-| Rule mapping to OWASP Top 10 2021, OWASP LLM Top 10 2025, EU AI Act themes, SOC 2, HIPAA, GDPR (a mapping, not certification or legal advice) | done, unreleased (data/compliance_map.json; a test requires every rule to have an entry) |
-| `--report compliance:<framework>` (HTML and printable output) | done, unreleased |
-| Signed threat-intel feed in `vibeaudit update`: slopsquatted names, model sunset calendar, prompt-injection patterns, community submissions; works offline | done, unreleased (DEP001, LLM012, LLM025) |
+| Rule mapping to OWASP Top 10 2021, OWASP LLM Top 10 2025, EU AI Act themes, SOC 2, HIPAA, GDPR (a mapping, not certification or legal advice) | done (data/compliance_map.json; a test requires every rule to have an entry; 0.9.0) |
+| `--report compliance:<framework>` (HTML and printable output) | done (0.9.0) |
+| Signed threat-intel feed in `vibeaudit update`: slopsquatted names, model sunset calendar, prompt-injection patterns, community submissions; works offline | done (DEP001, LLM012, LLM025; 0.9.0) |
 
-## Completion gate: 0.9.0, "Phases 0-4 complete" (planned)
+## Completion gate: 0.9.0, "Phases 0-4 complete" (done)
 
 Phases 5 and 6 start only after this gate holds. Order until then: finish Phase 1, then Phase 4 (compliance
 mapping and reports first; the threat feed after the Phase 3 items).
 
 | Condition | Status |
 | --- | --- |
-| Every Phase 0-4 item is done, or marked preview with its measured reason; nothing left planned without a reason | planned |
-| Full audit: correctness, adversarial inputs, false-positive sweep on the corpus, docs versus behaviour | planned |
-| Packaging: the built wheel in a fresh virtual environment, every command; Python 3.9-3.13 on Linux, macOS and Windows | planned |
-| No reproducible high or medium audit finding | planned |
-| Green CI and benchmark gate, then a verified signed release (0.9.0) | planned |
+| Every Phase 0-4 item is done, or marked preview with its measured reason; nothing left planned without a reason | done (0.9.0) |
+| Full audit: correctness, adversarial inputs, false-positive sweep on the corpus, docs versus behaviour | done ([docs/AUDIT-0.9.0.md](docs/AUDIT-0.9.0.md)) |
+| Packaging: the built wheel in a fresh virtual environment, every command; Python 3.9-3.13 on Linux, macOS and Windows | done (CI matrix and the audit's fresh-environment run) |
+| No reproducible high or medium audit finding | done (four medium findings fixed: #30 to #33) |
+| Green CI and benchmark gate, then a verified signed release (0.9.0) | done (0.9.0) |
 
 ## Phase 5: more languages (planned, not started; after the 0.9.0 gate, one language per release)
 
