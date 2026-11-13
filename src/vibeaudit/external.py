@@ -5,7 +5,6 @@ it orchestrates them, normalises the output, and removes duplicates of its own f
 """
 from __future__ import annotations
 
-import json
 import os
 import shutil
 import subprocess
@@ -15,6 +14,7 @@ from typing import Callable, Dict, List, Optional
 
 from .heuristics import mask
 from .model import Finding
+from .store import loads_json
 
 TOOLS = ("gitleaks", "osv-scanner", "bandit", "semgrep")
 NEEDS_NETWORK = {"osv-scanner", "semgrep"}
@@ -145,7 +145,7 @@ def run_tool(name: str, root: Path) -> Optional[List[Finding]]:
             if not os.path.exists(report):
                 _run(["gitleaks", "detect", "--no-git", "--source", str(root)] + base)
             try:
-                data = json.loads(Path(report).read_text(encoding="utf-8") or "[]")
+                data = loads_json(Path(report).read_text(encoding="utf-8") or "[]")
             except (OSError, ValueError):
                 return None
         return parse_gitleaks(data, root)
@@ -163,7 +163,7 @@ def run_tool(name: str, root: Path) -> Optional[List[Finding]]:
     if not raw:
         return None
     try:
-        data = json.loads(raw[raw.index("{"):])
+        data = loads_json(raw[raw.index("{"):])
     except ValueError:
         return None
     return PARSERS[name](data, root)

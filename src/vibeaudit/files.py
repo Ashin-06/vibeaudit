@@ -3,13 +3,13 @@ from __future__ import annotations
 
 import bisect
 import fnmatch
-import json
 import os
 import re
 import stat
 import subprocess
 from pathlib import Path
 from typing import Callable, Dict, Iterable, List, Optional, Set, Tuple
+from .store import loads_json
 
 SKIP_DIRS = {
     ".git", ".hg", ".svn", "node_modules", "bower_components", "jspm_packages", "vendor",
@@ -489,7 +489,7 @@ class Project:
             data = None
             if sf and sf.text:
                 try:
-                    data = json.loads(sf.text)
+                    data = loads_json(sf.text)
                 except ValueError:
                     data = None
             self._pkg_cache[rel_dir] = data if isinstance(data, dict) else None

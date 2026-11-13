@@ -25,6 +25,7 @@ from pathlib import Path
 from typing import Callable, Dict, List, Optional, Tuple
 
 from .model import SEVERITY_RANK, Finding
+from .store import loads_json
 
 MARKER = "<!-- vibeaudit:{} -->"
 MARKER_RX = re.compile(r"<!-- vibeaudit:([0-9a-f]{32}) -->\s*$")  # only at the very end of our own comments
@@ -119,7 +120,7 @@ def _request(method: str, url: str, token: str, body: Optional[dict] = None) -> 
                                           "Content-Type": "application/json"})
     try:
         with urllib.request.urlopen(req, timeout=API_TIMEOUT) as resp:  # noqa: S310 - the GitHub API URL
-            return json.loads(resp.read().decode("utf-8") or "null"), dict(resp.headers)
+            return loads_json(resp.read().decode("utf-8") or "null"), dict(resp.headers)
     except urllib.error.HTTPError as e:
         raise ReviewError(f"GitHub API {method} {url.split('?')[0]}: HTTP {e.code}") from None
     except (urllib.error.URLError, OSError, ValueError) as e:
@@ -159,7 +160,7 @@ def github_context(env: Dict[str, str]) -> Tuple[str, str, int, str]:
     repo = env.get("GITHUB_REPOSITORY", "")
     api = env.get("GITHUB_API_URL", "https://api.github.com").rstrip("/")
     try:
-        event = json.loads(Path(env["GITHUB_EVENT_PATH"]).read_text(encoding="utf-8"))
+        event = loads_json(Path(env["GITHUB_EVENT_PATH"]).read_text(encoding="utf-8"))
         pr = event["pull_request"]
         number, head = int(pr["number"]), str(pr["head"]["sha"])
     except (KeyError, OSError, ValueError, TypeError):

@@ -24,6 +24,7 @@ from pathlib import Path
 from typing import IO, Any, Callable, Dict, List, Optional
 
 from . import __version__
+from .store import loads_json
 
 MAX_MESSAGE = 32 * 1024 * 1024  # bytes in one JSON-RPC message
 MAX_HEADER = 8192
@@ -61,7 +62,7 @@ def read_message(stream: IO[bytes]) -> Optional[dict]:
     if len(body) != length:
         return None
     try:
-        msg = json.loads(body.decode("utf-8"))
+        msg = loads_json(body.decode("utf-8"))
     except (UnicodeDecodeError, ValueError):
         raise ProtocolError("body is not JSON") from None
     if not isinstance(msg, dict):

@@ -21,7 +21,7 @@ from typing import Callable, Dict, List, Optional
 
 from .files import Project
 from .model import Finding
-from .store import TimedCache
+from .store import TimedCache, loads_json
 from .secretscan import (DB_URL, GENERIC_ASSIGN, JWT, PASSWORD_ASSIGN, PRIVATE_KEY, PROVIDER_KEYS, SIGNING_FALLBACK,
                          SIGNING_LITERAL)
 
@@ -61,7 +61,7 @@ def _post(url: str, headers: Dict[str, str], body: dict) -> dict:
     req = urllib.request.Request(url, data=json.dumps(body).encode(), headers={"Content-Type": "application/json", **headers})
     try:
         with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:  # noqa: S310 - fixed provider hosts
-            return json.loads(resp.read().decode("utf-8"))
+            return loads_json(resp.read().decode("utf-8"))
     except urllib.error.HTTPError as e:
         detail = e.read().decode("utf-8", "replace")[:300]
         raise LLMError(f"HTTP {e.code} from provider: {detail}") from None
@@ -123,11 +123,11 @@ def parse_json(text: str):
     if start < 0:
         raise LLMError("model did not return JSON")
     try:
-        return json.loads(text[start:])
+        return loads_json(text[start:])
     except ValueError:
         end = max(text.rfind("}"), text.rfind("]"))
         try:
-            return json.loads(text[start:end + 1])
+            return loads_json(text[start:end + 1])
         except ValueError:
             raise LLMError("model returned invalid JSON") from None
 

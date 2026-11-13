@@ -26,7 +26,7 @@ from importlib import resources
 from typing import Dict, List, Optional, Tuple
 
 from .bundle import norm
-from .store import cache_dir
+from .store import cache_dir, loads_json
 
 FEED = "threat_feed.json"
 FORMAT = 1
@@ -136,14 +136,14 @@ def open_feed(raw: bytes, key: Optional[dict] = None) -> dict:
     if key is None:
         raise FeedError("this copy of vibeaudit has no feed key")
     try:
-        outer = json.loads(raw)
+        outer = loads_json(raw)
         payload, sig = outer["payload"], base64.b64decode(outer["signature"], validate=True)
     except (ValueError, KeyError, TypeError):
         raise FeedError("not a signed feed") from None
     if not isinstance(payload, str) or not verify(payload.encode("utf-8"), sig, key):
         raise FeedError("the signature does not match")
     try:
-        doc = json.loads(payload)
+        doc = loads_json(payload)
         if doc["format"] != FORMAT or not isinstance(doc["version"], int):
             raise FeedError(f"unknown feed format {doc['format']!r}")
         _when(doc["expires"])

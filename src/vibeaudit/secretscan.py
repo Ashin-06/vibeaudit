@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import ast
 import base64
-import json
 import re
 from typing import Callable, List, Optional, Pattern, Tuple
 
@@ -12,6 +11,7 @@ from .guard import GUARD, finditer
 from .files import ENV_EXAMPLE_RE, Project, SourceFile, production_overrides
 from .lexer import js_views, py_views
 from .model import Finding
+from .store import loads_json
 
 Emit = Callable[[Finding], None]
 
@@ -102,7 +102,7 @@ DOC_EXTS = (".md", ".mdx", ".rst", ".txt", ".adoc", ".ipynb")
 
 def _jwt_role(payload: str) -> Optional[str]:
     try:
-        data = json.loads(base64.urlsafe_b64decode(payload + "=" * (-len(payload) % 4)))
+        data = loads_json(base64.urlsafe_b64decode(payload + "=" * (-len(payload) % 4)))
     except (ValueError, TypeError):
         return None
     if not isinstance(data, dict) or data.get("iss") == "supabase-demo":

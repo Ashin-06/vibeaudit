@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import IO, Any, Callable, Dict, List, Optional
 
 from . import __version__
+from .store import loads_json
 
 SUPPORTED_PROTOCOLS = ("2025-06-18", "2025-03-26", "2024-11-05")
 MAX_FINDINGS = 200
@@ -478,7 +479,7 @@ def serve(stdin: IO[str], stdout: IO[str]) -> int:
         if not line:
             continue
         try:
-            msg = json.loads(line)
+            msg = loads_json(line)
         except ValueError:
             response: Optional[Dict[str, Any]] = {"jsonrpc": "2.0", "id": None, "error": {"code": -32700, "message": "Parse error"}}
         else:
