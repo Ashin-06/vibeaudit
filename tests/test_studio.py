@@ -75,6 +75,22 @@ def test_binds_localhost_and_serves_the_page_with_strict_headers(server):
         assert headers["X-Content-Type-Options"] == "nosniff" and headers["Referrer-Policy"] == "no-referrer"
 
 
+def test_no_other_process_can_bind_the_same_port(server):
+    """With SO_REUSEADDR (http.server's default) Windows lets a second socket bind the studio's port and take
+    its connections."""
+    import socket
+
+    srv, _ = server
+    other = socket.socket()
+    other.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    try:
+        with pytest.raises(OSError):
+            other.bind(("127.0.0.1", srv.server_address[1]))
+            other.listen()
+    finally:
+        other.close()
+
+
 def test_api_needs_the_token_and_a_local_host(server):
     srv, _ = server
     assert request(srv, "GET", "/api/scan", token=None)[0] == 403
