@@ -23,6 +23,7 @@ import io
 import json
 import re
 import zipfile
+import zlib
 from pathlib import Path
 from typing import Callable, Dict, List, Optional, Tuple
 
@@ -205,7 +206,7 @@ def import_bundle(path: Path, log: Callable[[str], None]) -> None:
     with z:
         try:
             manifest = loads_json(z.read("manifest.json"))
-        except (KeyError, ValueError):
+        except (KeyError, ValueError, zipfile.BadZipFile, zlib.error, EOFError, NotImplementedError, RuntimeError, OSError):
             raise BundleError("the bundle has no valid manifest.json") from None
         listed = manifest.get("files") if isinstance(manifest, dict) and manifest.get("format") == FORMAT else None
         if not isinstance(listed, dict):
@@ -221,7 +222,10 @@ def import_bundle(path: Path, log: Callable[[str], None]) -> None:
             cap = MAX_DATA if info.filename.startswith("data/") else MAX_INDEX
             if info.file_size > cap:
                 raise BundleError(f"{info.filename} is larger than {cap} bytes")
-            data = z.read(info)
+            try:
+                data = z.read(info)
+            except (zipfile.BadZipFile, zlib.error, EOFError, NotImplementedError, RuntimeError, OSError) as e:
+                raise BundleError(f"{info.filename} cannot be read: {e}") from None  # a damaged or forged archive
             meta = listed[info.filename]
             if not isinstance(meta, dict) or hashlib.sha256(data).hexdigest() != meta.get("sha256"):
                 raise BundleError(f"{info.filename} does not match the SHA-256 in the manifest")
