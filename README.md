@@ -648,8 +648,9 @@ feed is signed: [docs/THREAT_FEED.md](docs/THREAT_FEED.md).
 
 How it reads code:
 
-- Data flow is followed inside a function (plus one level of helper functions for auth checks), not across
-  the whole program.
+- Data flow is followed inside a function and, in Python, into the functions it calls (same file, `self`
+  methods and functions imported from the project, up to 3 calls deep); methods of other objects and dynamic
+  calls are not followed, and JavaScript is still followed inside a function only.
 - JavaScript and TypeScript are read with a lexer and patterns, not a full parser.
 - "Authenticated" means an auth check is visible in the route or its helpers, not that the check is correct.
 - Rate limiting and input validation are detected project-wide, so one limiter anywhere counts.

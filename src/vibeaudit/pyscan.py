@@ -1,4 +1,10 @@
-"""Python analysis on the real AST, with intra-procedural taint tracking.
+"""Python analysis on the real AST, with taint tracking inside functions and through calls.
+
+A call that passes tainted values to a function of the project (in the same file, a method of `self`, or a
+function imported from another module of the project) is followed: the function is walked again with those
+parameters tainted, up to CALL_DEPTH calls deep, so a sink in a helper is reported where it is, with the call
+it came through. Calls whose callee cannot be resolved statically (dynamic dispatch, instances of other classes,
+`*args`) are not followed.
 
 Taint kinds:
   user - data from an HTTP request (Flask, FastAPI, Django, Starlette) or a route parameter
@@ -18,6 +24,14 @@ from .lexer import py_views
 from .model import Finding, Route
 
 Emit = Callable[[Finding], None]
+# a database read returns stored rows, not the request data that was passed as a query parameter
+DB_READS = {"fetchrow", "fetchval", "fetchone", "fetchall", "fetchmany", "scalar", "scalars", "scalar_one",
+            "scalar_one_or_none", "one_or_none"}
+# SQLAlchemy statement builders: execute(select(...).where(...)) runs a parameterised statement object
+ORM_BUILDERS = {"select", "where", "filter", "filter_by", "limit", "offset", "order_by", "join", "outerjoin", "values",
+                "select_from", "returning", "group_by", "having", "options", "distinct", "with_only_columns", "in_"}
+FIXED_HOST = re.compile(r"https?://[^/{%]+/")
+CALL_DEPTH = 3  # calls followed from a route, tool or model output to a sink
 Taint = Dict[str, int]  # kind -> line where it entered
 
 USER_ATTRS = {
@@ -271,6 +285,13 @@ def header_exprs(stmt: ast.stmt) -> List[ast.AST]:
     return [stmt]
 
 
+def _subscript_key(node: ast.Subscript) -> Optional[str]:
+    """`name["key"]` as an env key, for taint tracked per constant key."""
+    if isinstance(node.value, ast.Name) and isinstance(node.slice, ast.Constant) and isinstance(node.slice.value, (str, int)):
+        return f"{node.value.id}[{node.slice.value!r}]"
+    return None
+
+
 def merge(*ts: Taint) -> Taint:
     out: Taint = {}
     for t in ts:
@@ -287,6 +308,7 @@ class Ctx:
         self.params = params
         self.except_names: Set[str] = set()
         self.try_depth = 0
+        self.depth = 0  # calls followed to get here (cross-function taint)
 
 
 class PyScanner:
@@ -300,14 +322,24 @@ class PyScanner:
         self.file_auth: Set[str] = set()
         self.drf_default_auth = False
         self.sf: SourceFile = None  # type: ignore[assignment]
-        self.reported: Set[Tuple[str, int, str]] = set()
+        self.reported: Set[tuple] = set()
         self.tool_methods: Set[int] = set()
         self.auth_aliases: Set[str] = set()
         self.tool_lambda_nodes: Set[int] = set()
+        # cross-function taint: per file, top-level functions, methods and imported names; calls to follow
+        self.defs: Dict[str, Dict[str, ast.AST]] = {}
+        self.methods: Dict[str, Dict[str, ast.AST]] = {}
+        self.imports: Dict[str, Dict[str, Tuple[str, Optional[str], int]]] = {}
+        self.modules: Dict[str, str] = {}  # dotted module name (and its suffixes) -> file
+        self.consts: Dict[str, Dict[str, str]] = {}  # per file: module-level NAME = "string"
+        self.calls: List[tuple] = []
+        self.via: Optional[str] = None  # set while a callee is walked: how the tainted value got there
 
     def add(self, rule: str, node: ast.AST, msg: str, sev: str = "") -> None:
         line = getattr(node, "lineno", 1)
-        key = (self.sf.rel, line, rule)
+        # a finding reached through a followed call has its own key: scanner.finalize drops the plain finding on the
+        # same line in its favour (also when the plain one is replayed by vibeaudit watch)
+        key = (self.sf.rel, line, rule) + (("via",) if self.via else ())
         if key in self.reported:
             return
         self.reported.add(key)
@@ -321,12 +353,14 @@ class PyScanner:
         GUARD.run("<project>", "Python call graph", self.index)
         if GUARD.memo is not None:  # what the checks read besides their own file (see guard.NEEDS_CONTEXT)
             GUARD.sink("py routes", self.routes)
+            GUARD.sink("py calls", self.calls)
             GUARD.memo.context["Python checks"] = (
                 frozenset(self.llm_funcs), self.global_auth, frozenset(self.file_auth), self.drf_default_auth,
                 frozenset(self.auth_aliases), H.CUSTOM.signature())
         for sf, tree in self.trees:
             self.sf = sf
             GUARD.run(sf.rel, "Python checks", self._check_file, sf, tree)
+        GUARD.run("<project>", "Python calls", self.follow_calls)
         return self.routes
 
     def _parse(self, sf: SourceFile) -> None:
@@ -348,6 +382,7 @@ class PyScanner:
         bodies: Dict[str, List[ast.AST]] = {}
         for sf, tree in self.trees:
             GUARD.tick()
+            self._index_callables(sf, tree)
             for node in ast.walk(tree):
                 if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                     bodies.setdefault(node.name, []).append(node)
@@ -392,6 +427,133 @@ class PyScanner:
             if not new:
                 break
             self.llm_funcs |= new
+
+    # -------------------------------------------------- cross-function taint
+    def _index_callables(self, sf: SourceFile, tree: ast.Module) -> None:
+        defs, methods, imports, consts = {}, {}, {}, {}
+        for node in tree.body:
+            if isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name) \
+                    and isinstance(node.value, ast.Constant) and isinstance(node.value.value, str):
+                consts[node.targets[0].id] = node.value.value
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                defs[node.name] = node
+            elif isinstance(node, ast.ClassDef):
+                for item in node.body:
+                    if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                        methods.setdefault(item.name, item)
+            elif isinstance(node, ast.ImportFrom):
+                for a in node.names:
+                    imports[a.asname or a.name] = (node.module or "", a.name, node.level)
+            elif isinstance(node, ast.Import):
+                for a in node.names:
+                    imports[a.asname or a.name.split(".")[0]] = (a.name if a.asname else a.name.split(".")[0], None, 0)
+        self.defs[sf.rel], self.methods[sf.rel], self.imports[sf.rel], self.consts[sf.rel] = defs, methods, imports, consts
+        parts = sf.rel[:-3].split("/")
+        if parts[-1] == "__init__":
+            parts = parts[:-1]
+        for i in range(len(parts)):
+            self.modules.setdefault(".".join(parts[i:]), sf.rel)
+
+    def _module_file(self, caller: str, module: str, level: int) -> Optional[str]:
+        if level:
+            base = caller.split("/")[:-1]
+            base = base[:len(base) - (level - 1)] if level > 1 else base
+            rel = "/".join(base + ([module.replace(".", "/")] if module else []))
+            for cand in (rel + ".py", rel + "/__init__.py"):
+                if cand in self.defs:
+                    return cand
+            return None
+        return self.modules.get(module)
+
+    def _callee(self, caller: str, spec: tuple) -> Optional[Tuple[str, ast.AST, bool]]:
+        """(file, function, is a method) for a call recorded as ("name", f), ("self", m) or ("attr", base, f)."""
+        if spec[0] == "self":
+            fn = self.methods.get(caller, {}).get(spec[1])
+            return (caller, fn, True) if fn is not None else None
+        if spec[0] == "name":
+            if spec[1] in self.defs.get(caller, {}):
+                return caller, self.defs[caller][spec[1]], False
+            imp = self.imports.get(caller, {}).get(spec[1])
+            if imp is None or imp[1] is None:
+                return None
+            module, name, level = imp
+            target = self._module_file(caller, module, level)
+            fn = self.defs.get(target or "", {}).get(name)
+            return (target, fn, False) if target and fn is not None else None
+        imp = self.imports.get(caller, {}).get(spec[1])  # attr: `module.function(...)`
+        if imp is None:
+            return None
+        module, name, level = imp
+        target = self._module_file(caller, module + ("." + name if name else "") if module else (name or ""), level) \
+            if name else self._module_file(caller, module, level)
+        fn = self.defs.get(target or "", {}).get(spec[2])
+        return (target, fn, False) if target and fn is not None else None
+
+    def _note_call(self, call: ast.Call, ctx: Ctx) -> None:
+        """Record a call that passes tainted values, to follow into the callee after every file is checked."""
+        if ctx.depth >= CALL_DEPTH or ctx.kind == "module":
+            return
+        f = call.func
+        if isinstance(f, ast.Name):
+            spec: tuple = ("name", f.id)
+        elif isinstance(f, ast.Attribute) and isinstance(f.value, ast.Name):
+            spec = ("self", f.attr) if f.value.id in ("self", "cls") else ("attr", f.value.id, f.attr)
+        else:
+            return
+        args = {}
+        for i, a in enumerate(call.args):
+            if isinstance(a, ast.Starred):
+                break
+            t = self.taint(a, ctx)
+            if t:
+                args[i] = t
+        for k in call.keywords:
+            if k.arg:
+                t = self.taint(k.value, ctx)
+                if t:
+                    args[k.arg] = t
+        if args:
+            via = self.via or f"{self.sf.rel}:{call.lineno}"
+            GUARD.publish("py calls", self.calls, (self.sf.rel, spec, args, ctx.depth + 1, via))
+
+    def follow_calls(self) -> None:
+        seen: Set[tuple] = set()
+        i = 0
+        while i < len(self.calls):  # following a call can record further calls
+            caller, spec, args, depth, via = self.calls[i]
+            i += 1
+            GUARD.tick()
+            got = self._callee(caller, spec)
+            if got is None:
+                continue
+            rel, fn, method = got
+            params = [a.arg for a in fn.args.posonlyargs + fn.args.args]  # type: ignore[attr-defined]
+            if method and params and params[0] in ("self", "cls"):
+                params = params[1:]
+            env: Dict[str, Taint] = {}
+            for key, t in args.items():
+                name = params[key] if isinstance(key, int) and key < len(params) else key if isinstance(key, str) else None
+                if name in params or (isinstance(key, str) and name in [a.arg for a in fn.args.kwonlyargs]):  # type: ignore[attr-defined]
+                    env[name] = merge(env.get(name, {}), t)  # type: ignore[index]
+            key = (rel, fn.lineno, tuple(sorted((k, tuple(sorted(v))) for k, v in env.items())))  # type: ignore[attr-defined]
+            if not env or key in seen or self._is_source(fn):
+                continue
+            seen.add(key)
+            sf = self.p.get(rel)
+            if sf is None:
+                continue
+            ctx = Ctx("plain", set(params))
+            ctx.env.update(env)
+            ctx.depth = depth
+            self.sf, self.via = sf, via
+            try:
+                self.walk_block(fn.body, ctx)  # type: ignore[attr-defined]
+            finally:
+                self.via = None
+
+    def _is_source(self, fn: ast.AST) -> bool:
+        """Routes and agent tools taint their own parameters already."""
+        return self.route_info(fn) is not None or self.is_tool(fn)
 
     def check_comments(self, sf: SourceFile) -> None:
         from .jsscan import SECURITY_TODO
@@ -521,11 +683,16 @@ class PyScanner:
                 return {"user": node.lineno}
             return self.taint(node.value, ctx)
         if isinstance(node, ast.Subscript):
+            key = _subscript_key(node)
+            if key is not None and key in ctx.env:
+                return dict(ctx.env[key])
             return self.taint(node.value, ctx)
         if isinstance(node, ast.Call):
             if is_llm_call(node, self.llm_funcs):
                 return {"llm": node.lineno}
             name = last_name(node.func)
+            if name in DB_READS and isinstance(node.func, ast.Attribute):
+                return {}
             if name in SANITIZERS or name in H.CUSTOM.sanitizers or re.match(r"(?i)(sanitize|validate|escape|clean)", name or ""):
                 return {}
             parts = [self.taint(a, ctx) for a in node.args] + [self.taint(k.value, ctx) for k in node.keywords]
@@ -564,7 +731,11 @@ class PyScanner:
                 self.assign(e, t, ctx)
         elif isinstance(target, ast.Starred):
             self.assign(target.value, t, ctx)
+        elif isinstance(target, ast.Subscript) and _subscript_key(target) is not None:
+            ctx.env[_subscript_key(target)] = t  # type: ignore[index]  # d["k"] = constant: that key is clean
         elif isinstance(target, (ast.Attribute, ast.Subscript)) and t:
+            if isinstance(target, ast.Subscript) and _subscript_key(target) is not None:
+                ctx.env[_subscript_key(target)] = t  # type: ignore[index]
             base = root_name(target)
             if base:
                 ctx.env[base] = merge(ctx.env.get(base, {}), t)
@@ -635,12 +806,14 @@ class PyScanner:
 
     # -------------------------------------------------------------- sinks
     def sink(self, node: ast.AST, t: Taint, rule: str, what: str, user_sev: str, crit: bool) -> bool:
+        via = f" (passed in through the call at {self.via})" if self.via else ""
         if "tool" in t:
-            self.add("LLM005", node, f"An agent tool passes a model-chosen argument to {what}.", "critical" if crit else "high")
+            self.add("LLM005", node, f"An agent tool passes a model-chosen argument to {what}{via}.", "critical" if crit else "high")
         elif "llm" in t:
-            self.add("LLM002", node, f"Model output (from the call on line {t['llm']}) flows into {what}.", "critical" if crit else "high")
+            src = f"from the call on line {t['llm']}" if not via else "from a model call"
+            self.add("LLM002", node, f"Model output ({src}) flows into {what}{via}.", "critical" if crit else "high")
         elif "user" in t:
-            self.add(rule, node, f"Request data flows into {what}.", user_sev)
+            self.add(rule, node, f"Request data flows into {what}{via}.", user_sev)
         else:
             return False
         return True
@@ -651,6 +824,23 @@ class PyScanner:
         above = re.split(r"(?m)^\s*(?:async\s+)?def\s", above)[-1]  # not a loop in the function before this one
         return isinstance(node, ast.Name) and bool(re.search(
             r"\bfor\s+%s\s+in\s+[\[(]\s*(?:['\"][\w.-]{1,60}['\"]\s*,?\s*){1,60}[\])]\s*:" % re.escape(node.id), above))
+
+    def _fixed_host(self, target: ast.AST) -> bool:
+        """The URL starts with a literal scheme and host, so request data only reaches its path or query string."""
+        if isinstance(target, ast.JoinedStr):
+            first = target.values[0] if target.values else None
+        elif isinstance(target, ast.Call) and isinstance(target.func, ast.Attribute) and target.func.attr == "format":
+            first = target.func.value
+        elif isinstance(target, ast.BinOp) and isinstance(target.op, (ast.Add, ast.Mod)):
+            first = target.left
+            while isinstance(first, ast.BinOp) and isinstance(first.op, ast.Add):
+                first = first.left
+        else:
+            return False
+        if isinstance(first, ast.FormattedValue) and isinstance(first.value, ast.Name):  # f"{API_BASE}{path}"
+            prefix = self.consts.get(self.sf.rel, {}).get(first.value.id)
+            return prefix is not None and bool(FIXED_HOST.match(prefix))
+        return isinstance(first, ast.Constant) and isinstance(first.value, str) and bool(FIXED_HOST.match(first.value))
 
     def _own_functions(self) -> Set[str]:
         """Names of functions defined in the current file, computed once per file."""
@@ -665,6 +855,7 @@ class PyScanner:
         return node
 
     def check_call(self, call: ast.Call, ctx: Ctx) -> None:
+        self._note_call(call, ctx)
         d = dotted(call.func)
         name = last_name(call.func)
         kws = {k.arg: k.value for k in call.keywords if k.arg}
@@ -679,7 +870,8 @@ class PyScanner:
                 formatted = is_formatted(src) and re.search(r"(?i)\b(select|insert|update|delete|drop|create|alter|where)\b", string_parts(src))
                 if formatted and all(fragment_safe(p, ctx.assigned) for p in interpolated(src)):
                     pass  # only bind markers are formatted in; the values are passed as parameters
-                elif t0 and (formatted or ctx.kind == "tool" or not isinstance(src, (ast.Constant, ast.JoinedStr, ast.BinOp))):
+                elif t0 and (formatted or ctx.kind == "tool" or not isinstance(src, (ast.Constant, ast.JoinedStr, ast.BinOp))) \
+                        and not (isinstance(src, ast.Call) and last_name(src.func) in ORM_BUILDERS):
                     self.sink(call, t0, "BE001", "a SQL query", "high", True)
                 elif formatted and all(self._literal_loop_name(p, call) for p in interpolated(src)):
                     pass  # for table in ['alerts', 'users']: execute('DROP TABLE %s' % table): fixed names
@@ -721,7 +913,7 @@ class PyScanner:
                 target = kws.get("url")
             if target is not None:
                 tt = self.taint(target, ctx)
-                fixed_host = isinstance(target, ast.JoinedStr) and target.values and isinstance(target.values[0], ast.Constant) and re.match(r"https?://[^/{]+/", str(target.values[0].value))
+                fixed_host = self._fixed_host(self.resolve(target, ctx))
                 if tt and not fixed_host:
                     self.sink(call, tt, "BE005", "an outbound HTTP request URL", "high", False)
             if isinstance(kws.get("verify"), ast.Constant) and kws["verify"].value is False:
