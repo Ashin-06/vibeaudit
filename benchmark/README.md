@@ -75,7 +75,7 @@ the rule. So the corpus has two parts:
 - **Tuned (41 repositories):** used to find and fix false positives. Its precision shows that known causes
   are fixed, nothing more.
 - **Held-out (12 repositories, `"split": "heldout"` in corpus.json):** careconnect, thynk,
-  langchain-nextjs-template, openai-assistants-quickstart, saas-starter, flasky, podinfo, terragoat and,
+  langchain-nextjs-template, openai-assistants-quickstart, next-saas-stripe-starter, flasky, podinfo, terragoat and,
   since 0.8.0, damn-vulnerable-llm-agent, dvpwa, nodejs-whisper and waline.
   Their findings are labelled the same way, but **no rule is changed because of them**. Held-out precision
   is what decides whether a rule may leave preview ([STABILITY.md](../STABILITY.md)).
@@ -86,6 +86,8 @@ Rules for keeping the held-out split honest:
 - If one is worth fixing anyway, the repository it came from moves to the tuned split in the same change,
   and a new repository replaces it in the held-out split before any rule graduates on the new numbers.
 - New rules are developed and tuned on the tuned split and on seeded cases only.
+
+saas-starter moved to the tuned split when JavaScript taint started following calls: its BE008 false positive (`redirect(session.url)` after a Stripe call that took a request value) was worth fixing, and next-saas-stripe-starter (same kind, chosen before it was scanned) replaced it.
 
 Known held-out false positives (not fixed, by the rule above): API001 does not recognise `route.tsx` files
 (openai-assistants-quickstart); CFG013 misses a templated Helm `resources:` block whose template is on the

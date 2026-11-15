@@ -2,7 +2,10 @@
 
 There is no JS parser in the standard library, so this works on lexer views (comments and string
 contents blanked) with bracket matching. Data flow is a per-file approximation: identifiers
-assigned from request data or model output are tracked as tainted until a fixpoint.
+assigned from request data or model output are tracked as tainted until a fixpoint. Calls are followed
+into functions of the same file and into named imports from project files (CALL_ROUNDS deep): an argument
+tainted at the call site taints the callee's parameter inside the callee. Methods called on objects,
+default imports and packages are not followed.
 """
 from __future__ import annotations
 
@@ -18,6 +21,7 @@ from .lexer import Views, first_arg, js_views, match_close, split_args, stmt_end
 from .model import Finding, Route
 
 Emit = Callable[[Finding], None]
+CALL_ROUNDS = 3  # calls followed from a source to a sink
 
 USER_SRC = re.compile(
     r"\b(?:req|request)\s*\.\s*(?:body|query|params|headers|cookies|files?)\b"
@@ -65,6 +69,7 @@ ROUTE_CALL = re.compile(r"\b([A-Za-z_$][\w$]*)\s*\.\s*(get|post|put|patch|delete
 ROUTER_NAME = re.compile(r"^(?:app|router|server|api|fastify|route|routes|hono|r|\w*Router|\w*router|\w*App|\w*Routes|\w*routes|\w*Api|\w*api)$")
 USE_CALL = re.compile(r"\b([A-Za-z_$][\w$]*)\s*\.\s*use\s*\(")
 IMPORT_DEFAULT = re.compile(r"""\bimport\s+([A-Za-z_$][\w$]*)(?:\s*,\s*\{[^}]*\})?\s+from\s+['"]([^'"]+)['"]""")
+CALL_SITE = re.compile(r"(?<![\w$.])([A-Za-z_$][\w$]*)\s*\(")  # a plain call `name(` (not `obj.name(`)
 IMPORT_NAMED = re.compile(r"""\bimport\s+\{([^}]*)\}\s+from\s+['"]([^'"]+)['"]""")
 REQUIRE = re.compile(r"""\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*require\s*\(\s*['"]([^'"]+)['"]\s*\)""")
 FUNC_DEFS = [
@@ -140,6 +145,8 @@ class FileState:
         # both depend only on this file (and the configured sanitizers, part of the cache key)
         self.defs: Optional[List[Tuple[str, int, int]]] = None  # functions found by index_functions
         self.tainted = False  # compute_taint has run
+        self.scoped: List[tuple] = []  # the assignments compute_taint iterates over
+        self.base_taint: Dict[str, Dict[Tuple[int, int], Set[str]]] = {}  # this file's own taint (cached)
         self.facts: Dict[Tuple[int, int], Tuple[bool, frozenset]] = {}  # see JsScanner.compute_llm_funcs
 
     def scope_of(self, at: int) -> Tuple[int, int]:
@@ -283,12 +290,14 @@ class JsScanner:
         GUARD.run("<project>", "JavaScript call graph", self.compute_llm_funcs)
         for fs in self.files:
             GUARD.run(fs.sf.rel, "data flow", self.compute_taint, fs)
+        self.injected = set()
+        GUARD.run("<project>", "JavaScript calls", self.follow_calls)
         GUARD.run("<project>", "middleware and router mounts", self.compute_mount_auth)
         if GUARD.memo is not None:  # what the checks read besides their own file (see guard.NEEDS_CONTEXT)
             GUARD.sink("js routes", self.routes)
             GUARD.memo.context["JavaScript checks"] = (
                 frozenset(self.llm_funcs), frozenset(self.authed_files), self.mongo, self.mongo_sanitized,
-                H.CUSTOM.signature())
+                H.CUSTOM.signature(), frozenset(self.injected))
         for fs in self.files:
             if not fs.sf.is_test:
                 GUARD.run(fs.sf.rel, "JavaScript checks", self._check_file, fs)
@@ -438,9 +447,16 @@ class JsScanner:
                 if SQL_KW.search(rhs) and ("${" in rhs or re.search(r"['\"`]\s*\+|\+\s*['\"`]", rhs)):
                     fs.sql_names.setdefault(names[0], set()).add(scope)
         self._taint_server_action_params(fs)
+        fs.scoped = scoped
+        self._fixpoint(fs)
+        fs.base_taint = {n: {sc: set(k) for sc, k in by.items()} for n, by in fs.taint.items()}
+
+    @staticmethod
+    def _fixpoint(fs: FileState) -> None:
+        code, bare = fs.v.code, fs.v.bare
         for _ in range(6):
             changed = False
-            for names, a, b, _plain, scope in scoped:
+            for names, a, b, _plain, scope in fs.scoped:
                 GUARD.tick()
                 k = fs.kinds(code[a:b], bare[a:b], a)
                 if not k:
@@ -449,6 +465,85 @@ class JsScanner:
                     changed |= fs.add_taint(n, scope, k)
             if not changed:
                 break
+
+    # ------------------------------------------------- cross-function taint
+    def follow_calls(self) -> None:
+        """Taint callee parameters from tainted arguments, then re-run the callee file's fixpoint."""
+        by_rel = {fs.sf.rel: fs for fs in self.files}
+        for fs in self.files:  # start from each file's own taint: last scan's injections must not linger
+            fs.taint = {n: {sc: set(k) for sc, k in by.items()} for n, by in fs.base_taint.items()}
+        self.injected: Set[tuple] = set()
+        for _ in range(CALL_ROUNDS):
+            touched: Set[str] = set()
+            for fs in self.files:
+                if fs.sf.is_test:
+                    continue
+                GUARD.tick()
+                for callee_fs, a, b, param, kinds in self._tainted_calls(fs, by_rel):
+                    if callee_fs.add_taint(param, (a, b), kinds):
+                        touched.add(callee_fs.sf.rel)
+                        self.injected.add((callee_fs.sf.rel, a, param, frozenset(kinds)))
+            if not touched:
+                break
+            for rel in touched:
+                self._fixpoint(by_rel[rel])
+
+    def _tainted_calls(self, fs: FileState, by_rel: Dict[str, "FileState"]):
+        code, bare = fs.v.code, fs.v.bare
+        local = {name: (a, b) for name, a, b in fs.defs or []}
+        imported = {}
+        for m in finditer(IMPORT_NAMED, code):
+            target = self.resolve_import(fs, m.group(2))
+            if target in by_rel:
+                for part in m.group(1).split(","):
+                    bits = [x.strip() for x in part.split(" as ")]
+                    if bits[0]:
+                        imported[bits[-1]] = (target, bits[0].replace("type ", "").strip())
+        names = set(local) | set(imported)
+        if not names:
+            return
+        for m in finditer(CALL_SITE, bare):
+            name = m.group(1)
+            if name not in names:
+                continue
+            if name in local:
+                callee_fs, (a, b) = fs, local[name]
+                if a <= m.start() < b and code[a:m.start()].count("(") == 0:
+                    continue  # the definition itself
+            else:
+                rel, original = imported[name]
+                callee_fs = by_rel[rel]
+                span = next(((a, b) for n, a, b in callee_fs.defs or [] if n == original), None)
+                if span is None:
+                    continue
+                a, b = span
+            params = self._params(callee_fs, a, b)
+            for i, (x, y) in enumerate(split_args(bare, m.end(), max(m.end(), match_close(bare, m.end() - 1)))):
+                if i >= len(params) or not params[i]:
+                    break
+                kinds = fs.kinds(code[x:y], bare[x:y], m.start())
+                if kinds:
+                    for p in params[i]:
+                        yield callee_fs, a, b, p, kinds
+
+    @staticmethod
+    def _params(fs: FileState, a: int, b: int) -> List[List[str]]:
+        """Parameter names of the function defined at a..b, one list per position (destructuring gives several)."""
+        bare, code = fs.v.bare, fs.v.code
+        open_p = bare.find("(", a, b)
+        close = match_close(bare, open_p) if open_p >= 0 else -1
+        if close < 0:
+            return []
+        out: List[List[str]] = []
+        for x, y in split_args(bare, open_p + 1, close):
+            piece = code[x:y].strip()
+            if piece.startswith(("{", "[")):
+                end = match_close(bare[x:y].strip(), 0)
+                out.append(_decl_names(piece[:end + 1]) if end > 0 else [])
+            else:
+                mm = re.match(r"(?:\.\.\.)?\s*([A-Za-z_$][\w$]*)", piece)
+                out.append([mm.group(1)] if mm else [])
+        return out
 
     def _taint_server_action_params(self, fs: FileState) -> None:
         """Server action arguments come straight from the client: `export async function save(id)` in a
@@ -664,8 +759,20 @@ class JsScanner:
             if re.match(r"(?:[\w$.]+\s*\(\s*)?`\$\{\s*[\w$.]*\borigin\s*\}/", t_code):
                 continue  # `${url.origin}/signin`: the app's own origin and a fixed path
             k = fs.kinds(t_code, target[1], m.start())
-            if k & {"user", "llm"}:
+            if k & {"user", "llm"} and not self._api_result(fs, t_code, m.start()):
                 report("BE008", m.start(), k, "a redirect target", "medium")
+
+    @staticmethod
+    def _api_result(fs: FileState, t_code: str, at: int) -> bool:
+        """`redirect(session.url)` where `session = await stripe.checkout.sessions.create({...})`: a field of what
+        an SDK or API client returned. Request values passed as arguments of that call do not choose the URL the
+        service sends back. Not when the call is made on a tainted object or reads the request directly."""
+        m = re.match(r"([A-Za-z_$][\w$]*)(?:\s*\??\.\s*[\w$]+)+\s*!?\s*$", t_code)
+        rhs = fs.decl_rhs.get(m.group(1)) if m else None
+        if not rhs or USER_SRC.search(rhs):
+            return False
+        c = re.match(r"\s*(?:await\s+)?([A-Za-z_$][\w$]*)(?:\s*\.\s*[\w$]+)+\s*\(", rhs)
+        return bool(c) and not fs.kinds(c.group(1), c.group(1), at)
 
     def check_html_sinks(self, fs: FileState) -> None:
         code, bare = fs.v.code, fs.v.bare

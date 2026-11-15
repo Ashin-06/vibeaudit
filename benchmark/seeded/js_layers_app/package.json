@@ -1,0 +1,1 @@
+{"name": "js-layers-app", "private": true, "dependencies": {"express": "latest", "pg": "latest", "openai": "latest"}}
