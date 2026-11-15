@@ -2,6 +2,7 @@
 
     python tools/compare.py            # needs semgrep and bandit on PATH and the corpus fetched
 
+No finding messages are stored: they can quote secrets from the corpus.
 Writes benchmark/compare.json (advisory recall, finding counts, overlap, precision on a labelled sample) and
 benchmark/compare_sample.json (a seeded random sample of each tool's findings, to label). Labels go in
 benchmark/compare_labels.json as {"tool|repo|file|line|rule": "tp" | "fp"}; rerun to fold them in. Runs in CI on
@@ -48,8 +49,7 @@ def semgrep(root: Path) -> List[dict]:
     errs = data.get("errors") or []
     if errs:
         print(f"  semgrep: {len(errs)} errors on {root.name}, first: {str(errs[0])[:300]}", flush=True)
-    return [{"file": _rel(r["path"], root), "line": r["start"]["line"], "rule": r["check_id"].rsplit(".", 1)[-1],
-             "message": (r.get("extra") or {}).get("message", "")[:200]} for r in data.get("results", [])]
+    return [{"file": _rel(r["path"], root), "line": r["start"]["line"], "rule": r["check_id"].rsplit(".", 1)[-1]} for r in data.get("results", [])]
 
 
 def bandit(root: Path) -> List[dict]:
@@ -61,8 +61,7 @@ def bandit(root: Path) -> List[dict]:
         data = json.loads(out.stdout or "{}")
     except ValueError:
         return []
-    return [{"file": _rel(r["filename"], root), "line": r["line_number"], "rule": r["test_id"],
-             "message": r.get("issue_text", "")[:200]} for r in data.get("results", [])]
+    return [{"file": _rel(r["filename"], root), "line": r["line_number"], "rule": r["test_id"]} for r in data.get("results", [])]
 
 
 def main() -> int:
@@ -77,7 +76,7 @@ def main() -> int:
             continue
         print("scanning", repo["name"], flush=True)
         for f in B.scan_repo(repo):
-            tools["vibeaudit"].append({"repo": repo["name"], "file": f["file"], "line": f["line"], "rule": f["rule"], "message": f["message"][:200]})
+            tools["vibeaudit"].append({"repo": repo["name"], "file": f["file"], "line": f["line"], "rule": f["rule"]})
         for name, fn in (("semgrep", semgrep), ("bandit", bandit)):
             for f in fn(root):
                 tools[name].append(dict(f, repo=repo["name"]))
@@ -109,7 +108,8 @@ def main() -> int:
         "limits": ("Semgrep's paid rules (Pro, cross-file) and Bandit plugins are not used. Seventeen advisory locations "
                    "are too few for a precise recall figure, and they are Python and JavaScript web and agent code, where "
                    "vibeaudit is strongest; Semgrep covers far more languages, and Bandit covers Python only. A sample of "
-                   f"{SAMPLE} gives a precision estimate within about +-14 points at 95% confidence."),
+                   f"{SAMPLE} gives a precision estimate within about +-14 points at 95% confidence."
+                   " All three tools' findings were labelled by vibeaudit's maintainers with vibeaudit's rubric (a real risk or defect at that location, worth telling the maintainers), which counts Bandit's and Semgrep's hygiene and hardening findings (asserts, mutable first-party action tags, cooldown settings) as false positives; with a looser rubric their precision would be higher. The labels are in benchmark/compare_labels.json for anyone to re-check."),
         "tools": result, "overlap": overlap,
         "advisory_hits": {f"{g['repo']}:{g['file']}:{g['lines'][0]}": found_by[i] for i, g in enumerate(gt)},
     }

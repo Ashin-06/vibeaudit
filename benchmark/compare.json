@@ -1,0 +1,80 @@
+{
+ "method": "Each tool scans the same pinned repositories. Advisory recall counts the known vulnerable locations (benchmark/recall.json) where the tool reports any finding within 3 lines, the same rule for every tool (looser than vibeaudit's own recall, which needs a matching rule). Semgrep runs `--config p/default` with no login (the community rules); Bandit runs on Python only, tests excluded. Precision is estimated from 50 findings per tool drawn with a fixed seed (2026) and labelled by the rubric in benchmark/README.md; vibeaudit's precision is the full labelled count in RESULTS.md.",
+ "limits": "Semgrep's paid rules (Pro, cross-file) and Bandit plugins are not used. Seventeen advisory locations are too few for a precise recall figure, and they are Python and JavaScript web and agent code, where vibeaudit is strongest; Semgrep covers far more languages, and Bandit covers Python only. A sample of 50 gives a precision estimate within about +-14 points at 95% confidence. All three tools' findings were labelled by vibeaudit's maintainers with vibeaudit's rubric (a real risk or defect at that location, worth telling the maintainers), which counts Bandit's and Semgrep's hygiene and hardening findings (asserts, mutable first-party action tags, cooldown settings) as false positives; with a looser rubric their precision would be higher. The labels are in benchmark/compare_labels.json for anyone to re-check.",
+ "tools": {
+  "vibeaudit": {
+   "findings": 1592,
+   "recall": [
+    6,
+    17
+   ],
+   "precision_sample": null
+  },
+  "semgrep": {
+   "findings": 1615,
+   "recall": [
+    6,
+    17
+   ],
+   "precision_sample": [
+    11,
+    50
+   ]
+  },
+  "bandit": {
+   "findings": 875,
+   "recall": [
+    6,
+    17
+   ],
+   "precision_sample": [
+    17,
+    50
+   ]
+  }
+ },
+ "overlap": 6,
+ "advisory_hits": {
+  "adx-mcp-server:src/adx_mcp_server/server.py:217": [],
+  "adx-mcp-server:src/adx_mcp_server/server.py:237": [],
+  "adx-mcp-server:src/adx_mcp_server/server.py:257": [],
+  "alerta:alerta/database/backends/mongodb/utils.py:22": [],
+  "flexible-graphrag:flexible-graphrag/langchain/graph/pg_store_adapters/falkordb_adapter.py:100": [],
+  "nodejs-whisper:src/whisper.ts:81": [],
+  "vibe-trading:agent/src/tools/bash_tool.py:44": [
+   "vibeaudit",
+   "semgrep",
+   "bandit"
+  ],
+  "vibe-trading:agent/src/tools/read_file_tool.py:42": [],
+  "vibe-trading:agent/src/tools/write_file_tool.py:46": [],
+  "vibe-trading:agent/src/tools/edit_file_tool.py:48": [],
+  "vibe-trading:agent/src/tools/doc_reader_tool.py:267": [],
+  "waline:packages/server/src/logic/token.js:35": [],
+  "wsgidav:wsgidav/samples/mysql_dav_provider.py:227": [
+   "vibeaudit",
+   "semgrep",
+   "bandit"
+  ],
+  "wsgidav:wsgidav/samples/mysql_dav_provider.py:371": [
+   "vibeaudit",
+   "semgrep",
+   "bandit"
+  ],
+  "wsgidav:wsgidav/samples/mysql_dav_provider.py:423": [
+   "vibeaudit",
+   "semgrep",
+   "bandit"
+  ],
+  "wsgidav:wsgidav/samples/mysql_dav_provider.py:477": [
+   "vibeaudit",
+   "semgrep",
+   "bandit"
+  ],
+  "wsgidav:wsgidav/samples/mysql_dav_provider.py:544": [
+   "vibeaudit",
+   "semgrep",
+   "bandit"
+  ]
+ }
+}

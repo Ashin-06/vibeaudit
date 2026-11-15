@@ -1,0 +1,607 @@
+{
+ "vibeaudit": [],
+ "semgrep": [
+  {
+   "file": ".github/workflows/django-main.yml",
+   "line": 39,
+   "rule": "github-actions-mutable-action-tag",
+   "repo": "djangoproject.com"
+  },
+  {
+   "file": "docs/templates/docs/search_results.html",
+   "line": 76,
+   "rule": "template-blocktranslate-no-escape",
+   "repo": "djangoproject.com"
+  },
+  {
+   "file": ".github/workflows/security.yml",
+   "line": 18,
+   "rule": "github-actions-mutable-action-tag",
+   "repo": "adx-mcp-server"
+  },
+  {
+   "file": "transaction_db.py",
+   "line": 62,
+   "rule": "sqlalchemy-execute-raw-query",
+   "repo": "damn-vulnerable-llm-agent"
+  },
+  {
+   "file": "dockerized_labs/broken_access_lab/main.py",
+   "line": 60,
+   "rule": "secure-set-cookie",
+   "repo": "pygoat"
+  },
+  {
+   "file": "backend/scripts/dedupe_vector_store.py",
+   "line": 26,
+   "rule": "avoid-sqlalchemy-text",
+   "repo": "sec-insights"
+  },
+  {
+   "file": "djangoproject/templates/foundation/meeting_archive_year.html",
+   "line": 9,
+   "rule": "template-blocktranslate-no-escape",
+   "repo": "djangoproject.com"
+  },
+  {
+   "file": ".github/workflows/lint.yml",
+   "line": 16,
+   "rule": "github-actions-mutable-action-tag",
+   "repo": "nodegoat"
+  },
+  {
+   "file": "src/WhisperHelper.ts",
+   "line": 98,
+   "rule": "path-join-resolve-traversal",
+   "repo": "nodejs-whisper"
+  },
+  {
+   "file": "flexible-graphrag/cocoindex_integration/_compat.py",
+   "line": 234,
+   "rule": "non-literal-import",
+   "repo": "flexible-graphrag"
+  },
+  {
+   "file": "old-workflows/semgrep.yml",
+   "line": 10,
+   "rule": "github-actions-mutable-action-tag",
+   "repo": "Vulnerable-Flask-App"
+  },
+  {
+   "file": "wsgidav/samples/mysql_dav_provider.py",
+   "line": 404,
+   "rule": "sqlalchemy-execute-raw-query",
+   "repo": "wsgidav"
+  },
+  {
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/nebula_adapter.py",
+   "line": 457,
+   "rule": "sqlalchemy-execute-raw-query",
+   "repo": "flexible-graphrag"
+  },
+  {
+   "file": ".github/workflows/docs.yml",
+   "line": 27,
+   "rule": "github-actions-mutable-action-tag",
+   "repo": "flexible-graphrag"
+  },
+  {
+   "file": ".github/renovate.json",
+   "line": 13,
+   "rule": "renovate-missing-minimum-release-age",
+   "repo": "waline"
+  },
+  {
+   "file": "wsgidav/dir_browser/_dir_browser.py",
+   "line": 74,
+   "rule": "direct-use-of-jinja2",
+   "repo": "wsgidav"
+  },
+  {
+   "file": "pnpm-workspace.yaml",
+   "line": 1,
+   "rule": "pnpm-block-exotic-sub-dependencies",
+   "repo": "waline"
+  },
+  {
+   "file": ".github/workflows/ci.yml",
+   "line": 23,
+   "rule": "github-actions-mutable-action-tag",
+   "repo": "adx-mcp-server"
+  },
+  {
+   "file": "docs/src/.vuepress/components/MigrationTool.vue",
+   "line": 122,
+   "rule": "avoid-v-html",
+   "repo": "waline"
+  },
+  {
+   "file": ".github/workflows/tests.yml",
+   "line": 35,
+   "rule": "github-actions-mutable-action-tag",
+   "repo": "wsgidav"
+  },
+  {
+   "file": "flexible-graphrag/pyproject.toml",
+   "line": 528,
+   "rule": "uv-missing-dependency-cooldown",
+   "repo": "flexible-graphrag"
+  },
+  {
+   "file": "docker-compose.yml",
+   "line": 11,
+   "rule": "no-new-privileges",
+   "repo": "flasky"
+  },
+  {
+   "file": "djangoproject/templates/fundraising/index.html",
+   "line": 117,
+   "rule": "template-blocktranslate-no-escape",
+   "repo": "djangoproject.com"
+  },
+  {
+   "file": ".github/workflows/claude.yml",
+   "line": 28,
+   "rule": "github-actions-mutable-action-tag",
+   "repo": "act-solo-ai"
+  },
+  {
+   "file": "server.js",
+   "line": 78,
+   "rule": "express-cookie-session-no-httponly",
+   "repo": "nodegoat"
+  },
+  {
+   "file": "frontend/public/annotator/index.html",
+   "line": 4,
+   "rule": "missing-integrity",
+   "repo": "openui"
+  },
+  {
+   "file": ".github/workflows/django.yml",
+   "line": 7,
+   "rule": "github-actions-mutable-action-tag",
+   "repo": "Django-Styleguide-Example"
+  },
+  {
+   "file": "djangoproject/templates/registration/registration_complete.html",
+   "line": 9,
+   "rule": "template-blocktranslate-no-escape",
+   "repo": "djangoproject.com"
+  },
+  {
+   "file": "backend/alembic/versions/c008bb4f3f48_update_sub_process_columns.py",
+   "line": 43,
+   "rule": "sqlalchemy-execute-raw-query",
+   "repo": "sec-insights"
+  },
+  {
+   "file": "deploy/bases/database/cronjob-rollup-daily.yaml",
+   "line": 21,
+   "rule": "run-as-non-root",
+   "repo": "podinfo"
+  },
+  {
+   "file": "src/integrations/supabase/client.ts",
+   "line": 6,
+   "rule": "detected-jwt-token",
+   "repo": "helpdesk-flow-verse"
+  },
+  {
+   "file": "dockerized_labs/sensitive_data_exposure/Dockerfile",
+   "line": 19,
+   "rule": "missing-user",
+   "repo": "pygoat"
+  },
+  {
+   "file": ".github/workflows/ci.yml",
+   "line": 20,
+   "rule": "github-actions-mutable-action-tag",
+   "repo": "adx-mcp-server"
+  },
+  {
+   "file": "dockerized_labs/sde/Dockerfile",
+   "line": 12,
+   "rule": "missing-user",
+   "repo": "pygoat"
+  },
+  {
+   "file": "docs/templates/docs/doc.html",
+   "line": 168,
+   "rule": "template-blocktranslate-no-escape",
+   "repo": "djangoproject.com"
+  },
+  {
+   "file": "djangoproject/templates/contact/foundation.html",
+   "line": 15,
+   "rule": "template-blocktranslate-no-escape",
+   "repo": "djangoproject.com"
+  },
+  {
+   "file": "examples/plnt/templates/about.html",
+   "line": 7,
+   "rule": "plaintext-http-link",
+   "repo": "werkzeug"
+  },
+  {
+   "file": "djangoproject/templates/fundraising/manage-donations.html",
+   "line": 61,
+   "rule": "template-blocktranslate-no-escape",
+   "repo": "djangoproject.com"
+  },
+  {
+   "file": "examples/javascript/js_example/templates/base.html",
+   "line": 3,
+   "rule": "missing-integrity",
+   "repo": "flask"
+  },
+  {
+   "file": "app/auth/routes.py",
+   "line": 46,
+   "rule": "unvalidated-password",
+   "repo": "microblog"
+  },
+  {
+   "file": "dashboard/starter-example/pnpm-workspace.yaml",
+   "line": 1,
+   "rule": "pnpm-trust-policy",
+   "repo": "next-learn"
+  },
+  {
+   "file": ".github/workflows/release-server.yml",
+   "line": 58,
+   "rule": "github-actions-mutable-action-tag",
+   "repo": "waline"
+  },
+  {
+   "file": ".github/workflows/test.yaml",
+   "line": 33,
+   "rule": "github-actions-mutable-action-tag",
+   "repo": "dvga"
+  },
+  {
+   "file": "dockerized_labs/a9_uckv_lab/app.py",
+   "line": 62,
+   "rule": "avoid-pyyaml-load",
+   "repo": "pygoat"
+  },
+  {
+   "file": "backend/openui/eval/evaluate_weave.py",
+   "line": 428,
+   "rule": "eval-detected",
+   "repo": "openui"
+  },
+  {
+   "file": "introduction/views.py",
+   "line": 269,
+   "rule": "no-csrf-exempt",
+   "repo": "pygoat"
+  },
+  {
+   "file": "examples/session/index.js",
+   "line": 16,
+   "rule": "express-cookie-session-no-path",
+   "repo": "express"
+  },
+  {
+   "file": ".devcontainer/Dockerfile",
+   "line": 13,
+   "rule": "missing-user",
+   "repo": "sec-insights"
+  },
+  {
+   "file": "flexible-graphrag/cocoindex_integration/bridge.py",
+   "line": 498,
+   "rule": "asyncpg-sqli",
+   "repo": "flexible-graphrag"
+  },
+  {
+   "file": "views/app/products.ejs",
+   "line": 52,
+   "rule": "template-explicit-unescape",
+   "repo": "dvna"
+  }
+ ],
+ "bandit": [
+  {
+   "file": "alerta/auth/gitlab.py",
+   "line": 49,
+   "rule": "B113",
+   "repo": "alerta"
+  },
+  {
+   "file": "alerta/auth/github.py",
+   "line": 39,
+   "rule": "B113",
+   "repo": "alerta"
+  },
+  {
+   "file": "flexible-graphrag/langchain/graph/retrievers/chains/_hugegraph.py",
+   "line": 198,
+   "rule": "B110",
+   "repo": "flexible-graphrag"
+  },
+  {
+   "file": "benchmarks/gzip_benchmark.py",
+   "line": 126,
+   "rule": "B101",
+   "repo": "starlette"
+  },
+  {
+   "file": "agent/src/preflight.py",
+   "line": 180,
+   "rule": "B105",
+   "repo": "vibe-trading"
+  },
+  {
+   "file": "wsgidav/dir_browser/_dir_browser.py",
+   "line": 160,
+   "rule": "B101",
+   "repo": "wsgidav"
+  },
+  {
+   "file": "wsgidav/fs_dav_provider.py",
+   "line": 356,
+   "rule": "B101",
+   "repo": "wsgidav"
+  },
+  {
+   "file": "dockerized_labs/insufficient_logging_lab/app.py",
+   "line": 7,
+   "rule": "B105",
+   "repo": "pygoat"
+  },
+  {
+   "file": "alerta/database/backends/postgres/base.py",
+   "line": 271,
+   "rule": "B608",
+   "repo": "alerta"
+  },
+  {
+   "file": "backend/openui/eval/evaluate.py",
+   "line": 194,
+   "rule": "B307",
+   "repo": "openui"
+  },
+  {
+   "file": "wsgidav/wsgidav_app.py",
+   "line": 470,
+   "rule": "B101",
+   "repo": "wsgidav"
+  },
+  {
+   "file": "wsgidav/fs_dav_provider.py",
+   "line": 235,
+   "rule": "B101",
+   "repo": "wsgidav"
+  },
+  {
+   "file": "flexible-graphrag/cocoindex_integration/_compat.py",
+   "line": 239,
+   "rule": "B110",
+   "repo": "flexible-graphrag"
+  },
+  {
+   "file": "examples/observability_example.py",
+   "line": 145,
+   "rule": "B110",
+   "repo": "flexible-graphrag"
+  },
+  {
+   "file": "flexible-graphrag/langchain/graph/retrievers/chains/_sparql.py",
+   "line": 631,
+   "rule": "B608",
+   "repo": "flexible-graphrag"
+  },
+  {
+   "file": "flexible-graphrag/ingest/ingest_lc_graph.py",
+   "line": 660,
+   "rule": "B110",
+   "repo": "flexible-graphrag"
+  },
+  {
+   "file": "docs/templatetags/docs.py",
+   "line": 86,
+   "rule": "B703",
+   "repo": "djangoproject.com"
+  },
+  {
+   "file": "flexible-graphrag/cocoindex_integration/pipeline/flexible_app.py",
+   "line": 100,
+   "rule": "B110",
+   "repo": "flexible-graphrag"
+  },
+  {
+   "file": "dockerized_labs/package_injection_lab/app.py",
+   "line": 260,
+   "rule": "B104",
+   "repo": "pygoat"
+  },
+  {
+   "file": "dockerized_labs/broken_auth_lab/app.py",
+   "line": 138,
+   "rule": "B110",
+   "repo": "pygoat"
+  },
+  {
+   "file": "flexible-graphrag/rdf/kg_to_rdf_converter.py",
+   "line": 176,
+   "rule": "B110",
+   "repo": "flexible-graphrag"
+  },
+  {
+   "file": "app/cli.py",
+   "line": 31,
+   "rule": "B605",
+   "repo": "microblog"
+  },
+  {
+   "file": "flexible-graphrag/ingest/update_pg_graph.py",
+   "line": 393,
+   "rule": "B110",
+   "repo": "flexible-graphrag"
+  },
+  {
+   "file": "flexible-graphrag/sources/passthrough_extractor.py",
+   "line": 231,
+   "rule": "B110",
+   "repo": "flexible-graphrag"
+  },
+  {
+   "file": "wsgidav/samples/hg_dav_provider.py",
+   "line": 472,
+   "rule": "B101",
+   "repo": "wsgidav"
+  },
+  {
+   "file": "wsgidav/lock_man/lock_storage.py",
+   "line": 305,
+   "rule": "B101",
+   "repo": "wsgidav"
+  },
+  {
+   "file": "dockerized_labs/software_integrity_lab/app.py",
+   "line": 9,
+   "rule": "B105",
+   "repo": "pygoat"
+  },
+  {
+   "file": "flexible-graphrag/main.py",
+   "line": 1245,
+   "rule": "B110",
+   "repo": "flexible-graphrag"
+  },
+  {
+   "file": "flexible-graphrag/cocoindex_integration/pipeline/env_config.py",
+   "line": 46,
+   "rule": "B110",
+   "repo": "flexible-graphrag"
+  },
+  {
+   "file": "scripts/cleanup.py",
+   "line": 1449,
+   "rule": "B110",
+   "repo": "flexible-graphrag"
+  },
+  {
+   "file": "src/werkzeug/serving.py",
+   "line": 254,
+   "rule": "B101",
+   "repo": "werkzeug"
+  },
+  {
+   "file": "wsgidav/util.py",
+   "line": 1603,
+   "rule": "B105",
+   "repo": "wsgidav"
+  },
+  {
+   "file": "flexible-graphrag/ingest/ingest_from_files.py",
+   "line": 175,
+   "rule": "B110",
+   "repo": "flexible-graphrag"
+  },
+  {
+   "file": "dockerized_labs/crypto_failure_lab/app.py",
+   "line": 25,
+   "rule": "B324",
+   "repo": "pygoat"
+  },
+  {
+   "file": "flexible-graphrag/llamaindex/llm/llm_factory.py",
+   "line": 68,
+   "rule": "B110",
+   "repo": "flexible-graphrag"
+  },
+  {
+   "file": "flexible-graphrag/stores/rdf_manager.py",
+   "line": 105,
+   "rule": "B110",
+   "repo": "flexible-graphrag"
+  },
+  {
+   "file": "scripts/cleanup.py",
+   "line": 965,
+   "rule": "B110",
+   "repo": "flexible-graphrag"
+  },
+  {
+   "file": "wsgidav/samples/mysql_dav_provider.py",
+   "line": 392,
+   "rule": "B608",
+   "repo": "wsgidav"
+  },
+  {
+   "file": "dockerized_labs/insecure_design_lab/app.py",
+   "line": 153,
+   "rule": "B201",
+   "repo": "pygoat"
+  },
+  {
+   "file": "starlette/schemas.py",
+   "line": 24,
+   "rule": "B101",
+   "repo": "starlette"
+  },
+  {
+   "file": "wsgidav/mw/debug_filter.py",
+   "line": 147,
+   "rule": "B110",
+   "repo": "wsgidav"
+  },
+  {
+   "file": "benchmarks/gzip_benchmark.py",
+   "line": 83,
+   "rule": "B101",
+   "repo": "starlette"
+  },
+  {
+   "file": "wsgidav/samples/virtual_dav_provider.py",
+   "line": 347,
+   "rule": "B101",
+   "repo": "wsgidav"
+  },
+  {
+   "file": "backend/scripts/file_utils.py",
+   "line": 129,
+   "rule": "B101",
+   "repo": "sec-insights"
+  },
+  {
+   "file": "wsgidav/fs_dav_provider.py",
+   "line": 86,
+   "rule": "B101",
+   "repo": "wsgidav"
+  },
+  {
+   "file": "scripts/cleanup.py",
+   "line": 1297,
+   "rule": "B110",
+   "repo": "flexible-graphrag"
+  },
+  {
+   "file": "agent/src/tools/bash_tool.py",
+   "line": 7,
+   "rule": "B404",
+   "repo": "vibe-trading"
+  },
+  {
+   "file": "src/flask/debughelpers.py",
+   "line": 59,
+   "rule": "B101",
+   "repo": "flask"
+  },
+  {
+   "file": "wsgidav/fs_dav_provider.py",
+   "line": 357,
+   "rule": "B101",
+   "repo": "wsgidav"
+  },
+  {
+   "file": "pygoat/settings.py",
+   "line": 23,
+   "rule": "B105",
+   "repo": "pygoat"
+  }
+ ]
+}

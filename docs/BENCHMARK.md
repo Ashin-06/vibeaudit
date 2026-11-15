@@ -76,7 +76,17 @@ Seeded misses (expected but not found): none.
 
 ## Compared with Semgrep and Bandit
 
-Not yet run: the comparison runs in CI (`.github/workflows/compare.yml`, Linux, manual and weekly) and its results are committed to benchmark/compare.json.
+Each tool scans the same pinned repositories. Advisory recall counts the known vulnerable locations (benchmark/recall.json) where the tool reports any finding within 3 lines, the same rule for every tool (looser than vibeaudit's own recall, which needs a matching rule). Semgrep runs `--config p/default` with no login (the community rules); Bandit runs on Python only, tests excluded. Precision is estimated from 50 findings per tool drawn with a fixed seed (2026) and labelled by the rubric in benchmark/README.md; vibeaudit's precision is the full labelled count in RESULTS.md.
+
+| Tool | Advisory recall | Findings on the corpus | Precision |
+| --- | --- | --- | --- |
+| vibeaudit | 6/17 | 1,592 | 88% (1396/1592, every finding labelled) |
+| semgrep | 6/17 | 1,615 | about 22% (11/50 in a random sample) |
+| bandit | 6/17 | 875 | about 34% (17/50 in a random sample) |
+
+All three tools find the same 6 of the 17 advisory locations (vibe-trading, wsgidav) and miss the same 11. Recall on these advisories is low for every tool, for the same reasons: the misses are injections into query languages none of them models as a sink (KQL, Cypher, MongoDB filters reached through an ORM or a JSON-parsed parameter), and flows that start at a library or agent-tool parameter and cross modules before reaching the sink. What separates the tools on this corpus is precision and the kinds of issue reported (Bandit reports Python hygiene such as asserts and bare excepts; Semgrep's community rules report mutable action tags, template escaping and hardening settings), not recall on these bugs.
+
+Semgrep's paid rules (Pro, cross-file) and Bandit plugins are not used. Seventeen advisory locations are too few for a precise recall figure, and they are Python and JavaScript web and agent code, where vibeaudit is strongest; Semgrep covers far more languages, and Bandit covers Python only. A sample of 50 gives a precision estimate within about +-14 points at 95% confidence. All three tools' findings were labelled by vibeaudit's maintainers with vibeaudit's rubric (a real risk or defect at that location, worth telling the maintainers), which counts Bandit's and Semgrep's hygiene and hardening findings (asserts, mutable first-party action tags, cooldown settings) as false positives; with a looser rubric their precision would be higher. The labels are in benchmark/compare_labels.json for anyone to re-check.
 
 ## Limits
 

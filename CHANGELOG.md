@@ -18,8 +18,10 @@ Bandit, and the means for others to check the labels.
 - A head-to-head with Semgrep (`--config p/default`, no login) and Bandit on the same pinned corpus
   (`tools/compare.py`, run by `.github/workflows/compare.yml` on Linux, manual and weekly): advisory recall,
   finding counts, overlap, and precision estimated from a labelled random sample of each tool's findings.
+  First run: all three tools find the same 6 of the 17 advisory locations; precision is 88% for vibeaudit (every
+  finding labelled), about 34% for Bandit and about 22% for Semgrep (50-finding samples, vibeaudit's rubric).
 - A sample report: `.github/workflows/pages.yml` publishes the HTML report and the six compliance reports for the
-  deliberately vulnerable Next.js + Supabase fixture to GitHub Pages.
+  deliberately vulnerable Next.js + Supabase fixture to GitHub Pages: https://ashin-06.github.io/vibeaudit/
 - A second-labeller kit (`tools/labelling_kit.py`, docs/LABELLING.md): a blind stratified sample of 150 labelled
   findings, labelling instructions, and Cohen's kappa against the maintainers' labels.
 - `.github/workflows/publish.yml`: trusted publishing of the attested wheel and sdist to PyPI, off until the

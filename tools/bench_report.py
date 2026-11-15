@@ -130,7 +130,7 @@ def build(results: dict, corpus: List[dict], checkout: Callable[[dict], Path], s
     lines += ["", "Seeded misses (expected but not found): "
               + (", ".join(f"{rid} {r['seeded_found']}/{r['seeded_expected']}" for rid, r in sorted(results["rules"].items())
                            if r.get("seeded_expected") and r["seeded_found"] < r["seeded_expected"]) or "none") + ".", ""]
-    lines += _comparison()
+    lines += _comparison((tp, tp + fp))
     lines += ["## Limits", "",
               "- The advisory set has 17 locations in 7 repositories: enough to show the kinds of bug that are missed, not a "
               "precise recall figure. More pre-fix repositories are added as advisories are published.",
@@ -142,7 +142,7 @@ def build(results: dict, corpus: List[dict], checkout: Callable[[dict], Path], s
     return "\n".join(lines)
 
 
-def _comparison() -> List[str]:
+def _comparison(own: Tuple[int, int] = (0, 0)) -> List[str]:
     path = BENCH / "compare.json"
     head = ["## Compared with Semgrep and Bandit", ""]
     if not path.is_file():
@@ -150,11 +150,27 @@ def _comparison() -> List[str]:
                        "and its results are committed to benchmark/compare.json.", ""]
     c = json.loads(path.read_text(encoding="utf-8"))
     out = head + [c.get("method", ""), "",
-                  "| Tool | Advisory recall | Findings on the corpus | Estimated precision (sample) |", "| --- | --- | --- | --- |"]
+                  "| Tool | Advisory recall | Findings on the corpus | Precision |", "| --- | --- | --- | --- |"]
     for tool, t in c["tools"].items():
         prec = t.get("precision_sample")
-        out.append(f"| {tool} | {t['recall'][0]}/{t['recall'][1]} | {t['findings']:,} | "
-                   f"{f'{prec[0]}/{prec[1]} ({_pct(prec[0] / max(1, prec[1]))})' if prec else 'not yet labelled'} |")
-    if c.get("overlap"):
+        if tool == "vibeaudit":
+            cell = f"{_pct(own[0] / max(1, own[1]))} ({own[0]}/{own[1]}, every finding labelled)"
+        else:
+            cell = f"about {_pct(prec[0] / max(1, prec[1]))} ({prec[0]}/{prec[1]} in a random sample)" if prec else "not yet labelled"
+        out.append(f"| {tool} | {t['recall'][0]}/{t['recall'][1]} | {t['findings']:,} | {cell} |")
+    recalls = {tool: tuple(t["recall"]) for tool, t in c["tools"].items()}
+    hits = c.get("advisory_hits", {})
+    if len(set(recalls.values())) == 1:
+        r = next(iter(recalls.values()))
+        found = sorted({k.split(":", 1)[0] for k, v in hits.items() if v})
+        out += ["", f"All three tools find the same {r[0]} of the {r[1]} advisory locations ({', '.join(found)}) and miss the "
+                    f"same {r[1] - r[0]}. Recall on these advisories is low for every tool, for the same reasons: the misses are "
+                    "injections into query languages none of them models as a sink (KQL, Cypher, MongoDB filters reached "
+                    "through an ORM or a JSON-parsed parameter), and flows that start at a library or agent-tool parameter "
+                    "and cross modules before reaching the sink. What separates the tools on this corpus is precision and "
+                    "the kinds of issue reported (Bandit reports Python hygiene such as asserts and bare excepts; Semgrep's "
+                    "community rules report mutable action tags, template escaping and hardening settings), not recall on "
+                    "these bugs."]
+    elif c.get("overlap"):
         out += ["", f"Advisory locations found by more than one tool: {c['overlap']}."]
     return out + ["", c.get("limits", ""), ""]
