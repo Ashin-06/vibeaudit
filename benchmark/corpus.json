@@ -262,8 +262,7 @@
    "url": "https://github.com/nextjs/saas-starter",
    "commit": "6e33e58b1e553a41fe22e6b941a7229a002de361",
    "licence": "MIT",
-   "kind": "well-maintained",
-   "split": "heldout"
+   "kind": "well-maintained"
   },
   {
    "name": "flasky",
@@ -390,6 +389,14 @@
    "licence": "MIT",
    "kind": "pre-fix",
    "advisory": "GHSA-p6gw-4frg-j7jw"
+  },
+  {
+   "name": "next-saas-stripe-starter",
+   "url": "https://github.com/mickasmt/next-saas-stripe-starter",
+   "commit": "c6df229ae73c207e87356d5e592779c511a9b56d",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "split": "heldout"
   }
  ]
 }

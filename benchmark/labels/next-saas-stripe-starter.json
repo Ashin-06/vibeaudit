@@ -1,0 +1,118 @@
+{
+ "repo": "next-saas-stripe-starter",
+ "commit": "c6df229ae73c207e87356d5e592779c511a9b56d",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/prune.yml",
+   "line": 23,
+   "fingerprint": "64632e3c47dc2299721bd19a722f9ed4",
+   "verdict": "tp",
+   "reason": "pnpm/action-setup@v4 is a movable tag, not a commit."
+  },
+  {
+   "rule": "UI011",
+   "file": "app/layout.tsx",
+   "line": 1,
+   "fingerprint": "84da9ef29848a0982367687761672c1c",
+   "verdict": "tp",
+   "reason": "No error.tsx anywhere under app/."
+  },
+  {
+   "rule": "QA003",
+   "file": "components/auth/google-one-tap.tsx",
+   "line": 27,
+   "fingerprint": "3bde341dfb2c41422c4fb91563b0397d",
+   "verdict": "fp",
+   "reason": "Dismissing the One Tap prompt is a normal outcome; the empty catch is deliberate and commented."
+  },
+  {
+   "rule": "UI014",
+   "file": "components/dashboard/organization-avatar.tsx",
+   "line": 13,
+   "fingerprint": "d9336c7776fce2ac388bc1474fff7d51",
+   "verdict": "fp",
+   "reason": "The avatar is sized by its CSS classes (fixed size, rounded), so it does not shift the layout."
+  },
+  {
+   "rule": "QA003",
+   "file": "components/marketing/panel-demo.tsx",
+   "line": 316,
+   "fingerprint": "5602cbcf7840c713bf198aadc45522f7",
+   "verdict": "tp",
+   "reason": "A failed clipboard write is ignored and the button still says copied."
+  },
+  {
+   "rule": "QA011",
+   "file": "components/shared/user-avatar.tsx",
+   "line": 5,
+   "fingerprint": "9b19ae346374627fb17d5dd7e4fab54c",
+   "verdict": "tp",
+   "reason": "getInitials is copied in two components."
+  },
+  {
+   "rule": "UI016",
+   "file": "components/ui/drawer.tsx",
+   "line": 124,
+   "fingerprint": "9849b861fc827e43f4bdf4ed255dd3a6",
+   "verdict": "fp",
+   "reason": "outline-none is on the drawer popup container, a dialog surface; focus styles are on the controls inside."
+  },
+  {
+   "rule": "UI016",
+   "file": "components/ui/dropdown-menu.tsx",
+   "line": 35,
+   "fingerprint": "6cf146fb40b14af988f80adb9a7598d9",
+   "verdict": "fp",
+   "reason": "outline-none is on the menu positioner, which never takes focus."
+  },
+  {
+   "rule": "UI013",
+   "file": "lib/auth/session.ts",
+   "line": 34,
+   "fingerprint": "384123782f2feda899d2ae0ee8474f84",
+   "verdict": "tp",
+   "reason": "redirect('/onboarding'): the page is at /dashboard/onboarding and nothing rewrites /onboarding."
+  },
+  {
+   "rule": "UI013",
+   "file": "lib/auth/session.ts",
+   "line": 44,
+   "fingerprint": "a32374632efb1ff3870ccd368e9a601a",
+   "verdict": "tp",
+   "reason": "redirect('/onboarding'): the page is at /dashboard/onboarding and nothing rewrites /onboarding."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "lib/features/dev-actions.ts",
+   "line": 22,
+   "fingerprint": "f66bc251f427d486c16e67f7c121c2bc",
+   "verdict": "fp",
+   "reason": "assertDevelopment() throws outside development, so the action cannot run in production."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "lib/features/dev-actions.ts",
+   "line": 45,
+   "fingerprint": "1e4250e5f93c4a53139fde799acd6dd8",
+   "verdict": "fp",
+   "reason": "assertDevelopment() throws outside development, so the action cannot run in production."
+  },
+  {
+   "rule": "SEC004",
+   "file": "lib/stripe.ts",
+   "line": 7,
+   "fingerprint": "ba24c428bbe92cfb5c608a5e454261f1",
+   "verdict": "fp",
+   "reason": "A placeholder Stripe key that makes billing calls fail, not a signing secret anyone can use."
+  },
+  {
+   "rule": "QA001",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "6ebc345ae714486cf41d50d631704e0c",
+   "verdict": "tp",
+   "reason": "No test files in the repository."
+  }
+ ]
+}

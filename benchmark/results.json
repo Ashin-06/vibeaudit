@@ -1,7 +1,7 @@
 {
  "tool": "vibeaudit benchmark",
- "corpus": 53,
- "scanned": 53,
+ "corpus": 54,
+ "scanned": 54,
  "skipped": {},
  "heldout": [
   "careconnect",
@@ -9,10 +9,10 @@
   "dvpwa",
   "flasky",
   "langchain-nextjs-template",
+  "next-saas-stripe-starter",
   "nodejs-whisper",
   "openai-assistants-quickstart",
   "podinfo",
-  "saas-starter",
   "terragoat",
   "thynk",
   "waline"
@@ -121,7 +121,7 @@
    "labelled": 26,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 4
+   "fixed_fp": 5
   },
   "sec-insights": {
    "findings": 42,
@@ -275,7 +275,7 @@
    "labelled": 9,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 1
   },
   "flasky": {
    "findings": 16,
@@ -373,7 +373,7 @@
    "labelled": 58,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 1
   },
   "waline": {
    "findings": 80,
@@ -388,6 +388,13 @@
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 1
+  },
+  "next-saas-stripe-starter": {
+   "findings": 14,
+   "labelled": 14,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
   }
  },
  "rules": {
@@ -443,11 +450,11 @@
    "title": "State-changing endpoint without authentication",
    "preview": false,
    "tp": 41,
-   "fp": 1,
+   "fp": 3,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9762,
-   "precision_pessimistic": 0.9762,
+   "precision": 0.9318,
+   "precision_pessimistic": 0.9318,
    "seeded_expected": 7,
    "seeded_found": 7,
    "seeded_recall": 1.0,
@@ -500,6 +507,11 @@
     "next-learn": [
      3,
      0,
+     0
+    ],
+    "next-saas-stripe-starter": [
+     0,
+     2,
      0
     ],
     "openai-assistants-quickstart": [
@@ -876,8 +888,8 @@
    "lost_tp": 0,
    "precision": 0.9259,
    "precision_pessimistic": 0.9259,
-   "seeded_expected": 2,
-   "seeded_found": 2,
+   "seeded_expected": 4,
+   "seeded_found": 4,
    "seeded_recall": 1.0,
    "by_repo": {
     "Vulnerable-Flask-App": [
@@ -931,8 +943,8 @@
    "lost_tp": 0,
    "precision": 0.5,
    "precision_pessimistic": 0.5,
-   "seeded_expected": 2,
-   "seeded_found": 2,
+   "seeded_expected": 4,
+   "seeded_found": 4,
    "seeded_recall": 1.0,
    "by_repo": {
     "djangoproject.com": [
@@ -1824,7 +1836,7 @@
   "CFG010": {
    "title": "Third-party GitHub Action not pinned to a commit",
    "preview": false,
-   "tp": 65,
+   "tp": 66,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -1875,6 +1887,11 @@
      0
     ],
     "next-learn": [
+     1,
+     0,
+     0
+    ],
+    "next-saas-stripe-starter": [
      1,
      0,
      0
@@ -2957,8 +2974,8 @@
    "lost_tp": 0,
    "precision": null,
    "precision_pessimistic": null,
-   "seeded_expected": 1,
-   "seeded_found": 1,
+   "seeded_expected": 3,
+   "seeded_found": 3,
    "seeded_recall": 1.0,
    "by_repo": {}
   },
@@ -3490,7 +3507,7 @@
   "QA001": {
    "title": "No automated tests",
    "preview": false,
-   "tp": 14,
+   "tp": 15,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -3541,6 +3558,11 @@
      0
     ],
     "next-learn": [
+     1,
+     0,
+     0
+    ],
+    "next-saas-stripe-starter": [
      1,
      0,
      0
@@ -3705,12 +3727,12 @@
   "QA003": {
    "title": "Exception silently swallowed",
    "preview": true,
-   "tp": 146,
-   "fp": 11,
+   "tp": 147,
+   "fp": 12,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9299,
-   "precision_pessimistic": 0.9299,
+   "precision": 0.9245,
+   "precision_pessimistic": 0.9245,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -3728,6 +3750,11 @@
     "flexible-graphrag": [
      116,
      0,
+     0
+    ],
+    "next-saas-stripe-starter": [
+     1,
+     1,
      0
     ],
     "openui": [
@@ -4033,7 +4060,7 @@
   "QA011": {
    "title": "Same function copied into several files",
    "preview": false,
-   "tp": 14,
+   "tp": 15,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -4060,6 +4087,11 @@
     ],
     "langchain-nextjs-template": [
      2,
+     0,
+     0
+    ],
+    "next-saas-stripe-starter": [
+     1,
      0,
      0
     ],
@@ -4412,11 +4444,11 @@
    "title": "Hardcoded or default signing secret",
    "preview": false,
    "tp": 29,
-   "fp": 2,
+   "fp": 3,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9355,
-   "precision_pessimistic": 0.9355,
+   "precision": 0.9062,
+   "precision_pessimistic": 0.9062,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
@@ -4439,6 +4471,11 @@
     "dvna": [
      1,
      0,
+     0
+    ],
+    "next-saas-stripe-starter": [
+     0,
+     1,
      0
     ],
     "node-express-realworld-example-app": [
@@ -5041,7 +5078,7 @@
   "UI011": {
    "title": "No error page",
    "preview": false,
-   "tp": 7,
+   "tp": 8,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -5062,6 +5099,11 @@
      0
     ],
     "langchain-nextjs-template": [
+     1,
+     0,
+     0
+    ],
+    "next-saas-stripe-starter": [
      1,
      0,
      0
@@ -5111,26 +5153,32 @@
   "UI013": {
    "title": "Link to a page that does not exist",
    "preview": false,
-   "tp": 0,
+   "tp": 2,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "next-saas-stripe-starter": [
+     2,
+     0,
+     0
+    ]
+   }
   },
   "UI014": {
    "title": "Image without width and height",
    "preview": false,
    "tp": 16,
-   "fp": 1,
+   "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9412,
-   "precision_pessimistic": 0.9412,
+   "precision": 0.8889,
+   "precision_pessimistic": 0.8889,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -5153,6 +5201,11 @@
     "next-learn": [
      2,
      0,
+     0
+    ],
+    "next-saas-stripe-starter": [
+     0,
+     1,
      0
     ],
     "openai-assistants-quickstart": [
@@ -5201,11 +5254,11 @@
    "title": "Focus outline removed",
    "preview": true,
    "tp": 6,
-   "fp": 0,
+   "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.75,
+   "precision_pessimistic": 0.75,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -5228,6 +5281,11 @@
     "learnathon-leaderboard": [
      2,
      0,
+     0
+    ],
+    "next-saas-stripe-starter": [
+     0,
+     2,
      0
     ]
    }

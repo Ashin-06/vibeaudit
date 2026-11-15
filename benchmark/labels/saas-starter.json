@@ -73,6 +73,14 @@
    "fingerprint": "25add55d2ce003204a961bffaa7bc2f6",
    "verdict": "tp",
    "reason": "The foreign key column has no index in any migration or schema file."
+  },
+  {
+   "rule": "BE008",
+   "file": "lib/payments/stripe.ts",
+   "line": 46,
+   "fingerprint": "bb407d822dcaff40f65db546886654aa",
+   "verdict": "fp",
+   "reason": "redirect(session.url): the URL comes from Stripe's API; the user's priceId is only an argument of that call."
   }
  ]
 }

@@ -21,7 +21,7 @@
    "by_repo": {}
   },
   "AUTH001": {
-   "precision": 0.9762,
+   "precision": 0.9318,
    "seeded_recall": 1.0,
    "by_repo": {
     "LinguaLearn": [
@@ -63,6 +63,10 @@
     "next-learn": [
      3,
      0
+    ],
+    "next-saas-stripe-starter": [
+     0,
+     2
     ],
     "openai-assistants-quickstart": [
      3,
@@ -884,6 +888,10 @@
      0
     ],
     "next-learn": [
+     1,
+     0
+    ],
+    "next-saas-stripe-starter": [
      1,
      0
     ],
@@ -1811,6 +1819,10 @@
      1,
      0
     ],
+    "next-saas-stripe-starter": [
+     1,
+     0
+    ],
     "nextjs-subscription-payments": [
      1,
      0
@@ -1932,7 +1944,7 @@
    }
   },
   "QA003": {
-   "precision": 0.9299,
+   "precision": 0.9245,
    "seeded_recall": 1.0,
    "by_repo": {
     "alerta": [
@@ -1946,6 +1958,10 @@
     "flexible-graphrag": [
      116,
      0
+    ],
+    "next-saas-stripe-starter": [
+     1,
+     1
     ],
     "openui": [
      1,
@@ -2163,6 +2179,10 @@
     ],
     "langchain-nextjs-template": [
      2,
+     0
+    ],
+    "next-saas-stripe-starter": [
+     1,
      0
     ],
     "opengpts": [
@@ -2388,7 +2408,7 @@
    }
   },
   "SEC004": {
-   "precision": 0.9355,
+   "precision": 0.9062,
    "seeded_recall": 1.0,
    "by_repo": {
     "Vulnerable-Flask-App": [
@@ -2406,6 +2426,10 @@
     "dvna": [
      1,
      0
+    ],
+    "next-saas-stripe-starter": [
+     0,
+     1
     ],
     "node-express-realworld-example-app": [
      3,
@@ -2798,6 +2822,10 @@
      1,
      0
     ],
+    "next-saas-stripe-starter": [
+     1,
+     0
+    ],
     "nextjs-subscription-payments": [
      1,
      0
@@ -2827,12 +2855,17 @@
    }
   },
   "UI013": {
-   "precision": null,
+   "precision": 1.0,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "next-saas-stripe-starter": [
+     2,
+     0
+    ]
+   }
   },
   "UI014": {
-   "precision": 0.9412,
+   "precision": 0.8889,
    "seeded_recall": 1.0,
    "by_repo": {
     "djangoproject.com": [
@@ -2850,6 +2883,10 @@
     "next-learn": [
      2,
      0
+    ],
+    "next-saas-stripe-starter": [
+     0,
+     1
     ],
     "openai-assistants-quickstart": [
      1,
@@ -2880,7 +2917,7 @@
    }
   },
   "UI016": {
-   "precision": 1.0,
+   "precision": 0.75,
    "seeded_recall": 1.0,
    "by_repo": {
     "ai-chatbot": [
@@ -2898,6 +2935,10 @@
     "learnathon-leaderboard": [
      2,
      0
+    ],
+    "next-saas-stripe-starter": [
+     0,
+     2
     ]
    }
   },
