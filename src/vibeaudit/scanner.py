@@ -30,6 +30,8 @@ from .rules import RULES
 from .secretscan import SecretScanner
 from .store import loads_json
 
+FOLLOWED = "(passed in through the call at "
+
 STACK_MARKERS = {
     "flask": "Flask", "fastapi": "FastAPI", "django": "Django", "streamlit": "Streamlit", "gradio": "Gradio",
     "openai": "OpenAI SDK", "anthropic": "Anthropic SDK", "google-genai": "Google GenAI SDK",
@@ -318,5 +320,8 @@ def finalize(project: Project, raw: List[Finding], opts: Options, already: bool 
         if f.fingerprint in baseline:
             continue
         out.append(f)
+    # taint followed through a call (pyscan) replaces the plain finding of the same rule on the same line
+    followed = {(f.rule_id, f.file, f.line) for f in out if FOLLOWED in f.message}
+    out = [f for f in out if FOLLOWED in f.message or (f.rule_id, f.file, f.line) not in followed]
     out.sort(key=lambda f: (SEVERITY_RANK[f.severity], f.category, f.file, f.line, f.rule_id))
     return out

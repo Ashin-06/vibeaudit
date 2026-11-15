@@ -465,6 +465,14 @@
    "fingerprint": "c55fe874bb6f825d0bd3f65edcb49231",
    "verdict": "tp",
    "reason": "The field has no label or aria-label."
+  },
+  {
+   "rule": "LLM005",
+   "file": "agent/src/tools/web_reader_tool.py",
+   "line": 26,
+   "fingerprint": "2cd7bd0bc41b081439065f08fdc1d1dc",
+   "verdict": "fp",
+   "reason": "The URL goes to a fixed reader host (r.jina.ai) prefix, so the model cannot reach internal addresses."
   }
  ]
 }
