@@ -3,7 +3,7 @@
 Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do not edit by hand.
 `vibeaudit rules` prints the same list, and `vibeaudit rules --format json` includes every field.
 
-161 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
+162 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
 57 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
@@ -604,6 +604,7 @@ References: CWE-200, A02:2021
 | [AUTH015](#auth015) | medium | preview | Password change keeps old sessions valid |
 | [AUTH016](#auth016) | high | preview | Query not scoped to the current tenant |
 | [AUTH017](#auth017) | high | preview | Admin or feature-flag endpoint without a role check |
+| [JAVA001](#java001) | high | preview | Spring controllers with no security configuration |
 
 ### AUTH001
 
@@ -788,6 +789,18 @@ Why it matters: An admin, feature-flag or maintenance endpoint changes state for
 How to fix: Check an admin role or permission in the handler or in middleware on the admin routes.
 
 References: CWE-285, A01:2021
+
+### JAVA001
+
+**Spring controllers with no security configuration** (high, preview)
+
+Preview: New with Java and Kotlin support: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: The project has no Spring Security filter chain, so every controller endpoint without @PreAuthorize, @Secured or @RolesAllowed answers anyone. (A single endpoint left open by an existing configuration is AUTH001.)
+
+How to fix: Add spring-boot-starter-security and a SecurityFilterChain that requires authentication (`.anyRequest().authenticated()`), and open only the public paths with `.requestMatchers(...).permitAll()`.
+
+References: CWE-306, A01:2021
 
 ## Configuration and deployment
 

@@ -41,6 +41,7 @@ class Rule:
     gates_in_preview: bool = False
 
 
+NEW_JVM = "New with Java and Kotlin support: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_089 = "New in 0.8.9: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_088 = "New in 0.8.8: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_087 = "New in 0.8.7: not yet measured on enough held-out findings in the benchmark."
@@ -408,6 +409,13 @@ _R = [
          "it. (Endpoints with no authentication at all are AUTH001.)",
          "Check an admin role or permission in the handler or in middleware on the admin routes.", "CWE-285",
          "A01:2021", preview=True, preview_reason=NEW_IN_087),
+    Rule("JAVA001", "Spring controllers with no security configuration", "auth", "high",
+         "The project has no Spring Security filter chain, so every controller endpoint without @PreAuthorize, "
+         "@Secured or @RolesAllowed answers anyone. (A single endpoint left open by an existing configuration is "
+         "AUTH001.)",
+         "Add spring-boot-starter-security and a SecurityFilterChain that requires authentication "
+         "(`.anyRequest().authenticated()`), and open only the public paths with `.requestMatchers(...).permitAll()`.",
+         "CWE-306", "A01:2021", preview=True, preview_reason=NEW_JVM),
     # ----------------------------------------------------------------- config
     Rule("CFG001", "Container runs as root", "config", "low",
          "If the app is compromised the attacker is root inside the container, which makes escaping and "

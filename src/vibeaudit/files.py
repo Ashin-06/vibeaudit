@@ -45,7 +45,8 @@ TEST_PATH_RE = re.compile(
     re.I,
 )
 # demo code shipped beside a library (flask/examples, express/examples): not the deployed application
-EXAMPLE_PATH_RE = re.compile(r"(^|/)examples?/", re.I)
+# not a Java package: Spring Initializr puts every new app in com.example.demo
+EXAMPLE_PATH_RE = re.compile(r"(^|(?<!com)(?<!org)(?<!net)(?<!io)/)examples?/", re.I)
 # one-off jobs run by a developer (migrations, management commands, seed and setup scripts): a query per loop
 # iteration or an f-string of constant identifiers there is not a request-time N+1 or an injection
 ONE_OFF_PATH_RE = re.compile(

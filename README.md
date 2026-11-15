@@ -20,7 +20,7 @@ nothing, inaccessible forms and frontend calls to API routes that do not exist.
 - Works offline with no API key. The network is used only for package-registry and vulnerability
   lookups (`--offline` turns that off); an LLM is used only if you ask for it.
 - Pure Python, no dependencies on 3.11+ (`tomli` on 3.9 and 3.10). Linux, macOS and Windows.
-- 160 rules in 12 categories, mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
+- 161 rules in 12 categories, mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
 - Terminal output plus JSON, SARIF 2.1.0 (GitHub code scanning), Markdown, HTML, an SVG badge and a fix
   brief you can paste into an AI assistant.
 - Fits into CI (GitHub Action, `--diff`), pre-commit (`--staged`) and coding agents (an MCP server).
@@ -654,6 +654,9 @@ How it reads code:
   calls are not followed. In JavaScript and TypeScript, calls are followed into functions of the same file and
   named imports from project files (3 calls deep); methods of objects and default imports are not.
 - JavaScript and TypeScript are read with a lexer and patterns, not a full parser.
+- Java and Kotlin (in progress): Spring and JAX-RS/Quarkus routes feed the route checks, with @PreAuthorize,
+  @Secured, @RolesAllowed and the Spring Security filter chain counted as authentication (JAVA001 when there
+  is no filter chain). Mappings inherited from annotated interfaces are not followed yet.
 - "Authenticated" means an auth check is visible in the route or its helpers, not that the check is correct.
 - Rate limiting and input validation are detected project-wide, so one limiter anywhere counts.
 - Router prefixes are resolved for FastAPI (`APIRouter(prefix=...)`, `include_router`), Flask blueprints

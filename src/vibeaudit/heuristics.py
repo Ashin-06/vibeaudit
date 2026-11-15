@@ -89,13 +89,15 @@ SERVER_VALIDATION_EVIDENCE = re.compile(
     | \bfrom\s+(?:pydantic|marshmallow|wtforms|flask_wtf|cerberus|voluptuous|jsonschema|rest_framework|django\s+import\s+forms|msgspec|attrs)\b
     | \bimport\s+(?:pydantic|marshmallow|cerberus|voluptuous|jsonschema)\b
     | \bforms\s*\.\s*(?:Form|ModelForm)\b | \bserializers\s*\.\s*\w*Serializer\b
+    | \bimport\s+(?:jakarta|javax)\.validation\b | @\s*(?:Valid|Validated)\b
     """
 )
 CLIENT_VALIDATION = re.compile(r"""(?:from|require\s*\()\s*['"](?:zod|yup|valibot|react-hook-form|joi|vee-validate)['"]""")
 
 MUTATION_EVIDENCE = re.compile(
     r"(?i)\.\s*(?:insert|insertOne|insertMany|update|updateOne|updateMany|upsert|delete|deleteOne|deleteMany|remove"
-    r"|create|createMany|destroy|save|rpc|bulkCreate|findOneAndUpdate|findByIdAndUpdate|findByIdAndDelete)\s*\("
+    r"|create|createMany|destroy|save|rpc|bulkCreate|findOneAndUpdate|findByIdAndUpdate|findByIdAndDelete"
+    r"|saveAll|saveAndFlush|saveAllAndFlush|deleteById|deleteAll|deleteAllById|deleteAllInBatch|persist|persistAndFlush)\s*\("  # JPA
     r"|\b(?:INSERT\s+INTO|UPDATE\s+\w+\s+SET|DELETE\s+FROM)\b"
 )
 
