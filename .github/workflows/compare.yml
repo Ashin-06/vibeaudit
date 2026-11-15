@@ -23,7 +23,7 @@ jobs:
       - name: Install vibeaudit, Semgrep and Bandit (pinned)
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -e . "semgrep==1.100.0" "bandit==1.8.0"
+          python -m pip install -e . "semgrep==1.100.0" "bandit==1.8.0" "setuptools<81"  # semgrep 1.100 imports pkg_resources
       - name: Fetch the pinned corpus
         run: python tools/benchmark.py fetch
       - name: Compare
