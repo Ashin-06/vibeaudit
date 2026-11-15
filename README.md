@@ -654,10 +654,11 @@ How it reads code:
 - JavaScript and TypeScript are read with a lexer and patterns, not a full parser.
 - "Authenticated" means an auth check is visible in the route or its helpers, not that the check is correct.
 - Rate limiting and input validation are detected project-wide, so one limiter anywhere counts.
-- Router prefixes (FastAPI `include_router`, Express `app.use("/api", router)`, Flask blueprints, Django
-  URLconfs) are not resolved yet, so the frontend-backend contract rules only run when routes are
-  file-based (Next.js, SvelteKit) or the project has no prefixes. Django URLconf views, NestJS and Remix
-  routes are only partly covered.
+- Router prefixes are resolved for FastAPI (`APIRouter(prefix=...)`, `include_router`), Flask blueprints
+  (`url_prefix`, `register_blueprint`) and Express (`app.use("/api", router)`), through imports and nested
+  routers, when each prefix is a string literal and each router is mounted once. The frontend-backend contract
+  rules run when every route's full path is known (or the project has no prefixes). Django URLconfs, NestJS and
+  Remix routes are only partly covered.
 - UI rules cover React, Next.js and HTML templates; Vue, Svelte and Astro files get only the alt-text and
   placeholder checks.
 - The per-file time budget is checked between regex matches and statements; a single regex step cannot be

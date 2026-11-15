@@ -11,7 +11,7 @@ def test_routes_json_for_the_express_fixture(tmp_path, capsys):
     rows = {(tuple(r["methods"]), r["path"]): r for r in json.loads(capsys.readouterr().out)}
     notes = rows[(("POST",), "/api/notes")]
     assert notes["authenticated"] is False and notes["writes_data"] is True and notes["file"] == "server.js"
-    assert rows[(("DELETE",), "/users/:id")]["file"] == "routes/admin.js"
+    assert rows[(("DELETE",), "/admin/users/:id")]["file"] == "routes/admin.js"  # app.use("/admin", adminRouter)
     assert rows[(("POST",), "/api/login")]["reads_body"] is True
 
 

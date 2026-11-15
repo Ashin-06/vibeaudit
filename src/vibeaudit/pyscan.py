@@ -21,7 +21,7 @@ from . import heuristics as H
 from .files import Project, SourceFile, production_overrides
 from .guard import GUARD
 from .lexer import py_views
-from .model import Finding, Route
+from .model import Finding, Route, join_path
 
 Emit = Callable[[Finding], None]
 # a database read returns stored rows, not the request data that was passed as a query parameter
@@ -361,6 +361,7 @@ class PyScanner:
             self.sf = sf
             GUARD.run(sf.rel, "Python checks", self._check_file, sf, tree)
         GUARD.run("<project>", "Python calls", self.follow_calls)
+        GUARD.run("<project>", "Python router prefixes", self.resolve_prefixes)
         return self.routes
 
     def _parse(self, sf: SourceFile) -> None:
@@ -453,6 +454,88 @@ class PyScanner:
             parts = parts[:-1]
         for i in range(len(parts)):
             self.modules.setdefault(".".join(parts[i:]), sf.rel)
+
+    def resolve_prefixes(self) -> None:
+        """FastAPI `APIRouter(prefix=...)` and `include_router(r, prefix=...)`, Flask `Blueprint(url_prefix=...)` and
+        `register_blueprint(bp, url_prefix=...)`, through imports and nested routers. A route gets its full path
+        and `prefix_resolved`; when a prefix is not a string literal, or a router is mounted twice or not at all,
+        the route keeps its own path and stays unresolved."""
+        own: Dict[Tuple[str, str], Tuple[Optional[str], bool]] = {}  # router -> (own prefix, is a Flask blueprint)
+        mounts: Dict[Tuple[str, str], List[Tuple[Optional[Tuple[str, str]], Optional[str]]]] = {}
+        apps: Set[Tuple[str, str]] = set()
+        for sf, tree in self.trees:
+            for node in ast.walk(tree):
+                if isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name) \
+                        and isinstance(node.value, ast.Call):
+                    kind = last_name(node.value.func)
+                    kws = {k.arg: k.value for k in node.value.keywords if k.arg}
+                    var = node.targets[0].id
+                    if kind == "APIRouter":
+                        own[(sf.rel, var)] = (const_str(kws["prefix"]) if "prefix" in kws else "", False)
+                    elif kind == "Blueprint":
+                        own[(sf.rel, var)] = (const_str(kws["url_prefix"]) if "url_prefix" in kws else "", True)
+                    elif kind in ("FastAPI", "Flask", "APIFlask", "Quart"):
+                        apps.add((sf.rel, var))
+        for sf, tree in self.trees:
+            for node in ast.walk(tree):
+                if not (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+                        and node.func.attr in ("include_router", "register_blueprint") and node.args):
+                    continue
+                kws = {k.arg: k.value for k in node.keywords if k.arg}
+                key = "prefix" if node.func.attr == "include_router" else "url_prefix"
+                prefix = const_str(kws[key]) if key in kws else ""
+                child = self._router_ref(sf.rel, node.args[0], own)
+                parent_obj = node.func.value.id if isinstance(node.func.value, ast.Name) else None
+                parent = (sf.rel, parent_obj) if parent_obj and (sf.rel, parent_obj) in own else None
+                if child is not None:
+                    mounts.setdefault(child, []).append((parent, prefix))
+
+        def full(router: Tuple[str, str], depth: int = 0) -> Optional[str]:
+            prefix, blueprint = own[router]
+            found = mounts.get(router, [])
+            if prefix is None or len(found) != 1 or depth > 8:
+                return None
+            parent, mount = found[0]
+            if mount is None:
+                return None
+            base = "" if parent is None else full(parent, depth + 1)
+            if base is None:
+                return None
+            if blueprint:  # register_blueprint(url_prefix=...) replaces the blueprint's own url_prefix
+                return join_path(base, mount or prefix)
+            return join_path(join_path(base, mount), prefix)
+
+        for r in self.routes:
+            m = re.match(r"\s*@\s*([A-Za-z_]\w*)\s*\.", r.body)
+            obj = m.group(1) if m else None
+            if obj is not None and (r.file, obj) in own:
+                prefix = full((r.file, obj))
+                if prefix is not None:
+                    r.path = join_path(prefix, r.path)
+                r.prefix_resolved = prefix is not None  # type: ignore[attr-defined]
+            else:
+                r.prefix_resolved = r.framework != "drf"  # type: ignore[attr-defined]  # on the app itself
+
+    def _router_ref(self, rel: str, node: ast.AST, own) -> Optional[Tuple[str, str]]:
+        """The (file, variable) of a router passed to include_router / register_blueprint."""
+        if isinstance(node, ast.Name):
+            if (rel, node.id) in own:
+                return rel, node.id
+            imp = self.imports.get(rel, {}).get(node.id)
+            if imp and imp[1]:
+                target = self._module_file(rel, imp[0], imp[2])
+                if target and (target, imp[1]) in own:
+                    return target, imp[1]
+            return None
+        if isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name):  # users.router
+            imp = self.imports.get(rel, {}).get(node.value.id)
+            if imp is None:
+                return None
+            module, name, level = imp
+            target = self._module_file(rel, (module + "." + name if module else name) if name else module, level)
+            if target and (target, node.attr) in own:
+                return target, node.attr
+        return None
 
     def _module_file(self, caller: str, module: str, level: int) -> Optional[str]:
         if level:
