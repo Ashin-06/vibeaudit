@@ -41,7 +41,13 @@ def semgrep(root: Path) -> List[dict]:
     try:
         data = json.loads(out.stdout or "{}")
     except ValueError:
-        return []
+        data = {}
+    if out.returncode not in (0, 1) or "results" not in data:
+        # a scanner that cannot run must fail the comparison, not count as "found nothing"
+        raise RuntimeError(f"semgrep exited {out.returncode} on {root.name}: {(out.stderr or '')[-1500:]}")
+    errs = data.get("errors") or []
+    if errs:
+        print(f"  semgrep: {len(errs)} errors on {root.name}, first: {str(errs[0])[:300]}", flush=True)
     return [{"file": _rel(r["path"], root), "line": r["start"]["line"], "rule": r["check_id"].rsplit(".", 1)[-1],
              "message": (r.get("extra") or {}).get("message", "")[:200]} for r in data.get("results", [])]
 
