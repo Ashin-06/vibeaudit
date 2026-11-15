@@ -4,7 +4,18 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.9.2] - 2026-11-16
+
+Cross-function taint for JavaScript and TypeScript, and two rules back in preview after a held-out measurement.
+
+### Added
+
+- JavaScript and TypeScript taint is followed into functions of the same file and named imports from project files
+  (3 calls deep). A redirect to a URL an API client returned (such as a Stripe checkout session) is no longer
+  reported as an open redirect.
+- Python taint is followed into the functions a route, agent tool or model call passes data to (same file, `self`
+  methods and imported project modules, up to 3 calls deep), and findings say which call it came through. (This
+  shipped in the 0.9.1 code; its note was missing from the 0.9.1 entry.)
 
 ### Changed
 

@@ -448,7 +448,7 @@
   },
   "AUTH001": {
    "title": "State-changing endpoint without authentication",
-   "preview": false,
+   "preview": true,
    "tp": 41,
    "fp": 3,
    "needs_review": 0,
@@ -5172,7 +5172,7 @@
   },
   "UI014": {
    "title": "Image without width and height",
-   "preview": false,
+   "preview": true,
    "tp": 16,
    "fp": 2,
    "needs_review": 0,
