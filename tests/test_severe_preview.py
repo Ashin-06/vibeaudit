@@ -8,6 +8,7 @@ from vibeaudit.cli import main
 from vibeaudit.rules import RULES
 
 SEVERE = ("BE002", "BE003", "BE004", "BE008", "FE001")
+GATING = SEVERE + ("AUTH001",)  # AUTH001 went back to preview in 0.9.2 and keeps gating
 # one file per rule, each with request data reaching the sink
 SAMPLES = {
     "BE002": ("app.py", "import os\nfrom flask import request\n@app.get('/ping')\ndef ping():\n"
@@ -26,8 +27,8 @@ def _scan(tmp_path, capsys, *args, level="high"):
 
 
 def test_the_five_severe_rules_are_the_ones_marked():
-    assert sorted(r for r, meta in RULES.items() if meta.gates_in_preview) == sorted(SEVERE)
-    assert all(RULES[r].preview for r in SEVERE)
+    assert sorted(r for r, meta in RULES.items() if meta.gates_in_preview) == sorted(GATING)
+    assert all(RULES[r].preview for r in GATING)
 
 
 @pytest.mark.parametrize("rule", SEVERE)

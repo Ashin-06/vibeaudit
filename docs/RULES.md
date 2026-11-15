@@ -5,7 +5,7 @@ Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do n
 
 161 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-56 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+58 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -587,7 +587,7 @@ References: CWE-200, A02:2021
 
 | ID | Severity | Status | Rule |
 | --- | --- | --- | --- |
-| [AUTH001](#auth001) | high | stable | State-changing endpoint without authentication |
+| [AUTH001](#auth001) | high | preview, gates | State-changing endpoint without authentication |
 | [AUTH002](#auth002) | high | stable | Admin endpoint without a role check |
 | [AUTH003](#auth003) | medium | stable | Possible insecure direct object reference (IDOR) |
 | [AUTH004](#auth004) | high | stable | Webhook without signature verification |
@@ -607,7 +607,9 @@ References: CWE-200, A02:2021
 
 ### AUTH001
 
-**State-changing endpoint without authentication** (high)
+**State-changing endpoint without authentication** (high, preview, gates)
+
+Preview: Held-out 14 of 16 (87.5%) after a fresh held-out repository: two server actions guarded by assertDevelopment() were reported. Still gates, as a severe security rule.
 
 Why it matters: This endpoint creates, changes or deletes data but no authentication check was found, so anyone on the internet can call it directly, whatever the UI shows.
 
@@ -1723,7 +1725,7 @@ How to fix: Add GET /health (or /healthz) that returns 200 when the app and its 
 | [UI011](#ui011) | low | stable | No error page |
 | [UI012](#ui012) | low | stable | Missing page metadata or viewport |
 | [UI013](#ui013) | medium | stable | Link to a page that does not exist |
-| [UI014](#ui014) | low | stable | Image without width and height |
+| [UI014](#ui014) | low | preview | Image without width and height |
 | [UI015](#ui015) | low | preview | Form error not announced to screen readers |
 | [UI016](#ui016) | medium | preview | Focus outline removed |
 | [UI017](#ui017) | medium | preview | Link to an asset that does not exist |
@@ -1844,7 +1846,9 @@ How to fix: Fix the path, or create the page.
 
 ### UI014
 
-**Image without width and height** (low)
+**Image without width and height** (low, preview)
+
+Preview: Held-out 6 of 7 (85.7%) after a fresh held-out repository: an <img> sized by CSS classes was reported.
 
 Why it matters: The browser cannot reserve space for an image without dimensions, so the content below jumps when it loads (cumulative layout shift, a Core Web Vital).
 

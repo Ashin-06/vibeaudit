@@ -327,7 +327,9 @@ _R = [
          "on the internet can call it directly, whatever the UI shows.",
          "Require a verified session or token in the handler (or in middleware that covers it). If the "
          "endpoint is meant to be public, add rate limiting and suppress the finding with a comment.",
-         "CWE-306", "A01:2021"),
+         "CWE-306", "A01:2021", preview=True, gates_in_preview=True,
+         preview_reason="Held-out 14 of 16 (87.5%) after a fresh held-out repository: two server actions guarded by "
+                        "assertDevelopment() were reported. Still gates, as a severe security rule."),
     Rule("AUTH002", "Admin endpoint without a role check", "auth", "high",
          "An /admin route that only checks that a user is logged in (or nothing at all) lets any user act "
          "as an administrator.",
@@ -854,7 +856,9 @@ _R = [
          "The browser cannot reserve space for an image without dimensions, so the content below jumps when "
          "it loads (cumulative layout shift, a Core Web Vital).",
          "Set `width` and `height` (the intrinsic size is enough; CSS can still scale it), or give the image "
-         "a fixed box with CSS such as `aspect-ratio`."),
+         "a fixed box with CSS such as `aspect-ratio`.", preview=True,
+         preview_reason="Held-out 6 of 7 (85.7%) after a fresh held-out repository: an <img> sized by CSS classes "
+                        "was reported."),
     Rule("UI015", "Form error not announced to screen readers", "ui", "low",
          "An error message that only appears next to the field is invisible to a screen reader user, who "
          "hears nothing when the form is rejected.",

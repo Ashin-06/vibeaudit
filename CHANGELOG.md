@@ -4,6 +4,17 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- Two rules go back to preview after a fresh held-out repository lowered their held-out precision below 90%
+  ([STABILITY.md](STABILITY.md#demotions)):
+  - UI014 (Image without width and height): 6 of 7 (85.7%); the false positive is an `<img>` sized by CSS classes.
+  - AUTH001 (State-changing endpoint without authentication): 14 of 16 (87.5%); two server actions are guarded by
+    `assertDevelopment()`. It keeps gating (`gates_in_preview`), like the other severe security rules: a missed
+    unauthenticated write costs more than a false alarm.
+
 ## [0.9.1] - 2026-11-15
 
 Credibility: measured recall and F1 next to precision, an honest list of misses, a comparison with Semgrep and
