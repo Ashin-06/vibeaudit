@@ -111,7 +111,7 @@ Real vulnerabilities are rare in the original corpus, so 13 repositories were ad
 - The held-out four were chosen before any of the new repositories was scanned: every third one in
   alphabetical order.
 
-[RESULTS.md](RESULTS.md) shows both precisions for every rule. First held-out measurement (0.7.1 rules):
+[RESULTS.md](RESULTS.md) shows both precisions for every rule (current numbers). For history, the first held-out measurement (0.7.1 rules):
 146 findings, 131 true and 15 false, 89.7%, against 88.8% on the tuned split.
 
 ## How findings are labelled

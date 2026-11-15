@@ -4,6 +4,33 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.9.1] - 2026-11-15
+
+Credibility: measured recall and F1 next to precision, an honest list of misses, a comparison with Semgrep and
+Bandit, and the means for others to check the labels.
+
+### Added
+
+- docs/BENCHMARK.md (`python tools/benchmark.py report`): precision, recall and F1 per category and per framework.
+  Recall comes from 17 known vulnerable locations in the repositories pinned before a published advisory
+  (benchmark/recall.json) and from the seeded cases; every advisory location vibeaudit misses is listed with the
+  reason. Advisory recall is 35% (6 of 17).
+- A head-to-head with Semgrep (`--config p/default`, no login) and Bandit on the same pinned corpus
+  (`tools/compare.py`, run by `.github/workflows/compare.yml` on Linux, manual and weekly): advisory recall,
+  finding counts, overlap, and precision estimated from a labelled random sample of each tool's findings.
+- A sample report: `.github/workflows/pages.yml` publishes the HTML report and the six compliance reports for the
+  deliberately vulnerable Next.js + Supabase fixture to GitHub Pages.
+- A second-labeller kit (`tools/labelling_kit.py`, docs/LABELLING.md): a blind stratified sample of 150 labelled
+  findings, labelling instructions, and Cohen's kappa against the maintainers' labels.
+- `.github/workflows/publish.yml`: trusted publishing of the attested wheel and sdist to PyPI, off until the
+  one-time setup in docs/PUBLISHING.md is done.
+
+### Changed
+
+- The README's accuracy numbers are generated from the benchmark results by `tools/benchmark.py baseline`, and a
+  test fails when they differ. They now say which numbers are stable rules only and which include preview rules
+  (the held-out precision of stable rules is 95.7%; the README said 94%).
+
 ## [0.9.0] - 2026-11-13
 
 Phases 0 to 4 of the roadmap are complete: a measured benchmark, the new checks, `vibeaudit fix`, the

@@ -1,0 +1,1505 @@
+{
+ "seed": 1509,
+ "items": [
+  {
+   "id": "S001",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "flexible-graphrag/ingest/update_vector.py",
+   "line": 165,
+   "rule": "QA003",
+   "title": "Exception silently swallowed",
+   "why": "An empty except/catch hides failures, including failed auth or payment calls, and makes incidents very hard to debug."
+  },
+  {
+   "id": "S002",
+   "repo": "https://github.com/mckaywrigley/chatbot-ui",
+   "commit": "81328b61d2a4ab597a7a057be70e785cf756d9f8",
+   "file": "lib/chat-setting-limits.ts",
+   "line": 24,
+   "rule": "LLM012",
+   "title": "Retired or deprecated model hardcoded",
+   "why": "The provider has retired (or announced the retirement of) this model id, so requests fail or will fail without warning."
+  },
+  {
+   "id": "S003",
+   "repo": "https://github.com/vercel/ai-chatbot",
+   "commit": "a8989b522fa3672a2ae52f053105e40993b36ca1",
+   "file": "artifacts/text/server.ts",
+   "line": 35,
+   "rule": "LLM003",
+   "title": "LLM call without an output token limit",
+   "why": "Without max tokens a single request (or a prompt-injected loop) can generate very long, expensive responses."
+  },
+  {
+   "id": "S004",
+   "repo": "https://github.com/django/djangoproject.com",
+   "commit": "83a027bb6aac5bb36b9ef48dad8cb4ff45a2e84f",
+   "file": "releases/tests.py",
+   "line": 461,
+   "rule": "DATA001",
+   "title": "Database query inside a loop (N+1)",
+   "why": "One query per item turns a page with 100 rows into 101 round trips: slow pages, timeouts and database load that grows with your data."
+  },
+  {
+   "id": "S005",
+   "repo": "https://github.com/adeyosemanputra/pygoat",
+   "commit": "2aa4cc14f251e4a780e94e200aed6b36a5b15c21",
+   "file": "dockerized_labs/broken_access_lab/templates/base.html",
+   "line": 25,
+   "rule": "FE001",
+   "title": "Cross-site scripting through a raw HTML sink",
+   "why": "Inserting unsanitized data as HTML (innerHTML, dangerouslySetInnerHTML, v-html, {@html}, |safe) lets an attacker run JavaScript in other users' browsers and steal their sessions."
+  },
+  {
+   "id": "S006",
+   "repo": "https://github.com/bridgecrewio/terragoat",
+   "commit": "729f8da62c6a85ce4af5ad3d123de97776d954c4",
+   "file": "terraform/aws/ec2.tf",
+   "line": 90,
+   "rule": "CFG015",
+   "title": "Admin or database port open to the internet",
+   "why": "A security group allowing 0.0.0.0/0 on SSH, RDP or a database port gets scanned and brute-forced within minutes of going up."
+  },
+  {
+   "id": "S007",
+   "repo": "https://github.com/wandb/openui",
+   "commit": "42d7ab4ab6650433486dfb12eb3783c393a3e475",
+   "file": "frontend/src/lib/webauthn.ts",
+   "line": 70,
+   "rule": "FE005",
+   "title": "Auth token stored in localStorage",
+   "why": "Any XSS bug can read localStorage and steal the token, so one script injection becomes account takeover."
+  },
+  {
+   "id": "S008",
+   "repo": "https://github.com/walinejs/waline",
+   "commit": "e9d4f6cd5d567d95349c3a28d0dcce99c1866a23",
+   "file": ".github/workflows/release-server.yml",
+   "line": 73,
+   "rule": "CFG010",
+   "title": "Third-party GitHub Action not pinned to a commit",
+   "why": "A tag like `@v3` can be moved by whoever controls the action's repository; if it is compromised, your workflow runs their code with your secrets and token (as in the tj-actions/changed-files attack)."
+  },
+  {
+   "id": "S009",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/ladybug_adapter.py",
+   "line": 189,
+   "rule": "BE001",
+   "title": "SQL injection",
+   "why": "Building SQL with string formatting lets an attacker change the query: read other users' data, bypass login or drop tables."
+  },
+  {
+   "id": "S010",
+   "repo": "https://github.com/piyushraj04/helpdesk-flow-verse",
+   "commit": "c08ede8e4213ad37e3ad319fe12d871dbfd908c9",
+   "file": "src/pages/AddAgent.tsx",
+   "line": 121,
+   "rule": "SEC010",
+   "title": "Secret written to logs",
+   "why": "Logs are copied to hosting dashboards, log services and screenshots. Printing a key leaks it there."
+  },
+  {
+   "id": "S011",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "flexible-graphrag/cocoindex_integration/pipeline/native_apps.py",
+   "line": 123,
+   "rule": "QA003",
+   "title": "Exception silently swallowed",
+   "why": "An empty except/catch hides failures, including failed auth or payment calls, and makes incidents very hard to debug."
+  },
+  {
+   "id": "S012",
+   "repo": "https://github.com/mar10/wsgidav",
+   "commit": "67abdbd7d622fcf29aefdfbd0c9910de9e0c8b3d",
+   "file": "wsgidav/samples/mysql_dav_provider.py",
+   "line": 547,
+   "rule": "BE001",
+   "title": "SQL injection",
+   "why": "Building SQL with string formatting lets an attacker change the query: read other users' data, bypass login or drop tables."
+  },
+  {
+   "id": "S013",
+   "repo": "https://github.com/HKUDS/Vibe-Trading",
+   "commit": "fd767f5c29c72cffe8e3f89c7ff006cb3041397f",
+   "file": "agent/api_server.py",
+   "line": 590,
+   "rule": "DATA007",
+   "title": "Environment variable missing from the example env file",
+   "why": "The code reads a variable that .env.example does not document, so the next deploy or teammate setup crashes or silently runs with a missing setting."
+  },
+  {
+   "id": "S014",
+   "repo": "https://github.com/walinejs/waline",
+   "commit": "e9d4f6cd5d567d95349c3a28d0dcce99c1866a23",
+   "file": "packages/admin/src/pages/manage-comments/index.jsx",
+   "line": 337,
+   "rule": "UI003",
+   "title": "Form field without a label",
+   "why": "Without a label, screen readers announce only \"edit text\", and placeholder text disappears as soon as the user types."
+  },
+  {
+   "id": "S015",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "flexible-graphrag/langchain/graph/retrievers/chains/_sparql.py",
+   "line": 451,
+   "rule": "LLM006",
+   "title": "Dangerous agent or framework option enabled",
+   "why": "This option gives the model arbitrary code, shell or network execution (for example allow_dangerous_code=True or a Python REPL tool)."
+  },
+  {
+   "id": "S016",
+   "repo": "https://github.com/we45/Vulnerable-Flask-App",
+   "commit": "b6a4f97afd466e83e1f60781494252dec1c37039",
+   "file": "app/app.py",
+   "line": 291,
+   "rule": "AUTH001",
+   "title": "State-changing endpoint without authentication",
+   "why": "This endpoint creates, changes or deletes data but no authentication check was found, so anyone on the internet can call it directly, whatever the UI shows."
+  },
+  {
+   "id": "S017",
+   "repo": "https://github.com/amo-tech-ai/prompt-sculptor-49",
+   "commit": "d60d5e9e66c6aefc713f67dec823d247a8585411",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 348,
+   "rule": "DATA012",
+   "title": "Foreign key without an index",
+   "why": "Postgres does not index foreign key columns. Every delete or key update in the referenced table, and every join on the key, scans the referencing table; with ON DELETE CASCADE it also locks it."
+  },
+  {
+   "id": "S018",
+   "repo": "https://github.com/wagtail/bakerydemo",
+   "commit": "890285b95dcf980215ab9e9942d64ed2b47c48c3",
+   "file": "bakerydemo/base/management/commands/create_random_data.py",
+   "line": 139,
+   "rule": "DATA001",
+   "title": "Database query inside a loop (N+1)",
+   "why": "One query per item turns a page with 100 rows into 101 round trips: slow pages, timeouts and database load that grows with your data."
+  },
+  {
+   "id": "S019",
+   "repo": "https://github.com/miguelgrinberg/microblog",
+   "commit": "a975ef64864354867c88e0ed3a17ba7d17dca752",
+   "file": "Dockerfile",
+   "line": 1,
+   "rule": "CFG001",
+   "title": "Container runs as root",
+   "why": "If the app is compromised the attacker is root inside the container, which makes escaping and tampering easier."
+  },
+  {
+   "id": "S020",
+   "repo": "https://github.com/BrainStation-23/learnathon-leaderboard",
+   "commit": "87ee5a2d7c2290ace3b14dedea25a4f4406b7cab",
+   "file": "supabase/functions/data-sync/index.ts",
+   "line": 9,
+   "rule": "BE012",
+   "title": "Insecure CORS policy",
+   "why": "Allowing any or a reflected origin together with credentials lets any website call your API as the logged-in user. (An open origin without credentials is not reported: no cookies are sent.)"
+  },
+  {
+   "id": "S021",
+   "repo": "https://github.com/josephkamau32/LinguaLearn",
+   "commit": "f1cc2e2ea82ec7e7504da0d931503112e80ec25e",
+   "file": "src/contexts/AuthContext.tsx",
+   "line": 147,
+   "rule": "FE005",
+   "title": "Auth token stored in localStorage",
+   "why": "Any XSS bug can read localStorage and steal the token, so one script injection becomes account takeover."
+  },
+  {
+   "id": "S022",
+   "repo": "https://github.com/adeyosemanputra/pygoat",
+   "commit": "2aa4cc14f251e4a780e94e200aed6b36a5b15c21",
+   "file": "challenge/labs/business_logic_lab/Dockerfile",
+   "line": 1,
+   "rule": "CFG001",
+   "title": "Container runs as root",
+   "why": "If the app is compromised the attacker is root inside the container, which makes escaping and tampering easier."
+  },
+  {
+   "id": "S023",
+   "repo": "https://github.com/josephkamau32/LinguaLearn",
+   "commit": "f1cc2e2ea82ec7e7504da0d931503112e80ec25e",
+   "file": "ml-service/app.py",
+   "line": 668,
+   "rule": "DATA006",
+   "title": "Timestamp without time zone",
+   "why": "Naive datetimes and `timestamp without time zone` columns silently mix local and UTC times, which breaks expiry checks, schedules and reports across regions and daylight saving."
+  },
+  {
+   "id": "S024",
+   "repo": "https://github.com/gothinkster/node-express-realworld-example-app",
+   "commit": "30b68e1e881462b2f4164ea09ab4c4f5699c7b0b",
+   "file": "src/app/routes/article/article.controller.ts",
+   "line": 230,
+   "rule": "AUTH003",
+   "title": "Possible insecure direct object reference (IDOR)",
+   "why": "The handler changes a record by the id in the URL but never compares it with the current user, so any logged-in user can change anyone's data by changing the id."
+  },
+  {
+   "id": "S025",
+   "repo": "https://github.com/alerta/alerta",
+   "commit": "cc0993d0b245dbeaa19e8ec30c9992ec06fa293e",
+   "file": "alerta/webhooks/pagerduty.py",
+   "line": 65,
+   "rule": "AUTH004",
+   "title": "Webhook without signature verification",
+   "why": "Without verifying the provider's signature anyone can post fake events, for example marking an order as paid."
+  },
+  {
+   "id": "S026",
+   "repo": "https://github.com/django/djangoproject.com",
+   "commit": "83a027bb6aac5bb36b9ef48dad8cb4ff45a2e84f",
+   "file": "releases/tests.py",
+   "line": 338,
+   "rule": "DATA001",
+   "title": "Database query inside a loop (N+1)",
+   "why": "One query per item turns a page with 100 rows into 101 round trips: slow pages, timeouts and database load that grows with your data."
+  },
+  {
+   "id": "S027",
+   "repo": "https://github.com/django/djangoproject.com",
+   "commit": "83a027bb6aac5bb36b9ef48dad8cb4ff45a2e84f",
+   "file": ".github/workflows/docker-test-build.yml",
+   "line": 39,
+   "rule": "CFG010",
+   "title": "Third-party GitHub Action not pinned to a commit",
+   "why": "A tag like `@v3` can be moved by whoever controls the action's repository; if it is compromised, your workflow runs their code with your secrets and token (as in the tj-actions/changed-files attack)."
+  },
+  {
+   "id": "S028",
+   "repo": "https://github.com/josephkamau32/LinguaLearn",
+   "commit": "f1cc2e2ea82ec7e7504da0d931503112e80ec25e",
+   "file": "ml-service/main.py",
+   "line": 27,
+   "rule": "QA007",
+   "title": "Package imported but not declared as a dependency",
+   "why": "The package is installed on the author's machine but missing from requirements.txt, pyproject.toml or package.json, so a clean install (CI, Docker, production) fails with an import error."
+  },
+  {
+   "id": "S029",
+   "repo": "https://github.com/3h0ll7/scriptforge-ai",
+   "commit": "07f5342b53db706d7afc0ae85b1e29a4145bd5dc",
+   "file": "supabase/migrations/20260321003030_3a65b9e5-8eb0-4c5b-994d-2d459d004bb4.sql",
+   "line": 47,
+   "rule": "DATA012",
+   "title": "Foreign key without an index",
+   "why": "Postgres does not index foreign key columns. Every delete or key update in the referenced table, and every join on the key, scans the referencing table; with ON DELETE CASCADE it also locks it."
+  },
+  {
+   "id": "S030",
+   "repo": "https://github.com/amo-tech-ai/prompt-sculptor-49",
+   "commit": "d60d5e9e66c6aefc713f67dec823d247a8585411",
+   "file": "scripts/seed-additional-tables.js",
+   "line": 4,
+   "rule": "SEC001",
+   "title": "Hardcoded API key or access token",
+   "why": "A real credential is committed in source. Anyone with read access to the repo, a fork, a build log or the shipped bundle can use it, and bots scrape public repos for keys within minutes."
+  },
+  {
+   "id": "S031",
+   "repo": "https://github.com/wagtail/bakerydemo",
+   "commit": "890285b95dcf980215ab9e9942d64ed2b47c48c3",
+   "file": "Dockerfile",
+   "line": 4,
+   "rule": "CFG001",
+   "title": "Container runs as root",
+   "why": "If the app is compromised the attacker is root inside the container, which makes escaping and tampering easier."
+  },
+  {
+   "id": "S032",
+   "repo": "https://github.com/django/djangoproject.com",
+   "commit": "83a027bb6aac5bb36b9ef48dad8cb4ff45a2e84f",
+   "file": "releases/tests.py",
+   "line": 389,
+   "rule": "DATA001",
+   "title": "Database query inside a loop (N+1)",
+   "why": "One query per item turns a page with 100 rows into 101 round trips: slow pages, timeouts and database load that grows with your data."
+  },
+  {
+   "id": "S033",
+   "repo": "https://github.com/adeyosemanputra/pygoat",
+   "commit": "2aa4cc14f251e4a780e94e200aed6b36a5b15c21",
+   "file": "dockerized_labs/open_source_library_attack_lab/Dockerfile",
+   "line": 1,
+   "rule": "CFG001",
+   "title": "Container runs as root",
+   "why": "If the app is compromised the attacker is root inside the container, which makes escaping and tampering easier."
+  },
+  {
+   "id": "S034",
+   "repo": "https://github.com/adeyosemanputra/pygoat",
+   "commit": "2aa4cc14f251e4a780e94e200aed6b36a5b15c21",
+   "file": "dockerized_labs/package_injection_lab/Dockerfile",
+   "line": 1,
+   "rule": "CFG001",
+   "title": "Container runs as root",
+   "why": "If the app is compromised the attacker is root inside the container, which makes escaping and tampering easier."
+  },
+  {
+   "id": "S035",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "flexible-graphrag-ui/frontend-angular/src/app/components/processing-tab/processing-tab.ts",
+   "line": 486,
+   "rule": "FE007",
+   "title": "Hardcoded localhost URL in frontend code",
+   "why": "A localhost API URL works on the developer's machine and silently breaks (or calls the visitor's own machine) in production."
+  },
+  {
+   "id": "S036",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "scripts/cleanup.py",
+   "line": 945,
+   "rule": "QA003",
+   "title": "Exception silently swallowed",
+   "why": "An empty except/catch hides failures, including failed auth or payment calls, and makes incidents very hard to debug."
+  },
+  {
+   "id": "S037",
+   "repo": "https://github.com/amo-tech-ai/prompt-sculptor-49",
+   "commit": "d60d5e9e66c6aefc713f67dec823d247a8585411",
+   "file": "supabase/amo-ai-agency-schema.sql",
+   "line": 499,
+   "rule": "AUTH005",
+   "title": "Supabase table without Row Level Security",
+   "why": "With RLS off, the public anon key (which ships in every Supabase frontend) can read and write the entire table."
+  },
+  {
+   "id": "S038",
+   "repo": "https://github.com/we45/Vulnerable-Flask-App",
+   "commit": "b6a4f97afd466e83e1f60781494252dec1c37039",
+   "file": "app/static/loader.js",
+   "line": 153,
+   "rule": "FE001",
+   "title": "Cross-site scripting through a raw HTML sink",
+   "why": "Inserting unsanitized data as HTML (innerHTML, dangerouslySetInnerHTML, v-html, {@html}, |safe) lets an attacker run JavaScript in other users' browsers and steal their sessions."
+  },
+  {
+   "id": "S039",
+   "repo": "https://github.com/openai/openai-assistants-quickstart",
+   "commit": "06fc2d444a5d41b574082080f4c7b2e48156b84f",
+   "file": "app/components/file-viewer.tsx",
+   "line": 51,
+   "rule": "API001",
+   "title": "Frontend calls an API path that no route handles",
+   "why": "The browser code requests a path that no backend route in this project serves, so the request always fails with 404: often a renamed route or a route the model forgot to write."
+  },
+  {
+   "id": "S040",
+   "repo": "https://github.com/wagtail/bakerydemo",
+   "commit": "890285b95dcf980215ab9e9942d64ed2b47c48c3",
+   "file": "bakerydemo/settings/base.py",
+   "line": 28,
+   "rule": "BE011",
+   "title": "Debug mode enabled",
+   "why": "Debug mode shows stack traces, settings and (in Flask/Werkzeug) an interactive console that gives remote code execution."
+  },
+  {
+   "id": "S041",
+   "repo": "https://github.com/thefixer3x/sync-plan-flow",
+   "commit": "9bbf2bf4b86d9a193d3ac37a09f7be7b3a4db0e1",
+   "file": "supabase/functions/_shared/github.ts",
+   "line": 2,
+   "rule": "QA006",
+   "title": "Import of a file or name that does not exist",
+   "why": "The code imports a local module, file or function that is not in the project. Assistants invent helper names that sound right; the app crashes on start-up or when that code path runs."
+  },
+  {
+   "id": "S042",
+   "repo": "https://github.com/thefixer3x/sync-plan-flow",
+   "commit": "9bbf2bf4b86d9a193d3ac37a09f7be7b3a4db0e1",
+   "file": "supabase/migrations/20260221000000_create_spf_schema.sql",
+   "line": 211,
+   "rule": "AUTH006",
+   "title": "Permissive Supabase policy",
+   "why": "A policy with `using (true)` or `with check (true)` for writes lets every user modify every row."
+  },
+  {
+   "id": "S043",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "flexible-graphrag-ui/frontend-angular/src/env-config.ts",
+   "line": 26,
+   "rule": "FE007",
+   "title": "Hardcoded localhost URL in frontend code",
+   "why": "A localhost API URL works on the developer's machine and silently breaks (or calls the visitor's own machine) in production."
+  },
+  {
+   "id": "S044",
+   "repo": "https://github.com/pallets/werkzeug",
+   "commit": "0f43c6ebd426039e4b99ec22535c2c8a2ec2f69f",
+   "file": "examples/cupoftee/network.py",
+   "line": 108,
+   "rule": "QA003",
+   "title": "Exception silently swallowed",
+   "why": "An empty except/catch hides failures, including failed auth or payment calls, and makes incidents very hard to debug."
+  },
+  {
+   "id": "S045",
+   "repo": "https://github.com/piyushraj04/helpdesk-flow-verse",
+   "commit": "c08ede8e4213ad37e3ad319fe12d871dbfd908c9",
+   "file": "supabase/functions/process-pdf-knowledge/index.ts",
+   "line": 6,
+   "rule": "BE012",
+   "title": "Insecure CORS policy",
+   "why": "Allowing any or a reflected origin together with credentials lets any website call your API as the logged-in user. (An open origin without credentials is not reported: no cookies are sent.)"
+  },
+  {
+   "id": "S046",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": ".github/workflows/docker-publish.yml",
+   "line": 70,
+   "rule": "CFG010",
+   "title": "Third-party GitHub Action not pinned to a commit",
+   "why": "A tag like `@v3` can be moved by whoever controls the action's repository; if it is compromised, your workflow runs their code with your secrets and token (as in the tj-actions/changed-files attack)."
+  },
+  {
+   "id": "S047",
+   "repo": "https://github.com/OWASP/NodeGoat",
+   "commit": "c5cb68a7084e4ae7dcc60e6a98768720a81841e8",
+   "file": "artifacts/db-reset.js",
+   "line": 35,
+   "rule": "SEC011",
+   "title": "Hardcoded password",
+   "why": "A password literal in code (often an admin or database password) is shared with everyone who can read the repo and cannot be rotated without a deploy."
+  },
+  {
+   "id": "S048",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/nebula_adapter.py",
+   "line": 409,
+   "rule": "LLM006",
+   "title": "Dangerous agent or framework option enabled",
+   "why": "This option gives the model arbitrary code, shell or network execution (for example allow_dangerous_code=True or a Python REPL tool)."
+  },
+  {
+   "id": "S049",
+   "repo": "https://github.com/walinejs/waline",
+   "commit": "e9d4f6cd5d567d95349c3a28d0dcce99c1866a23",
+   "file": "packages/client/src/pageview.ts",
+   "line": 4,
+   "rule": "QA006",
+   "title": "Import of a file or name that does not exist",
+   "why": "The code imports a local module, file or function that is not in the project. Assistants invent helper names that sound right; the app crashes on start-up or when that code path runs."
+  },
+  {
+   "id": "S050",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "flexible-graphrag/incremental_updates/detectors/alfresco_detector.py",
+   "line": 1380,
+   "rule": "DATA006",
+   "title": "Timestamp without time zone",
+   "why": "Naive datetimes and `timestamp without time zone` columns silently mix local and UTC times, which breaks expiry checks, schedules and reports across regions and daylight saving."
+  },
+  {
+   "id": "S051",
+   "repo": "https://github.com/gsm-fullweb/careconnect",
+   "commit": "e515b3df4d59b7caab3a8aa4c0ebf7e2e8b1e1e3",
+   "file": "src/hooks/use-toast.ts",
+   "line": 145,
+   "rule": "QA011",
+   "title": "Same function copied into several files",
+   "why": "A function with the same name and the same code is defined in more than one file of a package. A fix made in one copy does not reach the others, which then drift apart."
+  },
+  {
+   "id": "S052",
+   "repo": "https://github.com/vercel/next-learn",
+   "commit": "bb2558441a6673ab76c89914c25018bffa27a2ba",
+   "file": "dashboard/starter-example/app/ui/dashboard/latest-invoices.tsx",
+   "line": 4,
+   "rule": "QA006",
+   "title": "Import of a file or name that does not exist",
+   "why": "The code imports a local module, file or function that is not in the project. Assistants invent helper names that sound right; the app crashes on start-up or when that code path runs."
+  },
+  {
+   "id": "S053",
+   "repo": "https://github.com/langchain-ai/opengpts",
+   "commit": "8e7fef72e1f7fd1cd3518b4c6e1d6fbb33a4fe2c",
+   "file": "frontend/src/utils/json-refs.js",
+   "line": 1220,
+   "rule": "QA003",
+   "title": "Exception silently swallowed",
+   "why": "An empty except/catch hides failures, including failed auth or payment calls, and makes incidents very hard to debug."
+  },
+  {
+   "id": "S054",
+   "repo": "https://github.com/langchain-ai/opengpts",
+   "commit": "8e7fef72e1f7fd1cd3518b4c6e1d6fbb33a4fe2c",
+   "file": "tools/redis_to_postgres/Dockerfile",
+   "line": 1,
+   "rule": "CFG002",
+   "title": "Unpinned container base image",
+   "why": "`latest` (or no tag) changes under you, so builds are not reproducible and can pull a broken or compromised image."
+  },
+  {
+   "id": "S055",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "flexible-graphrag-ui/frontend-vue/src/components/ProcessingTab.vue",
+   "line": 913,
+   "rule": "FE007",
+   "title": "Hardcoded localhost URL in frontend code",
+   "why": "A localhost API URL works on the developer's machine and silently breaks (or calls the visitor's own machine) in production."
+  },
+  {
+   "id": "S056",
+   "repo": "https://github.com/mar10/wsgidav",
+   "commit": "67abdbd7d622fcf29aefdfbd0c9910de9e0c8b3d",
+   "file": "docs/source/requirements.txt",
+   "line": 1,
+   "rule": "DEP005",
+   "title": "Dependencies are not locked",
+   "why": "Without a lockfile or pinned versions every install can pull a different, possibly compromised, version."
+  },
+  {
+   "id": "S057",
+   "repo": "https://github.com/wandb/openui",
+   "commit": "42d7ab4ab6650433486dfb12eb3783c393a3e475",
+   "file": "frontend/src/lib/webauthn.ts",
+   "line": 71,
+   "rule": "FE005",
+   "title": "Auth token stored in localStorage",
+   "why": "Any XSS bug can read localStorage and steal the token, so one script injection becomes account takeover."
+  },
+  {
+   "id": "S058",
+   "repo": "https://github.com/alerta/alerta",
+   "commit": "cc0993d0b245dbeaa19e8ec30c9992ec06fa293e",
+   "file": "alerta/database/backends/mongodb/base.py",
+   "line": 1253,
+   "rule": "DATA001",
+   "title": "Database query inside a loop (N+1)",
+   "why": "One query per item turns a page with 100 rows into 101 round trips: slow pages, timeouts and database load that grows with your data."
+  },
+  {
+   "id": "S059",
+   "repo": "https://github.com/vercel/next-learn",
+   "commit": "bb2558441a6673ab76c89914c25018bffa27a2ba",
+   "file": "dashboard/final-example/app/lib/actions.ts",
+   "line": 77,
+   "rule": "AUTH001",
+   "title": "State-changing endpoint without authentication",
+   "why": "This endpoint creates, changes or deletes data but no authentication check was found, so anyone on the internet can call it directly, whatever the UI shows."
+  },
+  {
+   "id": "S060",
+   "repo": "https://github.com/langchain-ai/opengpts",
+   "commit": "8e7fef72e1f7fd1cd3518b4c6e1d6fbb33a4fe2c",
+   "file": "frontend/src/utils/json-refs.js",
+   "line": 9755,
+   "rule": "QA003",
+   "title": "Exception silently swallowed",
+   "why": "An empty except/catch hides failures, including failed auth or payment calls, and makes incidents very hard to debug."
+  },
+  {
+   "id": "S061",
+   "repo": "https://github.com/3h0ll7/scriptforge-ai",
+   "commit": "07f5342b53db706d7afc0ae85b1e29a4145bd5dc",
+   "file": "supabase/functions/enhance-prompt/index.ts",
+   "line": 12,
+   "rule": "LLM004",
+   "title": "LLM endpoint without rate limiting",
+   "why": "Anyone can call this endpoint in a loop and spend your model budget (denial of wallet), or use your app as a free LLM proxy."
+  },
+  {
+   "id": "S062",
+   "repo": "https://github.com/miguelgrinberg/flasky",
+   "commit": "3beedd640b9146b0bd65c8c2ecf402b01798bc33",
+   "file": "app/templates/base.html",
+   "line": 38,
+   "rule": "UI001",
+   "title": "Image without alt text",
+   "why": "Screen-reader users get the file name or nothing, and the image is invisible to search engines."
+  },
+  {
+   "id": "S063",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "flexible-graphrag-ui/frontend-angular/src/environments/environment.prod.ts",
+   "line": 6,
+   "rule": "FE007",
+   "title": "Hardcoded localhost URL in frontend code",
+   "why": "A localhost API URL works on the developer's machine and silently breaks (or calls the visitor's own machine) in production."
+  },
+  {
+   "id": "S064",
+   "repo": "https://github.com/josephkamau32/LinguaLearn",
+   "commit": "f1cc2e2ea82ec7e7504da0d931503112e80ec25e",
+   "file": "ml-service/app.py",
+   "line": 298,
+   "rule": "BE017",
+   "title": "Internal error details sent to the client",
+   "why": "Stack traces and exception text reveal file paths, queries and library versions that help an attacker."
+  },
+  {
+   "id": "S065",
+   "repo": "https://github.com/django/djangoproject.com",
+   "commit": "83a027bb6aac5bb36b9ef48dad8cb4ff45a2e84f",
+   "file": "dashboard/views.py",
+   "line": 18,
+   "rule": "DATA015",
+   "title": "Cache refilled without a lock (stampede)",
+   "why": "On a cache miss each request recomputes the value itself. When a hot key expires, every request in that moment runs the same expensive query or call at once."
+  },
+  {
+   "id": "S066",
+   "repo": "https://github.com/langchain-ai/opengpts",
+   "commit": "8e7fef72e1f7fd1cd3518b4c6e1d6fbb33a4fe2c",
+   "file": "frontend/src/components/FileUpload.tsx",
+   "line": 55,
+   "rule": "UI002",
+   "title": "Click handler on a non-interactive element",
+   "why": "A div or span with onClick cannot be focused or triggered with the keyboard, so keyboard and screen-reader users cannot use it."
+  },
+  {
+   "id": "S067",
+   "repo": "https://github.com/thefixer3x/sync-plan-flow",
+   "commit": "9bbf2bf4b86d9a193d3ac37a09f7be7b3a4db0e1",
+   "file": "src/components/AppSidebar.tsx",
+   "line": 44,
+   "rule": "UI002",
+   "title": "Click handler on a non-interactive element",
+   "why": "A div or span with onClick cannot be focused or triggered with the keyboard, so keyboard and screen-reader users cannot use it."
+  },
+  {
+   "id": "S068",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "flexible-graphrag/main.py",
+   "line": 412,
+   "rule": "QA003",
+   "title": "Exception silently swallowed",
+   "why": "An empty except/catch hides failures, including failed auth or payment calls, and makes incidents very hard to debug."
+  },
+  {
+   "id": "S069",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "flexible-graphrag/main.py",
+   "line": 437,
+   "rule": "QA003",
+   "title": "Exception silently swallowed",
+   "why": "An empty except/catch hides failures, including failed auth or payment calls, and makes incidents very hard to debug."
+  },
+  {
+   "id": "S070",
+   "repo": "https://github.com/mar10/wsgidav",
+   "commit": "67abdbd7d622fcf29aefdfbd0c9910de9e0c8b3d",
+   "file": "wsgidav/dc/pam_dc.py",
+   "line": 61,
+   "rule": "AUTH008",
+   "title": "Auth check stub always succeeds",
+   "why": "A function that is supposed to verify a token, password or permission just returns true. It is a placeholder an assistant left behind and it disables security for everything that relies on it."
+  },
+  {
+   "id": "S071",
+   "repo": "https://github.com/openai/openai-assistants-quickstart",
+   "commit": "06fc2d444a5d41b574082080f4c7b2e48156b84f",
+   "file": "app/components/file-viewer.tsx",
+   "line": 41,
+   "rule": "API001",
+   "title": "Frontend calls an API path that no route handles",
+   "why": "The browser code requests a path that no backend route in this project serves, so the request always fails with 404: often a renamed route or a route the model forgot to write."
+  },
+  {
+   "id": "S072",
+   "repo": "https://github.com/appsecco/dvna",
+   "commit": "9ba473add536f66ac9007966acb2a775dd31277a",
+   "file": "package.json",
+   "line": 1,
+   "rule": "QA001",
+   "title": "No automated tests",
+   "why": "AI-generated code often looks right and is subtly wrong. Without tests nobody notices until users do, and every future AI edit can silently break existing behaviour."
+  },
+  {
+   "id": "S073",
+   "repo": "https://github.com/miguelgrinberg/microblog",
+   "commit": "a975ef64864354867c88e0ed3a17ba7d17dca752",
+   "file": "Dockerfile",
+   "line": 1,
+   "rule": "REL006",
+   "title": "No health-check endpoint",
+   "why": "Load balancers, containers and uptime monitors need a cheap endpoint to tell a dead instance from a live one."
+  },
+  {
+   "id": "S074",
+   "repo": "https://github.com/HackSoftware/Django-Styleguide-Example",
+   "commit": "a70ef43d7df03706c1211d4fcfd70b4b0120ba1e",
+   "file": "config/django/base.py",
+   "line": 28,
+   "rule": "CFG006",
+   "title": "Any Host header accepted",
+   "why": "ALLOWED_HOSTS = ['*'] enables host header attacks such as poisoned password-reset links."
+  },
+  {
+   "id": "S075",
+   "repo": "https://github.com/kartikramachandrula/thynk",
+   "commit": "4957ee4b9d7009e29d0519a6a1673d612c95b061",
+   "file": "backend/redis_client.py",
+   "line": 72,
+   "rule": "DATA013",
+   "title": "Redis key without an expiry",
+   "why": "Keys written without a TTL stay until something deletes them; caches, sessions and rate-limit counters then grow until Redis runs out of memory or starts evicting keys you need."
+  },
+  {
+   "id": "S076",
+   "repo": "https://github.com/afllewellyn/act-solo-ai",
+   "commit": "f4c6a6296c90313c2c40422e95601222edee19c2",
+   "file": "src/components/practice/rehearsal/textUtils.ts",
+   "line": 86,
+   "rule": "FE001",
+   "title": "Cross-site scripting through a raw HTML sink",
+   "why": "Inserting unsanitized data as HTML (innerHTML, dangerouslySetInnerHTML, v-html, {@html}, |safe) lets an attacker run JavaScript in other users' browsers and steal their sessions."
+  },
+  {
+   "id": "S077",
+   "repo": "https://github.com/mckaywrigley/chatbot-ui",
+   "commit": "81328b61d2a4ab597a7a057be70e785cf756d9f8",
+   "file": "package.json",
+   "line": 1,
+   "rule": "QA002",
+   "title": "No continuous integration",
+   "why": "Without CI, tests and security checks only run when someone remembers to run them."
+  },
+  {
+   "id": "S078",
+   "repo": "https://github.com/alerta/alerta",
+   "commit": "cc0993d0b245dbeaa19e8ec30c9992ec06fa293e",
+   "file": "alerta/webhooks/telegram.py",
+   "line": 72,
+   "rule": "REL003",
+   "title": "Webhook handler is not idempotent",
+   "why": "Payment and other providers retry webhooks. Without recording the event id, a retry credits a customer, creates an order or sends an email twice."
+  },
+  {
+   "id": "S079",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "flexible-graphrag/incremental_updates/config_manager.py",
+   "line": 193,
+   "rule": "BE001",
+   "title": "SQL injection",
+   "why": "Building SQL with string formatting lets an attacker change the query: read other users' data, bypass login or drop tables."
+  },
+  {
+   "id": "S080",
+   "repo": "https://github.com/pallets/werkzeug",
+   "commit": "0f43c6ebd426039e4b99ec22535c2c8a2ec2f69f",
+   "file": "src/werkzeug/urls.py",
+   "line": 191,
+   "rule": "QA003",
+   "title": "Exception silently swallowed",
+   "why": "An empty except/catch hides failures, including failed auth or payment calls, and makes incidents very hard to debug."
+  },
+  {
+   "id": "S081",
+   "repo": "https://github.com/shadcn-ui/taxonomy",
+   "commit": "298a8857c7128a0d121e7f699dfd729f23b3966d",
+   "file": "app/api/webhooks/stripe/route.ts",
+   "line": 8,
+   "rule": "REL003",
+   "title": "Webhook handler is not idempotent",
+   "why": "Payment and other providers retry webhooks. Without recording the event id, a retry credits a customer, creates an order or sends an email twice."
+  },
+  {
+   "id": "S082",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "flexible-graphrag/incremental_updates/detectors/alfresco_detector.py",
+   "line": 1440,
+   "rule": "DATA006",
+   "title": "Timestamp without time zone",
+   "why": "Naive datetimes and `timestamp without time zone` columns silently mix local and UTC times, which breaks expiry checks, schedules and reports across regions and daylight saving."
+  },
+  {
+   "id": "S083",
+   "repo": "https://github.com/alerta/alerta",
+   "commit": "cc0993d0b245dbeaa19e8ec30c9992ec06fa293e",
+   "file": "requirements-dev.txt",
+   "line": 1,
+   "rule": "DEP005",
+   "title": "Dependencies are not locked",
+   "why": "Without a lockfile or pinned versions every install can pull a different, possibly compromised, version."
+  },
+  {
+   "id": "S084",
+   "repo": "https://github.com/piyushraj04/helpdesk-flow-verse",
+   "commit": "c08ede8e4213ad37e3ad319fe12d871dbfd908c9",
+   "file": "supabase/functions/ai-pattern-detector/index.ts",
+   "line": 39,
+   "rule": "AUTH001",
+   "title": "State-changing endpoint without authentication",
+   "why": "This endpoint creates, changes or deletes data but no authentication check was found, so anyone on the internet can call it directly, whatever the UI shows."
+  },
+  {
+   "id": "S085",
+   "repo": "https://github.com/HackSoftware/Django-Styleguide-Example",
+   "commit": "a70ef43d7df03706c1211d4fcfd70b4b0120ba1e",
+   "file": "docker/production.Dockerfile",
+   "line": 3,
+   "rule": "CFG001",
+   "title": "Container runs as root",
+   "why": "If the app is compromised the attacker is root inside the container, which makes escaping and tampering easier."
+  },
+  {
+   "id": "S086",
+   "repo": "https://github.com/mar10/wsgidav",
+   "commit": "67abdbd7d622fcf29aefdfbd0c9910de9e0c8b3d",
+   "file": "wsgidav/mw/debug_filter.py",
+   "line": 147,
+   "rule": "QA003",
+   "title": "Exception silently swallowed",
+   "why": "An empty except/catch hides failures, including failed auth or payment calls, and makes incidents very hard to debug."
+  },
+  {
+   "id": "S087",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "flexible-graphrag/cocoindex_integration/_compat.py",
+   "line": 284,
+   "rule": "QA003",
+   "title": "Exception silently swallowed",
+   "why": "An empty except/catch hides failures, including failed auth or payment calls, and makes incidents very hard to debug."
+  },
+  {
+   "id": "S088",
+   "repo": "https://github.com/run-llama/sec-insights",
+   "commit": "a9b6da0f5c4bff52437a5285954ff17bc713f14f",
+   "file": "backend/alembic/versions/663b3fea3024_update_sub_process_columns.py",
+   "line": 53,
+   "rule": "BE001",
+   "title": "SQL injection",
+   "why": "Building SQL with string formatting lets an attacker change the query: read other users' data, bypass login or drop tables."
+  },
+  {
+   "id": "S089",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "scripts/mcp/get-transport-token.py",
+   "line": 31,
+   "rule": "SEC004",
+   "title": "Hardcoded or default signing secret",
+   "why": "Session cookies and JWTs are signed with this secret. If it is in the code, or falls back to a default when the env var is missing, anyone can forge a login as any user, including admins."
+  },
+  {
+   "id": "S090",
+   "repo": "https://github.com/adeyosemanputra/pygoat",
+   "commit": "2aa4cc14f251e4a780e94e200aed6b36a5b15c21",
+   "file": "dockerized_labs/a9_uckv_lab/app.py",
+   "line": 62,
+   "rule": "BE004",
+   "title": "Unsafe deserialization",
+   "why": "pickle, marshal, dill and yaml.load can execute code while loading. Loading untrusted data is remote code execution."
+  },
+  {
+   "id": "S091",
+   "repo": "https://github.com/amo-tech-ai/prompt-sculptor-49",
+   "commit": "d60d5e9e66c6aefc713f67dec823d247a8585411",
+   "file": "src/components/crm/InvoiceDialog.tsx",
+   "line": 238,
+   "rule": "UI015",
+   "title": "Form error not announced to screen readers",
+   "why": "An error message that only appears next to the field is invisible to a screen reader user, who hears nothing when the form is rejected."
+  },
+  {
+   "id": "S092",
+   "repo": "https://github.com/kartikramachandrula/thynk",
+   "commit": "4957ee4b9d7009e29d0519a6a1673d612c95b061",
+   "file": "backend/main.py",
+   "line": 331,
+   "rule": "BE017",
+   "title": "Internal error details sent to the client",
+   "why": "Stack traces and exception text reveal file paths, queries and library versions that help an attacker."
+  },
+  {
+   "id": "S093",
+   "repo": "https://github.com/amo-tech-ai/prompt-sculptor-49",
+   "commit": "d60d5e9e66c6aefc713f67dec823d247a8585411",
+   "file": "supabase/migrations/20251006054217_f3a5b796-77d4-4ef5-854a-82d0560ece28.sql",
+   "line": 128,
+   "rule": "DATA012",
+   "title": "Foreign key without an index",
+   "why": "Postgres does not index foreign key columns. Every delete or key update in the referenced table, and every join on the key, scans the referencing table; with ON DELETE CASCADE it also locks it."
+  },
+  {
+   "id": "S094",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "scripts/cleanup.py",
+   "line": 1449,
+   "rule": "QA003",
+   "title": "Exception silently swallowed",
+   "why": "An empty except/catch hides failures, including failed auth or payment calls, and makes incidents very hard to debug."
+  },
+  {
+   "id": "S095",
+   "repo": "https://github.com/pallets/werkzeug",
+   "commit": "0f43c6ebd426039e4b99ec22535c2c8a2ec2f69f",
+   "file": "examples/cupoftee/db.py",
+   "line": 66,
+   "rule": "QA003",
+   "title": "Exception silently swallowed",
+   "why": "An empty except/catch hides failures, including failed auth or payment calls, and makes incidents very hard to debug."
+  },
+  {
+   "id": "S096",
+   "repo": "https://github.com/adeyosemanputra/pygoat",
+   "commit": "2aa4cc14f251e4a780e94e200aed6b36a5b15c21",
+   "file": "dockerized_labs/sec_misconfig/Dockerfile",
+   "line": 13,
+   "rule": "SEC004",
+   "title": "Hardcoded or default signing secret",
+   "why": "Session cookies and JWTs are signed with this secret. If it is in the code, or falls back to a default when the env var is missing, anyone can forge a login as any user, including admins."
+  },
+  {
+   "id": "S097",
+   "repo": "https://github.com/expressjs/express",
+   "commit": "43fca52d28a422c8be48fd489cbd4f2d6152bab6",
+   "file": "examples/session/index.js",
+   "line": 16,
+   "rule": "SEC004",
+   "title": "Hardcoded or default signing secret",
+   "why": "Session cookies and JWTs are signed with this secret. If it is in the code, or falls back to a default when the env var is missing, anyone can forge a login as any user, including admins."
+  },
+  {
+   "id": "S098",
+   "repo": "https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application",
+   "commit": "a961308c02d1fb462b192681c336b0739e432da7",
+   "file": "static/jquery/jquery.js",
+   "line": 5121,
+   "rule": "QA003",
+   "title": "Exception silently swallowed",
+   "why": "An empty except/catch hides failures, including failed auth or payment calls, and makes incidents very hard to debug."
+  },
+  {
+   "id": "S099",
+   "repo": "https://github.com/HKUDS/Vibe-Trading",
+   "commit": "fd767f5c29c72cffe8e3f89c7ff006cb3041397f",
+   "file": "agent/api_server.py",
+   "line": 602,
+   "rule": "QA003",
+   "title": "Exception silently swallowed",
+   "why": "An empty except/catch hides failures, including failed auth or payment calls, and makes incidents very hard to debug."
+  },
+  {
+   "id": "S100",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "flexible-graphrag/langchain/vector/adapters/chroma_adapter.py",
+   "line": 106,
+   "rule": "QA003",
+   "title": "Exception silently swallowed",
+   "why": "An empty except/catch hides failures, including failed auth or payment calls, and makes incidents very hard to debug."
+  },
+  {
+   "id": "S101",
+   "repo": "https://github.com/langchain-ai/opengpts",
+   "commit": "8e7fef72e1f7fd1cd3518b4c6e1d6fbb33a4fe2c",
+   "file": "backend/app/llms.py",
+   "line": 88,
+   "rule": "LLM003",
+   "title": "LLM call without an output token limit",
+   "why": "Without max tokens a single request (or a prompt-injected loop) can generate very long, expensive responses."
+  },
+  {
+   "id": "S102",
+   "repo": "https://github.com/adeyosemanputra/pygoat",
+   "commit": "2aa4cc14f251e4a780e94e200aed6b36a5b15c21",
+   "file": "dockerized_labs/dependency_attack_lab/app.py",
+   "line": 13,
+   "rule": "SEC003",
+   "title": "High-entropy secret assigned in code",
+   "why": "A variable named like a secret holds a random-looking literal. This is usually a real token pasted in while prototyping."
+  },
+  {
+   "id": "S103",
+   "repo": "https://github.com/we45/Vulnerable-Flask-App",
+   "commit": "b6a4f97afd466e83e1f60781494252dec1c37039",
+   "file": "app/app.py",
+   "line": 97,
+   "rule": "BE016",
+   "title": "JWT signature not verified",
+   "why": "Decoding a JWT without verifying its signature (or allowing alg none) means anyone can mint a token for any user."
+  },
+  {
+   "id": "S104",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/surrealdb_adapter.py",
+   "line": 199,
+   "rule": "LLM006",
+   "title": "Dangerous agent or framework option enabled",
+   "why": "This option gives the model arbitrary code, shell or network execution (for example allow_dangerous_code=True or a Python REPL tool)."
+  },
+  {
+   "id": "S105",
+   "repo": "https://github.com/HackSoftware/Django-Styleguide-Example",
+   "commit": "a70ef43d7df03706c1211d4fcfd70b4b0120ba1e",
+   "file": "styleguide_example/blog_examples/google_login_server_flow/sdk/services.py",
+   "line": 28,
+   "rule": "BE016",
+   "title": "JWT signature not verified",
+   "why": "Decoding a JWT without verifying its signature (or allowing alg none) means anyone can mint a token for any user."
+  },
+  {
+   "id": "S106",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "flexible-graphrag/main.py",
+   "line": 167,
+   "rule": "QA003",
+   "title": "Exception silently swallowed",
+   "why": "An empty except/catch hides failures, including failed auth or payment calls, and makes incidents very hard to debug."
+  },
+  {
+   "id": "S107",
+   "repo": "https://github.com/vercel/next-learn",
+   "commit": "bb2558441a6673ab76c89914c25018bffa27a2ba",
+   "file": "basics/demo/pages/posts/[id].js",
+   "line": 18,
+   "rule": "FE001",
+   "title": "Cross-site scripting through a raw HTML sink",
+   "why": "Inserting unsanitized data as HTML (innerHTML, dangerouslySetInnerHTML, v-html, {@html}, |safe) lets an attacker run JavaScript in other users' browsers and steal their sessions."
+  },
+  {
+   "id": "S108",
+   "repo": "https://github.com/amo-tech-ai/prompt-sculptor-49",
+   "commit": "d60d5e9e66c6aefc713f67dec823d247a8585411",
+   "file": ".env",
+   "line": 12,
+   "rule": "SEC003",
+   "title": "High-entropy secret assigned in code",
+   "why": "A variable named like a secret holds a random-looking literal. This is usually a real token pasted in while prototyping."
+  },
+  {
+   "id": "S109",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/spanner_adapter.py",
+   "line": 70,
+   "rule": "LLM006",
+   "title": "Dangerous agent or framework option enabled",
+   "why": "This option gives the model arbitrary code, shell or network execution (for example allow_dangerous_code=True or a Python REPL tool)."
+  },
+  {
+   "id": "S110",
+   "repo": "https://github.com/langchain-ai/opengpts",
+   "commit": "8e7fef72e1f7fd1cd3518b4c6e1d6fbb33a4fe2c",
+   "file": "frontend/src/components/ChatList.tsx",
+   "line": 88,
+   "rule": "UI002",
+   "title": "Click handler on a non-interactive element",
+   "why": "A div or span with onClick cannot be focused or triggered with the keyboard, so keyboard and screen-reader users cannot use it."
+  },
+  {
+   "id": "S111",
+   "repo": "https://github.com/walinejs/waline",
+   "commit": "e9d4f6cd5d567d95349c3a28d0dcce99c1866a23",
+   "file": "packages/server/src/config/middleware.js",
+   "line": 8,
+   "rule": "DATA007",
+   "title": "Environment variable missing from the example env file",
+   "why": "The code reads a variable that .env.example does not document, so the next deploy or teammate setup crashes or silently runs with a missing setting."
+  },
+  {
+   "id": "S112",
+   "repo": "https://github.com/piyushraj04/helpdesk-flow-verse",
+   "commit": "c08ede8e4213ad37e3ad319fe12d871dbfd908c9",
+   "file": "package.json",
+   "line": 1,
+   "rule": "QA001",
+   "title": "No automated tests",
+   "why": "AI-generated code often looks right and is subtly wrong. Without tests nobody notices until users do, and every future AI edit can silently break existing behaviour."
+  },
+  {
+   "id": "S113",
+   "repo": "https://github.com/appsecco/dvna",
+   "commit": "9ba473add536f66ac9007966acb2a775dd31277a",
+   "file": "core/appHandler.js",
+   "line": 11,
+   "rule": "BE001",
+   "title": "SQL injection",
+   "why": "Building SQL with string formatting lets an attacker change the query: read other users' data, bypass login or drop tables."
+  },
+  {
+   "id": "S114",
+   "repo": "https://github.com/gsm-fullweb/careconnect",
+   "commit": "e515b3df4d59b7caab3a8aa4c0ebf7e2e8b1e1e3",
+   "file": "supabase/functions/blog-ai-assistant/index.ts",
+   "line": 14,
+   "rule": "BE018",
+   "title": "No server-side input validation",
+   "why": "The backend reads request bodies but no validation library is used on the server. Validation done only in the browser is bypassed by calling the API directly."
+  },
+  {
+   "id": "S115",
+   "repo": "https://github.com/langchain-ai/opengpts",
+   "commit": "8e7fef72e1f7fd1cd3518b4c6e1d6fbb33a4fe2c",
+   "file": "backend/app/auth/handlers.py",
+   "line": 101,
+   "rule": "REL001",
+   "title": "Outbound HTTP request without a timeout",
+   "why": "`requests` and `urlopen` wait forever by default. One slow or dead upstream API ties up a worker per request until the whole service stops responding."
+  },
+  {
+   "id": "S116",
+   "repo": "https://github.com/walinejs/waline",
+   "commit": "e9d4f6cd5d567d95349c3a28d0dcce99c1866a23",
+   "file": "packages/admin/src/components/Header.jsx",
+   "line": 93,
+   "rule": "UI014",
+   "title": "Image without width and height",
+   "why": "The browser cannot reserve space for an image without dimensions, so the content below jumps when it loads (cumulative layout shift, a Core Web Vital)."
+  },
+  {
+   "id": "S117",
+   "repo": "https://github.com/piyushraj04/helpdesk-flow-verse",
+   "commit": "c08ede8e4213ad37e3ad319fe12d871dbfd908c9",
+   "file": "supabase/functions/generate-embeddings/index.ts",
+   "line": 11,
+   "rule": "AUTH001",
+   "title": "State-changing endpoint without authentication",
+   "why": "This endpoint creates, changes or deletes data but no authentication check was found, so anyone on the internet can call it directly, whatever the UI shows."
+  },
+  {
+   "id": "S118",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "flexible-graphrag/langchain/graph/rdf_store_adapters/neptune_rdf_adapter.py",
+   "line": 548,
+   "rule": "LLM006",
+   "title": "Dangerous agent or framework option enabled",
+   "why": "This option gives the model arbitrary code, shell or network execution (for example allow_dangerous_code=True or a Python REPL tool)."
+  },
+  {
+   "id": "S119",
+   "repo": "https://github.com/HKUDS/Vibe-Trading",
+   "commit": "fd767f5c29c72cffe8e3f89c7ff006cb3041397f",
+   "file": "agent/src/skills/seasonal/example_signal_engine.py",
+   "line": 114,
+   "rule": "REL001",
+   "title": "Outbound HTTP request without a timeout",
+   "why": "`requests` and `urlopen` wait forever by default. One slow or dead upstream API ties up a worker per request until the whole service stops responding."
+  },
+  {
+   "id": "S120",
+   "repo": "https://github.com/streamlit/llm-examples",
+   "commit": "7cf260745675e41f92e7436d3777aafdab9dad9f",
+   "file": "Chatbot.py",
+   "line": 26,
+   "rule": "LLM003",
+   "title": "LLM call without an output token limit",
+   "why": "Without max tokens a single request (or a prompt-injected loop) can generate very long, expensive responses."
+  },
+  {
+   "id": "S121",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/apache_age_adapter.py",
+   "line": 181,
+   "rule": "BE001",
+   "title": "SQL injection",
+   "why": "Building SQL with string formatting lets an attacker change the query: read other users' data, bypass login or drop tables."
+  },
+  {
+   "id": "S122",
+   "repo": "https://github.com/HKUDS/Vibe-Trading",
+   "commit": "fd767f5c29c72cffe8e3f89c7ff006cb3041397f",
+   "file": "agent/api_server.py",
+   "line": 886,
+   "rule": "QA003",
+   "title": "Exception silently swallowed",
+   "why": "An empty except/catch hides failures, including failed auth or payment calls, and makes incidents very hard to debug."
+  },
+  {
+   "id": "S123",
+   "repo": "https://github.com/we45/Vulnerable-Flask-App",
+   "commit": "b6a4f97afd466e83e1f60781494252dec1c37039",
+   "file": "app/templates/view.html",
+   "line": 15,
+   "rule": "UI001",
+   "title": "Image without alt text",
+   "why": "Screen-reader users get the file name or nothing, and the image is invisible to search engines."
+  },
+  {
+   "id": "S124",
+   "repo": "https://github.com/vercel/nextjs-subscription-payments",
+   "commit": "bdd0813206e47e6b218d42f15a7976c8a0d3c3eb",
+   "file": "app/auth/callback/route.ts",
+   "line": 18,
+   "rule": "BE008",
+   "title": "Open redirect",
+   "why": "Redirecting to a user-supplied URL lets phishing links borrow your domain."
+  },
+  {
+   "id": "S125",
+   "repo": "https://github.com/adeyosemanputra/pygoat",
+   "commit": "2aa4cc14f251e4a780e94e200aed6b36a5b15c21",
+   "file": "challenge/labs/business_logic_lab/templates/base.html",
+   "line": 37,
+   "rule": "FE001",
+   "title": "Cross-site scripting through a raw HTML sink",
+   "why": "Inserting unsanitized data as HTML (innerHTML, dangerouslySetInnerHTML, v-html, {@html}, |safe) lets an attacker run JavaScript in other users' browsers and steal their sessions."
+  },
+  {
+   "id": "S126",
+   "repo": "https://github.com/alerta/alerta",
+   "commit": "cc0993d0b245dbeaa19e8ec30c9992ec06fa293e",
+   "file": "alerta/models/alert.py",
+   "line": 378,
+   "rule": "DATA006",
+   "title": "Timestamp without time zone",
+   "why": "Naive datetimes and `timestamp without time zone` columns silently mix local and UTC times, which breaks expiry checks, schedules and reports across regions and daylight saving."
+  },
+  {
+   "id": "S127",
+   "repo": "https://github.com/ReversecLabs/damn-vulnerable-llm-agent",
+   "commit": "c0cf9a14adad76e9d6a53c41741f625334bd9971",
+   "file": "requirements.txt",
+   "line": 1,
+   "rule": "DEP005",
+   "title": "Dependencies are not locked",
+   "why": "Without a lockfile or pinned versions every install can pull a different, possibly compromised, version."
+  },
+  {
+   "id": "S128",
+   "repo": "https://github.com/django/djangoproject.com",
+   "commit": "83a027bb6aac5bb36b9ef48dad8cb4ff45a2e84f",
+   "file": "releases/tests.py",
+   "line": 475,
+   "rule": "DATA001",
+   "title": "Database query inside a loop (N+1)",
+   "why": "One query per item turns a page with 100 rows into 101 round trips: slow pages, timeouts and database load that grows with your data."
+  },
+  {
+   "id": "S129",
+   "repo": "https://github.com/adeyosemanputra/pygoat",
+   "commit": "2aa4cc14f251e4a780e94e200aed6b36a5b15c21",
+   "file": "dockerized_labs/a9_uckv_lab/app.py",
+   "line": 74,
+   "rule": "AUTH001",
+   "title": "State-changing endpoint without authentication",
+   "why": "This endpoint creates, changes or deletes data but no authentication check was found, so anyone on the internet can call it directly, whatever the UI shows."
+  },
+  {
+   "id": "S130",
+   "repo": "https://github.com/alerta/alerta",
+   "commit": "cc0993d0b245dbeaa19e8ec30c9992ec06fa293e",
+   "file": "alerta/auth/basic_ldap.py",
+   "line": 2,
+   "rule": "QA007",
+   "title": "Package imported but not declared as a dependency",
+   "why": "The package is installed on the author's machine but missing from requirements.txt, pyproject.toml or package.json, so a clean install (CI, Docker, production) fails with an import error."
+  },
+  {
+   "id": "S131",
+   "repo": "https://github.com/openai/openai-assistants-quickstart",
+   "commit": "06fc2d444a5d41b574082080f4c7b2e48156b84f",
+   "file": "app/components/file-viewer.tsx",
+   "line": 33,
+   "rule": "API001",
+   "title": "Frontend calls an API path that no route handles",
+   "why": "The browser code requests a path that no backend route in this project serves, so the request always fails with 404: often a renamed route or a route the model forgot to write."
+  },
+  {
+   "id": "S132",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "flexible-graphrag/process/kg_extractor.py",
+   "line": 270,
+   "rule": "QA003",
+   "title": "Exception silently swallowed",
+   "why": "An empty except/catch hides failures, including failed auth or payment calls, and makes incidents very hard to debug."
+  },
+  {
+   "id": "S133",
+   "repo": "https://github.com/adeyosemanputra/pygoat",
+   "commit": "2aa4cc14f251e4a780e94e200aed6b36a5b15c21",
+   "file": "dockerized_labs/package_injection_lab/app.py",
+   "line": 12,
+   "rule": "SEC011",
+   "title": "Hardcoded password",
+   "why": "A password literal in code (often an admin or database password) is shared with everyone who can read the repo and cannot be rotated without a deploy."
+  },
+  {
+   "id": "S134",
+   "repo": "https://github.com/walinejs/waline",
+   "commit": "e9d4f6cd5d567d95349c3a28d0dcce99c1866a23",
+   "file": "packages/admin/src/components/Header.jsx",
+   "line": 83,
+   "rule": "UI003",
+   "title": "Form field without a label",
+   "why": "Without a label, screen readers announce only \"edit text\", and placeholder text disappears as soon as the user types."
+  },
+  {
+   "id": "S135",
+   "repo": "https://github.com/thefixer3x/sync-plan-flow",
+   "commit": "9bbf2bf4b86d9a193d3ac37a09f7be7b3a4db0e1",
+   "file": "src/components/TaskCard.tsx",
+   "line": 166,
+   "rule": "UI003",
+   "title": "Form field without a label",
+   "why": "Without a label, screen readers announce only \"edit text\", and placeholder text disappears as soon as the user types."
+  },
+  {
+   "id": "S136",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "flexible-graphrag/incremental_updates/detectors/filesystem_detector.py",
+   "line": 60,
+   "rule": "DATA006",
+   "title": "Timestamp without time zone",
+   "why": "Naive datetimes and `timestamp without time zone` columns silently mix local and UTC times, which breaks expiry checks, schedules and reports across regions and daylight saving."
+  },
+  {
+   "id": "S137",
+   "repo": "https://github.com/thefixer3x/sync-plan-flow",
+   "commit": "9bbf2bf4b86d9a193d3ac37a09f7be7b3a4db0e1",
+   "file": "supabase/migrations/20260221000000_create_spf_schema.sql",
+   "line": 219,
+   "rule": "AUTH006",
+   "title": "Permissive Supabase policy",
+   "why": "A policy with `using (true)` or `with check (true)` for writes lets every user modify every row."
+  },
+  {
+   "id": "S138",
+   "repo": "https://github.com/3h0ll7/scriptforge-ai",
+   "commit": "07f5342b53db706d7afc0ae85b1e29a4145bd5dc",
+   "file": "supabase/functions/payment-webhook/index.ts",
+   "line": 5,
+   "rule": "BE012",
+   "title": "Insecure CORS policy",
+   "why": "Allowing any or a reflected origin together with credentials lets any website call your API as the logged-in user. (An open origin without credentials is not reported: no cookies are sent.)"
+  },
+  {
+   "id": "S139",
+   "repo": "https://github.com/bridgecrewio/terragoat",
+   "commit": "729f8da62c6a85ce4af5ad3d123de97776d954c4",
+   "file": "terraform/azure/mssql.tf",
+   "line": 102,
+   "rule": "SEC003",
+   "title": "High-entropy secret assigned in code",
+   "why": "A variable named like a secret holds a random-looking literal. This is usually a real token pasted in while prototyping."
+  },
+  {
+   "id": "S140",
+   "repo": "https://github.com/vercel/next-learn",
+   "commit": "bb2558441a6673ab76c89914c25018bffa27a2ba",
+   "file": "seo/pages/index.js",
+   "line": 95,
+   "rule": "UI014",
+   "title": "Image without width and height",
+   "why": "The browser cannot reserve space for an image without dimensions, so the content below jumps when it loads (cumulative layout shift, a Core Web Vital)."
+  },
+  {
+   "id": "S141",
+   "repo": "https://github.com/django/djangoproject.com",
+   "commit": "83a027bb6aac5bb36b9ef48dad8cb4ff45a2e84f",
+   "file": "djangoproject/templates/members/corporate_member_badges.html",
+   "line": 44,
+   "rule": "UI014",
+   "title": "Image without width and height",
+   "why": "The browser cannot reserve space for an image without dimensions, so the content below jumps when it loads (cumulative layout shift, a Core Web Vital)."
+  },
+  {
+   "id": "S142",
+   "repo": "https://github.com/adeyosemanputra/pygoat",
+   "commit": "2aa4cc14f251e4a780e94e200aed6b36a5b15c21",
+   "file": "dockerized_labs/broken_auth_lab/app.py",
+   "line": 26,
+   "rule": "SEC011",
+   "title": "Hardcoded password",
+   "why": "A password literal in code (often an admin or database password) is shared with everyone who can read the repo and cannot be rotated without a deploy."
+  },
+  {
+   "id": "S143",
+   "repo": "https://github.com/we45/Vulnerable-Flask-App",
+   "commit": "b6a4f97afd466e83e1f60781494252dec1c37039",
+   "file": "app/app.py",
+   "line": 135,
+   "rule": "BE018",
+   "title": "No server-side input validation",
+   "why": "The backend reads request bodies but no validation library is used on the server. Validation done only in the browser is bypassed by calling the API directly."
+  },
+  {
+   "id": "S144",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "flexible-graphrag/langchain/graph/pg_store_adapters/nebula_adapter.py",
+   "line": 91,
+   "rule": "QA003",
+   "title": "Exception silently swallowed",
+   "why": "An empty except/catch hides failures, including failed auth or payment calls, and makes incidents very hard to debug."
+  },
+  {
+   "id": "S145",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "flexible-graphrag/incremental_updates/detectors/alfresco_detector.py",
+   "line": 1416,
+   "rule": "DATA006",
+   "title": "Timestamp without time zone",
+   "why": "Naive datetimes and `timestamp without time zone` columns silently mix local and UTC times, which breaks expiry checks, schedules and reports across regions and daylight saving."
+  },
+  {
+   "id": "S146",
+   "repo": "https://github.com/langchain-ai/opengpts",
+   "commit": "8e7fef72e1f7fd1cd3518b4c6e1d6fbb33a4fe2c",
+   "file": "frontend/src/hooks/useChatList.ts",
+   "line": 34,
+   "rule": "UI009",
+   "title": "Data loaded without loading or error state",
+   "why": "If the request is slow the user sees an empty screen; if it fails the error is swallowed and the screen stays empty with no explanation."
+  },
+  {
+   "id": "S147",
+   "repo": "https://github.com/run-llama/sec-insights",
+   "commit": "a9b6da0f5c4bff52437a5285954ff17bc713f14f",
+   "file": "frontend/src/components/pdf-viewer/PdfOptionsBar.tsx",
+   "line": 125,
+   "rule": "UI002",
+   "title": "Click handler on a non-interactive element",
+   "why": "A div or span with onClick cannot be focused or triggered with the keyboard, so keyboard and screen-reader users cannot use it."
+  },
+  {
+   "id": "S148",
+   "repo": "https://github.com/adeyosemanputra/pygoat",
+   "commit": "2aa4cc14f251e4a780e94e200aed6b36a5b15c21",
+   "file": "dockerized_labs/xss_lab/templates/base.html",
+   "line": 26,
+   "rule": "FE001",
+   "title": "Cross-site scripting through a raw HTML sink",
+   "why": "Inserting unsanitized data as HTML (innerHTML, dangerouslySetInnerHTML, v-html, {@html}, |safe) lets an attacker run JavaScript in other users' browsers and steal their sessions."
+  },
+  {
+   "id": "S149",
+   "repo": "https://github.com/josephkamau32/LinguaLearn",
+   "commit": "f1cc2e2ea82ec7e7504da0d931503112e80ec25e",
+   "file": "supabase/migrations/001_initial_schema.sql",
+   "line": 77,
+   "rule": "DATA012",
+   "title": "Foreign key without an index",
+   "why": "Postgres does not index foreign key columns. Every delete or key update in the referenced table, and every join on the key, scans the referencing table; with ON DELETE CASCADE it also locks it."
+  },
+  {
+   "id": "S150",
+   "repo": "https://github.com/stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "file": "flexible-graphrag/cocoindex_integration/pipeline/env_config.py",
+   "line": 46,
+   "rule": "QA003",
+   "title": "Exception silently swallowed",
+   "why": "An empty except/catch hides failures, including failed auth or payment calls, and makes incidents very hard to debug."
+  }
+ ]
+}

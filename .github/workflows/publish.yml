@@ -1,0 +1,42 @@
+name: Publish to PyPI
+
+# Publishes the attested wheel and sdist of a GitHub release to PyPI with trusted publishing (OIDC, no API token).
+# Off until the one-time setup in docs/PUBLISHING.md is done and the repository variable PYPI_PUBLISH is "true";
+# until then every run is skipped, never red.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to publish (e.g. v0.9.1)"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    if: vars.PYPI_PUBLISH == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/vibeaudit/
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Download the release's wheel and sdist (the attested files)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: |
+          mkdir dist
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --dir dist --pattern "*.whl" --pattern "*.tar.gz"
+          ls -l dist
+      - name: Verify their build provenance
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for f in dist/*; do gh attestation verify "$f" --repo "$GITHUB_REPOSITORY"; done
+      - uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086  # v1.14.3

@@ -100,3 +100,14 @@ def test_docs_are_plain_ascii():
     for doc in ("README.md", "CONTRIBUTING.md", "SECURITY.md", "CHANGELOG.md", "docs/RULES.md"):
         data = (ROOT / doc).read_bytes()
         assert all(b < 127 for b in data), doc
+
+
+def test_readme_accuracy_numbers_match_the_benchmark_results():
+    import json
+    import sys
+    sys.path.insert(0, str(ROOT / "tools"))
+    import benchmark as B
+    results = json.loads((ROOT / "benchmark" / "results.json").read_text(encoding="utf-8"))
+    a, b = README.index(B.README_START), README.index(B.README_END)
+    assert README[a + len(B.README_START):b].strip() == B.readme_accuracy(results).strip(), \
+        "README accuracy numbers are stale: run `python tools/benchmark.py baseline`"

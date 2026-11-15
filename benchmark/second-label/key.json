@@ -1,0 +1,902 @@
+{
+ "S001": {
+  "repo": "flexible-graphrag",
+  "rule": "QA003",
+  "file": "flexible-graphrag/ingest/update_vector.py",
+  "line": 165
+ },
+ "S002": {
+  "repo": "chatbot-ui",
+  "rule": "LLM012",
+  "file": "lib/chat-setting-limits.ts",
+  "line": 24
+ },
+ "S003": {
+  "repo": "ai-chatbot",
+  "rule": "LLM003",
+  "file": "artifacts/text/server.ts",
+  "line": 35
+ },
+ "S004": {
+  "repo": "djangoproject.com",
+  "rule": "DATA001",
+  "file": "releases/tests.py",
+  "line": 461
+ },
+ "S005": {
+  "repo": "pygoat",
+  "rule": "FE001",
+  "file": "dockerized_labs/broken_access_lab/templates/base.html",
+  "line": 25
+ },
+ "S006": {
+  "repo": "terragoat",
+  "rule": "CFG015",
+  "file": "terraform/aws/ec2.tf",
+  "line": 90
+ },
+ "S007": {
+  "repo": "openui",
+  "rule": "FE005",
+  "file": "frontend/src/lib/webauthn.ts",
+  "line": 70
+ },
+ "S008": {
+  "repo": "waline",
+  "rule": "CFG010",
+  "file": ".github/workflows/release-server.yml",
+  "line": 73
+ },
+ "S009": {
+  "repo": "flexible-graphrag",
+  "rule": "BE001",
+  "file": "flexible-graphrag/langchain/graph/pg_store_adapters/ladybug_adapter.py",
+  "line": 189
+ },
+ "S010": {
+  "repo": "helpdesk-flow-verse",
+  "rule": "SEC010",
+  "file": "src/pages/AddAgent.tsx",
+  "line": 121
+ },
+ "S011": {
+  "repo": "flexible-graphrag",
+  "rule": "QA003",
+  "file": "flexible-graphrag/cocoindex_integration/pipeline/native_apps.py",
+  "line": 123
+ },
+ "S012": {
+  "repo": "wsgidav",
+  "rule": "BE001",
+  "file": "wsgidav/samples/mysql_dav_provider.py",
+  "line": 547
+ },
+ "S013": {
+  "repo": "vibe-trading",
+  "rule": "DATA007",
+  "file": "agent/api_server.py",
+  "line": 590
+ },
+ "S014": {
+  "repo": "waline",
+  "rule": "UI003",
+  "file": "packages/admin/src/pages/manage-comments/index.jsx",
+  "line": 337
+ },
+ "S015": {
+  "repo": "flexible-graphrag",
+  "rule": "LLM006",
+  "file": "flexible-graphrag/langchain/graph/retrievers/chains/_sparql.py",
+  "line": 451
+ },
+ "S016": {
+  "repo": "Vulnerable-Flask-App",
+  "rule": "AUTH001",
+  "file": "app/app.py",
+  "line": 291
+ },
+ "S017": {
+  "repo": "prompt-sculptor-49",
+  "rule": "DATA012",
+  "file": "supabase/amo-ai-agency-schema.sql",
+  "line": 348
+ },
+ "S018": {
+  "repo": "bakerydemo",
+  "rule": "DATA001",
+  "file": "bakerydemo/base/management/commands/create_random_data.py",
+  "line": 139
+ },
+ "S019": {
+  "repo": "microblog",
+  "rule": "CFG001",
+  "file": "Dockerfile",
+  "line": 1
+ },
+ "S020": {
+  "repo": "learnathon-leaderboard",
+  "rule": "BE012",
+  "file": "supabase/functions/data-sync/index.ts",
+  "line": 9
+ },
+ "S021": {
+  "repo": "LinguaLearn",
+  "rule": "FE005",
+  "file": "src/contexts/AuthContext.tsx",
+  "line": 147
+ },
+ "S022": {
+  "repo": "pygoat",
+  "rule": "CFG001",
+  "file": "challenge/labs/business_logic_lab/Dockerfile",
+  "line": 1
+ },
+ "S023": {
+  "repo": "LinguaLearn",
+  "rule": "DATA006",
+  "file": "ml-service/app.py",
+  "line": 668
+ },
+ "S024": {
+  "repo": "node-express-realworld-example-app",
+  "rule": "AUTH003",
+  "file": "src/app/routes/article/article.controller.ts",
+  "line": 230
+ },
+ "S025": {
+  "repo": "alerta",
+  "rule": "AUTH004",
+  "file": "alerta/webhooks/pagerduty.py",
+  "line": 65
+ },
+ "S026": {
+  "repo": "djangoproject.com",
+  "rule": "DATA001",
+  "file": "releases/tests.py",
+  "line": 338
+ },
+ "S027": {
+  "repo": "djangoproject.com",
+  "rule": "CFG010",
+  "file": ".github/workflows/docker-test-build.yml",
+  "line": 39
+ },
+ "S028": {
+  "repo": "LinguaLearn",
+  "rule": "QA007",
+  "file": "ml-service/main.py",
+  "line": 27
+ },
+ "S029": {
+  "repo": "scriptforge-ai",
+  "rule": "DATA012",
+  "file": "supabase/migrations/20260321003030_3a65b9e5-8eb0-4c5b-994d-2d459d004bb4.sql",
+  "line": 47
+ },
+ "S030": {
+  "repo": "prompt-sculptor-49",
+  "rule": "SEC001",
+  "file": "scripts/seed-additional-tables.js",
+  "line": 4
+ },
+ "S031": {
+  "repo": "bakerydemo",
+  "rule": "CFG001",
+  "file": "Dockerfile",
+  "line": 4
+ },
+ "S032": {
+  "repo": "djangoproject.com",
+  "rule": "DATA001",
+  "file": "releases/tests.py",
+  "line": 389
+ },
+ "S033": {
+  "repo": "pygoat",
+  "rule": "CFG001",
+  "file": "dockerized_labs/open_source_library_attack_lab/Dockerfile",
+  "line": 1
+ },
+ "S034": {
+  "repo": "pygoat",
+  "rule": "CFG001",
+  "file": "dockerized_labs/package_injection_lab/Dockerfile",
+  "line": 1
+ },
+ "S035": {
+  "repo": "flexible-graphrag",
+  "rule": "FE007",
+  "file": "flexible-graphrag-ui/frontend-angular/src/app/components/processing-tab/processing-tab.ts",
+  "line": 486
+ },
+ "S036": {
+  "repo": "flexible-graphrag",
+  "rule": "QA003",
+  "file": "scripts/cleanup.py",
+  "line": 945
+ },
+ "S037": {
+  "repo": "prompt-sculptor-49",
+  "rule": "AUTH005",
+  "file": "supabase/amo-ai-agency-schema.sql",
+  "line": 499
+ },
+ "S038": {
+  "repo": "Vulnerable-Flask-App",
+  "rule": "FE001",
+  "file": "app/static/loader.js",
+  "line": 153
+ },
+ "S039": {
+  "repo": "openai-assistants-quickstart",
+  "rule": "API001",
+  "file": "app/components/file-viewer.tsx",
+  "line": 51
+ },
+ "S040": {
+  "repo": "bakerydemo",
+  "rule": "BE011",
+  "file": "bakerydemo/settings/base.py",
+  "line": 28
+ },
+ "S041": {
+  "repo": "sync-plan-flow",
+  "rule": "QA006",
+  "file": "supabase/functions/_shared/github.ts",
+  "line": 2
+ },
+ "S042": {
+  "repo": "sync-plan-flow",
+  "rule": "AUTH006",
+  "file": "supabase/migrations/20260221000000_create_spf_schema.sql",
+  "line": 211
+ },
+ "S043": {
+  "repo": "flexible-graphrag",
+  "rule": "FE007",
+  "file": "flexible-graphrag-ui/frontend-angular/src/env-config.ts",
+  "line": 26
+ },
+ "S044": {
+  "repo": "werkzeug",
+  "rule": "QA003",
+  "file": "examples/cupoftee/network.py",
+  "line": 108
+ },
+ "S045": {
+  "repo": "helpdesk-flow-verse",
+  "rule": "BE012",
+  "file": "supabase/functions/process-pdf-knowledge/index.ts",
+  "line": 6
+ },
+ "S046": {
+  "repo": "flexible-graphrag",
+  "rule": "CFG010",
+  "file": ".github/workflows/docker-publish.yml",
+  "line": 70
+ },
+ "S047": {
+  "repo": "nodegoat",
+  "rule": "SEC011",
+  "file": "artifacts/db-reset.js",
+  "line": 35
+ },
+ "S048": {
+  "repo": "flexible-graphrag",
+  "rule": "LLM006",
+  "file": "flexible-graphrag/langchain/graph/pg_store_adapters/nebula_adapter.py",
+  "line": 409
+ },
+ "S049": {
+  "repo": "waline",
+  "rule": "QA006",
+  "file": "packages/client/src/pageview.ts",
+  "line": 4
+ },
+ "S050": {
+  "repo": "flexible-graphrag",
+  "rule": "DATA006",
+  "file": "flexible-graphrag/incremental_updates/detectors/alfresco_detector.py",
+  "line": 1380
+ },
+ "S051": {
+  "repo": "careconnect",
+  "rule": "QA011",
+  "file": "src/hooks/use-toast.ts",
+  "line": 145
+ },
+ "S052": {
+  "repo": "next-learn",
+  "rule": "QA006",
+  "file": "dashboard/starter-example/app/ui/dashboard/latest-invoices.tsx",
+  "line": 4
+ },
+ "S053": {
+  "repo": "opengpts",
+  "rule": "QA003",
+  "file": "frontend/src/utils/json-refs.js",
+  "line": 1220
+ },
+ "S054": {
+  "repo": "opengpts",
+  "rule": "CFG002",
+  "file": "tools/redis_to_postgres/Dockerfile",
+  "line": 1
+ },
+ "S055": {
+  "repo": "flexible-graphrag",
+  "rule": "FE007",
+  "file": "flexible-graphrag-ui/frontend-vue/src/components/ProcessingTab.vue",
+  "line": 913
+ },
+ "S056": {
+  "repo": "wsgidav",
+  "rule": "DEP005",
+  "file": "docs/source/requirements.txt",
+  "line": 1
+ },
+ "S057": {
+  "repo": "openui",
+  "rule": "FE005",
+  "file": "frontend/src/lib/webauthn.ts",
+  "line": 71
+ },
+ "S058": {
+  "repo": "alerta",
+  "rule": "DATA001",
+  "file": "alerta/database/backends/mongodb/base.py",
+  "line": 1253
+ },
+ "S059": {
+  "repo": "next-learn",
+  "rule": "AUTH001",
+  "file": "dashboard/final-example/app/lib/actions.ts",
+  "line": 77
+ },
+ "S060": {
+  "repo": "opengpts",
+  "rule": "QA003",
+  "file": "frontend/src/utils/json-refs.js",
+  "line": 9755
+ },
+ "S061": {
+  "repo": "scriptforge-ai",
+  "rule": "LLM004",
+  "file": "supabase/functions/enhance-prompt/index.ts",
+  "line": 12
+ },
+ "S062": {
+  "repo": "flasky",
+  "rule": "UI001",
+  "file": "app/templates/base.html",
+  "line": 38
+ },
+ "S063": {
+  "repo": "flexible-graphrag",
+  "rule": "FE007",
+  "file": "flexible-graphrag-ui/frontend-angular/src/environments/environment.prod.ts",
+  "line": 6
+ },
+ "S064": {
+  "repo": "LinguaLearn",
+  "rule": "BE017",
+  "file": "ml-service/app.py",
+  "line": 298
+ },
+ "S065": {
+  "repo": "djangoproject.com",
+  "rule": "DATA015",
+  "file": "dashboard/views.py",
+  "line": 18
+ },
+ "S066": {
+  "repo": "opengpts",
+  "rule": "UI002",
+  "file": "frontend/src/components/FileUpload.tsx",
+  "line": 55
+ },
+ "S067": {
+  "repo": "sync-plan-flow",
+  "rule": "UI002",
+  "file": "src/components/AppSidebar.tsx",
+  "line": 44
+ },
+ "S068": {
+  "repo": "flexible-graphrag",
+  "rule": "QA003",
+  "file": "flexible-graphrag/main.py",
+  "line": 412
+ },
+ "S069": {
+  "repo": "flexible-graphrag",
+  "rule": "QA003",
+  "file": "flexible-graphrag/main.py",
+  "line": 437
+ },
+ "S070": {
+  "repo": "wsgidav",
+  "rule": "AUTH008",
+  "file": "wsgidav/dc/pam_dc.py",
+  "line": 61
+ },
+ "S071": {
+  "repo": "openai-assistants-quickstart",
+  "rule": "API001",
+  "file": "app/components/file-viewer.tsx",
+  "line": 41
+ },
+ "S072": {
+  "repo": "dvna",
+  "rule": "QA001",
+  "file": "package.json",
+  "line": 1
+ },
+ "S073": {
+  "repo": "microblog",
+  "rule": "REL006",
+  "file": "Dockerfile",
+  "line": 1
+ },
+ "S074": {
+  "repo": "Django-Styleguide-Example",
+  "rule": "CFG006",
+  "file": "config/django/base.py",
+  "line": 28
+ },
+ "S075": {
+  "repo": "thynk",
+  "rule": "DATA013",
+  "file": "backend/redis_client.py",
+  "line": 72
+ },
+ "S076": {
+  "repo": "act-solo-ai",
+  "rule": "FE001",
+  "file": "src/components/practice/rehearsal/textUtils.ts",
+  "line": 86
+ },
+ "S077": {
+  "repo": "chatbot-ui",
+  "rule": "QA002",
+  "file": "package.json",
+  "line": 1
+ },
+ "S078": {
+  "repo": "alerta",
+  "rule": "REL003",
+  "file": "alerta/webhooks/telegram.py",
+  "line": 72
+ },
+ "S079": {
+  "repo": "flexible-graphrag",
+  "rule": "BE001",
+  "file": "flexible-graphrag/incremental_updates/config_manager.py",
+  "line": 193
+ },
+ "S080": {
+  "repo": "werkzeug",
+  "rule": "QA003",
+  "file": "src/werkzeug/urls.py",
+  "line": 191
+ },
+ "S081": {
+  "repo": "taxonomy",
+  "rule": "REL003",
+  "file": "app/api/webhooks/stripe/route.ts",
+  "line": 8
+ },
+ "S082": {
+  "repo": "flexible-graphrag",
+  "rule": "DATA006",
+  "file": "flexible-graphrag/incremental_updates/detectors/alfresco_detector.py",
+  "line": 1440
+ },
+ "S083": {
+  "repo": "alerta",
+  "rule": "DEP005",
+  "file": "requirements-dev.txt",
+  "line": 1
+ },
+ "S084": {
+  "repo": "helpdesk-flow-verse",
+  "rule": "AUTH001",
+  "file": "supabase/functions/ai-pattern-detector/index.ts",
+  "line": 39
+ },
+ "S085": {
+  "repo": "Django-Styleguide-Example",
+  "rule": "CFG001",
+  "file": "docker/production.Dockerfile",
+  "line": 3
+ },
+ "S086": {
+  "repo": "wsgidav",
+  "rule": "QA003",
+  "file": "wsgidav/mw/debug_filter.py",
+  "line": 147
+ },
+ "S087": {
+  "repo": "flexible-graphrag",
+  "rule": "QA003",
+  "file": "flexible-graphrag/cocoindex_integration/_compat.py",
+  "line": 284
+ },
+ "S088": {
+  "repo": "sec-insights",
+  "rule": "BE001",
+  "file": "backend/alembic/versions/663b3fea3024_update_sub_process_columns.py",
+  "line": 53
+ },
+ "S089": {
+  "repo": "flexible-graphrag",
+  "rule": "SEC004",
+  "file": "scripts/mcp/get-transport-token.py",
+  "line": 31
+ },
+ "S090": {
+  "repo": "pygoat",
+  "rule": "BE004",
+  "file": "dockerized_labs/a9_uckv_lab/app.py",
+  "line": 62
+ },
+ "S091": {
+  "repo": "prompt-sculptor-49",
+  "rule": "UI015",
+  "file": "src/components/crm/InvoiceDialog.tsx",
+  "line": 238
+ },
+ "S092": {
+  "repo": "thynk",
+  "rule": "BE017",
+  "file": "backend/main.py",
+  "line": 331
+ },
+ "S093": {
+  "repo": "prompt-sculptor-49",
+  "rule": "DATA012",
+  "file": "supabase/migrations/20251006054217_f3a5b796-77d4-4ef5-854a-82d0560ece28.sql",
+  "line": 128
+ },
+ "S094": {
+  "repo": "flexible-graphrag",
+  "rule": "QA003",
+  "file": "scripts/cleanup.py",
+  "line": 1449
+ },
+ "S095": {
+  "repo": "werkzeug",
+  "rule": "QA003",
+  "file": "examples/cupoftee/db.py",
+  "line": 66
+ },
+ "S096": {
+  "repo": "pygoat",
+  "rule": "SEC004",
+  "file": "dockerized_labs/sec_misconfig/Dockerfile",
+  "line": 13
+ },
+ "S097": {
+  "repo": "express",
+  "rule": "SEC004",
+  "file": "examples/session/index.js",
+  "line": 16
+ },
+ "S098": {
+  "repo": "dvga",
+  "rule": "QA003",
+  "file": "static/jquery/jquery.js",
+  "line": 5121
+ },
+ "S099": {
+  "repo": "vibe-trading",
+  "rule": "QA003",
+  "file": "agent/api_server.py",
+  "line": 602
+ },
+ "S100": {
+  "repo": "flexible-graphrag",
+  "rule": "QA003",
+  "file": "flexible-graphrag/langchain/vector/adapters/chroma_adapter.py",
+  "line": 106
+ },
+ "S101": {
+  "repo": "opengpts",
+  "rule": "LLM003",
+  "file": "backend/app/llms.py",
+  "line": 88
+ },
+ "S102": {
+  "repo": "pygoat",
+  "rule": "SEC003",
+  "file": "dockerized_labs/dependency_attack_lab/app.py",
+  "line": 13
+ },
+ "S103": {
+  "repo": "Vulnerable-Flask-App",
+  "rule": "BE016",
+  "file": "app/app.py",
+  "line": 97
+ },
+ "S104": {
+  "repo": "flexible-graphrag",
+  "rule": "LLM006",
+  "file": "flexible-graphrag/langchain/graph/pg_store_adapters/surrealdb_adapter.py",
+  "line": 199
+ },
+ "S105": {
+  "repo": "Django-Styleguide-Example",
+  "rule": "BE016",
+  "file": "styleguide_example/blog_examples/google_login_server_flow/sdk/services.py",
+  "line": 28
+ },
+ "S106": {
+  "repo": "flexible-graphrag",
+  "rule": "QA003",
+  "file": "flexible-graphrag/main.py",
+  "line": 167
+ },
+ "S107": {
+  "repo": "next-learn",
+  "rule": "FE001",
+  "file": "basics/demo/pages/posts/[id].js",
+  "line": 18
+ },
+ "S108": {
+  "repo": "prompt-sculptor-49",
+  "rule": "SEC003",
+  "file": ".env",
+  "line": 12
+ },
+ "S109": {
+  "repo": "flexible-graphrag",
+  "rule": "LLM006",
+  "file": "flexible-graphrag/langchain/graph/pg_store_adapters/spanner_adapter.py",
+  "line": 70
+ },
+ "S110": {
+  "repo": "opengpts",
+  "rule": "UI002",
+  "file": "frontend/src/components/ChatList.tsx",
+  "line": 88
+ },
+ "S111": {
+  "repo": "waline",
+  "rule": "DATA007",
+  "file": "packages/server/src/config/middleware.js",
+  "line": 8
+ },
+ "S112": {
+  "repo": "helpdesk-flow-verse",
+  "rule": "QA001",
+  "file": "package.json",
+  "line": 1
+ },
+ "S113": {
+  "repo": "dvna",
+  "rule": "BE001",
+  "file": "core/appHandler.js",
+  "line": 11
+ },
+ "S114": {
+  "repo": "careconnect",
+  "rule": "BE018",
+  "file": "supabase/functions/blog-ai-assistant/index.ts",
+  "line": 14
+ },
+ "S115": {
+  "repo": "opengpts",
+  "rule": "REL001",
+  "file": "backend/app/auth/handlers.py",
+  "line": 101
+ },
+ "S116": {
+  "repo": "waline",
+  "rule": "UI014",
+  "file": "packages/admin/src/components/Header.jsx",
+  "line": 93
+ },
+ "S117": {
+  "repo": "helpdesk-flow-verse",
+  "rule": "AUTH001",
+  "file": "supabase/functions/generate-embeddings/index.ts",
+  "line": 11
+ },
+ "S118": {
+  "repo": "flexible-graphrag",
+  "rule": "LLM006",
+  "file": "flexible-graphrag/langchain/graph/rdf_store_adapters/neptune_rdf_adapter.py",
+  "line": 548
+ },
+ "S119": {
+  "repo": "vibe-trading",
+  "rule": "REL001",
+  "file": "agent/src/skills/seasonal/example_signal_engine.py",
+  "line": 114
+ },
+ "S120": {
+  "repo": "llm-examples",
+  "rule": "LLM003",
+  "file": "Chatbot.py",
+  "line": 26
+ },
+ "S121": {
+  "repo": "flexible-graphrag",
+  "rule": "BE001",
+  "file": "flexible-graphrag/langchain/graph/pg_store_adapters/apache_age_adapter.py",
+  "line": 181
+ },
+ "S122": {
+  "repo": "vibe-trading",
+  "rule": "QA003",
+  "file": "agent/api_server.py",
+  "line": 886
+ },
+ "S123": {
+  "repo": "Vulnerable-Flask-App",
+  "rule": "UI001",
+  "file": "app/templates/view.html",
+  "line": 15
+ },
+ "S124": {
+  "repo": "nextjs-subscription-payments",
+  "rule": "BE008",
+  "file": "app/auth/callback/route.ts",
+  "line": 18
+ },
+ "S125": {
+  "repo": "pygoat",
+  "rule": "FE001",
+  "file": "challenge/labs/business_logic_lab/templates/base.html",
+  "line": 37
+ },
+ "S126": {
+  "repo": "alerta",
+  "rule": "DATA006",
+  "file": "alerta/models/alert.py",
+  "line": 378
+ },
+ "S127": {
+  "repo": "damn-vulnerable-llm-agent",
+  "rule": "DEP005",
+  "file": "requirements.txt",
+  "line": 1
+ },
+ "S128": {
+  "repo": "djangoproject.com",
+  "rule": "DATA001",
+  "file": "releases/tests.py",
+  "line": 475
+ },
+ "S129": {
+  "repo": "pygoat",
+  "rule": "AUTH001",
+  "file": "dockerized_labs/a9_uckv_lab/app.py",
+  "line": 74
+ },
+ "S130": {
+  "repo": "alerta",
+  "rule": "QA007",
+  "file": "alerta/auth/basic_ldap.py",
+  "line": 2
+ },
+ "S131": {
+  "repo": "openai-assistants-quickstart",
+  "rule": "API001",
+  "file": "app/components/file-viewer.tsx",
+  "line": 33
+ },
+ "S132": {
+  "repo": "flexible-graphrag",
+  "rule": "QA003",
+  "file": "flexible-graphrag/process/kg_extractor.py",
+  "line": 270
+ },
+ "S133": {
+  "repo": "pygoat",
+  "rule": "SEC011",
+  "file": "dockerized_labs/package_injection_lab/app.py",
+  "line": 12
+ },
+ "S134": {
+  "repo": "waline",
+  "rule": "UI003",
+  "file": "packages/admin/src/components/Header.jsx",
+  "line": 83
+ },
+ "S135": {
+  "repo": "sync-plan-flow",
+  "rule": "UI003",
+  "file": "src/components/TaskCard.tsx",
+  "line": 166
+ },
+ "S136": {
+  "repo": "flexible-graphrag",
+  "rule": "DATA006",
+  "file": "flexible-graphrag/incremental_updates/detectors/filesystem_detector.py",
+  "line": 60
+ },
+ "S137": {
+  "repo": "sync-plan-flow",
+  "rule": "AUTH006",
+  "file": "supabase/migrations/20260221000000_create_spf_schema.sql",
+  "line": 219
+ },
+ "S138": {
+  "repo": "scriptforge-ai",
+  "rule": "BE012",
+  "file": "supabase/functions/payment-webhook/index.ts",
+  "line": 5
+ },
+ "S139": {
+  "repo": "terragoat",
+  "rule": "SEC003",
+  "file": "terraform/azure/mssql.tf",
+  "line": 102
+ },
+ "S140": {
+  "repo": "next-learn",
+  "rule": "UI014",
+  "file": "seo/pages/index.js",
+  "line": 95
+ },
+ "S141": {
+  "repo": "djangoproject.com",
+  "rule": "UI014",
+  "file": "djangoproject/templates/members/corporate_member_badges.html",
+  "line": 44
+ },
+ "S142": {
+  "repo": "pygoat",
+  "rule": "SEC011",
+  "file": "dockerized_labs/broken_auth_lab/app.py",
+  "line": 26
+ },
+ "S143": {
+  "repo": "Vulnerable-Flask-App",
+  "rule": "BE018",
+  "file": "app/app.py",
+  "line": 135
+ },
+ "S144": {
+  "repo": "flexible-graphrag",
+  "rule": "QA003",
+  "file": "flexible-graphrag/langchain/graph/pg_store_adapters/nebula_adapter.py",
+  "line": 91
+ },
+ "S145": {
+  "repo": "flexible-graphrag",
+  "rule": "DATA006",
+  "file": "flexible-graphrag/incremental_updates/detectors/alfresco_detector.py",
+  "line": 1416
+ },
+ "S146": {
+  "repo": "opengpts",
+  "rule": "UI009",
+  "file": "frontend/src/hooks/useChatList.ts",
+  "line": 34
+ },
+ "S147": {
+  "repo": "sec-insights",
+  "rule": "UI002",
+  "file": "frontend/src/components/pdf-viewer/PdfOptionsBar.tsx",
+  "line": 125
+ },
+ "S148": {
+  "repo": "pygoat",
+  "rule": "FE001",
+  "file": "dockerized_labs/xss_lab/templates/base.html",
+  "line": 26
+ },
+ "S149": {
+  "repo": "LinguaLearn",
+  "rule": "DATA012",
+  "file": "supabase/migrations/001_initial_schema.sql",
+  "line": 77
+ },
+ "S150": {
+  "repo": "flexible-graphrag",
+  "rule": "QA003",
+  "file": "flexible-graphrag/cocoindex_integration/pipeline/env_config.py",
+  "line": 46
+ }
+}
