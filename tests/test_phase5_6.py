@@ -104,8 +104,8 @@ def test_phase5_csharp_aspnet_efcore(tmp_path):
     write(tmp_path, "Views/Home.cshtml", "<div>@Html.Raw(Model.Bio)</div>\n")
     res, all_r = _rules(tmp_path)
     ids = {r for _f, _ln, r in all_r}
-    assert {"AUTH001", "BE001", "BE002", "DATA001", "REL001", "FE001"} <= ids
-    assert any(r.path == "/api/orders/create" and r.framework == "aspnet" for r in res.routes)
+    assert {"CSHARP001", "BE001", "BE002", "DATA001", "REL001", "FE001"} <= ids  # no authorization anywhere
+    assert any(r.path == "/api/orders/create" and r.framework.startswith("aspnet") for r in res.routes)
 
 
 # -------------------------------------------------------------- Phase 5: Rust

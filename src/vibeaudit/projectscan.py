@@ -438,7 +438,7 @@ class ProjectScanner:
             elif is_admin and not H.ADMIN_ROLE_EVIDENCE.search(r.body) and (roles or not r.has_auth):
                 msg = "has no authentication or role check" if not r.has_auth else "checks login but not the admin role"
                 self.add(r.file, r.line, "AUTH002", f"{'/'.join(r.methods)} {path} {msg}.")
-            elif mutating and not r.has_auth and not public and r.framework != "spring-unsecured":  # JAVA001 covers those
+            elif mutating and not r.has_auth and not public and not r.framework.endswith("-unsecured"):  # JAVA001/CSHARP001
                 what = "has no authentication check" if writes else "calls a paid AI API without an authentication check"
                 self.add(r.file, r.line, "AUTH001", f"{'/'.join(r.methods)} {path} {what}.")
             elif mutating and r.has_auth and r.params and r.methods != ["POST"]:
