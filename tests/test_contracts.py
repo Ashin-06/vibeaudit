@@ -58,9 +58,15 @@ def test_code_defined_routes_only_count_without_router_prefixes(tmp_path):
     write(tmp_path, "app.py", "from flask import Flask\napp = Flask(__name__)\n\n@app.post('/api/notes')\ndef notes():\n    return ''\n")
     write(tmp_path, "web/notes.js", 'export const list = () => fetch("/api/notes");\nexport const old = () => fetch("/api/note");\n')
     assert _rules(tmp_path) == [("web/notes.js", 1, "API002"), ("web/notes.js", 2, "API001")]
-    # a blueprint may add a prefix the scanner does not resolve: stay quiet rather than guess
-    write(tmp_path, "admin.py", "from flask import Blueprint\nbp = Blueprint('admin', __name__, url_prefix='/admin')\n")
+    # a blueprint with routes that is never registered: its paths are unknown, so stay quiet rather than guess
+    write(tmp_path, "admin.py", "from flask import Blueprint\nbp = Blueprint('admin', __name__, url_prefix='/admin')\n\n"
+                                "@bp.get('/stats')\ndef stats():\n    return ''\n")
     assert _rules(tmp_path) == []
+    # registered: resolved to /admin/stats, so the calls are checked again
+    write(tmp_path, "app.py", "from flask import Flask\nfrom admin import bp\napp = Flask(__name__)\napp.register_blueprint(bp)\n\n"
+                              "@app.post('/api/notes')\ndef notes():\n    return ''\n")
+    write(tmp_path, "web/stats.js", 'export const s = () => fetch("/admin/stats");\n')
+    assert _rules(tmp_path) == [("web/notes.js", 1, "API002"), ("web/notes.js", 2, "API001")]
 
 
 def test_domain_scores_in_reports():

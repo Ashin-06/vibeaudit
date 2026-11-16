@@ -18,7 +18,7 @@ from . import heuristics as H
 from .guard import GUARD, finditer
 from .files import Project, SourceFile
 from .lexer import Views, first_arg, js_views, match_close, split_args, stmt_end
-from .model import Finding, Route
+from .model import Finding, Route, join_path
 
 Emit = Callable[[Finding], None]
 CALL_ROUNDS = 3  # calls followed from a source to a sink
@@ -67,6 +67,7 @@ FRAMEWORK_FILE = re.compile(
 )
 ROUTE_CALL = re.compile(r"\b([A-Za-z_$][\w$]*)\s*\.\s*(get|post|put|patch|delete|all)\s*\(\s*(['\"`])([^'\"`\n]*)\3")
 ROUTER_NAME = re.compile(r"^(?:app|router|server|api|fastify|route|routes|hono|r|\w*Router|\w*router|\w*App|\w*Routes|\w*routes|\w*Api|\w*api)$")
+ROUTER_DEF = re.compile(r"\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*(?:new\s+)?(?:express\s*\.\s*)?Router\s*\(")
 USE_CALL = re.compile(r"\b([A-Za-z_$][\w$]*)\s*\.\s*use\s*\(")
 IMPORT_DEFAULT = re.compile(r"""\bimport\s+([A-Za-z_$][\w$]*)(?:\s*,\s*\{[^}]*\})?\s+from\s+['"]([^'"]+)['"]""")
 CALL_SITE = re.compile(r"(?<![\w$.])([A-Za-z_$][\w$]*)\s*\(")  # a plain call `name(` (not `obj.name(`)
@@ -301,7 +302,69 @@ class JsScanner:
         for fs in self.files:
             if not fs.sf.is_test:
                 GUARD.run(fs.sf.rel, "JavaScript checks", self._check_file, fs)
+        GUARD.run("<project>", "Express router prefixes", self.resolve_prefixes)
         return self.routes
+
+    def resolve_prefixes(self) -> None:
+        """Express: `app.use('/api/users', usersRouter)` where usersRouter is an `express.Router()` of this file
+        or imported from a project file, also through nested routers. Routes on a router get the prefix; a router
+        mounted twice, not at all, or with a prefix that is not a string literal keeps its own paths, unresolved."""
+        by_rel = {fs.sf.rel: fs for fs in self.files}
+        routers: Dict[str, Set[str]] = {}  # file -> its router variables
+        for fs in self.files:
+            for m in finditer(ROUTER_DEF, fs.v.code):
+                routers.setdefault(fs.sf.rel, set()).add(m.group(1))
+        mounts: Dict[Tuple[str, str], List[Tuple[Optional[Tuple[str, str]], Optional[str]]]] = {}
+        for fs in self.files:
+            imports = None
+            for m in finditer(USE_CALL, fs.v.bare):
+                args = self.call_args(fs, m.end() - 1)
+                if len(args) < 2:
+                    continue
+                first = args[0][0].strip()
+                prefix = first[1:-1] if is_static_string(first) and "${" not in first else None
+                if prefix is None and not first.startswith(("'", '"', "`")):
+                    continue  # app.use(middleware): no path
+                child_name = args[-1][0].strip()
+                if not re.fullmatch(r"[A-Za-z_$][\w$]*", child_name):
+                    continue
+                child = None
+                if child_name in routers.get(fs.sf.rel, set()):
+                    child = (fs.sf.rel, child_name)
+                else:
+                    imports = imports if imports is not None else self.imports(fs)
+                    target = self.resolve_import(fs, imports[child_name]) if child_name in imports else None
+                    if target in routers and len(routers[target]) == 1:
+                        child = (target, next(iter(routers[target])))
+                if child is None:
+                    continue
+                parent_obj = m.group(1)
+                parent = (fs.sf.rel, parent_obj) if parent_obj in routers.get(fs.sf.rel, set()) else None
+                mounts.setdefault(child, []).append((parent, prefix))
+
+        def full(router: Tuple[str, str], depth: int = 0) -> Optional[str]:
+            found = mounts.get(router, [])
+            if len(found) != 1 or depth > 8 or found[0][1] is None:
+                return None
+            parent, prefix = found[0]
+            base = "" if parent is None else full(parent, depth + 1)
+            return None if base is None else join_path(base, prefix or "")
+
+        for r in self.routes:
+            if r.framework != "express":
+                r.prefix_resolved = True  # type: ignore[attr-defined]  # file-based and other frameworks
+                continue
+            fs = by_rel.get(r.file)
+            line = fs.sf.line(r.line) if fs else ""
+            m = ROUTE_CALL.search(line)
+            obj = m.group(1) if m else None
+            if obj in routers.get(r.file, set()):
+                prefix = full((r.file, obj))  # type: ignore[arg-type]
+                if prefix is not None:
+                    r.path = join_path(prefix, r.path)
+                r.prefix_resolved = prefix is not None  # type: ignore[attr-defined]
+            else:
+                r.prefix_resolved = True  # type: ignore[attr-defined]  # on the app itself
 
     def _load(self, sf: SourceFile) -> None:
         v = sf.cache.get("js_views") or js_views(sf.text or "")
