@@ -39,6 +39,9 @@ UNTRUSTED_EXPR = re.compile(
 )
 
 
+TEST_SOURCE_EXTS = (".cs", ".java", ".kt", ".go", ".rs", ".php")
+
+
 class ProjectScanner:
     def __init__(self, project: Project, emit: Emit, routes: List[Route]):
         self.p = project
@@ -387,7 +390,8 @@ class ProjectScanner:
         sources = [f for f in self.p.files if f.kind in ("py", "js") and not f.is_test and not re.search(r"\.config\.[cm]?[jt]s$|(?:^|/)(?:setup|conftest|manage)\.py$", f.rel)]
         if len(sources) < 3:
             return
-        has_tests = any(f.is_test and f.kind in ("py", "js") and not re.search(r"(?:^|/)(?:fixtures?|mocks?|__mocks__|testdata)/", f.rel) for f in self.p.files) \
+        # tests in any language count: a Python or JavaScript front end of a C# or Java service tested in that language
+        has_tests = any(f.is_test and (f.kind in ("py", "js") or f.rel.endswith(TEST_SOURCE_EXTS)) and not re.search(r"(?:^|/)(?:fixtures?|mocks?|__mocks__|testdata)/", f.rel) for f in self.p.files) \
             or any(TEST_CONFIG.search(f.rel) for f in self.p.files)
         anchor = self.p.anchor()
         if not has_tests:

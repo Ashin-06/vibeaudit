@@ -225,7 +225,8 @@ class SecretScanner:
                     name, val = m.group(1), m.group(2)
                     low = val.lower()
                     same = re.sub(r"[\W_]", "", low) == re.sub(r"[\W_]", "", name.lower())
-                    if (" " in val or same or low in DEFAULT_PASSWORD_VALUES
+                    # a message ("Password is required", or the same in Chinese or Japanese, which has no spaces)
+                    if (" " in val or not val.isascii() or same or low in DEFAULT_PASSWORD_VALUES
                             or H.PLACEHOLDER.search(val) or re.match(r"^[\w.]+\(|^\$|^%|^\{", val)):
                         continue
                     if once(m.start()):

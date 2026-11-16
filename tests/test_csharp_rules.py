@@ -72,7 +72,7 @@ app.Run();
 def write(root, rel, text):
     p = root / rel
     p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(text)
+    p.write_text(text, encoding="utf-8")
 
 
 def found(root):
@@ -202,3 +202,27 @@ def test_repeated_json_record_keys_are_not_secrets(tmp_path):
     write(tmp_path, "contract/captures/releases.json", '{\n  "releases": [\n' + rows + "\n  ]\n}\n")
     write(tmp_path, "config/app.json", '{\n  "token": "5f3a9c2e7b1d4086a2c4e6f8091b3d5e"\n}\n')
     assert sorted(x[0] for x in found(tmp_path) if x[2] == "SEC003") == ["config/app.json"]
+
+
+def test_dotnet_test_projects_are_tests(tmp_path):
+    for i in range(3):
+        write(tmp_path, f"Todo.Web/wwwroot/js/app{i}.js", f"export const a{i} = {i};\n")
+    write(tmp_path, "Todo.Api/Program.cs", "var app = WebApplication.Create();\napp.Run();\n")
+    write(tmp_path, "Todo.Api.Tests/TestHelper.cs",
+          "class TestHelper {\n  const string ApiToken = \"9f2c4e6a8b1d3f5a7c9e0b2d4f6a8c1e\";\n}\n")
+    f = found(tmp_path)
+    assert not [x for x in f if x[2] in ("QA001", "SEC003")]
+
+
+# found on the front ends of the C# corpus
+def test_validation_messages_and_placeholders_are_not_secrets_or_calls(tmp_path):
+    write(tmp_path, "web/src/UserModal.tsx",
+          "export function v(formData) {\n  const newErrors = {};\n"
+          "  if (!formData.password) {\n    newErrors.password = \"\u8bf7\u8f93\u5165\u5bc6\u7801\";\n  }\n"
+          "  const password = \"hunter2Xq9\";\n  return newErrors;\n}\n")
+    write(tmp_path, "web/src/AccountModal.tsx",
+          "\"use client\";\nexport const F = () => <input placeholder=\"\u4f8b\u5982\uff1ahttps://api.openai.com/v1\" />;\n"
+          "export const G = () => fetch(\"https://api.openai.com/v1/chat/completions\");\n")
+    f = found(tmp_path)
+    assert [x[1] for x in f if x[2] == "SEC011"] == [6]
+    assert [x[1] for x in f if x[2] == "FE002"] == [3]

@@ -23,6 +23,8 @@ from .model import Finding, Route, join_path
 Emit = Callable[[Finding], None]
 CALL_ROUNDS = 3  # calls followed from a source to a sink
 
+# an open placeholder attribute right before a match: an example in an input, placeholder="e.g. https://..."
+PLACEHOLDER_OPEN = re.compile(r"\bplaceholder\s*=\s*\{?\s*['\"`][^'\"`\n]{0,200}$")
 USER_SRC = re.compile(
     r"\b(?:req|request)\s*\.\s*(?:body|query|params|headers|cookies|files?)\b"
     r"|\b(?:req|request)\s*\.\s*(?:json|formData|text)\s*\(\s*\)"
@@ -907,6 +909,8 @@ class JsScanner:
                 line = fs.sf.line_at(m.start())
                 if line in seen_lines or "dangerouslyAllowBrowser" in fs.sf.line(line):
                     continue
+                if PLACEHOLDER_OPEN.search(code, max(0, m.start() - 220), m.start()):
+                    continue  # an example shown in an input (placeholder="e.g. https://api.openai.com/v1"), not a call
                 seen_lines.add(line)
                 self.add(fs, "FE002", m.start(), "AI provider called directly from browser code; the key is exposed to every visitor.")
             m = re.search(r"\brole\s*:\s*['\"]system['\"]\s*,\s*content\s*:\s*['\"`][^'\"`]{20,}"
