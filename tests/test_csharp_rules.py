@@ -226,3 +226,18 @@ def test_validation_messages_and_placeholders_are_not_secrets_or_calls(tmp_path)
     f = found(tmp_path)
     assert [x[1] for x in f if x[2] == "SEC011"] == [6]
     assert [x[1] for x in f if x[2] == "FE002"] == [3]
+
+
+def test_export_const_enum_is_an_export(tmp_path):
+    write(tmp_path, "package.json", '{"name": "w", "private": true, "dependencies": {"react": "18.0.0"}}\n')
+    write(tmp_path, "src/State.ts", "export const enum BuiltInPlugins {\n  A = 'a',\n}\n")
+    write(tmp_path, "src/slice.ts", "import { BuiltInPlugins } from './State';\nexport const x = BuiltInPlugins.A;\n")
+    assert not [x for x in found(tmp_path) if x[2] == "QA006"]
+
+
+def test_localhost_placeholder_and_server_render_fallback(tmp_path):
+    write(tmp_path, "web/src/conn.ts",
+          "\"use client\";\nexport const a = typeof window === \"undefined\" ? \"http://localhost\" : window.location.origin;\n"
+          "export const F = () => <input placeholder=\"http://localhost:9117/api\" />;\n"
+          "export const api = \"http://localhost:8080/api\";\n")
+    assert [x[1] for x in found(tmp_path) if x[2] == "FE007"] == [4]

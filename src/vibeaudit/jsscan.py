@@ -1054,6 +1054,11 @@ class JsScanner:
                 self.add(fs, "FE005", m.start(), "Auth token stored in localStorage.")
             for m in finditer(r"""['"`]https?://(?:localhost|127\.0\.0\.1)(?::\d+)?[/'"`]""", code):
                 line = sf.line(sf.line_at(m.start()))
+                if PLACEHOLDER_OPEN.search(code, max(0, m.start() - 220), m.start() + 1):  # the match opens the quote
+                    continue  # an example in an input: placeholder="http://localhost:9117/..."
+                # the server-render fallback beside window.location.origin, never used in the browser
+                if re.search(r"typeof\s+window\s*===?\s*['\"]undefined['\"]", line):
+                    continue
                 if not re.search(r"process\.env|import\.meta\.env|NODE_ENV|\bdev\b|__DEV__|isDev|development", line, re.I):
                     self.add(fs, "FE007", m.start(), "Hardcoded localhost URL in frontend code.")
             for m in finditer(r"\b(?:SUPABASE_)?SERVICE_ROLE(?:_KEY)?\b|\bserviceRoleKey\b", code):
