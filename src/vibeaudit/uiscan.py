@@ -17,6 +17,17 @@ Emit = Callable[[Finding], None]
 
 SKIP_PATH = re.compile(r"(?i)(?:^|/)(?:tests?|__tests__|stories|storybook|mocks?|__mocks__|fixtures?|examples?|demos?|docs?)/|\.stories\.|\.test\.|\.spec\.")
 JSX_EXT = re.compile(r"\.(?:jsx|tsx)$")
+SFC_EXT = re.compile(r"\.(?:vue|svelte)$")
+# Vue (@click, v-on:click) and Svelte (on:click, Svelte 5 onclick) event attributes, with optional modifiers
+SFC_CLICK = re.compile(r"(?:@click|v-on:click|\bon:click|\bonclick)(?:\.[\w.]+)?\s*=")
+SFC_KEYBOARD = re.compile(r"(?:@key(?:down|up|press)|v-on:key\w+|\bon:key\w+|\bonkey\w+)(?:\.[\w.]+)?\s*=|(?<![\w-]):?role\s*=|\btabindex\s*=")
+SFC_TAG = re.compile(r"<(div|span|li|td|tr|p|section|article|img|input|select|textarea|a)\b[^<>]{0,3000}>")
+SFC_EMPTY = re.compile(r"""(?:@click|v-on:click|\bon:click|\bonclick)(?:\.[\w.]+)?\s*=\s*["{]\s*\(\s*\w*\s*\)\s*=>\s*(?:\{\s*\}|console\.log\([^()]{0,200}\))\s*["}]""")
+SFC_DESTRUCTIVE = re.compile(r"""(?:@click|v-on:click|\bon:click|\bonclick)(?:\.[\w.]+)?\s*=\s*["{]\s*(?:\(\s*\w*\s*\)\s*=>\s*)?((?:handle|on)?(?:[Dd]elete|[Dd]estroy|[Pp]urge|[Ww]ipe)\w*)\b""")
+SFC_INDEX_KEY = re.compile(r"""v-for\s*=\s*["']\s*\(\s*\w+\s*,\s*(\w+)\s*\)\s+(?:in|of)\s+(\w+)[^"']*["'][^<>]{0,400}?:key\s*=\s*["']\s*\1\s*["']"""
+                           r"""|\{#each\s+(\w+)\s+as\s+\w+\s*,\s*(\w+)\s*\(\s*\4\s*\)\s*\}""")
+SFC_MOUNT = re.compile(r"\bonMount(?:ed)?\s*\(")
+SFC_CLEANUP = re.compile(r"\bon(?:Unmounted|BeforeUnmount|Destroy|Deactivated)\s*\(")
 MARKUP_EXT = re.compile(r"\.(?:html?|vue|svelte|astro|jinja2?|j2|hbs|ejs)$")
 TAG = re.compile(r"<(img|Image|input|select|textarea|div|span|li|td|tr|p|section|article|a|button)\b")
 NON_INTERACTIVE = {"div", "span", "li", "td", "tr", "p", "section", "article", "img"}
@@ -85,6 +96,8 @@ class UiScanner:
                 continue
             if JSX_EXT.search(sf.rel) or (sf.kind == "js" and re.search(r"""from\s+['"]react['"]""", sf.text)):
                 GUARD.run(sf.rel, "UI checks", self._jsx, sf)
+            elif SFC_EXT.search(sf.rel):
+                GUARD.run(sf.rel, "UI checks", self._sfc, sf)
             elif MARKUP_EXT.search(sf.rel):
                 GUARD.run(sf.rel, "UI checks", self._markup, sf)
             elif sf.rel.endswith((".css", ".scss")) and not sf.rel.endswith(".min.css") and not sf.is_vendored:
@@ -230,6 +243,51 @@ class UiScanner:
         m = LOREM.search(text)
         if m:
             self.add(sf, "UI010", sf.line_at(m.start()), "Placeholder text (lorem ipsum) is still in the UI.")
+
+    # ------------------------------------------------- Vue and Svelte files
+    def _sfc(self, sf: SourceFile) -> None:
+        """Single-file components: the markup checks, plus the template and script checks the JSX path does,
+        with Vue (@click, v-for, onMounted) and Svelte (on:click, {#each}, onMount) syntax."""
+        self._markup(sf)
+        text = re.sub(r"(?s)<!--.*?-->", lambda m: re.sub(r"[^\n]", " ", m.group(0)), sf.text or "")
+        for m in finditer(SFC_TAG, text):
+            name, attrs = m.group(1), m.group(0)
+            line = sf.line_at(m.start())
+            if name in NON_INTERACTIVE and SFC_CLICK.search(attrs) and not SFC_KEYBOARD.search(attrs) \
+                    and not re.search(r"(?:@click|v-on:click|on:click)\.(?:self|stop)\b", attrs):  # backdrop or swallow
+                self.add(sf, "UI002", line, f"<{name}> with a click handler cannot be reached or used with the keyboard.")
+            if name in ("input", "select", "textarea") and self._unlabeled(attrs, attrs, text, m.start()):
+                self.add(sf, "UI003", line, f"<{name}> has no label, aria-label or id that a <label> could point to.")
+            if name == "a" and re.search(r"""\bhref\s*=\s*["']#["']""", attrs) and not SFC_CLICK.search(attrs):
+                self.add(sf, "UI004", line, "Link with href=\"#\" and no click handler does nothing.")
+        for m in finditer(SFC_EMPTY, text):
+            self.add(sf, "UI004", sf.line_at(m.start()), "This control's click handler does nothing (empty or only logs).")
+        if not CONFIRMATION.search(text):
+            m = SFC_DESTRUCTIVE.search(text)
+            if m:
+                self.add(sf, "UI006", sf.line_at(m.start()), f"`{m.group(1)}` runs straight from a click, with no confirmation or undo.")
+        for m in finditer(SFC_INDEX_KEY, text):
+            items = m.group(2) or m.group(3)
+            body = text[m.end():m.end() + 1500]
+            if re.search(r"<(?:input|textarea|select)\b|v-model|bind:value", body) and re.search(
+                    r"\b" + re.escape(items) + r"\s*(?:\.value\s*)?(?:\.splice\s*\(|=\s*" + re.escape(items) + r"(?:\.value)?\s*\.\s*(?:filter|toSorted|reverse)\s*\()", text):
+                self.add(sf, "UI005", sf.line_at(m.start()),
+                         f"Items of `{items}` hold input state, are removed or reordered, and use the list index as key.")
+        mounted = None
+        for m in finditer(SFC_MOUNT, text):
+            close = text.find("\n})", m.end())  # the hook's body ends at the first `})` at the start of a line
+            body = text[m.end():close if close > 0 else m.end() + 3000]
+            sub = SUBSCRIBE.search(body)
+            if sub and not SFC_CLEANUP.search(text) and not re.search(r"\breturn\s*(?:\(\s*\)\s*=>|function|\w+)", body):
+                self.add(sf, "UI008", sf.line_at(m.start()),
+                         f"`{sub.group(0).strip(' (.')}` is started on mount but never stopped; it leaks and keeps running.")
+            if mounted is None and FETCH.search(body):
+                mounted = m.start()
+        if mounted is not None:
+            missing = [what for what, rx in (("loading", LOADING), ("error", ERROR_STATE)) if not rx.search(text)]
+            if missing:
+                self.add(sf, "UI009", sf.line_at(mounted), f"Data is fetched with no {' or '.join(missing)} state; users see a blank or stale screen.")
+        self._focus_classes(sf, text)
 
     # -------------------------------------------------------------- markup
     def _markup(self, sf: SourceFile) -> None:

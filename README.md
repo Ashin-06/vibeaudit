@@ -659,8 +659,8 @@ How it reads code:
   URLconfs) are not resolved yet, so the frontend-backend contract rules only run when routes are
   file-based (Next.js, SvelteKit) or the project has no prefixes. Django URLconf views, NestJS and Remix
   routes are only partly covered.
-- UI rules cover React, Next.js and HTML templates; Vue, Svelte and Astro files get only the alt-text and
-  placeholder checks.
+- UI rules cover React, Next.js, Vue and Svelte single-file components (templates and `onMounted`/`onMount`
+  hooks) and HTML templates; Astro files get only the alt-text and placeholder checks.
 - The per-file time budget is checked between regex matches and statements; a single regex step cannot be
   interrupted, which is why every pattern is tested for linear time.
 

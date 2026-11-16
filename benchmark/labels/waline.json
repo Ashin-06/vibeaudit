@@ -641,6 +641,46 @@
    "fingerprint": "1a3c27bf02283553262a12a176a2a33e",
    "verdict": "fp",
    "reason": "An optional local config.js loaded inside try/catch."
+  },
+  {
+   "rule": "UI002",
+   "file": "packages/client/src/components/ArticleReaction.vue",
+   "line": 135,
+   "fingerprint": "4d52c6fe47c16cbf9c2db6cc1c7270d5",
+   "verdict": "tp",
+   "reason": "A reaction <li> votes on click with no role, tabindex or key handler."
+  },
+  {
+   "rule": "UI003",
+   "file": "packages/client/src/components/CommentBox.vue",
+   "line": 724,
+   "fingerprint": "f6a7c5b53337094225f3dcf09b8738a4",
+   "verdict": "tp",
+   "reason": "The GIF search input has only a placeholder, no label or aria-label."
+  },
+  {
+   "rule": "UI002",
+   "file": "packages/client/src/components/ImageWall.vue",
+   "line": 143,
+   "fingerprint": "fe6b1b82517acfc4a98dbbf243a217ee",
+   "verdict": "tp",
+   "reason": "A gallery <img> inserts the image on click; it cannot be reached with the keyboard."
+  },
+  {
+   "rule": "UI002",
+   "file": "packages/client/src/components/WalineComment.vue",
+   "line": 285,
+   "fingerprint": "3aab05cd16dd22a5ad51f03f39ca6f3a",
+   "verdict": "tp",
+   "reason": "Sort options are <li> elements with only a click handler."
+  },
+  {
+   "rule": "UI002",
+   "file": "packages/client/src/widgets/star/WalineStarWidget.vue",
+   "line": 137,
+   "fingerprint": "01fe1f0846e978df8ee3cb5843f6777f",
+   "verdict": "tp",
+   "reason": "The star rating is set by mouse only: a <div> with click and mousemove handlers."
   }
  ]
 }

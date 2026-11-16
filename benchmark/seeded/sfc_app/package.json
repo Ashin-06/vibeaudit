@@ -1,0 +1,1 @@
+{"name": "sfc-app", "private": true, "dependencies": {"vue": "latest", "svelte": "latest", "axios": "latest"}}
