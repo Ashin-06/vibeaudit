@@ -1,0 +1,654 @@
+{
+ "repo": "ClaudeCodeProxy",
+ "commit": "2e82035810646ab9e2bf95aedb9137100c8e4456",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yml",
+   "line": 37,
+   "fingerprint": "ba8c8560dfb6ac0e557a3fc198503ffa",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yml",
+   "line": 40,
+   "fingerprint": "2287d158534187c0bc8d1b0a75524242",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yml",
+   "line": 47,
+   "fingerprint": "8c6395cfffc36b0f199e4ad8063eaadf",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yml",
+   "line": 79,
+   "fingerprint": "4440e2a15ee2962f918f0ad208f70b7a",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yml",
+   "line": 82,
+   "fingerprint": "5623ebe969755d5d41ef6e45f0de6bf1",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yml",
+   "line": 89,
+   "fingerprint": "c729398bb555948e261110e5a17cde66",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yml",
+   "line": 95,
+   "fingerprint": "a40341d87316aa1c643283411d69342d",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yml",
+   "line": 103,
+   "fingerprint": "6b4d06acd5016af4e577f7722ae52fd6",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yml",
+   "line": 111,
+   "fingerprint": "0afcdfdcd349ac1f6eb246ed810722e8",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yml",
+   "line": 187,
+   "fingerprint": "95d69abf6281b90ade7192ca245c984f",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "QA001",
+   "file": "README.md",
+   "line": 1,
+   "fingerprint": "1aada19653c4c2e2231cce91a63a2544",
+   "verdict": "tp",
+   "reason": "No automated tests."
+  },
+  {
+   "rule": "CFG001",
+   "file": "src/ClaudeCodeProxy.Host/Dockerfile",
+   "line": 27,
+   "fingerprint": "2f9ae339cda39b6aab815d0cf297c693",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "src/ClaudeCodeProxy.Host/Endpoints/AccountEndpoints.cs",
+   "line": 45,
+   "fingerprint": "d9bdb84e5a4950c1573266517446af2b",
+   "verdict": "tp",
+   "reason": "The endpoint changes data and nothing checks a login."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "src/ClaudeCodeProxy.Host/Endpoints/AccountEndpoints.cs",
+   "line": 53,
+   "fingerprint": "6750f295998d91ad66bc349012619ecb",
+   "verdict": "tp",
+   "reason": "The endpoint changes data and nothing checks a login."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "src/ClaudeCodeProxy.Host/Endpoints/AccountEndpoints.cs",
+   "line": 79,
+   "fingerprint": "e41e2289df3c05e0265b4a4ade0b1d55",
+   "verdict": "tp",
+   "reason": "The endpoint changes data and nothing checks a login."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "src/ClaudeCodeProxy.Host/Endpoints/AccountEndpoints.cs",
+   "line": 86,
+   "fingerprint": "fb3cfb3fa1e5906762fbfc442d554cd0",
+   "verdict": "tp",
+   "reason": "The endpoint changes data and nothing checks a login."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "src/ClaudeCodeProxy.Host/Endpoints/AccountEndpoints.cs",
+   "line": 93,
+   "fingerprint": "3ebfcde752e4560ddbeaf3d2e2d90c39",
+   "verdict": "tp",
+   "reason": "The endpoint changes data and nothing checks a login."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "src/ClaudeCodeProxy.Host/Endpoints/AccountEndpoints.cs",
+   "line": 100,
+   "fingerprint": "2c011a9d1d1617a465d7e207a25bc668",
+   "verdict": "tp",
+   "reason": "The endpoint changes data and nothing checks a login."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "src/ClaudeCodeProxy.Host/Endpoints/AccountEndpoints.cs",
+   "line": 108,
+   "fingerprint": "29fd566ad83a5ba2e32ffd2689676195",
+   "verdict": "tp",
+   "reason": "The endpoint changes data and nothing checks a login."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "src/ClaudeCodeProxy.Host/Endpoints/AccountEndpoints.cs",
+   "line": 116,
+   "fingerprint": "e50a2c8bc432042e3feeee24912a462f",
+   "verdict": "tp",
+   "reason": "The endpoint changes data and nothing checks a login."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "src/ClaudeCodeProxy.Host/Endpoints/AccountEndpoints.cs",
+   "line": 124,
+   "fingerprint": "41ddc894e0cd40218e0d95b99b3ff012",
+   "verdict": "tp",
+   "reason": "The endpoint changes data and nothing checks a login."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "src/ClaudeCodeProxy.Host/Endpoints/ApiKeyEndpoints.cs",
+   "line": 45,
+   "fingerprint": "4fced40b149f472e3ff62feaf8012b1e",
+   "verdict": "tp",
+   "reason": "The endpoint changes data and nothing checks a login."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "src/ClaudeCodeProxy.Host/Endpoints/ApiKeyEndpoints.cs",
+   "line": 53,
+   "fingerprint": "3440468654624bf979873eb69a9c65c7",
+   "verdict": "tp",
+   "reason": "The endpoint changes data and nothing checks a login."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "src/ClaudeCodeProxy.Host/Endpoints/ApiKeyEndpoints.cs",
+   "line": 60,
+   "fingerprint": "e897596900a576c0a87c879401e45aac",
+   "verdict": "tp",
+   "reason": "The endpoint changes data and nothing checks a login."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "src/ClaudeCodeProxy.Host/Endpoints/ApiKeyEndpoints.cs",
+   "line": 67,
+   "fingerprint": "047644a5dd3d95d0dbce6b377310ac55",
+   "verdict": "tp",
+   "reason": "The endpoint changes data and nothing checks a login."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "src/ClaudeCodeProxy.Host/Endpoints/ApiKeyEndpoints.cs",
+   "line": 74,
+   "fingerprint": "1e7356cc12f646849b7b417b05623908",
+   "verdict": "tp",
+   "reason": "The endpoint changes data and nothing checks a login."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "src/ClaudeCodeProxy.Host/Endpoints/ApiKeyEndpoints.cs",
+   "line": 101,
+   "fingerprint": "74725d472ac375113aa1af140c95206d",
+   "verdict": "tp",
+   "reason": "The endpoint changes data and nothing checks a login."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "src/ClaudeCodeProxy.Host/Endpoints/ApiKeyEndpoints.cs",
+   "line": 109,
+   "fingerprint": "88f197bfe70e4d13138ae82fc9336cff",
+   "verdict": "tp",
+   "reason": "The endpoint changes data and nothing checks a login."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/ClaudeCodeProxy.Host/Endpoints/RoleEndpoints.cs",
+   "line": 117,
+   "fingerprint": "c8927acf8705d54ddc7843bb102e232d",
+   "verdict": "tp",
+   "reason": "The record is changed by id with no check that it belongs to the caller."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/ClaudeCodeProxy.Host/Endpoints/UserAccountBindingEndpoints.cs",
+   "line": 85,
+   "fingerprint": "aba01ac72b69544f3191513dee905012",
+   "verdict": "tp",
+   "reason": "The record is changed by id with no check that it belongs to the caller."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/ClaudeCodeProxy.Host/Endpoints/UserAccountBindingEndpoints.cs",
+   "line": 111,
+   "fingerprint": "6c950737ee56984226fba78b22cf4d81",
+   "verdict": "tp",
+   "reason": "The record is changed by id with no check that it belongs to the caller."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/ClaudeCodeProxy.Host/Endpoints/UserAccountBindingEndpoints.cs",
+   "line": 138,
+   "fingerprint": "1ebe706baae1f01991b7553ad523510d",
+   "verdict": "tp",
+   "reason": "The record is changed by id with no check that it belongs to the caller."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/ClaudeCodeProxy.Host/Endpoints/UserEndpoints.cs",
+   "line": 52,
+   "fingerprint": "90585a75d768f28fb4b89d4a83971c32",
+   "verdict": "tp",
+   "reason": "The record is changed by id with no check that it belongs to the caller."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/ClaudeCodeProxy.Host/Endpoints/UserEndpoints.cs",
+   "line": 64,
+   "fingerprint": "223dcaf0a0a23e17d59cfbbafdc3b0bd",
+   "verdict": "tp",
+   "reason": "The record is changed by id with no check that it belongs to the caller."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/ClaudeCodeProxy.Host/Endpoints/UserEndpoints.cs",
+   "line": 76,
+   "fingerprint": "b6b9ff0130a176c9a858c82f08d1f588",
+   "verdict": "fp",
+   "reason": "Changing the password needs the current password, which the service verifies."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/ClaudeCodeProxy.Host/Endpoints/UserEndpoints.cs",
+   "line": 88,
+   "fingerprint": "4badca939adc718d009cd56098f257b5",
+   "verdict": "tp",
+   "reason": "The record is changed by id with no check that it belongs to the caller."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/ClaudeCodeProxy.Host/Endpoints/UserEndpoints.cs",
+   "line": 209,
+   "fingerprint": "aa092cfeea7cc783e7b8e965c4da2262",
+   "verdict": "tp",
+   "reason": "The record is changed by id with no check that it belongs to the caller."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/ClaudeCodeProxy.Host/Endpoints/UserEndpoints.cs",
+   "line": 244,
+   "fingerprint": "0831b9566656a28d1eed7b4f3cb2f299",
+   "verdict": "tp",
+   "reason": "The record is changed by id with no check that it belongs to the caller."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/ClaudeCodeProxy.Host/Endpoints/UserEndpoints.cs",
+   "line": 280,
+   "fingerprint": "0afb845ea75720081f09c0a5d22aa3a9",
+   "verdict": "tp",
+   "reason": "The record is changed by id with no check that it belongs to the caller."
+  },
+  {
+   "rule": "SEC003",
+   "file": "src/ClaudeCodeProxy.Host/appsettings.json",
+   "line": 42,
+   "fingerprint": "1750a37d12c2eae4f68f6be05ec1e3da",
+   "verdict": "tp",
+   "reason": "A real-looking secret is committed."
+  },
+  {
+   "rule": "UI015",
+   "file": "web/src/components/ApiKeyModal.tsx",
+   "line": 275,
+   "fingerprint": "7207b2cd8d7b756e62c53712c9e2a41a",
+   "verdict": "tp",
+   "reason": "The form error is not linked to its field with aria-describedby."
+  },
+  {
+   "rule": "LLM012",
+   "file": "web/src/components/RequestLogDetailModal.tsx",
+   "line": 52,
+   "fingerprint": "2aab6b9fdd2d816de2dbd6f8939934fd",
+   "verdict": "tp",
+   "reason": "The model id is retired."
+  },
+  {
+   "rule": "LLM012",
+   "file": "web/src/components/accounts/AccountModal.tsx",
+   "line": 74,
+   "fingerprint": "77813c71b59db64edf3b67deca7d8899",
+   "verdict": "tp",
+   "reason": "The model id is retired."
+  },
+  {
+   "rule": "LLM012",
+   "file": "web/src/components/accounts/AccountModal.tsx",
+   "line": 75,
+   "fingerprint": "23305d5078641fd1d12a9561b19e0fed",
+   "verdict": "tp",
+   "reason": "The model id is retired."
+  },
+  {
+   "rule": "FE002",
+   "file": "web/src/components/accounts/AccountModal.tsx",
+   "line": 183,
+   "fingerprint": "4375d807b0c760d5a3dc5c8901f86e3e",
+   "verdict": "fp",
+   "reason": "A default API URL for the account form, saved by the app's own backend; the browser does not call the provider."
+  },
+  {
+   "rule": "FE002",
+   "file": "web/src/components/accounts/AccountModal.tsx",
+   "line": 376,
+   "fingerprint": "4470fba7231f20ee22ada7e346726899",
+   "verdict": "fp",
+   "reason": "A default API URL for the account form, saved by the app's own backend; the browser does not call the provider."
+  },
+  {
+   "rule": "FE002",
+   "file": "web/src/components/accounts/AccountModal.tsx",
+   "line": 488,
+   "fingerprint": "b03773c4b708b33bf57c076501d7f3a7",
+   "verdict": "fp",
+   "reason": "A default API URL for the account form, saved by the app's own backend; the browser does not call the provider."
+  },
+  {
+   "rule": "UI015",
+   "file": "web/src/components/accounts/AccountModal.tsx",
+   "line": 741,
+   "fingerprint": "5e32d6d5d20ca1cfc2feb7a3e5932f12",
+   "verdict": "tp",
+   "reason": "The form error is not linked to its field with aria-describedby."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/components/accounts/AccountModal.tsx",
+   "line": 746,
+   "fingerprint": "4843773bd306aa4ba6eb3b07644b8c98",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/components/accounts/AccountModal.tsx",
+   "line": 949,
+   "fingerprint": "3a4b36a96d5cabe648c1fe0609abb327",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/components/accounts/AccountModal.tsx",
+   "line": 963,
+   "fingerprint": "ef5f175b05b9d439d6934479e92d11bf",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/components/accounts/AccountModal.tsx",
+   "line": 1073,
+   "fingerprint": "b9e3473e009ae4819ac0da200079263a",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/components/accounts/AccountModal.tsx",
+   "line": 1682,
+   "fingerprint": "28bc3977458c2b6ebc9f75322441ba0b",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/components/accounts/AccountModal.tsx",
+   "line": 1693,
+   "fingerprint": "bc33e9a37e1e11013a000d53f9cb428a",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "FE007",
+   "file": "web/src/components/accounts/OAuthFlow.tsx",
+   "line": 57,
+   "fingerprint": "4d8b5203df26e5a1590a5fd0ace1635a",
+   "verdict": "fp",
+   "reason": "A pasted callback URL is compared with the local callback address; nothing is requested from localhost."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/components/accounts/OAuthFlow.tsx",
+   "line": 341,
+   "fingerprint": "39f3f974fc23c56ff791c4b631165d62",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/components/accounts/OAuthFlow.tsx",
+   "line": 492,
+   "fingerprint": "77dea45c0d3844d8003b85c0ebd9145c",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/components/accounts/OAuthFlow.tsx",
+   "line": 611,
+   "fingerprint": "92f2a89e62e45e002e3e63b17287d0e8",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/components/accounts/OAuthFlow.tsx",
+   "line": 763,
+   "fingerprint": "3d98a2c62f2047caee67ed9caa5ae75e",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI004",
+   "file": "web/src/components/app-sidebar.tsx",
+   "line": 156,
+   "fingerprint": "533012ce942745fc25c9c42f64568ef6",
+   "verdict": "tp",
+   "reason": "A link with href=\"#\" and no click handler."
+  },
+  {
+   "rule": "QA010",
+   "file": "web/src/components/charts/UserProfileRadar.tsx",
+   "line": 59,
+   "fingerprint": "2a8f025c2e60de9965b0fe1f8a504997",
+   "verdict": "tp",
+   "reason": "Made-up data is shown when the real data is missing."
+  },
+  {
+   "rule": "UI002",
+   "file": "web/src/components/common/ConfirmModal.tsx",
+   "line": 29,
+   "fingerprint": "7d5bcfff0509ee0b10c2b9f55634aee9",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
+  },
+  {
+   "rule": "UI004",
+   "file": "web/src/components/login-form.tsx",
+   "line": 35,
+   "fingerprint": "96bb331e8f35cbb891a30ac1a6b03d99",
+   "verdict": "tp",
+   "reason": "A link with href=\"#\" and no click handler."
+  },
+  {
+   "rule": "UI004",
+   "file": "web/src/components/login-form.tsx",
+   "line": 83,
+   "fingerprint": "2cd49c10009f0c83b466b09f9b7453ac",
+   "verdict": "tp",
+   "reason": "A link with href=\"#\" and no click handler."
+  },
+  {
+   "rule": "UI017",
+   "file": "web/src/components/login-form.tsx",
+   "line": 91,
+   "fingerprint": "0b6d2d2c279c471a4935fcd01e78e6c2",
+   "verdict": "tp",
+   "reason": "The referenced image is not in the public folder."
+  },
+  {
+   "rule": "UI004",
+   "file": "web/src/components/login-form.tsx",
+   "line": 99,
+   "fingerprint": "4f2e83791eeac57099d36c15c842cc6d",
+   "verdict": "tp",
+   "reason": "A link with href=\"#\" and no click handler."
+  },
+  {
+   "rule": "UI004",
+   "file": "web/src/components/login-form.tsx",
+   "line": 100,
+   "fingerprint": "b091f8bd645dc43a367c5820d8ec0b10",
+   "verdict": "tp",
+   "reason": "A link with href=\"#\" and no click handler."
+  },
+  {
+   "rule": "UI015",
+   "file": "web/src/components/users/RoleModal.tsx",
+   "line": 162,
+   "fingerprint": "0460bbdc1bc1ab6096061ccc29d883b7",
+   "verdict": "tp",
+   "reason": "The form error is not linked to its field with aria-describedby."
+  },
+  {
+   "rule": "UI002",
+   "file": "web/src/components/users/RoleModal.tsx",
+   "line": 214,
+   "fingerprint": "cf3c2881f289daf9a7a5d294aeb439db",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
+  },
+  {
+   "rule": "UI015",
+   "file": "web/src/components/users/UserModal.tsx",
+   "line": 175,
+   "fingerprint": "72dc9bdaf7ea9a727a917ad38c3da8b0",
+   "verdict": "tp",
+   "reason": "The form error is not linked to its field with aria-describedby."
+  },
+  {
+   "rule": "QA004",
+   "file": "web/src/contexts/AuthContext.tsx",
+   "line": 56,
+   "fingerprint": "4178bb97bc70b396d76c8913089e1dd9",
+   "verdict": "tp",
+   "reason": "A TODO or stub comment left in shipped code."
+  },
+  {
+   "rule": "FE005",
+   "file": "web/src/pages/auth/callback.tsx",
+   "line": 58,
+   "fingerprint": "b0bf345ee176051af2cb58e75bc1736a",
+   "verdict": "tp",
+   "reason": "The auth token is kept in localStorage."
+  },
+  {
+   "rule": "FE005",
+   "file": "web/src/pages/register/index.tsx",
+   "line": 92,
+   "fingerprint": "3ca31c3dec05f1d546d00e20e9012cb1",
+   "verdict": "tp",
+   "reason": "The auth token is kept in localStorage."
+  },
+  {
+   "rule": "UI015",
+   "file": "web/src/pages/register/index.tsx",
+   "line": 163,
+   "fingerprint": "c3e5678c73756524661dd30081d9654d",
+   "verdict": "tp",
+   "reason": "The form error is not linked to its field with aria-describedby."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/pages/request-logs/index.tsx",
+   "line": 225,
+   "fingerprint": "eac8db22597cc25433142fce95aa318b",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/pages/request-logs/index.tsx",
+   "line": 238,
+   "fingerprint": "f3f5ec8afc7b64b339863d8a2ef93638",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/pages/request-logs/index.tsx",
+   "line": 253,
+   "fingerprint": "d697bade780b8d1170bac65584e3c506",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/pages/request-logs/index.tsx",
+   "line": 265,
+   "fingerprint": "bae8578b27b5b912d3cddc903405e472",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/pages/request-logs/index.tsx",
+   "line": 280,
+   "fingerprint": "ad1285bc2d979f62207d8ff09a19916a",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/pages/request-logs/index.tsx",
+   "line": 295,
+   "fingerprint": "dea1a0d1aeea4538e3011861d187986e",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "BE015",
+   "file": "web/src/pages/users/index.tsx",
+   "line": 177,
+   "fingerprint": "f5c7880f5f1047a5edd882f3176a1634",
+   "verdict": "tp",
+   "reason": "A temporary password is generated with Math.random()."
+  }
+ ]
+}

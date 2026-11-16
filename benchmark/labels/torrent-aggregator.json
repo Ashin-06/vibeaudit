@@ -1,0 +1,374 @@
+{
+ "repo": "torrent-aggregator",
+ "commit": "cb436138a17f0db8a2f50ca09588a268252b9821",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 23,
+   "fingerprint": "feff48ded38ca1821172b979d6a5f850",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yml",
+   "line": 24,
+   "fingerprint": "a19094986b31c916ada2e54d9a358da7",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yml",
+   "line": 25,
+   "fingerprint": "715782f250649d2dcb971b6e5767110e",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yml",
+   "line": 36,
+   "fingerprint": "116c0ddd3ab1649abca2d36300dafcaf",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yml",
+   "line": 43,
+   "fingerprint": "0d0ab83f204a2d0d9ae2f24d5175ca82",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yml",
+   "line": 85,
+   "fingerprint": "2287d158534187c0bc8d1b0a75524242",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yml",
+   "line": 91,
+   "fingerprint": "1cccfe33efe1a7ed9f6da59fee993616",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release-windows.yml",
+   "line": 43,
+   "fingerprint": "c35447538df53158be2f47395a20282d",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release-windows.yml",
+   "line": 114,
+   "fingerprint": "875b456ae1c15c476ab578a1935ebe38",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile",
+   "line": 18,
+   "fingerprint": "6e69ee85bbe535083656b7da8d593e30",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "backend/src/Api/Catalog/CatalogEndpoints.cs",
+   "line": 40,
+   "fingerprint": "50aadf977f0757354eb53b6768415131",
+   "verdict": "fp",
+   "reason": "A single-user, self-hosted app: sources and title links are global settings, not records owned by a user."
+  },
+  {
+   "rule": "DATA001",
+   "file": "backend/src/Api/Catalog/CatalogEndpoints.cs",
+   "line": 518,
+   "fingerprint": "20ad7e8099bda441d2ec9bd4ac6ed82c",
+   "verdict": "fp",
+   "reason": "The query is retried inside a concurrency-retry loop, not run once per item."
+  },
+  {
+   "rule": "DATA001",
+   "file": "backend/src/Api/Catalog/CatalogEndpoints.cs",
+   "line": 642,
+   "fingerprint": "79c761e011ebde8f9eb8d63a1053061a",
+   "verdict": "fp",
+   "reason": "The query is retried inside a concurrency-retry loop, not run once per item."
+  },
+  {
+   "rule": "DATA001",
+   "file": "backend/src/Api/EngineModule.cs",
+   "line": 66,
+   "fingerprint": "5f6fcefe4f10185c586e254734307f96",
+   "verdict": "fp",
+   "reason": "The query is retried inside a concurrency-retry loop, not run once per item."
+  },
+  {
+   "rule": "DATA001",
+   "file": "backend/src/Api/JellyfinLibrarySync.cs",
+   "line": 591,
+   "fingerprint": "06daca6b9898ebe590fe3b0c58b16150",
+   "verdict": "tp",
+   "reason": "A query runs once per item of the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "backend/src/Api/JellyfinLibrarySync.cs",
+   "line": 838,
+   "fingerprint": "f0213e47fbf8225f7cee524b8d9a7c69",
+   "verdict": "tp",
+   "reason": "A query runs once per item of the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "backend/src/Api/JellyfinLibrarySync.cs",
+   "line": 958,
+   "fingerprint": "c336c09ff1d468668b43cbea3c8a92c2",
+   "verdict": "tp",
+   "reason": "A query runs once per item of the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "backend/src/Api/JellyfinLibrarySync.cs",
+   "line": 1353,
+   "fingerprint": "179990ecdcd1d341ddfa873ee8c6c5a5",
+   "verdict": "tp",
+   "reason": "A query runs once per item of the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "backend/src/Api/JellyfinLibrarySync.cs",
+   "line": 1391,
+   "fingerprint": "e0e0192348f642da1b577ccdcf42c6b7",
+   "verdict": "tp",
+   "reason": "A query runs once per item of the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "backend/src/Api/JellyfinLibrarySync.cs",
+   "line": 1404,
+   "fingerprint": "0060eda4b43fd7ac4fff33d2f110e727",
+   "verdict": "tp",
+   "reason": "A query runs once per item of the loop."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "backend/src/Api/SettingsEndpoints.cs",
+   "line": 50,
+   "fingerprint": "53c8ecedd563180857064e6399248bd7",
+   "verdict": "fp",
+   "reason": "A single-user, self-hosted app: sources and title links are global settings, not records owned by a user."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "backend/src/Api/SettingsEndpoints.cs",
+   "line": 53,
+   "fingerprint": "1364d31a67a8445d08ed7c19f84a329d",
+   "verdict": "fp",
+   "reason": "A single-user, self-hosted app: sources and title links are global settings, not records owned by a user."
+  },
+  {
+   "rule": "DATA001",
+   "file": "backend/src/Store/LibraryDownloadRepository.cs",
+   "line": 74,
+   "fingerprint": "66478ee8d385572d85835fa3806f58c7",
+   "verdict": "tp",
+   "reason": "A query runs once per item of the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "backend/src/Store/LibraryDownloadRepository.cs",
+   "line": 105,
+   "fingerprint": "718d880cc2c74bd083ce23ca51888d98",
+   "verdict": "tp",
+   "reason": "A query runs once per item of the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "backend/src/Store/LibraryDownloadRepository.cs",
+   "line": 135,
+   "fingerprint": "6208015c8930580f2f349c8594cdb5bf",
+   "verdict": "tp",
+   "reason": "A query runs once per item of the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "backend/src/Store/LibraryRemovalRepository.cs",
+   "line": 17,
+   "fingerprint": "28bd38393ea55ce90879628ce07d64ab",
+   "verdict": "tp",
+   "reason": "A query runs once per item of the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "server/TorrentFlow.Data/WorkLinks.cs",
+   "line": 83,
+   "fingerprint": "6e907b16b16be18c9b5570d525b74e7a",
+   "verdict": "fp",
+   "reason": "The query is retried inside a concurrency-retry loop, not run once per item."
+  },
+  {
+   "rule": "DATA001",
+   "file": "server/TorrentFlow.Engine/DeletionCleanup.cs",
+   "line": 115,
+   "fingerprint": "ca61573d104f6bfffeadd1e3774a6518",
+   "verdict": "tp",
+   "reason": "A query runs once per item of the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "server/TorrentFlow.Engine/Settings/DownloadRecoveryService.cs",
+   "line": 128,
+   "fingerprint": "15ec2916043a3a05429393af9935bcde",
+   "verdict": "tp",
+   "reason": "A query runs once per item of the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "server/TorrentFlow.Engine/TorrentEngineService.cs",
+   "line": 1409,
+   "fingerprint": "b1a072de8cb5f699cae5014a0022038f",
+   "verdict": "fp",
+   "reason": "The query runs once, after a one-line loop that only takes locks."
+  },
+  {
+   "rule": "DATA001",
+   "file": "server/TorrentFlow.Engine/TorrentEngineService.cs",
+   "line": 1806,
+   "fingerprint": "896d7d5018649b4668f7c1de0fdcc218",
+   "verdict": "fp",
+   "reason": "The query is retried inside a concurrency-retry loop, not run once per item."
+  },
+  {
+   "rule": "DATA001",
+   "file": "server/TorrentFlow.Library/Features/Automation/AutomationService.cs",
+   "line": 165,
+   "fingerprint": "615113cb290c098880dfb6903166f5b6",
+   "verdict": "tp",
+   "reason": "A query runs once per item of the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "server/TorrentFlow.Library/Features/Grabs/WantedQueue.cs",
+   "line": 183,
+   "fingerprint": "23623ef3a74d4bd42f9f27b63923b977",
+   "verdict": "tp",
+   "reason": "A query runs once per item of the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "server/TorrentFlow.Library/Features/Grabs/WantedQueue.cs",
+   "line": 376,
+   "fingerprint": "6a821eff405e5187d042ca0771eb2d33",
+   "verdict": "tp",
+   "reason": "A query runs once per item of the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "server/TorrentFlow.Library/Features/Grabs/WantedQueue.cs",
+   "line": 459,
+   "fingerprint": "1cab7853060f8b78f6dc7f8da21990f9",
+   "verdict": "tp",
+   "reason": "A query runs once per item of the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "server/TorrentFlow.Library/Features/Storage/LibraryDownloadRecovery.cs",
+   "line": 24,
+   "fingerprint": "39df56ce58f89980f1625bd975acf54f",
+   "verdict": "tp",
+   "reason": "A query runs once per item of the loop."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "server/TorrentFlow.Library/Features/Titles/TitleController.cs",
+   "line": 84,
+   "fingerprint": "d627d8b44e82a2c6720256d2fd8a0e09",
+   "verdict": "fp",
+   "reason": "A single-user, self-hosted app: sources and title links are global settings, not records owned by a user."
+  },
+  {
+   "rule": "DATA001",
+   "file": "server/TorrentFlow.Library/Features/Titles/TitleController.cs",
+   "line": 200,
+   "fingerprint": "053bca04277c08fd6fc7740684327d72",
+   "verdict": "tp",
+   "reason": "A query runs once per item of the loop."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "server/TorrentFlow.Metadata/Settings/SourcesController.cs",
+   "line": 23,
+   "fingerprint": "e6a5896329dcbe9da3e968190e1e6439",
+   "verdict": "fp",
+   "reason": "A single-user, self-hosted app: sources and title links are global settings, not records owned by a user."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "server/TorrentFlow.Metadata/Settings/SourcesController.cs",
+   "line": 49,
+   "fingerprint": "c9a15e0873110ef7c639e0aa43d0331e",
+   "verdict": "fp",
+   "reason": "A single-user, self-hosted app: sources and title links are global settings, not records owned by a user."
+  },
+  {
+   "rule": "DATA001",
+   "file": "server/TorrentFlow.Search/LanguageHints.cs",
+   "line": 93,
+   "fingerprint": "94e94f91ccbee60e2d8bb322d44aabaf",
+   "verdict": "fp",
+   "reason": "One batched query per source group, not per row."
+  },
+  {
+   "rule": "DATA007",
+   "file": "web/scripts/screens.ts",
+   "line": 24,
+   "fingerprint": "7e5d59d78fa7d41905bee23485f20d11",
+   "verdict": "tp",
+   "reason": "The variable is read from the environment but missing from the example env file."
+  },
+  {
+   "rule": "UI016",
+   "file": "web/src/app/watchlist/watchlist-item-card.tsx",
+   "line": 220,
+   "fingerprint": "23ad2b152cf93cbf35173f910e7177a9",
+   "verdict": "tp",
+   "reason": "The focus outline is removed with no replacement."
+  },
+  {
+   "rule": "UI016",
+   "file": "web/src/components/library/folder-import-presentation.tsx",
+   "line": 280,
+   "fingerprint": "eec437b959289c5d0d228e5cf80f35fb",
+   "verdict": "tp",
+   "reason": "The focus outline is removed with no replacement."
+  },
+  {
+   "rule": "UI016",
+   "file": "web/src/components/ui/tabs.tsx",
+   "line": 83,
+   "fingerprint": "eb086ae04c330bf216807d86368cb0b3",
+   "verdict": "tp",
+   "reason": "The focus outline is removed with no replacement."
+  },
+  {
+   "rule": "FE006",
+   "file": "web/vite.config.ts",
+   "line": 42,
+   "fingerprint": "810e077e631760446489d680ce2763cc",
+   "verdict": "tp",
+   "reason": "The production build publishes source maps."
+  }
+ ]
+}

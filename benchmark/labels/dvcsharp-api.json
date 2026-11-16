@@ -1,0 +1,70 @@
+{
+ "repo": "dvcsharp-api",
+ "commit": "76c1de3c9d8d9c2e8ec0b50abe3b198a4330d7fc",
+ "findings": [
+  {
+   "rule": "AUTH015",
+   "file": "Controllers/PasswordResetsController.cs",
+   "line": 22,
+   "fingerprint": "31a30ab4a45ba3a5f1c7019780291f85",
+   "verdict": "tp",
+   "reason": "The password reset leaves existing sessions and tokens valid."
+  },
+  {
+   "rule": "BE001",
+   "file": "Controllers/ProductsController.cs",
+   "line": 73,
+   "fingerprint": "3bb4d45ccfc12c5c17d53e807be0e2b8",
+   "verdict": "tp",
+   "reason": "Request data is built into the SQL statement."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "Controllers/ProductsController.cs",
+   "line": 79,
+   "fingerprint": "d00b167237b22a042cc619aa64753a31",
+   "verdict": "tp",
+   "reason": "The endpoint changes data and nothing checks a login."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "Controllers/UsersController.cs",
+   "line": 56,
+   "fingerprint": "f833d9833a495fee935dbe241b0e123d",
+   "verdict": "tp",
+   "reason": "The record is changed by id with no check that it belongs to the caller."
+  },
+  {
+   "rule": "BE005",
+   "file": "Controllers/UsersController.cs",
+   "line": 82,
+   "fingerprint": "66daaa94fd95ed706d2ecbdcd2901a04",
+   "verdict": "tp",
+   "reason": "The server fetches a URL taken from the request."
+  },
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile",
+   "line": 1,
+   "fingerprint": "d02ddc436aaa639698744a2c940084a0",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "CFG002",
+   "file": "Dockerfile",
+   "line": 1,
+   "fingerprint": "c25effbb223e7ecfdd88a1b1f6379fe1",
+   "verdict": "tp",
+   "reason": "The base image has no tag."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Models/User.cs",
+   "line": 17,
+   "fingerprint": "a59874615c54971f33e0d1dbfde1e481",
+   "verdict": "tp",
+   "reason": "A real-looking secret is committed."
+  }
+ ]
+}
