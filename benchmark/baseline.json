@@ -21,7 +21,7 @@
    "by_repo": {}
   },
   "AUTH001": {
-   "precision": 0.9318,
+   "precision": 0.9762,
    "seeded_recall": 1.0,
    "by_repo": {
     "LinguaLearn": [
@@ -63,10 +63,6 @@
     "next-learn": [
      3,
      0
-    ],
-    "next-saas-stripe-starter": [
-     0,
-     2
     ],
     "openai-assistants-quickstart": [
      3,

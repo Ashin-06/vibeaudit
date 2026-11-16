@@ -327,9 +327,7 @@ _R = [
          "on the internet can call it directly, whatever the UI shows.",
          "Require a verified session or token in the handler (or in middleware that covers it). If the "
          "endpoint is meant to be public, add rate limiting and suppress the finding with a comment.",
-         "CWE-306", "A01:2021", preview=True, gates_in_preview=True,
-         preview_reason="Held-out 14 of 16 (87.5%) after a fresh held-out repository: two server actions guarded by "
-                        "assertDevelopment() were reported. Still gates, as a severe security rule."),
+         "CWE-306", "A01:2021"),
     Rule("AUTH002", "Admin endpoint without a role check", "auth", "high",
          "An /admin route that only checks that a user is logged in (or nothing at all) lets any user act "
          "as an administrator.",

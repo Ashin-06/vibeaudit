@@ -80,6 +80,9 @@ FUNC_DEFS = [
 ]
 NOT_FUNC = {"if", "for", "while", "switch", "catch", "function", "return", "with", "else", "do", "try", "constructor"}
 MAXTOK = re.compile(r"max_tokens|max_completion_tokens|max_output_tokens|maxTokens|maxOutputTokens|maxCompletionTokens|max_new_tokens")
+# a guard that throws unless the app runs in development: assertDevelopment(), devOnly(), or an explicit check
+DEV_ONLY = re.compile(r"\b(?:assert|ensure|require)_?(?:Dev|Development|DevMode|NonProd\w{0,10})\s*\(\s*\)|\bdevOnly\s*\(\s*\)"
+                      r"|\bif\s*\(\s*process\.env\.NODE_ENV\s*(?:!==?\s*['\"]development['\"]|===?\s*['\"]production['\"])\s*\)\s*\{?\s*throw\b")
 AGENT_LOOP_TEST = re.compile(r"(?i)tool_?calls?|tool_?use|stop_?reason|finish_?reason|function_?call|requires_action"
                              r"|!\s*(?:done|finished|isDone|isFinished|complete)\b")
 BOUND = re.compile(
@@ -1067,6 +1070,8 @@ class JsScanner:
         auth = bool(H.AUTH_EVIDENCE.search(body) or H.AUTH_MIDDLEWARE.search(middleware) or H.CUSTOM.is_auth(middleware + body))
         if sf.rel in self.authed_files or off > sf.cache.get("auth_from", 10 ** 12):
             auth = True
+        if DEV_ONLY.search(body):
+            auth = True  # throws outside development: not reachable in production
         if framework == "supabase-edge" and re.search(r"""headers\s*\.\s*get\s*\(\s*['"]authorization['"]""", body, re.I) \
                 and not self._jwt_check_disabled(path.rsplit("/", 1)[-1]):
             auth = True  # requires a bearer token and the platform verifies it before the function runs

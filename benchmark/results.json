@@ -390,11 +390,11 @@
    "fixed_fp": 1
   },
   "next-saas-stripe-starter": {
-   "findings": 14,
-   "labelled": 14,
+   "findings": 12,
+   "labelled": 12,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 2
   }
  },
  "rules": {
@@ -448,13 +448,13 @@
   },
   "AUTH001": {
    "title": "State-changing endpoint without authentication",
-   "preview": true,
+   "preview": false,
    "tp": 41,
-   "fp": 3,
+   "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9318,
-   "precision_pessimistic": 0.9318,
+   "precision": 0.9762,
+   "precision_pessimistic": 0.9762,
    "seeded_expected": 7,
    "seeded_found": 7,
    "seeded_recall": 1.0,
@@ -507,11 +507,6 @@
     "next-learn": [
      3,
      0,
-     0
-    ],
-    "next-saas-stripe-starter": [
-     0,
-     2,
      0
     ],
     "openai-assistants-quickstart": [

@@ -5,7 +5,7 @@ Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do n
 
 161 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-58 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+57 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -587,7 +587,7 @@ References: CWE-200, A02:2021
 
 | ID | Severity | Status | Rule |
 | --- | --- | --- | --- |
-| [AUTH001](#auth001) | high | preview, gates | State-changing endpoint without authentication |
+| [AUTH001](#auth001) | high | stable | State-changing endpoint without authentication |
 | [AUTH002](#auth002) | high | stable | Admin endpoint without a role check |
 | [AUTH003](#auth003) | medium | stable | Possible insecure direct object reference (IDOR) |
 | [AUTH004](#auth004) | high | stable | Webhook without signature verification |
@@ -607,9 +607,7 @@ References: CWE-200, A02:2021
 
 ### AUTH001
 
-**State-changing endpoint without authentication** (high, preview, gates)
-
-Preview: Held-out 14 of 16 (87.5%) after a fresh held-out repository: two server actions guarded by assertDevelopment() were reported. Still gates, as a severe security rule.
+**State-changing endpoint without authentication** (high)
 
 Why it matters: This endpoint creates, changes or deletes data but no authentication check was found, so anyone on the internet can call it directly, whatever the UI shows.
 
