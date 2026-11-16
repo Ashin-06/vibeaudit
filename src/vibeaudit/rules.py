@@ -43,6 +43,7 @@ class Rule:
 
 NEW_JVM = "New with Java and Kotlin support: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_089 = "New in 0.8.9: not yet measured on enough held-out findings in the benchmark."
+NEW_IN_JAVA = "New with Java and Kotlin support: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_088 = "New in 0.8.8: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_087 = "New in 0.8.7: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_086 = "New in 0.8.6: not yet measured on enough held-out findings in the benchmark."
@@ -416,6 +417,24 @@ _R = [
          "Add spring-boot-starter-security and a SecurityFilterChain that requires authentication "
          "(`.anyRequest().authenticated()`), and open only the public paths with `.requestMatchers(...).permitAll()`.",
          "CWE-306", "A01:2021", preview=True, preview_reason=NEW_JVM),
+    Rule("JAVA002", "Spring Boot Actuator endpoints exposed", "config", "high",
+         "Actuator endpoints such as env, configprops, heapdump and threaddump are reachable over HTTP. They reveal "
+         "configuration and secrets (heapdump contains every credential in memory), and shutdown stops the app.",
+         "Expose only health and info (`management.endpoints.web.exposure.include=health,info`), keep the others "
+         "behind Spring Security or on a separate management port, and leave shutdown disabled.", "CWE-215",
+         "A05:2021", preview=True, preview_reason=NEW_IN_JAVA),
+    Rule("JAVA003", "Security chain permits every request", "auth", "high",
+         "The Spring Security filter chain ends in `anyRequest().permitAll()` (or permits `/**`), so it protects "
+         "nothing: every endpoint without its own annotation answers anyone.",
+         "End the chain with `anyRequest().authenticated()` and list the public paths explicitly before it.",
+         "CWE-862", "A01:2021", preview=True, preview_reason=NEW_IN_JAVA),
+    Rule("JAVA004", "Polymorphic deserialization without an allow-list", "backend", "critical",
+         "Jackson default typing or class-based type ids (`JsonTypeInfo.Id.CLASS`), or XStream without an allow-list, "
+         "let the JSON or XML name the class to create. A gadget class on the classpath turns a request into remote "
+         "code execution.",
+         "Use name-based type ids with a fixed set of subtypes, or a `BasicPolymorphicTypeValidator` that allows only "
+         "your own packages; call `allowTypes` (or `setupDefaultSecurity`) on XStream.", "CWE-502", "A08:2021",
+         preview=True, preview_reason=NEW_IN_JAVA),
     # ----------------------------------------------------------------- config
     Rule("CFG001", "Container runs as root", "config", "low",
          "If the app is compromised the attacker is root inside the container, which makes escaping and "

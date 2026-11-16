@@ -445,6 +445,12 @@ class JvmScanner:
             for r in found:  # JAVA001 reports these once per controller; AUTH001 skips them
                 if r.framework == "spring":
                     r.framework = UNSECURED
+        from . import jvmconfig, jvmsinks
+
+        jvmconfig.run(self.p, security.present, self.add)
+        for sf in self.p.files:
+            if is_jvm(sf.rel) and sf.text is not None and not sf.is_test and not sf.is_example:
+                GUARD.run(sf.rel, "JVM data flow", jvmsinks.check, sf, views_of(sf), self.add)
         return found
 
     def _no_security(self, found: List[Route]) -> None:

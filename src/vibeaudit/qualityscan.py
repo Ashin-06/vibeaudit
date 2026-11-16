@@ -482,7 +482,13 @@ class QualityScanner:
             via_base_url = base_url is not None and not spec.startswith("@") and (
                 probe(self.p.root / (base_url or ".") / first, "exists")
                 or any(probe(self.p.root / (base_url or ".") / (first + e), "exists") for e in JS_EXTS))
-            if spec.startswith(".") or any(spec.startswith(p) for p, _t in aliases) or spec.startswith(("@/", "~/")) or via_base_url:
+            # a catch-all `"*"` path mapping is tried first and falls back to node_modules: a bare import is a
+            # project file only when the mapped location exists
+            via_catch_all = any(not p and (probe(self.p.root / (t or ".") / first, "exists")
+                                           or any(probe(self.p.root / (t or ".") / (first + e), "exists") for e in JS_EXTS))
+                                for p, t in aliases)
+            if spec.startswith(".") or any(p and spec.startswith(p) for p, _t in aliases) or spec.startswith(("@/", "~/")) \
+                    or via_base_url or via_catch_all:
                 target, exists = self._resolve_js(sf, spec)
                 if not exists:
                     self.add(sf, "QA006", line, f"Import `{spec}` does not resolve to a file in the project.")

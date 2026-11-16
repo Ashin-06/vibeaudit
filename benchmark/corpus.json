@@ -397,6 +397,81 @@
    "licence": "MIT",
    "kind": "well-maintained",
    "split": "heldout"
+  },
+  {
+   "name": "llm_wiki_agent",
+   "url": "https://github.com/Anton15K/llm_wiki_agent",
+   "commit": "bdcb96febb651bd98033092d02817663ccc8d6f6",
+   "licence": "MIT",
+   "kind": "ai-built",
+   "language": "kotlin"
+  },
+  {
+   "name": "Schematic",
+   "url": "https://github.com/BjoernKW/Schematic",
+   "commit": "f9175bf1655da4e674fc34f3bb6970d7b3ffc7ea",
+   "licence": "MIT",
+   "kind": "ai-built",
+   "language": "java",
+   "split": "heldout"
+  },
+  {
+   "name": "bella-openapi",
+   "url": "https://github.com/LianjiaTech/bella-openapi",
+   "commit": "af2a7a9cf091d70d9184a5c10ce0f029a943c670",
+   "licence": "MIT",
+   "kind": "ai-built",
+   "language": "java"
+  },
+  {
+   "name": "codbex-oceanus",
+   "url": "https://github.com/codbex/codbex-oceanus",
+   "commit": "6f08a87baba238a0d051dd5bca0b2b51d195e0c0",
+   "licence": "EPL-2.0",
+   "kind": "ai-built",
+   "language": "java"
+  },
+  {
+   "name": "spring-petclinic",
+   "url": "https://github.com/spring-projects/spring-petclinic",
+   "commit": "500158f732419217507c7656904b8e6aa1bcc0d6",
+   "licence": "Apache-2.0",
+   "kind": "well-maintained",
+   "language": "java"
+  },
+  {
+   "name": "spring-boot-realworld-example-app",
+   "url": "https://github.com/gothinkster/spring-boot-realworld-example-app",
+   "commit": "ee17e31aafe733d98c4853c8b9a74d7f2f6c924a",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "java",
+   "split": "heldout"
+  },
+  {
+   "name": "jhipster-sample-app",
+   "url": "https://github.com/jhipster/jhipster-sample-app",
+   "commit": "6b000b5d23a36c45e01472471b84a44fa2464044",
+   "licence": "Apache-2.0",
+   "kind": "well-maintained",
+   "language": "java"
+  },
+  {
+   "name": "vulnerable-java-application",
+   "url": "https://github.com/DataDog/vulnerable-java-application",
+   "commit": "e5c6c7a5b7edaaddf5c2856d491023edffd59877",
+   "licence": "Apache-2.0",
+   "kind": "training",
+   "language": "java",
+   "split": "heldout"
+  },
+  {
+   "name": "JavaVulnerableLab",
+   "url": "https://github.com/CSPF-Founder/JavaVulnerableLab",
+   "commit": "626a106a49777507beb51955d19ef9d271a9d4a5",
+   "licence": "GPL-2.0",
+   "kind": "training",
+   "language": "java"
   }
  ]
 }

@@ -184,3 +184,14 @@ def test_a_typical_repository_is_lexed_and_routed_in_under_a_second(tmp_path):
     t = time.perf_counter()
     routes = jvm.routes(project)
     assert len(routes) == 300 * 6 and time.perf_counter() - t < 1.0
+
+
+def test_catch_all_tsconfig_path_falls_back_to_packages(tmp_path):
+    from vibeaudit.scanner import Options, scan
+    (tmp_path / "package.json").write_text('{"dependencies": {"esbuild": "0.20.0"}}')
+    (tmp_path / "tsconfig.json").write_text('{"compilerOptions": {"paths": {"*": ["./src/main/webapp/*"]}}}')
+    (tmp_path / "src/main/webapp/app").mkdir(parents=True)
+    (tmp_path / "src/main/webapp/app/util.ts").write_text("export const x = 1;\n")
+    (tmp_path / "build.ts").write_text("import { build } from 'esbuild';\nimport { x } from 'app/util';\nimport { y } from 'app/missing';\n")
+    res = scan(str(tmp_path), Options(offline=True, external="none", min_severity="low"))
+    assert [(f.file, f.line) for f in res.findings if f.rule_id == "QA006"] == [("build.ts", 3)]
