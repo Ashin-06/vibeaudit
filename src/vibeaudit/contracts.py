@@ -1,9 +1,8 @@
 """Frontend-to-backend contract checks: calls from the browser code to API paths that no route handles, or with
 an HTTP method the route does not accept.
 
-Router prefixes (FastAPI include_router, Express app.use, Flask blueprints, Django urls) are not
-resolved, so routes count as full paths only when they are file-based (Next.js, SvelteKit) or when the project
-has no prefix machinery at all. Resolve prefixes to cover the rest."""
+Router prefixes are resolved by pyscan (FastAPI, Flask) and jsscan (Express); with prefixes, the checks run only
+when every route's full path is known (Route.prefix_resolved), so an unresolved mount never makes calls look unhandled."""
 from __future__ import annotations
 
 import re
@@ -66,9 +65,12 @@ class ContractScanner:
         from .files import has
 
         no_prefixes = not any(has(f, PREFIXES) for f in project.files if f.kind in ("py", "js") and not f.is_test)
+        # with router prefixes, compare only when every backend route's full path is known (pyscan and jsscan
+        # resolve FastAPI, Flask and Express prefixes); one unresolved route would make its calls look unhandled
+        resolved = all(getattr(r, "prefix_resolved", False) for r in routes if r.lang in ("py", "js"))
         self.routes: List[Tuple[List[str], Route]] = [
             (segments(r.path), r) for r in routes
-            if r.path.startswith("/") and (r.framework in FILE_BASED or no_prefixes)]
+            if r.path.startswith("/") and (r.framework in FILE_BASED or no_prefixes or resolved)]
         self.owned: Set[str] = {segs[0] for segs, _ in self.routes if segs and segs[0] not in ("*", "**")}
         config = " ".join(f.text or "" for f in project.files
                           if re.search(r"(?:^|/)(?:next|vite|nuxt)\.config\.\w+$|(?:^|/)(?:vercel\.json|netlify\.toml|package\.json)$", f.rel))

@@ -78,6 +78,15 @@ class Finding:
         return d
 
 
+def join_path(prefix: str, path: str) -> str:
+    """`/api` + `/users` -> `/api/users`; an empty route path is the prefix itself."""
+    if not prefix:
+        return path
+    if not path or path == "/":
+        return prefix.rstrip("/") or "/"
+    return prefix.rstrip("/") + "/" + path.lstrip("/")
+
+
 @dataclass
 class Route:
     """An HTTP entry point found in the code, used by the auth and rate-limit checks."""
