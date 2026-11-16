@@ -4,6 +4,26 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.9.3] - 2026-11-16
+
+Full route paths behind router prefixes, UI checks for Vue and Svelte, and AUTH001 stable again.
+
+### Added
+
+- Router prefixes are resolved for FastAPI, Flask blueprints and Express routers, so `vibeaudit routes`, the route
+  checks and the frontend-backend contract checks see full paths. The contract checks now also run in projects
+  with prefixes, once every route's full path is known.
+- Vue and Svelte components get the same UI checks as React: keyboard access, labels, dead controls, index keys,
+  unconfirmed destructive actions, cleanup of subscriptions and loading/error states.
+
+### Changed
+
+- AUTH001 (State-changing endpoint without authentication) is stable again: a route or server action that calls a
+  dev-only guard that throws (`assertDevelopment()`, `devOnly()`, a `NODE_ENV` check that throws) is not reported.
+  Held-out precision is 14 of 14 (it was 14 of 16 when it went back to preview in 0.9.2).
+- UI014 (Image without width and height) treats an `<img>` with a CSS-module class as sized by its stylesheet. It
+  stays in preview: its held-out false positive has another cause.
+
 ## [0.9.2] - 2026-11-16
 
 Cross-function taint for JavaScript and TypeScript, and two rules back in preview after a held-out measurement.

@@ -2597,7 +2597,7 @@
    }
   },
   "UI002": {
-   "precision": 0.973,
+   "precision": 0.9756,
    "seeded_recall": 1.0,
    "by_repo": {
     "chatbot-ui": [
@@ -2635,11 +2635,15 @@
     "sync-plan-flow": [
      1,
      0
+    ],
+    "waline": [
+     4,
+     0
     ]
    }
   },
   "UI003": {
-   "precision": 0.9811,
+   "precision": 0.9815,
    "seeded_recall": 1.0,
    "by_repo": {
     "LinguaLearn": [
@@ -2707,7 +2711,7 @@
      0
     ],
     "waline": [
-     3,
+     4,
      0
     ]
    }

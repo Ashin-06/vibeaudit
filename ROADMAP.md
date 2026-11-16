@@ -8,7 +8,7 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 
 | Item | Status |
 | --- | --- |
-| Labelled benchmark corpus: 53 pinned public repositories (12 held out; pre-fix advisory commits and training apps since 0.8.0), labels per finding | done |
+| Labelled benchmark corpus: 54 pinned public repositories (12 held out; pre-fix advisory commits and training apps since 0.8.0), labels per finding | done |
 | Precision per rule and seeded recall (`tools/benchmark.py`), table and JSON results | done |
 | CI regression gate against a stored baseline, tolerant of network failures | done |
 | Rule stability policy and preview rules (`--include-preview`) | done |
@@ -110,6 +110,21 @@ mapping and reports first; the threat feed after the Phase 3 items).
 | Packaging: the built wheel in a fresh virtual environment, every command; Python 3.9-3.13 on Linux, macOS and Windows | done (CI matrix and the audit's fresh-environment run) |
 | No reproducible high or medium audit finding | done (four medium findings fixed: #30 to #33) |
 | Green CI and benchmark gate, then a verified signed release (0.9.0) | done (0.9.0) |
+
+## Independent review follow-ups (0.9.1 to 0.9.3)
+
+| Item | Status |
+| --- | --- |
+| README accuracy numbers generated from the benchmark, stable and all-rule numbers apart, test on mismatch | done (0.9.1) |
+| Recall, F1 and false negatives: advisory ground truth plus seeded cases, per category and framework (docs/BENCHMARK.md) | done (0.9.1) |
+| Head-to-head with Semgrep and Bandit on the same corpus, in CI | done (0.9.1; same 6 of 17 advisory locations for all three tools) |
+| Public sample report on GitHub Pages | done (0.9.1) |
+| Second-labeller kit: blind sample, instructions, Cohen's kappa | done (0.9.1); waiting for volunteer labellers |
+| PyPI trusted publishing | done (0.9.1); off until the owner's one-time setup (docs/PUBLISHING.md) |
+| Cross-function taint: Python (0.9.1) and JavaScript/TypeScript (0.9.2) | done |
+| Router prefixes for FastAPI, Flask and Express | done (0.9.3) |
+| UI checks on Vue and Svelte components | done (0.9.3) |
+| Demotions after a fresh held-out repository: AUTH001 (stable again in 0.9.3), UI014 | done; UI014 stays preview (6 of 7 held-out) |
 
 ## Phase 5: more languages (planned, not started; after the 0.9.0 gate, one language per release)
 
