@@ -46,8 +46,8 @@ def _check(key: str, value: object, where: str) -> object:
     }[kind]
     if not ok:
         raise ConfigError(f"{where}: `{key}` must be a {kind}, got {value!r}")
-    if key == "llm" and value not in ("gemini", "openai", "anthropic"):
-        raise ConfigError(f"{where}: `llm` must be gemini, openai or anthropic")
+    if key == "llm" and value not in ("gemini", "openai", "openrouter", "anthropic"):
+        raise ConfigError(f"{where}: `llm` must be gemini, openai, openrouter or anthropic")
     return value
 
 

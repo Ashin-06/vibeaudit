@@ -14,7 +14,7 @@ Custom rules: see `vibeaudit.plugins` (`rule`, `route_rule`, `file_rule`).
 
 __version__ = "0.9.3"
 
-__all__ = ["__version__", "scan", "Options", "project_options", "Result", "Finding", "Route", "rule", "route_rule", "file_rule"]
+__all__ = ["__version__", "scan", "Options", "project_options", "Result", "Finding", "Route", "rule", "route_rule", "file_rule", "FastAPIMiddleware"]
 
 
 def __getattr__(name):  # lazy, so `import vibeaudit` stays cheap
@@ -22,6 +22,10 @@ def __getattr__(name):  # lazy, so `import vibeaudit` stays cheap
         from .config import project_options
 
         return project_options
+    if name == "FastAPIMiddleware":
+        from .runtime import FastAPIMiddleware
+
+        return FastAPIMiddleware
     if name in ("scan", "Options"):
         from . import scanner
 

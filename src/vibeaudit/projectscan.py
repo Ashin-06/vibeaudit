@@ -414,7 +414,10 @@ class ProjectScanner:
             # PUT/PATCH/DELETE change state by definition; POST and catch-all handlers are often reads, so they
             # need evidence of a write (or a paid model call) before we call them state-changing.
             semantic = any(m in ("PUT", "PATCH", "DELETE") for m in r.methods) and r.framework not in ("next-server-action",)
-            writes = semantic or bool(H.MUTATION_EVIDENCE.search(r.body))
+            poly_writes = r.lang not in ("py", "js") and bool(re.search(
+                r"(?i)\.\s*(?:updates|exec|persist|merge|deleteById|ExecuteSqlRaw|SaveChangesAsync|execute)\s*\(|::(?:create|destroy)\s*\(",
+                r.body))
+            writes = semantic or bool(H.MUTATION_EVIDENCE.search(r.body)) or poly_writes
             mutating = r.mutating and (writes or r.calls_llm)
             is_admin = bool(re.search(r"(?i)(?:^|/)admin(?:/|$|[-_])", path) or re.search(r"(?i)(?:^|/)admin(?:/|\.|$)", r.file))
             if H.WEBHOOK_PATH.search(path):
@@ -442,7 +445,7 @@ class ProjectScanner:
                     and not H.TOKEN_RESET.search(path + "\n" + r.body) \
                     and not H.ADMIN_ROLE_EVIDENCE.search(r.body):
                 self.add(r.file, r.line, "AUTH010", f"{path} has no rate limiting.")
-            if r.reads_body and reads_body is None:
+            if r.reads_body and r.lang in ("py", "js") and reads_body is None:
                 reads_body = r
         if reads_body is not None:
             from .files import has

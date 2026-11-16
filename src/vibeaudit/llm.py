@@ -28,8 +28,10 @@ from .secretscan import (DB_URL, GENERIC_ASSIGN, JWT, PASSWORD_ASSIGN, PRIVATE_K
 PROVIDERS = {
     "gemini": {"env": ("GEMINI_API_KEY", "GOOGLE_API_KEY"), "model": "gemini-3.5-flash"},
     "openai": {"env": ("OPENAI_API_KEY",), "model": "gpt-5-mini"},
+    "openrouter": {"env": ("OPENROUTER_API_KEY",), "model": "qwen/qwen4-max"},
     "anthropic": {"env": ("ANTHROPIC_API_KEY",), "model": "claude-sonnet-5-5"},
 }
+OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 TIMEOUT = 120
 VERDICT_CACHE = TimedCache("llm_verdicts.json", 30 * 24 * 3600)
 
@@ -74,10 +76,13 @@ class Provider:
         if name not in PROVIDERS:
             raise LLMError(f"unknown provider {name!r}; choose from {', '.join(PROVIDERS)}")
         self.name = name
-        self.model = model or os.environ.get("VIBEAUDIT_LLM_MODEL") or PROVIDERS[name]["model"]
+        # keys come from the environment only: never from a .env in the scanned project, which an attacker controls
         self.key = api_key or next((os.environ[e] for e in PROVIDERS[name]["env"] if os.environ.get(e)), None)
-        self.base_url = (base_url or os.environ.get("OPENAI_BASE_URL") or "https://api.openai.com/v1").rstrip("/")
-        if not self.key and not (name == "openai" and base_url):
+        self.model = model or os.environ.get("VIBEAUDIT_LLM_MODEL") or PROVIDERS[name]["model"]
+        default_base = OPENROUTER_BASE_URL if name == "openrouter" else "https://api.openai.com/v1"
+        env_base = os.environ.get("OPENAI_BASE_URL") if name == "openai" else None
+        self.base_url = (base_url or env_base or default_base).rstrip("/")
+        if not self.key and not (name in ("openai", "openrouter") and base_url):
             raise LLMError(f"no API key: set {' or '.join(PROVIDERS[name]['env'])}")
         self.requests = 0
 

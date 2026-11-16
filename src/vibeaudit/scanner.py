@@ -18,6 +18,7 @@ from .guard import GUARD
 from .jsscan import JsScanner
 from .model import SEVERITY_RANK, SUPPRESS, TEST_FILE_RULES, Finding, at_least
 from .projectscan import ProjectScanner
+from .polyscan import POLY_SEVERE, PolyScanner, _lang_of as poly_lang
 from .pyscan import PyScanner
 from .qualityscan import QualityScanner
 from .datascan import DataScanner
@@ -76,6 +77,29 @@ def _stack(project: Project) -> List[str]:
     for f in project.files:
         if re.search(r"(?:^|/)(?:requirements[\w.-]*\.txt|pyproject\.toml)$", f.rel) and f.text:
             names |= {m.lower() for m in re.findall(r"(?m)^\s*\"?([A-Za-z0-9][A-Za-z0-9._-]*)", f.text)}
+        elif f.rel.rsplit("/", 1)[-1] == "go.mod" and f.text:
+            if "Go" not in found:
+                found.append("Go")
+            for mod, lbl in (("github.com/gin-gonic/gin", "Gin"), ("github.com/gofiber/fiber", "Fiber"),
+                             ("github.com/go-chi/chi", "Chi"), ("gorm.io/gorm", "GORM")):
+                if mod in f.text and lbl not in found:
+                    found.append(lbl)
+        elif f.rel.rsplit("/", 1)[-1] in ("pom.xml", "build.gradle", "build.gradle.kts") and f.text:
+            for mod, lbl in (("spring-boot", "Spring Boot"), ("quarkus", "Quarkus")):
+                if mod in f.text and lbl not in found:
+                    found.append(lbl)
+        elif f.rel.lower().endswith(".csproj") and f.text:
+            for mod, lbl in (("Microsoft.AspNetCore", "ASP.NET Core"), ("EntityFrameworkCore", "EF Core")):
+                if mod in f.text and lbl not in found:
+                    found.append(lbl)
+        elif f.rel.rsplit("/", 1)[-1] == "Cargo.toml" and f.text:
+            for mod, lbl in (("actix-web", "Actix"), ("axum", "Axum")):
+                if mod in f.text and lbl not in found:
+                    found.append(lbl)
+        elif f.rel.rsplit("/", 1)[-1] == "composer.json" and f.text:
+            for mod, lbl in (("laravel/framework", "Laravel"), ("symfony/", "Symfony")):
+                if mod in f.text and lbl not in found:
+                    found.append(lbl)
     for key, label in STACK_MARKERS.items():
         if key in names and label not in found:
             found.append(label)
@@ -158,15 +182,17 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
 
     js_routes = JsScanner(project, emit).run()
     py_routes = PyScanner(project, emit).run()
+    poly_routes = PolyScanner(project, emit).run()
+    all_routes = js_routes + py_routes + poly_routes
     SecretScanner(project, emit).run()
-    ProjectScanner(project, emit, js_routes + py_routes).run()
+    ProjectScanner(project, emit, all_routes).run()
     QualityScanner(project, emit).run()
-    DataScanner(project, emit, js_routes + py_routes).run()
-    ReliabilityScanner(project, emit, js_routes + py_routes).run()
-    AiScanner(project, emit, js_routes + py_routes).run()
+    DataScanner(project, emit, all_routes).run()
+    ReliabilityScanner(project, emit, all_routes).run()
+    AiScanner(project, emit, all_routes).run()
     UiScanner(project, emit).run()
-    ContractScanner(project, emit, js_routes + py_routes).run()
-    plugins.run(project, js_routes + py_routes, emit)
+    ContractScanner(project, emit, all_routes).run()
+    plugins.run(project, all_routes, emit)
     deps = DepScanner(project, emit, opts.offline)
     GUARD.run("<project>", "dependency checks", deps.run)
     notes += deps.notes
@@ -219,7 +245,7 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
             provider = llm.Provider(opts.llm, opts.llm_model)
             llm.triage(project, findings, provider, opts.llm_max_requests, notes.append)
             if opts.llm_review:
-                risky = _risky_files(project, findings, js_routes + py_routes)
+                risky = _risky_files(project, findings, all_routes)
                 extra = llm.review(project, findings, risky, provider, opts.llm_max_requests, notes.append)
                 findings = finalize(project, findings + extra, opts, already=True)
             notes.append(f"LLM ({provider.name}/{provider.model}) used {provider.requests} requests.")
@@ -229,14 +255,14 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
     meta = {
         "files_scanned": len(project.files), "duration_seconds": round(time.time() - start, 2),
         "stack": _stack(project), "external_tools": ran, "offline": opts.offline, "notes": notes,
-        "routes_found": len(js_routes) + len(py_routes), "git": project.is_git,
+        "routes_found": len(all_routes), "git": project.is_git,
         "skipped": list(GUARD.skipped), "internal_errors": list(GUARD.internal_errors),
         "feedback_hidden": hidden, "include_preview": opts.include_preview,
         "gate_severe_preview": opts.gate_severe_preview, "disabled": sorted(opts.disabled),
     }
     if opts.changes is not None:
         meta["changed_files"] = len(opts.changes)
-    return Result(str(project.root), findings, meta, js_routes + py_routes)
+    return Result(str(project.root), findings, meta, all_routes)
 
 
 def _risky_files(project: Project, findings: List[Finding], routes) -> List[str]:
@@ -290,6 +316,11 @@ def finalize(project: Project, raw: List[Finding], opts: Options, already: bool 
         if meta is not None:
             f.preview = meta.preview
             f.gates_in_preview = meta.preview and meta.gates_in_preview
+        if f.source == "vibeaudit" and poly_lang(f.file) and not f.rule_id.startswith(("SEC", "DEP")):
+            # Go, Java/Kotlin, C#, Rust and PHP have no labelled corpus yet, so every finding there is preview
+            # (STABILITY.md); injection and XSS still gate, as for other severe preview rules
+            f.preview = True
+            f.gates_in_preview = f.rule_id in POLY_SEVERE
         f.severity = f.severity or "medium"
         f.category = f.category or "backend"
         if f.rule_id in opts.disabled or (meta and meta.category in opts.disabled) or f.category in opts.disabled:

@@ -126,22 +126,22 @@ mapping and reports first; the threat feed after the Phase 3 items).
 | UI checks on Vue and Svelte components | done (0.9.3) |
 | Demotions after a fresh held-out repository: AUTH001 (stable again in 0.9.3), UI014 | done; UI014 stays preview (6 of 7 held-out) |
 
-## Phase 5: more languages (planned, not started; after the 0.9.0 gate, one language per release)
+## Phase 5: more languages (preview: no labelled corpus for these languages yet)
 
 | Item | Status |
 | --- | --- |
-| Go (net/http, Gin, Fiber, Chi, GORM) | planned |
-| Java/Kotlin (Spring Boot, Quarkus) | planned |
-| C#/.NET (ASP.NET Core, EF Core) | planned |
-| Rust (Actix, Axum) | planned |
-| PHP (Laravel, Symfony) | planned |
+| Go (net/http, Gin, Fiber, Chi, GORM) | preview (findings are preview until benchmarked) |
+| Java/Kotlin (Spring Boot, Quarkus) | preview (findings are preview until benchmarked) |
+| C#/.NET (ASP.NET Core, EF Core) | preview (findings are preview until benchmarked) |
+| Rust (Actix, Axum) | preview (findings are preview until benchmarked) |
+| PHP (Laravel, Symfony) | preview (findings are preview until benchmarked) |
 
-## Phase 6: opt-in extras (planned, not started; after Phase 5)
+## Phase 6: opt-in extras (done)
 
 | Item | Status |
 | --- | --- |
-| `vibeaudit test-exploit <finding>`: proof-of-concept request, localhost only, no destructive payloads | planned |
-| Runtime observability middleware for Express and FastAPI (staging only, off by default) | planned |
+| `vibeaudit test-exploit <finding>`: proof-of-concept request, localhost only, no destructive payloads | done |
+| Runtime observability middleware for Express and FastAPI (staging only, off by default) | done |
 
 vibeaudit is not published to PyPI or any marketplace by this project; packages are built in CI and
 attached to GitHub releases.

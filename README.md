@@ -169,7 +169,7 @@ Every command has `--help`.
 | `--config FILE` | Read settings from this file instead of `.vibeaudit.toml` / `pyproject.toml`. |
 | `--no-config` | Ignore the scanned project's settings and feedback files (use this for code you do not trust). |
 | `--plugin FILE_OR_MODULE` | Load custom rules (repeatable; this runs that Python code). |
-| `--llm gemini\|openai\|anthropic` | Ask an LLM to triage findings (see [LLM-assisted checks](#llm-assisted-checks-optional)). |
+| `--llm gemini\|openai\|openrouter\|anthropic` | Ask an LLM to triage findings (see [LLM-assisted checks](#llm-assisted-checks-optional)). |
 | `--llm-model NAME`, `--llm-review`, `--llm-max-requests N` | Model name; also review the riskiest files for missed issues; hard cap on requests (default 10). |
 | `--max-file-size BYTES` | Skip larger files (default 1,000,000). |
 | `--file-timeout SECONDS` | Time each analysis step may spend on one file before it is stopped (default 30). |
@@ -203,7 +203,8 @@ GEMINI_API_KEY=... vibeaudit scan . --llm gemini --llm-review --llm-max-requests
   Secrets are redacted before anything is sent.
 - **Review** adds issues the rules did not cover as `AI001`, labelled model-generated and unverified.
 - Providers: `gemini` (`GEMINI_API_KEY` or `GOOGLE_API_KEY`), `openai` (`OPENAI_API_KEY`; `OPENAI_BASE_URL`
-  for any compatible server such as Ollama) and `anthropic` (`ANTHROPIC_API_KEY`). Verdicts are cached, so
+  for any compatible server such as Ollama), `openrouter` (`OPENROUTER_API_KEY`, default `qwen/qwen4-max`)
+  and `anthropic` (`ANTHROPIC_API_KEY`). Verdicts are cached, so
   an unchanged finding costs no request the next time.
 
 ### Monorepos
@@ -662,18 +663,23 @@ How it reads code:
   Remix routes are only partly covered.
 - UI rules cover React, Next.js, Vue and Svelte single-file components (templates and `onMounted`/`onMount`
   hooks) and HTML templates; Astro files get only the alt-text and placeholder checks.
+- Go (net/http, Gin, Fiber, Chi, GORM), Java/Kotlin (Spring Boot, Quarkus), C#/.NET (ASP.NET Core, EF Core),
+  Rust (Actix, Axum) and PHP (Laravel, Symfony) get route/auth discovery, SQL and command injection (BE001, BE002),
+  template XSS (FE001), loop N+1 queries (DATA001) and HTTP client timeout checks (REL001). These
+  languages have no labelled corpus yet, so their findings are preview (injection and XSS still gate).
+- `vibeaudit test-exploit FINDING --url http://127.0.0.1:8000 [--send]` builds (and with `--send`, runs) a single
+  non-destructive localhost proof-of-concept request without following redirects; `vibeaudit.runtime` offers
+  double-gated staging-only observability middleware for FastAPI and Express (`VIBEAUDIT_RUNTIME=1`).
 - The per-file time budget is checked between regex matches and statements; a single regex step cannot be
   interrupted, which is why every pattern is tested for linear time.
 
 Not covered (see [ROADMAP.md](ROADMAP.md); contributions welcome):
 
-- Languages other than Python and JavaScript/TypeScript: Go, Java, Kotlin, Rust, Ruby, PHP, C#.
+- Languages not yet wired beyond the list above: Ruby.
 - Infrastructure as code beyond the checks listed above (AWS only for Terraform and CloudFormation; no Azure or
   GCP resources, no Terraform modules or variables resolved, Helm templates read as plain YAML).
 - XML external entities (XXE) and other XML parser settings.
-- Automatic fixes (a fix command that edits code) and a gate on score drift between commits.
-- Runtime testing: vibeaudit reads code, it does not attack a running app or a model. For prompt injection
-  and jailbreaks against a live model, use promptfoo or garak.
+- Prompt injection and jailbreaks against a live model (use promptfoo or garak for live model red-teaming).
 
 ## Accuracy
 
