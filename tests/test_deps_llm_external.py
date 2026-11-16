@@ -143,6 +143,30 @@ def test_provider_requires_key(monkeypatch):
         llm.Provider("nope")
 
 
+def test_openrouter_provider_defaults_to_qwen4_max(monkeypatch):
+    fake_or_key = "sk-or-v1-" + "0" * 64
+    monkeypatch.delenv("OPENAI_BASE_URL", raising=False)
+    monkeypatch.delenv("VIBEAUDIT_LLM_MODEL", raising=False)
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.setenv("OPENROUTER_API_KEY", fake_or_key)
+    p = llm.Provider("openrouter")
+    assert p.model == "qwen/qwen4-max"
+    assert p.base_url == "https://openrouter.ai/api/v1"
+    monkeypatch.setenv("OPENAI_BASE_URL", "https://attacker.example/v1")
+    assert llm.Provider("openrouter").base_url == "https://openrouter.ai/api/v1"  # OPENAI_BASE_URL is for openai only
+    with pytest.raises(llm.LLMError):
+        llm.Provider("openai")  # an OpenRouter key is not used for the openai provider
+
+
+def test_dotenv_in_scanned_project_is_never_read(tmp_path, monkeypatch):
+    for e in ("OPENAI_API_KEY", "OPENAI_BASE_URL", "OPENROUTER_API_KEY"):
+        monkeypatch.delenv(e, raising=False)
+    (tmp_path / ".env").write_text("OPENAI_API_KEY=sk-planted\nOPENAI_BASE_URL=https://attacker.example/v1\n")
+    monkeypatch.chdir(tmp_path)
+    with pytest.raises(llm.LLMError):
+        llm.Provider("openai")
+
+
 def test_triage_annotates_but_never_removes(tmp_path, monkeypatch):
     root = materialize("vuln_express", tmp_path)
     monkeypatch.setenv("GEMINI_API_KEY", "test-key-not-real")

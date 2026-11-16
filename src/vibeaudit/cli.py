@@ -53,8 +53,8 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--max-file-size", type=int, default=None, help="skip files larger than this many bytes (default: 1000000)")
     s.add_argument("--file-timeout", type=float, default=None,
                    help="seconds each analysis step may spend on one file before it is stopped (default: 30)")
-    s.add_argument("--llm", choices=["gemini", "openai", "anthropic"],
-                   help="use an LLM to triage findings (needs GEMINI_API_KEY / OPENAI_API_KEY / ANTHROPIC_API_KEY)")
+    s.add_argument("--llm", choices=["gemini", "openai", "openrouter", "anthropic"],
+                   help="use an LLM to triage findings (needs GEMINI_API_KEY / OPENAI_API_KEY / OPENROUTER_API_KEY / ANTHROPIC_API_KEY)")
     s.add_argument("--llm-model", help="model name for the LLM provider")
     s.add_argument("--llm-review", action="store_true", help="also ask the LLM to review the riskiest files for missed issues")
     s.add_argument("--llm-max-requests", type=int, default=None, help="hard cap on LLM requests per scan (default: 10)")
@@ -116,7 +116,7 @@ def build_parser() -> argparse.ArgumentParser:
                    help="fix only these rules (repeatable, comma lists allowed)")
     x.add_argument("--exclude", action="append", default=[], metavar="GLOB", help="skip paths matching GLOB (repeatable)")
     x.add_argument("--config", metavar="FILE", help="read settings from this TOML file, as for scan")
-    x.add_argument("--llm", choices=["gemini", "openai", "anthropic"],
+    x.add_argument("--llm", choices=["gemini", "openai", "openrouter", "anthropic"],
                    help="ask an LLM for patches for findings without a codemod (auth, transactions, ...); needs an API key")
     x.add_argument("--llm-model", help="model name for the LLM provider")
     x.add_argument("--llm-max-requests", type=int, default=10, help="hard cap on LLM requests (default: 10)")
@@ -143,6 +143,17 @@ def build_parser() -> argparse.ArgumentParser:
     e.add_argument("--path", default=".", help="project directory (default: current directory)")
     e.add_argument("--format", choices=["text", "json"], default="text")
     e.add_argument("--config", metavar="FILE", help="read settings from this TOML file, as for scan")
+
+    tx = sub.add_parser("test-exploit", help="build (or --send) a localhost-only, non-destructive proof-of-concept request",
+                        description="Build a non-destructive canary proof-of-concept request for FINDING (FILE:LINE, "
+                                    "FILE:LINE:RULE or fingerprint prefix). Dry-run by default; --send sends one request "
+                                    "only to localhost / 127.0.0.1 / ::1 and never follows redirects.")
+    tx.add_argument("finding", help="FILE:LINE, FILE:LINE:RULE or a fingerprint prefix")
+    tx.add_argument("--path", default=".", help="project directory (default: current directory)")
+    tx.add_argument("--url", default="http://127.0.0.1:8000", help="localhost base URL (127.0.0.1, ::1 or localhost)")
+    tx.add_argument("--send", action="store_true", help="send the single non-destructive request to the localhost target")
+    tx.add_argument("--format", choices=["text", "json"], default="text")
+    tx.add_argument("--config", metavar="FILE", help="read settings from this TOML file, as for scan")
 
     r = sub.add_parser("rules", help="list every rule")
     r.add_argument("--format", choices=["text", "json", "md"], default="text")
@@ -266,6 +277,41 @@ def cmd_explain(a: argparse.Namespace) -> int:
         print(json.dumps(out, indent=2))
     else:
         print("\n\n".join(explain.render(e) for e in out))
+    return 0
+
+
+def cmd_test_exploit(a: argparse.Namespace) -> int:
+    from . import explain, exploit
+    from .config import project_options
+    from .scanner import scan
+
+    if not os.path.isdir(a.path):
+        print(f"vibeaudit: not a directory: {a.path}", file=sys.stderr)
+        return 2
+    try:
+        opts = project_options(a.path, a.config, offline=True, external="none", min_severity="info", include_preview=True)
+    except ConfigError as e:
+        print(f"vibeaudit: {e}", file=sys.stderr)
+        return 2
+    res = scan(a.path, opts)
+    chosen = explain.select(res.findings, a.finding)
+    if not chosen:
+        print(f"vibeaudit: no finding matches {a.finding!r}", file=sys.stderr)
+        return 1
+    results = []
+    try:
+        for f in chosen[:5]:
+            poc = exploit.build_poc(f, res.routes, a.url)
+            if a.send:
+                poc = exploit.send_poc(poc)
+            results.append(poc)
+    except exploit.ExploitError as e:
+        print(f"vibeaudit: {e}", file=sys.stderr)
+        return 2
+    if a.format == "json":
+        print(json.dumps(results, indent=2))
+    else:
+        print("\n\n".join(exploit.render_text(p) for p in results))
     return 0
 
 
@@ -531,6 +577,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         return cmd_rules(a.format)
     if a.command == "explain":
         return cmd_explain(a)
+    if a.command == "test-exploit":
+        return cmd_test_exploit(a)
     if a.command == "studio":
         from . import studio
         from .config import project_options

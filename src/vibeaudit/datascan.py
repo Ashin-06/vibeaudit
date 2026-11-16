@@ -391,6 +391,8 @@ class DataScanner:
     # ------------------------------------------------------- transactions
     def _transactions(self) -> None:
         for r in self.routes:
+            if r.lang not in ("py", "js"):
+                continue
             body = r.body
             # writes through a transaction client (`tx.order.create`, `trx(...)`) are inside a transaction
             # even when the code that opened it is not visible here
