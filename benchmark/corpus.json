@@ -654,6 +654,87 @@
    "kind": "well-maintained",
    "language": "rust",
    "split": "heldout"
+  },
+  {
+   "name": "eShopOnWeb",
+   "url": "https://github.com/dotnet-architecture/eShopOnWeb",
+   "commit": "4da8212117e87d808d4bbc7da6286fd2147ce606",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "csharp",
+   "split": "tuned"
+  },
+  {
+   "name": "aspnetcore-realworld-example-app",
+   "url": "https://github.com/realworld-apps/aspnetcore-realworld-example-app",
+   "commit": "6fe67a53892213d264dc8fa244e3aaaf55f50390",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "csharp",
+   "split": "tuned"
+  },
+  {
+   "name": "dvcsharp-api",
+   "url": "https://github.com/appsecco/dvcsharp-api",
+   "commit": "76c1de3c9d8d9c2e8ec0b50abe3b198a4330d7fc",
+   "licence": "MIT",
+   "kind": "training",
+   "language": "csharp",
+   "split": "tuned"
+  },
+  {
+   "name": "chat-copilot",
+   "url": "https://github.com/microsoft/chat-copilot",
+   "commit": "23b27821baa11b2a1639070434628e5b151ce706",
+   "licence": "MIT",
+   "kind": "llm-app",
+   "language": "csharp",
+   "split": "tuned"
+  },
+  {
+   "name": "ClaudeCodeProxy",
+   "url": "https://github.com/AIDotNet/ClaudeCodeProxy",
+   "commit": "2e82035810646ab9e2bf95aedb9137100c8e4456",
+   "licence": "MIT",
+   "kind": "ai-built",
+   "language": "csharp",
+   "split": "tuned"
+  },
+  {
+   "name": "VibeCodingBreadcrumbDemo",
+   "url": "https://github.com/dasiths/VibeCodingBreadcrumbDemo",
+   "commit": "186b52de327be6fb683ad90a3e02bc081815c8c1",
+   "licence": "MIT",
+   "kind": "ai-built",
+   "language": "csharp",
+   "split": "tuned"
+  },
+  {
+   "name": "TodoApp",
+   "url": "https://github.com/davidfowl/TodoApp",
+   "commit": "307a1eadbbd77a3004c318f2377e4818bc400af6",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "csharp",
+   "split": "tuned"
+  },
+  {
+   "name": "torrent-aggregator",
+   "url": "https://github.com/fideliskaruri/torrent-aggregator",
+   "commit": "cb436138a17f0db8a2f50ca09588a268252b9821",
+   "licence": "none declared",
+   "kind": "ai-built",
+   "language": "csharp",
+   "split": "heldout"
+  },
+  {
+   "name": "semantickernel-microservice",
+   "url": "https://github.com/goodtocode/semantickernel-microservice",
+   "commit": "a897d5e3ba9a737314efea9d66ba1bf93288e470",
+   "licence": "MIT",
+   "kind": "llm-app",
+   "language": "csharp",
+   "split": "heldout"
   }
  ]
 }
