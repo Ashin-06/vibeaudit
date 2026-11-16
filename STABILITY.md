@@ -33,7 +33,7 @@ A rule is in **preview** when it is new or when its measured precision is not go
 
 A few preview rules cover bug classes where a missed finding costs far more than a false alarm: command
 injection (BE002), dynamic code execution (BE003), unsafe deserialization (BE004), open redirect (BE008)
-cross-site scripting (FE001) and, since 0.9.2, a state-changing endpoint without authentication (AUTH001). One missed instance can mean remote code execution or account takeover,
+and cross-site scripting (FE001). One missed instance can mean remote code execution or account takeover,
 while a false alarm costs a reviewer a few minutes and an inline `vibeaudit: ignore`. So these rules are
 marked `gates_in_preview`:
 
@@ -52,7 +52,7 @@ cause is fixed on tuned-split cases only, and the rule leaves preview again once
 | Rule | Release | Held-out | Cause | Gates in preview |
 | --- | --- | --- | --- | --- |
 | UI014 Image without width and height | 0.9.2 | 6/7 (85.7%) | an `<img>` sized by CSS classes | no |
-| AUTH001 State-changing endpoint without authentication | 0.9.2 | 14/16 (87.5%) | server actions guarded by `assertDevelopment()` | yes (severe) |
+| AUTH001 State-changing endpoint without authentication | 0.9.2 | 14/16 (87.5%) | server actions guarded by `assertDevelopment()` | yes (severe); stable again after the fix (14/14) |
 
 ## What the benchmark guards
 

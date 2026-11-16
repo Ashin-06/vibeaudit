@@ -38,7 +38,9 @@ ERROR_STATE = re.compile(r"\bcatch\b|\.catch\s*\(|\berror\b|isError|onError|setE
 LOREM = re.compile(r"(?i)\blorem ipsum\b|\bdolor sit amet\b")
 HREF = re.compile(r"""(?:\bhref\s*=\s*\{?\s*|\brouter\s*\.\s*(?:push|replace)\s*\(\s*|\bredirect\s*\(\s*|\bnavigate\s*\(\s*)(["'`])(/[^"'`\s?#]*)(?:[?#][^"'`\s]*)?\1""")
 # an image whose box is fixed some other way: Tailwind size or aspect classes, inline style, fill layout
-SIZED = re.compile(r"\b(?:width|height)\s*=|\bfill\b|\bstyle\s*=|\b(?:w|h|size|aspect)-[\w\[/]|\bsizes\s*=")
+SIZED = re.compile(r"\b(?:width|height)\s*=|\bfill\b|\bstyle\s*=|\b(?:w|h|size|aspect)-[\w\[/]|\bsizes\s*="
+                   # a CSS-module class (className={styles.avatar}): the stylesheet sets the size
+                   r"|\bclassName\s*=\s*\{\s*(?:styles|classes|css|s|style)\s*(?:\.|\[)")
 # a visible focus style that replaces the removed outline
 FOCUS_REPLACEMENT = re.compile(r"\b(?:focus|focus-visible|focus-within|peer-focus|group-focus)[\w-]*:(?!outline-none|outline-hidden|outline-0)[\w\[\]/.#-]+|\bring-\d|\bsr-only\b")
 OUTLINE_NONE = re.compile(r"(?<![\w:-])(?:focus:|focus-visible:)?outline-(?:none|0)(?![\w-])")

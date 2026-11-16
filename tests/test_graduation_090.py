@@ -12,7 +12,6 @@ def test_data013_stays_in_preview_with_its_measured_reason():
     assert RULES["DATA013"].preview and "75%" in RULES["DATA013"].preview_reason
 
 
-def test_demotions_in_092_keep_their_measured_reasons():
+def test_demotions_in_092_and_the_regraduation():
     assert RULES["UI014"].preview and "6 of 7" in RULES["UI014"].preview_reason
-    a = RULES["AUTH001"]
-    assert a.preview and a.gates_in_preview and "14 of 16" in a.preview_reason
+    assert not RULES["AUTH001"].preview  # back to stable: dev-only server actions are no longer reported
