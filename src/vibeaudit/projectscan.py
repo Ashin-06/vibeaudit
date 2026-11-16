@@ -427,7 +427,7 @@ class ProjectScanner:
             elif is_admin and not H.ADMIN_ROLE_EVIDENCE.search(r.body):
                 msg = "has no authentication or role check" if not r.has_auth else "checks login but not the admin role"
                 self.add(r.file, r.line, "AUTH002", f"{'/'.join(r.methods)} {path} {msg}.")
-            elif mutating and not r.has_auth and not public:
+            elif mutating and not r.has_auth and not public and r.framework != "spring-unsecured":  # JAVA001 covers those
                 what = "has no authentication check" if writes else "calls a paid AI API without an authentication check"
                 self.add(r.file, r.line, "AUTH001", f"{'/'.join(r.methods)} {path} {what}.")
             elif mutating and r.has_auth and r.params and r.methods != ["POST"]:
@@ -452,7 +452,7 @@ class ProjectScanner:
 
             server_validation = any(
                 has(f, H.SERVER_VALIDATION_EVIDENCE) for f in self.p.files
-                if f.kind in ("py", "js") and not f.is_client and not f.is_test)
+                if (f.kind in ("py", "js") or f.rel.endswith((".java", ".kt"))) and not f.is_client and not f.is_test)
             if not server_validation:
                 client = next((f.rel for f in self.p.files if f.is_client and has(f, H.CLIENT_VALIDATION)), None)
                 extra = f" Validation exists only in browser code ({client})." if client else ""

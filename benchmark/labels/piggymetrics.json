@@ -1,0 +1,102 @@
+{
+ "repo": "piggymetrics",
+ "commit": "6bb2cf9ddbca980b664d3edbb6ff775d75369278",
+ "findings": [
+  {
+   "rule": "AUTH001",
+   "file": "account-service/src/main/java/com/piggymetrics/account/controller/AccountController.java",
+   "line": 35,
+   "fingerprint": "158715d20b670dc3902de58d2854c501",
+   "verdict": "fp",
+   "reason": "The security chain permits \"/\" on purpose: creating an account is the sign-up endpoint."
+  },
+  {
+   "rule": "CFG001",
+   "file": "account-service/Dockerfile",
+   "line": 1,
+   "fingerprint": "75273caa6df9bc01ac040c998ae8e298",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "CFG001",
+   "file": "auth-service/Dockerfile",
+   "line": 1,
+   "fingerprint": "dfb52ac37bee42b7208dcc797e0c17a0",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "CFG001",
+   "file": "config/Dockerfile",
+   "line": 1,
+   "fingerprint": "7bab48be9b47b591025b3b561a55e9d8",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "CFG001",
+   "file": "gateway/Dockerfile",
+   "line": 1,
+   "fingerprint": "dab88e5128293bfe7a56e6e823107a7f",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "CFG001",
+   "file": "mongodb/Dockerfile",
+   "line": 1,
+   "fingerprint": "b2a31c4bc8c34709edf9f9a6765a9c0e",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "CFG001",
+   "file": "monitoring/Dockerfile",
+   "line": 1,
+   "fingerprint": "88b561f91a87de2a1085931d5c595799",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "CFG001",
+   "file": "notification-service/Dockerfile",
+   "line": 1,
+   "fingerprint": "4a4464e7b646175b141f21ec5ff9ec27",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "CFG001",
+   "file": "registry/Dockerfile",
+   "line": 1,
+   "fingerprint": "06a267c670469fcf30496227a1ba2447",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "CFG001",
+   "file": "statistics-service/Dockerfile",
+   "line": 1,
+   "fingerprint": "e1c93e03557bf22de86913ff9b008908",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "CFG001",
+   "file": "turbine-stream-service/Dockerfile",
+   "line": 1,
+   "fingerprint": "c4d8f7736f918a93b6c3f2b0029ecb07",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "QA001",
+   "file": "README.md",
+   "line": 1,
+   "fingerprint": "9a25f37073b648528af824d2da3c3f5d",
+   "verdict": "fp",
+   "reason": "The services have Java tests under src/test; QA001 does not count Java test files."
+  }
+ ]
+}

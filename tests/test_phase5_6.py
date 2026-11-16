@@ -71,7 +71,7 @@ def test_phase5_java_spring_and_quarkus(tmp_path):
           '    jdbcTemplate.query("SELECT * FROM orders WHERE id = " + req, rowMapper);\n'
           '    new RestTemplate();\n'
           '    for (Long id : ids) { userRepository.findById(id); }\n'
-          '    Runtime.getRuntime().exec(cmd);\n'
+          '    Runtime.getRuntime().exec(req);\n'
           '  }\n'
           '}\n')
     write(tmp_path, "AdminResource.kt",
@@ -79,10 +79,10 @@ def test_phase5_java_spring_and_quarkus(tmp_path):
           '  @GET @Path("/items") fun list() { return "ok" }\n}\n')
     res, all_r = _rules(tmp_path)
     ids = {r for _f, _ln, r in all_r}
-    assert {"AUTH001", "BE001", "BE002", "DATA001", "REL001"} <= ids
+    assert {"JAVA001", "BE001", "BE002", "DATA001", "REL001"} <= ids  # no Spring Security at all: JAVA001, not AUTH001
     assert "Spring Boot" in res.meta["stack"]
     assert any(r.path == "/api/orders/charge" and not r.has_auth for r in res.routes)
-    assert any(r.path == "/quarkus/items" and r.framework == "quarkus" for r in res.routes)
+    assert any(r.path == "/quarkus/items" and r.framework == "jax-rs" for r in res.routes)
 
 
 # ----------------------------------------------------------- Phase 5: C#/.NET

@@ -1,0 +1,70 @@
+{
+ "repo": "vulnerable-java-application",
+ "commit": "e5c6c7a5b7edaaddf5c2856d491023edffd59877",
+ "findings": [
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile",
+   "line": 7,
+   "fingerprint": "54b21922f0abaa94c5a501a6d52174d7",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "JAVA001",
+   "file": "src/main/java/com/datadoghq/workshops/samplevulnerablejavaapp/controller/MainController.java",
+   "line": 34,
+   "fingerprint": "cef708a70235588f36855170e7a27ac6",
+   "verdict": "tp",
+   "reason": "No Spring Security configuration and no annotations: these endpoints answer anyone."
+  },
+  {
+   "rule": "JAVA002",
+   "file": "src/main/resources/application.properties",
+   "line": 2,
+   "fingerprint": "7ca210e5069dbd4a6e8a9c5d5a19202c",
+   "verdict": "tp",
+   "reason": "Actuator exposes every endpoint (include=*) with no security configuration."
+  },
+  {
+   "rule": "QA001",
+   "file": "README.md",
+   "line": 1,
+   "fingerprint": "728d76adeaeabf284b655496a9d2c265",
+   "verdict": "fp",
+   "reason": "The project has a Java test under src/test; QA001 does not count Java test files."
+  },
+  {
+   "rule": "QA011",
+   "file": "src/main/resources/static/js/main.js",
+   "line": 6,
+   "fingerprint": "4fd585dd2b30b43efef2edda309e47eb",
+   "verdict": "tp",
+   "reason": "The same function body is copied into another file of the same package."
+  },
+  {
+   "rule": "QA011",
+   "file": "src/main/resources/static/js/main.js",
+   "line": 13,
+   "fingerprint": "ceb58af04135b8de75fb913a18b44e62",
+   "verdict": "tp",
+   "reason": "The same function body is copied into another file of the same package."
+  },
+  {
+   "rule": "QA011",
+   "file": "src/main/resources/static/js/website.js",
+   "line": 6,
+   "fingerprint": "77e34822e97003f06e445d73837824f2",
+   "verdict": "tp",
+   "reason": "The same function body is copied into another file of the same package."
+  },
+  {
+   "rule": "QA011",
+   "file": "src/main/resources/static/js/website.js",
+   "line": 13,
+   "fingerprint": "a825bd90be3aef15b1ede66a761ef1a0",
+   "verdict": "tp",
+   "reason": "The same function body is copied into another file of the same package."
+  }
+ ]
+}

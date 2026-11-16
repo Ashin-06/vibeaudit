@@ -145,6 +145,9 @@ def _collect(project: Project) -> List[Dep]:
             npm_private_scopes |= set(re.findall(r"^\s*(@[\w-]+):registry\s*=", f.text, re.M))
     for f in project.files:
         name = f.rel.rsplit("/", 1)[-1]
+        if name in ("pom.xml", "build.gradle", "build.gradle.kts") and f.text is not None and not f.is_test:
+            deps.extend(Dep(mod, "Maven", f.rel, line, version) for mod, version, line in maven_dependencies(name, f.text))
+            continue
         requirements = bool(re.fullmatch(r"requirements[\w.-]*\.(?:txt|in)", name) or re.search(r"(?:^|/)requirements/[^/]+\.txt$", f.rel))
         # the name first: only manifests are read, so a long-lived Project keeps the result while code changes
         if not (requirements or name in ("pyproject.toml", "package.json")) or f.is_test or f.text is None:
@@ -530,7 +533,7 @@ class DepScanner:
                 slopped.add((d.ecosystem, d.name))
         squats: Dict[Tuple[str, str], str] = {}
         for d in deps:
-            if not d.checkable or (d.ecosystem, d.name) in slopped:
+            if not d.checkable or (d.ecosystem, d.name) in slopped or d.ecosystem not in ("PyPI", "npm"):
                 continue
             target = typosquat_target(d.name, d.ecosystem)
             if target:
@@ -555,7 +558,8 @@ class DepScanner:
             return
         known_pypi, _ = popular("PyPI")
         known_npm, _ = popular("npm")
-        to_check = sorted({(d.ecosystem, d.name) for d in deps if d.checkable and (d.ecosystem, d.name) not in slopped and not (
+        to_check = sorted({(d.ecosystem, d.name) for d in deps if d.checkable and d.ecosystem in ("PyPI", "npm")
+                           and (d.ecosystem, d.name) not in slopped and not (
             (d.ecosystem == "PyPI" and pep503(d.name) in known_pypi) or (d.ecosystem == "npm" and d.name.lower() in known_npm))})
         by_key = {(d.ecosystem, d.name): d for d in deps}
         BREAKER.reset()
@@ -734,4 +738,40 @@ def _lock_entries(lock: str, text: str) -> List[Tuple[str, str, int]]:
     elif lock == "bun.lock":
         for m in re.finditer(r'(?m)^\s*"[^"\n]+":\s*\[\s*"((?:@[^@/"]+/)?[^@"]+)@(\d[^"]*)"', text):
             out.append((m.group(1), m.group(2), line(m.start())))
+    return out
+
+
+# ------------------------------------------------------------------ Maven and Gradle (Java and Kotlin)
+POM_DEP = re.compile(r"<dependency>(.*?)</dependency>", re.S)
+POM_PROP = re.compile(r"<properties>(.*?)</properties>", re.S)
+GRADLE_DEP = re.compile(
+    r"""^[ \t]*(implementation|api|compile|runtimeOnly|compileOnly|kapt|annotationProcessor)[ \t]*\(?[ \t]*["']([\w.\-]+):([\w.\-]+):([\w.\-]+)["']""",
+    re.M)
+
+
+def _tag(block: str, name: str) -> str:
+    m = re.search(r"<%s>\s*([^<]{1,200}?)\s*</%s>" % (name, name), block)
+    return m.group(1) if m else ""
+
+
+def maven_dependencies(name: str, text: str) -> List[Tuple[str, str, int]]:
+    """(group:artifact, version, line) of the pinned, non-test dependencies of a pom.xml or build.gradle(.kts).
+    Versions from ${properties} are resolved; managed versions (from a BOM or a parent) are left out."""
+    out: List[Tuple[str, str, int]] = []
+    if name == "pom.xml":
+        props: Dict[str, str] = {}
+        for pm in POM_PROP.finditer(text):
+            props.update({k: v.strip() for k, v in re.findall(r"<([\w.\-]+)>([^<]{1,100})</\1>", pm.group(1))})
+        for m in POM_DEP.finditer(text):
+            block = m.group(1)
+            if _tag(block, "scope") in ("test", "provided", "system"):
+                continue
+            group, artifact, version = _tag(block, "groupId"), _tag(block, "artifactId"), _tag(block, "version")
+            version = re.sub(r"\$\{([\w.\-]+)\}", lambda x: props.get(x.group(1), x.group(0)), version)
+            if group and artifact and re.match(r"\d", version) and "${" not in version:
+                out.append((f"{group}:{artifact}", version, text.count("\n", 0, m.start()) + 1))
+        return out
+    for m in GRADLE_DEP.finditer(text):
+        if re.match(r"\d", m.group(4)):
+            out.append((f"{m.group(2)}:{m.group(3)}", m.group(4), text.count("\n", 0, m.start()) + 1))
     return out

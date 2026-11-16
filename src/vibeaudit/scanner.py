@@ -16,6 +16,7 @@ from . import heuristics as H
 from .files import Project
 from .guard import GUARD
 from .jsscan import JsScanner
+from .jvm import JvmScanner
 from .model import SEVERITY_RANK, SUPPRESS, TEST_FILE_RULES, Finding, at_least
 from .projectscan import ProjectScanner
 from .polyscan import POLY_SEVERE, PolyScanner, _lang_of as poly_lang
@@ -181,8 +182,8 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
     notes: List[str] = []
 
     js_routes = JsScanner(project, emit).run()
-    py_routes = PyScanner(project, emit).run()
-    poly_routes = PolyScanner(project, emit).run()
+    py_routes = PyScanner(project, emit).run() + JvmScanner(project, emit).run()  # Python, then Java and Kotlin
+    poly_routes = PolyScanner(project, emit).run()  # Go, C#, Rust, PHP; for Java only the checks JvmScanner lacks
     all_routes = js_routes + py_routes + poly_routes
     SecretScanner(project, emit).run()
     ProjectScanner(project, emit, all_routes).run()

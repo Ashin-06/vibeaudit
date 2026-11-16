@@ -1,0 +1,102 @@
+{
+ "repo": "JavaVulnerableLab",
+ "commit": "626a106a49777507beb51955d19ef9d271a9d4a5",
+ "findings": [
+  {
+   "rule": "BE001",
+   "file": "src/main/java/org/cysecurity/cspf/jvl/controller/EmailCheck.java",
+   "line": 48,
+   "fingerprint": "0357c99dfe993c84e970a718b2f51e11",
+   "verdict": "tp",
+   "reason": "Request data is concatenated into the SQL statement."
+  },
+  {
+   "rule": "BE001",
+   "file": "src/main/java/org/cysecurity/cspf/jvl/controller/LoginValidator.java",
+   "line": 52,
+   "fingerprint": "57029956420d7a86ddae09af548b26de",
+   "verdict": "tp",
+   "reason": "Request data is concatenated into the SQL statement."
+  },
+  {
+   "rule": "BE001",
+   "file": "src/main/java/org/cysecurity/cspf/jvl/controller/Register.java",
+   "line": 58,
+   "fingerprint": "d9aa2b8d0ba76918bcfac93319848de0",
+   "verdict": "tp",
+   "reason": "Request data is concatenated into the SQL statement."
+  },
+  {
+   "rule": "BE001",
+   "file": "src/main/java/org/cysecurity/cspf/jvl/controller/Register.java",
+   "line": 59,
+   "fingerprint": "78937ba1621227f977b866d1ac870e85",
+   "verdict": "tp",
+   "reason": "Request data is concatenated into the SQL statement."
+  },
+  {
+   "rule": "BE001",
+   "file": "src/main/java/org/cysecurity/cspf/jvl/controller/UsernameCheck.java",
+   "line": 48,
+   "fingerprint": "815df810d5e4b2cf731a2473d04045f1",
+   "verdict": "tp",
+   "reason": "Request data is concatenated into the SQL statement."
+  },
+  {
+   "rule": "BE006",
+   "file": "src/main/java/org/cysecurity/cspf/jvl/controller/AddPage.java",
+   "line": 45,
+   "fingerprint": "be4bbcbec602276058705fc41fece808",
+   "verdict": "tp",
+   "reason": "A request value is used in a file path."
+  },
+  {
+   "rule": "BE006",
+   "file": "src/main/java/org/cysecurity/cspf/jvl/controller/AddPage.java",
+   "line": 52,
+   "fingerprint": "3866543db8ce11df217d5e3ca7c7dfdb",
+   "verdict": "tp",
+   "reason": "A request value is used in a file path."
+  },
+  {
+   "rule": "BE008",
+   "file": "src/main/java/org/cysecurity/cspf/jvl/controller/Open.java",
+   "line": 39,
+   "fingerprint": "40598f1ef50be4a1fbc7b0b744926b26",
+   "verdict": "tp",
+   "reason": "The request value is used as the redirect target."
+  },
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile",
+   "line": 16,
+   "fingerprint": "3b35e9927505c18bc04aa3994b747908",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "CFG007",
+   "file": "docker-compose.yml",
+   "line": 16,
+   "fingerprint": "15fc8101fb5755e2c4a9b008cbf5b551",
+   "verdict": "tp",
+   "reason": "A default database password is committed in the compose file."
+  },
+  {
+   "rule": "SEC001",
+   "file": "src/main/webapp/vulnerability/clientsecrets/integrations.jsp",
+   "line": 34,
+   "fingerprint": "0b05be3810bec37b7a4a0bb1dfd9749b",
+   "verdict": "tp",
+   "reason": "A real-looking API key is committed in source."
+  },
+  {
+   "rule": "SEC003",
+   "file": "src/main/webapp/vulnerability/clientsecrets/integrations.jsp",
+   "line": 37,
+   "fingerprint": "ed92586776cb6e53e6ea59f904112a61",
+   "verdict": "tp",
+   "reason": "A real-looking secret is committed."
+  }
+ ]
+}

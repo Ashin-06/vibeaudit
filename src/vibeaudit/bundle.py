@@ -31,7 +31,7 @@ from . import __version__
 from .store import cache_dir, loads_json, write_atomic
 
 OSV_DUMP = "https://osv-vulnerabilities.storage.googleapis.com/{}/all.zip"
-ECOSYSTEMS = ("PyPI", "npm")
+ECOSYSTEMS = ("PyPI", "npm", "Maven")
 MAX_DUMP = 1_500_000_000  # bytes of one OSV all.zip download
 MAX_INDEX = 400_000_000  # bytes of one uncompressed index
 MAX_DATA = 10_000_000
