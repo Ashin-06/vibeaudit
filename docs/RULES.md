@@ -3,9 +3,9 @@
 Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do not edit by hand.
 `vibeaudit rules` prints the same list, and `vibeaudit rules --format json` includes every field.
 
-162 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
+165 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-57 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+61 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -269,6 +269,7 @@ References: CWE-1395, A06:2021
 | [BE018](#be018) | medium | preview | No server-side input validation |
 | [BE019](#be019) | high | preview | Payment amount taken from the client |
 | [BE020](#be020) | medium | preview | Email header injection |
+| [JAVA004](#java004) | critical | preview | Polymorphic deserialization without an allow-list |
 
 ### BE001
 
@@ -484,6 +485,18 @@ How to fix: Reject values with CR or LF, and build messages with an API that val
 
 References: CWE-93, A03:2021
 
+### JAVA004
+
+**Polymorphic deserialization without an allow-list** (critical, preview)
+
+Preview: New with Java and Kotlin support: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: Jackson default typing or class-based type ids (`JsonTypeInfo.Id.CLASS`), or XStream without an allow-list, let the JSON or XML name the class to create. A gadget class on the classpath turns a request into remote code execution.
+
+How to fix: Use name-based type ids with a fixed set of subtypes, or a `BasicPolymorphicTypeValidator` that allows only your own packages; call `allowTypes` (or `setupDefaultSecurity`) on XStream.
+
+References: CWE-502, A08:2021
+
 ## Frontend security
 
 | ID | Severity | Status | Rule |
@@ -605,6 +618,7 @@ References: CWE-200, A02:2021
 | [AUTH016](#auth016) | high | preview | Query not scoped to the current tenant |
 | [AUTH017](#auth017) | high | preview | Admin or feature-flag endpoint without a role check |
 | [JAVA001](#java001) | high | preview | Spring controllers with no security configuration |
+| [JAVA003](#java003) | high | preview | Security chain permits every request |
 
 ### AUTH001
 
@@ -802,6 +816,18 @@ How to fix: Add spring-boot-starter-security and a SecurityFilterChain that requ
 
 References: CWE-306, A01:2021
 
+### JAVA003
+
+**Security chain permits every request** (high, preview)
+
+Preview: New with Java and Kotlin support: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: The Spring Security filter chain ends in `anyRequest().permitAll()` (or permits `/**`), so it protects nothing: every endpoint without its own annotation answers anyone.
+
+How to fix: End the chain with `anyRequest().authenticated()` and list the public paths explicitly before it.
+
+References: CWE-862, A01:2021
+
 ## Configuration and deployment
 
 | ID | Severity | Status | Rule |
@@ -824,6 +850,7 @@ References: CWE-306, A01:2021
 | [CFG016](#cfg016) | medium | stable | Unencrypted database or disk storage |
 | [CFG017](#cfg017) | high | preview | Secret file or build argument in the final image |
 | [CFG018](#cfg018) | critical | preview | Pull request code run with secrets (pull_request_target) |
+| [JAVA002](#java002) | high | preview | Spring Boot Actuator endpoints exposed |
 
 ### CFG001
 
@@ -1018,6 +1045,18 @@ Why it matters: A pull_request_target workflow runs with this repository's secre
 How to fix: Use the pull_request trigger for code from forks, or keep pull_request_target jobs to the base branch's code and pass untrusted data only as inputs or artifacts.
 
 References: CWE-829, A08:2021
+
+### JAVA002
+
+**Spring Boot Actuator endpoints exposed** (high, preview)
+
+Preview: New with Java and Kotlin support: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: Actuator endpoints such as env, configprops, heapdump and threaddump are reachable over HTTP. They reveal configuration and secrets (heapdump contains every credential in memory), and shutdown stops the app.
+
+How to fix: Expose only health and info (`management.endpoints.web.exposure.include=health,info`), keep the others behind Spring Security or on a separate management port, and leave shutdown disabled.
+
+References: CWE-215, A05:2021
 
 ## LLM and AI-specific risks
 

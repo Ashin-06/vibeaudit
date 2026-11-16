@@ -22,9 +22,6 @@ POLY_TEST_RE = re.compile(r"_test\.go$|(?:Test|Tests|Spec)\.(?:java|kt|cs|php)$|
 # Direct per-language patterns (kept simple and bounded so every pattern runs in linear time)
 GO_SQLI = re.compile(
     r"""\b(?:db|tx|conn|pool)\s*\.\s*(?:Raw|Exec|Query|QueryRow|Where|Order)\s*\(\s*(?:fmt\.Sprintf\s*\(|"[^"\n]{0,200}"\s*\+)""")
-JAVA_SQLI = re.compile(
-    r"""\b(?:jdbcTemplate\s*\.\s*(?:query(?:ForObject|ForList)?|update|execute)|entityManager\s*\.\s*create(?:Native)?Query|statement\s*\.\s*execute(?:Query|Update)?)\s*\(\s*"[^"\n]{0,200}"\s*\+"""
-    r"""|\bcreateNativeQuery\s*\(\s*"[^"\n]{0,200}"\s*\+""")
 CS_SQLI = re.compile(
     r"""\.\s*(?:FromSqlRaw|ExecuteSqlRaw|SqlQueryRaw)\s*\(\s*(?:\$"|"[^"\n]{0,200}"\s*\+|string\.Format\s*\()""")
 RS_SQLI = re.compile(
@@ -33,8 +30,6 @@ PHP_SQLI = re.compile(
     r"""(?:\bDB::(?:raw|select|statement)|->\s*(?:whereRaw|selectRaw|orderByRaw|query|exec))\s*\(\s*(?:"[^"\n]{0,200}\$\w+|'[^'\n]{0,200}'\s*\.\s*\$)""")
 
 GO_CMDI = re.compile(r"""\bexec\.Command\s*\(\s*"(?:sh|bash|cmd|powershell)"\s*,\s*"(?:-c|/c)"\s*,\s*(?!")""")
-JAVA_CMDI = re.compile(
-    r"""\bRuntime\.getRuntime\(\)\.exec\s*\(\s*(?!")|\bnew\s+ProcessBuilder\s*\(\s*"(?:sh|bash|cmd)"\s*,\s*"(?:-c|/c)"\s*,\s*(?!")""")
 CS_CMDI = re.compile(
     r"""\bProcess\.Start\s*\(\s*(?:new\s+ProcessStartInfo\s*\(\s*)?"(?:cmd|powershell|sh|bash)(?:\.exe)?"\s*,\s*(?:\$"|"[^"\n]{0,200}"\s*\+)""")
 RS_CMDI = re.compile(
@@ -75,12 +70,6 @@ GO_ROUTER_VAR = re.compile(r'\b(\w+)\s*:?=\s*\w+\.(?:Group|Route)\s*\(\s*"([^"\n
 GO_METHOD_ROUTE = re.compile(
     r"""\b(\w+)\s*\.\s*(GET|POST|PUT|DELETE|PATCH|Get|Post|Put|Delete|Patch)\s*\(\s*"([^"\n]{1,200})"\s*,\s*([^,\n)]+)""")
 
-SPRING_CLASS_PREFIX = re.compile(r'@RequestMapping\s*\(\s*(?:value\s*=\s*|path\s*=\s*)?"([^"\n]{1,200})"')
-SPRING_METHOD_ROUTE = re.compile(
-    r"""@(Get|Post|Put|Delete|Patch)Mapping\s*(?:\(\s*(?:(?:value|path)\s*=\s*)?"([^"\n]{0,200})"[^)\n]*\))?""")
-JAXRS_CLASS_PATH = re.compile(r"""\bclass\s+\w+""")
-JAXRS_METHOD_ROUTE = re.compile(
-    r"""@(GET|POST|PUT|DELETE|PATCH)\b(?:[ \t\n]{0,120}@Path\s*\(\s*"([^"\n]{1,200})"\s*\))?""")
 
 CS_CLASS_ROUTE = re.compile(r"""\[Route\s*\(\s*"([^"\n]{1,200})"\s*\)\s*]""")
 CS_ATTR_ROUTE = re.compile(r"""\[Http(Get|Post|Put|Delete|Patch)(?:\s*\(\s*"([^"\n]{0,200})"\s*\))?\s*]""")
@@ -368,44 +357,8 @@ class PolyScanner:
 
     # -------------------------------------------------------- Java / Kotlin
     def _java(self, sf: SourceFile, code: str) -> None:
-        is_quarkus = "jakarta.ws.rs" in code or "javax.ws.rs" in code or "@Path(" in code
-        framework = "quarkus" if is_quarkus else "spring"
-        cls_pos = code.find("class ")
-        cls_head = code[:cls_pos + 120] if cls_pos >= 0 else code[:600]
-        class_auth = _has_auth(cls_head)
-
-        prefix = ""
-        pm = SPRING_CLASS_PREFIX.search(cls_head) if not is_quarkus else re.search(r'@Path\s*\(\s*"([^"\n]{1,200})"\s*\)', cls_head)
-        if pm:
-            prefix = pm.group(1)
-
-        if not is_quarkus:
-            for m in finditer(SPRING_METHOD_ROUTE, code):
-                if m.start() < cls_pos:
-                    continue
-                verb, sub = m.group(1).upper(), m.group(2) or ""
-                path = join_path(prefix, sub)
-                ctx_start = max(0, m.start() - 200)
-                brace = code.find("{", m.end(), m.end() + 400)
-                body = code[ctx_start:brace] + _brace_block(code, brace) if brace >= 0 else code[ctx_start:m.end() + 600]
-                if class_auth:
-                    body = "@PreAuthorize " + body
-                self._emit_route(sf, m.start(), path, [verb], body, "spring", "java")
-        else:
-            for m in finditer(JAXRS_METHOD_ROUTE, code):
-                verb, sub = m.group(1).upper(), m.group(2) or ""
-                path = join_path(prefix, sub)
-                ctx_start = max(0, m.start() - 200)
-                brace = code.find("{", m.end(), m.end() + 400)
-                body = code[ctx_start:brace] + _brace_block(code, brace) if brace >= 0 else code[ctx_start:m.end() + 600]
-                if class_auth:
-                    body = "@RolesAllowed " + body
-                self._emit_route(sf, m.start(), path, [verb], body, "quarkus", "java")
-
-        for m in finditer(JAVA_SQLI, code):
-            self.add(sf, sf.line_at(m.start()), "BE001", "SQL query built by concatenating strings into JDBC/JPA.")
-        for m in finditer(JAVA_CMDI, code):
-            self.add(sf, sf.line_at(m.start()), "BE002", "OS process executed with dynamic command arguments.")
+        # routes, the security configuration and request data into the sinks are jvm.JvmScanner's (a lexer and a
+        # per-method data flow); this keeps the checks it does not have
         self._loop_n_plus_one(sf, code, JAVA_LOOP_DB)
         self._check_timeout(sf, code, JAVA_HTTP, "RestTemplate/HttpClient")
 
