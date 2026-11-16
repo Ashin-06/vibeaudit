@@ -725,7 +725,7 @@
    "licence": "none declared",
    "kind": "ai-built",
    "language": "csharp",
-   "split": "heldout"
+   "split": "tuned"
   },
   {
    "name": "semantickernel-microservice",
@@ -733,6 +733,24 @@
    "commit": "a897d5e3ba9a737314efea9d66ba1bf93288e470",
    "licence": "MIT",
    "kind": "llm-app",
+   "language": "csharp",
+   "split": "tuned"
+  },
+  {
+   "name": "vibecodementor",
+   "url": "https://github.com/WilliamAvHolmberg/vibecodementor",
+   "commit": "70fa9be78b73040e43f75046623285de7ca4aa93",
+   "licence": "none declared",
+   "kind": "ai-built",
+   "language": "csharp",
+   "split": "heldout"
+  },
+  {
+   "name": "Timinute",
+   "url": "https://github.com/jame581/Timinute",
+   "commit": "d768c477d3002c449a0869b61ddacee6b687b006",
+   "licence": "MIT",
+   "kind": "ai-built",
    "language": "csharp",
    "split": "heldout"
   }

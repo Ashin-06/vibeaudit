@@ -4,7 +4,7 @@ from __future__ import annotations
 import ast
 import base64
 import re
-from typing import Callable, List, Optional, Pattern, Tuple
+from typing import Callable, Dict, List, Optional, Pattern, Tuple
 
 from . import heuristics as H
 from .guard import GUARD, finditer
@@ -230,8 +230,17 @@ class SecretScanner:
                         continue
                     if once(m.start()):
                         self.add(sf, "SEC011", m.start(), f"`{name}` is a hard-coded password.", val)
-            for m in finditer(GENERIC_ASSIGN, code if sf.kind in ("py", "js") else text):
+            assigns = list(finditer(GENERIC_ASSIGN, code if sf.kind in ("py", "js") else text))
+            # in a JSON file, a key with a random-looking value five or more times is a list of records (recorded API
+            # responses, an OpenAPI example repeated per schema), not a credential
+            counts: Dict[str, int] = {}
+            for m in assigns:
+                if sf.kind == "json" and H.looks_random(m.group(2)):
+                    counts[m.group(1)] = counts.get(m.group(1), 0) + 1
+            for m in assigns:
                 name, val = m.group(1), m.group(2)
+                if counts.get(name, 0) >= 5:
+                    continue
                 if re.search(r"(?i)tokens?_?(?:count|limit|url|endpoint|type|name|usage)|max_?tokens?|tokenizer|csrf|_url$|_path$|_file$|_id$|_ids$|placeholder|label|hint", name):
                     continue
                 if val.startswith("AIza") and FIREBASE_CONTEXT.search(text[max(0, m.start() - 600): m.end() + 600]):

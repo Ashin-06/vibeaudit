@@ -36,7 +36,6 @@ PHP_CMDI = re.compile(
 
 GO_HTTP = re.compile(r"""\bhttp\.(?:Get|Post|PostForm)\s*\(""")
 JAVA_HTTP = re.compile(r"""\bnew\s+RestTemplate\s*\(\s*\)|\bHttpClient\.newHttpClient\s*\(\s*\)""")
-CS_HTTP = re.compile(r"""\bnew\s+HttpClient\s*\(\s*\)""")
 RS_HTTP = re.compile(r"""\breqwest::get\s*\(|\breqwest::Client::new\s*\(\s*\)|\bClient::new\s*\(\s*\)""")
 PHP_HTTP = re.compile(r"""\bHttp::(?:get|post|put|delete)\s*\(""")
 
@@ -361,7 +360,6 @@ class PolyScanner:
     def _cs(self, sf: SourceFile, code: str) -> None:
         # routes, authorization and request data into the sinks are csharp.CsScanner's; this keeps the rest
         self._loop_n_plus_one(sf, code, CS_LOOP_DB)
-        self._check_timeout(sf, code, CS_HTTP, "new HttpClient()")
 
     # ----------------------------------------------------------------- PHP
     def _php(self, sf: SourceFile, code: str) -> None:

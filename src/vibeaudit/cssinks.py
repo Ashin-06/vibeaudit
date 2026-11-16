@@ -25,15 +25,18 @@ SOURCE = re.compile(r"\bRequest\s*\.\s*(?:Query|Form|Headers|Cookies|RouteValues
 DECL = re.compile(r"(?m)^[ \t]*(?:var|string|[\w<>\[\],.?]{1,60})\s+(\w+)\s*=\s*([^;\n]{1,400})")
 BUILT = re.compile(r"\$@?\"|@\$\"|\+\s*\w|\w\s*\+|string\s*\.\s*(?:Format|Concat)\s*\(|\.Append\s*\(")
 SQL_WORD = re.compile(r"(?i)\b(?:select|insert|update|delete|where)\b")
+# the receiver of GetAsync and friends: an HttpClient, not a repository or service that has a GetAsync of its own
+CLIENT_NAME = re.compile(r"(?i)http|client")
+CLIENT_DECL = re.compile(r"\bHttpClient\??\s+(\w+)|\b(\w+)\s*=\s*(?:new\s+HttpClient\b|[\w.]{1,80}\.\s*CreateClient\s*\()")
 FIXED_START = re.compile(r"^(?:\$@?|@\$|@)?\"[^{\"]")  # a literal that starts the URL: the host is fixed
 
 SINKS: List[Tuple["re.Pattern[str]", str, str, str, str]] = [
     # (call, rule, what, severity, which arguments: "built-first" | "first" | "any" | "url" (any, skipping a fixed host))
-    (re.compile(r"\.\s*(?:FromSqlRaw|ExecuteSqlRaw|ExecuteSqlRawAsync|SqlQueryRaw)\s*\(|\bnew\s+(?:SqlCommand|NpgsqlCommand|MySqlCommand|SqliteCommand)\s*\("
+    (re.compile(r"\.\s*(?:FromSqlRaw|FromSql|ExecuteSqlRaw|ExecuteSqlRawAsync|SqlQueryRaw)\s*\(|\bnew\s+(?:SqlCommand|NpgsqlCommand|MySqlCommand|SqliteCommand)\s*\("
                 r"|\.\s*(?:Query|QueryAsync|QueryFirst\w{0,20}|QuerySingle\w{0,20}|Execute|ExecuteAsync|ExecuteScalar\w{0,10})\s*(?:<[^<>()]{0,80}>)?\s*\("),
      "BE001", "a SQL query", "high", "built-first"),
     (re.compile(r"\bProcess\s*\.\s*Start\s*\(|\bnew\s+ProcessStartInfo\s*\("), "BE002", "a command", "critical", "any"),
-    (re.compile(r"\.\s*(?:GetAsync|GetStringAsync|GetStreamAsync|GetByteArrayAsync|PostAsync|PutAsync|DeleteAsync|GetFromJsonAsync|PostAsJsonAsync)\s*(?:<[^<>()]{0,80}>)?\s*\("
+    (re.compile(r"\b(\w+)\s*\.\s*(?:GetAsync|GetStringAsync|GetStreamAsync|GetByteArrayAsync|PostAsync|PutAsync|DeleteAsync|GetFromJsonAsync|PostAsJsonAsync)\s*(?:<[^<>()]{0,80}>)?\s*\("
                 r"|\bnew\s+HttpRequestMessage\s*\(\s*HttpMethod\s*\.\s*\w+\s*,"),
      "BE005", "an outbound HTTP request URL", "high", "first"),
     (re.compile(r"\bFile\s*\.\s*(?:ReadAll\w{0,10}|OpenRead|OpenWrite|Open|WriteAll\w{0,10}|Delete|Copy|Move|ReadLines|Create)\s*\("
@@ -55,6 +58,7 @@ def check(sf: SourceFile, v: Views, add: Add) -> None:
             add(sf, rule, line, msg, sev)
 
     controller = bool(re.search(r"\bControllerBase\b|\bController\b|\[\s*ApiController\b", code))
+    clients = {n for m in finditer(CLIENT_DECL, code) for n in m.groups() if n}
     opens = [m.end() - 1 for m in finditer(ACTION, bare) if controller and "public" in m.group(0)]
     opens += [m.end() - 1 for m in finditer(LAMBDA, bare)]
     for open_paren in opens:
@@ -65,7 +69,7 @@ def check(sf: SourceFile, v: Views, add: Add) -> None:
         tainted = _params(code[open_paren + 1:close])
         start = close + 1
         if tainted or SOURCE.search(code, start, end):
-            _method(code[start:end + 1], bare[start:end + 1], start, tainted, report)
+            _method(code[start:end + 1], bare[start:end + 1], start, tainted, report, clients)
     # SQL or a shell command built from a string in place, whatever the data (the earlier polyglot patterns)
     for m in finditer(CS_SQLI, code):
         report("BE001", m.start(), "A raw SQL query is built with string interpolation or concatenation.", "high")
@@ -85,7 +89,7 @@ def _params(params: str) -> Set[str]:
     return out
 
 
-def _method(code: str, bare: str, base: int, tainted: Set[str], report: Callable[..., None]) -> None:
+def _method(code: str, bare: str, base: int, tainted: Set[str], report: Callable[..., None], clients: Set[str]) -> None:
     def is_tainted(text: str) -> bool:
         return bool(SOURCE.search(text) or any(re.search(r"\b%s\b" % re.escape(t), text) for t in tainted))
 
@@ -107,10 +111,15 @@ def _method(code: str, bare: str, base: int, tainted: Set[str], report: Callable
             close = match_close(bare, m.end() - 1)
             if close < 0:
                 continue
+            receiver = m.group(1) if rx.groups else None
+            if receiver and receiver not in clients and not CLIENT_NAME.search(receiver):
+                continue
             argv = [a.strip() for a in _split(code[m.end():close])]
             if which == "built-first":
                 first = argv[0] if argv else ""
-                picked = [first] if first and (BUILT.search(first) or first in built) else []
+                # EF Core's FromSql($"...") turns the holes into parameters; FromSql(query) with a built string does not
+                inline = bool(re.search(r"\bFromSql\s*\($",bare[m.start():m.end()])) and first.startswith("$")
+                picked = [first] if first and not inline and (BUILT.search(first) or first in built) else []
             elif which in ("first", "url"):
                 picked = [a for a in (argv[:1] if which == "first" else argv) if not FIXED_START.match(a)]
             else:

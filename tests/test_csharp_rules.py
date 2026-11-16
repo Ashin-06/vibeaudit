@@ -162,3 +162,43 @@ def test_csharp_checks_are_linear_on_hostile_input(tmp_path):
     start = time.time()
     found(tmp_path)
     assert time.time() - start < 30
+
+
+def test_group_role_policy_reset_endpoints_and_ef_fromsql(tmp_path):
+    write(tmp_path, "Endpoints/Codes.cs",
+          "public static class Codes {\n  public static void Map(IEndpointRouteBuilder app) {\n"
+          "    var admin = app.MapGroup(\"/api/admin/codes\")\n        .WithTags(\"Admin\")\n"
+          "        .RequireAuthorization(policy => policy.RequireRole(\"Admin\"));\n"
+          "    admin.MapPost(\"/\", Create);\n    admin.MapDelete(\"/{id}\", Delete);\n  }\n}\n")
+    write(tmp_path, "Controllers/PasswordResetsController.cs",
+          "[Route(\"api/[controller]\")]\npublic class PasswordResetsController : Controller {\n"
+          "  [HttpPost]\n  public IActionResult Create(Reset r) { _db.Add(r); _db.SaveChanges(); return Ok(); }\n}\n")
+    write(tmp_path, "Controllers/ProductsController.cs",
+          "[Authorize]\n[Route(\"api/[controller]\")]\npublic class ProductsController : Controller {\n"
+          "  [HttpGet(\"search\")]\n  public IActionResult Search(string keyword) {\n"
+          "    var query = $\"SELECT * FROM Products WHERE name LIKE '%{keyword}%'\";\n"
+          "    var a = _db.Products.FromSql(query).ToList();\n"
+          "    var b = _db.Products.FromSql($\"SELECT * FROM Products WHERE name = {keyword}\").ToList();\n"
+          "    var client = new HttpClient();\n    return Ok(a);\n  }\n}\n")
+    f = found(tmp_path)
+    assert not [x for x in f if x[2] in ("AUTH001", "AUTH002", "REL001")]  # .NET's HttpClient times out after 100 s
+    assert [x[1] for x in f if x[2] == "BE001"] == [7]
+
+
+def test_versioned_route_template_and_service_get_async(tmp_path):
+    write(tmp_path, "Controllers/AdminAudioController.cs",
+          "[ApiController]\n[Route(\"api/v{version:apiVersion}/admin/audio\")]\n[Authorize]\n"
+          "public class AdminAudioController : ControllerBase {\n"
+          "  [HttpDelete(\"{id}\")]\n  public async Task<IActionResult> Delete(Guid id) { await _db.RemoveAsync(id); return NoContent(); }\n"
+          "  [HttpGet(\"fetch\")]\n  public async Task<IActionResult> Fetch(string id, string url) {\n"
+          "    var job = await jobs.GetAsync(id);\n    var page = await _httpClient.GetStringAsync(url);\n    return Ok(job);\n  }\n}\n")
+    got = routes(tmp_path)
+    assert ("/api/v{version:apiVersion}/admin/audio/{id}", "DELETE") in got
+    assert [(x[1], x[2]) for x in found(tmp_path) if x[2] == "BE005"] == [(10, "BE005")]
+
+
+def test_repeated_json_record_keys_are_not_secrets(tmp_path):
+    rows = ",\n".join('    {"token": "%032x", "title": "t%d"}' % (0x5f3a9c2e7b1d4086a2c4e6f8091b3d5e + i * 7919, i) for i in range(6))
+    write(tmp_path, "contract/captures/releases.json", '{\n  "releases": [\n' + rows + "\n  ]\n}\n")
+    write(tmp_path, "config/app.json", '{\n  "token": "5f3a9c2e7b1d4086a2c4e6f8091b3d5e"\n}\n')
+    assert sorted(x[0] for x in found(tmp_path) if x[2] == "SEC003") == ["config/app.json"]

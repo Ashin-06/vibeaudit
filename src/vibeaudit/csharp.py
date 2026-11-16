@@ -159,8 +159,11 @@ class CsScanner:
             end = match_close(bare, brace) if brace >= 0 else -1
             if end < 0 or not HTTP_ATTR.search(code, brace, end):
                 continue
-            before = code[max(0, cm.start() - 800):cm.start()]
-            head = before[max(before.rfind(c) for c in "{};") + 1:]  # the attributes of this class only
+            # the attributes of this class only: cut at the code before it, found where strings are blanked (a route
+            # template such as "api/v{version:apiVersion}" has braces of its own)
+            lo = max(0, cm.start() - 800)
+            before = bare[lo:cm.start()]
+            head = code[lo + max(before.rfind(c) for c in "{};") + 1:cm.start()]
             prefix = ""
             rm = ROUTE_ATTR.search(head)
             if rm:
@@ -183,23 +186,27 @@ class CsScanner:
                 auth = (class_auth or controllers or bool(AUTHORIZE.search(attr_text)) or _has_auth(body)) and not anonymous
                 out.append(self._route(sf, hm.start(), path, hm.group(1), body, auth))
         # minimal APIs: app.MapGet("/x", handler).RequireAuthorization(), also on route groups
-        groups: Dict[str, Tuple[str, bool]] = {}
+        # name -> (path prefix, requires authorization, the group's own configuration: a role policy counts there)
+        groups: Dict[str, Tuple[str, bool, str]] = {}
         for gm in finditer(GROUP, bare):
-            parent_prefix, parent_auth = groups.get(gm.group(2), ("", False))
+            parent_prefix, parent_auth, parent_text = groups.get(gm.group(2), ("", False, ""))
             prefix = code[gm.start(3):gm.end(3)]
             chain = code[gm.end(3):gm.end()]
             groups[gm.group(1)] = (_join(parent_prefix, prefix),
-                                   parent_auth or ("RequireAuthorization" in chain and "AllowAnonymous" not in chain))
+                                   parent_auth or ("RequireAuthorization" in chain and "AllowAnonymous" not in chain),
+                                   parent_text + chain)
         for gm in finditer(GROUP_AUTH, bare):
             if gm.group(1) in groups:
-                groups[gm.group(1)] = (groups[gm.group(1)][0], True)
+                prefix, _auth, text = groups[gm.group(1)]
+                groups[gm.group(1)] = (prefix, True, text + code[gm.start():bare.find(";", gm.end(), gm.end() + 300) + 1])
         for mm in finditer(MINIMAL, bare):
             close = match_close(bare, bare.find("(", mm.start()))
             if close < 0:
                 continue
             tail = code[close + 1:close + 300]
             chain = tail.split(";", 1)[0]
-            group_prefix, group_auth = groups.get(mm.group(1), ("", False))
+            group_prefix, group_auth, group_text = groups.get(mm.group(1), ("", False, ""))
+            chain += group_text
             handler = code[mm.start():close + 1]
             anonymous = "AllowAnonymous" in chain or bool(ANONYMOUS.search(handler))
             auth = ("RequireAuthorization" in chain or group_auth or everywhere
