@@ -19,6 +19,7 @@ from .jsscan import JsScanner
 from .jvm import JvmScanner
 from .model import SEVERITY_RANK, SUPPRESS, TEST_FILE_RULES, Finding, at_least
 from .projectscan import ProjectScanner
+from .goscan import GoScanner
 from .polyscan import POLY_SEVERE, PolyScanner, _lang_of as poly_lang
 from .pyscan import PyScanner
 from .qualityscan import QualityScanner
@@ -183,8 +184,9 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
 
     js_routes = JsScanner(project, emit).run()
     py_routes = PyScanner(project, emit).run() + JvmScanner(project, emit).run()  # Python, then Java and Kotlin
-    poly_routes = PolyScanner(project, emit).run()  # Go, C#, Rust, PHP; for Java only the checks JvmScanner lacks
-    all_routes = js_routes + py_routes + poly_routes
+    go_routes = GoScanner(project, emit).run()  # Go: lexer-based; polyscan covers the other new languages
+    poly_routes = PolyScanner(project, emit).run()  # C#, Rust, PHP; for Go and Java only the checks they lack
+    all_routes = js_routes + py_routes + go_routes + poly_routes
     SecretScanner(project, emit).run()
     ProjectScanner(project, emit, all_routes).run()
     QualityScanner(project, emit).run()
@@ -318,7 +320,7 @@ def finalize(project: Project, raw: List[Finding], opts: Options, already: bool 
             f.preview = meta.preview
             f.gates_in_preview = meta.preview and meta.gates_in_preview
         if f.source == "vibeaudit" and poly_lang(f.file) and not f.rule_id.startswith(("SEC", "DEP")):
-            # Go, Java/Kotlin, C#, Rust and PHP have no labelled corpus yet, so every finding there is preview
+            # Go, Java/Kotlin, C#, Rust and PHP stay preview until their held-out precision clears the bar
             # (STABILITY.md); injection and XSS still gate, as for other severe preview rules
             f.preview = True
             f.gates_in_preview = f.rule_id in POLY_SEVERE

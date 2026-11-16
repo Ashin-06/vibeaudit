@@ -250,8 +250,9 @@ class PolyScanner:
                 self.add(sf, sf.line_at(m.start()), "FE001", "Razor `@Html.Raw()` outputs unescaped HTML.")
             return
         code = strip_comments(raw, lang)
-        if lang == "go":
-            self._go(sf, code)
+        if lang == "go":  # routes, injection and the GO rules are goscan's; these two checks stay here
+            self._loop_n_plus_one(sf, code, GO_LOOP_DB)
+            self._check_timeout(sf, code, GO_HTTP, "http.Get/Post()")
         elif lang == "java":
             self._java(sf, code)
         elif lang == "cs":

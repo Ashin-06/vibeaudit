@@ -1,0 +1,166 @@
+{
+ "repo": "conveyor",
+ "commit": "e37ee1f3fe34aa3c9c5424df32666e67e035080b",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/claude-code-review.yml",
+   "line": 36,
+   "fingerprint": "b981016a8e63c951489afa5824917d59",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/claude.yml",
+   "line": 35,
+   "fingerprint": "41397eefc44abd1060b8e6fe15ca262b",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG009",
+   "file": "Dockerfile",
+   "line": 14,
+   "fingerprint": "46bbcfae0c50166ae0752bf092841422",
+   "verdict": "tp",
+   "reason": "COPY . . copies .env.development into the image and there is no .dockerignore."
+  },
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile",
+   "line": 35,
+   "fingerprint": "a1709dbfaac10cec2692b6e8d8e08304",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "CFG002",
+   "file": "Dockerfile",
+   "line": 35,
+   "fingerprint": "461677ed8ecf7a1172de36c8f68c97db",
+   "verdict": "tp",
+   "reason": "The base image uses latest or no tag."
+  },
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile.dev",
+   "line": 1,
+   "fingerprint": "190f61e81820cca54769d8b0150f1aa0",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "CFG009",
+   "file": "Dockerfile.dev",
+   "line": 23,
+   "fingerprint": "90631dd47aa1f2b2c77b478b6b0847e1",
+   "verdict": "tp",
+   "reason": "COPY . . copies .env.development into the image and there is no .dockerignore."
+  },
+  {
+   "rule": "QA001",
+   "file": "README.md",
+   "line": 1,
+   "fingerprint": "a974d15db71f3aff96c7368d2ee2283f",
+   "verdict": "fp",
+   "reason": "The project has Go tests (*_test.go), which were not recognised as tests."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "api/handlers.go",
+   "line": 40,
+   "fingerprint": "717fee43c4560d14b345b08800a33bdc",
+   "verdict": "fp",
+   "reason": "The project has no users or authentication at all, so ownership does not apply (the open endpoints are AUTH001)."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "api/handlers.go",
+   "line": 41,
+   "fingerprint": "2d440aa28ff0507494ebfcd5c7c53ac3",
+   "verdict": "fp",
+   "reason": "The project has no users or authentication at all, so ownership does not apply (the open endpoints are AUTH001)."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "api/routes/pipeline.go",
+   "line": 54,
+   "fingerprint": "28e7ad9b816466360ef40513dfda4ee7",
+   "verdict": "tp",
+   "reason": "No authentication middleware anywhere; anyone can change pipelines, plugins and security settings."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "api/routes/pipeline.go",
+   "line": 98,
+   "fingerprint": "da73f1ba92fd02de75a1171c800391cb",
+   "verdict": "tp",
+   "reason": "No authentication middleware anywhere; anyone can change pipelines, plugins and security settings."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "api/routes/plugin.go",
+   "line": 198,
+   "fingerprint": "1b51d609d4ef387c5bf895052ffac083",
+   "verdict": "tp",
+   "reason": "No authentication middleware anywhere; anyone can change pipelines, plugins and security settings."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "api/routes/security.go",
+   "line": 47,
+   "fingerprint": "02bae49f3a2caddf82a4324a070f47fd",
+   "verdict": "tp",
+   "reason": "No authentication middleware anywhere; anyone can change pipelines, plugins and security settings."
+  },
+  {
+   "rule": "CFG001",
+   "file": "ui/Dockerfile",
+   "line": 19,
+   "fingerprint": "eb6ac0c08f24e4001f613a73e2d61f67",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "CFG001",
+   "file": "ui/Dockerfile.dev",
+   "line": 1,
+   "fingerprint": "afdb4934151fc56d07285fd5978697ae",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "QA007",
+   "file": "ui/src/components/SecurityReport.tsx",
+   "line": 38,
+   "fingerprint": "54c473fc55e699e9002ca72e727b0b27",
+   "verdict": "tp",
+   "reason": "recharts is imported but not in ui/package.json."
+  },
+  {
+   "rule": "QA010",
+   "file": "ui/src/components/SecurityReport.tsx",
+   "line": 125,
+   "fingerprint": "6f45ddb3169afa296b51f21191548dde",
+   "verdict": "tp",
+   "reason": "When the API call fails the UI shows generated mock data as if it were real."
+  },
+  {
+   "rule": "QA010",
+   "file": "ui/src/services/api.ts",
+   "line": 302,
+   "fingerprint": "a58db35fd9771d647b6ae6d44042bbe8",
+   "verdict": "tp",
+   "reason": "When the API call fails the UI shows generated mock data as if it were real."
+  },
+  {
+   "rule": "FE006",
+   "file": "ui/vite.config.ts",
+   "line": 31,
+   "fingerprint": "6d90e945f8bbea97858663204aea5d51",
+   "verdict": "tp",
+   "reason": "vite.config.ts sets build.sourcemap: true."
+  }
+ ]
+}

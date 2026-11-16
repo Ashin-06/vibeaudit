@@ -94,6 +94,8 @@ SERVER_VALIDATION_EVIDENCE = re.compile(
     | \bfrom\s+(?:pydantic|marshmallow|wtforms|flask_wtf|cerberus|voluptuous|jsonschema|rest_framework|django\s+import\s+forms|msgspec|attrs)\b
     | \bimport\s+(?:pydantic|marshmallow|cerberus|voluptuous|jsonschema)\b
     | \bforms\s*\.\s*(?:Form|ModelForm)\b | \bserializers\s*\.\s*\w*Serializer\b
+    | \b(?:binding|validate):"[^"]*\b(?:required|min|max|len|email|oneof|gte|lte|url|uuid)
+    | go-playground/validator | go-ozzo/ozzo-validation
     | \bimport\s+(?:jakarta|javax)\.validation\b | @\s*(?:Valid|Validated)\b
     """
 )

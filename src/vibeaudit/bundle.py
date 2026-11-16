@@ -31,7 +31,7 @@ from . import __version__
 from .store import cache_dir, loads_json, write_atomic
 
 OSV_DUMP = "https://osv-vulnerabilities.storage.googleapis.com/{}/all.zip"
-ECOSYSTEMS = ("PyPI", "npm", "Maven")
+ECOSYSTEMS = ("PyPI", "npm", "Go", "Maven")
 MAX_DUMP = 1_500_000_000  # bytes of one OSV all.zip download
 MAX_INDEX = 400_000_000  # bytes of one uncompressed index
 MAX_DATA = 10_000_000
@@ -68,7 +68,9 @@ def build_index(dump: bytes, ecosystem: str) -> Tuple[bytes, Dict[str, int]]:
                 if pkg.get("ecosystem") != ecosystem or not isinstance(pkg.get("name"), str):
                     continue
                 versions = [v for v in aff.get("versions") or [] if isinstance(v, str)]
-                if not versions:
+                # Go advisories list no versions, only SEMVER ranges: keep those and match the ranges offline
+                semver = ecosystem == "Go" and any((r or {}).get("type") == "SEMVER" for r in aff.get("ranges") or [])
+                if not versions and not semver:
                     counts["without_versions"] += 1
                     continue
                 severity = (doc.get("database_specific") or {}).get("severity")
@@ -151,10 +153,50 @@ def offline_vulns(deps) -> Tuple[Dict[Tuple[str, str, str], List[dict]], List[st
             continue
         want = version_key(d.version, d.ecosystem)
         hits = [e for e in index["packages"].get(norm(d.name, d.ecosystem), [])
-                if any(version_key(v, d.ecosystem) == want for v in e["versions"])]
+                if any(version_key(v, d.ecosystem) == want for v in e["versions"])
+                or (not e["versions"] and d.ecosystem == "Go" and semver_affected(d.version, e["affected"]))]
         if hits:
             out[(d.ecosystem, d.name, d.version)] = [{k: v for k, v in e.items() if k != "versions"} for e in hits]
     return out, sorted(missing)
+
+
+def _semver_key(version: str) -> Tuple:
+    """Sort key for a Go module version (semver 2.0: a pre-release, including a pseudo-version, sorts before its
+    release)."""
+    v = version.strip()
+    v = v[1:] if v[:1] in ("v", "V") else v
+    v = v.split("+", 1)[0]
+    core, _, pre = v.partition("-")
+    nums = []
+    for part in (core.split(".") + ["0", "0", "0"])[:3]:
+        nums.append(int(part) if part.isdigit() else 0)
+    if not pre:
+        return (*nums, 1, ())
+    ids = tuple((0, int(x), "") if x.isdigit() else (1, 0, x) for x in pre.split("."))
+    return (*nums, 0, ids)
+
+
+def semver_affected(version: str, affected: list) -> bool:
+    """True when `version` falls in a SEMVER range of the advisory (OSV: events in order; introduced opens a
+    range, fixed closes it before that version, last_affected closes it after)."""
+    key = _semver_key(version)
+    for aff in affected or []:
+        for rng in (aff or {}).get("ranges") or []:
+            if (rng or {}).get("type") != "SEMVER":
+                continue
+            hit = False
+            for ev in rng.get("events") or []:
+                if "introduced" in ev:
+                    intro = str(ev["introduced"])
+                    if intro == "0" or key >= _semver_key(intro):
+                        hit = True
+                elif "fixed" in ev and key >= _semver_key(str(ev["fixed"])):
+                    hit = False
+                elif "last_affected" in ev and key > _semver_key(str(ev["last_affected"])):
+                    hit = False
+            if hit:
+                return True
+    return False
 
 
 def index_age(ecosystem: str) -> Optional[str]:

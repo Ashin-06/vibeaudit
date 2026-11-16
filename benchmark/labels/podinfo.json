@@ -33,6 +33,14 @@
    "fingerprint": "44c61f6e879b17a98d4985fdc7b17fd6",
    "verdict": "tp",
    "reason": "The img has no alt (static or bound)."
+  },
+  {
+   "rule": "BE006",
+   "file": "pkg/api/http/store.go",
+   "line": 62,
+   "fingerprint": "587020c6741573c4255da9bbd4b5400e",
+   "verdict": "fp",
+   "reason": "gorilla's {hash} matches one path segment, so path.Join cannot leave DataPath; at worst it reads the directory itself."
   }
  ]
 }

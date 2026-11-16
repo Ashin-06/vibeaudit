@@ -145,6 +145,10 @@ def _collect(project: Project) -> List[Dep]:
             npm_private_scopes |= set(re.findall(r"^\s*(@[\w-]+):registry\s*=", f.text, re.M))
     for f in project.files:
         name = f.rel.rsplit("/", 1)[-1]
+        if name == "go.mod" and f.text is not None and not f.is_test:
+            for mod, version, line, indirect in go_requires(f.text):
+                if not indirect:
+                    deps.append(Dep(mod, "Go", f.rel, line, version))
         if name in ("pom.xml", "build.gradle", "build.gradle.kts") and f.text is not None and not f.is_test:
             deps.extend(Dep(mod, "Maven", f.rel, line, version) for mod, version, line in maven_dependencies(name, f.text))
             continue
@@ -648,9 +652,10 @@ def _vkey(v: str) -> Tuple:
 
 
 # ------------------------------------------------------------------ transitive dependencies (DEP009)
-LOCK_MANIFESTS = {"package.json": "npm", "pyproject.toml": "PyPI", "Pipfile": "PyPI"}
+LOCK_MANIFESTS = {"package.json": "npm", "pyproject.toml": "PyPI", "Pipfile": "PyPI", "go.mod": "Go"}
 LOCKS = {"npm": ("package-lock.json", "pnpm-lock.yaml", "yarn.lock", "bun.lock"),
-         "PyPI": ("poetry.lock", "uv.lock", "pdm.lock", "Pipfile.lock")}
+         "PyPI": ("poetry.lock", "uv.lock", "pdm.lock", "Pipfile.lock"),
+         "Go": ("go.mod",)}  # its `// indirect` requirements
 MAX_LOCK_BYTES = 30_000_000
 
 
@@ -676,7 +681,7 @@ def locked_packages(project: Project, direct: List[Dep]) -> List[Dep]:
             seen: Set[Tuple[str, str]] = set()
             for name, version, line in _lock_entries(lock, text):
                 key = pep503(name) if eco == "PyPI" else name
-                if (eco, key) in direct_names or (key, version) in seen or not re.match(r"\d", version):
+                if (eco, key) in direct_names or (key, version) in seen or not re.match(r"v?\d", version):
                     continue
                 seen.add((key, version))
                 out.append(Dep(name, eco, rel, line, version))
@@ -735,9 +740,34 @@ def _lock_entries(lock: str, text: str) -> List[Tuple[str, str, int]]:
         for m in re.finditer(r'(?m)^"?((?:@[^@/\s"]+/)?[^@\s"]+)@[^\n]*:\n(?:  [^\n]*\n){0,3}?  version:? "?(\d[^"\s]*)', text):
             if "use.local" not in m.group(2):  # a workspace package
                 out.append((m.group(1), m.group(2), line(m.start())))
+    elif lock == "go.mod":
+        out.extend((mod, version, line) for mod, version, line, indirect in go_requires(text) if indirect)
     elif lock == "bun.lock":
         for m in re.finditer(r'(?m)^\s*"[^"\n]+":\s*\[\s*"((?:@[^@/"]+/)?[^@"]+)@(\d[^"]*)"', text):
             out.append((m.group(1), m.group(2), line(m.start())))
+    return out
+
+
+GO_REQUIRE = re.compile(r"^[ \t]*(?:require[ \t]+)?([\w.~-]+(?:/[\w.~-]+)*)[ \t]+(v[\w.+-]+)[ \t]*(//[ \t]*indirect\b)?", re.M)
+
+
+def go_requires(text: str) -> List[Tuple[str, str, int, bool]]:
+    """(module, version, line, indirect) of every `require` in a go.mod, single-line or in a block."""
+    out: List[Tuple[str, str, int, bool]] = []
+    lines = text.splitlines()
+    in_block = False
+    for n, raw in enumerate(lines, 1):
+        line = raw.strip()
+        if line.startswith("require") and line.endswith("("):
+            in_block = True
+            continue
+        if in_block and line.startswith(")"):
+            in_block = False
+            continue
+        if in_block or line.startswith("require "):
+            m = GO_REQUIRE.match(raw)
+            if m:
+                out.append((m.group(1), m.group(2), n, bool(m.group(3))))
     return out
 
 

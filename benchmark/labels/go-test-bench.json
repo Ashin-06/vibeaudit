@@ -1,0 +1,54 @@
+{
+ "repo": "go-test-bench",
+ "commit": "92445700823205281369911a72b7127f18c8c9ed",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/continuous-integration-workflow.yml",
+   "line": 45,
+   "fingerprint": "6fc2236aee9953d66886f24cab61289e",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile.agent",
+   "line": 20,
+   "fingerprint": "07296992d0c2d9fa1133ff1a5177330f",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "CFG002",
+   "file": "Dockerfile.agent",
+   "line": 20,
+   "fingerprint": "9605059210fe6f3c61b10be9012a9e9f",
+   "verdict": "tp",
+   "reason": "The base image uses latest or no tag."
+  },
+  {
+   "rule": "GO004",
+   "file": "internal/injection/sqli/sql-injection.go",
+   "line": 57,
+   "fingerprint": "73bad332b6b25ce3f8b9d4ed5dfe44b2",
+   "verdict": "tp",
+   "reason": "The unsafe test case builds SQL with fmt.Sprintf."
+  },
+  {
+   "rule": "REL001",
+   "file": "internal/ssrf/ssrf.go",
+   "line": 51,
+   "fingerprint": "8f6b928f8200bbe045ae380b983c71da",
+   "verdict": "tp",
+   "reason": "http.Get uses the default client, which has no timeout."
+  },
+  {
+   "rule": "BE008",
+   "file": "pkg/servechi/servechi.go",
+   "line": 87,
+   "fingerprint": "98cf80a6a00b60e1be6a1e4cee0411ab",
+   "verdict": "tp",
+   "reason": "The redirect target is built from r.Host, a header the client controls."
+  }
+ ]
+}

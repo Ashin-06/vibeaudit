@@ -219,7 +219,7 @@ class SecretScanner:
                     continue
                 if H.looks_random(m.group(2)) and once(m.start()):
                     self.add(sf, "SEC003", m.start(), f"{m.group(1)} has a real-looking value.", m.group(2))
-        elif sf.kind in ("py", "js", "html", "json", "yaml", "compose", "docker", "other", "workflow") and not ENV_EXAMPLE_RE.search(sf.rel):
+        elif sf.kind in ("py", "js", "go", "html", "json", "yaml", "compose", "docker", "other", "workflow") and not ENV_EXAMPLE_RE.search(sf.rel):
             if sf.kind in ("py", "js") and not sf.is_one_off:  # seed scripts create demo users on purpose
                 for m in finditer(PASSWORD_ASSIGN, code):
                     name, val = m.group(1), m.group(2)

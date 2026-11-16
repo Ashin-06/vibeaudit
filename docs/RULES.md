@@ -3,9 +3,9 @@
 Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do not edit by hand.
 `vibeaudit rules` prints the same list, and `vibeaudit rules --format json` includes every field.
 
-165 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
+169 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-61 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+65 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -269,6 +269,7 @@ References: CWE-1395, A06:2021
 | [BE018](#be018) | medium | preview | No server-side input validation |
 | [BE019](#be019) | high | preview | Payment amount taken from the client |
 | [BE020](#be020) | medium | preview | Email header injection |
+| [GO004](#go004) | medium | preview | SQL built with string formatting (Go) |
 | [JAVA004](#java004) | critical | preview | Polymorphic deserialization without an allow-list |
 
 ### BE001
@@ -484,6 +485,18 @@ Why it matters: A value placed into a raw email header can contain a line break 
 How to fix: Reject values with CR or LF, and build messages with an API that validates headers (`email.message.EmailMessage`, a mail SDK) instead of formatting header lines.
 
 References: CWE-93, A03:2021
+
+### GO004
+
+**SQL built with string formatting (Go)** (medium, preview)
+
+Preview: New in 0.10.0 (Go): not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: The query text is built with `fmt.Sprintf` or `+`. Today's values may be safe, but the next change that passes user input turns it into SQL injection. (Request data in the query is BE001.)
+
+How to fix: Use placeholders (`?` or `$1`) and pass values as arguments, e.g. `db.Raw("... WHERE id = ?", id)`.
+
+References: CWE-89, A03:2021
 
 ### JAVA004
 
@@ -1695,12 +1708,51 @@ References: CWE-837
 
 | ID | Severity | Status | Rule |
 | --- | --- | --- | --- |
+| [GO001](#go001) | medium | preview | Goroutine that never stops |
+| [GO002](#go002) | medium | preview | HTTP response body never closed |
+| [GO003](#go003) | high | preview | Map written concurrently without a lock |
 | [REL001](#rel001) | medium | stable | Outbound HTTP request without a timeout |
 | [REL002](#rel002) | medium | stable | Blocking call inside an async handler |
 | [REL003](#rel003) | medium | stable | Webhook handler is not idempotent |
 | [REL004](#rel004) | medium | stable | Upload accepted without a size limit |
 | [REL005](#rel005) | medium | stable | In-memory state on a serverless host |
 | [REL006](#rel006) | low | stable | No health-check endpoint |
+
+### GO001
+
+**Goroutine that never stops** (medium, preview)
+
+Preview: New in 0.10.0 (Go): not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: A goroutine runs an endless loop with no context, done channel or return. Each one started keeps running (and holding memory and connections) until the process exits, and request handlers that start one leak a goroutine per request.
+
+How to fix: Pass a `context.Context` and leave the loop on `<-ctx.Done()` (or a done channel), so the goroutine stops with its request or at shutdown.
+
+References: CWE-772
+
+### GO002
+
+**HTTP response body never closed** (medium, preview)
+
+Preview: New in 0.10.0 (Go): not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: An HTTP response body that is not closed keeps its connection out of the pool. Under load the program runs out of connections or file descriptors.
+
+How to fix: Add `defer resp.Body.Close()` right after checking the error.
+
+References: CWE-772
+
+### GO003
+
+**Map written concurrently without a lock** (high, preview)
+
+Preview: New in 0.10.0 (Go): not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: A package-level map is written from HTTP handlers or goroutines, which run concurrently, and nothing locks it. Concurrent map writes make the Go runtime stop the whole program.
+
+How to fix: Guard the map with a `sync.Mutex` (or `sync.RWMutex`), or use `sync.Map`.
+
+References: CWE-362
 
 ### REL001
 

@@ -1,0 +1,54 @@
+{
+ "repo": "golang-gin-realworld-example-app",
+ "commit": "a41289b2a4951e7cc09066f86742a27f85121c9b",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 45,
+   "fingerprint": "adccf67829f55dd4e2add4b48fde4eac",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 69,
+   "fingerprint": "63691c39e0fd16f2a3156b640926bef7",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 92,
+   "fingerprint": "dc632c343e80d8ca173b1834fec42854",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "DATA001",
+   "file": "articles/models.go",
+   "line": 361,
+   "fingerprint": "ee11e4141305eaed2dd951d464db259a",
+   "verdict": "tp",
+   "reason": "One INSERT per tag inside the loop."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "articles/routers.go",
+   "line": 22,
+   "fingerprint": "2c8de55511cc08d96bd418884d2ddaec",
+   "verdict": "fp",
+   "reason": "Unfavorite acts on the signed-in user's own favorite (the user comes from the context)."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "users/routers.go",
+   "line": 15,
+   "fingerprint": "3179fee35931698388911851dd8a836d",
+   "verdict": "tp",
+   "reason": "The login endpoint has no rate limiting anywhere in the project."
+  }
+ ]
+}

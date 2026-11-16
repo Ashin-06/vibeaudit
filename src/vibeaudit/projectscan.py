@@ -44,8 +44,10 @@ class ProjectScanner:
         self.routes = routes
         # project-wide evidence is searched file by file (code with comments blanked, plus the manifests), and
         # each file's answer is kept in its cache, so a long-lived Project searches only the files that changed
+        # Go sources and go.mod count too: project-wide evidence (rate limiting, CSRF protection) in a Go service
         self.code_files = [f for f in project.files if f.kind in ("py", "js", "html")
-                           or f.rel.endswith(("package.json", "requirements.txt", "pyproject.toml"))]
+                           or f.rel.endswith(("package.json", "requirements.txt", "pyproject.toml", "go.mod"))
+                           or (f.rel.endswith(".go") and not f.rel.endswith("_test.go"))]
 
     def _piece(self, f: SourceFile) -> str:
         views = f.cache.get("views") if f.kind in ("py", "js", "html") else None
@@ -452,7 +454,7 @@ class ProjectScanner:
 
             server_validation = any(
                 has(f, H.SERVER_VALIDATION_EVIDENCE) for f in self.p.files
-                if (f.kind in ("py", "js") or f.rel.endswith((".java", ".kt"))) and not f.is_client and not f.is_test)
+                if (f.kind in ("py", "js") or f.rel.endswith((".go", ".java", ".kt"))) and not f.is_client and not f.is_test)
             if not server_validation:
                 client = next((f.rel for f in self.p.files if f.is_client and has(f, H.CLIENT_VALIDATION)), None)
                 extra = f" Validation exists only in browser code ({client})." if client else ""
