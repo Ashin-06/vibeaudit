@@ -445,8 +445,7 @@
    "commit": "ee17e31aafe733d98c4853c8b9a74d7f2f6c924a",
    "licence": "MIT",
    "kind": "well-maintained",
-   "language": "java",
-   "split": "heldout"
+   "language": "java"
   },
   {
    "name": "jhipster-sample-app",
@@ -472,6 +471,15 @@
    "licence": "GPL-2.0",
    "kind": "training",
    "language": "java"
+  },
+  {
+   "name": "piggymetrics",
+   "url": "https://github.com/sqshq/piggymetrics",
+   "commit": "6bb2cf9ddbca980b664d3edbb6ff775d75369278",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "java",
+   "split": "heldout"
   }
  ]
 }

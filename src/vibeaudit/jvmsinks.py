@@ -37,7 +37,9 @@ SINKS: List[Tuple["re.Pattern[str]", str, str, str, str]] = [
      "BE002", "a command", "critical", "any"),
     (re.compile(r"\bnew\s+ObjectInputStream\s*\(|\bObjectInputStream\s*\(|\bXMLDecoder\s*\(|\.\s*fromXML\s*\("),
      "BE004", "deserialization of Java objects", "high", "any"),
-    (re.compile(r"\bnew\s+URL\s*\(|\bURL\s*\(|\bURI\s*\.\s*create\s*\(|\.\s*(?:getForObject|getForEntity|postForObject|postForEntity|exchange)\s*\("
+    # a URL that is opened (new URL(x).openConnection()), not one that is only parsed (new URL(x).getHost())
+    (re.compile(r"\bnew\s+URL\s*\((?=[^()\n]{0,200}\)\s*\.\s*(?:openConnection|openStream)\b)"
+                r"|\.\s*(?:getForObject|getForEntity|postForObject|postForEntity|exchange)\s*\("
                 r"|\.\s*uri\s*\("),
      "BE005", "an outbound HTTP request URL", "high", "first"),
     (re.compile(r"\bnew\s+File(?:InputStream|OutputStream|Reader|Writer)?\s*\(|\bFile(?:InputStream|OutputStream|Reader|Writer)?\s*\("

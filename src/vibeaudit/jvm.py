@@ -23,6 +23,11 @@ from .model import Finding, Route
 
 EXTS = (".java", ".kt", ".kts")
 UNSECURED = "spring-unsecured"  # a Spring route in a project with no security configuration (JAVA001)
+# a hand-written authentication interceptor or filter, used instead of Spring Security
+CUSTOM_AUTH = re.compile(
+    r"\bclass\s+\w{0,40}(?:Auth|Login|Jwt|JWT|Token|Session|Apikey|ApiKey|Sso|SSO|Cas)\w{0,40}\s*(?:<[^>{]{0,80}>)?"
+    r"(?:\s*\([^)]{0,200}\))?\s*(?::|extends|implements)\s*[^{]{0,200}?\b(?:HandlerInterceptor\w{0,20}|Filter|OncePerRequestFilter"
+    r"|GenericFilterBean|WebFilter|ContainerRequestFilter|AsyncHandlerInterceptor)\b")
 TOKEN = re.compile(
     r'//[^\n]*'
     r'|/\*.*?(?:\*/|\Z)'
@@ -352,9 +357,16 @@ class Security:
         self.present = False  # a filter chain or security configuration exists
         self.rules: List[Tuple["re.Pattern[str]", bool]] = []  # (path pattern, needs login), in declaration order
         self.default: Optional[bool] = None  # anyRequest(): True = login, False = open
+        self.custom = False  # a hand-written auth HandlerInterceptor or servlet filter (no Spring Security chain)
 
     def protects(self, path: str, verbs: List[str]) -> bool:
-        for rx, needs in self.rules:
+        if self.custom and not self.rules and self.default is None:
+            return True  # its paths cannot be read statically, so a route is not guessed to be public
+        for rule in self.rules:
+            rx, needs = rule[0], rule[1]
+            only = rule[2] if len(rule) > 2 else None  # type: ignore[misc]
+            if only and not ({v.upper() for v in verbs} & only or "ALL" in {v.upper() for v in verbs}):
+                continue  # a matcher scoped to other HTTP methods
             if rx.match(path):
                 return needs
         return bool(self.default)
@@ -372,6 +384,8 @@ class Security:
             elif re.search(r"(?:^|/)application[\w-]*\.(?:properties|ya?ml)$", sf.rel) and "quarkus.http.auth.permission" in sf.text:
                 sec.present = True
                 sec._quarkus(sf.text)
+            if is_jvm(sf.rel) and not sf.is_test and CUSTOM_AUTH.search(sf.text):
+                sec.present = sec.custom = True
         return sec
 
     def _spring(self, v: Views) -> None:
@@ -381,12 +395,14 @@ class Security:
             if close < 0:
                 continue
             patterns = [s for s in STRING.findall(code[m.end():close]) if s.startswith("/")]
+            # `antMatchers(HttpMethod.GET, "/articles/**")` applies to GET only
+            scoped = set(re.findall(r"\bHttpMethod\s*\.\s*([A-Z]+)", code[m.end():close]))
             rest = bare[close + 1:close + 200]
             act = re.match(r"\s*\.\s*(\w+)", rest)
             if not patterns or not act:
                 continue
             needs = act.group(1) not in OPEN
-            self.rules += [(_ant(p), needs) for p in patterns]
+            self.rules += [(_ant(p), needs, scoped) for p in patterns]  # type: ignore[misc]
         m = re.search(r"\banyRequest\s*\(\s*\)\s*\.\s*(\w+)", bare)
         if m:
             self.default = m.group(1) not in OPEN

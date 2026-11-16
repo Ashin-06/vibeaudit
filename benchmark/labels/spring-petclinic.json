@@ -1,0 +1,150 @@
+{
+ "repo": "spring-petclinic",
+ "commit": "500158f732419217507c7656904b8e6aa1bcc0d6",
+ "findings": [
+  {
+   "rule": "CFG001",
+   "file": ".devcontainer/Dockerfile",
+   "line": 3,
+   "fingerprint": "f64dae528c007ea0c2b3af298d66b1e2",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/deploy-and-test-cluster.yml",
+   "line": 21,
+   "fingerprint": "97bc76cac3d3d1d0e3921c78178499c1",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/gradle-build.yml",
+   "line": 29,
+   "fingerprint": "aba2e115b7aa2c06e99b24484ab81ed9",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG013",
+   "file": "k8s/db.yml",
+   "line": 43,
+   "fingerprint": "1ba45f65b4d55d7c1ab540fd7328c435",
+   "verdict": "tp",
+   "reason": "The Kubernetes container has no resource limits."
+  },
+  {
+   "rule": "CFG013",
+   "file": "k8s/petclinic.yml",
+   "line": 31,
+   "fingerprint": "c0d40f78bf71a2ccd70c1681134d9cd8",
+   "verdict": "tp",
+   "reason": "The Kubernetes container has no resource limits."
+  },
+  {
+   "rule": "JAVA001",
+   "file": "src/main/java/org/springframework/samples/petclinic/owner/OwnerController.java",
+   "line": 72,
+   "fingerprint": "a2348da2d4b080cde49d665c45009ca0",
+   "verdict": "tp",
+   "reason": "No Spring Security configuration and no annotations: these endpoints answer anyone."
+  },
+  {
+   "rule": "JAVA001",
+   "file": "src/main/java/org/springframework/samples/petclinic/owner/PetController.java",
+   "line": 100,
+   "fingerprint": "2e0745a91fc07ce6d9dbf8e8caba4a27",
+   "verdict": "tp",
+   "reason": "No Spring Security configuration and no annotations: these endpoints answer anyone."
+  },
+  {
+   "rule": "JAVA001",
+   "file": "src/main/java/org/springframework/samples/petclinic/owner/VisitController.java",
+   "line": 90,
+   "fingerprint": "368a670bffef9fe4f18a16bc8f3680d0",
+   "verdict": "tp",
+   "reason": "No Spring Security configuration and no annotations: these endpoints answer anyone."
+  },
+  {
+   "rule": "JAVA001",
+   "file": "src/main/java/org/springframework/samples/petclinic/system/CrashController.java",
+   "line": 31,
+   "fingerprint": "020ccb4aa50b98cd24b310c45213530f",
+   "verdict": "tp",
+   "reason": "No Spring Security configuration and no annotations: these endpoints answer anyone."
+  },
+  {
+   "rule": "JAVA001",
+   "file": "src/main/java/org/springframework/samples/petclinic/system/WelcomeController.java",
+   "line": 25,
+   "fingerprint": "1c8b22defff46062d3b42b34d3c93d0f",
+   "verdict": "tp",
+   "reason": "No Spring Security configuration and no annotations: these endpoints answer anyone."
+  },
+  {
+   "rule": "JAVA001",
+   "file": "src/main/java/org/springframework/samples/petclinic/vet/VetController.java",
+   "line": 45,
+   "fingerprint": "6df91fcace75e546d034b31d36e2524c",
+   "verdict": "tp",
+   "reason": "No Spring Security configuration and no annotations: these endpoints answer anyone."
+  },
+  {
+   "rule": "JAVA002",
+   "file": "src/main/resources/application.properties",
+   "line": 21,
+   "fingerprint": "7ca210e5069dbd4a6e8a9c5d5a19202c",
+   "verdict": "tp",
+   "reason": "Actuator exposes every endpoint (include=*) with no security configuration."
+  },
+  {
+   "rule": "UI001",
+   "file": "src/main/resources/templates/error.html",
+   "line": 6,
+   "fingerprint": "a8802b840cedbf501c10ab02d0847b2c",
+   "verdict": "tp",
+   "reason": "The image has no alt text."
+  },
+  {
+   "rule": "UI001",
+   "file": "src/main/resources/templates/welcome.html",
+   "line": 10,
+   "fingerprint": "a1deea265886529eae6ef3eac3eb9c93",
+   "verdict": "tp",
+   "reason": "The image has no alt text."
+  },
+  {
+   "rule": "UI014",
+   "file": "src/main/resources/templates/error.html",
+   "line": 6,
+   "fingerprint": "25eba5c46a7f61c7a396a064e288ba08",
+   "verdict": "tp",
+   "reason": "The image has no width and height."
+  },
+  {
+   "rule": "UI016",
+   "file": "src/main/resources/static/resources/css/petclinic.css",
+   "line": 402,
+   "fingerprint": "3291d50a3a0fa1a68ef67f8b55807142",
+   "verdict": "tp",
+   "reason": "The focus outline is removed with no replacement."
+  },
+  {
+   "rule": "UI016",
+   "file": "src/main/resources/static/resources/css/petclinic.css",
+   "line": 1756,
+   "fingerprint": "b22f58bac799abe94d48f2b0214ef0eb",
+   "verdict": "tp",
+   "reason": "The focus outline is removed with no replacement."
+  },
+  {
+   "rule": "UI016",
+   "file": "src/main/resources/static/resources/css/petclinic.css",
+   "line": 1968,
+   "fingerprint": "3c7f7558de975340af02d0cdb17c0ff5",
+   "verdict": "tp",
+   "reason": "The focus outline is removed with no replacement."
+  }
+ ]
+}

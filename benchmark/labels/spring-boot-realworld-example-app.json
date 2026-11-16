@@ -1,0 +1,46 @@
+{
+ "repo": "spring-boot-realworld-example-app",
+ "commit": "ee17e31aafe733d98c4853c8b9a74d7f2f6c924a",
+ "findings": [
+  {
+   "rule": "AUTH010",
+   "file": "src/main/java/io/spring/api/UsersApi.java",
+   "line": 47,
+   "fingerprint": "6abfeeedee3dfe1d5a4c1ed49958cb2b",
+   "verdict": "tp",
+   "reason": "The login endpoint has no rate limit."
+  },
+  {
+   "rule": "DATA006",
+   "file": "src/main/resources/db/migration/V1__create_tables.sql",
+   "line": 17,
+   "fingerprint": "6a08b2e5dac394125c187e860f9f74d7",
+   "verdict": "tp",
+   "reason": "The timestamp column has no time zone."
+  },
+  {
+   "rule": "DATA006",
+   "file": "src/main/resources/db/migration/V1__create_tables.sql",
+   "line": 18,
+   "fingerprint": "e4c6a33e3a4fdf5ca5ab59846cee6528",
+   "verdict": "tp",
+   "reason": "The timestamp column has no time zone."
+  },
+  {
+   "rule": "DATA006",
+   "file": "src/main/resources/db/migration/V1__create_tables.sql",
+   "line": 47,
+   "fingerprint": "f5e9581d406a60d5f7a5094337e8b7e7",
+   "verdict": "tp",
+   "reason": "The timestamp column has no time zone."
+  },
+  {
+   "rule": "DATA006",
+   "file": "src/main/resources/db/migration/V1__create_tables.sql",
+   "line": 48,
+   "fingerprint": "ca3078c30398933d2a753d0c86590f45",
+   "verdict": "tp",
+   "reason": "The timestamp column has no time zone."
+  }
+ ]
+}
