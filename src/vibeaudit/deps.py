@@ -149,6 +149,8 @@ def _collect(project: Project) -> List[Dep]:
             for mod, version, line, indirect in go_requires(f.text):
                 if not indirect:
                     deps.append(Dep(mod, "Go", f.rel, line, version))
+        if name in ("pom.xml", "build.gradle", "build.gradle.kts") and f.text is not None and not f.is_test:
+            deps.extend(Dep(mod, "Maven", f.rel, line, version) for mod, version, line in maven_dependencies(name, f.text))
             continue
         requirements = bool(re.fullmatch(r"requirements[\w.-]*\.(?:txt|in)", name) or re.search(r"(?:^|/)requirements/[^/]+\.txt$", f.rel))
         # the name first: only manifests are read, so a long-lived Project keeps the result while code changes
@@ -766,4 +768,40 @@ def go_requires(text: str) -> List[Tuple[str, str, int, bool]]:
             m = GO_REQUIRE.match(raw)
             if m:
                 out.append((m.group(1), m.group(2), n, bool(m.group(3))))
+    return out
+
+
+# ------------------------------------------------------------------ Maven and Gradle (Java and Kotlin)
+POM_DEP = re.compile(r"<dependency>(.*?)</dependency>", re.S)
+POM_PROP = re.compile(r"<properties>(.*?)</properties>", re.S)
+GRADLE_DEP = re.compile(
+    r"""^[ \t]*(implementation|api|compile|runtimeOnly|compileOnly|kapt|annotationProcessor)[ \t]*\(?[ \t]*["']([\w.\-]+):([\w.\-]+):([\w.\-]+)["']""",
+    re.M)
+
+
+def _tag(block: str, name: str) -> str:
+    m = re.search(r"<%s>\s*([^<]{1,200}?)\s*</%s>" % (name, name), block)
+    return m.group(1) if m else ""
+
+
+def maven_dependencies(name: str, text: str) -> List[Tuple[str, str, int]]:
+    """(group:artifact, version, line) of the pinned, non-test dependencies of a pom.xml or build.gradle(.kts).
+    Versions from ${properties} are resolved; managed versions (from a BOM or a parent) are left out."""
+    out: List[Tuple[str, str, int]] = []
+    if name == "pom.xml":
+        props: Dict[str, str] = {}
+        for pm in POM_PROP.finditer(text):
+            props.update({k: v.strip() for k, v in re.findall(r"<([\w.\-]+)>([^<]{1,100})</\1>", pm.group(1))})
+        for m in POM_DEP.finditer(text):
+            block = m.group(1)
+            if _tag(block, "scope") in ("test", "provided", "system"):
+                continue
+            group, artifact, version = _tag(block, "groupId"), _tag(block, "artifactId"), _tag(block, "version")
+            version = re.sub(r"\$\{([\w.\-]+)\}", lambda x: props.get(x.group(1), x.group(0)), version)
+            if group and artifact and re.match(r"\d", version) and "${" not in version:
+                out.append((f"{group}:{artifact}", version, text.count("\n", 0, m.start()) + 1))
+        return out
+    for m in GRADLE_DEP.finditer(text):
+        if re.match(r"\d", m.group(4)):
+            out.append((f"{m.group(2)}:{m.group(3)}", m.group(4), text.count("\n", 0, m.start()) + 1))
     return out

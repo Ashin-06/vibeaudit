@@ -1,0 +1,46 @@
+{
+ "repo": "codbex-oceanus",
+ "commit": "6f08a87baba238a0d051dd5bca0b2b51d195e0c0",
+ "findings": [
+  {
+   "rule": "CFG001",
+   "file": "application/Dockerfile",
+   "line": 1,
+   "fingerprint": "7bd2865c64209b88ef5bf6e9e0c40b0f",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/build.yaml",
+   "line": 10,
+   "fingerprint": "097941b123e2348e2b7d21f21ed35fcc",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/codeql.yml",
+   "line": 15,
+   "fingerprint": "55150fd2d535f0bdd298bbd623f0eb05",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/pull-request.yaml",
+   "line": 10,
+   "fingerprint": "89e8e31b454e65e0a2cb2ab8c627dc4d",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yaml",
+   "line": 19,
+   "fingerprint": "c272f544ad577493e4d63b5d9fafbf3d",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  }
+ ]
+}

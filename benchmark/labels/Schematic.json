@@ -1,0 +1,54 @@
+{
+ "repo": "Schematic",
+ "commit": "f9175bf1655da4e674fc34f3bb6970d7b3ffc7ea",
+ "findings": [
+  {
+   "rule": "CFG002",
+   "file": ".gitpod.Dockerfile",
+   "line": 1,
+   "fingerprint": "23e968eefeffaeb27c895475aa6d7efe",
+   "verdict": "fp",
+   "reason": "A Gitpod development workspace image, not a production image."
+  },
+  {
+   "rule": "CFG007",
+   "file": "compose.yaml",
+   "line": 6,
+   "fingerprint": "dbd7beb9f934d88c95eb7f8d68de30be",
+   "verdict": "tp",
+   "reason": "A default database password is committed in the compose file."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/build-and-test.yml",
+   "line": 37,
+   "fingerprint": "3facc25be7b96e22744cba665cbaa942",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "JAVA001",
+   "file": "src/main/java/com/bjoernkw/schematic/IndexController.java",
+   "line": 16,
+   "fingerprint": "299559de4039e1916498d85aab340ac1",
+   "verdict": "tp",
+   "reason": "No Spring Security configuration and no annotations: these endpoints answer anyone."
+  },
+  {
+   "rule": "JAVA001",
+   "file": "src/main/java/com/bjoernkw/schematic/TablesController.java",
+   "line": 58,
+   "fingerprint": "c5b77dc6b97f8578c44ffa3d1ca20c2b",
+   "verdict": "tp",
+   "reason": "No Spring Security configuration and no annotations: these endpoints answer anyone."
+  },
+  {
+   "rule": "QA003",
+   "file": "src/main/resources/static/js/schematic.js",
+   "line": 123,
+   "fingerprint": "ad7b7a2da6a345c59f0316313d785967",
+   "verdict": "tp",
+   "reason": "The error is caught and ignored with no comment."
+  }
+ ]
+}

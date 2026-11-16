@@ -21,7 +21,7 @@
    "by_repo": {}
   },
   "AUTH001": {
-   "precision": 0.92,
+   "precision": 0.9535,
    "seeded_recall": 1.0,
    "by_repo": {
     "LinguaLearn": [
@@ -40,24 +40,12 @@
      1,
      0
     ],
-    "conveyor": [
-     4,
-     0
-    ],
     "dvna": [
      0,
      1
     ],
     "flexible-graphrag": [
      8,
-     0
-    ],
-    "go-base": [
-     0,
-     3
-    ],
-    "go-clean-arch": [
-     1,
      0
     ],
     "helpdesk-flow-verse": [
@@ -80,6 +68,10 @@
      3,
      0
     ],
+    "piggymetrics": [
+     0,
+     1
+    ],
     "pygoat": [
      1,
      0
@@ -99,44 +91,36 @@
    }
   },
   "AUTH002": {
-   "precision": 0.76,
+   "precision": 0.6667,
    "seeded_recall": 1.0,
    "by_repo": {
+    "bella-openapi": [
+     0,
+     1
+    ],
     "dvna": [
      2,
-     0
-    ],
-    "go-base": [
-     0,
-     6
-    ],
-    "uniedit-server": [
-     17,
      0
     ]
    }
   },
   "AUTH003": {
-   "precision": 0.0,
+   "precision": 0.6429,
    "seeded_recall": 1.0,
    "by_repo": {
-    "conveyor": [
-     0,
-     2
-    ],
-    "golang-gin-realworld-example-app": [
+    "bella-openapi": [
      0,
      1
+    ],
+    "jhipster-sample-app": [
+     9,
+     0
     ],
     "microblog": [
      0,
      1
     ],
     "node-express-realworld-example-app": [
-     0,
-     1
-    ],
-    "toWers": [
      0,
      1
     ],
@@ -241,23 +225,15 @@
      3,
      0
     ],
-    "go-base": [
-     1,
-     0
-    ],
-    "golang-gin-realworld-example-app": [
-     1,
-     0
-    ],
-    "govwa": [
-     1,
-     0
-    ],
     "microblog": [
      2,
      0
     ],
     "node-express-realworld-example-app": [
+     1,
+     0
+    ],
+    "spring-boot-realworld-example-app": [
      1,
      0
     ]
@@ -290,10 +266,6 @@
     "full-stack-fastapi-template": [
      2,
      0
-    ],
-    "toWers": [
-     1,
-     0
     ]
    }
   },
@@ -303,19 +275,18 @@
    "by_repo": {}
   },
   "AUTH017": {
-   "precision": 1.0,
+   "precision": null,
    "seeded_recall": 1.0,
-   "by_repo": {
-    "sili-smart-hr": [
-     2,
-     0
-    ]
-   }
+   "by_repo": {}
   },
   "BE001": {
-   "precision": 0.7576,
+   "precision": 0.9375,
    "seeded_recall": 1.0,
    "by_repo": {
+    "JavaVulnerableLab": [
+     5,
+     0
+    ],
     "Vulnerable-Flask-App": [
      1,
      0
@@ -339,10 +310,6 @@
     "pygoat": [
      1,
      0
-    ],
-    "sili-smart-hr": [
-     0,
-     6
     ],
     "waline": [
      0,
@@ -437,9 +404,13 @@
    }
   },
   "BE005": {
-   "precision": 0.5,
+   "precision": 0.75,
    "seeded_recall": 1.0,
    "by_repo": {
+    "bella-openapi": [
+     2,
+     0
+    ],
     "physicalmediavault": [
      0,
      1
@@ -451,14 +422,14 @@
    }
   },
   "BE006": {
-   "precision": 0.25,
+   "precision": 0.6,
    "seeded_recall": 1.0,
    "by_repo": {
-    "flexible-graphrag": [
-     0,
-     1
+    "JavaVulnerableLab": [
+     2,
+     0
     ],
-    "podinfo": [
+    "flexible-graphrag": [
      0,
      1
     ],
@@ -486,15 +457,15 @@
    "precision": 0.8571,
    "seeded_recall": 1.0,
    "by_repo": {
+    "JavaVulnerableLab": [
+     1,
+     0
+    ],
     "chatbot-ui": [
      1,
      0
     ],
     "dvna": [
-     1,
-     0
-    ],
-    "go-test-bench": [
      1,
      0
     ],
@@ -725,6 +696,10 @@
      2,
      0
     ],
+    "JavaVulnerableLab": [
+     1,
+     0
+    ],
     "LinguaLearn": [
      1,
      0
@@ -737,8 +712,12 @@
      1,
      0
     ],
-    "conveyor": [
-     4,
+    "bella-openapi": [
+     3,
+     0
+    ],
+    "codbex-oceanus": [
+     1,
      0
     ],
     "damn-vulnerable-llm-agent": [
@@ -765,19 +744,7 @@
      2,
      0
     ],
-    "go-base": [
-     1,
-     0
-    ],
-    "go-clean-arch": [
-     1,
-     0
-    ],
-    "go-clean-template": [
-     1,
-     0
-    ],
-    "go-test-bench": [
+    "jhipster-sample-app": [
      1,
      0
     ],
@@ -797,6 +764,10 @@
      1,
      0
     ],
+    "piggymetrics": [
+     10,
+     0
+    ],
     "pygoat": [
      25,
      0
@@ -805,7 +776,7 @@
      2,
      0
     ],
-    "sili-smart-hr": [
+    "spring-petclinic": [
      1,
      0
     ],
@@ -817,11 +788,11 @@
      1,
      0
     ],
-    "toWers": [
+    "vibe-trading": [
      1,
      0
     ],
-    "vibe-trading": [
+    "vulnerable-java-application": [
      1,
      0
     ],
@@ -836,26 +807,14 @@
    }
   },
   "CFG002": {
-   "precision": 1.0,
+   "precision": 0.75,
    "seeded_recall": 1.0,
    "by_repo": {
-    "conveyor": [
-     1,
-     0
+    "Schematic": [
+     0,
+     1
     ],
     "flexible-graphrag": [
-     1,
-     0
-    ],
-    "go-base": [
-     2,
-     0
-    ],
-    "go-clean-arch": [
-     1,
-     0
-    ],
-    "go-test-bench": [
      1,
      0
     ],
@@ -864,10 +823,6 @@
      0
     ],
     "thynk": [
-     1,
-     0
-    ],
-    "toWers": [
      1,
      0
     ]
@@ -910,8 +865,20 @@
      1,
      0
     ],
+    "JavaVulnerableLab": [
+     1,
+     0
+    ],
+    "Schematic": [
+     1,
+     0
+    ],
     "bakerydemo": [
      1,
+     0
+    ],
+    "bella-openapi": [
+     2,
      0
     ],
     "djangoproject.com": [
@@ -922,23 +889,11 @@
      1,
      0
     ],
-    "go-base": [
-     1,
-     0
-    ],
-    "go-clean-arch": [
-     2,
-     0
-    ],
     "opengpts": [
      1,
      0
     ],
     "sec-insights": [
-     1,
-     0
-    ],
-    "uniedit-server": [
      1,
      0
     ]
@@ -966,15 +921,7 @@
      1,
      0
     ],
-    "conveyor": [
-     2,
-     0
-    ],
     "sec-insights": [
-     1,
-     0
-    ],
-    "toWers": [
      1,
      0
     ]
@@ -984,6 +931,10 @@
    "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
+    "Schematic": [
+     1,
+     0
+    ],
     "Vulnerable-Flask-App": [
      1,
      0
@@ -1004,8 +955,12 @@
      1,
      0
     ],
-    "conveyor": [
-     2,
+    "bella-openapi": [
+     3,
+     0
+    ],
+    "codbex-oceanus": [
+     4,
      0
     ],
     "djangoproject.com": [
@@ -1014,22 +969,6 @@
     ],
     "flexible-graphrag": [
      6,
-     0
-    ],
-    "go-base": [
-     1,
-     0
-    ],
-    "go-clean-template": [
-     5,
-     0
-    ],
-    "go-test-bench": [
-     1,
-     0
-    ],
-    "golang-gin-realworld-example-app": [
-     3,
      0
     ],
     "llm-examples": [
@@ -1056,16 +995,16 @@
      1,
      0
     ],
+    "spring-petclinic": [
+     2,
+     0
+    ],
     "terragoat": [
      3,
      0
     ],
     "thynk": [
      1,
-     0
-    ],
-    "toWers": [
-     6,
      0
     ],
     "waline": [
@@ -1089,12 +1028,16 @@
    "by_repo": {}
   },
   "CFG013": {
-   "precision": 0.5,
+   "precision": 0.75,
    "seeded_recall": 1.0,
    "by_repo": {
     "podinfo": [
      1,
      1
+    ],
+    "spring-petclinic": [
+     2,
+     0
     ]
    }
   },
@@ -1139,7 +1082,7 @@
    "by_repo": {}
   },
   "DATA001": {
-   "precision": 0.5909,
+   "precision": 0.6316,
    "seeded_recall": 1.0,
    "by_repo": {
     "Django-Styleguide-Example": [
@@ -1162,17 +1105,9 @@
      9,
      0
     ],
-    "golang-gin-realworld-example-app": [
-     1,
-     0
-    ],
     "pygoat": [
      0,
      1
-    ],
-    "sili-smart-hr": [
-     0,
-     2
     ],
     "waline": [
      0,
@@ -1186,24 +1121,16 @@
    "by_repo": {}
   },
   "DATA003": {
-   "precision": 0.75,
+   "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
     "chatbot-ui": [
      1,
      0
     ],
-    "go-clean-template": [
-     1,
-     0
-    ],
     "node-express-realworld-example-app": [
      1,
      0
-    ],
-    "uniedit-server": [
-     0,
-     1
     ]
    }
   },
@@ -1223,7 +1150,7 @@
    }
   },
   "DATA006": {
-   "precision": 0.9897,
+   "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
     "LinguaLearn": [
@@ -1238,16 +1165,16 @@
      38,
      0
     ],
+    "bella-openapi": [
+     2,
+     0
+    ],
     "flasky": [
      1,
      0
     ],
     "flexible-graphrag": [
      28,
-     0
-    ],
-    "go-clean-template": [
-     4,
      0
     ],
     "pygoat": [
@@ -1258,23 +1185,23 @@
      4,
      0
     ],
-    "sili-smart-hr": [
-     0,
-     1
-    ],
-    "uniedit-server": [
-     6,
+    "spring-boot-realworld-example-app": [
+     4,
      0
     ]
    }
   },
   "DATA007": {
-   "precision": 0.3684,
+   "precision": 0.6,
    "seeded_recall": 1.0,
    "by_repo": {
     "bakerydemo": [
      0,
      4
+    ],
+    "bella-openapi": [
+     11,
+     0
     ],
     "chat-langchain": [
      3,
@@ -1339,14 +1266,9 @@
    }
   },
   "DATA011": {
-   "precision": 1.0,
+   "precision": null,
    "seeded_recall": 1.0,
-   "by_repo": {
-    "uniedit-server": [
-     14,
-     0
-    ]
-   }
+   "by_repo": {}
   },
   "DATA012": {
    "precision": 1.0,
@@ -1402,10 +1324,6 @@
     ],
     "scriptforge-ai": [
      1,
-     0
-    ],
-    "uniedit-server": [
-     6,
      0
     ]
    }
@@ -1493,6 +1411,10 @@
      1,
      0
     ],
+    "jhipster-sample-app": [
+     1,
+     0
+    ],
     "llm-examples": [
      1,
      0
@@ -1513,9 +1435,14 @@
    "by_repo": {}
   },
   "DEP007": {
-   "precision": null,
+   "precision": 1.0,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "bella-openapi": [
+     1,
+     0
+    ]
+   }
   },
   "DEP008": {
    "precision": null,
@@ -1528,7 +1455,7 @@
    "by_repo": {}
   },
   "FE001": {
-   "precision": 0.5357,
+   "precision": 0.5233,
    "seeded_recall": 1.0,
    "by_repo": {
     "act-solo-ai": [
@@ -1537,6 +1464,10 @@
     ],
     "ai-chatbot": [
      3,
+     1
+    ],
+    "bella-openapi": [
+     0,
      1
     ],
     "careconnect": [
@@ -1552,6 +1483,10 @@
      0
     ],
     "flasky": [
+     0,
+     1
+    ],
+    "jhipster-sample-app": [
      0,
      1
     ],
@@ -1590,14 +1525,9 @@
    }
   },
   "FE002": {
-   "precision": 0.0,
+   "precision": null,
    "seeded_recall": 1.0,
-   "by_repo": {
-    "sili-smart-hr": [
-     0,
-     3
-    ]
-   }
+   "by_repo": {}
   },
   "FE003": {
    "precision": null,
@@ -1634,10 +1564,6 @@
      1,
      0
     ],
-    "toWers": [
-     3,
-     0
-    ],
     "waline": [
      1,
      0
@@ -1645,14 +1571,9 @@
    }
   },
   "FE006": {
-   "precision": 1.0,
+   "precision": null,
    "seeded_recall": 1.0,
-   "by_repo": {
-    "conveyor": [
-     1,
-     0
-    ]
-   }
+   "by_repo": {}
   },
   "FE007": {
    "precision": 0.8462,
@@ -1693,42 +1614,47 @@
    "seeded_recall": 1.0,
    "by_repo": {}
   },
-  "GO001": {
-   "precision": null,
-   "seeded_recall": null,
-   "by_repo": {}
-  },
-  "GO002": {
-   "precision": null,
-   "seeded_recall": null,
-   "by_repo": {}
-  },
-  "GO003": {
-   "precision": null,
-   "seeded_recall": null,
-   "by_repo": {}
-  },
-  "GO004": {
-   "precision": 0.8,
-   "seeded_recall": null,
+  "JAVA001": {
+   "precision": 1.0,
+   "seeded_recall": 1.0,
    "by_repo": {
-    "go-test-bench": [
-     1,
-     0
-    ],
-    "govwa": [
+    "Schematic": [
      2,
      0
     ],
-    "sili-smart-hr": [
-     0,
-     1
+    "spring-petclinic": [
+     6,
+     0
     ],
-    "uniedit-server": [
+    "vulnerable-java-application": [
      1,
      0
     ]
    }
+  },
+  "JAVA002": {
+   "precision": 1.0,
+   "seeded_recall": null,
+   "by_repo": {
+    "spring-petclinic": [
+     1,
+     0
+    ],
+    "vulnerable-java-application": [
+     1,
+     0
+    ]
+   }
+  },
+  "JAVA003": {
+   "precision": null,
+   "seeded_recall": null,
+   "by_repo": {}
+  },
+  "JAVA004": {
+   "precision": null,
+   "seeded_recall": null,
+   "by_repo": {}
   },
   "LLM001": {
    "precision": null,
@@ -1988,7 +1914,7 @@
    "by_repo": {}
   },
   "LLM023": {
-   "precision": 0.6667,
+   "precision": 1.0,
    "seeded_recall": null,
    "by_repo": {
     "chatgpt-your-files": [
@@ -1998,10 +1924,6 @@
     "opengpts": [
      1,
      0
-    ],
-    "sili-smart-hr": [
-     0,
-     1
     ]
    }
   },
@@ -2025,7 +1947,7 @@
    "by_repo": {}
   },
   "QA001": {
-   "precision": 0.9412,
+   "precision": 0.8824,
    "seeded_recall": 1.0,
    "by_repo": {
     "careconnect": [
@@ -2040,10 +1962,6 @@
      1,
      0
     ],
-    "conveyor": [
-     0,
-     1
-    ],
     "damn-vulnerable-llm-agent": [
      1,
      0
@@ -2053,10 +1971,6 @@
      0
     ],
     "dvpwa": [
-     1,
-     0
-    ],
-    "govwa": [
      1,
      0
     ],
@@ -2084,6 +1998,10 @@
      1,
      0
     ],
+    "piggymetrics": [
+     0,
+     1
+    ],
     "prompt-sculptor-49": [
      1,
      0
@@ -2095,6 +2013,10 @@
     "taxonomy": [
      1,
      0
+    ],
+    "vulnerable-java-application": [
+     0,
+     1
     ]
    }
   },
@@ -2186,10 +2108,6 @@
      1,
      0
     ],
-    "sili-smart-hr": [
-     1,
-     0
-    ],
     "sync-plan-flow": [
      1,
      0
@@ -2201,12 +2119,20 @@
    }
   },
   "QA003": {
-   "precision": 0.7241,
+   "precision": 0.9268,
    "seeded_recall": 1.0,
    "by_repo": {
+    "Schematic": [
+     1,
+     0
+    ],
     "alerta": [
      0,
      1
+    ],
+    "bella-openapi": [
+     4,
+     0
     ],
     "chat-langchain": [
      1,
@@ -2227,10 +2153,6 @@
     "pygoat": [
      3,
      0
-    ],
-    "sili-smart-hr": [
-     0,
-     44
     ],
     "vibe-trading": [
      24,
@@ -2311,7 +2233,7 @@
    }
   },
   "QA006": {
-   "precision": 0.2857,
+   "precision": 0.3684,
    "seeded_recall": 1.0,
    "by_repo": {
     "careconnect": [
@@ -2322,9 +2244,9 @@
      1,
      0
     ],
-    "govwa": [
+    "jhipster-sample-app": [
      0,
-     12
+     1
     ],
     "next-learn": [
      7,
@@ -2364,7 +2286,7 @@
      4,
      0
     ],
-    "conveyor": [
+    "bella-openapi": [
      1,
      0
     ],
@@ -2414,6 +2336,10 @@
    "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
+    "jhipster-sample-app": [
+     1,
+     0
+    ],
     "taxonomy": [
      2,
      0
@@ -2426,14 +2352,9 @@
    "by_repo": {}
   },
   "QA010": {
-   "precision": 1.0,
+   "precision": null,
    "seeded_recall": 1.0,
-   "by_repo": {
-    "conveyor": [
-     2,
-     0
-    ]
-   }
+   "by_repo": {}
   },
   "QA011": {
    "precision": 1.0,
@@ -2441,6 +2362,10 @@
    "by_repo": {
     "act-solo-ai": [
      2,
+     0
+    ],
+    "bella-openapi": [
+     9,
      0
     ],
     "careconnect": [
@@ -2463,8 +2388,8 @@
      1,
      0
     ],
-    "sili-smart-hr": [
-     36,
+    "vulnerable-java-application": [
+     4,
      0
     ],
     "wsgidav": [
@@ -2485,16 +2410,16 @@
      15,
      0
     ],
+    "bella-openapi": [
+     1,
+     0
+    ],
     "djangoproject.com": [
      4,
      0
     ],
     "flexible-graphrag": [
      2,
-     0
-    ],
-    "go-test-bench": [
-     1,
      0
     ],
     "microblog": [
@@ -2519,10 +2444,6 @@
     ],
     "thynk": [
      4,
-     0
-    ],
-    "toWers": [
-     1,
      0
     ],
     "vibe-trading": [
@@ -2612,12 +2533,16 @@
    }
   },
   "SEC001": {
-   "precision": 0.9643,
+   "precision": 0.9655,
    "seeded_recall": 1.0,
    "by_repo": {
     "Django-Styleguide-Example": [
      0,
      1
+    ],
+    "JavaVulnerableLab": [
+     1,
+     0
     ],
     "bakerydemo": [
      1,
@@ -2648,9 +2573,13 @@
    }
   },
   "SEC003": {
-   "precision": 0.625,
+   "precision": 0.6667,
    "seeded_recall": 1.0,
    "by_repo": {
+    "JavaVulnerableLab": [
+     1,
+     0
+    ],
     "bakerydemo": [
      0,
      1
@@ -2659,7 +2588,7 @@
      0,
      3
     ],
-    "go-clean-template": [
+    "jhipster-sample-app": [
      1,
      0
     ],
@@ -2671,6 +2600,10 @@
      0,
      1
     ],
+    "podinfo": [
+     0,
+     1
+    ],
     "prompt-sculptor-49": [
      9,
      0
@@ -2678,10 +2611,6 @@
     "pygoat": [
      4,
      1
-    ],
-    "sili-smart-hr": [
-     2,
-     4
     ],
     "terragoat": [
      7,
@@ -2736,13 +2665,9 @@
    }
   },
   "SEC005": {
-   "precision": 0.5,
+   "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
-    "go-clean-template": [
-     0,
-     3
-    ],
     "prompt-sculptor-49": [
      2,
      0
@@ -2801,9 +2726,13 @@
    }
   },
   "SEC010": {
-   "precision": 0.25,
+   "precision": 0.5,
    "seeded_recall": 1.0,
    "by_repo": {
+    "bella-openapi": [
+     2,
+     0
+    ],
     "helpdesk-flow-verse": [
      1,
      0
@@ -2815,7 +2744,7 @@
    }
   },
   "SEC011": {
-   "precision": 0.4333,
+   "precision": 0.8571,
    "seeded_recall": 1.0,
    "by_repo": {
     "LinguaLearn": [
@@ -2842,13 +2771,13 @@
      0,
      1
     ],
+    "jhipster-sample-app": [
+     0,
+     1
+    ],
     "pygoat": [
      17,
      0
-    ],
-    "sili-smart-hr": [
-     2,
-     31
     ]
    }
   },
@@ -2872,10 +2801,6 @@
      5,
      0
     ],
-    "govwa": [
-     2,
-     0
-    ],
     "microblog": [
      4,
      0
@@ -2896,6 +2821,10 @@
      12,
      0
     ],
+    "spring-petclinic": [
+     2,
+     0
+    ],
     "waline": [
      1,
      0
@@ -2903,9 +2832,13 @@
    }
   },
   "UI002": {
-   "precision": 0.9756,
+   "precision": 0.9818,
    "seeded_recall": 1.0,
    "by_repo": {
+    "bella-openapi": [
+     14,
+     0
+    ],
     "chatbot-ui": [
      14,
      0
@@ -2949,11 +2882,15 @@
    }
   },
   "UI003": {
-   "precision": 0.9831,
+   "precision": 0.9853,
    "seeded_recall": 1.0,
    "by_repo": {
     "LinguaLearn": [
      1,
+     0
+    ],
+    "bella-openapi": [
+     14,
      0
     ],
     "careconnect": [
@@ -3012,10 +2949,6 @@
      4,
      0
     ],
-    "toWers": [
-     5,
-     0
-    ],
     "vibe-trading": [
      3,
      0
@@ -3042,11 +2975,15 @@
    "by_repo": {}
   },
   "UI006": {
-   "precision": 0.6667,
+   "precision": 0.7692,
    "seeded_recall": 1.0,
    "by_repo": {
     "act-solo-ai": [
      1,
+     0
+    ],
+    "bella-openapi": [
+     4,
      0
     ],
     "careconnect": [
@@ -3086,7 +3023,7 @@
    "by_repo": {}
   },
   "UI009": {
-   "precision": 0.875,
+   "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
     "careconnect": [
@@ -3104,10 +3041,6 @@
     "scriptforge-ai": [
      1,
      0
-    ],
-    "toWers": [
-     0,
-     1
     ],
     "waline": [
      1,
@@ -3179,7 +3112,7 @@
    }
   },
   "UI014": {
-   "precision": 0.9,
+   "precision": 0.8947,
    "seeded_recall": 1.0,
    "by_repo": {
     "djangoproject.com": [
@@ -3188,10 +3121,6 @@
     ],
     "flasky": [
      1,
-     0
-    ],
-    "govwa": [
-     2,
      0
     ],
     "microblog": [
@@ -3210,6 +3139,10 @@
      1,
      0
     ],
+    "spring-petclinic": [
+     1,
+     0
+    ],
     "waline": [
      4,
      0
@@ -3224,26 +3157,22 @@
      1,
      0
     ],
-    "prompt-sculptor-49": [
-     5,
+    "bella-openapi": [
+     6,
      0
     ],
-    "sili-smart-hr": [
-     13,
+    "prompt-sculptor-49": [
+     5,
      0
     ],
     "taxonomy": [
      2,
      0
-    ],
-    "toWers": [
-     1,
-     0
     ]
    }
   },
   "UI016": {
-   "precision": 0.75,
+   "precision": 0.8182,
    "seeded_recall": 1.0,
    "by_repo": {
     "ai-chatbot": [
@@ -3265,6 +3194,10 @@
     "next-saas-stripe-starter": [
      0,
      2
+    ],
+    "spring-petclinic": [
+     3,
+     0
     ]
    }
   },
@@ -3281,10 +3214,6 @@
      0
     ],
     "prompt-sculptor-49": [
-     1,
-     0
-    ],
-    "toWers": [
      1,
      0
     ]

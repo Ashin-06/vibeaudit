@@ -1,0 +1,134 @@
+{
+ "repo": "jhipster-sample-app",
+ "commit": "6b000b5d23a36c45e01472471b84a44fa2464044",
+ "findings": [
+  {
+   "rule": "AUTH003",
+   "file": "src/main/java/io/github/jhipster/sample/web/rest/BankAccountResource.java",
+   "line": 73,
+   "fingerprint": "ecb289951102186a6edbda7953a9dd4d",
+   "verdict": "tp",
+   "reason": "The record is changed by id with no check that it belongs to the caller."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/main/java/io/github/jhipster/sample/web/rest/BankAccountResource.java",
+   "line": 107,
+   "fingerprint": "71570f2defc2390cb655d851c5fc1c12",
+   "verdict": "tp",
+   "reason": "The record is changed by id with no check that it belongs to the caller."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/main/java/io/github/jhipster/sample/web/rest/BankAccountResource.java",
+   "line": 177,
+   "fingerprint": "3c6b2bdb5a95ad014cd26a19cf699428",
+   "verdict": "tp",
+   "reason": "The record is changed by id with no check that it belongs to the caller."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/main/java/io/github/jhipster/sample/web/rest/LabelResource.java",
+   "line": 73,
+   "fingerprint": "64803821bc8a973744d845bf7b9ce3b7",
+   "verdict": "tp",
+   "reason": "The record is changed by id with no check that it belongs to the caller."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/main/java/io/github/jhipster/sample/web/rest/LabelResource.java",
+   "line": 105,
+   "fingerprint": "5e13f5e4d0b526458b6bd8c3d3e51d20",
+   "verdict": "tp",
+   "reason": "The record is changed by id with no check that it belongs to the caller."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/main/java/io/github/jhipster/sample/web/rest/LabelResource.java",
+   "line": 167,
+   "fingerprint": "09303250cba5024a31be40e10c88f8f7",
+   "verdict": "tp",
+   "reason": "The record is changed by id with no check that it belongs to the caller."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/main/java/io/github/jhipster/sample/web/rest/OperationResource.java",
+   "line": 78,
+   "fingerprint": "8898166fd73b405aa8de28f96816b0c4",
+   "verdict": "tp",
+   "reason": "The record is changed by id with no check that it belongs to the caller."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/main/java/io/github/jhipster/sample/web/rest/OperationResource.java",
+   "line": 112,
+   "fingerprint": "a1041622dac419ee2e4c9d501de1a41d",
+   "verdict": "tp",
+   "reason": "The record is changed by id with no check that it belongs to the caller."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/main/java/io/github/jhipster/sample/web/rest/OperationResource.java",
+   "line": 188,
+   "fingerprint": "0793927b8bb9f87790c4ee150732a1e6",
+   "verdict": "tp",
+   "reason": "The record is changed by id with no check that it belongs to the caller."
+  },
+  {
+   "rule": "CFG001",
+   "file": ".devcontainer/Dockerfile",
+   "line": 5,
+   "fingerprint": "f64dae528c007ea0c2b3af298d66b1e2",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "DEP005",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "5e6440f154e5fafdbedb3d38d01fb73b",
+   "verdict": "tp",
+   "reason": "No lockfile is committed for package.json."
+  },
+  {
+   "rule": "FE001",
+   "file": "src/main/webapp/app/shared/language/translate.directive.ts",
+   "line": 47,
+   "fingerprint": "45f2e5c2a7ca6cd2d1f68249d44c0de4",
+   "verdict": "fp",
+   "reason": "innerHTML is set from the app's own translation files."
+  },
+  {
+   "rule": "QA006",
+   "file": "src/main/webapp/i18n/index.ts",
+   "line": 9,
+   "fingerprint": "95de079c5198ab67c0d14492a488e975",
+   "verdict": "fp",
+   "reason": "i18n/en.json is generated at build time by merging the translation folders."
+  },
+  {
+   "rule": "QA008",
+   "file": "src/main/webapp/i18n/index.ts",
+   "line": 2,
+   "fingerprint": "a0c947cb17a7153de791afc77851347a",
+   "verdict": "tp",
+   "reason": "TypeScript checking is disabled for the whole file."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".yo-rc.json",
+   "line": 31,
+   "fingerprint": "52c5820971eb1c3835c558d1c24b7550",
+   "verdict": "tp",
+   "reason": "A real-looking secret is committed."
+  },
+  {
+   "rule": "SEC011",
+   "file": "cypress.config.ts",
+   "line": 15,
+   "fingerprint": "b205bd30ed2f67591f978c500e5185bd",
+   "verdict": "fp",
+   "reason": "The password is in the Cypress end-to-end test configuration."
+  }
+ ]
+}

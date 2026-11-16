@@ -131,7 +131,7 @@ mapping and reports first; the threat feed after the Phase 3 items).
 | Item | Status |
 | --- | --- |
 | Go (net/http, Gin, Fiber, Chi, GORM) | preview (findings are preview until benchmarked) |
-| Java/Kotlin (Spring Boot, Quarkus) | preview (findings are preview until benchmarked) |
+| Java/Kotlin (Spring Boot, Quarkus) | preview (a lexer, Spring and JAX-RS routes with the security configuration, data flow into the generic sinks, Maven/Gradle dependencies, JAVA001-JAVA004; preview until benchmarked) |
 | C#/.NET (ASP.NET Core, EF Core) | preview (findings are preview until benchmarked) |
 | Rust (Actix, Axum) | preview (findings are preview until benchmarked) |
 | PHP (Laravel, Symfony) | preview (findings are preview until benchmarked) |

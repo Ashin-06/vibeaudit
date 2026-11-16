@@ -45,13 +45,18 @@ AUTH_MIDDLEWARE = re.compile(
 
 ADMIN_ROLE_EVIDENCE = re.compile(
     r"(?i)(?:get_current_active_superuser|require_superuser)|\b(?:is_?admin|is_staff|is_superuser|superuser|roles?\b|permissions?|has_?role|require_?role|require_?admin"
-    r"|admin_required|check_?role|authorize\s*\(|ability|can\s*\(|isStaff|staff_member_required|scopes?\b)"
+    r"|admin_required|check_?role|authorize\s*\(|ability|can\s*\(|isStaff|staff_member_required|scopes?\b"
+    # Spring and Jakarta: @PreAuthorize("hasAuthority(...)"), @Secured, @RolesAllowed
+    r"|has_?(?:any_?)?authority|has_?any_?role|secured|roles_?allowed)"
 )
 
 OWNERSHIP_EVIDENCE = re.compile(
     r"(?i)(?:\buser_?id\b|\bowner(?:_?id)?\b|\bauthor(?:_?id)?\b|\bcreated_?by\b|current_user\s*(?:\(\s*\))?\s*\.\s*id"
     r"|\.user\s*[?!]?\s*\.\s*(?:id|_id|sub)\b|session\s*\.\s*user|auth\s*\.\s*uid|\buid\b|\btenant|\borg_?id\b"
-    r"|\baccount_?id\b|\bsub\b)"
+    r"|\baccount_?id\b|\bsub\b"
+    # Java and Kotlin: user.getId(), principal.getName(), canWriteArticle(user, a), isOwner(...)
+    r"|\b(?:user|principal|currentUser|authentication)\s*\.\s*get(?:Id|Name|Username)\s*\(|\bcan(?:Write|Edit|Delete|Modify|Update|Access)\w{0,30}\s*\("
+    r"|\bis_?owner\w{0,20}\s*\()"
 )
 # a reset that needs a signed, emailed token, or a route that takes no credential: nothing to guess or rate-limit
 TOKEN_RESET = re.compile(r"(?i)verify\w*token\w*\s*\(|[<{:]token\b")
@@ -91,13 +96,15 @@ SERVER_VALIDATION_EVIDENCE = re.compile(
     | \bforms\s*\.\s*(?:Form|ModelForm)\b | \bserializers\s*\.\s*\w*Serializer\b
     | \b(?:binding|validate):"[^"]*\b(?:required|min|max|len|email|oneof|gte|lte|url|uuid)
     | go-playground/validator | go-ozzo/ozzo-validation
+    | \bimport\s+(?:jakarta|javax)\.validation\b | @\s*(?:Valid|Validated)\b
     """
 )
 CLIENT_VALIDATION = re.compile(r"""(?:from|require\s*\()\s*['"](?:zod|yup|valibot|react-hook-form|joi|vee-validate)['"]""")
 
 MUTATION_EVIDENCE = re.compile(
     r"(?i)\.\s*(?:insert|insertOne|insertMany|update|updateOne|updateMany|upsert|delete|deleteOne|deleteMany|remove"
-    r"|create|createMany|destroy|save|rpc|bulkCreate|findOneAndUpdate|findByIdAndUpdate|findByIdAndDelete)\s*\("
+    r"|create|createMany|destroy|save|rpc|bulkCreate|findOneAndUpdate|findByIdAndUpdate|findByIdAndDelete"
+    r"|saveAll|saveAndFlush|saveAllAndFlush|deleteById|deleteAll|deleteAllById|deleteAllInBatch|persist|persistAndFlush)\s*\("  # JPA
     r"|\b(?:INSERT\s+INTO|UPDATE\s+\w+\s+SET|DELETE\s+FROM)\b"
 )
 

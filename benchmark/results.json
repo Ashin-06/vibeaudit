@@ -4,20 +4,20 @@
  "scanned": 64,
  "skipped": {},
  "heldout": [
+  "Schematic",
   "careconnect",
   "damn-vulnerable-llm-agent",
   "dvpwa",
   "flasky",
-  "go-base",
-  "govwa",
   "langchain-nextjs-template",
   "next-saas-stripe-starter",
   "nodejs-whisper",
   "openai-assistants-quickstart",
+  "piggymetrics",
   "podinfo",
   "terragoat",
   "thynk",
-  "toWers",
+  "vulnerable-java-application",
   "waline"
  ],
  "repos": {
@@ -292,7 +292,7 @@
    "labelled": 4,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 1
+   "fixed_fp": 0
   },
   "terragoat": {
    "findings": 25,
@@ -399,72 +399,72 @@
    "lost_tp": [],
    "fixed_fp": 2
   },
-  "uniedit-server": {
-   "findings": 46,
-   "labelled": 46,
+  "llm_wiki_agent": {
+   "findings": 0,
+   "labelled": 0,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
   },
-  "conveyor": {
-   "findings": 20,
-   "labelled": 20,
-   "needs_review": 0,
-   "lost_tp": [],
-   "fixed_fp": 0
-  },
-  "toWers": {
-   "findings": 23,
-   "labelled": 23,
-   "needs_review": 0,
-   "lost_tp": [],
-   "fixed_fp": 0
-  },
-  "sili-smart-hr": {
-   "findings": 150,
-   "labelled": 150,
-   "needs_review": 0,
-   "lost_tp": [],
-   "fixed_fp": 0
-  },
-  "golang-gin-realworld-example-app": {
+  "Schematic": {
    "findings": 6,
    "labelled": 6,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
   },
-  "go-clean-arch": {
+  "bella-openapi": {
+   "findings": 82,
+   "labelled": 82,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "codbex-oceanus": {
    "findings": 5,
    "labelled": 5,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
   },
-  "go-base": {
-   "findings": 15,
-   "labelled": 15,
+  "spring-petclinic": {
+   "findings": 18,
+   "labelled": 18,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
   },
-  "go-clean-template": {
-   "findings": 15,
-   "labelled": 15,
+  "spring-boot-realworld-example-app": {
+   "findings": 5,
+   "labelled": 5,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
   },
-  "govwa": {
-   "findings": 20,
-   "labelled": 20,
+  "jhipster-sample-app": {
+   "findings": 16,
+   "labelled": 16,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
   },
-  "go-test-bench": {
-   "findings": 6,
-   "labelled": 6,
+  "vulnerable-java-application": {
+   "findings": 8,
+   "labelled": 8,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "JavaVulnerableLab": {
+   "findings": 12,
+   "labelled": 12,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "piggymetrics": {
+   "findings": 12,
+   "labelled": 12,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
@@ -522,14 +522,14 @@
   "AUTH001": {
    "title": "State-changing endpoint without authentication",
    "preview": false,
-   "tp": 46,
-   "fp": 4,
+   "tp": 41,
+   "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.92,
-   "precision_pessimistic": 0.92,
-   "seeded_expected": 7,
-   "seeded_found": 7,
+   "precision": 0.9535,
+   "precision_pessimistic": 0.9535,
+   "seeded_expected": 8,
+   "seeded_found": 8,
    "seeded_recall": 1.0,
    "by_repo": {
     "LinguaLearn": [
@@ -552,11 +552,6 @@
      0,
      0
     ],
-    "conveyor": [
-     4,
-     0,
-     0
-    ],
     "dvna": [
      0,
      1,
@@ -564,16 +559,6 @@
     ],
     "flexible-graphrag": [
      8,
-     0,
-     0
-    ],
-    "go-base": [
-     0,
-     3,
-     0
-    ],
-    "go-clean-arch": [
-     1,
      0,
      0
     ],
@@ -602,6 +587,11 @@
      0,
      0
     ],
+    "piggymetrics": [
+     0,
+     1,
+     0
+    ],
     "pygoat": [
      1,
      0,
@@ -627,28 +617,23 @@
   "AUTH002": {
    "title": "Admin endpoint without a role check",
    "preview": false,
-   "tp": 19,
-   "fp": 6,
+   "tp": 2,
+   "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.76,
-   "precision_pessimistic": 0.76,
+   "precision": 0.6667,
+   "precision_pessimistic": 0.6667,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
    "by_repo": {
+    "bella-openapi": [
+     0,
+     1,
+     0
+    ],
     "dvna": [
      2,
-     0,
-     0
-    ],
-    "go-base": [
-     0,
-     6,
-     0
-    ],
-    "uniedit-server": [
-     17,
      0,
      0
     ]
@@ -657,24 +642,24 @@
   "AUTH003": {
    "title": "Possible insecure direct object reference (IDOR)",
    "preview": false,
-   "tp": 0,
-   "fp": 8,
+   "tp": 9,
+   "fp": 5,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.0,
-   "precision_pessimistic": 0.0,
+   "precision": 0.6429,
+   "precision_pessimistic": 0.6429,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
-    "conveyor": [
-     0,
-     2,
-     0
-    ],
-    "golang-gin-realworld-example-app": [
+    "bella-openapi": [
      0,
      1,
+     0
+    ],
+    "jhipster-sample-app": [
+     9,
+     0,
      0
     ],
     "microblog": [
@@ -683,11 +668,6 @@
      0
     ],
     "node-express-realworld-example-app": [
-     0,
-     1,
-     0
-    ],
-    "toWers": [
      0,
      1,
      0
@@ -836,7 +816,7 @@
   "AUTH010": {
    "title": "Login endpoint without rate limiting",
    "preview": false,
-   "tp": 15,
+   "tp": 13,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -871,27 +851,17 @@
      0,
      0
     ],
-    "go-base": [
-     1,
-     0,
-     0
-    ],
-    "golang-gin-realworld-example-app": [
-     1,
-     0,
-     0
-    ],
-    "govwa": [
-     1,
-     0,
-     0
-    ],
     "microblog": [
      2,
      0,
      0
     ],
     "node-express-realworld-example-app": [
+     1,
+     0,
+     0
+    ],
+    "spring-boot-realworld-example-app": [
      1,
      0,
      0
@@ -957,7 +927,7 @@
   "AUTH015": {
    "title": "Password change keeps old sessions valid",
    "preview": true,
-   "tp": 3,
+   "tp": 2,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -969,11 +939,6 @@
    "by_repo": {
     "full-stack-fastapi-template": [
      2,
-     0,
-     0
-    ],
-    "toWers": [
-     1,
      0,
      0
     ]
@@ -996,36 +961,35 @@
   "AUTH017": {
    "title": "Admin or feature-flag endpoint without a role check",
    "preview": true,
-   "tp": 2,
+   "tp": 0,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": null,
+   "precision_pessimistic": null,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {
-    "sili-smart-hr": [
-     2,
-     0,
-     0
-    ]
-   }
+   "by_repo": {}
   },
   "BE001": {
    "title": "SQL injection",
    "preview": false,
-   "tp": 25,
-   "fp": 8,
+   "tp": 30,
+   "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.7576,
-   "precision_pessimistic": 0.7576,
+   "precision": 0.9375,
+   "precision_pessimistic": 0.9375,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
    "by_repo": {
+    "JavaVulnerableLab": [
+     5,
+     0,
+     0
+    ],
     "Vulnerable-Flask-App": [
      1,
      0,
@@ -1054,11 +1018,6 @@
     "pygoat": [
      1,
      0,
-     0
-    ],
-    "sili-smart-hr": [
-     0,
-     6,
      0
     ],
     "waline": [
@@ -1201,16 +1160,21 @@
   "BE005": {
    "title": "Server-side request forgery (SSRF)",
    "preview": false,
-   "tp": 1,
+   "tp": 3,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5,
-   "precision_pessimistic": 0.5,
+   "precision": 0.75,
+   "precision_pessimistic": 0.75,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
    "by_repo": {
+    "bella-openapi": [
+     2,
+     0,
+     0
+    ],
     "physicalmediavault": [
      0,
      1,
@@ -1226,22 +1190,22 @@
   "BE006": {
    "title": "Path traversal",
    "preview": false,
-   "tp": 1,
-   "fp": 3,
+   "tp": 3,
+   "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.25,
-   "precision_pessimistic": 0.25,
+   "precision": 0.6,
+   "precision_pessimistic": 0.6,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
-    "flexible-graphrag": [
+    "JavaVulnerableLab": [
+     2,
      0,
-     1,
      0
     ],
-    "podinfo": [
+    "flexible-graphrag": [
      0,
      1,
      0
@@ -1291,17 +1255,17 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "JavaVulnerableLab": [
+     1,
+     0,
+     0
+    ],
     "chatbot-ui": [
      1,
      0,
      0
     ],
     "dvna": [
-     1,
-     0,
-     0
-    ],
-    "go-test-bench": [
      1,
      0,
      0
@@ -1673,7 +1637,7 @@
   "CFG001": {
    "title": "Container runs as root",
    "preview": false,
-   "tp": 68,
+   "tp": 76,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -1685,6 +1649,11 @@
    "by_repo": {
     "Django-Styleguide-Example": [
      2,
+     0,
+     0
+    ],
+    "JavaVulnerableLab": [
+     1,
      0,
      0
     ],
@@ -1703,8 +1672,13 @@
      0,
      0
     ],
-    "conveyor": [
-     4,
+    "bella-openapi": [
+     3,
+     0,
+     0
+    ],
+    "codbex-oceanus": [
+     1,
      0,
      0
     ],
@@ -1738,22 +1712,7 @@
      0,
      0
     ],
-    "go-base": [
-     1,
-     0,
-     0
-    ],
-    "go-clean-arch": [
-     1,
-     0,
-     0
-    ],
-    "go-clean-template": [
-     1,
-     0,
-     0
-    ],
-    "go-test-bench": [
+    "jhipster-sample-app": [
      1,
      0,
      0
@@ -1778,6 +1737,11 @@
      0,
      0
     ],
+    "piggymetrics": [
+     10,
+     0,
+     0
+    ],
     "pygoat": [
      25,
      0,
@@ -1788,7 +1752,7 @@
      0,
      0
     ],
-    "sili-smart-hr": [
+    "spring-petclinic": [
      1,
      0,
      0
@@ -1803,12 +1767,12 @@
      0,
      0
     ],
-    "toWers": [
+    "vibe-trading": [
      1,
      0,
      0
     ],
-    "vibe-trading": [
+    "vulnerable-java-application": [
      1,
      0,
      0
@@ -1828,37 +1792,22 @@
   "CFG002": {
    "title": "Unpinned container base image",
    "preview": false,
-   "tp": 9,
-   "fp": 0,
+   "tp": 3,
+   "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.75,
+   "precision_pessimistic": 0.75,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
-    "conveyor": [
-     1,
+    "Schematic": [
      0,
+     1,
      0
     ],
     "flexible-graphrag": [
-     1,
-     0,
-     0
-    ],
-    "go-base": [
-     2,
-     0,
-     0
-    ],
-    "go-clean-arch": [
-     1,
-     0,
-     0
-    ],
-    "go-test-bench": [
      1,
      0,
      0
@@ -1869,11 +1818,6 @@
      0
     ],
     "thynk": [
-     1,
-     0,
-     0
-    ],
-    "toWers": [
      1,
      0,
      0
@@ -1965,8 +1909,23 @@
      0,
      0
     ],
+    "JavaVulnerableLab": [
+     1,
+     0,
+     0
+    ],
+    "Schematic": [
+     1,
+     0,
+     0
+    ],
     "bakerydemo": [
      1,
+     0,
+     0
+    ],
+    "bella-openapi": [
+     2,
      0,
      0
     ],
@@ -1980,27 +1939,12 @@
      0,
      0
     ],
-    "go-base": [
-     1,
-     0,
-     0
-    ],
-    "go-clean-arch": [
-     2,
-     0,
-     0
-    ],
     "opengpts": [
      1,
      0,
      0
     ],
     "sec-insights": [
-     1,
-     0,
-     0
-    ],
-    "uniedit-server": [
      1,
      0,
      0
@@ -2035,7 +1979,7 @@
   "CFG009": {
    "title": ".env file copied into the container image",
    "preview": false,
-   "tp": 5,
+   "tp": 2,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2050,17 +1994,7 @@
      0,
      0
     ],
-    "conveyor": [
-     2,
-     0,
-     0
-    ],
     "sec-insights": [
-     1,
-     0,
-     0
-    ],
-    "toWers": [
      1,
      0,
      0
@@ -2070,7 +2004,7 @@
   "CFG010": {
    "title": "Third-party GitHub Action not pinned to a commit",
    "preview": false,
-   "tp": 84,
+   "tp": 76,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2080,6 +2014,11 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "Schematic": [
+     1,
+     0,
+     0
+    ],
     "Vulnerable-Flask-App": [
      1,
      0,
@@ -2105,8 +2044,13 @@
      0,
      0
     ],
-    "conveyor": [
-     2,
+    "bella-openapi": [
+     3,
+     0,
+     0
+    ],
+    "codbex-oceanus": [
+     4,
      0,
      0
     ],
@@ -2117,26 +2061,6 @@
     ],
     "flexible-graphrag": [
      6,
-     0,
-     0
-    ],
-    "go-base": [
-     1,
-     0,
-     0
-    ],
-    "go-clean-template": [
-     5,
-     0,
-     0
-    ],
-    "go-test-bench": [
-     1,
-     0,
-     0
-    ],
-    "golang-gin-realworld-example-app": [
-     3,
      0,
      0
     ],
@@ -2170,6 +2094,11 @@
      0,
      0
     ],
+    "spring-petclinic": [
+     2,
+     0,
+     0
+    ],
     "terragoat": [
      3,
      0,
@@ -2177,11 +2106,6 @@
     ],
     "thynk": [
      1,
-     0,
-     0
-    ],
-    "toWers": [
-     6,
      0,
      0
     ],
@@ -2228,12 +2152,12 @@
   "CFG013": {
    "title": "Kubernetes container without resource limits",
    "preview": true,
-   "tp": 1,
+   "tp": 3,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5,
-   "precision_pessimistic": 0.5,
+   "precision": 0.75,
+   "precision_pessimistic": 0.75,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -2241,6 +2165,11 @@
     "podinfo": [
      1,
      1,
+     0
+    ],
+    "spring-petclinic": [
+     2,
+     0,
      0
     ]
    }
@@ -2336,12 +2265,12 @@
   "DATA001": {
    "title": "Database query inside a loop (N+1)",
    "preview": true,
-   "tp": 13,
-   "fp": 9,
+   "tp": 12,
+   "fp": 7,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5909,
-   "precision_pessimistic": 0.5909,
+   "precision": 0.6316,
+   "precision_pessimistic": 0.6316,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -2371,19 +2300,9 @@
      0,
      0
     ],
-    "golang-gin-realworld-example-app": [
-     1,
-     0,
-     0
-    ],
     "pygoat": [
      0,
      1,
-     0
-    ],
-    "sili-smart-hr": [
-     0,
-     2,
      0
     ],
     "waline": [
@@ -2410,12 +2329,12 @@
   "DATA003": {
    "title": "Destructive database migration",
    "preview": false,
-   "tp": 3,
-   "fp": 1,
+   "tp": 2,
+   "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.75,
-   "precision_pessimistic": 0.75,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -2425,19 +2344,9 @@
      0,
      0
     ],
-    "go-clean-template": [
-     1,
-     0,
-     0
-    ],
     "node-express-realworld-example-app": [
      1,
      0,
-     0
-    ],
-    "uniedit-server": [
-     0,
-     1,
      0
     ]
    }
@@ -2479,12 +2388,12 @@
   "DATA006": {
    "title": "Timestamp without time zone",
    "preview": false,
-   "tp": 96,
-   "fp": 1,
+   "tp": 92,
+   "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9897,
-   "precision_pessimistic": 0.9897,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -2504,6 +2413,11 @@
      0,
      0
     ],
+    "bella-openapi": [
+     2,
+     0,
+     0
+    ],
     "flasky": [
      1,
      0,
@@ -2511,11 +2425,6 @@
     ],
     "flexible-graphrag": [
      28,
-     0,
-     0
-    ],
-    "go-clean-template": [
-     4,
      0,
      0
     ],
@@ -2529,13 +2438,8 @@
      0,
      0
     ],
-    "sili-smart-hr": [
-     0,
-     1,
-     0
-    ],
-    "uniedit-server": [
-     6,
+    "spring-boot-realworld-example-app": [
+     4,
      0,
      0
     ]
@@ -2544,12 +2448,12 @@
   "DATA007": {
    "title": "Environment variable missing from the example env file",
    "preview": true,
-   "tp": 7,
+   "tp": 18,
    "fp": 12,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.3684,
-   "precision_pessimistic": 0.3684,
+   "precision": 0.6,
+   "precision_pessimistic": 0.6,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -2557,6 +2461,11 @@
     "bakerydemo": [
      0,
      4,
+     0
+    ],
+    "bella-openapi": [
+     11,
+     0,
      0
     ],
     "chat-langchain": [
@@ -2662,27 +2571,21 @@
   "DATA011": {
    "title": "Index built without CONCURRENTLY on an existing table",
    "preview": true,
-   "tp": 14,
+   "tp": 0,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": null,
+   "precision_pessimistic": null,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {
-    "uniedit-server": [
-     14,
-     0,
-     0
-    ]
-   }
+   "by_repo": {}
   },
   "DATA012": {
    "title": "Foreign key without an index",
    "preview": false,
-   "tp": 76,
+   "tp": 70,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2754,11 +2657,6 @@
     ],
     "scriptforge-ai": [
      1,
-     0,
-     0
-    ],
-    "uniedit-server": [
-     6,
      0,
      0
     ]
@@ -2907,7 +2805,7 @@
   "DEP005": {
    "title": "Dependencies are not locked",
    "preview": false,
-   "tp": 8,
+   "tp": 9,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2933,6 +2831,11 @@
      0
     ],
     "dvna": [
+     1,
+     0,
+     0
+    ],
+    "jhipster-sample-app": [
      1,
      0,
      0
@@ -2971,16 +2874,22 @@
   "DEP007": {
    "title": "MCP server launched from an unpinned package",
    "preview": false,
-   "tp": 0,
+   "tp": 1,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "bella-openapi": [
+     1,
+     0,
+     0
+    ]
+   }
   },
   "DEP008": {
    "title": "Extra package index (dependency confusion)",
@@ -3014,11 +2923,11 @@
    "title": "Cross-site scripting through a raw HTML sink",
    "preview": true,
    "tp": 45,
-   "fp": 39,
+   "fp": 41,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5357,
-   "precision_pessimistic": 0.5357,
+   "precision": 0.5233,
+   "precision_pessimistic": 0.5233,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -3030,6 +2939,11 @@
     ],
     "ai-chatbot": [
      3,
+     1,
+     0
+    ],
+    "bella-openapi": [
+     0,
      1,
      0
     ],
@@ -3049,6 +2963,11 @@
      0
     ],
     "flasky": [
+     0,
+     1,
+     0
+    ],
+    "jhipster-sample-app": [
      0,
      1,
      0
@@ -3099,21 +3018,15 @@
    "title": "LLM or secret API called directly from the browser",
    "preview": false,
    "tp": 0,
-   "fp": 3,
+   "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.0,
-   "precision_pessimistic": 0.0,
+   "precision": null,
+   "precision_pessimistic": null,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {
-    "sili-smart-hr": [
-     0,
-     3,
-     0
-    ]
-   }
+   "by_repo": {}
   },
   "FE003": {
    "title": "Authorization state kept in browser storage",
@@ -3157,7 +3070,7 @@
   "FE005": {
    "title": "Auth token stored in localStorage",
    "preview": false,
-   "tp": 11,
+   "tp": 8,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -3182,11 +3095,6 @@
      0,
      0
     ],
-    "toWers": [
-     3,
-     0,
-     0
-    ],
     "waline": [
      1,
      0,
@@ -3197,22 +3105,16 @@
   "FE006": {
    "title": "Production source maps enabled",
    "preview": false,
-   "tp": 1,
+   "tp": 0,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": null,
+   "precision_pessimistic": null,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {
-    "conveyor": [
-     1,
-     0,
-     0
-    ]
-   }
+   "by_repo": {}
   },
   "FE007": {
    "title": "Hardcoded localhost URL in frontend code",
@@ -3278,82 +3180,88 @@
    "seeded_recall": 1.0,
    "by_repo": {}
   },
-  "GO001": {
-   "title": "Goroutine that never stops",
+  "JAVA001": {
+   "title": "Spring controllers with no security configuration",
    "preview": true,
-   "tp": 0,
+   "tp": 9,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
-   "seeded_expected": 0,
-   "seeded_found": 0,
-   "seeded_recall": null,
-   "by_repo": {}
-  },
-  "GO002": {
-   "title": "HTTP response body never closed",
-   "preview": true,
-   "tp": 0,
-   "fp": 0,
-   "needs_review": 0,
-   "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
-   "seeded_expected": 0,
-   "seeded_found": 0,
-   "seeded_recall": null,
-   "by_repo": {}
-  },
-  "GO003": {
-   "title": "Map written concurrently without a lock",
-   "preview": true,
-   "tp": 0,
-   "fp": 0,
-   "needs_review": 0,
-   "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
-   "seeded_expected": 0,
-   "seeded_found": 0,
-   "seeded_recall": null,
-   "by_repo": {}
-  },
-  "GO004": {
-   "title": "SQL built with string formatting (Go)",
-   "preview": true,
-   "tp": 4,
-   "fp": 1,
-   "needs_review": 0,
-   "lost_tp": 0,
-   "precision": 0.8,
-   "precision_pessimistic": 0.8,
-   "seeded_expected": 0,
-   "seeded_found": 0,
-   "seeded_recall": null,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
    "by_repo": {
-    "go-test-bench": [
-     1,
-     0,
-     0
-    ],
-    "govwa": [
+    "Schematic": [
      2,
      0,
      0
     ],
-    "sili-smart-hr": [
+    "spring-petclinic": [
+     6,
      0,
-     1,
      0
     ],
-    "uniedit-server": [
+    "vulnerable-java-application": [
      1,
      0,
      0
     ]
    }
+  },
+  "JAVA002": {
+   "title": "Spring Boot Actuator endpoints exposed",
+   "preview": true,
+   "tp": 2,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 0,
+   "seeded_found": 0,
+   "seeded_recall": null,
+   "by_repo": {
+    "spring-petclinic": [
+     1,
+     0,
+     0
+    ],
+    "vulnerable-java-application": [
+     1,
+     0,
+     0
+    ]
+   }
+  },
+  "JAVA003": {
+   "title": "Security chain permits every request",
+   "preview": true,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 0,
+   "seeded_found": 0,
+   "seeded_recall": null,
+   "by_repo": {}
+  },
+  "JAVA004": {
+   "title": "Polymorphic deserialization without an allow-list",
+   "preview": true,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 0,
+   "seeded_found": 0,
+   "seeded_recall": null,
+   "by_repo": {}
   },
   "LLM001": {
    "title": "Untrusted input placed in the system prompt",
@@ -3848,11 +3756,11 @@
    "title": "No per-user usage or cost limit for model calls",
    "preview": true,
    "tp": 2,
-   "fp": 1,
+   "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6667,
-   "precision_pessimistic": 0.6667,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 0,
    "seeded_found": 0,
    "seeded_recall": null,
@@ -3865,11 +3773,6 @@
     "opengpts": [
      1,
      0,
-     0
-    ],
-    "sili-smart-hr": [
-     0,
-     1,
      0
     ]
    }
@@ -3916,12 +3819,12 @@
   "QA001": {
    "title": "No automated tests",
    "preview": false,
-   "tp": 16,
-   "fp": 1,
+   "tp": 15,
+   "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9412,
-   "precision_pessimistic": 0.9412,
+   "precision": 0.8824,
+   "precision_pessimistic": 0.8824,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -3941,11 +3844,6 @@
      0,
      0
     ],
-    "conveyor": [
-     0,
-     1,
-     0
-    ],
     "damn-vulnerable-llm-agent": [
      1,
      0,
@@ -3957,11 +3855,6 @@
      0
     ],
     "dvpwa": [
-     1,
-     0,
-     0
-    ],
-    "govwa": [
      1,
      0,
      0
@@ -3996,6 +3889,11 @@
      0,
      0
     ],
+    "piggymetrics": [
+     0,
+     1,
+     0
+    ],
     "prompt-sculptor-49": [
      1,
      0,
@@ -4010,13 +3908,18 @@
      1,
      0,
      0
+    ],
+    "vulnerable-java-application": [
+     0,
+     1,
+     0
     ]
    }
   },
   "QA002": {
    "title": "No continuous integration",
    "preview": false,
-   "tp": 24,
+   "tp": 23,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -4131,11 +4034,6 @@
      0,
      0
     ],
-    "sili-smart-hr": [
-     1,
-     0,
-     0
-    ],
     "sync-plan-flow": [
      1,
      0,
@@ -4151,19 +4049,29 @@
   "QA003": {
    "title": "Exception silently swallowed",
    "preview": true,
-   "tp": 147,
-   "fp": 56,
+   "tp": 152,
+   "fp": 12,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.7241,
-   "precision_pessimistic": 0.7241,
+   "precision": 0.9268,
+   "precision_pessimistic": 0.9268,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
    "by_repo": {
+    "Schematic": [
+     1,
+     0,
+     0
+    ],
     "alerta": [
      0,
      1,
+     0
+    ],
+    "bella-openapi": [
+     4,
+     0,
      0
     ],
     "chat-langchain": [
@@ -4189,11 +4097,6 @@
     "pygoat": [
      3,
      0,
-     0
-    ],
-    "sili-smart-hr": [
-     0,
-     44,
      0
     ],
     "vibe-trading": [
@@ -4312,11 +4215,11 @@
    "title": "Import of a file or name that does not exist",
    "preview": true,
    "tp": 14,
-   "fp": 35,
+   "fp": 24,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.2857,
-   "precision_pessimistic": 0.2857,
+   "precision": 0.3684,
+   "precision_pessimistic": 0.3684,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -4331,9 +4234,9 @@
      0,
      0
     ],
-    "govwa": [
+    "jhipster-sample-app": [
      0,
-     12,
+     1,
      0
     ],
     "next-learn": [
@@ -4391,7 +4294,7 @@
      0,
      0
     ],
-    "conveyor": [
+    "bella-openapi": [
      1,
      0,
      0
@@ -4451,7 +4354,7 @@
   "QA008": {
    "title": "TypeScript checking disabled for a whole file",
    "preview": false,
-   "tp": 2,
+   "tp": 3,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -4461,6 +4364,11 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "jhipster-sample-app": [
+     1,
+     0,
+     0
+    ],
     "taxonomy": [
      2,
      0,
@@ -4485,27 +4393,21 @@
   "QA010": {
    "title": "Made-up data used as a fallback",
    "preview": true,
-   "tp": 2,
+   "tp": 0,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": null,
+   "precision_pessimistic": null,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {
-    "conveyor": [
-     2,
-     0,
-     0
-    ]
-   }
+   "by_repo": {}
   },
   "QA011": {
    "title": "Same function copied into several files",
    "preview": false,
-   "tp": 51,
+   "tp": 28,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -4517,6 +4419,11 @@
    "by_repo": {
     "act-solo-ai": [
      2,
+     0,
+     0
+    ],
+    "bella-openapi": [
+     9,
      0,
      0
     ],
@@ -4545,8 +4452,8 @@
      0,
      0
     ],
-    "sili-smart-hr": [
-     36,
+    "vulnerable-java-application": [
+     4,
      0,
      0
     ],
@@ -4560,7 +4467,7 @@
   "REL001": {
    "title": "Outbound HTTP request without a timeout",
    "preview": false,
-   "tp": 56,
+   "tp": 55,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -4580,6 +4487,11 @@
      0,
      0
     ],
+    "bella-openapi": [
+     1,
+     0,
+     0
+    ],
     "djangoproject.com": [
      4,
      0,
@@ -4587,11 +4499,6 @@
     ],
     "flexible-graphrag": [
      2,
-     0,
-     0
-    ],
-    "go-test-bench": [
-     1,
      0,
      0
     ],
@@ -4622,11 +4529,6 @@
     ],
     "thynk": [
      4,
-     0,
-     0
-    ],
-    "toWers": [
-     1,
      0,
      0
     ],
@@ -4778,12 +4680,12 @@
   "SEC001": {
    "title": "Hardcoded API key or access token",
    "preview": false,
-   "tp": 27,
+   "tp": 28,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9643,
-   "precision_pessimistic": 0.9643,
+   "precision": 0.9655,
+   "precision_pessimistic": 0.9655,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
@@ -4791,6 +4693,11 @@
     "Django-Styleguide-Example": [
      0,
      1,
+     0
+    ],
+    "JavaVulnerableLab": [
+     1,
+     0,
      0
     ],
     "bakerydemo": [
@@ -4838,16 +4745,21 @@
   "SEC003": {
    "title": "High-entropy secret assigned in code",
    "preview": true,
-   "tp": 25,
-   "fp": 15,
+   "tp": 24,
+   "fp": 12,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.625,
-   "precision_pessimistic": 0.625,
+   "precision": 0.6667,
+   "precision_pessimistic": 0.6667,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "JavaVulnerableLab": [
+     1,
+     0,
+     0
+    ],
     "bakerydemo": [
      0,
      1,
@@ -4858,7 +4770,7 @@
      3,
      0
     ],
-    "go-clean-template": [
+    "jhipster-sample-app": [
      1,
      0,
      0
@@ -4873,6 +4785,11 @@
      1,
      0
     ],
+    "podinfo": [
+     0,
+     1,
+     0
+    ],
     "prompt-sculptor-49": [
      9,
      0,
@@ -4881,11 +4798,6 @@
     "pygoat": [
      4,
      1,
-     0
-    ],
-    "sili-smart-hr": [
-     2,
-     4,
      0
     ],
     "terragoat": [
@@ -4964,20 +4876,15 @@
    "title": "Database URL with embedded password",
    "preview": false,
    "tp": 3,
-   "fp": 3,
+   "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5,
-   "precision_pessimistic": 0.5,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
-    "go-clean-template": [
-     0,
-     3,
-     0
-    ],
     "prompt-sculptor-49": [
      2,
      0,
@@ -5082,16 +4989,21 @@
   "SEC010": {
    "title": "Secret written to logs",
    "preview": false,
-   "tp": 1,
+   "tp": 3,
    "fp": 3,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.25,
-   "precision_pessimistic": 0.25,
+   "precision": 0.5,
+   "precision_pessimistic": 0.5,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "bella-openapi": [
+     2,
+     0,
+     0
+    ],
     "helpdesk-flow-verse": [
      1,
      0,
@@ -5107,12 +5019,12 @@
   "SEC011": {
    "title": "Hardcoded password",
    "preview": true,
-   "tp": 26,
-   "fp": 34,
+   "tp": 24,
+   "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.4333,
-   "precision_pessimistic": 0.4333,
+   "precision": 0.8571,
+   "precision_pessimistic": 0.8571,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -5147,14 +5059,14 @@
      1,
      0
     ],
+    "jhipster-sample-app": [
+     0,
+     1,
+     0
+    ],
     "pygoat": [
      17,
      0,
-     0
-    ],
-    "sili-smart-hr": [
-     2,
-     31,
      0
     ]
    }
@@ -5192,11 +5104,6 @@
      0,
      0
     ],
-    "govwa": [
-     2,
-     0,
-     0
-    ],
     "microblog": [
      4,
      0,
@@ -5222,6 +5129,11 @@
      0,
      0
     ],
+    "spring-petclinic": [
+     2,
+     0,
+     0
+    ],
     "waline": [
      1,
      0,
@@ -5232,16 +5144,21 @@
   "UI002": {
    "title": "Click handler on a non-interactive element",
    "preview": false,
-   "tp": 40,
+   "tp": 54,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9756,
-   "precision_pessimistic": 0.9756,
+   "precision": 0.9818,
+   "precision_pessimistic": 0.9818,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
    "by_repo": {
+    "bella-openapi": [
+     14,
+     0,
+     0
+    ],
     "chatbot-ui": [
      14,
      0,
@@ -5297,18 +5214,23 @@
   "UI003": {
    "title": "Form field without a label",
    "preview": false,
-   "tp": 58,
+   "tp": 67,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9831,
-   "precision_pessimistic": 0.9831,
+   "precision": 0.9853,
+   "precision_pessimistic": 0.9853,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
    "by_repo": {
     "LinguaLearn": [
      1,
+     0,
+     0
+    ],
+    "bella-openapi": [
+     14,
      0,
      0
     ],
@@ -5382,11 +5304,6 @@
      0,
      0
     ],
-    "toWers": [
-     5,
-     0,
-     0
-    ],
     "vibe-trading": [
      3,
      0,
@@ -5436,18 +5353,23 @@
   "UI006": {
    "title": "Destructive action without confirmation",
    "preview": true,
-   "tp": 6,
+   "tp": 10,
    "fp": 3,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6667,
-   "precision_pessimistic": 0.6667,
+   "precision": 0.7692,
+   "precision_pessimistic": 0.7692,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
    "by_repo": {
     "act-solo-ai": [
      1,
+     0,
+     0
+    ],
+    "bella-openapi": [
+     4,
      0,
      0
     ],
@@ -5515,11 +5437,11 @@
    "title": "Data loaded without loading or error state",
    "preview": false,
    "tp": 7,
-   "fp": 1,
+   "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.875,
-   "precision_pessimistic": 0.875,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -5542,11 +5464,6 @@
     "scriptforge-ai": [
      1,
      0,
-     0
-    ],
-    "toWers": [
-     0,
-     1,
      0
     ],
     "waline": [
@@ -5668,12 +5585,12 @@
   "UI014": {
    "title": "Image without width and height",
    "preview": true,
-   "tp": 18,
+   "tp": 17,
    "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9,
-   "precision_pessimistic": 0.9,
+   "precision": 0.8947,
+   "precision_pessimistic": 0.8947,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -5685,11 +5602,6 @@
     ],
     "flasky": [
      1,
-     0,
-     0
-    ],
-    "govwa": [
-     2,
      0,
      0
     ],
@@ -5713,6 +5625,11 @@
      0,
      0
     ],
+    "spring-petclinic": [
+     1,
+     0,
+     0
+    ],
     "waline": [
      4,
      0,
@@ -5723,7 +5640,7 @@
   "UI015": {
    "title": "Form error not announced to screen readers",
    "preview": true,
-   "tp": 22,
+   "tp": 14,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -5738,23 +5655,18 @@
      0,
      0
     ],
+    "bella-openapi": [
+     6,
+     0,
+     0
+    ],
     "prompt-sculptor-49": [
      5,
      0,
      0
     ],
-    "sili-smart-hr": [
-     13,
-     0,
-     0
-    ],
     "taxonomy": [
      2,
-     0,
-     0
-    ],
-    "toWers": [
-     1,
      0,
      0
     ]
@@ -5763,12 +5675,12 @@
   "UI016": {
    "title": "Focus outline removed",
    "preview": true,
-   "tp": 6,
+   "tp": 9,
    "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.75,
-   "precision_pessimistic": 0.75,
+   "precision": 0.8182,
+   "precision_pessimistic": 0.8182,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -5797,13 +5709,18 @@
      0,
      2,
      0
+    ],
+    "spring-petclinic": [
+     3,
+     0,
+     0
     ]
    }
   },
   "UI017": {
    "title": "Link to an asset that does not exist",
    "preview": true,
-   "tp": 4,
+   "tp": 3,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -5824,11 +5741,6 @@
      0
     ],
     "prompt-sculptor-49": [
-     1,
-     0,
-     0
-    ],
-    "toWers": [
      1,
      0,
      0
