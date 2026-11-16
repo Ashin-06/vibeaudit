@@ -145,6 +145,11 @@ def _collect(project: Project) -> List[Dep]:
             npm_private_scopes |= set(re.findall(r"^\s*(@[\w-]+):registry\s*=", f.text, re.M))
     for f in project.files:
         name = f.rel.rsplit("/", 1)[-1]
+        if name == "go.mod" and f.text is not None and not f.is_test:
+            for mod, version, line, indirect in go_requires(f.text):
+                if not indirect:
+                    deps.append(Dep(mod, "Go", f.rel, line, version))
+            continue
         requirements = bool(re.fullmatch(r"requirements[\w.-]*\.(?:txt|in)", name) or re.search(r"(?:^|/)requirements/[^/]+\.txt$", f.rel))
         # the name first: only manifests are read, so a long-lived Project keeps the result while code changes
         if not (requirements or name in ("pyproject.toml", "package.json")) or f.is_test or f.text is None:
@@ -530,7 +535,7 @@ class DepScanner:
                 slopped.add((d.ecosystem, d.name))
         squats: Dict[Tuple[str, str], str] = {}
         for d in deps:
-            if not d.checkable or (d.ecosystem, d.name) in slopped:
+            if not d.checkable or (d.ecosystem, d.name) in slopped or d.ecosystem not in ("PyPI", "npm"):
                 continue
             target = typosquat_target(d.name, d.ecosystem)
             if target:
@@ -555,7 +560,8 @@ class DepScanner:
             return
         known_pypi, _ = popular("PyPI")
         known_npm, _ = popular("npm")
-        to_check = sorted({(d.ecosystem, d.name) for d in deps if d.checkable and (d.ecosystem, d.name) not in slopped and not (
+        to_check = sorted({(d.ecosystem, d.name) for d in deps if d.checkable and d.ecosystem in ("PyPI", "npm")
+                           and (d.ecosystem, d.name) not in slopped and not (
             (d.ecosystem == "PyPI" and pep503(d.name) in known_pypi) or (d.ecosystem == "npm" and d.name.lower() in known_npm))})
         by_key = {(d.ecosystem, d.name): d for d in deps}
         BREAKER.reset()
@@ -644,9 +650,10 @@ def _vkey(v: str) -> Tuple:
 
 
 # ------------------------------------------------------------------ transitive dependencies (DEP009)
-LOCK_MANIFESTS = {"package.json": "npm", "pyproject.toml": "PyPI", "Pipfile": "PyPI"}
+LOCK_MANIFESTS = {"package.json": "npm", "pyproject.toml": "PyPI", "Pipfile": "PyPI", "go.mod": "Go"}
 LOCKS = {"npm": ("package-lock.json", "pnpm-lock.yaml", "yarn.lock", "bun.lock"),
-         "PyPI": ("poetry.lock", "uv.lock", "pdm.lock", "Pipfile.lock")}
+         "PyPI": ("poetry.lock", "uv.lock", "pdm.lock", "Pipfile.lock"),
+         "Go": ("go.mod",)}  # its `// indirect` requirements
 MAX_LOCK_BYTES = 30_000_000
 
 
@@ -672,7 +679,7 @@ def locked_packages(project: Project, direct: List[Dep]) -> List[Dep]:
             seen: Set[Tuple[str, str]] = set()
             for name, version, line in _lock_entries(lock, text):
                 key = pep503(name) if eco == "PyPI" else name
-                if (eco, key) in direct_names or (key, version) in seen or not re.match(r"\d", version):
+                if (eco, key) in direct_names or (key, version) in seen or not re.match(r"v?\d", version):
                     continue
                 seen.add((key, version))
                 out.append(Dep(name, eco, rel, line, version))
@@ -731,7 +738,32 @@ def _lock_entries(lock: str, text: str) -> List[Tuple[str, str, int]]:
         for m in re.finditer(r'(?m)^"?((?:@[^@/\s"]+/)?[^@\s"]+)@[^\n]*:\n(?:  [^\n]*\n){0,3}?  version:? "?(\d[^"\s]*)', text):
             if "use.local" not in m.group(2):  # a workspace package
                 out.append((m.group(1), m.group(2), line(m.start())))
+    elif lock == "go.mod":
+        out.extend((mod, version, line) for mod, version, line, indirect in go_requires(text) if indirect)
     elif lock == "bun.lock":
         for m in re.finditer(r'(?m)^\s*"[^"\n]+":\s*\[\s*"((?:@[^@/"]+/)?[^@"]+)@(\d[^"]*)"', text):
             out.append((m.group(1), m.group(2), line(m.start())))
+    return out
+
+
+GO_REQUIRE = re.compile(r"^[ \t]*(?:require[ \t]+)?([\w.~-]+(?:/[\w.~-]+)*)[ \t]+(v[\w.+-]+)[ \t]*(//[ \t]*indirect\b)?", re.M)
+
+
+def go_requires(text: str) -> List[Tuple[str, str, int, bool]]:
+    """(module, version, line, indirect) of every `require` in a go.mod, single-line or in a block."""
+    out: List[Tuple[str, str, int, bool]] = []
+    lines = text.splitlines()
+    in_block = False
+    for n, raw in enumerate(lines, 1):
+        line = raw.strip()
+        if line.startswith("require") and line.endswith("("):
+            in_block = True
+            continue
+        if in_block and line.startswith(")"):
+            in_block = False
+            continue
+        if in_block or line.startswith("require "):
+            m = GO_REQUIRE.match(raw)
+            if m:
+                out.append((m.group(1), m.group(2), n, bool(m.group(3))))
     return out

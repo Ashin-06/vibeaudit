@@ -1,0 +1,46 @@
+{
+ "repo": "go-clean-arch",
+ "commit": "e06c6d0cb37069b0ef56e3df67f80ca130a1ab82",
+ "findings": [
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile",
+   "line": 14,
+   "fingerprint": "a1709dbfaac10cec2692b6e8d8e08304",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "CFG002",
+   "file": "Dockerfile",
+   "line": 14,
+   "fingerprint": "461677ed8ecf7a1172de36c8f68c97db",
+   "verdict": "tp",
+   "reason": "The base image uses latest or no tag."
+  },
+  {
+   "rule": "CFG007",
+   "file": "compose.yaml",
+   "line": 25,
+   "fingerprint": "308e9c3b44e1c616eef9d3a094125a13",
+   "verdict": "tp",
+   "reason": "A default database password in docker-compose: a deliberate local default, but the rule's claim holds."
+  },
+  {
+   "rule": "CFG007",
+   "file": "compose.yaml",
+   "line": 26,
+   "fingerprint": "180f5cf1bc2e6e4ab71020bec48ea1bd",
+   "verdict": "tp",
+   "reason": "A default database password in docker-compose: a deliberate local default, but the rule's claim holds."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "internal/rest/article.go",
+   "line": 47,
+   "fingerprint": "8d7ad1e156dd3c071bcdc423c564eec3",
+   "verdict": "tp",
+   "reason": "The sample API has no authentication; DELETE /articles/:id is open."
+  }
+ ]
+}

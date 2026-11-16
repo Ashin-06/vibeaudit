@@ -40,7 +40,7 @@ DEFAULT_MAX_BYTES = 1_000_000
 
 TEST_PATH_RE = re.compile(
     r"(^|/)(tests?|__tests__|__mocks__|spec|specs|e2e|cypress|playwright|fixtures?|testdata|mocks?)/"
-    r"|(^|/)test_[^/]*\.py$|_test\.py$|(^|/)(conftest|tests?)\.py$"
+    r"|(^|/)test_[^/]*\.py$|_test\.py$|(^|/)(conftest|tests?)\.py$|_test\.go$"
     r"|\.(test|spec|stories|story|cy)\.[cm]?[jt]sx?$",
     re.I,
 )
@@ -72,6 +72,8 @@ def kind_of(rel: str) -> str:
         return "py"
     if ext in JS_EXTS:
         return "js"
+    if ext == ".go":
+        return "go"
     if ext in HTML_EXTS:
         return "html"
     if ext == ".sql":

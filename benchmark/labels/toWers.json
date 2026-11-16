@@ -1,0 +1,190 @@
+{
+ "repo": "toWers",
+ "commit": "2c22e67dc7af1e43e7534e391197139ee46ce29b",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/claude-code-review.yml",
+   "line": 36,
+   "fingerprint": "68bc7105a1965b32046f421653719e13",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/claude.yml",
+   "line": 34,
+   "fingerprint": "9c31659171fde26c80030c4e9538e153",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yml",
+   "line": 26,
+   "fingerprint": "ba8c8560dfb6ac0e557a3fc198503ffa",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yml",
+   "line": 30,
+   "fingerprint": "2287d158534187c0bc8d1b0a75524242",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yml",
+   "line": 38,
+   "fingerprint": "116c0ddd3ab1649abca2d36300dafcaf",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yml",
+   "line": 49,
+   "fingerprint": "8c6395cfffc36b0f199e4ad8063eaadf",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG002",
+   "file": "Dockerfile",
+   "line": 9,
+   "fingerprint": "e8fd01984ad90a0d949e252b448dfd45",
+   "verdict": "tp",
+   "reason": "The base image uses latest or no tag."
+  },
+  {
+   "rule": "CFG009",
+   "file": "Dockerfile",
+   "line": 45,
+   "fingerprint": "46bbcfae0c50166ae0752bf092841422",
+   "verdict": "tp",
+   "reason": "COPY . . copies .env.development into the image and there is no .dockerignore."
+  },
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile",
+   "line": 56,
+   "fingerprint": "d7f45544711ce498533e3194161813e6",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "REL001",
+   "file": "backend/api/middleware/turnstile-check.go",
+   "line": 35,
+   "fingerprint": "31fb54680d33be2325cb1d4a48c40d00",
+   "verdict": "tp",
+   "reason": "http.PostForm uses the default client, which has no timeout."
+  },
+  {
+   "rule": "AUTH015",
+   "file": "backend/api/route/api-router.go",
+   "line": 61,
+   "fingerprint": "d493f2970c10208c94673c57dc3cdbf0",
+   "verdict": "tp",
+   "reason": "ChangePassword updates the hash but does not revoke existing sessions or tokens."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "backend/api/route/api-router.go",
+   "line": 102,
+   "fingerprint": "0b382c35e9421efb5db4d76dfe9723ec",
+   "verdict": "fp",
+   "reason": "An admin-only MCP service setting, not a user-owned record."
+  },
+  {
+   "rule": "UI017",
+   "file": "frontend/index.html",
+   "line": 5,
+   "fingerprint": "a2412001d6e83ecc3117fb2efcf53617",
+   "verdict": "tp",
+   "reason": "/logo.svg is not in frontend/public (only logo.png and vite.svg)."
+  },
+  {
+   "rule": "UI015",
+   "file": "frontend/src/components/market/CustomServiceModal.tsx",
+   "line": 263,
+   "fingerprint": "d2b0898ecd16250cc2e1baeb5fc3caff",
+   "verdict": "tp",
+   "reason": "The field error is rendered next to the input without aria-describedby or a live region."
+  },
+  {
+   "rule": "UI009",
+   "file": "frontend/src/components/market/ServiceConfigModal.tsx",
+   "line": 63,
+   "fingerprint": "49e5295117e22eaee5433a839d78e943",
+   "verdict": "fp",
+   "reason": "The effect fetches the user token into a form field; nothing is rendered blank while it loads."
+  },
+  {
+   "rule": "FE005",
+   "file": "frontend/src/components/ui/LoginFormCommon.tsx",
+   "line": 111,
+   "fingerprint": "1e3a9e2ddc5ea55ba8d452b735227e12",
+   "verdict": "tp",
+   "reason": "The auth token is written to localStorage."
+  },
+  {
+   "rule": "FE005",
+   "file": "frontend/src/contexts/AuthContext.tsx",
+   "line": 51,
+   "fingerprint": "f7095868f2e1b7a822a1030c07c3fd70",
+   "verdict": "tp",
+   "reason": "The auth token is written to localStorage."
+  },
+  {
+   "rule": "FE005",
+   "file": "frontend/src/pages/OAuthCallback.tsx",
+   "line": 42,
+   "fingerprint": "835a7e4611173410f373e8751add7016",
+   "verdict": "tp",
+   "reason": "The auth token is written to localStorage."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/pages/PreferencesPage.tsx",
+   "line": 201,
+   "fingerprint": "48840a516cc7cfad5985b47f256ffbc9",
+   "verdict": "tp",
+   "reason": "The <label> is a sibling without htmlFor and the input has no id or aria-label."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/pages/PreferencesPage.tsx",
+   "line": 311,
+   "fingerprint": "14b832b90ee0866a0dc3dc77f6cecb8a",
+   "verdict": "tp",
+   "reason": "The <label> is a sibling without htmlFor and the input has no id or aria-label."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/pages/PreferencesPage.tsx",
+   "line": 322,
+   "fingerprint": "bcd32ecac48ec2e677111b6ae03cec21",
+   "verdict": "tp",
+   "reason": "The <label> is a sibling without htmlFor and the input has no id or aria-label."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/pages/PreferencesPage.tsx",
+   "line": 373,
+   "fingerprint": "cf27ce92d1ecead0d36b28be67395e2c",
+   "verdict": "tp",
+   "reason": "The <label> is a sibling without htmlFor and the input has no id or aria-label."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/pages/PreferencesPage.tsx",
+   "line": 384,
+   "fingerprint": "564de0e8639a9b5876b594cef50c24ca",
+   "verdict": "tp",
+   "reason": "The <label> is a sibling without htmlFor and the input has no id or aria-label."
+  }
+ ]
+}

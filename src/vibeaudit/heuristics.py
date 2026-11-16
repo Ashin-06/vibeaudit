@@ -89,6 +89,8 @@ SERVER_VALIDATION_EVIDENCE = re.compile(
     | \bfrom\s+(?:pydantic|marshmallow|wtforms|flask_wtf|cerberus|voluptuous|jsonschema|rest_framework|django\s+import\s+forms|msgspec|attrs)\b
     | \bimport\s+(?:pydantic|marshmallow|cerberus|voluptuous|jsonschema)\b
     | \bforms\s*\.\s*(?:Form|ModelForm)\b | \bserializers\s*\.\s*\w*Serializer\b
+    | \b(?:binding|validate):"[^"]*\b(?:required|min|max|len|email|oneof|gte|lte|url|uuid)
+    | go-playground/validator | go-ozzo/ozzo-validation
     """
 )
 CLIENT_VALIDATION = re.compile(r"""(?:from|require\s*\()\s*['"](?:zod|yup|valibot|react-hook-form|joi|vee-validate)['"]""")

@@ -42,6 +42,7 @@ class Rule:
 
 
 NEW_IN_089 = "New in 0.8.9: not yet measured on enough held-out findings in the benchmark."
+NEW_IN_0100 = "New in 0.10.0 (Go): not yet measured on enough held-out findings in the benchmark."
 NEW_IN_088 = "New in 0.8.8: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_087 = "New in 0.8.7: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_086 = "New in 0.8.6: not yet measured on enough held-out findings in the benchmark."
@@ -541,6 +542,28 @@ _R = [
          "injected agent can loop forever and burn tokens.",
          "Add a maximum number of steps and a token or cost budget, and stop when either is reached.",
          "CWE-834", "LLM10:2025"),
+    # ---------------------------------------------------------------- go
+    Rule("GO001", "Goroutine that never stops", "reliability", "medium",
+         "A goroutine runs an endless loop with no context, done channel or return. Each one started keeps "
+         "running (and holding memory and connections) until the process exits, and request handlers that start "
+         "one leak a goroutine per request.",
+         "Pass a `context.Context` and leave the loop on `<-ctx.Done()` (or a done channel), so the goroutine stops "
+         "with its request or at shutdown.", "CWE-772", "", preview=True, preview_reason=NEW_IN_0100),
+    Rule("GO002", "HTTP response body never closed", "reliability", "medium",
+         "An HTTP response body that is not closed keeps its connection out of the pool. Under load the program "
+         "runs out of connections or file descriptors.",
+         "Add `defer resp.Body.Close()` right after checking the error.", "CWE-772", "",
+         preview=True, preview_reason=NEW_IN_0100),
+    Rule("GO003", "Map written concurrently without a lock", "reliability", "high",
+         "A package-level map is written from HTTP handlers or goroutines, which run concurrently, and nothing "
+         "locks it. Concurrent map writes make the Go runtime stop the whole program.",
+         "Guard the map with a `sync.Mutex` (or `sync.RWMutex`), or use `sync.Map`.", "CWE-362", "",
+         preview=True, preview_reason=NEW_IN_0100),
+    Rule("GO004", "SQL built with string formatting (Go)", "backend", "medium",
+         "The query text is built with `fmt.Sprintf` or `+`. Today's values may be safe, but the next change that "
+         "passes user input turns it into SQL injection. (Request data in the query is BE001.)",
+         "Use placeholders (`?` or `$1`) and pass values as arguments, e.g. `db.Raw(\"... WHERE id = ?\", id)`.",
+         "CWE-89", "A03:2021", preview=True, preview_reason=NEW_IN_0100),
     # ---------------------------------------------------------------- quality
     Rule("QA001", "No automated tests", "quality", "medium",
          "AI-generated code often looks right and is subtly wrong. Without tests nobody notices until users "

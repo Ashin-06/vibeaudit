@@ -1,0 +1,126 @@
+{
+ "repo": "go-clean-template",
+ "commit": "d6d2f93f82d11962aa97d1520da2b6920e4d4d4d",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 16,
+   "fingerprint": "64d06199587c4a32d7f6277bb67159e5",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 25,
+   "fingerprint": "1fee5b60ccdba8c744f9d23e7f337d61",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 36,
+   "fingerprint": "1b51be6b3ab9d7b1dcf198a5ba6bd51c",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 46,
+   "fingerprint": "8138c4eb61b49796b0570639af08ca2a",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 61,
+   "fingerprint": "36044b39ce512ae77cbb007a8cac3d40",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "SEC005",
+   "file": "README.md",
+   "line": 152,
+   "fingerprint": "6d495e82194a69306ad2d2644f21b815",
+   "verdict": "fp",
+   "reason": "An example connection string in the README documentation."
+  },
+  {
+   "rule": "SEC005",
+   "file": "README_CN.md",
+   "line": 147,
+   "fingerprint": "75838e591abf98fa02d186571a7796b9",
+   "verdict": "fp",
+   "reason": "An example connection string in the README documentation."
+  },
+  {
+   "rule": "SEC005",
+   "file": "README_RU.md",
+   "line": 147,
+   "fingerprint": "112f8abff94066475dc9e3780c4a8299",
+   "verdict": "fp",
+   "reason": "An example connection string in the README documentation."
+  },
+  {
+   "rule": "SEC003",
+   "file": "docker-compose.yml",
+   "line": 6,
+   "fingerprint": "de3c7a93b48db490493b094dba617612",
+   "verdict": "tp",
+   "reason": "A default database password in docker-compose: a deliberate local default, but the rule's claim holds."
+  },
+  {
+   "rule": "CFG001",
+   "file": "integration-test/Dockerfile",
+   "line": 11,
+   "fingerprint": "68807417be57a0149b0bfeb870e30d10",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "DATA006",
+   "file": "migrations/20260403000001_create_users.up.sql",
+   "line": 6,
+   "fingerprint": "c7d1524b557670c0eb733d0c8ce73837",
+   "verdict": "tp",
+   "reason": "TIMESTAMP without time zone."
+  },
+  {
+   "rule": "DATA006",
+   "file": "migrations/20260403000001_create_users.up.sql",
+   "line": 7,
+   "fingerprint": "7ae4aa5753990943e6196329ab501542",
+   "verdict": "tp",
+   "reason": "TIMESTAMP without time zone."
+  },
+  {
+   "rule": "DATA006",
+   "file": "migrations/20260403000002_create_tasks.up.sql",
+   "line": 7,
+   "fingerprint": "1db6d96a9157de9d0d5c4c961a7973c2",
+   "verdict": "tp",
+   "reason": "TIMESTAMP without time zone."
+  },
+  {
+   "rule": "DATA006",
+   "file": "migrations/20260403000002_create_tasks.up.sql",
+   "line": 8,
+   "fingerprint": "e26c68d52f95ea45b67c59f7a58ecff1",
+   "verdict": "tp",
+   "reason": "TIMESTAMP without time zone."
+  },
+  {
+   "rule": "DATA003",
+   "file": "migrations/20260403000003_add_user_id_to_history.up.sql",
+   "line": 1,
+   "fingerprint": "d7ee8db5f04856c6165a0178a5c6ae7e",
+   "verdict": "tp",
+   "reason": "The migration drops the history table and its data."
+  }
+ ]
+}

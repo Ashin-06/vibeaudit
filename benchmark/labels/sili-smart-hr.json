@@ -1,0 +1,1206 @@
+{
+ "repo": "sili-smart-hr",
+ "commit": "5c867b307c52a62ec3d9c953d011c15a13a2e143",
+ "findings": [
+  {
+   "rule": "QA002",
+   "file": "README.md",
+   "line": 1,
+   "fingerprint": "e9347e321e2bea46589a11b23f7bb134",
+   "verdict": "tp",
+   "reason": "No CI configuration in the repository."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/06_prototype/01_\u539f\u578b/dimension-config-list.html",
+   "line": 1380,
+   "fingerprint": "33b40ea0ecc915a14b010f85a3e60326",
+   "verdict": "fp",
+   "reason": "The rejection of ElMessageBox.confirm is the user pressing Cancel; ignoring it is deliberate."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/06_prototype/01_\u539f\u578b/dimension-config-list.html",
+   "line": 1709,
+   "fingerprint": "998d9167928802dd4f3e9a1f2a8f8ddc",
+   "verdict": "fp",
+   "reason": "The rejection of ElMessageBox.confirm is the user pressing Cancel; ignoring it is deliberate."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/06_prototype/01_\u539f\u578b/dimension-config-list.html",
+   "line": 1727,
+   "fingerprint": "9f825b5e27574efbd64a916046579ff9",
+   "verdict": "fp",
+   "reason": "The rejection of ElMessageBox.confirm is the user pressing Cancel; ignoring it is deliberate."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/06_prototype/01_\u539f\u578b/index.html",
+   "line": 1361,
+   "fingerprint": "3937fcc2a3e524436fde37646b1bc7d5",
+   "verdict": "fp",
+   "reason": "The rejection of ElMessageBox.confirm is the user pressing Cancel; ignoring it is deliberate."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/06_prototype/01_\u539f\u578b/operation-log.html",
+   "line": 837,
+   "fingerprint": "2287ac8e71f71d15f6241a7d6faf5144",
+   "verdict": "fp",
+   "reason": "The rejection of ElMessageBox.confirm is the user pressing Cancel; ignoring it is deliberate."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/06_prototype/01_\u539f\u578b/profile-detail.html",
+   "line": 792,
+   "fingerprint": "cab4ab8123dd5a6defd9a63f082d1c1c",
+   "verdict": "fp",
+   "reason": "The rejection of ElMessageBox.confirm is the user pressing Cancel; ignoring it is deliberate."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/06_prototype/01_\u539f\u578b/profile-list.html",
+   "line": 932,
+   "fingerprint": "cf7eab3ee5fd8c5c707bff751c2c88f7",
+   "verdict": "fp",
+   "reason": "The rejection of ElMessageBox.confirm is the user pressing Cancel; ignoring it is deliberate."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/06_prototype/01_\u539f\u578b/question-bank-list.html",
+   "line": 1589,
+   "fingerprint": "e039279d5ed8692b5598a378cecd3514",
+   "verdict": "fp",
+   "reason": "The rejection of ElMessageBox.confirm is the user pressing Cancel; ignoring it is deliberate."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/06_prototype/01_\u539f\u578b/question-bank-list.html",
+   "line": 1947,
+   "fingerprint": "c6ec5f70eadae96b4b2e119a63b18a5c",
+   "verdict": "fp",
+   "reason": "The rejection of ElMessageBox.confirm is the user pressing Cancel; ignoring it is deliberate."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/06_prototype/01_\u539f\u578b/question-generate-form.html",
+   "line": 769,
+   "fingerprint": "7e4e307823c8a531f259ae8feba6159e",
+   "verdict": "fp",
+   "reason": "The rejection of ElMessageBox.confirm is the user pressing Cancel; ignoring it is deliberate."
+  },
+  {
+   "rule": "FE002",
+   "file": "context/06_prototype/01_\u539f\u578b/secret-config.html",
+   "line": 876,
+   "fingerprint": "5a0c60db1375eb38a47c7ef79201531b",
+   "verdict": "fp",
+   "reason": "A static HTML prototype with mock data; it is not shipped and holds no real key."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/06_prototype/01_\u539f\u578b/secret-config.html",
+   "line": 1004,
+   "fingerprint": "900d6f0f3505489b4943ad1c7ffc6e0f",
+   "verdict": "fp",
+   "reason": "The rejection of ElMessageBox.confirm is the user pressing Cancel; ignoring it is deliberate."
+  },
+  {
+   "rule": "FE002",
+   "file": "context/06_prototype/01_\u539f\u578b/secret-config.html",
+   "line": 1045,
+   "fingerprint": "afc36bf0c59573afaed8ff91e7705c52",
+   "verdict": "fp",
+   "reason": "A static HTML prototype with mock data; it is not shipped and holds no real key."
+  },
+  {
+   "rule": "SEC003",
+   "file": "context/06_prototype/01_\u539f\u578b/secret-config.html",
+   "line": 1046,
+   "fingerprint": "c641adcefe9e8b2090755057702de380",
+   "verdict": "fp",
+   "reason": "Mock data in a static HTML prototype: made-up keys, not credentials."
+  },
+  {
+   "rule": "SEC003",
+   "file": "context/06_prototype/01_\u539f\u578b/secret-config.html",
+   "line": 1056,
+   "fingerprint": "416d2975869921c01c57fd7b225f96f9",
+   "verdict": "fp",
+   "reason": "Mock data in a static HTML prototype: made-up keys, not credentials."
+  },
+  {
+   "rule": "FE002",
+   "file": "context/06_prototype/01_\u539f\u578b/secret-config.html",
+   "line": 1065,
+   "fingerprint": "81d6748c764924d26405010b89f16aca",
+   "verdict": "fp",
+   "reason": "A static HTML prototype with mock data; it is not shipped and holds no real key."
+  },
+  {
+   "rule": "SEC003",
+   "file": "context/06_prototype/01_\u539f\u578b/secret-config.html",
+   "line": 1066,
+   "fingerprint": "709cce67d021d9f7527338c480510061",
+   "verdict": "fp",
+   "reason": "Mock data in a static HTML prototype: made-up keys, not credentials."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/06_prototype/01_\u539f\u578b/secret-config.html",
+   "line": 1139,
+   "fingerprint": "210579af94d4c871a33faf521546d273",
+   "verdict": "fp",
+   "reason": "The rejection of ElMessageBox.confirm is the user pressing Cancel; ignoring it is deliberate."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/06_prototype/01_\u539f\u578b/system-config.html",
+   "line": 869,
+   "fingerprint": "1ee2245a859dfd68dafea876a459ab66",
+   "verdict": "fp",
+   "reason": "The rejection of ElMessageBox.confirm is the user pressing Cancel; ignoring it is deliberate."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/06_prototype/01_\u539f\u578b/team-ability-trend.html",
+   "line": 997,
+   "fingerprint": "ee690d6205de2b522daf2ab264f0fa5c",
+   "verdict": "fp",
+   "reason": "The rejection of ElMessageBox.confirm is the user pressing Cancel; ignoring it is deliberate."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/06_prototype/01_\u539f\u578b/team-dashboard.html",
+   "line": 1002,
+   "fingerprint": "428f43b417a3a7c48d6e9dc5371bd9c8",
+   "verdict": "fp",
+   "reason": "The rejection of ElMessageBox.confirm is the user pressing Cancel; ignoring it is deliberate."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/06_prototype/01_\u539f\u578b/user-list.html",
+   "line": 948,
+   "fingerprint": "6ac3e2786a2d3a563774b18c723b9a6f",
+   "verdict": "fp",
+   "reason": "The rejection of ElMessageBox.confirm is the user pressing Cancel; ignoring it is deliberate."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/06_prototype/01_\u539f\u578b/user-list.html",
+   "line": 1008,
+   "fingerprint": "097df27b7eb9cc9ed24c64298b3d7cf0",
+   "verdict": "fp",
+   "reason": "The rejection of ElMessageBox.confirm is the user pressing Cancel; ignoring it is deliberate."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P1_ACC_001_FEAT_\u767b\u5f55\u4e0e\u7528\u6237\u7ba1\u7406/api_runner.py",
+   "line": 21,
+   "fingerprint": "a5b33a579bb917154a5d5a6215afb53e",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "SEC003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P1_ACC_001_FEAT_\u767b\u5f55\u4e0e\u7528\u6237\u7ba1\u7406/api_runner.py",
+   "line": 112,
+   "fingerprint": "2d6fe0e3aed1142f02653c6e457353bb",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P1_ACC_001_FEAT_\u767b\u5f55\u4e0e\u7528\u6237\u7ba1\u7406/api_runner.py",
+   "line": 239,
+   "fingerprint": "84c67a46d9e74ef662a25a64c1f8e733",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P1_ACC_001_FEAT_\u767b\u5f55\u4e0e\u7528\u6237\u7ba1\u7406/api_runner.py",
+   "line": 240,
+   "fingerprint": "6da7497e5639e9c14cdcf86cb225eb74",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P1_ACC_001_FEAT_\u767b\u5f55\u4e0e\u7528\u6237\u7ba1\u7406/api_runner.py",
+   "line": 241,
+   "fingerprint": "eb094daa5f6d79d00af4610457b9c1fd",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P1_ACC_001_FEAT_\u767b\u5f55\u4e0e\u7528\u6237\u7ba1\u7406/api_runner.py",
+   "line": 242,
+   "fingerprint": "3159f1d3713c16fc57fdb6ff15e59165",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P1_ACC_001_FEAT_\u767b\u5f55\u4e0e\u7528\u6237\u7ba1\u7406/api_runner.py",
+   "line": 244,
+   "fingerprint": "d87fbcd33555ed6c1cbcd1b7bffe2605",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P1_ACC_001_FEAT_\u767b\u5f55\u4e0e\u7528\u6237\u7ba1\u7406/api_runner.py",
+   "line": 541,
+   "fingerprint": "b83486851b33dca9d321917dae718189",
+   "verdict": "fp",
+   "reason": "A QA runner script's best-effort evidence write or cleanup; a failure there must not mask the test result."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P1_ACC_001_FEAT_\u767b\u5f55\u4e0e\u7528\u6237\u7ba1\u7406/e2e_runner.py",
+   "line": 22,
+   "fingerprint": "7f32a1aa0ecba704d7358e674565616a",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P1_ACC_001_FEAT_\u767b\u5f55\u4e0e\u7528\u6237\u7ba1\u7406/e2e_runner.py",
+   "line": 463,
+   "fingerprint": "70bc39afb3386845c263741c3ca5ff4a",
+   "verdict": "fp",
+   "reason": "A QA runner script's best-effort evidence write or cleanup; a failure there must not mask the test result."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P1_SYS_001_FEAT_\u7cfb\u7edf\u521d\u59cb\u5316/api_runner.py",
+   "line": 16,
+   "fingerprint": "2bc1a4e0cbec965e23691e10e51c207d",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P1_SYS_001_FEAT_\u7cfb\u7edf\u521d\u59cb\u5316/api_runner.py",
+   "line": 106,
+   "fingerprint": "f63296946f76735067facd0d8a67a1cc",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P1_SYS_001_FEAT_\u7cfb\u7edf\u521d\u59cb\u5316/api_runner.py",
+   "line": 107,
+   "fingerprint": "57908e3809cd7ecbee6621fc4ca32564",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P1_SYS_001_FEAT_\u7cfb\u7edf\u521d\u59cb\u5316/api_runner.py",
+   "line": 108,
+   "fingerprint": "21ba60617ac850796d97d2ded4c2f765",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P1_SYS_001_FEAT_\u7cfb\u7edf\u521d\u59cb\u5316/api_runner.py",
+   "line": 289,
+   "fingerprint": "0a135582bbe8bbbf87f689e424e26478",
+   "verdict": "fp",
+   "reason": "A QA runner script's best-effort evidence write or cleanup; a failure there must not mask the test result."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P1_SYS_001_FEAT_\u7cfb\u7edf\u521d\u59cb\u5316/e2e_runner.py",
+   "line": 14,
+   "fingerprint": "5368cea7efbacd6e3696dca5ee686d55",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P1_SYS_001_FEAT_\u7cfb\u7edf\u521d\u59cb\u5316/e2e_runner.py",
+   "line": 197,
+   "fingerprint": "d3cd1a9fbb709fc0f9177677601948a4",
+   "verdict": "fp",
+   "reason": "A QA runner script's best-effort evidence write or cleanup; a failure there must not mask the test result."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_ASM_001_FEAT_\u5468\u671f\u6279\u91cf\u8bc4\u4f30\u8dd1\u6279\u7f16\u6392/api_runner.py",
+   "line": 24,
+   "fingerprint": "868d0183344bea596c1156262b74ce83",
+   "verdict": "tp",
+   "reason": "The comment says this is a real key for an internal relay; it is committed in a QA script."
+  },
+  {
+   "rule": "SEC003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_ASM_001_FEAT_\u5468\u671f\u6279\u91cf\u8bc4\u4f30\u8dd1\u6279\u7f16\u6392/api_runner.py",
+   "line": 25,
+   "fingerprint": "a779a0e586d874d67db6a30a9f7076cc",
+   "verdict": "tp",
+   "reason": "The comment says this is a real key for an internal relay; it is committed in a QA script."
+  },
+  {
+   "rule": "DATA001",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_ASM_001_FEAT_\u5468\u671f\u6279\u91cf\u8bc4\u4f30\u8dd1\u6279\u7f16\u6392/api_runner.py",
+   "line": 200,
+   "fingerprint": "b6347cc59baf6afa690702637ed92d8d",
+   "verdict": "fp",
+   "reason": "A QA runner seeding test rows in a loop, not request-time code."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_ASM_001_FEAT_\u5468\u671f\u6279\u91cf\u8bc4\u4f30\u8dd1\u6279\u7f16\u6392/api_runner.py",
+   "line": 821,
+   "fingerprint": "8a8fc3429e3d4063bb525de00eeb03f6",
+   "verdict": "fp",
+   "reason": "A QA runner script's best-effort evidence write or cleanup; a failure there must not mask the test result."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_ASM_001_FEAT_\u5468\u671f\u6279\u91cf\u8bc4\u4f30\u8dd1\u6279\u7f16\u6392/e2e_runner.py",
+   "line": 22,
+   "fingerprint": "4b4c627fb2ea55f7088ddd4261b3e786",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_ASM_001_FEAT_\u5468\u671f\u6279\u91cf\u8bc4\u4f30\u8dd1\u6279\u7f16\u6392/e2e_runner.py",
+   "line": 30,
+   "fingerprint": "5dd738aef95b096ac752e258a1a719a9",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_ASM_001_FEAT_\u5468\u671f\u6279\u91cf\u8bc4\u4f30\u8dd1\u6279\u7f16\u6392/e2e_runner.py",
+   "line": 567,
+   "fingerprint": "37df0820c59a2691e0fbb58948a4b6fb",
+   "verdict": "fp",
+   "reason": "A QA runner script's best-effort evidence write or cleanup; a failure there must not mask the test result."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_DIM_001_FEAT_\u7ef4\u5ea6\u4e0e\u6743\u91cd\u914d\u7f6e/api_runner.py",
+   "line": 16,
+   "fingerprint": "d77003171f555ef0f5b68d4318a73984",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_DIM_001_FEAT_\u7ef4\u5ea6\u4e0e\u6743\u91cd\u914d\u7f6e/api_runner.py",
+   "line": 452,
+   "fingerprint": "00164666819aa8ca03654bbedcc0c398",
+   "verdict": "fp",
+   "reason": "A QA runner script's best-effort evidence write or cleanup; a failure there must not mask the test result."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_DIM_001_FEAT_\u7ef4\u5ea6\u4e0e\u6743\u91cd\u914d\u7f6e/e2e_runner.py",
+   "line": 20,
+   "fingerprint": "7cffb9326d51fad4151b45ed462d50eb",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_DIM_001_FEAT_\u7ef4\u5ea6\u4e0e\u6743\u91cd\u914d\u7f6e/e2e_runner.py",
+   "line": 23,
+   "fingerprint": "13a94c6005e93bb49fc6e166c079278c",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_DIM_001_FEAT_\u7ef4\u5ea6\u4e0e\u6743\u91cd\u914d\u7f6e/e2e_runner.py",
+   "line": 489,
+   "fingerprint": "0601cf1f99f74b3c0ae6733970b57c54",
+   "verdict": "fp",
+   "reason": "A QA runner script's best-effort evidence write or cleanup; a failure there must not mask the test result."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_PRF_001_FEAT_\u4e2a\u4eba\u753b\u50cf/api_runner.py",
+   "line": 28,
+   "fingerprint": "0dd1672ab2704ea269904bbff583e6f0",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_PRF_001_FEAT_\u4e2a\u4eba\u753b\u50cf/api_runner.py",
+   "line": 734,
+   "fingerprint": "f02b08ca14a48b59094574c582c693f3",
+   "verdict": "fp",
+   "reason": "A QA runner script's best-effort evidence write or cleanup; a failure there must not mask the test result."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_PRF_001_FEAT_\u4e2a\u4eba\u753b\u50cf/e2e_runner.py",
+   "line": 21,
+   "fingerprint": "cd9b8579b25ad09d7cef1884e2db3a51",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_PRF_001_FEAT_\u4e2a\u4eba\u753b\u50cf/e2e_runner.py",
+   "line": 26,
+   "fingerprint": "110c86278235277b1b353b61cd735948",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_PRF_001_FEAT_\u4e2a\u4eba\u753b\u50cf/e2e_runner.py",
+   "line": 435,
+   "fingerprint": "6d88703cfa99c59318dc2904ebb9f685",
+   "verdict": "fp",
+   "reason": "A QA runner script's best-effort evidence write or cleanup; a failure there must not mask the test result."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_QBN_001_FEAT_\u9898\u5e93\u7ba1\u7406/api_runner.py",
+   "line": 23,
+   "fingerprint": "04c72d64ed389f083d7ded345ebccff4",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_QBN_001_FEAT_\u9898\u5e93\u7ba1\u7406/api_runner.py",
+   "line": 857,
+   "fingerprint": "54b0489121c794aa8d097cbd5e226072",
+   "verdict": "fp",
+   "reason": "A QA runner script's best-effort evidence write or cleanup; a failure there must not mask the test result."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_QBN_001_FEAT_\u9898\u5e93\u7ba1\u7406/e2e_runner.py",
+   "line": 20,
+   "fingerprint": "a0a8dafd013ad0f2b8d20625491cfada",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_QBN_001_FEAT_\u9898\u5e93\u7ba1\u7406/e2e_runner.py",
+   "line": 25,
+   "fingerprint": "6cc19e34d862053845d2135bd0059afa",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_QBN_001_FEAT_\u9898\u5e93\u7ba1\u7406/e2e_runner.py",
+   "line": 606,
+   "fingerprint": "90b5d7e1d5909c13a7c90104d6002c88",
+   "verdict": "fp",
+   "reason": "A QA runner script's best-effort evidence write or cleanup; a failure there must not mask the test result."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_QBN_001_FEAT_\u9898\u5e93\u7ba1\u7406/e2e_runner.py",
+   "line": 640,
+   "fingerprint": "2019e63c1e640471ca2aaa9a6b09d765",
+   "verdict": "fp",
+   "reason": "A QA runner script's best-effort evidence write or cleanup; a failure there must not mask the test result."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_SYS_001_FEAT_\u7cfb\u7edf\u53c2\u6570\u4e0e\u5927\u6a21\u578b\u914d\u7f6e/api_runner.py",
+   "line": 18,
+   "fingerprint": "4fd4bbe812277fd7d0339722fcd76191",
+   "verdict": "tp",
+   "reason": "The comment says this is a real key for an internal relay; it is committed in a QA script."
+  },
+  {
+   "rule": "SEC003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_SYS_001_FEAT_\u7cfb\u7edf\u53c2\u6570\u4e0e\u5927\u6a21\u578b\u914d\u7f6e/api_runner.py",
+   "line": 19,
+   "fingerprint": "0cebfb753998ab4aec26396313d535cd",
+   "verdict": "tp",
+   "reason": "The comment says this is a real key for an internal relay; it is committed in a QA script."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_SYS_001_FEAT_\u7cfb\u7edf\u53c2\u6570\u4e0e\u5927\u6a21\u578b\u914d\u7f6e/api_runner.py",
+   "line": 603,
+   "fingerprint": "de77dbe7f5e0c507ded96765de2249d2",
+   "verdict": "fp",
+   "reason": "A QA runner script's best-effort evidence write or cleanup; a failure there must not mask the test result."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_SYS_001_FEAT_\u7cfb\u7edf\u53c2\u6570\u4e0e\u5927\u6a21\u578b\u914d\u7f6e/e2e_runner.py",
+   "line": 21,
+   "fingerprint": "0b000d9ccbfee7a4e04d5a3231dee6ac",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_SYS_001_FEAT_\u7cfb\u7edf\u53c2\u6570\u4e0e\u5927\u6a21\u578b\u914d\u7f6e/e2e_runner.py",
+   "line": 24,
+   "fingerprint": "389a51cb0c4d10a30886cc843df3da1c",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_SYS_001_FEAT_\u7cfb\u7edf\u53c2\u6570\u4e0e\u5927\u6a21\u578b\u914d\u7f6e/e2e_runner.py",
+   "line": 40,
+   "fingerprint": "d694c889dc29d68d4d25f54357b21a5a",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_SYS_001_FEAT_\u7cfb\u7edf\u53c2\u6570\u4e0e\u5927\u6a21\u578b\u914d\u7f6e/e2e_runner.py",
+   "line": 496,
+   "fingerprint": "82b809682e0c278e3c8d4dcce90c2345",
+   "verdict": "fp",
+   "reason": "A QA runner script's best-effort evidence write or cleanup; a failure there must not mask the test result."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TMD_001_FEAT_\u56e2\u961f\u770b\u677f/api_runner.py",
+   "line": 28,
+   "fingerprint": "b28eeb1bd85f20d5b91cd67642c21146",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TMD_001_FEAT_\u56e2\u961f\u770b\u677f/api_runner.py",
+   "line": 67,
+   "fingerprint": "301d790963aecc1f92f629886144fe0a",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "BE001",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TMD_001_FEAT_\u56e2\u961f\u770b\u677f/api_runner.py",
+   "line": 526,
+   "fingerprint": "9df5873a9be9dd1940b30777cda1b51a",
+   "verdict": "fp",
+   "reason": "A QA runner formatting fixed table names from a literal tuple; the values are parameters."
+  },
+  {
+   "rule": "BE001",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TMD_001_FEAT_\u56e2\u961f\u770b\u677f/api_runner.py",
+   "line": 539,
+   "fingerprint": "62e6044be8f8596315b7d9cc5f512169",
+   "verdict": "fp",
+   "reason": "A QA runner formatting fixed table names from a literal tuple; the values are parameters."
+  },
+  {
+   "rule": "BE001",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TMD_001_FEAT_\u56e2\u961f\u770b\u677f/api_runner.py",
+   "line": 542,
+   "fingerprint": "c1dd1c5f98be5d6175d34619d117659e",
+   "verdict": "fp",
+   "reason": "A QA runner formatting fixed table names from a literal tuple; the values are parameters."
+  },
+  {
+   "rule": "BE001",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TMD_001_FEAT_\u56e2\u961f\u770b\u677f/api_runner.py",
+   "line": 554,
+   "fingerprint": "fdabbf09b821619f70d1bf4553f3ae82",
+   "verdict": "fp",
+   "reason": "A QA runner formatting fixed table names from a literal tuple; the values are parameters."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TMD_001_FEAT_\u56e2\u961f\u770b\u677f/api_runner.py",
+   "line": 564,
+   "fingerprint": "f36f70edbf95810ca0eb2592abd3a6d3",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TMD_001_FEAT_\u56e2\u961f\u770b\u677f/api_runner.py",
+   "line": 838,
+   "fingerprint": "34a259121afd53e5fa9a68a5e25a30b4",
+   "verdict": "fp",
+   "reason": "A QA runner script's best-effort evidence write or cleanup; a failure there must not mask the test result."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TMD_001_FEAT_\u56e2\u961f\u770b\u677f/e2e_runner.py",
+   "line": 21,
+   "fingerprint": "9a1dca90ba9ce11c65807bfdf9025b45",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TMD_001_FEAT_\u56e2\u961f\u770b\u677f/e2e_runner.py",
+   "line": 26,
+   "fingerprint": "9dc261e4ad361d0e41d25a012319da12",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TMD_001_FEAT_\u56e2\u961f\u770b\u677f/e2e_runner.py",
+   "line": 54,
+   "fingerprint": "4d87f5db5ae444c555345531890b566a",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TMD_001_FEAT_\u56e2\u961f\u770b\u677f/e2e_runner.py",
+   "line": 440,
+   "fingerprint": "c8eadd3a7af5d0f1fe10452cd971154b",
+   "verdict": "fp",
+   "reason": "A QA runner script's best-effort evidence write or cleanup; a failure there must not mask the test result."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TST_001_FEAT_\u4e3b\u52a8\u6d4b\u8bd5\u8bc4\u4f30\u8fd0\u8425/api_runner.py",
+   "line": 28,
+   "fingerprint": "dd658e27345a72c279b2536d477aec6e",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TST_001_FEAT_\u4e3b\u52a8\u6d4b\u8bd5\u8bc4\u4f30\u8fd0\u8425/api_runner.py",
+   "line": 73,
+   "fingerprint": "3e0582b33ae1007701d2d6c03cf71614",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "DATA006",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TST_001_FEAT_\u4e3b\u52a8\u6d4b\u8bd5\u8bc4\u4f30\u8fd0\u8425/api_runner.py",
+   "line": 84,
+   "fingerprint": "27794646b22b9065a15302180ae8eb45",
+   "verdict": "fp",
+   "reason": "A QA runner formatting a UTC time for SQLite fixtures, consistent with how the app stores it."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TST_001_FEAT_\u4e3b\u52a8\u6d4b\u8bd5\u8bc4\u4f30\u8fd0\u8425/api_runner.py",
+   "line": 941,
+   "fingerprint": "16bd4a290274c19556740d4d84f01243",
+   "verdict": "fp",
+   "reason": "A QA runner script's best-effort evidence write or cleanup; a failure there must not mask the test result."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TST_001_FEAT_\u4e3b\u52a8\u6d4b\u8bd5\u8bc4\u4f30\u8fd0\u8425/e2e_runner.py",
+   "line": 25,
+   "fingerprint": "2cca79586b81243817c8ebb752c83f91",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TST_001_FEAT_\u4e3b\u52a8\u6d4b\u8bd5\u8bc4\u4f30\u8fd0\u8425/e2e_runner.py",
+   "line": 50,
+   "fingerprint": "2c6842ca76ac4b0a1d6d33350ba78e15",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TST_001_FEAT_\u4e3b\u52a8\u6d4b\u8bd5\u8bc4\u4f30\u8fd0\u8425/e2e_runner.py",
+   "line": 62,
+   "fingerprint": "8d514eba2a08474cdcf2dabb9dba641d",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TST_001_FEAT_\u4e3b\u52a8\u6d4b\u8bd5\u8bc4\u4f30\u8fd0\u8425/e2e_runner.py",
+   "line": 69,
+   "fingerprint": "e758efab2583103fb9c700aad6685920",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "BE001",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TST_001_FEAT_\u4e3b\u52a8\u6d4b\u8bd5\u8bc4\u4f30\u8fd0\u8425/e2e_runner.py",
+   "line": 136,
+   "fingerprint": "8e0fed88fe19ca55fd9344f4f40c2624",
+   "verdict": "fp",
+   "reason": "A QA runner formatting fixed table names from a literal tuple; the values are parameters."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TST_001_FEAT_\u4e3b\u52a8\u6d4b\u8bd5\u8bc4\u4f30\u8fd0\u8425/e2e_runner.py",
+   "line": 183,
+   "fingerprint": "018ba3b06842d8991625a9c451e43f4b",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TST_001_FEAT_\u4e3b\u52a8\u6d4b\u8bd5\u8bc4\u4f30\u8fd0\u8425/e2e_runner.py",
+   "line": 585,
+   "fingerprint": "6056e91e69aeb3e1678b5523086e2d6c",
+   "verdict": "fp",
+   "reason": "A QA runner script's best-effort evidence write or cleanup; a failure there must not mask the test result."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TST_001_FEAT_\u4e3b\u52a8\u6d4b\u8bd5\u8bc4\u4f30\u8fd0\u8425/e2e_runner.py",
+   "line": 738,
+   "fingerprint": "0c194cf5aa14249347d9935d141e5ff4",
+   "verdict": "fp",
+   "reason": "A QA runner script's best-effort evidence write or cleanup; a failure there must not mask the test result."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TST_002_FEAT_\u5458\u5de5\u4f5c\u7b54/api_runner.py",
+   "line": 25,
+   "fingerprint": "0ed5cdbc3d8be0d0f53b104cd172b94d",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TST_002_FEAT_\u5458\u5de5\u4f5c\u7b54/api_runner.py",
+   "line": 53,
+   "fingerprint": "eac590bdbea7a45a66f163cfeca33807",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TST_002_FEAT_\u5458\u5de5\u4f5c\u7b54/api_runner.py",
+   "line": 65,
+   "fingerprint": "1656d5c65ca14f6e0393fa1a257737ea",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TST_002_FEAT_\u5458\u5de5\u4f5c\u7b54/api_runner.py",
+   "line": 72,
+   "fingerprint": "ed2bdad8d974bb99885db16adbae1ef6",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TST_002_FEAT_\u5458\u5de5\u4f5c\u7b54/api_runner.py",
+   "line": 829,
+   "fingerprint": "4c9d5bcca34e964e3f0713433d146472",
+   "verdict": "fp",
+   "reason": "A QA runner script's best-effort evidence write or cleanup; a failure there must not mask the test result."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TST_002_FEAT_\u5458\u5de5\u4f5c\u7b54/e2e_runner.py",
+   "line": 23,
+   "fingerprint": "7c962d05d368a7ab236e87ae8615c935",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TST_002_FEAT_\u5458\u5de5\u4f5c\u7b54/e2e_runner.py",
+   "line": 33,
+   "fingerprint": "01f4738b93ed3f605113b93cffface91",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TST_002_FEAT_\u5458\u5de5\u4f5c\u7b54/e2e_runner.py",
+   "line": 41,
+   "fingerprint": "10d79199aea056703af83cf3576e2bac",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TST_002_FEAT_\u5458\u5de5\u4f5c\u7b54/e2e_runner.py",
+   "line": 50,
+   "fingerprint": "fecf3c78a161d80d4bef44eb8a5bb17d",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TST_002_FEAT_\u5458\u5de5\u4f5c\u7b54/e2e_runner.py",
+   "line": 62,
+   "fingerprint": "afd3aeb4e6d70741f27a98cfa22a6550",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TST_002_FEAT_\u5458\u5de5\u4f5c\u7b54/e2e_runner.py",
+   "line": 115,
+   "fingerprint": "0fd870243f563ddc2cb413170a433a41",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_TST_002_FEAT_\u5458\u5de5\u4f5c\u7b54/e2e_runner.py",
+   "line": 538,
+   "fingerprint": "d1acc3fac2118292c42dcc36b90fada6",
+   "verdict": "fp",
+   "reason": "A QA runner script's best-effort evidence write or cleanup; a failure there must not mask the test result."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_WRK_001_FEAT_\u5de5\u4f5c\u53f0/api_runner.py",
+   "line": 28,
+   "fingerprint": "8804dd986a9978cb39175a64cf6cf666",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_WRK_001_FEAT_\u5de5\u4f5c\u53f0/api_runner.py",
+   "line": 63,
+   "fingerprint": "1b42a8415a232480d8790b4bb6dbee64",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "BE001",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_WRK_001_FEAT_\u5de5\u4f5c\u53f0/api_runner.py",
+   "line": 83,
+   "fingerprint": "af1c44562f94e7eac1b253c589910a98",
+   "verdict": "fp",
+   "reason": "A QA runner formatting fixed table names from a literal tuple; the values are parameters."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_WRK_001_FEAT_\u5de5\u4f5c\u53f0/api_runner.py",
+   "line": 283,
+   "fingerprint": "75397aa10206625651068f2448161471",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_WRK_001_FEAT_\u5de5\u4f5c\u53f0/api_runner.py",
+   "line": 523,
+   "fingerprint": "4ad63540c0911589fea0ff2d5dd5c526",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_WRK_001_FEAT_\u5de5\u4f5c\u53f0/api_runner.py",
+   "line": 777,
+   "fingerprint": "b4b0d60909f465a8e9a856ab26a6423c",
+   "verdict": "fp",
+   "reason": "A QA runner script's best-effort evidence write or cleanup; a failure there must not mask the test result."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_WRK_001_FEAT_\u5de5\u4f5c\u53f0/e2e_runner.py",
+   "line": 19,
+   "fingerprint": "f9c97c4c8f50e3f14a133b4cd3c921f0",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_WRK_001_FEAT_\u5de5\u4f5c\u53f0/e2e_runner.py",
+   "line": 22,
+   "fingerprint": "5aaa411223a98842f5109078f9d34fd7",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_WRK_001_FEAT_\u5de5\u4f5c\u53f0/e2e_runner.py",
+   "line": 30,
+   "fingerprint": "d4259aa63a0ea7ac1732ff7b6c29b351",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P2_WRK_001_FEAT_\u5de5\u4f5c\u53f0/e2e_runner.py",
+   "line": 237,
+   "fingerprint": "94ed503d418f220ba8fd9f94ff7b1727",
+   "verdict": "fp",
+   "reason": "A QA runner script's best-effort evidence write or cleanup; a failure there must not mask the test result."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P4_LOG_001_FEAT_\u64cd\u4f5c\u65e5\u5fd7/api_runner.py",
+   "line": 30,
+   "fingerprint": "7eded371623a51a888b11b145a7a5629",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P4_LOG_001_FEAT_\u64cd\u4f5c\u65e5\u5fd7/api_runner.py",
+   "line": 45,
+   "fingerprint": "ab4f8dc449e1f0c095440ffd4daf5a8f",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P4_LOG_001_FEAT_\u64cd\u4f5c\u65e5\u5fd7/api_runner.py",
+   "line": 328,
+   "fingerprint": "3b881a12eb6e94a459c24ae7da83b2e3",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P4_LOG_001_FEAT_\u64cd\u4f5c\u65e5\u5fd7/api_runner.py",
+   "line": 471,
+   "fingerprint": "a52fdad3e359a206c07011014d289d73",
+   "verdict": "fp",
+   "reason": "A QA runner script's best-effort evidence write or cleanup; a failure there must not mask the test result."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P4_LOG_001_FEAT_\u64cd\u4f5c\u65e5\u5fd7/api_runner.py",
+   "line": 607,
+   "fingerprint": "0533f099ed8c019e7c81c3448670199f",
+   "verdict": "fp",
+   "reason": "A QA runner script's best-effort evidence write or cleanup; a failure there must not mask the test result."
+  },
+  {
+   "rule": "SEC011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P4_LOG_001_FEAT_\u64cd\u4f5c\u65e5\u5fd7/e2e_runner.py",
+   "line": 22,
+   "fingerprint": "f2ff4a7edbff79114b682bee2b572f24",
+   "verdict": "fp",
+   "reason": "QA runner logins and invalid-input cases for the local test instance, not production credentials."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P4_LOG_001_FEAT_\u64cd\u4f5c\u65e5\u5fd7/e2e_runner.py",
+   "line": 27,
+   "fingerprint": "cfb3077ceb8a42a993ee9c72a2cfc95d",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P4_LOG_001_FEAT_\u64cd\u4f5c\u65e5\u5fd7/e2e_runner.py",
+   "line": 77,
+   "fingerprint": "acdd31a6837a3c43fb5980ff5a3eeeb9",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA003",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/feature-P4_LOG_001_FEAT_\u64cd\u4f5c\u65e5\u5fd7/e2e_runner.py",
+   "line": 340,
+   "fingerprint": "98c58c174f6ffcaa787d68ce5113628b",
+   "verdict": "fp",
+   "reason": "A QA runner script's best-effort evidence write or cleanup; a failure there must not mask the test result."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/\u8fd0\u884c\u5e93/assets/qa_lib.py",
+   "line": 7,
+   "fingerprint": "4a63d80d520c4d040069c89f744e4636",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA011",
+   "file": "context/07_testOn/\u6d4b\u8bd5\u811a\u672c/\u8fd0\u884c\u5e93/assets/qa_lib.py",
+   "line": 21,
+   "fingerprint": "4bbbd52afb71d61f819465f8e007ff95",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "CFG001",
+   "file": "hr-backend/Dockerfile",
+   "line": 9,
+   "fingerprint": "81d312280096d05e5ac86181f35179c0",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "AUTH017",
+   "file": "hr-backend/internal/api/router/router.go",
+   "line": 116,
+   "fingerprint": "2c4ae34891c767082578e885649adddc",
+   "verdict": "tp",
+   "reason": "Inside the JWT group with no role check: any signed-in account can toggle accounts and questions."
+  },
+  {
+   "rule": "LLM023",
+   "file": "hr-backend/internal/api/router/router.go",
+   "line": 119,
+   "fingerprint": "71fd963b8ce308043199e5af9d6e65fd",
+   "verdict": "fp",
+   "reason": "The health-check route is rate limited per account (10/min) right in the route definition."
+  },
+  {
+   "rule": "AUTH017",
+   "file": "hr-backend/internal/api/router/router.go",
+   "line": 170,
+   "fingerprint": "09be61f3bcf505025ed249f07bac83bd",
+   "verdict": "tp",
+   "reason": "Inside the JWT group with no role check: any signed-in account can toggle accounts and questions."
+  },
+  {
+   "rule": "GO004",
+   "file": "hr-backend/internal/repository/dashboard_query.go",
+   "line": 148,
+   "fingerprint": "2927ca17bc20cbdf42f42b2b780ee122",
+   "verdict": "fp",
+   "reason": "Only placeholders built by periodOrConds are concatenated in; the values are passed as arguments."
+  },
+  {
+   "rule": "DATA001",
+   "file": "hr-backend/internal/repository/dimension.go",
+   "line": 177,
+   "fingerprint": "890c26d20b8e92b96b5cf61b8315b982",
+   "verdict": "fp",
+   "reason": "A two-attempt retry loop around one upsert, not a query per item."
+  },
+  {
+   "rule": "UI015",
+   "file": "hr-frontend/src/features/account/components/account-form-dialog.tsx",
+   "line": 209,
+   "fingerprint": "c074b556ce44b554fb508cb24322b6d0",
+   "verdict": "tp",
+   "reason": "The error <p> has no id and the input no aria-describedby, so screen readers do not announce it."
+  },
+  {
+   "rule": "UI015",
+   "file": "hr-frontend/src/features/account/components/reset-password-dialog.tsx",
+   "line": 136,
+   "fingerprint": "9d69ecff4c1ee4ecb3e453dbbae22171",
+   "verdict": "tp",
+   "reason": "The error <p> has no id and the input no aria-describedby, so screen readers do not announce it."
+  },
+  {
+   "rule": "UI015",
+   "file": "hr-frontend/src/features/assessment/components/create-batch-dialog.tsx",
+   "line": 405,
+   "fingerprint": "b34f529b4d4721cb68355937bc6860c1",
+   "verdict": "tp",
+   "reason": "The error <p> has no id and the input no aria-describedby, so screen readers do not announce it."
+  },
+  {
+   "rule": "UI015",
+   "file": "hr-frontend/src/features/assessment/components/test-task-form.tsx",
+   "line": 128,
+   "fingerprint": "0c79a21ac627bf47b88de3166f4827bb",
+   "verdict": "tp",
+   "reason": "The error <p> has no id and the input no aria-describedby, so screen readers do not announce it."
+  },
+  {
+   "rule": "UI015",
+   "file": "hr-frontend/src/features/dimension/components/activity-rule-panel.tsx",
+   "line": 168,
+   "fingerprint": "f3eddcf979e531097ce913ca34f2ab43",
+   "verdict": "tp",
+   "reason": "The error <p> has no id and the input no aria-describedby, so screen readers do not announce it."
+  },
+  {
+   "rule": "UI015",
+   "file": "hr-frontend/src/features/dimension/components/create-dimension-dialog.tsx",
+   "line": 284,
+   "fingerprint": "031af7b4686030a1222959364338e30c",
+   "verdict": "tp",
+   "reason": "The error <p> has no id and the input no aria-describedby, so screen readers do not announce it."
+  },
+  {
+   "rule": "UI015",
+   "file": "hr-frontend/src/features/dimension/components/leaf-config-form.tsx",
+   "line": 242,
+   "fingerprint": "b9c8d0def3e4ad4db31d38a5490c3c9b",
+   "verdict": "tp",
+   "reason": "The error <p> has no id and the input no aria-describedby, so screen readers do not announce it."
+  },
+  {
+   "rule": "UI015",
+   "file": "hr-frontend/src/features/integration-secret/components/secret-update-dialog.tsx",
+   "line": 181,
+   "fingerprint": "e4055c85aef18b251753248cec1013c4",
+   "verdict": "tp",
+   "reason": "The error <p> has no id and the input no aria-describedby, so screen readers do not announce it."
+  },
+  {
+   "rule": "UI015",
+   "file": "hr-frontend/src/features/llm-config/components/llm-form-dialog.tsx",
+   "line": 264,
+   "fingerprint": "089e4453dc60cbaae5d70cbeed3e297a",
+   "verdict": "tp",
+   "reason": "The error <p> has no id and the input no aria-describedby, so screen readers do not announce it."
+  },
+  {
+   "rule": "QA011",
+   "file": "hr-frontend/src/features/profile/api.ts",
+   "line": 13,
+   "fingerprint": "132381ac07680cf98f90f2f62e2262ad",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA011",
+   "file": "hr-frontend/src/features/profile/api.ts",
+   "line": 29,
+   "fingerprint": "fc311d3918e8e4095e7dece65a9414f8",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "QA011",
+   "file": "hr-frontend/src/features/profile/hooks.ts",
+   "line": 20,
+   "fingerprint": "c88d0423bdb89b47e7e1426ea17ab90e",
+   "verdict": "tp",
+   "reason": "The same helper is copied into several files."
+  },
+  {
+   "rule": "UI015",
+   "file": "hr-frontend/src/features/question-bank/components/question-form-dialog.tsx",
+   "line": 183,
+   "fingerprint": "88e9d8172472b95aae71fecb32e348fc",
+   "verdict": "tp",
+   "reason": "The error <p> has no id and the input no aria-describedby, so screen readers do not announce it."
+  },
+  {
+   "rule": "UI015",
+   "file": "hr-frontend/src/routes/_authenticated/system/params.tsx",
+   "line": 215,
+   "fingerprint": "579f59deba5436037d9758b1518b8425",
+   "verdict": "tp",
+   "reason": "The error <p> has no id and the input no aria-describedby, so screen readers do not announce it."
+  },
+  {
+   "rule": "UI015",
+   "file": "hr-frontend/src/routes/login.tsx",
+   "line": 123,
+   "fingerprint": "f992b52aaea6d37f48268863b93bb11a",
+   "verdict": "tp",
+   "reason": "The error <p> has no id and the input no aria-describedby, so screen readers do not announce it."
+  },
+  {
+   "rule": "UI015",
+   "file": "hr-frontend/src/routes/setup.tsx",
+   "line": 204,
+   "fingerprint": "121ac4911f8f947950008d0a89241978",
+   "verdict": "tp",
+   "reason": "The error <p> has no id and the input no aria-describedby, so screen readers do not announce it."
+  }
+ ]
+}

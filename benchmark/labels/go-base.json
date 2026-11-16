@@ -1,0 +1,126 @@
+{
+ "repo": "go-base",
+ "commit": "ed4c6ac2bdbc46778f3076a2f52c4751deaf5a6b",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/lint.yml",
+   "line": 12,
+   "fingerprint": "3f426050d6925841cecd938a1fef41b2",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG002",
+   "file": "Dockerfile",
+   "line": 1,
+   "fingerprint": "76c2221ef2089f18c7f9f9d87c29efdf",
+   "verdict": "tp",
+   "reason": "The base image uses latest or no tag."
+  },
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile",
+   "line": 13,
+   "fingerprint": "c7de32de549d4986fd814f6a12a901a4",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "CFG002",
+   "file": "Dockerfile",
+   "line": 13,
+   "fingerprint": "f0e1e573568938dfefb88b2f398d669f",
+   "verdict": "tp",
+   "reason": "The base image uses latest or no tag."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "api/admin/accounts.go",
+   "line": 45,
+   "fingerprint": "bc1a59b078c125f8581177eb33e4dc60",
+   "verdict": "fp",
+   "reason": "The admin router uses authorize.RequiresRole(roleAdmin) and is mounted inside a group with JWT verification (Mount inside r.Group is not followed)."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "api/admin/accounts.go",
+   "line": 46,
+   "fingerprint": "2b6b96c27aeccec78b498067ff78aa33",
+   "verdict": "fp",
+   "reason": "The admin router uses authorize.RequiresRole(roleAdmin) and is mounted inside a group with JWT verification (Mount inside r.Group is not followed)."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "api/admin/api.go",
+   "line": 48,
+   "fingerprint": "ef367af760149fab3cfaa6c23011a313",
+   "verdict": "fp",
+   "reason": "The admin router uses authorize.RequiresRole(roleAdmin) and is mounted inside a group with JWT verification (Mount inside r.Group is not followed)."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "api/app/account.go",
+   "line": 48,
+   "fingerprint": "08f9859aa6a3b27b44cd3bd32a4d31c8",
+   "verdict": "fp",
+   "reason": "Mounted under /api inside a chi group that uses the JWT Verifier and Authenticator (not followed through Mount)."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "api/app/account.go",
+   "line": 49,
+   "fingerprint": "86610a896bbbc0c68cb0f1c15ec70b19",
+   "verdict": "fp",
+   "reason": "Mounted under /api inside a chi group that uses the JWT Verifier and Authenticator (not followed through Mount)."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "api/app/profile.go",
+   "line": 42,
+   "fingerprint": "af5126ba3984d0efcfa1f9be4348aada",
+   "verdict": "fp",
+   "reason": "Mounted under /api inside a chi group that uses the JWT Verifier and Authenticator (not followed through Mount)."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "auth/pwdless/api.go",
+   "line": 72,
+   "fingerprint": "d47129fe8bc41c9921fa12852717ec38",
+   "verdict": "tp",
+   "reason": "The passwordless login endpoint sends login tokens by e-mail with no rate limit."
+  },
+  {
+   "rule": "CFG007",
+   "file": "docker-compose.yml",
+   "line": 33,
+   "fingerprint": "7a944ebd944a807294159d6d1ddbd55c",
+   "verdict": "tp",
+   "reason": "A default database password in docker-compose: a deliberate local default, but the rule's claim holds."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "api/admin/accounts.go",
+   "line": 49,
+   "fingerprint": "a7b094e2898e4c64792bc3605509be79",
+   "verdict": "fp",
+   "reason": "The admin router uses authorize.RequiresRole(roleAdmin) and is mounted inside a group with JWT verification (Mount inside r.Group is not followed)."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "api/admin/accounts.go",
+   "line": 50,
+   "fingerprint": "97cb15437d92c1443d1ffcbab60f44a3",
+   "verdict": "fp",
+   "reason": "The admin router uses authorize.RequiresRole(roleAdmin) and is mounted inside a group with JWT verification (Mount inside r.Group is not followed)."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "api/admin/accounts.go",
+   "line": 51,
+   "fingerprint": "f32938769f4c86b7d6fedde0a117d63b",
+   "verdict": "fp",
+   "reason": "The admin router uses authorize.RequiresRole(roleAdmin) and is mounted inside a group with JWT verification (Mount inside r.Group is not followed)."
+  }
+ ]
+}

@@ -397,6 +397,89 @@
    "licence": "MIT",
    "kind": "well-maintained",
    "split": "heldout"
+  },
+  {
+   "name": "uniedit-server",
+   "url": "https://github.com/OpenNekoPaw/uniedit-server",
+   "commit": "9f74533b81b41c141fc98f3d26acc45ca03281bf",
+   "licence": "none declared",
+   "kind": "ai-built",
+   "language": "go"
+  },
+  {
+   "name": "conveyor",
+   "url": "https://github.com/Packetz/conveyor",
+   "commit": "e37ee1f3fe34aa3c9c5424df32666e67e035080b",
+   "licence": "none declared",
+   "kind": "ai-built",
+   "language": "go"
+  },
+  {
+   "name": "toWers",
+   "url": "https://github.com/delorenj/toWers",
+   "commit": "2c22e67dc7af1e43e7534e391197139ee46ce29b",
+   "licence": "none declared",
+   "kind": "ai-built",
+   "language": "go",
+   "split": "heldout"
+  },
+  {
+   "name": "sili-smart-hr",
+   "url": "https://github.com/zer0Black/sili-smart-hr",
+   "commit": "5c867b307c52a62ec3d9c953d011c15a13a2e143",
+   "licence": "none declared",
+   "kind": "ai-built",
+   "language": "go"
+  },
+  {
+   "name": "golang-gin-realworld-example-app",
+   "url": "https://github.com/realworld-apps/golang-gin-realworld-example-app",
+   "commit": "a41289b2a4951e7cc09066f86742a27f85121c9b",
+   "licence": "none declared",
+   "kind": "well-maintained",
+   "language": "go"
+  },
+  {
+   "name": "go-clean-arch",
+   "url": "https://github.com/bxcodec/go-clean-arch",
+   "commit": "e06c6d0cb37069b0ef56e3df67f80ca130a1ab82",
+   "licence": "none declared",
+   "kind": "well-maintained",
+   "language": "go"
+  },
+  {
+   "name": "go-base",
+   "url": "https://github.com/dhax/go-base",
+   "commit": "ed4c6ac2bdbc46778f3076a2f52c4751deaf5a6b",
+   "licence": "none declared",
+   "kind": "well-maintained",
+   "language": "go",
+   "split": "heldout"
+  },
+  {
+   "name": "go-clean-template",
+   "url": "https://github.com/evrone/go-clean-template",
+   "commit": "d6d2f93f82d11962aa97d1520da2b6920e4d4d4d",
+   "licence": "none declared",
+   "kind": "well-maintained",
+   "language": "go"
+  },
+  {
+   "name": "govwa",
+   "url": "https://github.com/0c34/govwa",
+   "commit": "4058f79f31eeb4a36d8f1e64bba1f0c899646e6f",
+   "licence": "none declared",
+   "kind": "training",
+   "language": "go",
+   "split": "heldout"
+  },
+  {
+   "name": "go-test-bench",
+   "url": "https://github.com/Contrast-Security-OSS/go-test-bench",
+   "commit": "92445700823205281369911a72b7127f18c8c9ed",
+   "licence": "none declared",
+   "kind": "training",
+   "language": "go"
   }
  ]
 }

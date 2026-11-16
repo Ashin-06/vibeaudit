@@ -1,13 +1,15 @@
 {
  "tool": "vibeaudit benchmark",
- "corpus": 54,
- "scanned": 54,
+ "corpus": 64,
+ "scanned": 64,
  "skipped": {},
  "heldout": [
   "careconnect",
   "damn-vulnerable-llm-agent",
   "dvpwa",
   "flasky",
+  "go-base",
+  "govwa",
   "langchain-nextjs-template",
   "next-saas-stripe-starter",
   "nodejs-whisper",
@@ -15,6 +17,7 @@
   "podinfo",
   "terragoat",
   "thynk",
+  "toWers",
   "waline"
  ],
  "repos": {
@@ -289,7 +292,7 @@
    "labelled": 4,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 1
   },
   "terragoat": {
    "findings": 25,
@@ -395,6 +398,76 @@
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 2
+  },
+  "uniedit-server": {
+   "findings": 46,
+   "labelled": 46,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "conveyor": {
+   "findings": 20,
+   "labelled": 20,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "toWers": {
+   "findings": 23,
+   "labelled": 23,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "sili-smart-hr": {
+   "findings": 150,
+   "labelled": 150,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "golang-gin-realworld-example-app": {
+   "findings": 6,
+   "labelled": 6,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "go-clean-arch": {
+   "findings": 5,
+   "labelled": 5,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "go-base": {
+   "findings": 15,
+   "labelled": 15,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "go-clean-template": {
+   "findings": 15,
+   "labelled": 15,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "govwa": {
+   "findings": 20,
+   "labelled": 20,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "go-test-bench": {
+   "findings": 6,
+   "labelled": 6,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
   }
  },
  "rules": {
@@ -449,12 +522,12 @@
   "AUTH001": {
    "title": "State-changing endpoint without authentication",
    "preview": false,
-   "tp": 41,
-   "fp": 1,
+   "tp": 46,
+   "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9762,
-   "precision_pessimistic": 0.9762,
+   "precision": 0.92,
+   "precision_pessimistic": 0.92,
    "seeded_expected": 7,
    "seeded_found": 7,
    "seeded_recall": 1.0,
@@ -479,6 +552,11 @@
      0,
      0
     ],
+    "conveyor": [
+     4,
+     0,
+     0
+    ],
     "dvna": [
      0,
      1,
@@ -486,6 +564,16 @@
     ],
     "flexible-graphrag": [
      8,
+     0,
+     0
+    ],
+    "go-base": [
+     0,
+     3,
+     0
+    ],
+    "go-clean-arch": [
+     1,
      0,
      0
     ],
@@ -539,18 +627,28 @@
   "AUTH002": {
    "title": "Admin endpoint without a role check",
    "preview": false,
-   "tp": 2,
-   "fp": 0,
+   "tp": 19,
+   "fp": 6,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.76,
+   "precision_pessimistic": 0.76,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
    "by_repo": {
     "dvna": [
      2,
+     0,
+     0
+    ],
+    "go-base": [
+     0,
+     6,
+     0
+    ],
+    "uniedit-server": [
+     17,
      0,
      0
     ]
@@ -560,7 +658,7 @@
    "title": "Possible insecure direct object reference (IDOR)",
    "preview": false,
    "tp": 0,
-   "fp": 4,
+   "fp": 8,
    "needs_review": 0,
    "lost_tp": 0,
    "precision": 0.0,
@@ -569,12 +667,27 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "conveyor": [
+     0,
+     2,
+     0
+    ],
+    "golang-gin-realworld-example-app": [
+     0,
+     1,
+     0
+    ],
     "microblog": [
      0,
      1,
      0
     ],
     "node-express-realworld-example-app": [
+     0,
+     1,
+     0
+    ],
+    "toWers": [
      0,
      1,
      0
@@ -723,7 +836,7 @@
   "AUTH010": {
    "title": "Login endpoint without rate limiting",
    "preview": false,
-   "tp": 12,
+   "tp": 15,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -755,6 +868,21 @@
     ],
     "full-stack-fastapi-template": [
      3,
+     0,
+     0
+    ],
+    "go-base": [
+     1,
+     0,
+     0
+    ],
+    "golang-gin-realworld-example-app": [
+     1,
+     0,
+     0
+    ],
+    "govwa": [
+     1,
      0,
      0
     ],
@@ -829,7 +957,7 @@
   "AUTH015": {
    "title": "Password change keeps old sessions valid",
    "preview": true,
-   "tp": 2,
+   "tp": 3,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -841,6 +969,11 @@
    "by_repo": {
     "full-stack-fastapi-template": [
      2,
+     0,
+     0
+    ],
+    "toWers": [
+     1,
      0,
      0
     ]
@@ -863,26 +996,32 @@
   "AUTH017": {
    "title": "Admin or feature-flag endpoint without a role check",
    "preview": true,
-   "tp": 0,
+   "tp": 2,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "sili-smart-hr": [
+     2,
+     0,
+     0
+    ]
+   }
   },
   "BE001": {
    "title": "SQL injection",
    "preview": false,
    "tp": 25,
-   "fp": 2,
+   "fp": 8,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9259,
-   "precision_pessimistic": 0.9259,
+   "precision": 0.7576,
+   "precision_pessimistic": 0.7576,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -915,6 +1054,11 @@
     "pygoat": [
      1,
      0,
+     0
+    ],
+    "sili-smart-hr": [
+     0,
+     6,
      0
     ],
     "waline": [
@@ -1083,16 +1227,21 @@
    "title": "Path traversal",
    "preview": false,
    "tp": 1,
-   "fp": 2,
+   "fp": 3,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.3333,
-   "precision_pessimistic": 0.3333,
+   "precision": 0.25,
+   "precision_pessimistic": 0.25,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
     "flexible-graphrag": [
+     0,
+     1,
+     0
+    ],
+    "podinfo": [
      0,
      1,
      0
@@ -1132,12 +1281,12 @@
   "BE008": {
    "title": "Open redirect",
    "preview": true,
-   "tp": 5,
+   "tp": 6,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8333,
-   "precision_pessimistic": 0.8333,
+   "precision": 0.8571,
+   "precision_pessimistic": 0.8571,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -1148,6 +1297,11 @@
      0
     ],
     "dvna": [
+     1,
+     0,
+     0
+    ],
+    "go-test-bench": [
      1,
      0,
      0
@@ -1519,7 +1673,7 @@
   "CFG001": {
    "title": "Container runs as root",
    "preview": false,
-   "tp": 58,
+   "tp": 68,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -1546,6 +1700,11 @@
     ],
     "bakerydemo": [
      1,
+     0,
+     0
+    ],
+    "conveyor": [
+     4,
      0,
      0
     ],
@@ -1579,6 +1738,26 @@
      0,
      0
     ],
+    "go-base": [
+     1,
+     0,
+     0
+    ],
+    "go-clean-arch": [
+     1,
+     0,
+     0
+    ],
+    "go-clean-template": [
+     1,
+     0,
+     0
+    ],
+    "go-test-bench": [
+     1,
+     0,
+     0
+    ],
     "microblog": [
      1,
      0,
@@ -1609,12 +1788,22 @@
      0,
      0
     ],
+    "sili-smart-hr": [
+     1,
+     0,
+     0
+    ],
     "terragoat": [
      1,
      0,
      0
     ],
     "thynk": [
+     1,
+     0,
+     0
+    ],
+    "toWers": [
      1,
      0,
      0
@@ -1639,7 +1828,7 @@
   "CFG002": {
    "title": "Unpinned container base image",
    "preview": false,
-   "tp": 3,
+   "tp": 9,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -1649,7 +1838,27 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "conveyor": [
+     1,
+     0,
+     0
+    ],
     "flexible-graphrag": [
+     1,
+     0,
+     0
+    ],
+    "go-base": [
+     2,
+     0,
+     0
+    ],
+    "go-clean-arch": [
+     1,
+     0,
+     0
+    ],
+    "go-test-bench": [
      1,
      0,
      0
@@ -1660,6 +1869,11 @@
      0
     ],
     "thynk": [
+     1,
+     0,
+     0
+    ],
+    "toWers": [
      1,
      0,
      0
@@ -1736,7 +1950,7 @@
   "CFG007": {
    "title": "Default database credentials",
    "preview": false,
-   "tp": 6,
+   "tp": 10,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -1766,12 +1980,27 @@
      0,
      0
     ],
+    "go-base": [
+     1,
+     0,
+     0
+    ],
+    "go-clean-arch": [
+     2,
+     0,
+     0
+    ],
     "opengpts": [
      1,
      0,
      0
     ],
     "sec-insights": [
+     1,
+     0,
+     0
+    ],
+    "uniedit-server": [
      1,
      0,
      0
@@ -1806,7 +2035,7 @@
   "CFG009": {
    "title": ".env file copied into the container image",
    "preview": false,
-   "tp": 2,
+   "tp": 5,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -1821,7 +2050,17 @@
      0,
      0
     ],
+    "conveyor": [
+     2,
+     0,
+     0
+    ],
     "sec-insights": [
+     1,
+     0,
+     0
+    ],
+    "toWers": [
      1,
      0,
      0
@@ -1831,7 +2070,7 @@
   "CFG010": {
    "title": "Third-party GitHub Action not pinned to a commit",
    "preview": false,
-   "tp": 66,
+   "tp": 84,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -1866,6 +2105,11 @@
      0,
      0
     ],
+    "conveyor": [
+     2,
+     0,
+     0
+    ],
     "djangoproject.com": [
      7,
      0,
@@ -1873,6 +2117,26 @@
     ],
     "flexible-graphrag": [
      6,
+     0,
+     0
+    ],
+    "go-base": [
+     1,
+     0,
+     0
+    ],
+    "go-clean-template": [
+     5,
+     0,
+     0
+    ],
+    "go-test-bench": [
+     1,
+     0,
+     0
+    ],
+    "golang-gin-realworld-example-app": [
+     3,
      0,
      0
     ],
@@ -1913,6 +2177,11 @@
     ],
     "thynk": [
      1,
+     0,
+     0
+    ],
+    "toWers": [
+     6,
      0,
      0
     ],
@@ -2067,12 +2336,12 @@
   "DATA001": {
    "title": "Database query inside a loop (N+1)",
    "preview": true,
-   "tp": 12,
-   "fp": 7,
+   "tp": 13,
+   "fp": 9,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6316,
-   "precision_pessimistic": 0.6316,
+   "precision": 0.5909,
+   "precision_pessimistic": 0.5909,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -2102,9 +2371,19 @@
      0,
      0
     ],
+    "golang-gin-realworld-example-app": [
+     1,
+     0,
+     0
+    ],
     "pygoat": [
      0,
      1,
+     0
+    ],
+    "sili-smart-hr": [
+     0,
+     2,
      0
     ],
     "waline": [
@@ -2131,12 +2410,12 @@
   "DATA003": {
    "title": "Destructive database migration",
    "preview": false,
-   "tp": 2,
-   "fp": 0,
+   "tp": 3,
+   "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.75,
+   "precision_pessimistic": 0.75,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -2146,9 +2425,19 @@
      0,
      0
     ],
+    "go-clean-template": [
+     1,
+     0,
+     0
+    ],
     "node-express-realworld-example-app": [
      1,
      0,
+     0
+    ],
+    "uniedit-server": [
+     0,
+     1,
      0
     ]
    }
@@ -2190,12 +2479,12 @@
   "DATA006": {
    "title": "Timestamp without time zone",
    "preview": false,
-   "tp": 86,
-   "fp": 0,
+   "tp": 96,
+   "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.9897,
+   "precision_pessimistic": 0.9897,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -2225,6 +2514,11 @@
      0,
      0
     ],
+    "go-clean-template": [
+     4,
+     0,
+     0
+    ],
     "pygoat": [
      5,
      0,
@@ -2232,6 +2526,16 @@
     ],
     "sec-insights": [
      4,
+     0,
+     0
+    ],
+    "sili-smart-hr": [
+     0,
+     1,
+     0
+    ],
+    "uniedit-server": [
+     6,
      0,
      0
     ]
@@ -2358,21 +2662,27 @@
   "DATA011": {
    "title": "Index built without CONCURRENTLY on an existing table",
    "preview": true,
-   "tp": 0,
+   "tp": 14,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "uniedit-server": [
+     14,
+     0,
+     0
+    ]
+   }
   },
   "DATA012": {
    "title": "Foreign key without an index",
    "preview": false,
-   "tp": 70,
+   "tp": 76,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2444,6 +2754,11 @@
     ],
     "scriptforge-ai": [
      1,
+     0,
+     0
+    ],
+    "uniedit-server": [
+     6,
      0,
      0
     ]
@@ -2784,15 +3099,21 @@
    "title": "LLM or secret API called directly from the browser",
    "preview": false,
    "tp": 0,
-   "fp": 0,
+   "fp": 3,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 0.0,
+   "precision_pessimistic": 0.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "sili-smart-hr": [
+     0,
+     3,
+     0
+    ]
+   }
   },
   "FE003": {
    "title": "Authorization state kept in browser storage",
@@ -2836,7 +3157,7 @@
   "FE005": {
    "title": "Auth token stored in localStorage",
    "preview": false,
-   "tp": 8,
+   "tp": 11,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2861,6 +3182,11 @@
      0,
      0
     ],
+    "toWers": [
+     3,
+     0,
+     0
+    ],
     "waline": [
      1,
      0,
@@ -2871,16 +3197,22 @@
   "FE006": {
    "title": "Production source maps enabled",
    "preview": false,
-   "tp": 0,
+   "tp": 1,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "conveyor": [
+     1,
+     0,
+     0
+    ]
+   }
   },
   "FE007": {
    "title": "Hardcoded localhost URL in frontend code",
@@ -2945,6 +3277,83 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {}
+  },
+  "GO001": {
+   "title": "Goroutine that never stops",
+   "preview": true,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 0,
+   "seeded_found": 0,
+   "seeded_recall": null,
+   "by_repo": {}
+  },
+  "GO002": {
+   "title": "HTTP response body never closed",
+   "preview": true,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 0,
+   "seeded_found": 0,
+   "seeded_recall": null,
+   "by_repo": {}
+  },
+  "GO003": {
+   "title": "Map written concurrently without a lock",
+   "preview": true,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 0,
+   "seeded_found": 0,
+   "seeded_recall": null,
+   "by_repo": {}
+  },
+  "GO004": {
+   "title": "SQL built with string formatting (Go)",
+   "preview": true,
+   "tp": 4,
+   "fp": 1,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.8,
+   "precision_pessimistic": 0.8,
+   "seeded_expected": 0,
+   "seeded_found": 0,
+   "seeded_recall": null,
+   "by_repo": {
+    "go-test-bench": [
+     1,
+     0,
+     0
+    ],
+    "govwa": [
+     2,
+     0,
+     0
+    ],
+    "sili-smart-hr": [
+     0,
+     1,
+     0
+    ],
+    "uniedit-server": [
+     1,
+     0,
+     0
+    ]
+   }
   },
   "LLM001": {
    "title": "Untrusted input placed in the system prompt",
@@ -3439,11 +3848,11 @@
    "title": "No per-user usage or cost limit for model calls",
    "preview": true,
    "tp": 2,
-   "fp": 0,
+   "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.6667,
+   "precision_pessimistic": 0.6667,
    "seeded_expected": 0,
    "seeded_found": 0,
    "seeded_recall": null,
@@ -3456,6 +3865,11 @@
     "opengpts": [
      1,
      0,
+     0
+    ],
+    "sili-smart-hr": [
+     0,
+     1,
      0
     ]
    }
@@ -3502,12 +3916,12 @@
   "QA001": {
    "title": "No automated tests",
    "preview": false,
-   "tp": 15,
-   "fp": 0,
+   "tp": 16,
+   "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.9412,
+   "precision_pessimistic": 0.9412,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -3527,6 +3941,11 @@
      0,
      0
     ],
+    "conveyor": [
+     0,
+     1,
+     0
+    ],
     "damn-vulnerable-llm-agent": [
      1,
      0,
@@ -3538,6 +3957,11 @@
      0
     ],
     "dvpwa": [
+     1,
+     0,
+     0
+    ],
+    "govwa": [
      1,
      0,
      0
@@ -3592,7 +4016,7 @@
   "QA002": {
    "title": "No continuous integration",
    "preview": false,
-   "tp": 23,
+   "tp": 24,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -3707,6 +4131,11 @@
      0,
      0
     ],
+    "sili-smart-hr": [
+     1,
+     0,
+     0
+    ],
     "sync-plan-flow": [
      1,
      0,
@@ -3723,11 +4152,11 @@
    "title": "Exception silently swallowed",
    "preview": true,
    "tp": 147,
-   "fp": 12,
+   "fp": 56,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9245,
-   "precision_pessimistic": 0.9245,
+   "precision": 0.7241,
+   "precision_pessimistic": 0.7241,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -3760,6 +4189,11 @@
     "pygoat": [
      3,
      0,
+     0
+    ],
+    "sili-smart-hr": [
+     0,
+     44,
      0
     ],
     "vibe-trading": [
@@ -3878,11 +4312,11 @@
    "title": "Import of a file or name that does not exist",
    "preview": true,
    "tp": 14,
-   "fp": 23,
+   "fp": 35,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.3784,
-   "precision_pessimistic": 0.3784,
+   "precision": 0.2857,
+   "precision_pessimistic": 0.2857,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -3895,6 +4329,11 @@
     "chatbot-ui": [
      1,
      0,
+     0
+    ],
+    "govwa": [
+     0,
+     12,
      0
     ],
     "next-learn": [
@@ -3922,12 +4361,12 @@
   "QA007": {
    "title": "Package imported but not declared as a dependency",
    "preview": false,
-   "tp": 49,
+   "tp": 50,
    "fp": 3,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9423,
-   "precision_pessimistic": 0.9423,
+   "precision": 0.9434,
+   "precision_pessimistic": 0.9434,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -3949,6 +4388,11 @@
     ],
     "bakerydemo": [
      4,
+     0,
+     0
+    ],
+    "conveyor": [
+     1,
      0,
      0
     ],
@@ -4041,21 +4485,27 @@
   "QA010": {
    "title": "Made-up data used as a fallback",
    "preview": true,
-   "tp": 0,
+   "tp": 2,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "conveyor": [
+     2,
+     0,
+     0
+    ]
+   }
   },
   "QA011": {
    "title": "Same function copied into several files",
    "preview": false,
-   "tp": 15,
+   "tp": 51,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -4095,6 +4545,11 @@
      0,
      0
     ],
+    "sili-smart-hr": [
+     36,
+     0,
+     0
+    ],
     "wsgidav": [
      2,
      0,
@@ -4105,7 +4560,7 @@
   "REL001": {
    "title": "Outbound HTTP request without a timeout",
    "preview": false,
-   "tp": 54,
+   "tp": 56,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -4132,6 +4587,11 @@
     ],
     "flexible-graphrag": [
      2,
+     0,
+     0
+    ],
+    "go-test-bench": [
+     1,
      0,
      0
     ],
@@ -4162,6 +4622,11 @@
     ],
     "thynk": [
      4,
+     0,
+     0
+    ],
+    "toWers": [
+     1,
      0,
      0
     ],
@@ -4373,12 +4838,12 @@
   "SEC003": {
    "title": "High-entropy secret assigned in code",
    "preview": true,
-   "tp": 22,
-   "fp": 12,
+   "tp": 25,
+   "fp": 15,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6471,
-   "precision_pessimistic": 0.6471,
+   "precision": 0.625,
+   "precision_pessimistic": 0.625,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -4393,17 +4858,17 @@
      3,
      0
     ],
+    "go-clean-template": [
+     1,
+     0,
+     0
+    ],
     "nodegoat": [
      2,
      0,
      0
     ],
     "openui": [
-     0,
-     1,
-     0
-    ],
-    "podinfo": [
      0,
      1,
      0
@@ -4416,6 +4881,11 @@
     "pygoat": [
      4,
      1,
+     0
+    ],
+    "sili-smart-hr": [
+     2,
+     4,
      0
     ],
     "terragoat": [
@@ -4494,15 +4964,20 @@
    "title": "Database URL with embedded password",
    "preview": false,
    "tp": 3,
-   "fp": 0,
+   "fp": 3,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.5,
+   "precision_pessimistic": 0.5,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "go-clean-template": [
+     0,
+     3,
+     0
+    ],
     "prompt-sculptor-49": [
      2,
      0,
@@ -4632,12 +5107,12 @@
   "SEC011": {
    "title": "Hardcoded password",
    "preview": true,
-   "tp": 24,
-   "fp": 3,
+   "tp": 26,
+   "fp": 34,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8889,
-   "precision_pessimistic": 0.8889,
+   "precision": 0.4333,
+   "precision_pessimistic": 0.4333,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -4676,13 +5151,18 @@
      17,
      0,
      0
+    ],
+    "sili-smart-hr": [
+     2,
+     31,
+     0
     ]
    }
   },
   "UI001": {
    "title": "Image without alt text",
    "preview": false,
-   "tp": 31,
+   "tp": 33,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -4709,6 +5189,11 @@
     ],
     "flasky": [
      5,
+     0,
+     0
+    ],
+    "govwa": [
+     2,
      0,
      0
     ],
@@ -4812,12 +5297,12 @@
   "UI003": {
    "title": "Form field without a label",
    "preview": false,
-   "tp": 53,
+   "tp": 58,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9815,
-   "precision_pessimistic": 0.9815,
+   "precision": 0.9831,
+   "precision_pessimistic": 0.9831,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -4894,6 +5379,11 @@
     ],
     "sync-plan-flow": [
      4,
+     0,
+     0
+    ],
+    "toWers": [
+     5,
      0,
      0
     ],
@@ -5025,11 +5515,11 @@
    "title": "Data loaded without loading or error state",
    "preview": false,
    "tp": 7,
-   "fp": 0,
+   "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.875,
+   "precision_pessimistic": 0.875,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -5052,6 +5542,11 @@
     "scriptforge-ai": [
      1,
      0,
+     0
+    ],
+    "toWers": [
+     0,
+     1,
      0
     ],
     "waline": [
@@ -5173,12 +5668,12 @@
   "UI014": {
    "title": "Image without width and height",
    "preview": true,
-   "tp": 16,
+   "tp": 18,
    "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8889,
-   "precision_pessimistic": 0.8889,
+   "precision": 0.9,
+   "precision_pessimistic": 0.9,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -5190,6 +5685,11 @@
     ],
     "flasky": [
      1,
+     0,
+     0
+    ],
+    "govwa": [
+     2,
      0,
      0
     ],
@@ -5223,7 +5723,7 @@
   "UI015": {
    "title": "Form error not announced to screen readers",
    "preview": true,
-   "tp": 8,
+   "tp": 22,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -5243,8 +5743,18 @@
      0,
      0
     ],
+    "sili-smart-hr": [
+     13,
+     0,
+     0
+    ],
     "taxonomy": [
      2,
+     0,
+     0
+    ],
+    "toWers": [
+     1,
      0,
      0
     ]
@@ -5293,7 +5803,7 @@
   "UI017": {
    "title": "Link to an asset that does not exist",
    "preview": true,
-   "tp": 3,
+   "tp": 4,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -5314,6 +5824,11 @@
      0
     ],
     "prompt-sculptor-49": [
+     1,
+     0,
+     0
+    ],
+    "toWers": [
      1,
      0,
      0

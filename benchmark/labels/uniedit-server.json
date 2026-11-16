@@ -1,0 +1,374 @@
+{
+ "repo": "uniedit-server",
+ "commit": "9f74533b81b41c141fc98f3d26acc45ca03281bf",
+ "findings": [
+  {
+   "rule": "CFG007",
+   "file": "docker-compose.yaml",
+   "line": 7,
+   "fingerprint": "2db1cee807e15198c85e328b42791a24",
+   "verdict": "tp",
+   "reason": "A default database password in docker-compose: a deliberate local default, but the rule's claim holds."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "internal/adapter/inbound/http/user/admin.go",
+   "line": 27,
+   "fingerprint": "e3678829c78a4cac645bc6a48c415980",
+   "verdict": "tp",
+   "reason": "The admin group's RequireAdmin() middleware is commented out; any signed-in user reaches these admin routes."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "internal/adapter/inbound/http/user/admin.go",
+   "line": 28,
+   "fingerprint": "91c51dcf743cb7f4dd434cac5716fbe2",
+   "verdict": "tp",
+   "reason": "The admin group's RequireAdmin() middleware is commented out; any signed-in user reaches these admin routes."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "internal/adapter/inbound/http/user/admin.go",
+   "line": 29,
+   "fingerprint": "0b7d29c0cf2b24a58a9f3c2dc50a01ad",
+   "verdict": "tp",
+   "reason": "The admin group's RequireAdmin() middleware is commented out; any signed-in user reaches these admin routes."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "internal/adapter/inbound/http/user/admin.go",
+   "line": 30,
+   "fingerprint": "bcfa63d70e5db43d6fae7a1eee5fbcae",
+   "verdict": "tp",
+   "reason": "The admin group's RequireAdmin() middleware is commented out; any signed-in user reaches these admin routes."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "internal/adapter/inbound/http/user/admin.go",
+   "line": 32,
+   "fingerprint": "b1b2801633018a27b785c62e706d6010",
+   "verdict": "tp",
+   "reason": "The admin group's RequireAdmin() middleware is commented out; any signed-in user reaches these admin routes."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "internal/app/app.go",
+   "line": 378,
+   "fingerprint": "44d2b4a8d16ff656fc88e0a1b44a76cd",
+   "verdict": "tp",
+   "reason": "The admin group's RequireAdmin() middleware is commented out; any signed-in user reaches these admin routes."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "internal/app/app.go",
+   "line": 379,
+   "fingerprint": "fb944b135f2e11c32d27120524e0c022",
+   "verdict": "tp",
+   "reason": "The admin group's RequireAdmin() middleware is commented out; any signed-in user reaches these admin routes."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "internal/app/app.go",
+   "line": 380,
+   "fingerprint": "ca1f54d9b001ed3cafbe3bf39143d955",
+   "verdict": "tp",
+   "reason": "The admin group's RequireAdmin() middleware is commented out; any signed-in user reaches these admin routes."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "internal/app/app.go",
+   "line": 381,
+   "fingerprint": "d7f04511e2bebaf1d4ffb06211c5070c",
+   "verdict": "tp",
+   "reason": "The admin group's RequireAdmin() middleware is commented out; any signed-in user reaches these admin routes."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "internal/app/app.go",
+   "line": 382,
+   "fingerprint": "c65561a2db293e34239eadf76f8f8a8d",
+   "verdict": "tp",
+   "reason": "The admin group's RequireAdmin() middleware is commented out; any signed-in user reaches these admin routes."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "internal/app/app.go",
+   "line": 383,
+   "fingerprint": "ba7221c78a6c02c270849445938a4ffa",
+   "verdict": "tp",
+   "reason": "The admin group's RequireAdmin() middleware is commented out; any signed-in user reaches these admin routes."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "internal/app/app.go",
+   "line": 384,
+   "fingerprint": "ec367e657ca661d325cdd4bc30f29da4",
+   "verdict": "tp",
+   "reason": "The admin group's RequireAdmin() middleware is commented out; any signed-in user reaches these admin routes."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "internal/app/app.go",
+   "line": 392,
+   "fingerprint": "61ca42b8884c0aed1d8184d42e26187e",
+   "verdict": "tp",
+   "reason": "The admin group's RequireAdmin() middleware is commented out; any signed-in user reaches these admin routes."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "internal/app/app.go",
+   "line": 393,
+   "fingerprint": "fe9c2460b503bce281333126c4753d8c",
+   "verdict": "tp",
+   "reason": "The admin group's RequireAdmin() middleware is commented out; any signed-in user reaches these admin routes."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "internal/app/app.go",
+   "line": 394,
+   "fingerprint": "2f2293d05fe0fa3311503afa765d375f",
+   "verdict": "tp",
+   "reason": "The admin group's RequireAdmin() middleware is commented out; any signed-in user reaches these admin routes."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "internal/app/app.go",
+   "line": 395,
+   "fingerprint": "28040e8116a5d0c28ec1b39cb0c74151",
+   "verdict": "tp",
+   "reason": "The admin group's RequireAdmin() middleware is commented out; any signed-in user reaches these admin routes."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "internal/app/app.go",
+   "line": 396,
+   "fingerprint": "d54677815b1c614790fda22385567f49",
+   "verdict": "tp",
+   "reason": "The admin group's RequireAdmin() middleware is commented out; any signed-in user reaches these admin routes."
+  },
+  {
+   "rule": "GO004",
+   "file": "internal/infra/task/repository.go",
+   "line": 95,
+   "fingerprint": "a9eab25e51e4796b12b8c8449d881dd5",
+   "verdict": "tp",
+   "reason": "ORDER BY is built with fmt.Sprintf from two variables."
+  },
+  {
+   "rule": "DATA012",
+   "file": "migrations/000001_create_ai_providers.up.sql",
+   "line": 68,
+   "fingerprint": "6996d427fe18063dd0076d9c6a21e1d9",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index."
+  },
+  {
+   "rule": "DATA011",
+   "file": "migrations/000004_extend_users.up.sql",
+   "line": 20,
+   "fingerprint": "af46f875478e32d6ef7cd51405139336",
+   "verdict": "tp",
+   "reason": "CREATE INDEX without CONCURRENTLY on a table that already exists (and holds data) blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "migrations/000004_extend_users.up.sql",
+   "line": 21,
+   "fingerprint": "97fa9a838d7370ee12767fa4dc4a29fc",
+   "verdict": "tp",
+   "reason": "CREATE INDEX without CONCURRENTLY on a table that already exists (and holds data) blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "migrations/000004_extend_users.up.sql",
+   "line": 22,
+   "fingerprint": "867233c38b6c55e9c170704384826848",
+   "verdict": "tp",
+   "reason": "CREATE INDEX without CONCURRENTLY on a table that already exists (and holds data) blocks writes."
+  },
+  {
+   "rule": "DATA012",
+   "file": "migrations/000005_create_billing_tables.up.sql",
+   "line": 30,
+   "fingerprint": "5a2b78c1a6d6b002aa223ff433a22c97",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index."
+  },
+  {
+   "rule": "DATA012",
+   "file": "migrations/000006_create_order_tables.up.sql",
+   "line": 16,
+   "fingerprint": "73f3411c0966f6dc3759da7d21da8a15",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index."
+  },
+  {
+   "rule": "DATA011",
+   "file": "migrations/000009_add_china_payment_support.up.sql",
+   "line": 9,
+   "fingerprint": "b00814b5f9c16048f52e4e60f05404a0",
+   "verdict": "tp",
+   "reason": "CREATE INDEX without CONCURRENTLY on a table that already exists (and holds data) blocks writes."
+  },
+  {
+   "rule": "DATA012",
+   "file": "migrations/000010_create_git_tables.up.sql",
+   "line": 92,
+   "fingerprint": "144e33e54ddb1a972c5053f17135f7cd",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index."
+  },
+  {
+   "rule": "DATA011",
+   "file": "migrations/000011_create_system_api_keys.up.sql",
+   "line": 41,
+   "fingerprint": "92a02855875bb85ccaecf4a88397af8e",
+   "verdict": "tp",
+   "reason": "CREATE INDEX without CONCURRENTLY on a table that already exists (and holds data) blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "migrations/000012_extend_usage_records.up.sql",
+   "line": 12,
+   "fingerprint": "789e82f474ef6731af39d80377d6c4c6",
+   "verdict": "tp",
+   "reason": "CREATE INDEX without CONCURRENTLY on a table that already exists (and holds data) blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "migrations/000012_extend_usage_records.up.sql",
+   "line": 15,
+   "fingerprint": "842fbe20fca4359a5082626dc0de9fb4",
+   "verdict": "tp",
+   "reason": "CREATE INDEX without CONCURRENTLY on a table that already exists (and holds data) blocks writes."
+  },
+  {
+   "rule": "DATA012",
+   "file": "migrations/000013_create_collaboration_tables.up.sql",
+   "line": 43,
+   "fingerprint": "580d5bc7b92d32fa9125ceb5aa7cf33c",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index."
+  },
+  {
+   "rule": "DATA012",
+   "file": "migrations/000013_create_collaboration_tables.up.sql",
+   "line": 45,
+   "fingerprint": "d415e5b3d91d72bd68e6ca321e2e4018",
+   "verdict": "tp",
+   "reason": "The foreign key column has no index."
+  },
+  {
+   "rule": "DATA006",
+   "file": "migrations/000014_create_provider_account_pool.up.sql",
+   "line": 18,
+   "fingerprint": "08cac47229c24f5996221237fa7bc732",
+   "verdict": "tp",
+   "reason": "TIMESTAMP without time zone."
+  },
+  {
+   "rule": "DATA006",
+   "file": "migrations/000014_create_provider_account_pool.up.sql",
+   "line": 30,
+   "fingerprint": "afe0bd05baf47335c3c1b280b3c1bb59",
+   "verdict": "tp",
+   "reason": "TIMESTAMP without time zone."
+  },
+  {
+   "rule": "DATA006",
+   "file": "migrations/000014_create_provider_account_pool.up.sql",
+   "line": 31,
+   "fingerprint": "b5a9148a98a7e1007e3542c88a0aeffa",
+   "verdict": "tp",
+   "reason": "TIMESTAMP without time zone."
+  },
+  {
+   "rule": "DATA006",
+   "file": "migrations/000014_create_provider_account_pool.up.sql",
+   "line": 47,
+   "fingerprint": "7e4199119023c58be0058d22b57fbc7d",
+   "verdict": "tp",
+   "reason": "TIMESTAMP without time zone."
+  },
+  {
+   "rule": "DATA006",
+   "file": "migrations/000014_create_provider_account_pool.up.sql",
+   "line": 63,
+   "fingerprint": "3c6310207526d9d22f96995ee9b562cd",
+   "verdict": "tp",
+   "reason": "TIMESTAMP without time zone."
+  },
+  {
+   "rule": "DATA006",
+   "file": "migrations/000014_create_provider_account_pool.up.sql",
+   "line": 73,
+   "fingerprint": "a012227ef58fb431fce1b643f86bc346",
+   "verdict": "tp",
+   "reason": "TIMESTAMP without time zone."
+  },
+  {
+   "rule": "DATA011",
+   "file": "migrations/000016_refactor_tasks.down.sql",
+   "line": 19,
+   "fingerprint": "e6e7a4877c63884be1865f811f285aa7",
+   "verdict": "tp",
+   "reason": "CREATE INDEX without CONCURRENTLY on a table that already exists (and holds data) blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "migrations/000016_refactor_tasks.down.sql",
+   "line": 20,
+   "fingerprint": "aa7a8e632024a9ea8ededb290487c754",
+   "verdict": "tp",
+   "reason": "CREATE INDEX without CONCURRENTLY on a table that already exists (and holds data) blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "migrations/000016_refactor_tasks.down.sql",
+   "line": 21,
+   "fingerprint": "9935821655ff608d2960a29e80ac9cd7",
+   "verdict": "tp",
+   "reason": "CREATE INDEX without CONCURRENTLY on a table that already exists (and holds data) blocks writes."
+  },
+  {
+   "rule": "DATA003",
+   "file": "migrations/000016_refactor_tasks.up.sql",
+   "line": 14,
+   "fingerprint": "906693cd4047ae0934eaff75ce4f317a",
+   "verdict": "fp",
+   "reason": "ALTER COLUMN TYPE widens a VARCHAR; no data is lost."
+  },
+  {
+   "rule": "DATA011",
+   "file": "migrations/000016_refactor_tasks.up.sql",
+   "line": 21,
+   "fingerprint": "be83509133fafa1072ea42a5b891c511",
+   "verdict": "tp",
+   "reason": "CREATE INDEX without CONCURRENTLY on a table that already exists (and holds data) blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "migrations/000016_refactor_tasks.up.sql",
+   "line": 22,
+   "fingerprint": "79358674627ab1a0c7ec429cff7da0ca",
+   "verdict": "tp",
+   "reason": "CREATE INDEX without CONCURRENTLY on a table that already exists (and holds data) blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "migrations/000016_refactor_tasks.up.sql",
+   "line": 23,
+   "fingerprint": "44a2655da98839f72c2fd9df5ab398a7",
+   "verdict": "tp",
+   "reason": "CREATE INDEX without CONCURRENTLY on a table that already exists (and holds data) blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "migrations/000016_refactor_tasks.up.sql",
+   "line": 24,
+   "fingerprint": "e8d1e7f678a6793f359bcf3393f15139",
+   "verdict": "tp",
+   "reason": "CREATE INDEX without CONCURRENTLY on a table that already exists (and holds data) blocks writes."
+  }
+ ]
+}

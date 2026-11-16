@@ -89,7 +89,7 @@ Rules for keeping the held-out split honest:
 
 saas-starter moved to the tuned split when JavaScript taint started following calls: its BE008 false positive (`redirect(session.url)` after a Stripe call that took a request value) was worth fixing, and next-saas-stripe-starter (same kind, chosen before it was scanned) replaced it.
 
-Known held-out false positives (not fixed, by the rule above): API001 does not recognise `route.tsx` files
+Known held-out false positives (not fixed, by the rule above): chi routers mounted with `r.Mount` inside an `r.Group` that adds JWT and role middleware are not followed, so AUTH001 and AUTH002 report go-base's protected admin and app routes; a `.env_example` file is not recognised as an example (toWers, CFG009); API001 does not recognise `route.tsx` files
 (openai-assistants-quickstart); CFG013 misses a templated Helm `resources:` block whose template is on the
 next line (podinfo); `_test.go` files are not treated as tests (podinfo, SEC003); DEBUG and CSRF settings
 inside development and testing config classes (flasky, BE011 and AUTH009); `|safe` on HTML already cleaned
