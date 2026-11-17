@@ -2,7 +2,8 @@ name: Publish to PyPI
 
 # Publishes the attested wheel and sdist of a GitHub release to PyPI with trusted publishing (OIDC, no API token).
 # Off until the one-time setup in docs/PUBLISHING.md is done and the repository variable PYPI_PUBLISH is "true";
-# until then every run is skipped, never red.
+# until then every run is skipped, never red. release.yml starts it for each new tag (workflow_dispatch); the
+# `release` event covers a release created by hand.
 on:
   release:
     types: [published]
