@@ -25,10 +25,24 @@ nothing, inaccessible forms and frontend calls to API routes that do not exist.
   brief you can paste into an AI assistant.
 - Fits into CI (GitHub Action, `--diff`), pre-commit (`--staged`) and coding agents (an MCP server).
 
-Contents: [Quickstart](#quickstart) - [Example output](#example-output) - [What it checks](#what-it-checks) -
+Contents: [Quickstart](#quickstart) - [Architecture](#architecture) - [Example output](#example-output) - [What it checks](#what-it-checks) -
 [Install](#install) - [Commands](#commands) - [Automatic fixes](#automatic-fixes-vibeaudit-fix) - [Configuration](#configuration) - [CI and pre-commit](#ci-and-pre-commit) -
 [Editors](#editors-vs-code-cursor-and-other-lsp-clients) - [MCP server](#mcp-server-for-coding-agents) - [Scoring](#scoring) - [False positives](#false-positives-and-suppressing-findings) -
-[Limits](#limits-and-what-is-not-covered) - [Contributing](#contributing-security-and-license)
+[Limits](#limits-and-what-is-not-covered) - [Accuracy & Benchmarks](#accuracy) - [Contributing](#contributing-security-and-license)
+
+## Architecture
+
+```mermaid
+flowchart LR
+    Repo["Target Repository (Frontend, Backend, DB Rules, CI, AI/MCP)"] --> Discovery["Stack & Route Discovery (Flask, FastAPI, Next.js, Express, Supabase)"]
+    Discovery --> PyAST["Python AST & Taint Engine"]
+    Discovery --> JSLex["Offset-Preserving JS/TS Lexer"]
+    Discovery --> CfgScan["Config, RLS, Supply-Chain & OSV Scanner"]
+    Discovery --> ExtTools["Optional Tool Merger (gitleaks, bandit, semgrep, osv-scanner)"]
+    PyAST & JSLex & CfgScan & ExtTools --> Rules["172 Rules Across 12 Domains (CWE & OWASP LLM Mapped)"]
+    Rules --> Dedup["Deduplication, Domain Scoring & Fix Generator"]
+    Dedup --> Out["Outputs: Terminal, SARIF 2.1.0, HTML, Studio UI, LSP & MCP Server"]
+```
 
 ## Quickstart
 
