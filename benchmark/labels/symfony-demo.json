@@ -1,0 +1,126 @@
+{
+ "repo": "symfony-demo",
+ "commit": "f42980c690b4bf335fa41bbafdb075bb67b719c2",
+ "findings": [
+  {
+   "rule": "SEC006",
+   "file": ".env.local.demo",
+   "line": 0,
+   "fingerprint": "b909f8a348a6e1726aaddf101f0d055d",
+   "verdict": "fp",
+   "reason": "The file says the value is for the demo app only."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/end_to_end_tests.yaml",
+   "line": 21,
+   "fingerprint": "fc64653d71932ddd62c129fea08e97fb",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/end_to_end_tests.yaml",
+   "line": 68,
+   "fingerprint": "7d95ed8d4657f517cdd874e005d49690",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/end_to_end_tests.yaml",
+   "line": 115,
+   "fingerprint": "efec6e1ac0bac207466f9be8086e89d4",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/lint.yaml",
+   "line": 40,
+   "fingerprint": "3463225c8bc6f3ac7263c3f4cd1c3599",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/lint.yaml",
+   "line": 91,
+   "fingerprint": "f68853b95fb767616baada69a5642987",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/tests.yaml",
+   "line": 36,
+   "fingerprint": "a8ed037dc6930954d2eb7f9fc64737f1",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "QA004",
+   "file": "assets/controllers/login-controller.js",
+   "line": 16,
+   "fingerprint": "90ca5f3a98e3a72b1c8a24d172fb456e",
+   "verdict": "fp",
+   "reason": "A deliberate explanatory note about the demo credentials, not unfinished work."
+  },
+  {
+   "rule": "FE001",
+   "file": "assets/js/doclinks.js",
+   "line": 25,
+   "fingerprint": "38a6535bf2c879e45cdda63e9c98bf32",
+   "verdict": "fp",
+   "reason": "Rewrites the demo's own source-code listing into documentation links."
+  },
+  {
+   "rule": "FE001",
+   "file": "assets/js/doclinks.js",
+   "line": 35,
+   "fingerprint": "cbf0b97b8c1c1135f70179e5a28596b9",
+   "verdict": "fp",
+   "reason": "Rewrites the demo's own source-code listing into documentation links."
+  },
+  {
+   "rule": "FE001",
+   "file": "assets/js/doclinks.js",
+   "line": 45,
+   "fingerprint": "0fe410b2690578aa096e134e219f71f2",
+   "verdict": "fp",
+   "reason": "Rewrites the demo's own source-code listing into documentation links."
+  },
+  {
+   "rule": "FE001",
+   "file": "assets/js/doclinks.js",
+   "line": 52,
+   "fingerprint": "8c446fe4140f7da93184de9eae42e985",
+   "verdict": "fp",
+   "reason": "Rewrites the demo's own source-code listing into documentation links."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "src/Controller/SecurityController.php",
+   "line": 38,
+   "fingerprint": "d559ce8ec163580027e89ebfe7033360",
+   "verdict": "tp",
+   "reason": "No login_throttling is configured in security.yaml."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "src/Controller/UserController.php",
+   "line": 37,
+   "fingerprint": "fb9359c2366ff74842f79c61345c5fec",
+   "verdict": "fp",
+   "reason": "The class carries IsGranted(User::ROLE_USER) in a combined `#[Route(...), IsGranted(...)]` attribute group, which is not read."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "src/Controller/UserController.php",
+   "line": 60,
+   "fingerprint": "1561762a477777c10501c55bedb8052c",
+   "verdict": "fp",
+   "reason": "The class carries IsGranted(User::ROLE_USER) in a combined `#[Route(...), IsGranted(...)]` attribute group, which is not read."
+  }
+ ]
+}

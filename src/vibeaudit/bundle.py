@@ -31,8 +31,13 @@ from . import __version__
 from .store import cache_dir, loads_json, write_atomic
 
 OSV_DUMP = "https://osv-vulnerabilities.storage.googleapis.com/{}/all.zip"
-ECOSYSTEMS = ("PyPI", "npm", "Go", "Maven", "crates.io", "NuGet")
-SEMVER_ECOSYSTEMS = ("Go", "crates.io")  # advisories give SEMVER ranges, not version lists
+ECOSYSTEMS = ("PyPI", "npm", "Go", "Maven", "crates.io", "NuGet", "Packagist")
+SEMVER_ECOSYSTEMS = ("Go", "crates.io", "Packagist")  # advisories give SEMVER ranges, not version lists
+
+
+def range_types(ecosystem: str) -> tuple:
+    """Range types matched as semver: Packagist advisories use ECOSYSTEM ranges over semver-like Composer versions."""
+    return ("SEMVER", "ECOSYSTEM") if ecosystem == "Packagist" else ("SEMVER",)
 MAX_DUMP = 1_500_000_000  # bytes of one OSV all.zip download
 MAX_INDEX = 400_000_000  # bytes of one uncompressed index
 MAX_DATA = 10_000_000
@@ -70,7 +75,8 @@ def build_index(dump: bytes, ecosystem: str) -> Tuple[bytes, Dict[str, int]]:
                     continue
                 versions = [v for v in aff.get("versions") or [] if isinstance(v, str)]
                 # Go advisories list no versions, only SEMVER ranges: keep those and match the ranges offline
-                semver = ecosystem in SEMVER_ECOSYSTEMS and any((r or {}).get("type") == "SEMVER" for r in aff.get("ranges") or [])
+                semver = ecosystem in SEMVER_ECOSYSTEMS and any((r or {}).get("type") in range_types(ecosystem)
+                                                                for r in aff.get("ranges") or [])
                 if not versions and not semver:
                     counts["without_versions"] += 1
                     continue
@@ -155,7 +161,8 @@ def offline_vulns(deps) -> Tuple[Dict[Tuple[str, str, str], List[dict]], List[st
         want = version_key(d.version, d.ecosystem)
         hits = [e for e in index["packages"].get(norm(d.name, d.ecosystem), [])
                 if any(version_key(v, d.ecosystem) == want for v in e["versions"])
-                or (not e["versions"] and d.ecosystem in SEMVER_ECOSYSTEMS and semver_affected(d.version, e["affected"]))]
+                or (not e["versions"] and d.ecosystem in SEMVER_ECOSYSTEMS
+                    and semver_affected(d.version, e["affected"], range_types(d.ecosystem)))]
         if hits:
             out[(d.ecosystem, d.name, d.version)] = [{k: v for k, v in e.items() if k != "versions"} for e in hits]
     return out, sorted(missing)
@@ -177,13 +184,13 @@ def _semver_key(version: str) -> Tuple:
     return (*nums, 0, ids)
 
 
-def semver_affected(version: str, affected: list) -> bool:
+def semver_affected(version: str, affected: list, types: tuple = ("SEMVER",)) -> bool:
     """True when `version` falls in a SEMVER range of the advisory (OSV: events in order; introduced opens a
     range, fixed closes it before that version, last_affected closes it after)."""
     key = _semver_key(version)
     for aff in affected or []:
         for rng in (aff or {}).get("ranges") or []:
-            if (rng or {}).get("type") != "SEMVER":
+            if (rng or {}).get("type") not in types:
                 continue
             hit = False
             for ev in rng.get("events") or []:

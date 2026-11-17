@@ -43,7 +43,11 @@ RLS = re.compile(r"(?i)enable\s+row\s+level\s+security")
 DB_TOUCH = r"(?:find\w*|filter|get|all|select|update\w*|delete\w*|insert|create\w*|query|exec\w*|raw|aggregate|count)"
 
 CODE_EXTS = (".go", ".rs", ".java", ".kt", ".cs", ".php", ".rb")
-ADMIN_ROUTE = re.compile(r"(?i)/admin\b|/feature[-_]?flags?\b|/flags?\b|/toggles?\b|/maintenance\b|/site[-_]?settings\b")
+ADMIN_ROUTE = re.compile(r"(?i)/admin\b|/feature[-_]?(?:flags?|toggles?)\b|/flags?\b|/toggles?\b|/maintenance\b|/site[-_]?settings\b")
+# `/contacts/{contact}/quickFacts/toggle` flips one record's field and `/preferences/toggle-dark-mode` the caller's own
+# setting; `/accounts/toggle-enabled` and `/toggles` are switches
+OWN_TOGGLE = re.compile(r"(?i)\{[^}\n]{0,200}\}[^\n]{0,500}/toggles?\b"
+                        r"|/(?:preferences|profile|me|my[-_]\w{1,40}|account)/(?:[^/\n]{1,100}/){0,8}toggle")
 ROLE_CHECK = re.compile(
     r"(?i)admin|\brole|is_?staff|is_?superuser|superuser|permission|\bcan\s*\(|authori[sz]e|ability|polic(?:y|ies)|has_?perm"
     r"|requireRole|require_role|is_?owner|isOwner|owner_?only|staff_?member_required|user_passes_test|\bscopes?\b|\bclaims?\b")
@@ -61,7 +65,10 @@ def run(project: Project, routes: List[Route], add: Add) -> None:
     # no roles anywhere in the code: every signed-in user is the admin, so there is no role to check
     roles = any(H.ANY_ROLE.search(f.text) for f in files if f.kind in ("py", "js", "html") or f.rel.endswith(CODE_EXTS))
     for r in routes:
-        if roles and ADMIN_ROUTE.search(r.path) and r.has_auth and not ROLE_CHECK.search(r.body) \
+        admin = ADMIN_ROUTE.search(r.path)
+        if admin and "toggle" in admin.group(0).lower() and not re.search(r"(?i)feature", admin.group(0)) and OWN_TOGGLE.search(r.path):
+            admin = None
+        if roles and admin and r.has_auth and not ROLE_CHECK.search(r.body) \
                 and set(m.upper() for m in r.methods) & {"POST", "PUT", "PATCH", "DELETE"}:
             add(r.file, r.line, "AUTH017", f"{r.path} changes admin or feature-flag state, and any signed-in user can call it: "
                                            "nothing checks a role.")

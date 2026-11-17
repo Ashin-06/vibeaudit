@@ -1,0 +1,62 @@
+{
+ "repo": "laravel-realworld-example-app",
+ "commit": "e45c37c8a5f57131c9d239f1fc104c227e66b6ee",
+ "findings": [
+  {
+   "rule": "CFG007",
+   "file": "docker/docker-compose.yml",
+   "line": 16,
+   "fingerprint": "56a4f684cc01695fd4231a56510eceab",
+   "verdict": "tp",
+   "reason": "docker-compose sets a default database password."
+  },
+  {
+   "rule": "CFG007",
+   "file": "docker/docker-compose.yml",
+   "line": 19,
+   "fingerprint": "0ad04bf6320c2c8995110df21fd24f07",
+   "verdict": "tp",
+   "reason": "docker-compose sets a default database password."
+  },
+  {
+   "rule": "CFG001",
+   "file": "docker/php/Dockerfile",
+   "line": 1,
+   "fingerprint": "b994aa985bb7f5c7eb42233d5314ea06",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "UI016",
+   "file": "public/css/app.css",
+   "line": 9,
+   "fingerprint": "b5716f2dbbcef2658f41e8a7c665f6e9",
+   "verdict": "fp",
+   "reason": "Compiled vendor CSS (normalize/Bootstrap)."
+  },
+  {
+   "rule": "QA003",
+   "file": "resources/assets/js/bootstrap.js",
+   "line": 14,
+   "fingerprint": "ec8235d87c17e80facdeaef07a0f157b",
+   "verdict": "fp",
+   "reason": "The Laravel bootstrap.js stub: an optional require."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "routes/api.php",
+   "line": 17,
+   "fingerprint": "5502ab09416fe2635f437b9f52e6e236",
+   "verdict": "fp",
+   "reason": "Registration is public by design."
+  },
+  {
+   "rule": "BE006",
+   "file": "server.php",
+   "line": 17,
+   "fingerprint": "c2ecafae656f523154256c2a8e098de9",
+   "verdict": "fp",
+   "reason": "Laravel's built-in development-server router."
+  }
+ ]
+}

@@ -5,7 +5,7 @@ Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do n
 
 172 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-68 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+73 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -872,7 +872,7 @@ References: CWE-862, A01:2021
 | ID | Severity | Status | Rule |
 | --- | --- | --- | --- |
 | [CFG001](#cfg001) | low | stable | Container runs as root |
-| [CFG002](#cfg002) | low | stable | Unpinned container base image |
+| [CFG002](#cfg002) | low | preview | Unpinned container base image |
 | [CFG003](#cfg003) | high | stable | Secret baked into the container image |
 | [CFG004](#cfg004) | high | stable | GitHub Actions script injection |
 | [CFG005](#cfg005) | high | stable | pull_request_target checks out untrusted code |
@@ -904,7 +904,9 @@ References: CWE-250, A05:2021
 
 ### CFG002
 
-**Unpinned container base image** (low)
+**Unpinned container base image** (low, preview)
+
+Preview: Held-out 5 of 6 (83.3%) after the Go and Rust held-out repositories: a Gitpod development workspace image was reported.
 
 Why it matters: `latest` (or no tag) changes under you, so builds are not reproducible and can pull a broken or compromised image.
 
@@ -1412,13 +1414,13 @@ References: CWE-77, LLM01:2025
 
 | ID | Severity | Status | Rule |
 | --- | --- | --- | --- |
-| [QA001](#qa001) | medium | stable | No automated tests |
+| [QA001](#qa001) | medium | preview | No automated tests |
 | [QA002](#qa002) | low | stable | No continuous integration |
 | [QA003](#qa003) | low | preview | Exception silently swallowed |
 | [QA004](#qa004) | medium | preview | Security placeholder or TODO left in code |
 | [QA005](#qa005) | medium | preview | Unfinished stub left in code |
 | [QA006](#qa006) | high | preview | Import of a file or name that does not exist |
-| [QA007](#qa007) | medium | stable | Package imported but not declared as a dependency |
+| [QA007](#qa007) | medium | preview | Package imported but not declared as a dependency |
 | [QA008](#qa008) | low | stable | TypeScript checking disabled for a whole file |
 | [QA009](#qa009) | medium | preview | Pages Router code in an App Router file |
 | [QA010](#qa010) | medium | preview | Made-up data used as a fallback |
@@ -1426,7 +1428,9 @@ References: CWE-77, LLM01:2025
 
 ### QA001
 
-**No automated tests** (medium)
+**No automated tests** (medium, preview)
+
+Preview: Held-out 6 of 8 (75.0%) after the Java held-out repositories: Java tests under src/test were not counted. Fixed (tests in every language count); it leaves preview again on fresh held-out data, not on the repositories that showed the cause.
 
 Why it matters: AI-generated code often looks right and is subtly wrong. Without tests nobody notices until users do, and every future AI edit can silently break existing behaviour.
 
@@ -1490,7 +1494,9 @@ References: CWE-1164
 
 ### QA007
 
-**Package imported but not declared as a dependency** (medium)
+**Package imported but not declared as a dependency** (medium, preview)
+
+Preview: Held-out 6 of 7 (85.7%) after the Rust held-out repositories: an example script importing a client that is not published under that name.
 
 Why it matters: The package is installed on the author's machine but missing from requirements.txt, pyproject.toml or package.json, so a clean install (CI, Docker, production) fails with an import error.
 
@@ -1569,7 +1575,7 @@ How to fix: Check the issue by hand before acting on it; suppress or disable AI0
 | [DATA009](#data009) | medium | stable | SQLite file database on a serverless host |
 | [DATA010](#data010) | low | preview | Several writes without a transaction |
 | [DATA011](#data011) | low | preview | Index built without CONCURRENTLY on an existing table |
-| [DATA012](#data012) | low | stable | Foreign key without an index |
+| [DATA012](#data012) | low | preview | Foreign key without an index |
 | [DATA013](#data013) | low | preview | Redis key without an expiry |
 | [DATA014](#data014) | medium | preview | Personal data in vector store metadata |
 | [DATA015](#data015) | low | preview | Cache refilled without a lock (stampede) |
@@ -1687,7 +1693,9 @@ References: CWE-833
 
 ### DATA012
 
-**Foreign key without an index** (low)
+**Foreign key without an index** (low, preview)
+
+Preview: Held-out 19 of 28 (67.9%) after the Rust held-out repositories: MariaDB/MySQL migrations, where InnoDB indexes every foreign key itself, were reported.
 
 Why it matters: Postgres does not index foreign key columns. Every delete or key update in the referenced table, and every join on the key, scans the referencing table; with ON DELETE CASCADE it also locks it.
 
@@ -1861,7 +1869,7 @@ How to fix: Add GET /health (or /healthz) that returns 200 when the app and its 
 | [UI006](#ui006) | low | preview | Destructive action without confirmation |
 | [UI007](#ui007) | medium | stable | Hydration mismatch |
 | [UI008](#ui008) | medium | stable | Effect without cleanup |
-| [UI009](#ui009) | low | stable | Data loaded without loading or error state |
+| [UI009](#ui009) | low | preview | Data loaded without loading or error state |
 | [UI010](#ui010) | low | stable | Placeholder content left in the UI |
 | [UI011](#ui011) | low | stable | No error page |
 | [UI012](#ui012) | low | stable | Missing page metadata or viewport |
@@ -1947,7 +1955,9 @@ References: CWE-401
 
 ### UI009
 
-**Data loaded without loading or error state** (low)
+**Data loaded without loading or error state** (low, preview)
+
+Preview: Held-out 4 of 5 (80.0%) after the Go held-out repositories: an effect that only fills a form field was reported.
 
 Why it matters: If the request is slow the user sees an empty screen; if it fails the error is swallowed and the screen stays empty with no explanation.
 

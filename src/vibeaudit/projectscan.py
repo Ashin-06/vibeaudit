@@ -10,6 +10,7 @@ from . import accessscan, agentscan, apiscan, iacscan as iac, opsscan, promptsca
 from .guard import GUARD, finditer
 from .files import ENV_EXAMPLE_RE, ENV_FILE_RE, TEST_PATH_RE, Project, SourceFile, read_ignore_file, _matches
 from .lexer import py_views
+from .phpscan import php_views
 from .rustscan import rust_views
 from .model import Finding, Route
 from .store import loads_json
@@ -39,7 +40,7 @@ UNTRUSTED_EXPR = re.compile(
 )
 
 
-TEST_SOURCE_EXTS = (".cs", ".java", ".kt", ".go", ".rs", ".php")
+TEST_SOURCE_EXTS = (".cs", ".java", ".kt", ".go", ".rs", ".php", ".rb")
 
 
 class ProjectScanner:
@@ -53,13 +54,16 @@ class ProjectScanner:
         self.code_files = [f for f in project.files if f.kind in ("py", "js", "html")
                            or f.rel.endswith(("package.json", "requirements.txt", "pyproject.toml", "go.mod"))
                            or (f.rel.endswith(".go") and not f.rel.endswith("_test.go"))
-                           or (f.rel.endswith(".rs") and not f.is_test)]
+                           or (f.rel.endswith((".rs", ".php")) and not f.is_test)]
 
     def _piece(self, f: SourceFile) -> str:
         views = f.cache.get("views") if f.kind in ("py", "js", "html") else None
         if f.rel.endswith(".rs") and f.text is not None:  # Rust without comments ("apply a rate-limit here")
             views = f.cache.get("rust_views") or rust_views(f.text)
             f.cache["rust_views"] = views
+        elif f.rel.endswith(".php") and f.text is not None:  # PHP code only: no comments, no inline HTML
+            views = f.cache.get("php_views") or php_views(f.text)
+            f.cache["php_views"] = views
         return views.code if views is not None else (f.text or "")  # type: ignore[attr-defined]
 
     def any_code(self, rx: "re.Pattern[str]") -> bool:
@@ -390,7 +394,7 @@ class ProjectScanner:
         sources = [f for f in self.p.files if f.kind in ("py", "js") and not f.is_test and not re.search(r"\.config\.[cm]?[jt]s$|(?:^|/)(?:setup|conftest|manage)\.py$", f.rel)]
         if len(sources) < 3:
             return
-        # tests in any language count: a Python or JavaScript front end of a C# or Java service tested in that language
+        # tests in any language count: Go `_test.go`, Java/Kotlin under src/test, Rust, C#, PHP (conveyor, piggymetrics)
         has_tests = any(f.is_test and (f.kind in ("py", "js") or f.rel.endswith(TEST_SOURCE_EXTS)) and not re.search(r"(?:^|/)(?:fixtures?|mocks?|__mocks__|testdata)/", f.rel) for f in self.p.files) \
             or any(TEST_CONFIG.search(f.rel) for f in self.p.files)
         anchor = self.p.anchor()
@@ -430,7 +434,9 @@ class ProjectScanner:
             # need evidence of a write (or a paid model call) before we call them state-changing.
             semantic = any(m in ("PUT", "PATCH", "DELETE") for m in r.methods) and r.framework not in ("next-server-action",)
             poly_writes = r.lang not in ("py", "js") and bool(re.search(
-                r"(?i)\.\s*(?:updates|exec|persist|merge|deleteById|ExecuteSqlRaw|SaveChangesAsync|execute)\s*\(|::(?:create|destroy)\s*\(",
+                r"(?i)\.\s*(?:updates|exec|persist|merge|deleteById|ExecuteSqlRaw|SaveChangesAsync|execute)\s*\(|::(?:create|destroy)\s*\("
+                # PHP: Doctrine's ->persist() / ->remove() / ->flush(), Eloquent's ->save() / ->delete() / ->update()
+                r"|->\s*(?:persist|remove|flush|save|delete|update|create|insert|forceDelete|sync|attach|detach)\s*\(",
                 r.body))
             writes = semantic or bool(H.MUTATION_EVIDENCE.search(r.body)) or poly_writes
             mutating = r.mutating and (writes or r.calls_llm)
@@ -442,7 +448,8 @@ class ProjectScanner:
             elif is_admin and not H.ADMIN_ROLE_EVIDENCE.search(r.body) and (roles or not r.has_auth):
                 msg = "has no authentication or role check" if not r.has_auth else "checks login but not the admin role"
                 self.add(r.file, r.line, "AUTH002", f"{'/'.join(r.methods)} {path} {msg}.")
-            elif mutating and not r.has_auth and not public and not r.framework.endswith("-unsecured"):  # JAVA001/CSHARP001
+            elif (mutating and not r.has_auth and not public and not r.framework.endswith("-unsecured")  # JAVA001/CSHARP001
+                  and not H.WEBHOOK_VERIFY.search(r.body)):  # a signed webhook receiver (`x-hub-signature-256`)
                 what = "has no authentication check" if writes else "calls a paid AI API without an authentication check"
                 self.add(r.file, r.line, "AUTH001", f"{'/'.join(r.methods)} {path} {what}.")
             elif mutating and r.has_auth and r.params and r.methods != ["POST"]:

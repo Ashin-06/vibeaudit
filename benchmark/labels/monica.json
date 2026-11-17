@@ -1,0 +1,2398 @@
+{
+ "repo": "monica",
+ "commit": "dab74273acc5c9e0ba713a9f7c2c71c24ab16993",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/deploy.yml",
+   "line": 17,
+   "fingerprint": "ab7b8e4e045a2633d82ab352ccf7c779",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yml",
+   "line": 52,
+   "fingerprint": "116c0ddd3ab1649abca2d36300dafcaf",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yml",
+   "line": 72,
+   "fingerprint": "ba8c8560dfb6ac0e557a3fc198503ffa",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yml",
+   "line": 75,
+   "fingerprint": "2287d158534187c0bc8d1b0a75524242",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yml",
+   "line": 88,
+   "fingerprint": "0d0ab83f204a2d0d9ae2f24d5175ca82",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yml",
+   "line": 103,
+   "fingerprint": "8b49ab1395dcd2962b3b7a2c0632b24e",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/lint.yml",
+   "line": 14,
+   "fingerprint": "039ccb6cc1c755b524b71fc387589fd6",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/lint.yml",
+   "line": 18,
+   "fingerprint": "fdc055e9148ea50bf57e4a09794273cf",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yml",
+   "line": 25,
+   "fingerprint": "7b3de25ead9a56b6b156fef921c07a4f",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yml",
+   "line": 48,
+   "fingerprint": "16deab82d451c74435e7ab174dd581b7",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yml",
+   "line": 115,
+   "fingerprint": "2cbb6162724ca98e93275e080373eff8",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/semantic.yml",
+   "line": 12,
+   "fingerprint": "af07bcacaf728570ea3b43d64c21c56a",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/static_analysis.yml",
+   "line": 14,
+   "fingerprint": "51d0787f149c7b3f49028e1eec0d255e",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/tests.yml",
+   "line": 24,
+   "fingerprint": "ba5beb52770f3b3a9d07f7798530926a",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/tests.yml",
+   "line": 36,
+   "fingerprint": "ee464f8c7ff562cf8aae1e4526161a8d",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/Local/SetupDummyAccount.php",
+   "line": 210,
+   "fingerprint": "e9dcec64b4c213c82b82a6e4fd519c04",
+   "verdict": "fp",
+   "reason": "A seeding or migration script, not a request path."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/Local/SetupDummyAccount.php",
+   "line": 343,
+   "fingerprint": "2fb7a66b743b646ac782b5d081903f95",
+   "verdict": "fp",
+   "reason": "A seeding or migration script, not a request path."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Domains/Contact/Dav/Jobs/CleanSyncToken.php",
+   "line": 51,
+   "fingerprint": "235213eedecbe2af930650c239e2c4b2",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Domains/Contact/ManageContact/Services/DestroyContact.php",
+   "line": 57,
+   "fingerprint": "043991ee88fb06f29913dd39422a31f3",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "REL001",
+   "file": "app/Domains/Contact/ManageContactAddresses/Web/Controllers/ContactModuleAddressImageController.php",
+   "line": 22,
+   "fingerprint": "cbbb3e86a7a6a37a27e988493c178ced",
+   "verdict": "tp",
+   "reason": "The HTTP call has no timeout."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Domains/Contact/ManageLifeEvents/Services/CreateLifeEvent.php",
+   "line": 109,
+   "fingerprint": "863464291f0a577d406fba754f1f1e12",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Domains/Contact/ManageLifeEvents/Services/UpdateLifeEvent.php",
+   "line": 131,
+   "fingerprint": "ac8b3ae26971a06a0fc6e96ae98921bb",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Domains/Contact/ManageRelationships/Web/ViewHelpers/ModuleFamilySummaryViewHelper.php",
+   "line": 51,
+   "fingerprint": "dd6a8751e07115ea1525f4e67761d919",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Domains/Contact/ManageRelationships/Web/ViewHelpers/ModuleFamilySummaryViewHelper.php",
+   "line": 68,
+   "fingerprint": "c158e9c759bf73b80ff1b9759a3d9d1f",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Domains/Contact/ManageRelationships/Web/ViewHelpers/ModuleRelationshipViewHelper.php",
+   "line": 30,
+   "fingerprint": "322a4096a9d315119d89796a627c69ca",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Domains/Contact/ManageRelationships/Web/ViewHelpers/ModuleRelationshipViewHelper.php",
+   "line": 50,
+   "fingerprint": "e0b146697b8d03ac4adcddc84b5d3d13",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Domains/Contact/ManageReminders/Jobs/ProcessScheduledContactReminders.php",
+   "line": 46,
+   "fingerprint": "716a5344092f3a32e64b85a43ecb493a",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Domains/Settings/ManageNotificationChannels/Services/ScheduleAllContactRemindersForNotificationChannel.php",
+   "line": 94,
+   "fingerprint": "dc4b34421020045fdf2cd09784cccac4",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Domains/Settings/ManageUsers/Services/DestroyUser.php",
+   "line": 87,
+   "fingerprint": "effefefadd3200c52f3090990d999fc7",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "REL001",
+   "file": "app/Domains/Vault/ManageAddresses/Services/GetGPSCoordinate.php",
+   "line": 53,
+   "fingerprint": "0e56facb4e4a48028337e6c82d7fc2e5",
+   "verdict": "tp",
+   "reason": "The HTTP call has no timeout."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Domains/Vault/ManageJournals/Services/CreatePost.php",
+   "line": 102,
+   "fingerprint": "f1ae61b07fddc4a460fa141662a02f1a",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Domains/Vault/ManageJournals/Services/DestroyPost.php",
+   "line": 68,
+   "fingerprint": "4d7dc2c3e2235548a2d5e0e8e427622b",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Domains/Vault/ManageVault/Web/ViewHelpers/VaultReminderIndexViewHelper.php",
+   "line": 58,
+   "fingerprint": "c2ef2dd641017eac83975ee334b7606b",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Domains/Vault/Search/Web/ViewHelpers/VaultMostConsultedViewHelper.php",
+   "line": 26,
+   "fingerprint": "a40e7a02e5cc4da7d7761718d28d230d",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "REL001",
+   "file": "app/Helpers/WikipediaHelper.php",
+   "line": 30,
+   "fingerprint": "b94f799174f2b7ead51e28e40a046f76",
+   "verdict": "tp",
+   "reason": "The HTTP call has no timeout."
+  },
+  {
+   "rule": "QA007",
+   "file": "eslint.config.js",
+   "line": 1,
+   "fingerprint": "330862d9713338324b9015347f05bbfa",
+   "verdict": "tp",
+   "reason": "The package is imported but not declared in package.json."
+  },
+  {
+   "rule": "UI003",
+   "file": "resources/js/Components/Checkbox.vue",
+   "line": 29,
+   "fingerprint": "35e665d0cf615e2c4dc967f9c897fb8e",
+   "verdict": "fp",
+   "reason": "A generic checkbox component; the caller supplies the label around it."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Components/Dropdown.vue",
+   "line": 51,
+   "fingerprint": "9d0123c1c0a322dbf653df67c4aaeaf7",
+   "verdict": "fp",
+   "reason": "A full-screen overlay that closes the dropdown or modal; keyboard users close it with Escape."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Components/Dropdown.vue",
+   "line": 56,
+   "fingerprint": "61fb91a9c193a38d646e9efa51ce768f",
+   "verdict": "fp",
+   "reason": "A full-screen overlay that closes the dropdown or modal; keyboard users close it with Escape."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Components/Dropdown.vue",
+   "line": 65,
+   "fingerprint": "3f5bd0a06440a0d0bc8da9ac3bc64bd4",
+   "verdict": "fp",
+   "reason": "A wrapper around a slot; the interactive element is whatever the parent passes in."
+  },
+  {
+   "rule": "UI003",
+   "file": "resources/js/Components/Input.vue",
+   "line": 23,
+   "fingerprint": "7c0e9d3207096a5f51ae3746d87c17b8",
+   "verdict": "fp",
+   "reason": "A generic input component; the caller supplies the label."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Components/Jetstream/ConfirmsPassword.vue",
+   "line": 86,
+   "fingerprint": "9417c76e514fcfb265129b8bd41edb27",
+   "verdict": "fp",
+   "reason": "A wrapper around a slot; the interactive element is whatever the parent passes in."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Components/Jetstream/Modal.vue",
+   "line": 86,
+   "fingerprint": "9bc896326cef340342d73d79763526de",
+   "verdict": "fp",
+   "reason": "A full-screen overlay that closes the dropdown or modal; keyboard users close it with Escape."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Components/Jetstream/Select.vue",
+   "line": 182,
+   "fingerprint": "c643480a40b9c8235e8edd6bcfb2c2e1",
+   "verdict": "fp",
+   "reason": "A full-screen overlay that closes the dropdown or modal; keyboard users close it with Escape."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Components/Jetstream/Select.vue",
+   "line": 196,
+   "fingerprint": "0478b605e370a1268bca41770fda3662",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/Components/Pagination.vue",
+   "line": 30,
+   "fingerprint": "2d9e636fcac8515ccbafee3f408e4eaf",
+   "verdict": "fp",
+   "reason": "Pagination labels from Laravel's paginator and translation strings."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/Components/Pagination.vue",
+   "line": 37,
+   "fingerprint": "41987d98b9f5a202d13367622493429f",
+   "verdict": "fp",
+   "reason": "Pagination labels from Laravel's paginator and translation strings."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/Components/Pagination.vue",
+   "line": 53,
+   "fingerprint": "30319ec8f026b66997373410245263c9",
+   "verdict": "fp",
+   "reason": "Pagination labels from Laravel's paginator and translation strings."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/Components/Pagination.vue",
+   "line": 58,
+   "fingerprint": "7d7d765257680d775745800790b897ef",
+   "verdict": "fp",
+   "reason": "Pagination labels from Laravel's paginator and translation strings."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/Components/Pagination.vue",
+   "line": 133,
+   "fingerprint": "3e00695586255fdce92708026ba6cb18",
+   "verdict": "fp",
+   "reason": "Pagination labels from Laravel's paginator and translation strings."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/Components/Pagination.vue",
+   "line": 139,
+   "fingerprint": "efbf0d2b7b966fb126722ade3f83016c",
+   "verdict": "fp",
+   "reason": "Pagination labels from Laravel's paginator and translation strings."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/Components/Pagination.vue",
+   "line": 155,
+   "fingerprint": "7d83f570d36e8ac6b0a01178ee7f7a34",
+   "verdict": "fp",
+   "reason": "Pagination labels from Laravel's paginator and translation strings."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Components/Uploadcare.vue",
+   "line": 2,
+   "fingerprint": "64e7cebaa6750341cc65583c10f6df76",
+   "verdict": "fp",
+   "reason": "A wrapper around a slot; the interactive element is whatever the parent passes in."
+  },
+  {
+   "rule": "QA007",
+   "file": "resources/js/Components/Uploadcare.vue",
+   "line": 8,
+   "fingerprint": "376c884f0eeb7b472d5b06a027be7657",
+   "verdict": "tp",
+   "reason": "The package is imported but not declared in package.json."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/Layouts/FooterLayout.vue",
+   "line": 9,
+   "fingerprint": "86516746e5af566d66178c6897cd252e",
+   "verdict": "fp",
+   "reason": "The footer is a server-side setting, not user input."
+  },
+  {
+   "rule": "UI003",
+   "file": "resources/js/Layouts/Layout.vue",
+   "line": 71,
+   "fingerprint": "ac978b5575078d7c6e39995c3e5462f0",
+   "verdict": "tp",
+   "reason": "The field has no label, aria-label or associated label."
+  },
+  {
+   "rule": "UI003",
+   "file": "resources/js/Layouts/Layout.vue",
+   "line": 192,
+   "fingerprint": "14f14dfa8ff911a981fa467921a063c0",
+   "verdict": "tp",
+   "reason": "The field has no label, aria-label or associated label."
+  },
+  {
+   "rule": "UI003",
+   "file": "resources/js/Layouts/LayoutNav.vue",
+   "line": 38,
+   "fingerprint": "062b1f50b91093550e6c7929dbe50f34",
+   "verdict": "tp",
+   "reason": "The field has no label, aria-label or associated label."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/API/Partials/ApiTokenManager.vue",
+   "line": 199,
+   "fingerprint": "08de64bcf4e8d910a66ad6a5d555c581",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Auth/Beta.vue",
+   "line": 18,
+   "fingerprint": "d45d70f8d5a11c0dba483cdc6fcac4a0",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/Pages/Auth/Register.vue",
+   "line": 121,
+   "fingerprint": "419cc43554fcb92cb96d6779ac3a3d9f",
+   "verdict": "fp",
+   "reason": "A translation string with links built by the app."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/Pages/PrivacyPolicy.vue",
+   "line": 19,
+   "fingerprint": "40f7942c7eee9bedb17f821556f644ae",
+   "verdict": "fp",
+   "reason": "The policy is rendered from a file shipped with the app."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/Pages/Profile/Partials/TwoFactorAuthenticationForm.vue",
+   "line": 160,
+   "fingerprint": "6a95bb1a413bc45ae0a637766dbe3cd9",
+   "verdict": "fp",
+   "reason": "The QR code SVG and setup key come from Fortify on the server."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/Pages/Profile/Partials/TwoFactorAuthenticationForm.vue",
+   "line": 163,
+   "fingerprint": "5bbb973251e965c726ad902eb91e748c",
+   "verdict": "fp",
+   "reason": "The QR code SVG and setup key come from Fortify on the server."
+  },
+  {
+   "rule": "UI006",
+   "file": "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.vue",
+   "line": 110,
+   "fingerprint": "11b269d6accaacb40ba9f17a783a3f26",
+   "verdict": "tp",
+   "reason": "The delete runs straight from the click, with no confirm or undo."
+  },
+  {
+   "rule": "UI006",
+   "file": "resources/js/Pages/Profile/Partials/UpdateProviders.vue",
+   "line": 67,
+   "fingerprint": "b301d4e77b62e1c7d693ffffa3b516bf",
+   "verdict": "tp",
+   "reason": "The delete runs straight from the click, with no confirm or undo."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Notifications/Partials/Emails.vue",
+   "line": 125,
+   "fingerprint": "7b2a381184e33fed5ff28af055fe8ba4",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Notifications/Partials/Emails.vue",
+   "line": 131,
+   "fingerprint": "c1f61f2e48f2a22d4fddf7efb75fe4d6",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Notifications/Partials/Emails.vue",
+   "line": 139,
+   "fingerprint": "b3570f01ad690bd87ad8248fbded3f16",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Notifications/Partials/Emails.vue",
+   "line": 159,
+   "fingerprint": "b0945f6023060cebc5b316c8d5cbb26b",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Notifications/Partials/Emails.vue",
+   "line": 171,
+   "fingerprint": "678430adef0798a6de535f3938ecd939",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Notifications/Partials/Telegram.vue",
+   "line": 252,
+   "fingerprint": "3218013dd5eb19541cedc2b726ad4b08",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Notifications/Partials/Telegram.vue",
+   "line": 260,
+   "fingerprint": "82db39443dd5b354a3701a250770242d",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Notifications/Partials/Telegram.vue",
+   "line": 278,
+   "fingerprint": "7197f2c14270088b9629f3e80dd610f6",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/AddressTypes/Index.vue",
+   "line": 105,
+   "fingerprint": "ee0335fa56500d94284e2876fd4edf60",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/AddressTypes/Index.vue",
+   "line": 108,
+   "fingerprint": "c9cf8a6be3e15a9dbcc499c63490f8fe",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/CallReasons/Index.vue",
+   "line": 122,
+   "fingerprint": "22abf220b11d115d8762bb2b7429916d",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/CallReasons/Index.vue",
+   "line": 125,
+   "fingerprint": "d2fdd0d9be75bbfa75ec0ef47e4c2a6d",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/CallReasons/Index.vue",
+   "line": 174,
+   "fingerprint": "8df7e1a94af3f110cdf557175ebc860e",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/CallReasons/Index.vue",
+   "line": 177,
+   "fingerprint": "7e3d1d800c6c97ac420784abf2403a36",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/CallReasons/Index.vue",
+   "line": 219,
+   "fingerprint": "0af30127be19aa60cb0c728242a1204b",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/ContactInformationTypes/Index.vue",
+   "line": 247,
+   "fingerprint": "fbe71eb7c8e9dc4a7a8c3ac5525203ee",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/ContactInformationTypes/Index.vue",
+   "line": 252,
+   "fingerprint": "40f0372da67917c1167812d8ca261a07",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/Currencies/Index.vue",
+   "line": 83,
+   "fingerprint": "1febbe8c4adf7d04f10a1ea86f90decb",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/Currencies/Index.vue",
+   "line": 88,
+   "fingerprint": "63f5c5a16b2caf90174e34705bff25c5",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/Currencies/Index.vue",
+   "line": 110,
+   "fingerprint": "2229837a49181e0e9b65bf3baacf59b5",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/Currencies/Index.vue",
+   "line": 118,
+   "fingerprint": "f7d8c412c4264caef903d9d6a31742dc",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/Genders/Index.vue",
+   "line": 103,
+   "fingerprint": "e927ef0312442b069cc1f0991f405f58",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/Genders/Index.vue",
+   "line": 106,
+   "fingerprint": "417aee5d322a7d12ad51c9155da4bc25",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/GiftOccasions/Index.vue",
+   "line": 128,
+   "fingerprint": "8432a4b691f609c88678d01f89cd985a",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/GiftOccasions/Index.vue",
+   "line": 131,
+   "fingerprint": "e680dbd660a0db6d756bfb932ca96d6d",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/GiftStates/Index.vue",
+   "line": 126,
+   "fingerprint": "918a6dbd86031abce6ba751abdf35792",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/GiftStates/Index.vue",
+   "line": 129,
+   "fingerprint": "43fa13ea02ee54fa0509a3c98e2d606f",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/GroupTypes/Index.vue",
+   "line": 153,
+   "fingerprint": "c181a873a907c243157de333c34a8a77",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/GroupTypes/Index.vue",
+   "line": 156,
+   "fingerprint": "802f025d351ab17a463d498a41b99960",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/GroupTypes/Index.vue",
+   "line": 202,
+   "fingerprint": "d5348765b039880f455ba1d31d3f5f32",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/GroupTypes/Index.vue",
+   "line": 205,
+   "fingerprint": "5a6101a02ea05bbc0b3d84a08cc8c1d8",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/GroupTypes/Index.vue",
+   "line": 254,
+   "fingerprint": "23c4f45c2e56e2532c7a9a0d16401cd2",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/GroupTypes/Index.vue",
+   "line": 307,
+   "fingerprint": "f32926507b471251a5c0a8309ff5967d",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/Modules/Index.vue",
+   "line": 136,
+   "fingerprint": "9d19623f9cb7589e35b074ae4c184347",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/Modules/Index.vue",
+   "line": 165,
+   "fingerprint": "b25b051a89f52d7c186606576b36725f",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/Modules/Index.vue",
+   "line": 184,
+   "fingerprint": "be3652c37e3db3f5a1281ec30f30830b",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/Modules/Index.vue",
+   "line": 231,
+   "fingerprint": "26a1d4b3a82a26d8ad288f6cb1934b54",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/PetCategories/Index.vue",
+   "line": 105,
+   "fingerprint": "8ed89b90aaa7b6a550dfb22451571f58",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/PetCategories/Index.vue",
+   "line": 108,
+   "fingerprint": "564a0f125dee2c477e69d28be6d37f1c",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/PostTemplates/Index.vue",
+   "line": 153,
+   "fingerprint": "abb742f10199f5458338e8083adcc181",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/PostTemplates/Index.vue",
+   "line": 156,
+   "fingerprint": "ebfbeee44837cc1cbcd09c7c7de3f5e1",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/PostTemplates/Index.vue",
+   "line": 205,
+   "fingerprint": "e14fa96df77291607e896193b34b0e8e",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/PostTemplates/Index.vue",
+   "line": 210,
+   "fingerprint": "f7e41abf6f5f9925b1c4714a50a67601",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/PostTemplates/Index.vue",
+   "line": 251,
+   "fingerprint": "8becd08eeefaaccc119bcd596e61c2ac",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/PostTemplates/Index.vue",
+   "line": 309,
+   "fingerprint": "7eb2bdce045545084eca3808cd6924a8",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/Pronouns/Index.vue",
+   "line": 103,
+   "fingerprint": "4e2421fc8e35b424dae1bc6a97a0757b",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/Pronouns/Index.vue",
+   "line": 106,
+   "fingerprint": "7013c80c5238753157eab0897b5984de",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/Relationships/Index.vue",
+   "line": 141,
+   "fingerprint": "34023a38fd5c766816ff55522499b3bb",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/Relationships/Index.vue",
+   "line": 144,
+   "fingerprint": "5cfbe37e03403d71bbdac37b22581b26",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/Relationships/Index.vue",
+   "line": 213,
+   "fingerprint": "a74d8752725404010e5829b78f530119",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/Relationships/Index.vue",
+   "line": 216,
+   "fingerprint": "38c5d2e54a695dacd38f30a798c1d7b0",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/Relationships/Index.vue",
+   "line": 274,
+   "fingerprint": "5a440126a10ee09018a4500d0533e96a",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/Religions/Index.vue",
+   "line": 128,
+   "fingerprint": "a1b621f2ff346edaaf1843796bb9774d",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/Religions/Index.vue",
+   "line": 131,
+   "fingerprint": "f294813cbfd9279f99351bfe30d3fc1a",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/Templates/Index.vue",
+   "line": 140,
+   "fingerprint": "a164349237933c64facd2d819dcf84d9",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/Templates/Index.vue",
+   "line": 143,
+   "fingerprint": "7c88659c2bba76d14da8aa56bde7a73d",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/Templates/Partials/Modules.vue",
+   "line": 33,
+   "fingerprint": "aef29664e8067b03e8548cccb38a640f",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/Templates/Partials/Modules.vue",
+   "line": 85,
+   "fingerprint": "9a666a778a5bbde87573dba50b417102",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/Templates/Partials/Pages.vue",
+   "line": 9,
+   "fingerprint": "7eec44519ee32a08cd22c555a4e84008",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/Templates/Partials/Pages.vue",
+   "line": 42,
+   "fingerprint": "a6f4edfa05a9c21fb4bda796a8f258b8",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/Templates/Partials/Pages.vue",
+   "line": 75,
+   "fingerprint": "aeaea048dc100d5754be0fd78d2bccd4",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Personalize/Templates/Partials/Pages.vue",
+   "line": 78,
+   "fingerprint": "57ac095db5425b819260ceaa5c3c099d",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/Pages/Settings/Preferences/Partials/NameOrder.vue",
+   "line": 214,
+   "fingerprint": "1ac5fe5228dd328b86c847eade41e166",
+   "verdict": "fp",
+   "reason": "Help text built from a translation string."
+  },
+  {
+   "rule": "UI003",
+   "file": "resources/js/Pages/Settings/Preferences/Partials/Timezone.vue",
+   "line": 52,
+   "fingerprint": "84d898694113aed36f4e8cb2a568c5b0",
+   "verdict": "tp",
+   "reason": "The field has no label, aria-label or associated label."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Users/Index.vue",
+   "line": 104,
+   "fingerprint": "d3b816a39f15b72f25e1dcda9ca0d679",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Settings/Users/Index.vue",
+   "line": 107,
+   "fingerprint": "964573df72eb1e52dd6afcbc872f3e21",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/Pages/TermsOfService.vue",
+   "line": 19,
+   "fingerprint": "d4bceb0bfc360ab208ce2303cebe6847",
+   "verdict": "fp",
+   "reason": "The terms are rendered from a file shipped with the app."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Calendar/Index.vue",
+   "line": 91,
+   "fingerprint": "52f0e7b7dcf784e6582effdb37d0d600",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Contact/Blank.vue",
+   "line": 82,
+   "fingerprint": "eeb9579f583403fcaee62291f39ea45e",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Contact/Create.vue",
+   "line": 157,
+   "fingerprint": "0749132b1d0e71e1f4f8ea2363c46add",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Contact/Create.vue",
+   "line": 163,
+   "fingerprint": "0c8725d6493a625e45adeb33baf95629",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Contact/Create.vue",
+   "line": 169,
+   "fingerprint": "f88f48c18e65a71715547cd5d2dd1f16",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Contact/Create.vue",
+   "line": 175,
+   "fingerprint": "e58563fe2f27a909e97e320c50c12e08",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Contact/Create.vue",
+   "line": 181,
+   "fingerprint": "93088fda863b6f8d4e0ec7838636845d",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Contact/Goals/Show.vue",
+   "line": 54,
+   "fingerprint": "5c41067b75610e8be3986906806f3ea1",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Contact/Goals/Show.vue",
+   "line": 57,
+   "fingerprint": "5c0e44709077afbd26a28cb09167c7f9",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Contact/ImportantDates/Index.vue",
+   "line": 154,
+   "fingerprint": "aad0596a63245d56dfea5524c684383e",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Contact/ImportantDates/Index.vue",
+   "line": 157,
+   "fingerprint": "e1d583f1ce4539d2286c96e5946dfd84",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI003",
+   "file": "resources/js/Pages/Vault/Contact/ImportantDates/Partials/CreateOrEditImportantDate.vue",
+   "line": 163,
+   "fingerprint": "e86f05df1207c5d1ec19ae95aac0c6b2",
+   "verdict": "tp",
+   "reason": "The field has no label, aria-label or associated label."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Contact/Move.vue",
+   "line": 93,
+   "fingerprint": "a426f0f8721d2209638136fc217aae21",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI014",
+   "file": "resources/js/Pages/Vault/Contact/Photos/Index.vue",
+   "line": 104,
+   "fingerprint": "c8f40956e70e55c3c8fd3a0b1420ede5",
+   "verdict": "tp",
+   "reason": "The image has no width, height or sizing class."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Contact/Photos/Show.vue",
+   "line": 100,
+   "fingerprint": "6b2c4c167c930ff42b52c28dab805193",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI014",
+   "file": "resources/js/Pages/Vault/Contact/Photos/Show.vue",
+   "line": 106,
+   "fingerprint": "3d0255a34ee1b42277e280c4a1b698ed",
+   "verdict": "tp",
+   "reason": "The image has no width, height or sizing class."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Contact/Relationships/Create.vue",
+   "line": 88,
+   "fingerprint": "fdf5c4ff4e05e87102a28f9028c354bd",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Contact/Relationships/Create.vue",
+   "line": 171,
+   "fingerprint": "82ede195ea91804b076e46cbca79e85d",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Contact/Relationships/Create.vue",
+   "line": 177,
+   "fingerprint": "8b3cd5153a070802e6c55491ab2619d7",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Contact/Relationships/Create.vue",
+   "line": 183,
+   "fingerprint": "3c2a0c77a144726392d4bd573bf2edb3",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Contact/Relationships/Create.vue",
+   "line": 189,
+   "fingerprint": "31a9327f4d295fcbbc31865002abfec5",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Contact/Show.vue",
+   "line": 230,
+   "fingerprint": "b5e861e93dd547a0f071ba83d85e44f9",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Contact/Show.vue",
+   "line": 250,
+   "fingerprint": "be4c2ccda1c0cc87f1396bc77ed0d9ac",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Contact/Show.vue",
+   "line": 256,
+   "fingerprint": "d83df6e4bfea8e77942907787933beff",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Contact/Show.vue",
+   "line": 280,
+   "fingerprint": "7f1c7387455dacc611b92e06971e3984",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI001",
+   "file": "resources/js/Pages/Vault/Contact/Show.vue",
+   "line": 297,
+   "fingerprint": "620615df3597547c59cc376e95857456",
+   "verdict": "tp",
+   "reason": "The image has no alt text."
+  },
+  {
+   "rule": "UI003",
+   "file": "resources/js/Pages/Vault/Contact/Show.vue",
+   "line": 335,
+   "fingerprint": "65f3abcadf4f732b46b2c659f7fdada6",
+   "verdict": "tp",
+   "reason": "The field has no label, aria-label or associated label."
+  },
+  {
+   "rule": "QA003",
+   "file": "resources/js/Pages/Vault/Dashboard/Partials/LifeMetrics.vue",
+   "line": 106,
+   "fingerprint": "ebb2a9c3a866ff5c9571bc162ea2a582",
+   "verdict": "tp",
+   "reason": "The request error is swallowed silently."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Dashboard/Partials/LifeMetrics.vue",
+   "line": 170,
+   "fingerprint": "1f9b12c7489f5a39b19c46bffc2bfada",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Dashboard/Partials/MoodTrackingEvents.vue",
+   "line": 124,
+   "fingerprint": "97db287f4f89ae43239815b37f4b39bf",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Dashboard/Partials/MoodTrackingEvents.vue",
+   "line": 131,
+   "fingerprint": "036aba94adc1c3a552b7daef11ae525d",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Dashboard/Partials/MoodTrackingEvents.vue",
+   "line": 138,
+   "fingerprint": "b6a6b97035f680cb519f884795a01713",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI003",
+   "file": "resources/js/Pages/Vault/Dashboard/Partials/MoodTrackingEvents.vue",
+   "line": 157,
+   "fingerprint": "dd4b2de65ed49ebf396dfaae93e1834f",
+   "verdict": "tp",
+   "reason": "The field has no label, aria-label or associated label."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Files/Index.vue",
+   "line": 97,
+   "fingerprint": "f54c7a33438ef4f083bd1dafd0bc5ee0",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Group/Show.vue",
+   "line": 123,
+   "fingerprint": "972d595943185f7de13a01b6083f8412",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Journal/Metrics/Index.vue",
+   "line": 160,
+   "fingerprint": "8e2d1d43d6efb8ad9fa59bcf105a5d52",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI014",
+   "file": "resources/js/Pages/Vault/Journal/Photo/Index.vue",
+   "line": 99,
+   "fingerprint": "4e0759ddf5dc7ab5a7da345f1927437f",
+   "verdict": "tp",
+   "reason": "The image has no width, height or sizing class."
+  },
+  {
+   "rule": "QA011",
+   "file": "resources/js/Pages/Vault/Journal/Post/Edit.vue",
+   "line": 85,
+   "fingerprint": "5d49ce1e69a69df6f55087f2277b43e0",
+   "verdict": "tp",
+   "reason": "The same function body is defined twice."
+  },
+  {
+   "rule": "QA003",
+   "file": "resources/js/Pages/Vault/Journal/Post/Edit.vue",
+   "line": 140,
+   "fingerprint": "8636e531355e8aa4f9b51d060d5f74c8",
+   "verdict": "tp",
+   "reason": "The request error is swallowed silently."
+  },
+  {
+   "rule": "UI001",
+   "file": "resources/js/Pages/Vault/Journal/Post/Edit.vue",
+   "line": 231,
+   "fingerprint": "f3ffea8abc27e52f0c3b1b6d3fde83d2",
+   "verdict": "tp",
+   "reason": "The image has no alt text."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Journal/Post/Edit.vue",
+   "line": 239,
+   "fingerprint": "d4ccdfdc0a8cea38e2a25a0f6b1fadfc",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI003",
+   "file": "resources/js/Pages/Vault/Journal/Post/Edit.vue",
+   "line": 384,
+   "fingerprint": "8bbd146680612ac5fc945b89d2e0e63a",
+   "verdict": "tp",
+   "reason": "The field has no label, aria-label or associated label."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Journal/Post/Edit.vue",
+   "line": 478,
+   "fingerprint": "22498dea9249aefb794e2194b798a7a0",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Journal/Post/Partials/PostMetrics.vue",
+   "line": 86,
+   "fingerprint": "856a0c4c4aed3ef2d63fb68513a1b2ab",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Journal/Post/Partials/PostMetrics.vue",
+   "line": 104,
+   "fingerprint": "766468df41b2cfe6845349fc632a21df",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Journal/Post/Partials/PostMetrics.vue",
+   "line": 110,
+   "fingerprint": "8c6271a8792c1726617a3242aa174ae1",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Journal/Post/Partials/PostMetrics.vue",
+   "line": 116,
+   "fingerprint": "b86395f5ec82b82514afd6405d05230f",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Journal/Post/Partials/SlicesOfLife.vue",
+   "line": 63,
+   "fingerprint": "7a56dc5901f3a576713f1a4a730ac9c6",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Journal/Post/Partials/SlicesOfLife.vue",
+   "line": 100,
+   "fingerprint": "e37354d341131c991e9a974621a3a879",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Journal/Post/Partials/Tags.vue",
+   "line": 6,
+   "fingerprint": "6b339bf6d729141770867bc755627ab8",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Journal/Post/Partials/Tags.vue",
+   "line": 14,
+   "fingerprint": "a393d6e134166ffb75f08515f7c8a8a4",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Journal/Post/Partials/Tags.vue",
+   "line": 44,
+   "fingerprint": "be465eadc8add223560aae0073559466",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Journal/Post/Partials/Tags.vue",
+   "line": 66,
+   "fingerprint": "3f72d9eeaa4e18a03e6bda5f555b2da6",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI014",
+   "file": "resources/js/Pages/Vault/Journal/Post/Show.vue",
+   "line": 130,
+   "fingerprint": "04f67d4af1ad429100a08f100291fb71",
+   "verdict": "tp",
+   "reason": "The image has no width, height or sizing class."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/Pages/Vault/Journal/Post/Show.vue",
+   "line": 141,
+   "fingerprint": "abe75236f53d8c958654c48a72556ed1",
+   "verdict": "fp",
+   "reason": "The section is rendered from markdown with html_input strip and no unsafe links."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Journal/Show.vue",
+   "line": 130,
+   "fingerprint": "aab76ee68e1c3dbb71c4fe8c7502810e",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI014",
+   "file": "resources/js/Pages/Vault/Journal/Show.vue",
+   "line": 183,
+   "fingerprint": "5f43270a4e325a93b9833cbebde5f63d",
+   "verdict": "tp",
+   "reason": "The image has no width, height or sizing class."
+  },
+  {
+   "rule": "UI001",
+   "file": "resources/js/Pages/Vault/Journal/Show.vue",
+   "line": 195,
+   "fingerprint": "95212b2286b57cddc9736276a43ee936",
+   "verdict": "tp",
+   "reason": "The image has no alt text."
+  },
+  {
+   "rule": "QA003",
+   "file": "resources/js/Pages/Vault/Journal/Slices/Show.vue",
+   "line": 31,
+   "fingerprint": "ace21161b979e5c376723ecfd0df90b7",
+   "verdict": "tp",
+   "reason": "The request error is swallowed silently."
+  },
+  {
+   "rule": "QA011",
+   "file": "resources/js/Pages/Vault/Journal/Slices/Show.vue",
+   "line": 34,
+   "fingerprint": "5c366c07c9d74c4c9b70ac0e794e9225",
+   "verdict": "tp",
+   "reason": "The same function body is defined twice."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Journal/Slices/Show.vue",
+   "line": 236,
+   "fingerprint": "8e368dbdb321de520c02727fd329ea4c",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Journal/Slices/Show.vue",
+   "line": 242,
+   "fingerprint": "0f29e320b246483cd7489fa2b84d9d69",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Search/Partials/Note.vue",
+   "line": 59,
+   "fingerprint": "cf44611f0290e39975aec02cd462733c",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Settings/Partials/ContactImportantDateTypes.vue",
+   "line": 61,
+   "fingerprint": "adaddf6e652d15a354e7803ea4044978",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Settings/Partials/ContactImportantDateTypes.vue",
+   "line": 64,
+   "fingerprint": "3d6ff0a9dcbeccbf1246594594798973",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Settings/Partials/DefaultTemplate.vue",
+   "line": 52,
+   "fingerprint": "88a25415f4e227f4b39cd87df1641be8",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Settings/Partials/Labels.vue",
+   "line": 81,
+   "fingerprint": "98062db702db2b38a7bfc4ebd630fb59",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Settings/Partials/Labels.vue",
+   "line": 84,
+   "fingerprint": "e328bbe3f2ab39c5003363e9ecfe1273",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Settings/Partials/LifeEventTypesAndCategories.vue",
+   "line": 282,
+   "fingerprint": "c3c518bc5fcd36b8f9604ee62eb37712",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Settings/Partials/LifeEventTypesAndCategories.vue",
+   "line": 285,
+   "fingerprint": "8588705091d144cab2750ffd5bbc1a78",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Settings/Partials/LifeEventTypesAndCategories.vue",
+   "line": 331,
+   "fingerprint": "5e7c483df84ba3f0207a12d733f05952",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Settings/Partials/LifeEventTypesAndCategories.vue",
+   "line": 334,
+   "fingerprint": "66c9f64ab58201001558a943c0b10c4d",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Settings/Partials/LifeEventTypesAndCategories.vue",
+   "line": 374,
+   "fingerprint": "83d11fa10e184d23bf5c30f55a7e6f5b",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Settings/Partials/LifeEventTypesAndCategories.vue",
+   "line": 432,
+   "fingerprint": "a4ea6059acf9df80281e263afdb7a17e",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Settings/Partials/MoodTrackingParameters.vue",
+   "line": 223,
+   "fingerprint": "e012b22deafc9b969462a912fc4234e9",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Settings/Partials/MoodTrackingParameters.vue",
+   "line": 228,
+   "fingerprint": "db498e42f127cd91697b680d2bd2c298",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "QA011",
+   "file": "resources/js/Pages/Vault/Settings/Partials/QuickFactTemplate.vue",
+   "line": 86,
+   "fingerprint": "bced082cbba7e8db55d1d84547150fd2",
+   "verdict": "tp",
+   "reason": "The same function body is defined twice."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Settings/Partials/QuickFactTemplate.vue",
+   "line": 178,
+   "fingerprint": "30f9eeafd452129bc0e9b06b5515a8ad",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Settings/Partials/QuickFactTemplate.vue",
+   "line": 181,
+   "fingerprint": "fa0ba0b4f6de514a0525142240e667ad",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Settings/Partials/Tags.vue",
+   "line": 59,
+   "fingerprint": "db5cb8cf7ecb10ba2168a9aaf3ff405f",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Settings/Partials/Tags.vue",
+   "line": 62,
+   "fingerprint": "db3aab62929299fcdf70e888901fc0e9",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Settings/Partials/Users.vue",
+   "line": 131,
+   "fingerprint": "304892ef4999c4fde415abd0e3887043",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Pages/Vault/Settings/Partials/Users.vue",
+   "line": 134,
+   "fingerprint": "7308dfd113a38081442681e89d4b4212",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/Shared/Avatar.vue",
+   "line": 9,
+   "fingerprint": "8b2c0216342b9a887cfa48725158a0ed",
+   "verdict": "fp",
+   "reason": "A server-generated avatar SVG."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/Shared/ContactCard.vue",
+   "line": 29,
+   "fingerprint": "6c25ecf869d0217a43a47825dc68807b",
+   "verdict": "fp",
+   "reason": "A server-generated avatar SVG."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/Shared/ContactCard.vue",
+   "line": 68,
+   "fingerprint": "e807561dfb84c0479b9de2c3c93949db",
+   "verdict": "fp",
+   "reason": "A server-generated avatar SVG."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Form/ContactSelector.vue",
+   "line": 160,
+   "fingerprint": "25b3649d1b3d264b298f07d7a394450a",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Form/ContactSelector.vue",
+   "line": 167,
+   "fingerprint": "da41a4949bb118ee8570a4e42e8eeed5",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI003",
+   "file": "resources/js/Shared/Form/ContactSelector.vue",
+   "line": 180,
+   "fingerprint": "ee20ec33b0891d13ce093ec88061c8cd",
+   "verdict": "tp",
+   "reason": "The field has no label, aria-label or associated label."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Form/ContactSelector.vue",
+   "line": 216,
+   "fingerprint": "073bd476138ca7f55a33f9baae256284",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Form/ContactSelector.vue",
+   "line": 249,
+   "fingerprint": "36c73ede7d68c2d2b09b2a2b6131bfd3",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Addresses.vue",
+   "line": 381,
+   "fingerprint": "e24064d7d9147da53ea9756a7afa74e8",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Addresses.vue",
+   "line": 384,
+   "fingerprint": "939335bc4db076ddedb976ee97e45e40",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Addresses.vue",
+   "line": 564,
+   "fingerprint": "2319525445917a3d9b5f5d0e4f4ad38e",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Addresses.vue",
+   "line": 567,
+   "fingerprint": "86c4b2020d5b2321474d73f1468779bd",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI003",
+   "file": "resources/js/Shared/Modules/Calls.vue",
+   "line": 189,
+   "fingerprint": "0b0ebee257459d7244c72ac9c2800cee",
+   "verdict": "tp",
+   "reason": "The field has no label, aria-label or associated label."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Calls.vue",
+   "line": 352,
+   "fingerprint": "ce2d907cfb195527de60a3095633e1fc",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Calls.vue",
+   "line": 360,
+   "fingerprint": "d3ac0b112e525e528e767f1a1358852e",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Calls.vue",
+   "line": 368,
+   "fingerprint": "0f65f3245ab49b7855eb384cf60a9df4",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI003",
+   "file": "resources/js/Shared/Modules/Calls.vue",
+   "line": 439,
+   "fingerprint": "4ab802f07ad3f1adf524c1e9035f48d2",
+   "verdict": "tp",
+   "reason": "The field has no label, aria-label or associated label."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Calls.vue",
+   "line": 606,
+   "fingerprint": "ecc0897d346c880acab938dfaf91fedc",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Calls.vue",
+   "line": 614,
+   "fingerprint": "567347e3f75029d1a4106a521e56bc86",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Calls.vue",
+   "line": 622,
+   "fingerprint": "96febb4e8b99948ceaf9315d3a0683d2",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/ContactInformation.vue",
+   "line": 269,
+   "fingerprint": "046097f689decac870d18f5f9969f71d",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/ContactInformation.vue",
+   "line": 272,
+   "fingerprint": "e2982ac6cc2df740589d46bd733d923a",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/CreateLifeEvent.vue",
+   "line": 186,
+   "fingerprint": "81e91921b1d8768dd303426638debbbd",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/CreateLifeEvent.vue",
+   "line": 210,
+   "fingerprint": "81a55ccf173d19e667612b02d2c4239b",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/CreateLifeEvent.vue",
+   "line": 236,
+   "fingerprint": "8c8fde60d7e72d38cfd2f83174393206",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/CreateLifeEvent.vue",
+   "line": 248,
+   "fingerprint": "52dee6be11c6eece4f7dedca18d00894",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI003",
+   "file": "resources/js/Shared/Modules/CreateLifeEvent.vue",
+   "line": 264,
+   "fingerprint": "93617f293c07f6c195a02c9c449f7cee",
+   "verdict": "tp",
+   "reason": "The field has no label, aria-label or associated label."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/CreateLifeEvent.vue",
+   "line": 380,
+   "fingerprint": "210d3705b1b359d6bbbac4bf05642f3b",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/CreateLifeEvent.vue",
+   "line": 389,
+   "fingerprint": "f5be7fd7bdfcfe9844e2c52298b4df5b",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/CreateLifeEvent.vue",
+   "line": 398,
+   "fingerprint": "7a920f9fbcf7ef27380c86945c64c24d",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Documents.vue",
+   "line": 57,
+   "fingerprint": "2d5178a7f6d6da42f4c6cc343b3810ee",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Feed.vue",
+   "line": 169,
+   "fingerprint": "6ca51cee860d34e47d883502fc519b9b",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "QA003",
+   "file": "resources/js/Shared/Modules/Feed.vue",
+   "line": 243,
+   "fingerprint": "a1c539d71bb4367a9a1bcfaac17e7661",
+   "verdict": "tp",
+   "reason": "The request error is swallowed silently."
+  },
+  {
+   "rule": "QA003",
+   "file": "resources/js/Shared/Modules/Feed.vue",
+   "line": 255,
+   "fingerprint": "427f79b9dde0fb04b36459958f6c1ad3",
+   "verdict": "tp",
+   "reason": "The request error is swallowed silently."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Goals.vue",
+   "line": 76,
+   "fingerprint": "38280cd8383217b03edb85be9e43c09a",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Goals.vue",
+   "line": 84,
+   "fingerprint": "e1941ce4aaf1819cc0f735847ff1e718",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Groups.vue",
+   "line": 105,
+   "fingerprint": "aea02091ac8a7258af0917fb66f9780a",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/JobInformation.vue",
+   "line": 5,
+   "fingerprint": "fd12a69dbd6cb5f2e7d50c92dd3e7305",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/JobInformation.vue",
+   "line": 10,
+   "fingerprint": "cf45ca2056e8bf2f6cffcdb8dcb2e1eb",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/JobInformation.vue",
+   "line": 37,
+   "fingerprint": "2bb28a4f8420a2ab0d94d4d67afe55e6",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/JobInformation.vue",
+   "line": 82,
+   "fingerprint": "c19937f2f1a1fa493a6b562877d21695",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Labels.vue",
+   "line": 5,
+   "fingerprint": "578619e5a9c99b1f6119b4ac3dae4542",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Labels.vue",
+   "line": 10,
+   "fingerprint": "7a676f8a235a74c881c0f7b6ca63351c",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Labels.vue",
+   "line": 41,
+   "fingerprint": "cbaf140f8be8604d47e06aa0dd15a46b",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Labels.vue",
+   "line": 48,
+   "fingerprint": "e0cdb2d5f7c52301b979b20ec5c236e1",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "QA003",
+   "file": "resources/js/Shared/Modules/LifeEvent.vue",
+   "line": 35,
+   "fingerprint": "b5af53a274b2eb1eeef3a89e6767a0bb",
+   "verdict": "tp",
+   "reason": "The request error is swallowed silently."
+  },
+  {
+   "rule": "QA003",
+   "file": "resources/js/Shared/Modules/LifeEvent.vue",
+   "line": 48,
+   "fingerprint": "642042877f43de8671fa54a5ee8131de",
+   "verdict": "tp",
+   "reason": "The request error is swallowed silently."
+  },
+  {
+   "rule": "QA003",
+   "file": "resources/js/Shared/Modules/LifeEvent.vue",
+   "line": 59,
+   "fingerprint": "50068d5c906d2ed6b791c1d84ab81f10",
+   "verdict": "tp",
+   "reason": "The request error is swallowed silently."
+  },
+  {
+   "rule": "QA003",
+   "file": "resources/js/Shared/Modules/LifeEvent.vue",
+   "line": 72,
+   "fingerprint": "79cec58e2fb67862c0463b06954f76d0",
+   "verdict": "tp",
+   "reason": "The request error is swallowed silently."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/LifeEvent.vue",
+   "line": 138,
+   "fingerprint": "9f5e3642d965aaed89e6883d7dc7ae09",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/LifeEvent.vue",
+   "line": 185,
+   "fingerprint": "612abe1c78af9631d1cb220080403c0f",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/LifeEvent.vue",
+   "line": 262,
+   "fingerprint": "f296f5ef35c278fbddd58c360cf6edbf",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/LifeEvent.vue",
+   "line": 283,
+   "fingerprint": "d1d9e9c8a9cee7db20b622053237b1bb",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI003",
+   "file": "resources/js/Shared/Modules/Loans.vue",
+   "line": 263,
+   "fingerprint": "c6509f1b41021c37f690c204728fd694",
+   "verdict": "tp",
+   "reason": "The field has no label, aria-label or associated label."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Loans.vue",
+   "line": 359,
+   "fingerprint": "4693cf9abea8989d9547a20532562c48",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Loans.vue",
+   "line": 365,
+   "fingerprint": "e2da33a68ce26ba0affe4e202258eecb",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Loans.vue",
+   "line": 370,
+   "fingerprint": "fe52300a99762d41f9ed124be5073de0",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Loans.vue",
+   "line": 375,
+   "fingerprint": "dd0b52b59a5548d7d015505048cd9a3b",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI003",
+   "file": "resources/js/Shared/Modules/Loans.vue",
+   "line": 479,
+   "fingerprint": "093d105e34bffbaad41328e792d556eb",
+   "verdict": "tp",
+   "reason": "The field has no label, aria-label or associated label."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Notes.vue",
+   "line": 61,
+   "fingerprint": "7997ac05a99d6f00167fc1f7a91d6ef4",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Notes.vue",
+   "line": 69,
+   "fingerprint": "5f44bd8b804e0d59013a563f22988b9b",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Notes.vue",
+   "line": 100,
+   "fingerprint": "2e7ab753d7091376b25e14c2b42f9ac7",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Pets.vue",
+   "line": 72,
+   "fingerprint": "0362d17704e0c2a6db3ed71d925e965c",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Pets.vue",
+   "line": 75,
+   "fingerprint": "dcfd5936cfdb9668a3ba134dc6239c7e",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI014",
+   "file": "resources/js/Shared/Modules/Photos.vue",
+   "line": 42,
+   "fingerprint": "a55c99d4bf4839bcb1ed8e80ee3b2436",
+   "verdict": "tp",
+   "reason": "The image has no width, height or sizing class."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/QuickFacts.vue",
+   "line": 101,
+   "fingerprint": "0ccbf13f373539462a681ff4a868716f",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/QuickFacts.vue",
+   "line": 120,
+   "fingerprint": "b23549db7425217b7b2a5d2d94c24f14",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/QuickFacts.vue",
+   "line": 183,
+   "fingerprint": "ca3d4cb18c9847134f44c88dcfc0db07",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/QuickFacts.vue",
+   "line": 194,
+   "fingerprint": "9e9e9f1332343cbcb5e75a9c35c6989e",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Relationships.vue",
+   "line": 54,
+   "fingerprint": "a67770b0c9a2c2b117c2d611550615f2",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Religion.vue",
+   "line": 49,
+   "fingerprint": "4732d8c4b120cd92f0ed22bf8b1ea05f",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Religion.vue",
+   "line": 54,
+   "fingerprint": "cdc75fbd5d92a01827590c78a5cd41d3",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI003",
+   "file": "resources/js/Shared/Modules/Reminders.vue",
+   "line": 186,
+   "fingerprint": "6e133684aefe2580535301adcde43710",
+   "verdict": "tp",
+   "reason": "The field has no label, aria-label or associated label."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Reminders.vue",
+   "line": 322,
+   "fingerprint": "b30cd4afc329573644eab4e0f541382f",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/js/Shared/Modules/Reminders.vue",
+   "line": 327,
+   "fingerprint": "754c7e4e3c182f919d051bc190fa0033",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI003",
+   "file": "resources/js/Shared/Modules/Reminders.vue",
+   "line": 382,
+   "fingerprint": "330315063b6a568330dc08b76547143e",
+   "verdict": "tp",
+   "reason": "The field has no label, aria-label or associated label."
+  },
+  {
+   "rule": "UI003",
+   "file": "resources/js/Shared/Modules/TaskItems/CreateOrEditTask.vue",
+   "line": 120,
+   "fingerprint": "9234bcef40541f89c72d7fa04d9c1620",
+   "verdict": "tp",
+   "reason": "The field has no label, aria-label or associated label."
+  },
+  {
+   "rule": "BE005",
+   "file": "resources/js/sentry.js",
+   "line": 19,
+   "fingerprint": "ccc7b109439d77c1960ca26031d99d98",
+   "verdict": "fp",
+   "reason": "Sentry's transport sends to the configured DSN; no request data picks the URL."
+  },
+  {
+   "rule": "AUTH004",
+   "file": "routes/web.php",
+   "line": 178,
+   "fingerprint": "638ad931634192a6bf6b93cef71cc348",
+   "verdict": "fp",
+   "reason": "The Telegram webhook path carries the configured secret token, which is how Telegram webhooks are authenticated."
+  },
+  {
+   "rule": "CFG009",
+   "file": "scripts/docker/Dockerfile",
+   "line": 13,
+   "fingerprint": "6521e439562ec24b1aabac50f37ca856",
+   "verdict": "fp",
+   "reason": "scripts/docker/.env.production holds only non-secret defaults (APP_KEY is empty)."
+  },
+  {
+   "rule": "CFG001",
+   "file": "scripts/docker/Dockerfile",
+   "line": 21,
+   "fingerprint": "bb2c9577e3309deb3d449346220b45ad",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "CFG009",
+   "file": "scripts/docker/Dockerfile",
+   "line": 166,
+   "fingerprint": "a86cecf6816f8a95c687944db28b7820",
+   "verdict": "fp",
+   "reason": "scripts/docker/.env.production holds only non-secret defaults (APP_KEY is empty)."
+  },
+  {
+   "rule": "CFG017",
+   "file": "scripts/docker/Dockerfile",
+   "line": 190,
+   "fingerprint": "95e7cef3f66ca51087d87d17b14b150e",
+   "verdict": "fp",
+   "reason": "scripts/docker/.env.production holds only non-secret defaults (APP_KEY is empty)."
+  }
+ ]
+}

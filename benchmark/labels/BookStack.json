@@ -1,0 +1,606 @@
+{
+ "repo": "BookStack",
+ "commit": "0b6b667e0d84ebb3406de6de9fadbf4230c29c0b",
+ "findings": [
+  {
+   "rule": "SEC006",
+   "file": ".env.example.complete",
+   "line": 0,
+   "fingerprint": "44667ce0bb65b239d8bfd2c5b4cb1d99",
+   "verdict": "fp",
+   "reason": "A documented example env file with placeholder values."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/AssignSortRuleCommand.php",
+   "line": 76,
+   "fingerprint": "371bd131b8ea54e96b29a857d9f053d2",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Entities/Tools/HierarchyTransformer.php",
+   "line": 38,
+   "fingerprint": "cdec6bff0199070247393fe6a8c65067",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Entities/Tools/PermissionsUpdater.php",
+   "line": 155,
+   "fingerprint": "557c231793db4455281116a74d2506f8",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "BE008",
+   "file": "app/Http/Controller.php",
+   "line": 194,
+   "fingerprint": "661abb585e9a16cd8af278a1ba3c083c",
+   "verdict": "fp",
+   "reason": "The return URL's host, scheme and port are compared with the app's own first."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Permissions/JointPermissionBuilder.php",
+   "line": 171,
+   "fingerprint": "0b89f4b1b4d290849607ebca45da7a83",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Permissions/JointPermissionBuilder.php",
+   "line": 233,
+   "fingerprint": "bdf18bda3e5fa5a978c523f73e744525",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/References/ReferenceStore.php",
+   "line": 93,
+   "fingerprint": "47029a4a1221abb501c66b3812b625d3",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/References/ReferenceUpdater.php",
+   "line": 68,
+   "fingerprint": "116815722ca049af6b382f82d2e4a80c",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "BE001",
+   "file": "app/Search/SearchRunner.php",
+   "line": 446,
+   "fingerprint": "4a0672b2bb07617b306ec98ec109009d",
+   "verdict": "fp",
+   "reason": "Only the table prefix from DB::getTablePrefix() is concatenated; values are bound."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Sorting/BookSorter.php",
+   "line": 63,
+   "fingerprint": "1928184298dfb0f40eaa7f3f46efe887",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Sorting/BookSorter.php",
+   "line": 74,
+   "fingerprint": "9f94122b54faa961d50945933f639073",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/Uploads/Controllers/AttachmentApiController.php",
+   "line": 109,
+   "fingerprint": "69b9bea7ceae39601f383d95b71d7d8d",
+   "verdict": "fp",
+   "reason": "JSON streamed with a JSON content type, not HTML."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/Uploads/Controllers/AttachmentApiController.php",
+   "line": 117,
+   "fingerprint": "d104501ac215afd09308a68247e01aec",
+   "verdict": "fp",
+   "reason": "JSON streamed with a JSON content type, not HTML."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Uploads/ImageService.php",
+   "line": 189,
+   "fingerprint": "b6ce3a6a3b98a98f5bda308c74c098fb",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Users/UserRepo.php",
+   "line": 221,
+   "fingerprint": "6c9104aa3165b3a30e48777924bd1397",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Users/UserRepo.php",
+   "line": 241,
+   "fingerprint": "3a86418995eeb7f2e95085acc2027610",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "CFG001",
+   "file": "dev/docker/Dockerfile",
+   "line": 1,
+   "fingerprint": "40d03a57b79211cb9bc25d5200b9be50",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "CFG001",
+   "file": "dev/docker/db-testing/Containerfile",
+   "line": 1,
+   "fingerprint": "1ec021e9ed913de4e23340f53b7bd081",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "QA002",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
+   "verdict": "tp",
+   "reason": "No CI configuration is committed at this commit."
+  },
+  {
+   "rule": "QA003",
+   "file": "public/libs/tinymce/plugins/importcss/plugin.min.js",
+   "line": 4,
+   "fingerprint": "d7004eec2c75c2932304d180623d18fd",
+   "verdict": "fp",
+   "reason": "Vendored minified TinyMCE plugin."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/code/index.mjs",
+   "line": 18,
+   "fingerprint": "2f6cc9def08ce1ce84d57a4cd388996d",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/code/index.mjs",
+   "line": 28,
+   "fingerprint": "d8e1273d5d5445df13b4a8025e0965eb",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/code/index.mjs",
+   "line": 36,
+   "fingerprint": "364bca9129966cbc5a05e27350bf88cf",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/code/index.mjs",
+   "line": 64,
+   "fingerprint": "74b9eacfabf7b20219f64968e1715b85",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/components/ajax-form.js",
+   "line": 66,
+   "fingerprint": "3720d52b2ae3cc0d3587c9a035ca6d34",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/components/ajax-form.js",
+   "line": 71,
+   "fingerprint": "f11fa440eb45e300bcd153675bd12544",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/components/attachments.js",
+   "line": 64,
+   "fingerprint": "285d464a0ea58cd26c057a1629345e94",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/components/attachments.js",
+   "line": 80,
+   "fingerprint": "c56f9f246eb70c43b85692e929d3643c",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/components/dropdown-search.js",
+   "line": 57,
+   "fingerprint": "48c86522891e59bb0eeb59762f0b0f5c",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/components/entity-search.js",
+   "line": 44,
+   "fingerprint": "e67d8b88b87344c6576b490a5a7b4d4d",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/components/entity-selector.ts",
+   "line": 141,
+   "fingerprint": "df6813e7b5711ce4a3d9d01475c41896",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/components/entity-selector.ts",
+   "line": 159,
+   "fingerprint": "a8623502210991ecc5a7d03316b01d07",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/components/image-manager.js",
+   "line": 187,
+   "fingerprint": "f4fd89ab34e29b4c09a0c9d770a4ff15",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/components/image-manager.js",
+   "line": 192,
+   "fingerprint": "c431e1e0b6193e1759cf549635d01568",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/components/image-manager.js",
+   "line": 274,
+   "fingerprint": "5346e60f6740d14d4ffd66accfd0d406",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/components/page-comment-reference.ts",
+   "line": 122,
+   "fingerprint": "e2369be308396ec682eb267e82be7c83",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/components/page-comment-reference.ts",
+   "line": 202,
+   "fingerprint": "6ba6667a6b1b73d4871154d9ab679af2",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/components/page-editor.js",
+   "line": 56,
+   "fingerprint": "d8f53369f7966a9e0d8ef1f034c3609f",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/components/template-manager.js",
+   "line": 77,
+   "fingerprint": "b4ae9c132c391b5aec01b52d6bc9efe7",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/components/template-manager.js",
+   "line": 86,
+   "fingerprint": "e476bde7bdca25bede1e7659180f95e7",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/components/user-select.js",
+   "line": 17,
+   "fingerprint": "ad7dae0e3f65ecd34ffe2ffd4bc6e6ac",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/services/dom.ts",
+   "line": 176,
+   "fingerprint": "c8dee8302fc996da92217eb641839027",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/services/vdom.ts",
+   "line": 26,
+   "fingerprint": "01dadead000b1225c85eef5a5ccf59e4",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/wysiwyg-tinymce/config.js",
+   "line": 167,
+   "fingerprint": "113fcfe3d780b2dcfd407113ac7e8655",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/wysiwyg-tinymce/plugin-codeeditor.js",
+   "line": 103,
+   "fingerprint": "b9f82d06f69efb528b292151a1519a41",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/wysiwyg-tinymce/plugins-details.js",
+   "line": 237,
+   "fingerprint": "131a64edc3049140fdb86081c76f0faa",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "QA007",
+   "file": "resources/js/wysiwyg/index.ts",
+   "line": 1,
+   "fingerprint": "1d8ad4d09cd5e4771c7e095ac47ac390",
+   "verdict": "fp",
+   "reason": "`lexical` resolves through the tsconfig path alias to the vendored copy under resources/js/wysiwyg/lexical."
+  },
+  {
+   "rule": "QA004",
+   "file": "resources/js/wysiwyg/lexical/core/LexicalUpdates.ts",
+   "line": 970,
+   "fingerprint": "0c750b2fbec759395c4118b3d9e68bc5",
+   "verdict": "tp",
+   "reason": "A TODO left in the code."
+  },
+  {
+   "rule": "QA007",
+   "file": "resources/js/wysiwyg/lexical/yjs/Bindings.ts",
+   "line": 19,
+   "fingerprint": "e0a3ea52994019a2395e59abb80a4957",
+   "verdict": "fp",
+   "reason": "The yjs folder is excluded in tsconfig.json; it is not built."
+  },
+  {
+   "rule": "QA006",
+   "file": "resources/js/wysiwyg/lexical/yjs/CollabElementNode.ts",
+   "line": 13,
+   "fingerprint": "00fc7a34b18931af23ea3580d343c1eb",
+   "verdict": "fp",
+   "reason": "The yjs folder is excluded in tsconfig.json; it is not built."
+  },
+  {
+   "rule": "QA011",
+   "file": "resources/js/wysiwyg/lexical/yjs/Utils.ts",
+   "line": 477,
+   "fingerprint": "f24cf4ff78ee0e296f4cf8b29c38f2a5",
+   "verdict": "tp",
+   "reason": "The same function body is defined twice."
+  },
+  {
+   "rule": "QA006",
+   "file": "resources/js/wysiwyg/lexical/yjs/types.ts",
+   "line": 9,
+   "fingerprint": "b8087f3b354129781a0b1cf39d211a1e",
+   "verdict": "fp",
+   "reason": "The yjs folder is excluded in tsconfig.json; it is not built."
+  },
+  {
+   "rule": "QA006",
+   "file": "resources/js/wysiwyg/lexical/yjs/types.ts",
+   "line": 10,
+   "fingerprint": "5023c50d384e8861b94b0d5713c87d67",
+   "verdict": "fp",
+   "reason": "The yjs folder is excluded in tsconfig.json; it is not built."
+  },
+  {
+   "rule": "QA006",
+   "file": "resources/js/wysiwyg/lexical/yjs/types.ts",
+   "line": 11,
+   "fingerprint": "61247caf974edd150100557430dce43b",
+   "verdict": "fp",
+   "reason": "The yjs folder is excluded in tsconfig.json; it is not built."
+  },
+  {
+   "rule": "QA006",
+   "file": "resources/js/wysiwyg/lexical/yjs/types.ts",
+   "line": 12,
+   "fingerprint": "ede44520682b7346c2d4e01c037d1fab",
+   "verdict": "fp",
+   "reason": "The yjs folder is excluded in tsconfig.json; it is not built."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/wysiwyg/ui/decorators/MentionDecorator.ts",
+   "line": 99,
+   "fingerprint": "a59d140165255ee8252330224df51d1f",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/wysiwyg/ui/framework/blocks/color-picker.ts",
+   "line": 68,
+   "fingerprint": "edf91b0085ca14da11e90fb8b1cf9e60",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/wysiwyg/ui/framework/blocks/color-picker.ts",
+   "line": 77,
+   "fingerprint": "9c983fe5bf0d7fd5ef27f3942c7ebab5",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/wysiwyg/ui/framework/blocks/external-content.ts",
+   "line": 23,
+   "fingerprint": "f00b234231d0604089d42cbe31113dd0",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/wysiwyg/ui/framework/blocks/menu-button.ts",
+   "line": 10,
+   "fingerprint": "0cbf3d26397e6d22f11db550c071fe15",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/wysiwyg/ui/framework/buttons.ts",
+   "line": 64,
+   "fingerprint": "c176205d16d5ca0bd33e3e50c5e7a812",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/js/wysiwyg/ui/framework/modals.ts",
+   "line": 60,
+   "fingerprint": "02bb3d89e4aad20882e1483b5531f535",
+   "verdict": "fp",
+   "reason": "HTML the app builds or its own server rendered (resp.data fragments, icon constants, its own DOM), not user input."
+  },
+  {
+   "rule": "UI016",
+   "file": "resources/sass/_codemirror.scss",
+   "line": 67,
+   "fingerprint": "c0887e3aa1d57f340e0319f202829685",
+   "verdict": "tp",
+   "reason": "The outline is removed with no other focus style."
+  },
+  {
+   "rule": "UI016",
+   "file": "resources/sass/_components.scss",
+   "line": 142,
+   "fingerprint": "6027ccfefe1291777f5424ee83dca0b3",
+   "verdict": "tp",
+   "reason": "The outline is removed with no other focus style."
+  },
+  {
+   "rule": "UI016",
+   "file": "resources/sass/_components.scss",
+   "line": 572,
+   "fingerprint": "9197e797b7a13727256628771d1815f6",
+   "verdict": "fp",
+   "reason": "A tab panel focused by script (no-outline), not a keyboard control."
+  },
+  {
+   "rule": "UI016",
+   "file": "resources/sass/_editor.scss",
+   "line": 44,
+   "fingerprint": "70443605d49162209cf6edb5874ffde9",
+   "verdict": "tp",
+   "reason": "The outline is removed with no other focus style."
+  },
+  {
+   "rule": "UI016",
+   "file": "resources/sass/_forms.scss",
+   "line": 69,
+   "fingerprint": "4b05453024814b84539fe520835ddcf4",
+   "verdict": "fp",
+   "reason": "The input sits inside a wrapper that shows the focus style (focus-within)."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/exports/parts/custom-head.blade.php",
+   "line": 5,
+   "fingerprint": "39a8ced0111a7debb2dddfe81b2b3cc7",
+   "verdict": "fp",
+   "reason": "Custom head HTML is an admin setting, raw by design."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/layouts/parts/custom-head.blade.php",
+   "line": 5,
+   "fingerprint": "de0eab57872e6d93e07981bfc2c0a99c",
+   "verdict": "fp",
+   "reason": "Custom head HTML is an admin setting, raw by design."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/pages/parts/page-display.blade.php",
+   "line": 8,
+   "fingerprint": "885122d00a2fb5cad6ac957e028397b9",
+   "verdict": "fp",
+   "reason": "The diff is HTML built by the server from stored, sanitized page content."
+  },
+  {
+   "rule": "AUTH015",
+   "file": "routes/web.php",
+   "line": 272,
+   "fingerprint": "c925c9629e21f26d5a77fe97e3b49573",
+   "verdict": "tp",
+   "reason": "Changing or resetting the password does not end the user's other sessions."
+  },
+  {
+   "rule": "AUTH015",
+   "file": "routes/web.php",
+   "line": 379,
+   "fingerprint": "8c9058ce1de18b2ab6695b15a219b1df",
+   "verdict": "tp",
+   "reason": "Changing or resetting the password does not end the user's other sessions."
+  },
+  {
+   "rule": "AUTH015",
+   "file": "routes/web.php",
+   "line": 387,
+   "fingerprint": "3b146abbf728a7dff0d22d7d2f246f19",
+   "verdict": "tp",
+   "reason": "Changing or resetting the password does not end the user's other sessions."
+  },
+  {
+   "rule": "SEC002",
+   "file": "tests/Helpers/OidcJwtHelper.php",
+   "line": 92,
+   "fingerprint": "d524888f529480a13b83a1d8aab1788a",
+   "verdict": "fp",
+   "reason": "A key fixture in the test helpers."
+  }
+ ]
+}

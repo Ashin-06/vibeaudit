@@ -162,8 +162,10 @@ class SecretScanner:
                     self.add(sf, "SEC001", m.start(), f"{label} committed in source.", secret, sev)
         for m in finditer(PRIVATE_KEY, text):
             window = text[m.end(): m.end() + 200]
-            if re.search(r"(?i)\.\.\.|example|your|redacted", window[:60]) or len(window.strip()) < 40:
-                continue
+            body = window.split("-----END", 1)[0]
+            if re.search(r"(?i)\.\.\.|example|your|redacted|fake|dummy|placeholder", window[:60]) or len(window.strip()) < 40 \
+                    or ("-----END" in window and len(re.findall(r"[A-Za-z0-9+/=]", body)) < 40):
+                continue  # a placeholder (`...PRIVATE KEY-----\n123...-----END`), not a key
             if once(m.start()):
                 self.add(sf, "SEC002", m.start(), "Private key committed in source.")
         for m in finditer(JWT, text):
@@ -181,9 +183,15 @@ class SecretScanner:
         if sf.is_test or is_doc or bundle:
             return
         public_lines = set()
+        # a bare PUBLIC_ prefix reaches the browser only in SvelteKit and Astro
+        bare_public = any(re.search(r"(?:^|/)(?:svelte|astro)\.config\.[cm]?[jt]s$", f.rel) for f in self.p.files)
         for m in finditer(PUBLIC_ENV, text):
             if re.search(r"PUBLISHABLE|ANON|PUBLIC_KEY|SITE_KEY|MEASUREMENT|_PK_|PK_LIVE|PK_TEST", m.group(0)):
                 continue
+            if m.group(0).startswith("PUBLIC_") and not bare_public:
+                continue  # Laravel's PUBLIC_AWS_* (the public disk) stays on the server
+            if re.match(r"""[ \t]*=[ \t]*(?:null|""|''|)[ \t]*(?:#[^\n]*)?(?:\n|$)""", text[m.end():m.end() + 200]):
+                continue  # declared empty
             line = sf.line_at(m.start())
             if line not in public_lines:
                 public_lines.add(line)
@@ -195,6 +203,8 @@ class SecretScanner:
             for m in finditer(rx, code):
                 if bare is not None and len(bare) == len(code) and not bare[m.start()].strip():
                     continue  # inside a string: an error message naming cookieParser("secret"), not a call
+                if sf.rel.endswith(".php") and m.group(0).startswith("session"):
+                    continue  # Laravel's session('key') reads a session value
                 val = m.group(1)
                 if H.PLACEHOLDER.search(val) and not re.search(r"(?i)changeme|change_me|secret|dev|insecure", val):
                     continue
@@ -231,7 +241,10 @@ class SecretScanner:
                         continue
                     if once(m.start()):
                         self.add(sf, "SEC011", m.start(), f"`{name}` is a hard-coded password.", val)
-            assigns = list(finditer(GENERIC_ASSIGN, code if sf.kind in ("py", "js") else text))
+            # translation files hold UI strings, in any script (Laravel resources/lang/ja/..., Symfony translations/)
+            translations = bool(re.search(r"(?:^|/)(?:lang|locales?|translations|i18n)/", sf.rel))
+            php = sf.rel.endswith(".php") and not sf.rel.endswith(".blade.php")
+            assigns = [] if translations else list(finditer(GENERIC_ASSIGN, code if sf.kind in ("py", "js") or php else text))
             # in a JSON file, a key with a random-looking value five or more times is a list of records (recorded API
             # responses, an OpenAPI example repeated per schema), not a credential
             counts: Dict[str, int] = {}
@@ -245,6 +258,11 @@ class SecretScanner:
                 if re.search(r"(?i)tokens?_?(?:count|limit|url|endpoint|type|name|usage)|max_?tokens?|tokenizer|csrf|_url$|_path$|_file$|_id$|_ids$|placeholder|label|hint", name):
                     continue
                 if val.startswith("AIza") and FIREBASE_CONTEXT.search(text[max(0, m.start() - 600): m.end() + 600]):
+                    continue
+                # not secrets: a column or key name (`google2fa_secret`), Laravel validation rules
+                # (`required|min:8|confirmed`), a Crowdin translation placeholder (`crwdns6798:0crwdne6798:0`)
+                if val.startswith("%env(") or (re.search(r"(?i)_(?:column|col|field|attribute|attr|table|header|param)s?$", name) and re.fullmatch(r"[a-z][a-z0-9]*(?:[_.-][a-z0-9]+)*", val)) or re.fullmatch(r"[\w:,.]+(?:\|[\w:,.]+)+", val) \
+                        or re.fullmatch(r"crwdns\d+:\d+crwdne\d+:\d+", val):
                     continue
                 if H.looks_random(val) and once(m.start()):
                     self.add(sf, "SEC003", m.start(), f"`{name}` is assigned a real-looking secret.", val)
@@ -263,6 +281,12 @@ class SecretScanner:
                 v = py_views(text)
             elif sf.kind in ("js", "html"):
                 v = js_views(text)
+            elif sf.rel.endswith(".php") and not sf.rel.endswith(".blade.php"):
+                from .phpscan import php_views  # PHP: no comments (docblock examples), no inline HTML
+
+                pv = sf.cache.get("php_views") or php_views(text)
+                sf.cache["php_views"] = pv
+                return pv.code  # type: ignore[attr-defined]
             else:
                 return text
             sf.cache["views"] = v

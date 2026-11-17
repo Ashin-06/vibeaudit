@@ -25,14 +25,10 @@ GO_SQLI = re.compile(
     r"""\b(?:db|tx|conn|pool)\s*\.\s*(?:Raw|Exec|Query|QueryRow|Where|Order)\s*\(\s*(?:fmt\.Sprintf\s*\(|"[^"\n]{0,200}"\s*\+)""")
 CS_SQLI = re.compile(
     r"""\.\s*(?:FromSqlRaw|ExecuteSqlRaw|SqlQueryRaw)\s*\(\s*(?:\$"|"[^"\n]{0,200}"\s*\+|string\.Format\s*\()""")
-PHP_SQLI = re.compile(
-    r"""(?:\bDB::(?:raw|select|statement)|->\s*(?:whereRaw|selectRaw|orderByRaw|query|exec))\s*\(\s*(?:"[^"\n]{0,200}\$\w+|'[^'\n]{0,200}'\s*\.\s*\$)""")
 
 GO_CMDI = re.compile(r"""\bexec\.Command\s*\(\s*"(?:sh|bash|cmd|powershell)"\s*,\s*"(?:-c|/c)"\s*,\s*(?!")""")
 CS_CMDI = re.compile(
     r"""\bProcess\.Start\s*\(\s*(?:new\s+ProcessStartInfo\s*\(\s*)?"(?:cmd|powershell|sh|bash)(?:\.exe)?"\s*,\s*(?:\$"|"[^"\n]{0,200}"\s*\+)""")
-PHP_CMDI = re.compile(
-    r"""\b(?:shell_exec|system|passthru)\s*\(\s*(?:"[^"\n]{0,200}\$|\$\w+|(?:"[^"\n]{0,200}"|'[^'\n]{0,200}')\s*\.\s*\$)""")
 
 GO_HTTP = re.compile(r"""\bhttp\.(?:Get|Post|PostForm)\s*\(""")
 JAVA_HTTP = re.compile(r"""\bnew\s+RestTemplate\s*\(\s*\)|\bHttpClient\.newHttpClient\s*\(\s*\)""")
@@ -47,9 +43,12 @@ JAVA_LOOP_DB = re.compile(
     r"""\b\w{1,40}Repository\s*\.\s*(?:find|get|save|delete)\w*\s*\(|\bentityManager\s*\.\s*(?:find|create(?:Native)?Query)\s*\(|\bjdbcTemplate\s*\.\s*(?:query|update)\w*\s*\(""")
 CS_LOOP_DB = re.compile(r"""\.\s*(?:FirstOrDefaultAsync|SingleOrDefaultAsync|FindAsync|ToListAsync|SaveChangesAsync|ExecuteSqlRawAsync)\s*\(""")
 RS_LOOP_DB = re.compile(r"""\b(?:sqlx::query|diesel::\w+|collection\.find_one)\b""")
-PHP_LOOP_DB = re.compile(r"""\b(?:DB::(?:select|table)|[A-Z]\w{0,40}::(?:find|where|create|first))\s*\(|->\s*(?:save|delete|execute|fetch)\s*\(""")
+# a model's ->save() / ->delete() (no arguments: Storage::disk()->delete($key) is a file), a PDO statement's ->execute()
+PHP_LOOP_DB = re.compile(r"""\b(?:DB::(?:select|table)|(?!(?:Carbon|CarbonImmutable|Date\w*|Str|Arr|Collection|Response|Http)::)"""
+                         r"""[A-Z]\w{0,40}::(?:find|where|create|first))\s*\(|->\s*(?:save\s*\(|delete\s*\(\s*\))"""
+                         r"""|\$\w*(?:stmt|statement|sth|query)\w*\s*->\s*(?:execute|fetch\w*)\s*\(""")
+PHP_LOOP_HEAD = re.compile(r"""(?<![:>$\w])(?:for|foreach|while)\s*\(""")  # not Breadcrumbs::for(...)
 
-BLADE_RAW = re.compile(r"""\{!!\s*\$(?!slot\b|attributes\b)[^!\n]{1,200}!!\}|\becho\s+\$_(?:GET|POST|REQUEST)\b""")
 RAZOR_RAW = re.compile(r"""@Html\.Raw\s*\(""")
 
 POLY_AUTH = re.compile(
@@ -71,10 +70,6 @@ GO_METHOD_ROUTE = re.compile(
 
 
 
-PHP_LARAVEL_ROUTE = re.compile(
-    r"""\bRoute::(get|post|put|delete|patch)\s*\(\s*['"]([^'"\n]{1,200})['"]\s*,\s*([^;\n]{1,200})""")
-PHP_SYMFONY_ROUTE = re.compile(
-    r"""#\[Route\s*\(\s*['"]([^'"\n]{1,200})['"][^\]\n]{0,200}\]""")
 
 
 POLY_SEVERE = frozenset({"BE001", "BE002", "FE001"})  # injection and XSS: gate even in preview
@@ -252,8 +247,9 @@ class PolyScanner:
             code = without_test_modules(v.code, v.bare)
             self._loop_n_plus_one(sf, code, RS_LOOP_DB, RS_LOOP_HEAD)
             self._check_timeout(sf, code, RS_HTTP, "reqwest")
-        elif lang == "php":
-            self._php(sf, code)
+        elif lang == "php":  # routes, injection and Blade output are phpscan's; these two checks stay here
+            self._loop_n_plus_one(sf, code, PHP_LOOP_DB, PHP_LOOP_HEAD)
+            self._check_timeout(sf, code, PHP_HTTP, "Http::get/post()")
 
     def _emit_route(self, sf: SourceFile, offset: int, path: str, methods: List[str], body: str,
                     framework: str, lang: str) -> None:
@@ -360,42 +356,3 @@ class PolyScanner:
     def _cs(self, sf: SourceFile, code: str) -> None:
         # routes, authorization and request data into the sinks are csharp.CsScanner's; this keeps the rest
         self._loop_n_plus_one(sf, code, CS_LOOP_DB)
-
-    # ----------------------------------------------------------------- PHP
-    def _php(self, sf: SourceFile, code: str) -> None:
-        raw = sf.text or ""
-        for m in finditer(PHP_LARAVEL_ROUTE, code):
-            verb, path, rest = m.group(1).upper(), m.group(2), m.group(3)
-            line_end = code.find("\n", m.start())
-            end_pos = line_end if line_end >= 0 else len(code)
-            stmt_end = code.find(";", m.start())
-            full_stmt = code[m.start():stmt_end if stmt_end > 0 else m.end() + 120]
-            brace = code.find("{", m.start(), end_pos)
-            body = _brace_block(code, brace) if brace >= 0 else full_stmt
-            if brace < 0:
-                ctrl_m = re.search(r"['\"](\w+)['\"]\s*\]|@\s*(\w+)", rest)
-                if ctrl_m:
-                    method_name = ctrl_m.group(1) or ctrl_m.group(2)
-                    body = full_stmt + " " + (_named_body(code, method_name, "php") or "")
-            if _has_auth(full_stmt):
-                body = "middleware('auth') " + body
-            self._emit_route(sf, m.start(), path, [verb], body, "laravel", "php")
-
-        for m in finditer(PHP_SYMFONY_ROUTE, code):
-            path = m.group(1)
-            attr = m.group(0)
-            mm = re.search(r"methods:\s*\[([^\]]{1,80})\]", attr)
-            methods = [v.strip().strip("'\"").upper() for v in mm.group(1).split(",")] if mm else ["GET"]
-            ctx_start = max(0, m.start() - 120)
-            brace = code.find("{", m.end(), m.end() + 300)
-            body = code[ctx_start:brace] + _brace_block(code, brace) if brace >= 0 else code[ctx_start:m.end() + 600]
-            self._emit_route(sf, m.start(), path, methods, body, "symfony", "php")
-
-        for m in finditer(PHP_SQLI, code):
-            self.add(sf, sf.line_at(m.start()), "BE001", "Raw SQL query interpolates or concatenates a PHP variable.")
-        for m in finditer(PHP_CMDI, code):
-            self.add(sf, sf.line_at(m.start()), "BE002", "Shell execution function receives dynamic PHP variables.")
-        for m in finditer(BLADE_RAW, raw):
-            self.add(sf, sf.line_at(m.start()), "FE001", "Unescaped `{!! ... !!}` output in template/PHP can execute script (XSS).")
-        self._loop_n_plus_one(sf, code, PHP_LOOP_DB)
-        self._check_timeout(sf, code, PHP_HTTP, "Http::get/post()")

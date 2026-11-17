@@ -21,6 +21,7 @@ from .jvm import JvmScanner
 from .model import SEVERITY_RANK, SUPPRESS, TEST_FILE_RULES, Finding, at_least
 from .projectscan import ProjectScanner
 from .goscan import GoScanner
+from .phpscan import PhpScanner
 from .rustscan import RustScanner
 from .polyscan import POLY_SEVERE, PolyScanner, _lang_of as poly_lang
 from .pyscan import PyScanner
@@ -189,7 +190,8 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
     go_routes = GoScanner(project, emit).run()  # Go: lexer-based; polyscan covers the other new languages
     go_routes += RustScanner(project, emit).run()  # Rust: Actix and Axum
     go_routes += CsScanner(project, emit).run()  # C#: ASP.NET Core controllers and minimal APIs
-    poly_routes = PolyScanner(project, emit).run()  # PHP; for Go, Java, Rust and C# only the checks they lack
+    go_routes += PhpScanner(project, emit).run()  # PHP: Laravel and Symfony
+    poly_routes = PolyScanner(project, emit).run()  # for Go, Java, Rust, C# and PHP only the checks they lack
     all_routes = js_routes + py_routes + go_routes + poly_routes
     SecretScanner(project, emit).run()
     ProjectScanner(project, emit, all_routes).run()

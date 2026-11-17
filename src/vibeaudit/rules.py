@@ -465,7 +465,9 @@ _R = [
     Rule("CFG002", "Unpinned container base image", "config", "low",
          "`latest` (or no tag) changes under you, so builds are not reproducible and can pull a broken or "
          "compromised image.",
-         "Pin a version tag, ideally with a digest (`python:3.12-slim@sha256:...`).", "CWE-1357", "A08:2021"),
+         "Pin a version tag, ideally with a digest (`python:3.12-slim@sha256:...`).", "CWE-1357", "A08:2021",
+         preview=True, preview_reason="Held-out 5 of 6 (83.3%) after the Go and Rust held-out repositories: a Gitpod "
+                                      "development workspace image was reported."),
     Rule("CFG003", "Secret baked into the container image", "config", "high",
          "ENV and ARG values are stored in the image layers and visible to anyone who can pull the image.",
          "Pass secrets at runtime (environment, secret mounts with `RUN --mount=type=secret`).",
@@ -616,7 +618,10 @@ _R = [
     Rule("QA001", "No automated tests", "quality", "medium",
          "AI-generated code often looks right and is subtly wrong. Without tests nobody notices until users "
          "do, and every future AI edit can silently break existing behaviour.",
-         "Add tests for the critical paths first (auth, payments, data writes) and run them in CI.", "", ""),
+         "Add tests for the critical paths first (auth, payments, data writes) and run them in CI.", "", "",
+         preview=True, preview_reason="Held-out 6 of 8 (75.0%) after the Java held-out repositories: Java tests under "
+                                      "src/test were not counted. Fixed (tests in every language count); it leaves "
+                                      "preview again on fresh held-out data, not on the repositories that showed the cause."),
     Rule("QA002", "No continuous integration", "quality", "low",
          "Without CI, tests and security checks only run when someone remembers to run them.",
          "Add a CI workflow (for example GitHub Actions) that runs tests and `vibeaudit scan` on every push.",
@@ -652,7 +657,9 @@ _R = [
     Rule("QA007", "Package imported but not declared as a dependency", "quality", "medium",
          "The package is installed on the author's machine but missing from requirements.txt, pyproject.toml or "
          "package.json, so a clean install (CI, Docker, production) fails with an import error.",
-         "Add the package with a pinned version to the project's dependency file.", "CWE-1104", ""),
+         "Add the package with a pinned version to the project's dependency file.", "CWE-1104", "",
+         preview=True, preview_reason="Held-out 6 of 7 (85.7%) after the Rust held-out repositories: an example "
+                                      "script importing a client that is not published under that name."),
     Rule("QA008", "TypeScript checking disabled for a whole file", "quality", "low",
          "`// @ts-nocheck` hides every type error in the file, including the ones that would catch broken AI edits.",
          "Remove @ts-nocheck and fix or narrowly suppress the individual errors.", "", ""),
@@ -733,7 +740,9 @@ _R = [
          "Postgres does not index foreign key columns. Every delete or key update in the referenced table, and "
          "every join on the key, scans the referencing table; with ON DELETE CASCADE it also locks it.",
          "Add an index on the foreign key column, for example `CREATE INDEX ON orders (user_id)`.", "CWE-1050",
-         ""),
+         "", preview=True,
+         preview_reason="Held-out 19 of 28 (67.9%) after the Rust held-out repositories: MariaDB/MySQL migrations, "
+                        "where InnoDB indexes every foreign key itself, were reported."),
     Rule("DATA013", "Redis key without an expiry", "data", "low",
          "Keys written without a TTL stay until something deletes them; caches, sessions and rate-limit "
          "counters then grow until Redis runs out of memory or starts evicting keys you need.",
@@ -906,7 +915,9 @@ _R = [
     Rule("UI009", "Data loaded without loading or error state", "ui", "low",
          "If the request is slow the user sees an empty screen; if it fails the error is swallowed and the screen "
          "stays empty with no explanation.",
-         "Track loading and error state (or use a data library such as SWR or React Query) and render both."),
+         "Track loading and error state (or use a data library such as SWR or React Query) and render both.",
+         preview=True, preview_reason="Held-out 4 of 5 (80.0%) after the Go held-out repositories: an effect that "
+                                      "only fills a form field was reported."),
     Rule("UI010", "Placeholder content left in the UI", "ui", "low",
          "Lorem ipsum in shipped pages makes the product look unfinished.",
          "Replace it with real copy, or hide the section until it has content."),
