@@ -92,6 +92,8 @@ spring-boot-realworld-example-app moved to the tuned split with Java support: it
 
 jira-meridian moved to the tuned split with Rust support: its project-specific Axum extractor `OrgContext` (a `FromRequestParts` impl that rejects unauthenticated requests) was not recognised as authentication, so AUTH001 reported about 60 member-only routes. Custom extractors are a common Rust pattern, so the cause was worth fixing; mCaptcha (an Actix-web application, chosen and pinned before it was scanned) replaced it.
 
+torrent-aggregator and semantickernel-microservice moved to the tuned split with C# support, before any of their results were reported: their first scan showed two bugs worth fixing (a GetAsync call on any object was taken for an HTTP request, and a versioned route template such as `api/v{version:apiVersion}` cut the class attributes short, losing the route prefix). vibecodementor and Timinute (chosen and pinned before they were scanned) replaced them.
+
 Known held-out false positives (not fixed, by the rule above): DATA012 on MariaDB/MySQL migrations, where InnoDB indexes every foreign key itself (mCaptcha); an `export const enum` is not seen as an export (mCaptcha, QA006); secrets in `#[cfg(test)]` modules (svix-webhooks, SEC003 and SEC004); chi routers mounted with `r.Mount` inside an `r.Group` that adds JWT and role middleware are not followed, so AUTH001 and AUTH002 report go-base's protected admin and app routes; a `.env_example` file is not recognised as an example (toWers, CFG009); API001 does not recognise `route.tsx` files
 (openai-assistants-quickstart); CFG013 misses a templated Helm `resources:` block whose template is on the
 next line (podinfo); `_test.go` files are not treated as tests (podinfo, SEC003); DEBUG and CSRF settings

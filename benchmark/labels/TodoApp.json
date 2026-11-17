@@ -1,0 +1,22 @@
+{
+ "repo": "TodoApp",
+ "commit": "307a1eadbbd77a3004c318f2377e4818bc400af6",
+ "findings": [
+  {
+   "rule": "AUTH010",
+   "file": "Todo.Api/Users/UsersApi.cs",
+   "line": 24,
+   "fingerprint": "3d31698da816f4ae656f4335c9c7fa0c",
+   "verdict": "fp",
+   "reason": "Exchanges a provider key protected by the server's data protection; there is no password to guess."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "Todo.Web/Server/AuthApi.cs",
+   "line": 27,
+   "fingerprint": "4cd80c165d542d6b9e9abcb3bdea7834",
+   "verdict": "tp",
+   "reason": "The login endpoint has no rate limit."
+  }
+ ]
+}

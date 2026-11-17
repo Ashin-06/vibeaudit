@@ -1,10 +1,11 @@
 {
  "tool": "vibeaudit benchmark",
- "corpus": 85,
- "scanned": 85,
+ "corpus": 96,
+ "scanned": 96,
  "skipped": {},
  "heldout": [
   "Schematic",
+  "Timinute",
   "careconnect",
   "damn-vulnerable-llm-agent",
   "dvpwa",
@@ -23,6 +24,7 @@
   "terragoat",
   "thynk",
   "toWers",
+  "vibecodementor",
   "vulnerable-java-application",
   "waline"
  ],
@@ -455,11 +457,11 @@
    "fixed_fp": 0
   },
   "vulnerable-java-application": {
-   "findings": 8,
-   "labelled": 8,
+   "findings": 7,
+   "labelled": 7,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 1
   },
   "JavaVulnerableLab": {
    "findings": 12,
@@ -469,11 +471,11 @@
    "fixed_fp": 0
   },
   "piggymetrics": {
-   "findings": 12,
-   "labelled": 12,
+   "findings": 11,
+   "labelled": 11,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 1
   },
   "uniedit-server": {
    "findings": 46,
@@ -483,11 +485,11 @@
    "fixed_fp": 0
   },
   "conveyor": {
-   "findings": 20,
-   "labelled": 20,
+   "findings": 19,
+   "labelled": 19,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 1
   },
   "toWers": {
    "findings": 23,
@@ -497,11 +499,11 @@
    "fixed_fp": 0
   },
   "sili-smart-hr": {
-   "findings": 150,
-   "labelled": 150,
+   "findings": 149,
+   "labelled": 149,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 1
   },
   "golang-gin-realworld-example-app": {
    "findings": 6,
@@ -588,11 +590,11 @@
    "fixed_fp": 0
   },
   "svix-webhooks": {
-   "findings": 42,
-   "labelled": 42,
+   "findings": 41,
+   "labelled": 41,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 3
+   "fixed_fp": 4
   },
   "jira-meridian": {
    "findings": 72,
@@ -616,8 +618,85 @@
    "fixed_fp": 3
   },
   "mCaptcha": {
-   "findings": 39,
-   "labelled": 39,
+   "findings": 38,
+   "labelled": 38,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 1
+  },
+  "eShopOnWeb": {
+   "findings": 5,
+   "labelled": 5,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "aspnetcore-realworld-example-app": {
+   "findings": 3,
+   "labelled": 3,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "dvcsharp-api": {
+   "findings": 8,
+   "labelled": 8,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "chat-copilot": {
+   "findings": 33,
+   "labelled": 33,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "ClaudeCodeProxy": {
+   "findings": 81,
+   "labelled": 81,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "VibeCodingBreadcrumbDemo": {
+   "findings": 0,
+   "labelled": 0,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "TodoApp": {
+   "findings": 2,
+   "labelled": 2,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "torrent-aggregator": {
+   "findings": 46,
+   "labelled": 46,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "semantickernel-microservice": {
+   "findings": 15,
+   "labelled": 15,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "vibecodementor": {
+   "findings": 42,
+   "labelled": 42,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "Timinute": {
+   "findings": 48,
+   "labelled": 48,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
@@ -678,16 +757,21 @@
   "AUTH001": {
    "title": "State-changing endpoint without authentication",
    "preview": false,
-   "tp": 46,
+   "tp": 63,
    "fp": 11,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.807,
-   "precision_pessimistic": 0.807,
+   "precision": 0.8514,
+   "precision_pessimistic": 0.8514,
    "seeded_expected": 8,
    "seeded_found": 8,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     16,
+     0,
+     0
+    ],
     "LinguaLearn": [
      2,
      0,
@@ -710,6 +794,11 @@
     ],
     "conveyor": [
      4,
+     0,
+     0
+    ],
+    "dvcsharp-api": [
+     1,
      0,
      0
     ],
@@ -790,8 +879,18 @@
     ]
    },
    "preview_by_repo": {
+    "ClaudeCodeProxy": [
+     16,
+     0,
+     0
+    ],
     "conveyor": [
      4,
+     0,
+     0
+    ],
+    "dvcsharp-api": [
+     1,
      0,
      0
     ],
@@ -882,16 +981,21 @@
   "AUTH003": {
    "title": "Possible insecure direct object reference (IDOR)",
    "preview": false,
-   "tp": 9,
-   "fp": 11,
+   "tp": 25,
+   "fp": 19,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.45,
-   "precision_pessimistic": 0.45,
+   "precision": 0.5682,
+   "precision_pessimistic": 0.5682,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     10,
+     1,
+     0
+    ],
     "bella-openapi": [
      0,
      1,
@@ -905,6 +1009,11 @@
     "conveyor": [
      0,
      2,
+     0
+    ],
+    "dvcsharp-api": [
+     1,
+     0,
      0
     ],
     "golang-gin-realworld-example-app": [
@@ -927,18 +1036,38 @@
      1,
      0
     ],
+    "semantickernel-microservice": [
+     5,
+     0,
+     0
+    ],
     "toWers": [
      0,
      1,
+     0
+    ],
+    "torrent-aggregator": [
+     0,
+     6,
      0
     ],
     "vibe-trading": [
      0,
      2,
      0
+    ],
+    "vibecodementor": [
+     0,
+     1,
+     0
     ]
    },
    "preview_by_repo": {
+    "ClaudeCodeProxy": [
+     10,
+     1,
+     0
+    ],
     "bella-openapi": [
      0,
      1,
@@ -954,6 +1083,11 @@
      2,
      0
     ],
+    "dvcsharp-api": [
+     1,
+     0,
+     0
+    ],
     "golang-gin-realworld-example-app": [
      0,
      1,
@@ -964,7 +1098,22 @@
      0,
      0
     ],
+    "semantickernel-microservice": [
+     5,
+     0,
+     0
+    ],
     "toWers": [
+     0,
+     1,
+     0
+    ],
+    "torrent-aggregator": [
+     0,
+     6,
+     0
+    ],
+    "vibecodementor": [
      0,
      1,
      0
@@ -1125,17 +1274,27 @@
   "AUTH010": {
    "title": "Login endpoint without rate limiting",
    "preview": false,
-   "tp": 20,
-   "fp": 0,
+   "tp": 22,
+   "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.9565,
+   "precision_pessimistic": 0.9565,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
    "by_repo": {
+    "TodoApp": [
+     1,
+     1,
+     0
+    ],
     "Vulnerable-Flask-App": [
+     1,
+     0,
+     0
+    ],
+    "aspnetcore-realworld-example-app": [
      1,
      0,
      0
@@ -1207,6 +1366,16 @@
     ]
    },
    "preview_by_repo": {
+    "TodoApp": [
+     1,
+     1,
+     0
+    ],
+    "aspnetcore-realworld-example-app": [
+     1,
+     0,
+     0
+    ],
     "go-base": [
      1,
      0,
@@ -1307,7 +1476,7 @@
   "AUTH015": {
    "title": "Password change keeps old sessions valid",
    "preview": true,
-   "tp": 3,
+   "tp": 4,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -1317,6 +1486,11 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "dvcsharp-api": [
+     1,
+     0,
+     0
+    ],
     "full-stack-fastapi-template": [
      2,
      0,
@@ -1329,6 +1503,11 @@
     ]
    },
    "preview_by_repo": {
+    "dvcsharp-api": [
+     1,
+     0,
+     0
+    ],
     "full-stack-fastapi-template": [
      2,
      0,
@@ -1386,12 +1565,12 @@
   "BE001": {
    "title": "SQL injection",
    "preview": false,
-   "tp": 30,
+   "tp": 31,
    "fp": 10,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.75,
-   "precision_pessimistic": 0.75,
+   "precision": 0.7561,
+   "precision_pessimistic": 0.7561,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -1408,6 +1587,11 @@
     ],
     "damn-vulnerable-llm-agent": [
      2,
+     0,
+     0
+    ],
+    "dvcsharp-api": [
+     1,
      0,
      0
     ],
@@ -1455,6 +1639,11 @@
    "preview_by_repo": {
     "JavaVulnerableLab": [
      5,
+     0,
+     0
+    ],
+    "dvcsharp-api": [
+     1,
      0,
      0
     ],
@@ -1689,18 +1878,28 @@
   "BE005": {
    "title": "Server-side request forgery (SSRF)",
    "preview": false,
-   "tp": 3,
+   "tp": 5,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.75,
-   "precision_pessimistic": 0.75,
+   "precision": 0.8333,
+   "precision_pessimistic": 0.8333,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
    "by_repo": {
     "bella-openapi": [
      2,
+     0,
+     0
+    ],
+    "chat-copilot": [
+     1,
+     0,
+     0
+    ],
+    "dvcsharp-api": [
+     1,
      0,
      0
     ],
@@ -1715,7 +1914,18 @@
      0
     ]
    },
-   "preview_by_repo": {}
+   "preview_by_repo": {
+    "chat-copilot": [
+     1,
+     0,
+     0
+    ],
+    "dvcsharp-api": [
+     1,
+     0,
+     0
+    ]
+   }
   },
   "BE006": {
    "title": "Path traversal",
@@ -2035,7 +2245,7 @@
   "BE015": {
    "title": "Insecure randomness for secrets",
    "preview": false,
-   "tp": 3,
+   "tp": 4,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2045,6 +2255,11 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     1,
+     0,
+     0
+    ],
     "pygoat": [
      1,
      0,
@@ -2305,7 +2520,7 @@
   "CFG001": {
    "title": "Container runs as root",
    "preview": false,
-   "tp": 98,
+   "tp": 109,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2315,6 +2530,11 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     1,
+     0,
+     0
+    ],
     "Django-Styleguide-Example": [
      2,
      0,
@@ -2345,6 +2565,11 @@
      0,
      0
     ],
+    "chat-copilot": [
+     5,
+     0,
+     0
+    ],
     "chat-systems": [
      3,
      0,
@@ -2370,6 +2595,11 @@
      0,
      0
     ],
+    "dvcsharp-api": [
+     1,
+     0,
+     0
+    ],
     "dvna": [
      1,
      0,
@@ -2377,6 +2607,11 @@
     ],
     "dvpwa": [
      1,
+     0,
+     0
+    ],
+    "eShopOnWeb": [
+     2,
      0,
      0
     ],
@@ -2485,7 +2720,17 @@
      0,
      0
     ],
+    "torrent-aggregator": [
+     1,
+     0,
+     0
+    ],
     "vibe-trading": [
+     1,
+     0,
+     0
+    ],
+    "vibecodementor": [
      1,
      0,
      0
@@ -2516,12 +2761,12 @@
   "CFG002": {
    "title": "Unpinned container base image",
    "preview": false,
-   "tp": 12,
+   "tp": 13,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9231,
-   "precision_pessimistic": 0.9231,
+   "precision": 0.9286,
+   "precision_pessimistic": 0.9286,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -2537,6 +2782,11 @@
      0
     ],
     "conveyor": [
+     1,
+     0,
+     0
+    ],
+    "dvcsharp-api": [
      1,
      0,
      0
@@ -2663,7 +2913,7 @@
   "CFG007": {
    "title": "Default database credentials",
    "preview": false,
-   "tp": 19,
+   "tp": 20,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2742,6 +2992,11 @@
      1,
      0,
      0
+    ],
+    "vibecodementor": [
+     1,
+     0,
+     0
     ]
    },
    "preview_by_repo": {}
@@ -2816,7 +3071,7 @@
   "CFG010": {
    "title": "Third-party GitHub Action not pinned to a commit",
    "preview": false,
-   "tp": 179,
+   "tp": 229,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2826,8 +3081,18 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     10,
+     0,
+     0
+    ],
     "Schematic": [
      1,
+     0,
+     0
+    ],
+    "Timinute": [
+     6,
      0,
      0
     ],
@@ -2851,6 +3116,11 @@
      0,
      0
     ],
+    "aspnetcore-realworld-example-app": [
+     1,
+     0,
+     0
+    ],
     "bakerydemo": [
      1,
      0,
@@ -2858,6 +3128,11 @@
     ],
     "bella-openapi": [
      3,
+     0,
+     0
+    ],
+    "chat-copilot": [
+     13,
      0,
      0
     ],
@@ -2878,6 +3153,11 @@
     ],
     "djangoproject.com": [
      7,
+     0,
+     0
+    ],
+    "eShopOnWeb": [
+     1,
      0,
      0
     ],
@@ -2961,6 +3241,11 @@
      0,
      0
     ],
+    "semantickernel-microservice": [
+     10,
+     0,
+     0
+    ],
     "spring-petclinic": [
      2,
      0,
@@ -2983,6 +3268,11 @@
     ],
     "toWers": [
      6,
+     0,
+     0
+    ],
+    "torrent-aggregator": [
+     9,
      0,
      0
     ],
@@ -3176,15 +3466,60 @@
    "by_repo": {},
    "preview_by_repo": {}
   },
+  "CSHARP001": {
+   "title": "ASP.NET Core endpoints with no authorization",
+   "preview": true,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 0,
+   "seeded_found": 0,
+   "seeded_recall": null,
+   "by_repo": {},
+   "preview_by_repo": {}
+  },
+  "CSHARP002": {
+   "title": "Deserialization that lets the payload pick the type",
+   "preview": true,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 0,
+   "seeded_found": 0,
+   "seeded_recall": null,
+   "by_repo": {},
+   "preview_by_repo": {}
+  },
+  "CSHARP003": {
+   "title": "Developer error page outside Development",
+   "preview": true,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 0,
+   "seeded_found": 0,
+   "seeded_recall": null,
+   "by_repo": {},
+   "preview_by_repo": {}
+  },
   "DATA001": {
    "title": "Database query inside a loop (N+1)",
    "preview": true,
-   "tp": 26,
-   "fp": 13,
+   "tp": 45,
+   "fp": 21,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6667,
-   "precision_pessimistic": 0.6667,
+   "precision": 0.6818,
+   "precision_pessimistic": 0.6818,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -3196,6 +3531,11 @@
     ],
     "alerta": [
      2,
+     0,
+     0
+    ],
+    "aspnetcore-realworld-example-app": [
+     1,
      0,
      0
     ],
@@ -3247,6 +3587,16 @@
     "svix-webhooks": [
      0,
      3,
+     0
+    ],
+    "torrent-aggregator": [
+     18,
+     7,
+     0
+    ],
+    "vibecodementor": [
+     0,
+     1,
      0
     ],
     "waline": [
@@ -3266,6 +3616,11 @@
      0,
      0
     ],
+    "aspnetcore-realworld-example-app": [
+     1,
+     0,
+     0
+    ],
     "chat-systems": [
      2,
      0,
@@ -3314,6 +3669,16 @@
     "svix-webhooks": [
      0,
      3,
+     0
+    ],
+    "torrent-aggregator": [
+     18,
+     7,
+     0
+    ],
+    "vibecodementor": [
+     0,
+     1,
      0
     ],
     "waline": [
@@ -3519,12 +3884,12 @@
   "DATA007": {
    "title": "Environment variable missing from the example env file",
    "preview": true,
-   "tp": 18,
+   "tp": 20,
    "fp": 15,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5455,
-   "precision_pessimistic": 0.5455,
+   "precision": 0.5714,
+   "precision_pessimistic": 0.5714,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -3536,6 +3901,11 @@
     ],
     "bella-openapi": [
      11,
+     0,
+     0
+    ],
+    "chat-copilot": [
+     1,
      0,
      0
     ],
@@ -3560,6 +3930,11 @@
      0
     ],
     "thynk": [
+     1,
+     0,
+     0
+    ],
+    "torrent-aggregator": [
      1,
      0,
      0
@@ -3586,6 +3961,11 @@
      0,
      0
     ],
+    "chat-copilot": [
+     1,
+     0,
+     0
+    ],
     "chat-langchain": [
      3,
      0,
@@ -3607,6 +3987,11 @@
      0
     ],
     "thynk": [
+     1,
+     0,
+     0
+    ],
+    "torrent-aggregator": [
      1,
      0,
      0
@@ -4137,7 +4522,7 @@
   "DEP007": {
    "title": "MCP server launched from an unpinned package",
    "preview": false,
-   "tp": 1,
+   "tp": 2,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -4147,6 +4532,11 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "Timinute": [
+     1,
+     0,
+     0
+    ],
     "bella-openapi": [
      1,
      0,
@@ -4189,11 +4579,11 @@
    "title": "Cross-site scripting through a raw HTML sink",
    "preview": true,
    "tp": 45,
-   "fp": 103,
+   "fp": 105,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.3041,
-   "precision_pessimistic": 0.3041,
+   "precision": 0.3,
+   "precision_pessimistic": 0.3,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -4278,6 +4668,11 @@
      1,
      0
     ],
+    "vibecodementor": [
+     0,
+     2,
+     0
+    ],
     "waline": [
      2,
      4,
@@ -4370,6 +4765,11 @@
      1,
      0
     ],
+    "vibecodementor": [
+     0,
+     2,
+     0
+    ],
     "waline": [
      2,
      4,
@@ -4386,7 +4786,7 @@
    "title": "LLM or secret API called directly from the browser",
    "preview": false,
    "tp": 0,
-   "fp": 3,
+   "fp": 5,
    "needs_review": 0,
    "lost_tp": 0,
    "precision": 0.0,
@@ -4395,9 +4795,14 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
-    "sili-smart-hr": [
+    "ClaudeCodeProxy": [
      0,
      3,
+     0
+    ],
+    "sili-smart-hr": [
+     0,
+     2,
      0
     ]
    },
@@ -4452,7 +4857,7 @@
   "FE005": {
    "title": "Auth token stored in localStorage",
    "preview": false,
-   "tp": 11,
+   "tp": 13,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -4462,6 +4867,11 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     2,
+     0,
+     0
+    ],
     "LinguaLearn": [
      5,
      0,
@@ -4493,7 +4903,7 @@
   "FE006": {
    "title": "Production source maps enabled",
    "preview": false,
-   "tp": 2,
+   "tp": 3,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -4512,6 +4922,11 @@
      1,
      0,
      0
+    ],
+    "torrent-aggregator": [
+     1,
+     0,
+     0
     ]
    },
    "preview_by_repo": {}
@@ -4520,15 +4935,20 @@
    "title": "Hardcoded localhost URL in frontend code",
    "preview": true,
    "tp": 22,
-   "fp": 4,
+   "fp": 5,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8462,
-   "precision_pessimistic": 0.8462,
+   "precision": 0.8148,
+   "precision_pessimistic": 0.8148,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     0,
+     1,
+     0
+    ],
     "LinguaLearn": [
      3,
      0,
@@ -4566,6 +4986,11 @@
     ]
    },
    "preview_by_repo": {
+    "ClaudeCodeProxy": [
+     0,
+     1,
+     0
+    ],
     "LinguaLearn": [
      3,
      0,
@@ -5125,16 +5550,21 @@
   "LLM012": {
    "title": "Retired or deprecated model hardcoded",
    "preview": false,
-   "tp": 24,
+   "tp": 27,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.96,
-   "precision_pessimistic": 0.96,
+   "precision": 0.9643,
+   "precision_pessimistic": 0.9643,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     3,
+     0,
+     0
+    ],
     "chatbot-ui": [
      11,
      0,
@@ -5186,16 +5616,22 @@
   "LLM014": {
    "title": "Secret in an MCP configuration",
    "preview": false,
-   "tp": 0,
+   "tp": 1,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {},
+   "by_repo": {
+    "vibecodementor": [
+     1,
+     0,
+     0
+    ]
+   },
    "preview_by_repo": {}
   },
   "LLM015": {
@@ -5474,16 +5910,21 @@
   "QA001": {
    "title": "No automated tests",
    "preview": false,
-   "tp": 16,
-   "fp": 3,
+   "tp": 17,
+   "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8421,
-   "precision_pessimistic": 0.8421,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     1,
+     0,
+     0
+    ],
     "careconnect": [
      1,
      0,
@@ -5497,11 +5938,6 @@
     "commerce": [
      1,
      0,
-     0
-    ],
-    "conveyor": [
-     0,
-     1,
      0
     ],
     "damn-vulnerable-llm-agent": [
@@ -5554,11 +5990,6 @@
      0,
      0
     ],
-    "piggymetrics": [
-     0,
-     1,
-     0
-    ],
     "prompt-sculptor-49": [
      1,
      0,
@@ -5573,11 +6004,6 @@
      1,
      0,
      0
-    ],
-    "vulnerable-java-application": [
-     0,
-     1,
-     0
     ]
    },
    "preview_by_repo": {}
@@ -5585,7 +6011,7 @@
   "QA002": {
    "title": "No continuous integration",
    "preview": false,
-   "tp": 24,
+   "tp": 25,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -5714,6 +6140,11 @@
      1,
      0,
      0
+    ],
+    "vibecodementor": [
+     1,
+     0,
+     0
     ]
    },
    "preview_by_repo": {}
@@ -5721,18 +6152,23 @@
   "QA003": {
    "title": "Exception silently swallowed",
    "preview": true,
-   "tp": 152,
+   "tp": 154,
    "fp": 86,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6387,
-   "precision_pessimistic": 0.6387,
+   "precision": 0.6417,
+   "precision_pessimistic": 0.6417,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
    "by_repo": {
     "Schematic": [
      1,
+     0,
+     0
+    ],
+    "Timinute": [
+     2,
      0,
      0
     ],
@@ -5805,6 +6241,11 @@
    "preview_by_repo": {
     "Schematic": [
      1,
+     0,
+     0
+    ],
+    "Timinute": [
+     2,
      0,
      0
     ],
@@ -5878,16 +6319,21 @@
   "QA004": {
    "title": "Security placeholder or TODO left in code",
    "preview": true,
-   "tp": 13,
+   "tp": 15,
    "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8667,
-   "precision_pessimistic": 0.8667,
+   "precision": 0.8824,
+   "precision_pessimistic": 0.8824,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     1,
+     0,
+     0
+    ],
     "Django-Styleguide-Example": [
      1,
      0,
@@ -5899,6 +6345,11 @@
      0
     ],
     "alerta": [
+     1,
+     0,
+     0
+    ],
+    "chat-copilot": [
      1,
      0,
      0
@@ -5940,6 +6391,11 @@
     ]
    },
    "preview_by_repo": {
+    "ClaudeCodeProxy": [
+     1,
+     0,
+     0
+    ],
     "Django-Styleguide-Example": [
      1,
      0,
@@ -5951,6 +6407,11 @@
      0
     ],
     "alerta": [
+     1,
+     0,
+     0
+    ],
+    "chat-copilot": [
      1,
      0,
      0
@@ -6043,11 +6504,11 @@
    "title": "Import of a file or name that does not exist",
    "preview": true,
    "tp": 14,
-   "fp": 37,
+   "fp": 36,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.2745,
-   "precision_pessimistic": 0.2745,
+   "precision": 0.28,
+   "precision_pessimistic": 0.28,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -6068,11 +6529,6 @@
      0
     ],
     "jhipster-sample-app": [
-     0,
-     1,
-     0
-    ],
-    "mCaptcha": [
      0,
      1,
      0
@@ -6119,11 +6575,6 @@
      1,
      0
     ],
-    "mCaptcha": [
-     0,
-     1,
-     0
-    ],
     "next-learn": [
      7,
      0,
@@ -6149,12 +6600,12 @@
   "QA007": {
    "title": "Package imported but not declared as a dependency",
    "preview": false,
-   "tp": 53,
+   "tp": 55,
    "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9298,
-   "precision_pessimistic": 0.9298,
+   "precision": 0.9322,
+   "precision_pessimistic": 0.9322,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -6180,6 +6631,11 @@
      0
     ],
     "bella-openapi": [
+     1,
+     0,
+     0
+    ],
+    "chat-copilot": [
      1,
      0,
      0
@@ -6243,6 +6699,11 @@
      4,
      0,
      0
+    ],
+    "vibecodementor": [
+     1,
+     0,
+     0
     ]
    },
    "preview_by_repo": {}
@@ -6291,7 +6752,7 @@
   "QA010": {
    "title": "Made-up data used as a fallback",
    "preview": true,
-   "tp": 2,
+   "tp": 4,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -6301,15 +6762,35 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     1,
+     0,
+     0
+    ],
     "conveyor": [
      2,
+     0,
+     0
+    ],
+    "vibecodementor": [
+     1,
      0,
      0
     ]
    },
    "preview_by_repo": {
+    "ClaudeCodeProxy": [
+     1,
+     0,
+     0
+    ],
     "conveyor": [
      2,
+     0,
+     0
+    ],
+    "vibecodementor": [
+     1,
      0,
      0
     ]
@@ -6772,24 +7253,49 @@
   "SEC003": {
    "title": "High-entropy secret assigned in code",
    "preview": true,
-   "tp": 29,
-   "fp": 29,
+   "tp": 32,
+   "fp": 68,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5,
-   "precision_pessimistic": 0.5,
+   "precision": 0.32,
+   "precision_pessimistic": 0.32,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     1,
+     0,
+     0
+    ],
     "JavaVulnerableLab": [
      1,
      0,
      0
     ],
+    "Timinute": [
+     0,
+     36,
+     0
+    ],
     "bakerydemo": [
      0,
      1,
+     0
+    ],
+    "chat-copilot": [
+     0,
+     4,
+     0
+    ],
+    "dvcsharp-api": [
+     1,
+     0,
+     0
+    ],
+    "eShopOnWeb": [
+     1,
+     0,
      0
     ],
     "flexible-graphrag": [
@@ -6849,7 +7355,7 @@
     ],
     "svix-webhooks": [
      0,
-     12,
+     11,
      0
     ],
     "terragoat": [
@@ -6869,14 +7375,39 @@
     ]
    },
    "preview_by_repo": {
+    "ClaudeCodeProxy": [
+     1,
+     0,
+     0
+    ],
     "JavaVulnerableLab": [
      1,
      0,
      0
     ],
+    "Timinute": [
+     0,
+     36,
+     0
+    ],
     "bakerydemo": [
      0,
      1,
+     0
+    ],
+    "chat-copilot": [
+     0,
+     4,
+     0
+    ],
+    "dvcsharp-api": [
+     1,
+     0,
+     0
+    ],
+    "eShopOnWeb": [
+     1,
+     0,
      0
     ],
     "flexible-graphrag": [
@@ -6936,7 +7467,7 @@
     ],
     "svix-webhooks": [
      0,
-     12,
+     11,
      0
     ],
     "terragoat": [
@@ -6959,12 +7490,12 @@
   "SEC004": {
    "title": "Hardcoded or default signing secret",
    "preview": false,
-   "tp": 29,
+   "tp": 30,
    "fp": 6,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8286,
-   "precision_pessimistic": 0.8286,
+   "precision": 0.8333,
+   "precision_pessimistic": 0.8333,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
@@ -6985,6 +7516,11 @@
      0
     ],
     "dvna": [
+     1,
+     0,
+     0
+    ],
+    "eShopOnWeb": [
      1,
      0,
      0
@@ -7103,7 +7639,7 @@
    "title": "Secret exposed to the browser through a public env var",
    "preview": false,
    "tp": 0,
-   "fp": 1,
+   "fp": 5,
    "needs_review": 0,
    "lost_tp": 0,
    "precision": 0.0,
@@ -7112,6 +7648,11 @@
    "seeded_found": 3,
    "seeded_recall": 1.0,
    "by_repo": {
+    "chat-copilot": [
+     0,
+     4,
+     0
+    ],
     "prompt-sculptor-49": [
      0,
      1,
@@ -7368,18 +7909,28 @@
   "UI002": {
    "title": "Click handler on a non-interactive element",
    "preview": false,
-   "tp": 55,
+   "tp": 65,
    "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9322,
-   "precision_pessimistic": 0.9322,
+   "precision": 0.942,
+   "precision_pessimistic": 0.942,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     2,
+     0,
+     0
+    ],
     "bella-openapi": [
      14,
+     0,
+     0
+    ],
+    "chat-copilot": [
+     2,
      0,
      0
     ],
@@ -7438,6 +7989,11 @@
      0,
      0
     ],
+    "vibecodementor": [
+     6,
+     0,
+     0
+    ],
     "waline": [
      4,
      0,
@@ -7449,16 +8005,21 @@
   "UI003": {
    "title": "Form field without a label",
    "preview": false,
-   "tp": 72,
+   "tp": 110,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9863,
-   "precision_pessimistic": 0.9863,
+   "precision": 0.991,
+   "precision_pessimistic": 0.991,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     16,
+     0,
+     0
+    ],
     "LinguaLearn": [
      1,
      0,
@@ -7472,6 +8033,11 @@
     "careconnect": [
      13,
      1,
+     0
+    ],
+    "chat-copilot": [
+     1,
+     0,
      0
     ],
     "chatgpt-your-files": [
@@ -7549,6 +8115,11 @@
      0,
      0
     ],
+    "vibecodementor": [
+     21,
+     0,
+     0
+    ],
     "waline": [
      4,
      0,
@@ -7560,7 +8131,7 @@
   "UI004": {
    "title": "Control that does nothing",
    "preview": false,
-   "tp": 4,
+   "tp": 9,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -7570,6 +8141,11 @@
    "seeded_found": 3,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     5,
+     0,
+     0
+    ],
     "prompt-sculptor-49": [
      4,
      0,
@@ -7703,16 +8279,22 @@
   "UI007": {
    "title": "Hydration mismatch",
    "preview": false,
-   "tp": 0,
+   "tp": 3,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {},
+   "by_repo": {
+    "vibecodementor": [
+     3,
+     0,
+     0
+    ]
+   },
    "preview_by_repo": {}
   },
   "UI008": {
@@ -7794,7 +8376,7 @@
   "UI011": {
    "title": "No error page",
    "preview": false,
-   "tp": 8,
+   "tp": 9,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -7840,6 +8422,11 @@
      0
     ],
     "taxonomy": [
+     1,
+     0,
+     0
+    ],
+    "vibecodementor": [
      1,
      0,
      0
@@ -8019,7 +8606,7 @@
   "UI015": {
    "title": "Form error not announced to screen readers",
    "preview": true,
-   "tp": 28,
+   "tp": 33,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -8029,6 +8616,11 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     5,
+     0,
+     0
+    ],
     "act-solo-ai": [
      1,
      0,
@@ -8061,6 +8653,11 @@
     ]
    },
    "preview_by_repo": {
+    "ClaudeCodeProxy": [
+     5,
+     0,
+     0
+    ],
     "act-solo-ai": [
      1,
      0,
@@ -8096,16 +8693,21 @@
   "UI016": {
    "title": "Focus outline removed",
    "preview": true,
-   "tp": 11,
-   "fp": 9,
+   "tp": 15,
+   "fp": 12,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.55,
-   "precision_pessimistic": 0.55,
+   "precision": 0.5556,
+   "precision_pessimistic": 0.5556,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "Timinute": [
+     0,
+     3,
+     0
+    ],
     "ai-chatbot": [
      1,
      0,
@@ -8148,11 +8750,26 @@
     ],
     "spring-petclinic": [
      3,
+     0,
+     0
+    ],
+    "torrent-aggregator": [
+     3,
+     0,
+     0
+    ],
+    "vibecodementor": [
+     1,
      0,
      0
     ]
    },
    "preview_by_repo": {
+    "Timinute": [
+     0,
+     3,
+     0
+    ],
     "ai-chatbot": [
      1,
      0,
@@ -8195,6 +8812,16 @@
     ],
     "spring-petclinic": [
      3,
+     0,
+     0
+    ],
+    "torrent-aggregator": [
+     3,
+     0,
+     0
+    ],
+    "vibecodementor": [
+     1,
      0,
      0
     ]
@@ -8203,7 +8830,7 @@
   "UI017": {
    "title": "Link to an asset that does not exist",
    "preview": true,
-   "tp": 4,
+   "tp": 5,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -8213,6 +8840,11 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     1,
+     0,
+     0
+    ],
     "careconnect": [
      1,
      0,
@@ -8235,6 +8867,11 @@
     ]
    },
    "preview_by_repo": {
+    "ClaudeCodeProxy": [
+     1,
+     0,
+     0
+    ],
     "careconnect": [
      1,
      0,

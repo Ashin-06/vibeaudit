@@ -1,0 +1,30 @@
+{
+ "repo": "aspnetcore-realworld-example-app",
+ "commit": "6fe67a53892213d264dc8fa244e3aaaf55f50390",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/realworld-api-tests.yml",
+   "line": 45,
+   "fingerprint": "47e7361dfabde9627e0efabc04904ddd",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "DATA001",
+   "file": "src/Conduit/Features/Articles/Create.cs",
+   "line": 61,
+   "fingerprint": "83bd91cedc159fbbde133ef19a74fd5b",
+   "verdict": "tp",
+   "reason": "A query runs once per item of the loop."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "src/Conduit/Features/Users/UsersController.cs",
+   "line": 22,
+   "fingerprint": "5eea04336976eb669297454114fc5973",
+   "verdict": "tp",
+   "reason": "The login endpoint has no rate limit."
+  }
+ ]
+}

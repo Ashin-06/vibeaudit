@@ -1,0 +1,342 @@
+{
+ "repo": "vibecodementor",
+ "commit": "70fa9be78b73040e43f75046623285de7ca4aa93",
+ "findings": [
+  {
+   "rule": "LLM014",
+   "file": ".mcp.json",
+   "line": 10,
+   "fingerprint": "572d8e860d1293e56068d5e7d9e7be7d",
+   "verdict": "tp",
+   "reason": "An API token is written into the MCP config file."
+  },
+  {
+   "rule": "DATA001",
+   "file": "api/Source/Features/Newsletter/Commands/SaveEmailToNewsletter.cs",
+   "line": 55,
+   "fingerprint": "1a0f867038d9d2aa621d26f03003742f",
+   "verdict": "fp",
+   "reason": "There is no loop: the word 'for' in a log message was read as one."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "api/Source/Features/Users/Controllers/UsersController.cs",
+   "line": 128,
+   "fingerprint": "ccaa6fd561283e2a3423cab3354fe670",
+   "verdict": "fp",
+   "reason": "The handler compares the caller's id with the id and returns Forbid otherwise."
+  },
+  {
+   "rule": "CFG007",
+   "file": "docker-compose.yml",
+   "line": 10,
+   "fingerprint": "7a944ebd944a807294159d6d1ddbd55c",
+   "verdict": "tp",
+   "reason": "A default database password is committed in the compose file."
+  },
+  {
+   "rule": "FE001",
+   "file": "frontend/src/app/(app)/blog/from-bus-ride-to-90k-users/page.tsx",
+   "line": 48,
+   "fingerprint": "5465de4593b4f5f96b16dc3331ae21d3",
+   "verdict": "fp",
+   "reason": "JSON-LD built from the page's own constants, not user input."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/app/(tools)/ata/[id]/edit/components/LineItemEditor.tsx",
+   "line": 39,
+   "fingerprint": "4d519f49e0d3568d21f1a4d94e5aad4e",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/app/(tools)/ata/[id]/edit/components/LineItemEditor.tsx",
+   "line": 104,
+   "fingerprint": "205630c24102cb90fa6eac2af7f271a7",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/app/(tools)/ata/[id]/edit/components/LineItemEditor.tsx",
+   "line": 124,
+   "fingerprint": "e82c530f43211f97e448987ab66d7b09",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/app/(tools)/ata/[id]/edit/page.tsx",
+   "line": 334,
+   "fingerprint": "3eaee3d3fdffc509e64a2638bf4f5cbb",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/app/(tools)/ata/[id]/edit/page.tsx",
+   "line": 352,
+   "fingerprint": "70e1293921ab6a68495e10d222a5bfa4",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/app/(tools)/ata/[id]/edit/page.tsx",
+   "line": 370,
+   "fingerprint": "ba72212e6a5cd09d70f062e4e5f2cc41",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/app/(tools)/ata/[id]/edit/page.tsx",
+   "line": 388,
+   "fingerprint": "493c541fec563d9f4ec80e8877413a8f",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/app/(tools)/ata/[id]/edit/page.tsx",
+   "line": 407,
+   "fingerprint": "a3f8cfa7059e298ef46fdb67e36b5f27",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI002",
+   "file": "frontend/src/app/(tools)/ata/page.tsx",
+   "line": 110,
+   "fingerprint": "830066e960fa7e0f50c3109f7975b1ff",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/app/ata/approve/[id]/components/StickyApprovalDrawer.tsx",
+   "line": 119,
+   "fingerprint": "9b6e552011fb6ccbdf75e66184dbdc90",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI011",
+   "file": "frontend/src/app/layout.tsx",
+   "line": 1,
+   "fingerprint": "e7a017cbc38194900d0c2b1854ae9a79",
+   "verdict": "tp",
+   "reason": "The app has no error boundary page."
+  },
+  {
+   "rule": "FE001",
+   "file": "frontend/src/app/layout.tsx",
+   "line": 86,
+   "fingerprint": "475d57fbee09682c3684ed6f368316c1",
+   "verdict": "fp",
+   "reason": "JSON-LD built from the page's own constants, not user input."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/features/auth/otp-input.tsx",
+   "line": 120,
+   "fingerprint": "a9800d228361cc086ef730936299dca8",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/features/fake-iphone/components/BackgroundControls.tsx",
+   "line": 135,
+   "fingerprint": "655e346fcf1f78db22bb284391beeb5f",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/features/fake-iphone/components/NotificationCard.tsx",
+   "line": 111,
+   "fingerprint": "f02868dee6d3d1748798d03a8f46f93f",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/features/fake-iphone/components/SimpleNotificationCard.tsx",
+   "line": 57,
+   "fingerprint": "75174270752a85df7f02e2a11af464c2",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/features/fake-iphone/components/SimpleNotificationCard.tsx",
+   "line": 104,
+   "fingerprint": "6199d2a13ba8e64965cc4fcf0ae12611",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/features/fake-iphone/components/SimpleNotificationCard.tsx",
+   "line": 122,
+   "fingerprint": "13e365e5c696b5164e3436f320a8f4f2",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/features/fake-iphone/components/SimpleNotificationCard.tsx",
+   "line": 142,
+   "fingerprint": "5cb7b47f04ef35515986bcadb74e6b6f",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/features/fake-iphone/components/SystemControls.tsx",
+   "line": 170,
+   "fingerprint": "582ccf7ba983b8682e0569fc7d474f91",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI002",
+   "file": "frontend/src/features/habits/components/HabitCard.tsx",
+   "line": 33,
+   "fingerprint": "948a72f3a6cd766965cfa8eabfce714e",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/features/habits/components/HabitCheckinInterface.tsx",
+   "line": 70,
+   "fingerprint": "df1ff388c142f383eeb549505cb25e57",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/features/habits/components/HabitCreateForm.tsx",
+   "line": 49,
+   "fingerprint": "0b0c3c6d2881a4f3e6c63e27b852e840",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "QA010",
+   "file": "frontend/src/features/homepage-hero/floating-metrics.tsx",
+   "line": 75,
+   "fingerprint": "5776ba31585e8b67dab3d699be68dbef",
+   "verdict": "tp",
+   "reason": "Made-up data is shown when the real data is missing."
+  },
+  {
+   "rule": "UI002",
+   "file": "frontend/src/features/kanban/components/KanbanTask.tsx",
+   "line": 21,
+   "fingerprint": "68d88b956cb2a1650523806a14b97ae5",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/features/openrouter/components/inputs/ChatInput.tsx",
+   "line": 89,
+   "fingerprint": "300a18aed9699f6498d1081dc887aa4c",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI007",
+   "file": "frontend/src/features/openrouter/components/messages/ActiveToolCall.tsx",
+   "line": 46,
+   "fingerprint": "07dafbf5df6c9e8206cd06e3534863a2",
+   "verdict": "tp",
+   "reason": "An icon-only button without an accessible name."
+  },
+  {
+   "rule": "UI002",
+   "file": "frontend/src/features/openrouter/components/messages/CompletedToolCall.tsx",
+   "line": 18,
+   "fingerprint": "83cbd891809bf9234bac87ea5880526c",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
+  },
+  {
+   "rule": "UI007",
+   "file": "frontend/src/features/openrouter/components/messages/CompletedToolCall.tsx",
+   "line": 65,
+   "fingerprint": "e35904adaf285b79f33c2003a521e5a2",
+   "verdict": "tp",
+   "reason": "An icon-only button without an accessible name."
+  },
+  {
+   "rule": "UI007",
+   "file": "frontend/src/features/openrouter/components/messages/TextMessage.tsx",
+   "line": 114,
+   "fingerprint": "89b63d2759f0c12ed3494c8249797897",
+   "verdict": "tp",
+   "reason": "An icon-only button without an accessible name."
+  },
+  {
+   "rule": "UI002",
+   "file": "frontend/src/features/vehicle-simulation/components/PerformanceDebugPanel.tsx",
+   "line": 59,
+   "fingerprint": "27e6ec2b233f3f1849708016729b66c6",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
+  },
+  {
+   "rule": "UI002",
+   "file": "frontend/src/features/vehicle-simulation/components/PerformanceDebugPanel.tsx",
+   "line": 247,
+   "fingerprint": "666565357e4c7183fb7e873ab6010c37",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
+  },
+  {
+   "rule": "QA007",
+   "file": "frontend/src/features/vehicle-simulation/hooks/useVehiclePhysics.ts",
+   "line": 5,
+   "fingerprint": "ff0ca3c97157687279f5ce76434c477a",
+   "verdict": "tp",
+   "reason": "The package is imported but not declared in package.json."
+  },
+  {
+   "rule": "UI003",
+   "file": "frontend/src/features/vehicle-simulation/pages/VehicleSimulationPage.tsx",
+   "line": 295,
+   "fingerprint": "8b28cbb8fad768c73a70007f473c30de",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI016",
+   "file": "frontend/src/shared/components/ui/tabs.tsx",
+   "line": 60,
+   "fingerprint": "f48301f302727b8ae88455120677830e",
+   "verdict": "tp",
+   "reason": "The focus outline is removed with no replacement."
+  },
+  {
+   "rule": "CFG001",
+   "file": "infrastructure/docker/nginx.Dockerfile",
+   "line": 1,
+   "fingerprint": "87a0e04d331f9d99dc5f5dd4e4c7777c",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "QA002",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
+   "verdict": "tp",
+   "reason": "No CI configuration."
+  }
+ ]
+}

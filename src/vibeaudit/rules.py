@@ -45,6 +45,7 @@ NEW_JVM = "New with Java and Kotlin support: not yet measured on enough held-out
 NEW_IN_089 = "New in 0.8.9: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_0100 = "New in 0.10.0 (Go): not yet measured on enough held-out findings in the benchmark."
 NEW_IN_JAVA = "New with Java and Kotlin support: not yet measured on enough held-out findings in the benchmark."
+NEW_IN_CSHARP = "New with C# support: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_088 = "New in 0.8.8: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_087 = "New in 0.8.7: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_086 = "New in 0.8.6: not yet measured on enough held-out findings in the benchmark."
@@ -436,6 +437,26 @@ _R = [
          "Use name-based type ids with a fixed set of subtypes, or a `BasicPolymorphicTypeValidator` that allows only "
          "your own packages; call `allowTypes` (or `setupDefaultSecurity`) on XStream.", "CWE-502", "A08:2021",
          preview=True, preview_reason=NEW_IN_JAVA),
+    Rule("CSHARP001", "ASP.NET Core endpoints with no authorization", "auth", "high",
+         "The project uses no [Authorize], RequireAuthorization or fallback policy anywhere, so every controller "
+         "action and minimal-API endpoint answers anyone. (A single endpoint left open in a project that does "
+         "authorize is AUTH001.)",
+         "Add authentication and a fallback policy that requires an authenticated user "
+         "(`options.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build()`), and "
+         "mark the public endpoints with [AllowAnonymous].", "CWE-306", "A01:2021", preview=True,
+         preview_reason=NEW_IN_CSHARP),
+    Rule("CSHARP002", "Deserialization that lets the payload pick the type", "backend", "critical",
+         "Json.NET with TypeNameHandling other than None (and no SerializationBinder), or BinaryFormatter and its "
+         "relatives, create whatever type the payload names. A gadget type turns a request into remote code "
+         "execution.",
+         "Leave TypeNameHandling at None (or add an ISerializationBinder that allows only your own types), and "
+         "replace BinaryFormatter with System.Text.Json.", "CWE-502", "A08:2021", preview=True,
+         preview_reason=NEW_IN_CSHARP),
+    Rule("CSHARP003", "Developer error page outside Development", "config", "medium",
+         "UseDeveloperExceptionPage (or UseDatabaseErrorPage) is called without an IsDevelopment() check, so stack "
+         "traces, source lines and configuration are shown to anyone who triggers an error in production.",
+         "Call it only inside `if (app.Environment.IsDevelopment())` and use UseExceptionHandler elsewhere.",
+         "CWE-209", "A05:2021", preview=True, preview_reason=NEW_IN_CSHARP),
     # ----------------------------------------------------------------- config
     Rule("CFG001", "Container runs as root", "config", "low",
          "If the app is compromised the attacker is root inside the container, which makes escaping and "

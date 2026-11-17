@@ -68,7 +68,7 @@ CREDENTIAL_INPUT = re.compile(r"(?i)password|passwd|\botp\b|\bcode\b|e-?mail|use
 PUBLIC_PATH = re.compile(
     r"(?i)(?:^|[/_.\-\s])(?:login|logout|signin|sign-in|sign_in|signup|sign-up|sign_up|register|auth|oauth|token|refresh"
     r"|sessions?|health|healthz|ready|readyz|live|livez|ping|status|version|webhooks?|callback|public|forgot|reset"
-    r"|verify|confirm|csrf|contact|subscribe|unsubscribe|newsletter|waitlist|feedback|track|analytics|og|robots"
+    r"|verify|confirm|resets|passwordresets?|csrf|contact|subscribe|unsubscribe|newsletter|waitlist|feedback|track|analytics|og|robots"
     r"|sitemap|metrics|nextauth)(?:$|[/_.\-\s\[{<:])"
 )
 

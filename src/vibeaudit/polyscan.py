@@ -36,7 +36,6 @@ PHP_CMDI = re.compile(
 
 GO_HTTP = re.compile(r"""\bhttp\.(?:Get|Post|PostForm)\s*\(""")
 JAVA_HTTP = re.compile(r"""\bnew\s+RestTemplate\s*\(\s*\)|\bHttpClient\.newHttpClient\s*\(\s*\)""")
-CS_HTTP = re.compile(r"""\bnew\s+HttpClient\s*\(\s*\)""")
 RS_HTTP = re.compile(r"""\breqwest::get\s*\(|\breqwest::Client::new\s*\(\s*\)|\bClient::new\s*\(\s*\)""")
 PHP_HTTP = re.compile(r"""\bHttp::(?:get|post|put|delete)\s*\(""")
 
@@ -70,9 +69,6 @@ GO_METHOD_ROUTE = re.compile(
     r"""\b(\w+)\s*\.\s*(GET|POST|PUT|DELETE|PATCH|Get|Post|Put|Delete|Patch)\s*\(\s*"([^"\n]{1,200})"\s*,\s*([^,\n)]+)""")
 
 
-CS_CLASS_ROUTE = re.compile(r"""\[Route\s*\(\s*"([^"\n]{1,200})"\s*\)\s*]""")
-CS_ATTR_ROUTE = re.compile(r"""\[Http(Get|Post|Put|Delete|Patch)(?:\s*\(\s*"([^"\n]{0,200})"\s*\))?\s*]""")
-CS_MINIMAL_ROUTE = re.compile(r"""\b\w+\.Map(Get|Post|Put|Delete|Patch)\s*\(\s*"([^"\n]{1,200})"\s*,""")
 
 
 PHP_LARAVEL_ROUTE = re.compile(
@@ -362,42 +358,8 @@ class PolyScanner:
 
     # ------------------------------------------------------------ C# / .NET
     def _cs(self, sf: SourceFile, code: str) -> None:
-        cls_m = re.search(r"\bclass\s+(\w+)", code)
-        cls_head = code[:cls_m.start() + 80] if cls_m else code[:600]
-        class_auth = _has_auth(cls_head) and "[AllowAnonymous]" not in cls_head
-        prefix = ""
-        rm = CS_CLASS_ROUTE.search(cls_head)
-        if rm:
-            prefix = rm.group(1)
-            if cls_m and "[controller]" in prefix.lower():
-                ctrl = re.sub(r"Controller$", "", cls_m.group(1)).lower()
-                prefix = re.sub(r"\[controller\]", ctrl, prefix, flags=re.I)
-
-        for m in finditer(CS_ATTR_ROUTE, code):
-            verb, sub = m.group(1).upper(), m.group(2) or ""
-            path = join_path(prefix, sub)
-            ctx_start = max(0, m.start() - 200)
-            brace = code.find("{", m.end(), m.end() + 400)
-            body = code[ctx_start:brace] + _brace_block(code, brace) if brace >= 0 else code[ctx_start:m.end() + 600]
-            if "[AllowAnonymous]" in body:
-                continue
-            if class_auth:
-                body = "[Authorize] " + body
-            self._emit_route(sf, m.start(), path, [verb], body, "aspnet", "cs")
-
-        for m in finditer(CS_MINIMAL_ROUTE, code):
-            verb, path = m.group(1).upper(), m.group(2)
-            brace = code.find("{", m.end(), m.end() + 180)
-            tail = code[m.end():m.end() + 400]
-            body = (_brace_block(code, brace) if brace >= 0 else "") + " " + tail
-            self._emit_route(sf, m.start(), path, [verb], body, "aspnet", "cs")
-
-        for m in finditer(CS_SQLI, code):
-            self.add(sf, sf.line_at(m.start()), "BE001", "Raw EF Core SQL query built with string interpolation or concatenation.")
-        for m in finditer(CS_CMDI, code):
-            self.add(sf, sf.line_at(m.start()), "BE002", "Shell process started with formatted command string.")
+        # routes, authorization and request data into the sinks are csharp.CsScanner's; this keeps the rest
         self._loop_n_plus_one(sf, code, CS_LOOP_DB)
-        self._check_timeout(sf, code, CS_HTTP, "new HttpClient()")
 
     # ----------------------------------------------------------------- PHP
     def _php(self, sf: SourceFile, code: str) -> None:

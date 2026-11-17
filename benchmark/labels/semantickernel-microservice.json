@@ -1,0 +1,126 @@
+{
+ "repo": "semantickernel-microservice",
+ "commit": "a897d5e3ba9a737314efea9d66ba1bf93288e470",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/gtc-semker-standalone-iac.yml",
+   "line": 52,
+   "fingerprint": "e70df72b6a4854b257aab63a64532152",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/gtc-semker-standalone-iac.yml",
+   "line": 59,
+   "fingerprint": "31025e3ae9520f857daaca8f70e3d021",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/gtc-semker-standalone-iac.yml",
+   "line": 65,
+   "fingerprint": "b69fb41d71d6f8054ffb36550dc4955a",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/gtc-semker-standalone-iac.yml",
+   "line": 83,
+   "fingerprint": "f45dd3dc706225cf293c5ae7221a2204",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/gtc-semker-standalone-iac.yml",
+   "line": 90,
+   "fingerprint": "74730a5535e6122a133d53719e884e10",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/gtc-semker-standalone-web-api-sql.yml",
+   "line": 101,
+   "fingerprint": "045e4a1f64336b360c42b649cb01ab7f",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/gtc-semker-standalone-web-api-sql.yml",
+   "line": 253,
+   "fingerprint": "ee9f73e427dd74f1bc48751b66697769",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/gtc-semker-standalone-web-api-sql.yml",
+   "line": 269,
+   "fingerprint": "7717c46602a6e84cee34f13b6f570eb4",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/gtc-semker-standalone-web-api-sql.yml",
+   "line": 275,
+   "fingerprint": "094ff358e18eaf2a105129dc96527c12",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/gtc-semker-standalone-web-api-sql.yml",
+   "line": 300,
+   "fingerprint": "0a68fcf9b248e80ef325093d136f6db6",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/Presentation.WebApi/Audio/AdminAudioController.cs",
+   "line": 158,
+   "fingerprint": "81da21b6dcd5031dfdea67050352325d",
+   "verdict": "tp",
+   "reason": "The record is changed by id with no check that it belongs to the caller."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/Presentation.WebApi/ChatCompletion/AdminChatSessionController.cs",
+   "line": 207,
+   "fingerprint": "a8f2ab0fcee06c34e3a71bfb827805fc",
+   "verdict": "tp",
+   "reason": "The record is changed by id with no check that it belongs to the caller."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/Presentation.WebApi/ChatCompletion/AdminChatSessionController.cs",
+   "line": 229,
+   "fingerprint": "4c8e43a59ab8918fda51b8d3d0312de3",
+   "verdict": "tp",
+   "reason": "The record is changed by id with no check that it belongs to the caller."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/Presentation.WebApi/Image/AdminImageController.cs",
+   "line": 158,
+   "fingerprint": "9a9cae4579344298302c564fbe887a4f",
+   "verdict": "tp",
+   "reason": "The record is changed by id with no check that it belongs to the caller."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "src/Presentation.WebApi/TextGeneration/AdminTextGenerationController.cs",
+   "line": 174,
+   "fingerprint": "cb797abf11d93fa6b8cbb5d838308e56",
+   "verdict": "tp",
+   "reason": "The record is changed by id with no check that it belongs to the caller."
+  }
+ ]
+}

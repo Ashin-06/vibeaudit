@@ -39,6 +39,9 @@ UNTRUSTED_EXPR = re.compile(
 )
 
 
+TEST_SOURCE_EXTS = (".cs", ".java", ".kt", ".go", ".rs", ".php")
+
+
 class ProjectScanner:
     def __init__(self, project: Project, emit: Emit, routes: List[Route]):
         self.p = project
@@ -387,7 +390,8 @@ class ProjectScanner:
         sources = [f for f in self.p.files if f.kind in ("py", "js") and not f.is_test and not re.search(r"\.config\.[cm]?[jt]s$|(?:^|/)(?:setup|conftest|manage)\.py$", f.rel)]
         if len(sources) < 3:
             return
-        has_tests = any(f.is_test and f.kind in ("py", "js") and not re.search(r"(?:^|/)(?:fixtures?|mocks?|__mocks__|testdata)/", f.rel) for f in self.p.files) \
+        # tests in any language count: a Python or JavaScript front end of a C# or Java service tested in that language
+        has_tests = any(f.is_test and (f.kind in ("py", "js") or f.rel.endswith(TEST_SOURCE_EXTS)) and not re.search(r"(?:^|/)(?:fixtures?|mocks?|__mocks__|testdata)/", f.rel) for f in self.p.files) \
             or any(TEST_CONFIG.search(f.rel) for f in self.p.files)
         anchor = self.p.anchor()
         if not has_tests:
@@ -438,7 +442,7 @@ class ProjectScanner:
             elif is_admin and not H.ADMIN_ROLE_EVIDENCE.search(r.body) and (roles or not r.has_auth):
                 msg = "has no authentication or role check" if not r.has_auth else "checks login but not the admin role"
                 self.add(r.file, r.line, "AUTH002", f"{'/'.join(r.methods)} {path} {msg}.")
-            elif mutating and not r.has_auth and not public and r.framework != "spring-unsecured":  # JAVA001 covers those
+            elif mutating and not r.has_auth and not public and not r.framework.endswith("-unsecured"):  # JAVA001/CSHARP001
                 what = "has no authentication check" if writes else "calls a paid AI API without an authentication check"
                 self.add(r.file, r.line, "AUTH001", f"{'/'.join(r.methods)} {path} {what}.")
             elif mutating and r.has_auth and r.params and r.methods != ["POST"]:
