@@ -4,6 +4,52 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.11.0] - 2026-11-17
+
+Lexer-based scanners with labelled corpora for Rust, C# and PHP, which completes Phase 5 as preview; benchmark
+numbers counted by each finding's own preview flag; and five rules back in preview after new held-out repositories.
+
+### Added
+
+- Rust (Actix, Axum): a lexer; attribute macros, `.route` builders, `web::scope` and Axum `Router::route` /
+  `.nest` routes, with auth middleware (`.wrap`, `.layer`, `.route_layer`), guard attributes and auth extractors,
+  including a project's own `FromRequestParts` extractor that rejects with 401/403; request data followed into SQL
+  (sqlx, diesel, rusqlite), commands, outbound HTTP (reqwest), file paths and redirects; `Cargo.toml` dependencies
+  locked from `Cargo.lock` and checked against OSV, offline bundle included.
+- C# (ASP.NET Core): a lexer (verbatim, interpolated and raw strings); controller and minimal-API routes with
+  `[Authorize]` / `[AllowAnonymous]`, `RequireAuthorization()`, route groups, fallback policies and a project's own
+  auth filters; request data followed into SQL (EF Core raw SQL, ADO.NET, Dapper), commands, outbound HTTP, file
+  paths and redirects; NuGet dependencies from `.csproj` and `Directory.Packages.props` checked against OSV. Three
+  preview rules: CSHARP001 (no authorization anywhere in the project), CSHARP002 (deserialization that lets the
+  payload pick the type: TypeNameHandling without a binder, BinaryFormatter), CSHARP003 (developer error page
+  outside Development).
+- PHP (Laravel, Symfony): a lexer (inline HTML, heredoc and nowdoc); Laravel routes with groups, resources,
+  middleware groups and controller middleware, and Symfony routes with `#[IsGranted]` and `access_control`; request
+  data followed into SQL, commands, eval, unserialize, outbound HTTP, file paths, redirects and echoed HTML,
+  including plain PHP pages; Blade `{!! !!}` output; Composer dependencies checked against OSV.
+- Benchmark: 11 Rust, 11 C# and 10 PHP repositories, every finding labelled, held-out repositories chosen and
+  pinned before scanning (106 repositories in all).
+
+### Changed
+
+- Benchmark accounting: a finding counts as stable or preview by its own preview flag, not its rule's. Findings of
+  a stable rule in Go, Java/Kotlin, C#, Rust or PHP code are preview and do not gate, so "stable" in the README and
+  docs/BENCHMARK.md means exactly what `--fail-on` acts on. Stable precision is 94.4% tuned and 94.1% held-out.
+- Back to preview after new held-out repositories (STABILITY.md has the measurements): CFG002 (Unpinned container
+  base image, 5 of 6), QA007 (Package imported but not declared as a dependency, 6 of 7), DATA012 (Foreign key
+  without an index, 19 of 28), UI009 (Data loaded without loading or error state, 4 of 5) and QA001 (No automated
+  tests, 6 of 8). None is a severe class. QA001's cause is fixed (tests in every supported language now count:
+  `_test.go`, `src/test`, Rust test modules and files, .NET `*.Tests` projects, PHP); it returns to stable once
+  measured on fresh held-out data.
+- AUTH002 and AUTH017 do not fire on an admin area of a project with no role concept anywhere, where every
+  signed-in user is the admin.
+- Project-wide evidence (rate limiting, roles) reads Go and Rust code.
+- Fewer false positives, each from the tuned split: SEC003 on recorded API responses, translation folders, column
+  names and validation strings; SEC011 on validation messages; FE002 and FE007 on placeholder URLs and server-render
+  fallbacks; QA006 on `export const enum`; DATA001 on Rust `impl ... for`, `#[cfg(test)]` modules and PHP builder
+  calls; CFG009 on env files that set no value.
+- C# HTTP clients are no longer reported for a missing timeout: .NET's HttpClient times out after 100 seconds.
+
 ## [0.10.0] - 2026-11-17
 
 Five more languages in preview, with lexer-based scanners and labelled corpora for Go and Java/Kotlin, and the
