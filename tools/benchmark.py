@@ -119,7 +119,7 @@ def scan_repo(repo: dict) -> List[dict]:
     res = scan(str(checkout_path(repo)), Options(offline=True, external="none", feedback=False, cache=False,
                                                   min_severity="low", include_preview=True))
     out = [{"rule": f.rule_id, "file": f.file, "line": f.line, "fingerprint": f.fingerprint, "severity": f.severity,
-            "message": f.message} for f in res.findings if f.rule_id not in NETWORK_RULES]
+            "message": f.message, "preview": bool(f.preview)} for f in res.findings if f.rule_id not in NETWORK_RULES]
     return sorted(out, key=lambda x: (x["file"], x["line"], x["rule"]))
 
 
@@ -188,18 +188,24 @@ def run(verbose: bool = True) -> dict:
     skipped = fetch_all(quiet=not verbose)
     per_rule: Dict[str, Dict[str, int]] = defaultdict(lambda: {"tp": 0, "fp": 0, "review": 0, "lost_tp": 0})
     by_repo: Dict[str, Dict[str, List[int]]] = defaultdict(dict)  # rule -> repo -> [tp, fp, needs review]
+    # the same counts for the findings the scanner itself marked preview (a stable rule's Go or Rust findings are)
+    preview_by_repo: Dict[str, Dict[str, List[int]]] = defaultdict(dict)
     repos = {}
     for repo in corpus():
         if repo["name"] in skipped:
             continue
         findings = scan_repo(repo)
         pairs, unlabelled, missing = match(findings, load_labels(repo["name"]))
-        for _f, lb in pairs:
+        for f, lb in pairs:
             per_rule[lb["rule"]][lb["verdict"]] += 1
             by_repo[lb["rule"]].setdefault(repo["name"], [0, 0, 0])[0 if lb["verdict"] == "tp" else 1] += 1
+            if f.get("preview"):
+                preview_by_repo[lb["rule"]].setdefault(repo["name"], [0, 0, 0])[0 if lb["verdict"] == "tp" else 1] += 1
         for f in unlabelled:
             per_rule[f["rule"]]["review"] += 1
             by_repo[f["rule"]].setdefault(repo["name"], [0, 0, 0])[2] += 1
+            if f.get("preview"):
+                preview_by_repo[f["rule"]].setdefault(repo["name"], [0, 0, 0])[2] += 1
         lost = [lb for lb in missing if lb["verdict"] == "tp"]
         for lb in lost:
             per_rule[lb["rule"]]["lost_tp"] += 1
@@ -221,6 +227,7 @@ def run(verbose: bool = True) -> dict:
             "seeded_expected": r["expected"], "seeded_found": r["found"],
             "seeded_recall": round(r["found"] / r["expected"], 4) if r["expected"] else None,
             "by_repo": dict(sorted(by_repo.get(rid, {}).items())),
+            "preview_by_repo": dict(sorted(preview_by_repo.get(rid, {}).items())),
         }
     return {"tool": "vibeaudit benchmark", "corpus": len(corpus()), "scanned": len(repos), "skipped": skipped,
             "heldout": sorted(r["name"] for r in corpus() if r.get("split") == "heldout"),
@@ -235,6 +242,17 @@ def _split(results: dict, rule: dict, heldout: bool) -> Tuple[int, int]:
     names = set(results.get("heldout", []))
     rows = [v for repo, v in rule["by_repo"].items() if (repo in names) == heldout]
     return sum(v[0] for v in rows), sum(v[1] for v in rows)
+
+
+def _stable_split(results: dict, heldout: bool) -> Tuple[int, int]:
+    """(TP, FP) of the findings that gate as stable: each finding counts by its own preview flag, not its rule's
+    (a stable rule's findings in a preview language are preview and do not gate)."""
+    tp = fp = 0
+    for r in results["rules"].values():
+        a = _split(results, r, heldout)
+        b = _split(results, {"by_repo": r.get("preview_by_repo", r["by_repo"] if r["preview"] else {})}, heldout)
+        tp, fp = tp + a[0] - b[0], fp + a[1] - b[1]
+    return tp, fp
 
 
 def _precision(tp: int, fp: int) -> str:
@@ -292,10 +310,9 @@ def check(results: dict) -> List[str]:
 
 def _stable_only(results: dict) -> str:
     """Stable rules are the ones that fail builds, so their precision is what a user of --fail-on sees."""
-    stable = [r for r in results["rules"].values() if not r["preview"]]
-    t = [sum(x) for x in zip(*(_split(results, r, False) for r in stable))]
-    h = [sum(x) for x in zip(*(_split(results, r, True) for r in stable))]
-    return (f"- Stable rules only (what `--fail-on` acts on): tuned {t[0] / max(1, sum(t)):.1%} ({t[0]}/{sum(t)}), "
+    t, h = _stable_split(results, False), _stable_split(results, True)
+    return (f"- Stable findings only (what `--fail-on` acts on; a stable rule's findings in a preview language "
+            f"count as preview): tuned {t[0] / max(1, sum(t)):.1%} ({t[0]}/{sum(t)}), "
             f"held-out {h[0] / max(1, sum(h)):.1%} ({h[0]}/{sum(h)}). Most false positives are in preview rules.")
 
 
@@ -321,9 +338,7 @@ def readme_accuracy(results: dict) -> str:
     rules = list(results["rules"].values())
     tuned = [sum(x) for x in zip(*(_split(results, r, False) for r in rules))]
     held = [sum(x) for x in zip(*(_split(results, r, True) for r in rules))]
-    stable = [r for r in rules if not r["preview"]]
-    st = [sum(x) for x in zip(*(_split(results, r, False) for r in stable))]
-    sh = [sum(x) for x in zip(*(_split(results, r, True) for r in stable))]
+    st, sh = _stable_split(results, False), _stable_split(results, True)
     pct = lambda tp_fp: f"{tp_fp[0] / max(1, sum(tp_fp)):.1%}"  # noqa: E731
     n_held = len(results["heldout"])
     return (
@@ -332,7 +347,7 @@ def readme_accuracy(results: dict) -> str:
         f"false, plus seeded examples for recall. {results['scanned'] - n_held} repositories were used to find and fix "
         f"false positives; {n_held} are held out and never used for tuning.\n\n"
         f"| Precision | Tuned split | Held-out split |\n| --- | --- | --- |\n"
-        f"| Stable rules (what `--fail-on` acts on) | {pct(st)} ({st[0]}/{sum(st)}) | {pct(sh)} ({sh[0]}/{sum(sh)}) |\n"
+        f"| Stable findings (what `--fail-on` acts on) | {pct(st)} ({st[0]}/{sum(st)}) | {pct(sh)} ({sh[0]}/{sum(sh)}) |\n"
         f"| All rules, preview included | {pct(tuned)} ({tuned[0]}/{sum(tuned)}) | {pct(held)} ({held[0]}/{sum(held)}) |\n\n"
         "Preview rules are reported but do not gate, and most false positives are theirs. Recall, F1 and the misses: "
         "[docs/BENCHMARK.md](docs/BENCHMARK.md)."

@@ -694,7 +694,7 @@ Every rule is measured on a labelled benchmark: 84 public repositories pinned to
 
 | Precision | Tuned split | Held-out split |
 | --- | --- | --- |
-| Stable rules (what `--fail-on` acts on) | 95.2% (1245/1308) | 72.3% (279/386) |
+| Stable findings (what `--fail-on` acts on) | 95.5% (1196/1252) | 92.8% (270/291) |
 | All rules, preview included | 82.7% (1748/2113) | 65.0% (351/540) |
 
 Preview rules are reported but do not gate, and most false positives are theirs. Recall, F1 and the misses: [docs/BENCHMARK.md](docs/BENCHMARK.md).
