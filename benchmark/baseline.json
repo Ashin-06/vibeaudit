@@ -21,7 +21,7 @@
    "by_repo": {}
   },
   "AUTH001": {
-   "precision": 0.902,
+   "precision": 0.807,
    "seeded_recall": 1.0,
    "by_repo": {
     "LinguaLearn": [
@@ -64,6 +64,10 @@
      5,
      0
     ],
+    "jira-meridian": [
+     0,
+     6
+    ],
     "langchain-nextjs-template": [
      7,
      0
@@ -103,7 +107,7 @@
    }
   },
   "AUTH002": {
-   "precision": 0.7308,
+   "precision": 0.6552,
    "seeded_recall": 1.0,
    "by_repo": {
     "bella-openapi": [
@@ -117,6 +121,10 @@
     "go-base": [
      0,
      6
+    ],
+    "jira-meridian": [
+     0,
+     3
     ],
     "uniedit-server": [
      17,
@@ -353,7 +361,7 @@
    }
   },
   "BE001": {
-   "precision": 0.7895,
+   "precision": 0.75,
    "seeded_recall": 1.0,
    "by_repo": {
     "JavaVulnerableLab": [
@@ -379,6 +387,10 @@
     "flexible-graphrag": [
      11,
      1
+    ],
+    "jira-meridian": [
+     0,
+     2
     ],
     "pygoat": [
      1,
