@@ -190,8 +190,8 @@ def test_vscode_extension_is_safe_and_versioned():
     pkg = json.loads((root / "package.json").read_text(encoding="utf-8"))
     assert pkg["version"] == vibeaudit.__version__
     readme = (root / "README.md").read_text(encoding="utf-8")
-    # vibeaudit is not on PyPI: a bare `pip install vibeaudit` would install whoever registers the name
-    assert f"vibeaudit.git@v{vibeaudit.__version__}" in readme
+    # the extension and the language server it starts are released together: install the matching version
+    assert f"pip install vibeaudit=={vibeaudit.__version__}" in readme
     assert not re.search(r"pip install vibeaudit\s*$", readme, re.M)
     assert pkg["capabilities"]["untrustedWorkspaces"]["supported"] is False
     props = pkg["contributes"]["configuration"]["properties"]

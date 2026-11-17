@@ -7,7 +7,7 @@ This extension is a thin client: it starts `vibeaudit lsp`, the language server 
 `vibeaudit` Python package. Install that first:
 
 ```bash
-pip install vibeaudit
+pip install vibeaudit==0.11.0
 ```
 
 ## Settings
