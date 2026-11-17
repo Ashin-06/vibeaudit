@@ -93,6 +93,13 @@ def without_test_modules(code: str, bare: str) -> str:
     return "".join(parts) + code[last:]
 
 
+# a request extractor of the project's own: Axum `impl<S> FromRequestParts<S> for OrgContext`, Actix `impl FromRequest for User`
+EXTRACTOR_IMPL = re.compile(r"\bimpl\b[^{;]{0,200}?\bFromRequest(?:Parts)?\b[^{;]{0,200}?\bfor\s+([A-Z]\w*)[^{;]{0,200}\{")
+# ...that turns a request away: 401/403 rejections
+REJECTS = re.compile(r"\b(?:Unauthenticated|Unauthori[sz]ed|UNAUTHORIZED|Forbidden|FORBIDDEN|ErrorUnauthorized|ErrorForbidden)\b"
+                     r"|\bStatusCode\s*::\s*from_u16\s*\(\s*40[13]\b")
+
+
 def is_rust(sf: SourceFile) -> bool:
     return sf.rel.endswith(".rs") and sf.text is not None
 
@@ -106,6 +113,8 @@ class RustScanner:
         self.routes: List[Route] = []
         self.handlers: Set[Tuple[str, int]] = set()  # (file, fn start) of handler functions
         self.fn_prefix: Dict[str, str] = {}  # function name -> prefix it is nested or scoped under
+        self.extractors: Dict[str, str] = {}  # type -> body of its FromRequest(Parts) impl
+        self.auth_extractors: Set[str] = set()  # those that reject unauthenticated requests
 
     def add(self, sf: SourceFile, off: int, rule: str, msg: str, sev: str = "") -> None:
         line = sf.line_at(off)
@@ -117,6 +126,7 @@ class RustScanner:
             return []
         for sf in self.files:
             GUARD.run(sf.rel, "Rust lexing", self._load, sf)
+        self._auth_extractors()
         for sf in self.files:
             GUARD.run(sf.rel, "Rust prefixes", self._prefixes, sf)
         for sf in self.files:
@@ -142,6 +152,22 @@ class RustScanner:
             end = match_close(bare, brace)
             if end > 0:
                 self.funcs.setdefault(m.group(1), []).append((sf, m.start(), po, pc, end + 1))
+        for m in finditer(EXTRACTOR_IMPL, bare):
+            end = match_close(bare, m.end() - 1)
+            body = v.code[m.end():end if end > 0 else m.end() + 4000]
+            self.extractors[m.group(1)] = self.extractors.get(m.group(1), "") + body
+
+    def _auth_extractors(self) -> None:
+        """Extractor types whose impl rejects with 401/403, names an auth type, or builds on one that does
+        (`OrgContext` from `AuthContext::from_request_parts`)."""
+        known = {t for t, body in self.extractors.items() if REJECTS.search(body) or AUTH_TYPE.search(t)}
+        for _ in range(3):
+            more = {t for t, body in self.extractors.items() if t not in known and any(
+                re.search(r"\b" + re.escape(k) + r"\b", body) for k in known)}
+            if not more:
+                break
+            known |= more
+        self.auth_extractors = known
 
     def _fn(self, name: str, sf: SourceFile) -> Optional[Tuple[SourceFile, int, int, int, int]]:
         found = self.funcs.get(name.rsplit("::", 1)[-1], [])
@@ -272,7 +298,8 @@ class RustScanner:
         # attributes on the handler, such as `#[actix_web_grants::protect(...)]` (names only: a path may say "auth")
         above = FN_ATTRS.search(code, max(0, a - 600), a)
         guards = " ".join(re.findall(r"#\[\s*([\w:]+)", attrs + (above.group(0) if above else "")))
-        has_auth = (layered or bool(AUTH_TYPE.search(types)) or bool(AUTH_MW.search(guards))
+        custom = bool(self.auth_extractors & set(re.findall(r"\b[A-Z]\w*", types)))
+        has_auth = (layered or custom or bool(AUTH_TYPE.search(types)) or bool(AUTH_MW.search(guards))
                     or bool(H.AUTH_EVIDENCE.search(code[pc:b])) or H.CUSTOM.is_auth(body))
         self.handlers.add((fsf.rel, a))
         self.routes.append(Route(sf.rel, sf.line_at(off), path, verbs, body, framework, "rust", has_auth=has_auth,
@@ -310,6 +337,9 @@ class RustScanner:
                 close = match_close(body_b, m.end() - 1)
                 if close < 0:
                     continue
+                if rule == "BE001" and m.group(0).lstrip().startswith(".") and SQLX_CHAIN.search(
+                        body_b, max(body_b.rfind(";", 0, m.start()), body_b.rfind("{", 0, m.start()), 0), m.start()):
+                    continue  # sqlx `query(...).bind(x).execute(&pool)`: the argument is the executor, not SQL
                 argv = _split_top(body_c[m.end():close])
                 pick = argv[:1] if rule != "BE008" or "Location" not in body_c[m.start():close] else argv
                 if rule == "BE002":
@@ -345,6 +375,7 @@ SINKS = [
     (re.compile(r"\bRedirect\s*::\s*(?:to|temporary|permanent|see_other)\s*\(|\.\s*(?:append_header|insert_header)\s*\("),
      "BE008", "a redirect target", "medium"),
 ]
+SQLX_CHAIN = re.compile(r"\b(?:query|query_as|query_scalar|sql_query)\s*(?:::\s*<[^>\n]{0,120}>\s*)?\(")
 SHELL_ARG = re.compile(r"\"(?:sh|bash|/bin/sh|/bin/bash|cmd|powershell)\"\s*\)\s*\.\s*args?\s*\(\s*(?:\[\s*)?\"(?:-c|/C|-Command)\"\s*[,)]\s*(?:\.\s*arg\s*\()?")
 SOURCE = re.compile(r"\b(?:req|request)\s*\.\s*(?:match_info|query_string|uri|headers)\s*\(")
 

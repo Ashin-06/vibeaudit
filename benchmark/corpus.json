@@ -628,8 +628,7 @@
    "commit": "9cc61e14dbd9710a8139914003851be38046676f",
    "licence": "none declared",
    "kind": "small-app",
-   "language": "rust",
-   "split": "heldout"
+   "language": "rust"
   },
   {
    "name": "pomb",
@@ -646,6 +645,15 @@
    "licence": "MIT",
    "kind": "small-app",
    "language": "rust"
+  },
+  {
+   "name": "mCaptcha",
+   "url": "https://github.com/mCaptcha/mCaptcha",
+   "commit": "b215a411ed3e53e3c5d77465f73b40d35986ec93",
+   "licence": "AGPL-3.0",
+   "kind": "well-maintained",
+   "language": "rust",
+   "split": "heldout"
   }
  ]
 }

@@ -1,7 +1,7 @@
 {
  "tool": "vibeaudit benchmark",
- "corpus": 84,
- "scanned": 84,
+ "corpus": 85,
+ "scanned": 85,
  "skipped": {},
  "heldout": [
   "Schematic",
@@ -11,8 +11,8 @@
   "flasky",
   "go-base",
   "govwa",
-  "jira-meridian",
   "langchain-nextjs-template",
+  "mCaptcha",
   "next-saas-stripe-starter",
   "nodejs-whisper",
   "openai-assistants-quickstart",
@@ -595,11 +595,11 @@
    "fixed_fp": 3
   },
   "jira-meridian": {
-   "findings": 130,
-   "labelled": 130,
+   "findings": 72,
+   "labelled": 72,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 58
   },
   "pomb": {
    "findings": 94,
@@ -614,6 +614,13 @@
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 3
+  },
+  "mCaptcha": {
+   "findings": 39,
+   "labelled": 39,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
   }
  },
  "rules": {
@@ -672,11 +679,11 @@
    "title": "State-changing endpoint without authentication",
    "preview": false,
    "tp": 46,
-   "fp": 62,
+   "fp": 11,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.4259,
-   "precision_pessimistic": 0.4259,
+   "precision": 0.807,
+   "precision_pessimistic": 0.807,
    "seeded_expected": 8,
    "seeded_found": 8,
    "seeded_recall": 1.0,
@@ -733,7 +740,7 @@
     ],
     "jira-meridian": [
      0,
-     57,
+     6,
      0
     ],
     "langchain-nextjs-template": [
@@ -800,7 +807,7 @@
     ],
     "jira-meridian": [
      0,
-     57,
+     6,
      0
     ],
     "piggymetrics": [
@@ -968,20 +975,15 @@
    "title": "Webhook without signature verification",
    "preview": false,
    "tp": 1,
-   "fp": 8,
+   "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.1111,
-   "precision_pessimistic": 0.1111,
+   "precision": 0.3333,
+   "precision_pessimistic": 0.3333,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
-    "jira-meridian": [
-     0,
-     6,
-     0
-    ],
     "learnathon-leaderboard": [
      1,
      0,
@@ -994,11 +996,6 @@
     ]
    },
    "preview_by_repo": {
-    "jira-meridian": [
-     0,
-     6,
-     0
-    ],
     "svix-webhooks": [
      0,
      2,
@@ -1390,11 +1387,11 @@
    "title": "SQL injection",
    "preview": false,
    "tp": 30,
-   "fp": 11,
+   "fp": 10,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.7317,
-   "precision_pessimistic": 0.7317,
+   "precision": 0.75,
+   "precision_pessimistic": 0.75,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -1431,7 +1428,7 @@
     ],
     "jira-meridian": [
      0,
-     3,
+     2,
      0
     ],
     "pygoat": [
@@ -1463,7 +1460,7 @@
     ],
     "jira-meridian": [
      0,
-     3,
+     2,
      0
     ]
    }
@@ -2519,12 +2516,12 @@
   "CFG002": {
    "title": "Unpinned container base image",
    "preview": false,
-   "tp": 11,
+   "tp": 12,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9167,
-   "precision_pessimistic": 0.9167,
+   "precision": 0.9231,
+   "precision_pessimistic": 0.9231,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -2560,6 +2557,11 @@
      0
     ],
     "go-test-bench": [
+     1,
+     0,
+     0
+    ],
+    "mCaptcha": [
      1,
      0,
      0
@@ -2773,7 +2775,7 @@
   "CFG009": {
    "title": ".env file copied into the container image",
    "preview": false,
-   "tp": 5,
+   "tp": 6,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2793,6 +2795,11 @@
      0,
      0
     ],
+    "mCaptcha": [
+     1,
+     0,
+     0
+    ],
     "sec-insights": [
      1,
      0,
@@ -2809,7 +2816,7 @@
   "CFG010": {
    "title": "Third-party GitHub Action not pinned to a commit",
    "preview": false,
-   "tp": 171,
+   "tp": 179,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2911,6 +2918,11 @@
     ],
     "llm-examples": [
      2,
+     0,
+     0
+    ],
+    "mCaptcha": [
+     8,
      0,
      0
     ],
@@ -3167,12 +3179,12 @@
   "DATA001": {
    "title": "Database query inside a loop (N+1)",
    "preview": true,
-   "tp": 22,
+   "tp": 26,
    "fp": 13,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6286,
-   "precision_pessimistic": 0.6286,
+   "precision": 0.6667,
+   "precision_pessimistic": 0.6667,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -3215,6 +3227,11 @@
     "jira-meridian": [
      7,
      1,
+     0
+    ],
+    "mCaptcha": [
+     4,
+     0,
      0
     ],
     "pygoat": [
@@ -3279,6 +3296,11 @@
      1,
      0
     ],
+    "mCaptcha": [
+     4,
+     0,
+     0
+    ],
     "pygoat": [
      0,
      1,
@@ -3320,11 +3342,11 @@
    "title": "Destructive database migration",
    "preview": false,
    "tp": 42,
-   "fp": 1,
+   "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9767,
-   "precision_pessimistic": 0.9767,
+   "precision": 0.9545,
+   "precision_pessimistic": 0.9545,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -3347,6 +3369,11 @@
     "jira-meridian": [
      2,
      0,
+     0
+    ],
+    "mCaptcha": [
+     0,
+     1,
      0
     ],
     "node-express-realworld-example-app": [
@@ -3753,12 +3780,12 @@
   "DATA012": {
    "title": "Foreign key without an index",
    "preview": false,
-   "tp": 191,
-   "fp": 0,
+   "tp": 201,
+   "fp": 9,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.9571,
+   "precision_pessimistic": 0.9571,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -3801,6 +3828,11 @@
     "jira-meridian": [
      25,
      0,
+     0
+    ],
+    "mCaptcha": [
+     10,
+     9,
      0
     ],
     "nextjs-subscription-payments": [
@@ -4157,11 +4189,11 @@
    "title": "Cross-site scripting through a raw HTML sink",
    "preview": true,
    "tp": 45,
-   "fp": 102,
+   "fp": 103,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.3061,
-   "precision_pessimistic": 0.3061,
+   "precision": 0.3041,
+   "precision_pessimistic": 0.3041,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -4202,6 +4234,11 @@
      0
     ],
     "jhipster-sample-app": [
+     0,
+     1,
+     0
+    ],
+    "mCaptcha": [
      0,
      1,
      0
@@ -4289,6 +4326,11 @@
      0
     ],
     "jhipster-sample-app": [
+     0,
+     1,
+     0
+    ],
+    "mCaptcha": [
      0,
      1,
      0
@@ -6001,11 +6043,11 @@
    "title": "Import of a file or name that does not exist",
    "preview": true,
    "tp": 14,
-   "fp": 36,
+   "fp": 37,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.28,
-   "precision_pessimistic": 0.28,
+   "precision": 0.2745,
+   "precision_pessimistic": 0.2745,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -6026,6 +6068,11 @@
      0
     ],
     "jhipster-sample-app": [
+     0,
+     1,
+     0
+    ],
+    "mCaptcha": [
      0,
      1,
      0
@@ -6068,6 +6115,11 @@
      0
     ],
     "jhipster-sample-app": [
+     0,
+     1,
+     0
+    ],
+    "mCaptcha": [
      0,
      1,
      0
@@ -6342,7 +6394,7 @@
   "REL001": {
    "title": "Outbound HTTP request without a timeout",
    "preview": false,
-   "tp": 66,
+   "tp": 67,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -6394,6 +6446,11 @@
     ],
     "lldap": [
      3,
+     0,
+     0
+    ],
+    "mCaptcha": [
+     1,
      0,
      0
     ],
@@ -6466,6 +6523,11 @@
     ],
     "lldap": [
      3,
+     0,
+     0
+    ],
+    "mCaptcha": [
+     1,
      0,
      0
     ],
@@ -6710,12 +6772,12 @@
   "SEC003": {
    "title": "High-entropy secret assigned in code",
    "preview": true,
-   "tp": 28,
+   "tp": 29,
    "fp": 29,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.4912,
-   "precision_pessimistic": 0.4912,
+   "precision": 0.5,
+   "precision_pessimistic": 0.5,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -6748,6 +6810,11 @@
     "jira-meridian": [
      0,
      1,
+     0
+    ],
+    "mCaptcha": [
+     1,
+     0,
      0
     ],
     "nodegoat": [
@@ -6830,6 +6897,11 @@
     "jira-meridian": [
      0,
      1,
+     0
+    ],
+    "mCaptcha": [
+     1,
+     0,
      0
     ],
     "nodegoat": [
@@ -7078,11 +7150,11 @@
    "title": "Secret written to logs",
    "preview": false,
    "tp": 3,
-   "fp": 3,
+   "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5,
-   "precision_pessimistic": 0.5,
+   "precision": 0.4286,
+   "precision_pessimistic": 0.4286,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -7095,6 +7167,11 @@
     "helpdesk-flow-verse": [
      1,
      0,
+     0
+    ],
+    "mCaptcha": [
+     0,
+     1,
      0
     ],
     "wsgidav": [

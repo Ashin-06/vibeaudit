@@ -158,3 +158,83 @@ def test_pathological_input_is_fast():
         without_test_modules(v.code, v.bare)
         assert len(v.bare) == len(src)
         assert time.perf_counter() - t < 2
+
+
+EXTRACTORS = '''use axum::{extract::FromRequestParts, http::{request::Parts, StatusCode}, routing::{get, post}, Router};
+
+pub struct Member { pub id: i64 }
+pub struct Org { pub member: Member }
+pub struct Page { pub n: u32 }
+
+impl<S> FromRequestParts<S> for Member
+where
+    S: Send + Sync,
+{
+    type Rejection = StatusCode;
+    async fn from_request_parts(parts: &mut Parts, _s: &S) -> Result<Self, Self::Rejection> {
+        let token = parts.headers.get("x-token").ok_or(StatusCode::UNAUTHORIZED)?;
+        Ok(Member { id: lookup(token)? })
+    }
+}
+
+impl<S: Send + Sync> FromRequestParts<S> for Org {
+    type Rejection = StatusCode;
+    async fn from_request_parts(parts: &mut Parts, s: &S) -> Result<Self, Self::Rejection> {
+        Ok(Org { member: Member::from_request_parts(parts, s).await? })
+    }
+}
+
+impl<S: Send + Sync> FromRequestParts<S> for Page {
+    type Rejection = StatusCode;
+    async fn from_request_parts(parts: &mut Parts, _s: &S) -> Result<Self, Self::Rejection> {
+        Ok(Page { n: parts.uri.query().map(|q| q.len() as u32).ok_or(StatusCode::BAD_REQUEST)? })
+    }
+}
+
+async fn rename(org: Org, Json(body): Json<Rename>) -> StatusCode { StatusCode::OK }
+async fn wipe(member: Member) -> StatusCode { StatusCode::OK }
+async fn reorder(page: Page, Json(body): Json<Order>) -> StatusCode { StatusCode::OK }
+
+pub fn app() -> Router {
+    Router::new().route("/teams", post(rename)).route("/me", axum::routing::delete(wipe)).route("/pages", axum::routing::put(reorder))
+}
+'''
+ACTIX_EXTRACTOR = '''use actix_web::{dev::Payload, error::ErrorUnauthorized, post, web, Error, FromRequest, HttpRequest};
+use std::future::{ready, Ready};
+
+pub struct Staff;
+
+impl FromRequest for Staff {
+    type Error = Error;
+    type Future = Ready<Result<Self, Error>>;
+    fn from_request(req: &HttpRequest, _: &mut Payload) -> Self::Future {
+        ready(if req.headers().contains_key("x-staff") { Ok(Staff) } else { Err(ErrorUnauthorized("no")) })
+    }
+}
+
+#[post("/close")]
+async fn close(_staff: Staff, body: web::Json<Close>) -> &'static str { "ok" }
+'''
+
+
+def test_custom_extractors_that_reject_unauthenticated_requests_count_as_auth(tmp_path):
+    root = write(tmp_path, {"src/routes.rs": EXTRACTORS, "src/staff.rs": ACTIX_EXTRACTOR})
+    routes = {r.path: r for r in RustScanner(Project(root), lambda f: None).run()}
+    assert routes["/teams"].has_auth  # Org builds on Member
+    assert routes["/me"].has_auth  # Member rejects with 401
+    assert not routes["/pages"].has_auth  # Page only rejects bad input
+    assert routes["/close"].has_auth  # Actix FromRequest with ErrorUnauthorized
+    assert [(r, f) for r, f, _ln in found(root, "AUTH001")] == [("AUTH001", "routes.rs")]
+
+
+def test_sqlx_executor_argument_is_not_sql(tmp_path):
+    src = ('use actix_web::{post, web};\n'
+           '#[post("/notes")]\n'
+           'async fn add(body: web::Json<Note>) -> &\'static str {\n'
+           '    let mut tx = begin(body.org).await;\n'
+           '    sqlx::query("INSERT INTO notes (t) VALUES ($1)").bind(&body.text).execute(tx.conn()).await;\n'
+           '    conn.execute(&format!("DELETE FROM notes WHERE t = \'{}\'", body.text), []);\n'
+           '    "ok"\n'
+           '}\n')
+    root = write(tmp_path, {"src/main.rs": src})
+    assert found(root, "BE001") == [("BE001", "main.rs", 6)]  # rusqlite's execute takes SQL; sqlx's takes the executor

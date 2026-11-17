@@ -21,7 +21,7 @@
    "by_repo": {}
   },
   "AUTH001": {
-   "precision": 0.4259,
+   "precision": 0.807,
    "seeded_recall": 1.0,
    "by_repo": {
     "LinguaLearn": [
@@ -66,7 +66,7 @@
     ],
     "jira-meridian": [
      0,
-     57
+     6
     ],
     "langchain-nextjs-template": [
      7,
@@ -175,13 +175,9 @@
    }
   },
   "AUTH004": {
-   "precision": 0.1111,
+   "precision": 0.3333,
    "seeded_recall": 1.0,
    "by_repo": {
-    "jira-meridian": [
-     0,
-     6
-    ],
     "learnathon-leaderboard": [
      1,
      0
@@ -365,7 +361,7 @@
    }
   },
   "BE001": {
-   "precision": 0.7317,
+   "precision": 0.75,
    "seeded_recall": 1.0,
    "by_repo": {
     "JavaVulnerableLab": [
@@ -394,7 +390,7 @@
     ],
     "jira-meridian": [
      0,
-     3
+     2
     ],
     "pygoat": [
      1,
@@ -956,7 +952,7 @@
    }
   },
   "CFG002": {
-   "precision": 0.9167,
+   "precision": 0.9231,
    "seeded_recall": 1.0,
    "by_repo": {
     "Schematic": [
@@ -984,6 +980,10 @@
      0
     ],
     "go-test-bench": [
+     1,
+     0
+    ],
+    "mCaptcha": [
      1,
      0
     ],
@@ -1122,6 +1122,10 @@
      2,
      0
     ],
+    "mCaptcha": [
+     1,
+     0
+    ],
     "sec-insights": [
      1,
      0
@@ -1210,6 +1214,10 @@
     ],
     "llm-examples": [
      2,
+     0
+    ],
+    "mCaptcha": [
+     8,
      0
     ],
     "next-learn": [
@@ -1339,7 +1347,7 @@
    "by_repo": {}
   },
   "DATA001": {
-   "precision": 0.6286,
+   "precision": 0.6667,
    "seeded_recall": 1.0,
    "by_repo": {
     "Django-Styleguide-Example": [
@@ -1374,6 +1382,10 @@
      7,
      1
     ],
+    "mCaptcha": [
+     4,
+     0
+    ],
     "pygoat": [
      0,
      1
@@ -1398,7 +1410,7 @@
    "by_repo": {}
   },
   "DATA003": {
-   "precision": 0.9767,
+   "precision": 0.9545,
    "seeded_recall": 1.0,
    "by_repo": {
     "chat-systems": [
@@ -1416,6 +1428,10 @@
     "jira-meridian": [
      2,
      0
+    ],
+    "mCaptcha": [
+     0,
+     1
     ],
     "node-express-realworld-example-app": [
      1,
@@ -1609,7 +1625,7 @@
    }
   },
   "DATA012": {
-   "precision": 1.0,
+   "precision": 0.9571,
    "seeded_recall": 1.0,
    "by_repo": {
     "LinguaLearn": [
@@ -1643,6 +1659,10 @@
     "jira-meridian": [
      25,
      0
+    ],
+    "mCaptcha": [
+     10,
+     9
     ],
     "nextjs-subscription-payments": [
      6,
@@ -1821,7 +1841,7 @@
    "by_repo": {}
   },
   "FE001": {
-   "precision": 0.3061,
+   "precision": 0.3041,
    "seeded_recall": 1.0,
    "by_repo": {
     "act-solo-ai": [
@@ -1853,6 +1873,10 @@
      1
     ],
     "jhipster-sample-app": [
+     0,
+     1
+    ],
+    "mCaptcha": [
      0,
      1
     ],
@@ -2690,7 +2714,7 @@
    }
   },
   "QA006": {
-   "precision": 0.28,
+   "precision": 0.2745,
    "seeded_recall": 1.0,
    "by_repo": {
     "careconnect": [
@@ -2706,6 +2730,10 @@
      12
     ],
     "jhipster-sample-app": [
+     0,
+     1
+    ],
+    "mCaptcha": [
      0,
      1
     ],
@@ -2924,6 +2952,10 @@
      3,
      0
     ],
+    "mCaptcha": [
+     1,
+     0
+    ],
     "microblog": [
      1,
      0
@@ -3091,7 +3123,7 @@
    }
   },
   "SEC003": {
-   "precision": 0.4912,
+   "precision": 0.5,
    "seeded_recall": 1.0,
    "by_repo": {
     "JavaVulnerableLab": [
@@ -3117,6 +3149,10 @@
     "jira-meridian": [
      0,
      1
+    ],
+    "mCaptcha": [
+     1,
+     0
     ],
     "nodegoat": [
      2,
@@ -3272,7 +3308,7 @@
    }
   },
   "SEC010": {
-   "precision": 0.5,
+   "precision": 0.4286,
    "seeded_recall": 1.0,
    "by_repo": {
     "bella-openapi": [
@@ -3282,6 +3318,10 @@
     "helpdesk-flow-verse": [
      1,
      0
+    ],
+    "mCaptcha": [
+     0,
+     1
     ],
     "wsgidav": [
      0,
