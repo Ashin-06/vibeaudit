@@ -1,0 +1,158 @@
+{
+ "repo": "zero-to-production",
+ "commit": "970987c5f793af6fc8e557731c9bbb23b620451e",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/audit.yml",
+   "line": 14,
+   "fingerprint": "abbf9d45beff64041bd2e61757e24c26",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/general.yml",
+   "line": 53,
+   "fingerprint": "ddee90a7b78702f31be5d74c0cfbf2f1",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/general.yml",
+   "line": 95,
+   "fingerprint": "df06bf574f38a4804df2f81db8d6dfbb",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/general.yml",
+   "line": 109,
+   "fingerprint": "37cfb3d1cae8c350f5f180b0f54c5c9f",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/general.yml",
+   "line": 134,
+   "fingerprint": "3ee7bef6ca6fa67b74b33b36063113cb",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/general.yml",
+   "line": 157,
+   "fingerprint": "1e7c6ef26375a5bab3f6e09436fa5bdd",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile",
+   "line": 19,
+   "fingerprint": "acb6a8c333e63205a364f5c3934d9da1",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "DATA012",
+   "file": "migrations/20210307185410_create_subscription_tokens_table.sql",
+   "line": 4,
+   "fingerprint": "fa4e78a0330eec5a065b52748eda299a",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA003",
+   "file": "migrations/20210829200701_remove_salt_from_users.sql",
+   "line": 1,
+   "fingerprint": "ac3ba050a9914e52f5b81f5ea1d17bb3",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "src/startup.rs",
+   "line": 94,
+   "fingerprint": "6653c3c57aaffa2f8f579063afb0b27f",
+   "verdict": "fp",
+   "reason": "The scope wraps reject_anonymous_users and the app has a single kind of user: every account is the newsletter admin, created by migration."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "src/startup.rs",
+   "line": 95,
+   "fingerprint": "4d67b510baf464f76da52883b4fd93b2",
+   "verdict": "fp",
+   "reason": "The scope wraps reject_anonymous_users and the app has a single kind of user: every account is the newsletter admin, created by migration."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "src/startup.rs",
+   "line": 96,
+   "fingerprint": "4f290394d4978de376a3e805e70d5714",
+   "verdict": "fp",
+   "reason": "The scope wraps reject_anonymous_users and the app has a single kind of user: every account is the newsletter admin, created by migration."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "src/startup.rs",
+   "line": 97,
+   "fingerprint": "6d252064bfca6c4b2e82a1a7b575db82",
+   "verdict": "fp",
+   "reason": "The scope wraps reject_anonymous_users and the app has a single kind of user: every account is the newsletter admin, created by migration."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "src/startup.rs",
+   "line": 98,
+   "fingerprint": "761716272eacb756fd496a2d628bc489",
+   "verdict": "fp",
+   "reason": "The scope wraps reject_anonymous_users and the app has a single kind of user: every account is the newsletter admin, created by migration."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "src/startup.rs",
+   "line": 98,
+   "fingerprint": "fa441db7e5494e54007851a03329b0f3",
+   "verdict": "tp",
+   "reason": "Change password checks the current password with no rate limit."
+  },
+  {
+   "rule": "AUTH017",
+   "file": "src/startup.rs",
+   "line": 98,
+   "fingerprint": "4cfebf79eefe553c563895256f62b777",
+   "verdict": "fp",
+   "reason": "Change password only changes the caller's own password, not admin or feature-flag state."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "src/startup.rs",
+   "line": 99,
+   "fingerprint": "fd9a2463acee820636425afe221b7c76",
+   "verdict": "fp",
+   "reason": "The scope wraps reject_anonymous_users and the app has a single kind of user: every account is the newsletter admin, created by migration."
+  },
+  {
+   "rule": "AUTH017",
+   "file": "src/startup.rs",
+   "line": 99,
+   "fingerprint": "f8b1cc6c6d0beeff5087328f563ffaee",
+   "verdict": "fp",
+   "reason": "Log out only ends the caller's own session."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "src/startup.rs",
+   "line": 102,
+   "fingerprint": "dbb2077f10a8f72b5d1f8777beeaaccc",
+   "verdict": "tp",
+   "reason": "The password login has no rate limit."
+  }
+ ]
+}

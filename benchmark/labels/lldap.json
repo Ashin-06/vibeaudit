@@ -1,0 +1,302 @@
+{
+ "repo": "lldap",
+ "commit": "99c510a7a603df1cdaca00a9ffff95ec73b296eb",
+ "findings": [
+  {
+   "rule": "CFG001",
+   "file": ".github/workflows/Dockerfile.ci.alpine",
+   "line": 1,
+   "fingerprint": "badde550ee94dca310c43913da108f6a",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "CFG001",
+   "file": ".github/workflows/Dockerfile.ci.alpine-base",
+   "line": 65,
+   "fingerprint": "4257e273b86aaf26f097c547f882debe",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "CFG001",
+   "file": ".github/workflows/Dockerfile.ci.debian",
+   "line": 1,
+   "fingerprint": "f138ab2345a359aa2e794956f3d85d61",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "CFG001",
+   "file": ".github/workflows/Dockerfile.ci.debian-base",
+   "line": 66,
+   "fingerprint": "1cf5f04c753dac288fec752fa463085f",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "CFG001",
+   "file": ".github/workflows/Dockerfile.dev",
+   "line": 2,
+   "fingerprint": "10f584d673b21097dac9fadb4e93721a",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-build-static.yml",
+   "line": 74,
+   "fingerprint": "e109a51c810f2ca7dbbb948fdf5ec270",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-build-static.yml",
+   "line": 93,
+   "fingerprint": "7d8c80e1ff48e7639cfc421a6f5f82de",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-build-static.yml",
+   "line": 142,
+   "fingerprint": "db2bfd4d0b8079d93cc94e5767a4667b",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-build-static.yml",
+   "line": 523,
+   "fingerprint": "2cdde8a8660c5647a996a77b64472965",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-build-static.yml",
+   "line": 525,
+   "fingerprint": "f1c05c2f82aa0be12e959248ab4c96eb",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-build-static.yml",
+   "line": 531,
+   "fingerprint": "78fbf3ae6f1e4b62ff8d1096e1c65403",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-build-static.yml",
+   "line": 539,
+   "fingerprint": "55430256711aa9f270f6e219835294a8",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-build-static.yml",
+   "line": 560,
+   "fingerprint": "7a3e57f14239ad49319135b9de99b5fc",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-build-static.yml",
+   "line": 593,
+   "fingerprint": "240958d2a2fb99f463563b0f404a2334",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-build-static.yml",
+   "line": 627,
+   "fingerprint": "85cb988880695750506530ce9889e15b",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-build-static.yml",
+   "line": 634,
+   "fingerprint": "5650eb4dda9f464d73b89ed2eee94dc5",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-build-static.yml",
+   "line": 641,
+   "fingerprint": "31d9191b652d3235a5e7d5bca4e4e52b",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-build-static.yml",
+   "line": 655,
+   "fingerprint": "b4edfd147147fd124e84fcada4e42180",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-build-static.yml",
+   "line": 669,
+   "fingerprint": "2a58f1031ab52edc043986e6fa7f9754",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-build-static.yml",
+   "line": 677,
+   "fingerprint": "5ff8a88fe74eabf278aab2e261fd8c1b",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-build-static.yml",
+   "line": 759,
+   "fingerprint": "b0257ab75ab463c99b13fd8dc742b5d0",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/rust.yml",
+   "line": 21,
+   "fingerprint": "3e3ce7d877f3f46d1ccc9e505026a79f",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/rust.yml",
+   "line": 40,
+   "fingerprint": "8bb7bee3298779bade8e39ca8639961c",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/rust.yml",
+   "line": 43,
+   "fingerprint": "ab52e01e2a0e8fbc1657c9e09be5e147",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/rust.yml",
+   "line": 64,
+   "fingerprint": "e92aeec8ef4035172ed78b100dd23a81",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/rust.yml",
+   "line": 68,
+   "fingerprint": "440d7016bba89ad6e350ad88f90bc792",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/rust.yml",
+   "line": 81,
+   "fingerprint": "ddf6952d9f676a620d367dad2091545b",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/rust.yml",
+   "line": 85,
+   "fingerprint": "e1e3954b747e4176054c24c0ace4f477",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/rust.yml",
+   "line": 102,
+   "fingerprint": "071447fd7d5e1798ca159cc78f7d8b9e",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/rust.yml",
+   "line": 104,
+   "fingerprint": "d7697778694438f36a014e7ec0648fde",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/rust.yml",
+   "line": 111,
+   "fingerprint": "f66fde91aa308cc245ed6d7c6c58cc0b",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG009",
+   "file": "Dockerfile",
+   "line": 26,
+   "fingerprint": "46bbcfae0c50166ae0752bf092841422",
+   "verdict": "fp",
+   "reason": "The only env file is .envrc with `use flake` (direnv), which holds no values."
+  },
+  {
+   "rule": "CFG009",
+   "file": "Dockerfile",
+   "line": 38,
+   "fingerprint": "757333665451e06be8d0d262f893e635",
+   "verdict": "fp",
+   "reason": "The only env file is .envrc with `use flake` (direnv), which holds no values."
+  },
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile",
+   "line": 44,
+   "fingerprint": "073a5160421bb3684114547a82ad3327",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "REL001",
+   "file": "server/src/healthcheck.rs",
+   "line": 190,
+   "fingerprint": "71218faca39570f83e37986884da1d07",
+   "verdict": "tp",
+   "reason": "reqwest client built with no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "set-password/src/main.rs",
+   "line": 48,
+   "fingerprint": "a7d8e59269311c820714aaf48c95cdf2",
+   "verdict": "tp",
+   "reason": "reqwest client built with no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "set-password/src/main.rs",
+   "line": 65,
+   "fingerprint": "65d52e13b97f352763386455ecdbc168",
+   "verdict": "tp",
+   "reason": "reqwest client built with no timeout."
+  }
+ ]
+}

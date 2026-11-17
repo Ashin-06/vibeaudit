@@ -21,7 +21,7 @@
    "by_repo": {}
   },
   "AUTH001": {
-   "precision": 0.902,
+   "precision": 0.807,
    "seeded_recall": 1.0,
    "by_repo": {
     "LinguaLearn": [
@@ -64,6 +64,10 @@
      5,
      0
     ],
+    "jira-meridian": [
+     0,
+     6
+    ],
     "langchain-nextjs-template": [
      7,
      0
@@ -103,7 +107,7 @@
    }
   },
   "AUTH002": {
-   "precision": 0.7308,
+   "precision": 0.6552,
    "seeded_recall": 1.0,
    "by_repo": {
     "bella-openapi": [
@@ -118,6 +122,10 @@
      0,
      6
     ],
+    "jira-meridian": [
+     0,
+     3
+    ],
     "uniedit-server": [
      17,
      0
@@ -125,12 +133,16 @@
    }
   },
   "AUTH003": {
-   "precision": 0.5,
+   "precision": 0.45,
    "seeded_recall": 1.0,
    "by_repo": {
     "bella-openapi": [
      0,
      1
+    ],
+    "chat-systems": [
+     0,
+     2
     ],
     "conveyor": [
      0,
@@ -163,12 +175,16 @@
    }
   },
   "AUTH004": {
-   "precision": 1.0,
+   "precision": 0.3333,
    "seeded_recall": 1.0,
    "by_repo": {
     "learnathon-leaderboard": [
      1,
      0
+    ],
+    "svix-webhooks": [
+     0,
+     2
     ]
    }
   },
@@ -277,8 +293,20 @@
      1,
      0
     ],
+    "realworld-axum-sqlx": [
+     1,
+     0
+    ],
+    "realworld-rust-axum-sqlx": [
+     1,
+     0
+    ],
     "spring-boot-realworld-example-app": [
      1,
+     0
+    ],
+    "zero-to-production": [
+     2,
      0
     ]
    }
@@ -333,7 +361,7 @@
    }
   },
   "BE001": {
-   "precision": 0.7895,
+   "precision": 0.75,
    "seeded_recall": 1.0,
    "by_repo": {
     "JavaVulnerableLab": [
@@ -360,6 +388,10 @@
      11,
      1
     ],
+    "jira-meridian": [
+     0,
+     2
+    ],
     "pygoat": [
      1,
      0
@@ -379,7 +411,7 @@
    }
   },
   "BE002": {
-   "precision": 0.5,
+   "precision": 0.4444,
    "seeded_recall": 1.0,
    "by_repo": {
     "djangoproject.com": [
@@ -409,6 +441,10 @@
     "pygoat": [
      1,
      0
+    ],
+    "svix-webhooks": [
+     0,
+     1
     ],
     "vibe-trading": [
      1,
@@ -781,6 +817,10 @@
      3,
      0
     ],
+    "chat-systems": [
+     3,
+     0
+    ],
     "codbex-oceanus": [
      1,
      0
@@ -833,6 +873,10 @@
      1,
      0
     ],
+    "lldap": [
+     6,
+     0
+    ],
     "microblog": [
      1,
      0
@@ -855,6 +899,10 @@
     ],
     "pygoat": [
      25,
+     0
+    ],
+    "realworld-rust-axum-sqlx": [
+     2,
      0
     ],
     "sec-insights": [
@@ -896,16 +944,24 @@
     "wsgidav": [
      1,
      0
+    ],
+    "zero-to-production": [
+     1,
+     0
     ]
    }
   },
   "CFG002": {
-   "precision": 0.9,
+   "precision": 0.9231,
    "seeded_recall": 1.0,
    "by_repo": {
     "Schematic": [
      0,
      1
+    ],
+    "actix-realworld-example-app": [
+     1,
+     0
     ],
     "conveyor": [
      1,
@@ -927,7 +983,15 @@
      1,
      0
     ],
+    "mCaptcha": [
+     1,
+     0
+    ],
     "opengpts": [
+     1,
+     0
+    ],
+    "realworld-rust-axum-sqlx": [
      1,
      0
     ],
@@ -1010,12 +1074,20 @@
      2,
      0
     ],
+    "jira-meridian": [
+     1,
+     0
+    ],
     "opengpts": [
      1,
      0
     ],
     "sec-insights": [
      1,
+     0
+    ],
+    "svix-webhooks": [
+     4,
      0
     ],
     "uniedit-server": [
@@ -1048,6 +1120,10 @@
     ],
     "conveyor": [
      2,
+     0
+    ],
+    "mCaptcha": [
+     1,
      0
     ],
     "sec-insights": [
@@ -1092,6 +1168,10 @@
      3,
      0
     ],
+    "chat-systems": [
+     14,
+     0
+    ],
     "codbex-oceanus": [
      4,
      0
@@ -1124,8 +1204,20 @@
      3,
      0
     ],
+    "jira-meridian": [
+     8,
+     0
+    ],
+    "lldap": [
+     26,
+     0
+    ],
     "llm-examples": [
      2,
+     0
+    ],
+    "mCaptcha": [
+     8,
      0
     ],
     "next-learn": [
@@ -1148,8 +1240,20 @@
      1,
      0
     ],
+    "realworld-rust-axum-sqlx": [
+     3,
+     0
+    ],
+    "rustypaste": [
+     19,
+     0
+    ],
     "spring-petclinic": [
      2,
+     0
+    ],
+    "svix-webhooks": [
+     1,
      0
     ],
     "terragoat": [
@@ -1170,6 +1274,10 @@
     ],
     "wsgidav": [
      2,
+     0
+    ],
+    "zero-to-production": [
+     6,
      0
     ]
    }
@@ -1239,7 +1347,7 @@
    "by_repo": {}
   },
   "DATA001": {
-   "precision": 0.5909,
+   "precision": 0.6667,
    "seeded_recall": 1.0,
    "by_repo": {
     "Django-Styleguide-Example": [
@@ -1247,6 +1355,10 @@
      1
     ],
     "alerta": [
+     2,
+     0
+    ],
+    "chat-systems": [
      2,
      0
     ],
@@ -1266,6 +1378,14 @@
      1,
      0
     ],
+    "jira-meridian": [
+     7,
+     1
+    ],
+    "mCaptcha": [
+     4,
+     0
+    ],
     "pygoat": [
      0,
      1
@@ -1273,6 +1393,10 @@
     "sili-smart-hr": [
      0,
      2
+    ],
+    "svix-webhooks": [
+     0,
+     3
     ],
     "waline": [
      0,
@@ -1286,9 +1410,13 @@
    "by_repo": {}
   },
   "DATA003": {
-   "precision": 0.75,
+   "precision": 0.9545,
    "seeded_recall": 1.0,
    "by_repo": {
+    "chat-systems": [
+     34,
+     0
+    ],
     "chatbot-ui": [
      1,
      0
@@ -1297,13 +1425,29 @@
      1,
      0
     ],
+    "jira-meridian": [
+     2,
+     0
+    ],
+    "mCaptcha": [
+     0,
+     1
+    ],
     "node-express-realworld-example-app": [
      1,
+     0
+    ],
+    "svix-webhooks": [
+     2,
      0
     ],
     "uniedit-server": [
      0,
      1
+    ],
+    "zero-to-production": [
+     1,
+     0
     ]
    }
   },
@@ -1323,7 +1467,7 @@
    }
   },
   "DATA006": {
-   "precision": 0.9903,
+   "precision": 0.9913,
    "seeded_recall": 1.0,
    "by_repo": {
     "LinguaLearn": [
@@ -1332,6 +1476,10 @@
     ],
     "Vulnerable-Flask-App": [
      2,
+     0
+    ],
+    "actix-realworld-example-app": [
+     12,
      0
     ],
     "alerta": [
@@ -1377,7 +1525,7 @@
    }
   },
   "DATA007": {
-   "precision": 0.6,
+   "precision": 0.5455,
    "seeded_recall": 1.0,
    "by_repo": {
     "bakerydemo": [
@@ -1391,6 +1539,10 @@
     "chat-langchain": [
      3,
      0
+    ],
+    "chat-systems": [
+     0,
+     3
     ],
     "opengpts": [
      2,
@@ -1454,6 +1606,18 @@
    "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
+    "chat-systems": [
+     49,
+     0
+    ],
+    "jira-meridian": [
+     5,
+     0
+    ],
+    "svix-webhooks": [
+     3,
+     0
+    ],
     "uniedit-server": [
      14,
      0
@@ -1461,7 +1625,7 @@
    }
   },
   "DATA012": {
-   "precision": 1.0,
+   "precision": 0.9571,
    "seeded_recall": 1.0,
    "by_repo": {
     "LinguaLearn": [
@@ -1476,6 +1640,10 @@
      6,
      0
     ],
+    "chat-systems": [
+     76,
+     0
+    ],
     "chatbot-ui": [
      16,
      0
@@ -1487,6 +1655,14 @@
     "dvpwa": [
      3,
      0
+    ],
+    "jira-meridian": [
+     25,
+     0
+    ],
+    "mCaptcha": [
+     10,
+     9
     ],
     "nextjs-subscription-payments": [
      6,
@@ -1508,6 +1684,14 @@
      17,
      0
     ],
+    "realworld-axum-sqlx": [
+     4,
+     0
+    ],
+    "realworld-rust-axum-sqlx": [
+     7,
+     0
+    ],
     "saas-starter": [
      6,
      0
@@ -1516,8 +1700,16 @@
      1,
      0
     ],
+    "svix-webhooks": [
+     2,
+     0
+    ],
     "uniedit-server": [
      6,
+     0
+    ],
+    "zero-to-production": [
+     1,
      0
     ]
    }
@@ -1649,7 +1841,7 @@
    "by_repo": {}
   },
   "FE001": {
-   "precision": 0.5233,
+   "precision": 0.3041,
    "seeded_recall": 1.0,
    "by_repo": {
     "act-solo-ai": [
@@ -1684,6 +1876,10 @@
      0,
      1
     ],
+    "mCaptcha": [
+     0,
+     1
+    ],
     "microblog": [
      0,
      1
@@ -1699,6 +1895,10 @@
     "openui": [
      3,
      0
+    ],
+    "pomb": [
+     0,
+     61
     ],
     "pygoat": [
      17,
@@ -1734,9 +1934,13 @@
    "by_repo": {}
   },
   "FE004": {
-   "precision": 1.0,
+   "precision": 0.75,
    "seeded_recall": 1.0,
    "by_repo": {
+    "jira-meridian": [
+     0,
+     1
+    ],
     "openui": [
      1,
      0
@@ -1778,6 +1982,10 @@
    "seeded_recall": 1.0,
    "by_repo": {
     "conveyor": [
+     1,
+     0
+    ],
+    "jira-meridian": [
      1,
      0
     ]
@@ -2380,7 +2588,7 @@
    }
   },
   "QA003": {
-   "precision": 0.7308,
+   "precision": 0.6387,
    "seeded_recall": 1.0,
    "by_repo": {
     "Schematic": [
@@ -2399,6 +2607,10 @@
      1,
      0
     ],
+    "chat-systems": [
+     0,
+     10
+    ],
     "flexible-graphrag": [
      116,
      0
@@ -2410,6 +2622,10 @@
     "openui": [
      1,
      0
+    ],
+    "pomb": [
+     0,
+     20
     ],
     "pygoat": [
      3,
@@ -2498,7 +2714,7 @@
    }
   },
   "QA006": {
-   "precision": 0.28,
+   "precision": 0.2745,
    "seeded_recall": 1.0,
    "by_repo": {
     "careconnect": [
@@ -2514,6 +2730,10 @@
      12
     ],
     "jhipster-sample-app": [
+     0,
+     1
+    ],
+    "mCaptcha": [
      0,
      1
     ],
@@ -2536,7 +2756,7 @@
    }
   },
   "QA007": {
-   "precision": 0.9444,
+   "precision": 0.9298,
    "seeded_recall": 1.0,
    "by_repo": {
     "LinguaLearn": [
@@ -2595,6 +2815,10 @@
      4,
      0
     ],
+    "svix-webhooks": [
+     2,
+     1
+    ],
     "thynk": [
      2,
      0
@@ -2635,7 +2859,7 @@
    }
   },
   "QA011": {
-   "precision": 1.0,
+   "precision": 0.9851,
    "seeded_recall": 1.0,
    "by_repo": {
     "act-solo-ai": [
@@ -2648,6 +2872,10 @@
     ],
     "careconnect": [
      6,
+     0
+    ],
+    "chat-systems": [
+     2,
      0
     ],
     "flask": [
@@ -2669,6 +2897,10 @@
     "sili-smart-hr": [
      36,
      0
+    ],
+    "svix-webhooks": [
+     0,
+     1
     ],
     "vulnerable-java-application": [
      4,
@@ -2696,6 +2928,10 @@
      1,
      0
     ],
+    "chat-systems": [
+     1,
+     0
+    ],
     "djangoproject.com": [
      4,
      0
@@ -2705,6 +2941,18 @@
      0
     ],
     "go-test-bench": [
+     1,
+     0
+    ],
+    "jira-meridian": [
+     1,
+     0
+    ],
+    "lldap": [
+     3,
+     0
+    ],
+    "mCaptcha": [
      1,
      0
     ],
@@ -2728,6 +2976,10 @@
      6,
      0
     ],
+    "svix-webhooks": [
+     4,
+     0
+    ],
     "thynk": [
      4,
      0
@@ -2748,12 +3000,16 @@
    "by_repo": {}
   },
   "REL003": {
-   "precision": 0.6667,
+   "precision": 0.3333,
    "seeded_recall": 1.0,
    "by_repo": {
     "alerta": [
      1,
      0
+    ],
+    "jira-meridian": [
+     0,
+     3
     ],
     "scriptforge-ai": [
      1,
@@ -2849,12 +3105,16 @@
    }
   },
   "SEC002": {
-   "precision": 1.0,
+   "precision": 0.6667,
    "seeded_recall": 1.0,
    "by_repo": {
     "nodegoat": [
      1,
      0
+    ],
+    "svix-webhooks": [
+     0,
+     1
     ],
     "wsgidav": [
      1,
@@ -2863,7 +3123,7 @@
    }
   },
   "SEC003": {
-   "precision": 0.6429,
+   "precision": 0.5,
    "seeded_recall": 1.0,
    "by_repo": {
     "JavaVulnerableLab": [
@@ -2886,6 +3146,14 @@
      1,
      0
     ],
+    "jira-meridian": [
+     0,
+     1
+    ],
+    "mCaptcha": [
+     1,
+     0
+    ],
     "nodegoat": [
      2,
      0
@@ -2902,9 +3170,17 @@
      4,
      1
     ],
+    "realworld-rust-axum-sqlx": [
+     1,
+     1
+    ],
     "sili-smart-hr": [
      2,
      4
+    ],
+    "svix-webhooks": [
+     0,
+     12
     ],
     "terragoat": [
      7,
@@ -2921,7 +3197,7 @@
    }
   },
   "SEC004": {
-   "precision": 0.9062,
+   "precision": 0.8286,
    "seeded_recall": 1.0,
    "by_repo": {
     "Vulnerable-Flask-App": [
@@ -2955,6 +3231,10 @@
     "pygoat": [
      20,
      0
+    ],
+    "svix-webhooks": [
+     0,
+     3
     ]
    }
   },
@@ -2977,7 +3257,7 @@
    }
   },
   "SEC006": {
-   "precision": 0.5,
+   "precision": 0.6,
    "seeded_recall": null,
    "by_repo": {
     "LinguaLearn": [
@@ -2990,6 +3270,10 @@
     ],
     "prompt-sculptor-49": [
      2,
+     0
+    ],
+    "realworld-rust-axum-sqlx": [
+     1,
      0
     ]
    }
@@ -3024,7 +3308,7 @@
    }
   },
   "SEC010": {
-   "precision": 0.5,
+   "precision": 0.4286,
    "seeded_recall": 1.0,
    "by_repo": {
     "bella-openapi": [
@@ -3034,6 +3318,10 @@
     "helpdesk-flow-verse": [
      1,
      0
+    ],
+    "mCaptcha": [
+     0,
+     1
     ],
     "wsgidav": [
      0,
@@ -3138,12 +3426,16 @@
    }
   },
   "UI002": {
-   "precision": 0.9818,
+   "precision": 0.9322,
    "seeded_recall": 1.0,
    "by_repo": {
     "bella-openapi": [
      14,
      0
+    ],
+    "chat-systems": [
+     1,
+     2
     ],
     "chatbot-ui": [
      14,
@@ -3155,6 +3447,10 @@
     ],
     "commerce": [
      1,
+     1
+    ],
+    "jira-meridian": [
+     0,
      1
     ],
     "openai-assistants-quickstart": [
@@ -3285,7 +3581,7 @@
    "by_repo": {}
   },
   "UI006": {
-   "precision": 0.7692,
+   "precision": 0.8125,
    "seeded_recall": 1.0,
    "by_repo": {
     "act-solo-ai": [
@@ -3298,6 +3594,10 @@
     ],
     "careconnect": [
      1,
+     0
+    ],
+    "chat-systems": [
+     3,
      0
     ],
     "helpdesk-flow-verse": [
@@ -3426,9 +3726,13 @@
    }
   },
   "UI014": {
-   "precision": 0.9048,
+   "precision": 0.5714,
    "seeded_recall": 1.0,
    "by_repo": {
+    "chat-systems": [
+     1,
+     2
+    ],
     "djangoproject.com": [
      5,
      1
@@ -3456,6 +3760,10 @@
     "openai-assistants-quickstart": [
      1,
      0
+    ],
+    "pomb": [
+     0,
+     11
     ],
     "spring-petclinic": [
      1,
@@ -3498,12 +3806,16 @@
    }
   },
   "UI016": {
-   "precision": 0.8182,
+   "precision": 0.55,
    "seeded_recall": 1.0,
    "by_repo": {
     "ai-chatbot": [
      1,
      0
+    ],
+    "chat-systems": [
+     0,
+     3
     ],
     "chatbot-ui": [
      2,
@@ -3513,6 +3825,10 @@
      1,
      0
     ],
+    "jira-meridian": [
+     1,
+     3
+    ],
     "learnathon-leaderboard": [
      2,
      0
@@ -3520,6 +3836,10 @@
     "next-saas-stripe-starter": [
      0,
      2
+    ],
+    "pomb": [
+     1,
+     1
     ],
     "spring-petclinic": [
      3,

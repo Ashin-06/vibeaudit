@@ -1,0 +1,758 @@
+{
+ "repo": "pomb",
+ "commit": "02df75b765294060422c66a51f94860294fb51ed",
+ "findings": [
+  {
+   "rule": "QA003",
+   "file": ".dev/parity/finder.mjs",
+   "line": 72,
+   "fingerprint": "570b824239874fa2d2a7e261d68fe43a",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch: best-effort browser storage, a JSON-parse fallback, or test tooling (.dev/parity)."
+  },
+  {
+   "rule": "QA003",
+   "file": ".dev/parity/lib.mjs",
+   "line": 349,
+   "fingerprint": "36a4ba1b6eb392926031822ea9c95efc",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch: best-effort browser storage, a JSON-parse fallback, or test tooling (.dev/parity)."
+  },
+  {
+   "rule": "QA003",
+   "file": ".dev/parity/lib.mjs",
+   "line": 392,
+   "fingerprint": "3a126b02290c723faac5c50464ac8899",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch: best-effort browser storage, a JSON-parse fallback, or test tooling (.dev/parity)."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 263,
+   "fingerprint": "b5feeda26aa138616f7946cb74fb6cb1",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 785,
+   "fingerprint": "d692b2e27081d498c928035c5b4de67f",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 1076,
+   "fingerprint": "f557f7e385467f555c4e165d978ca9ca",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 1294,
+   "fingerprint": "612a87b2fa412d25c721e42389db8df4",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "QA003",
+   "file": "static/app.js",
+   "line": 1377,
+   "fingerprint": "bccf5f135251326f1060a2d34808acf9",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch: best-effort browser storage, a JSON-parse fallback, or test tooling (.dev/parity)."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 1798,
+   "fingerprint": "5736adf50e833252632d1717a0f51b92",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "QA003",
+   "file": "static/app.js",
+   "line": 2203,
+   "fingerprint": "929a5ad8698d3f21c5e3708486e5e517",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch: best-effort browser storage, a JSON-parse fallback, or test tooling (.dev/parity)."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 3271,
+   "fingerprint": "2c16419624b84843f28b0050c1d3073c",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 3340,
+   "fingerprint": "8acf5a5f22d1f0f7b49aaf8eebca1eda",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "QA003",
+   "file": "static/app.js",
+   "line": 3373,
+   "fingerprint": "cc4831d53ed22d002599cf6636b4674e",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch: best-effort browser storage, a JSON-parse fallback, or test tooling (.dev/parity)."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 3426,
+   "fingerprint": "01486aeb4f7eba4b27bec5d415d970ca",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "QA003",
+   "file": "static/app.js",
+   "line": 3614,
+   "fingerprint": "03dd8cae98fb17f901585ba96a9ac70f",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch: best-effort browser storage, a JSON-parse fallback, or test tooling (.dev/parity)."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 3619,
+   "fingerprint": "5d2aa82197ba4c35018acd1b9b02b468",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 4128,
+   "fingerprint": "7139ff52f8130750da96f2fb590ddf4f",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 4177,
+   "fingerprint": "385eff3603ce2e0205964c4ef684b53d",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "QA003",
+   "file": "static/app.js",
+   "line": 4944,
+   "fingerprint": "8139e1a2eb79225280767bb91cc4d426",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch: best-effort browser storage, a JSON-parse fallback, or test tooling (.dev/parity)."
+  },
+  {
+   "rule": "QA003",
+   "file": "static/app.js",
+   "line": 5215,
+   "fingerprint": "a95c4153c364043700726165069e56be",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch: best-effort browser storage, a JSON-parse fallback, or test tooling (.dev/parity)."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 5520,
+   "fingerprint": "178e32b8aa0bc412fce4cb5bfe2f21ae",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "QA003",
+   "file": "static/app.js",
+   "line": 5706,
+   "fingerprint": "1ca6811b7ed5785f89f2702827f1f169",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch: best-effort browser storage, a JSON-parse fallback, or test tooling (.dev/parity)."
+  },
+  {
+   "rule": "QA003",
+   "file": "static/app.js",
+   "line": 6041,
+   "fingerprint": "fae40f51cc1a6a6dec7e6e8500cc0b17",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch: best-effort browser storage, a JSON-parse fallback, or test tooling (.dev/parity)."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 7217,
+   "fingerprint": "a56f4385559d07edbf8e52b622666185",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 7426,
+   "fingerprint": "ad5c0ddb4582bff10b406e0989638a7f",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 7877,
+   "fingerprint": "a320d9e71786599cc533fee553b92f37",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 8026,
+   "fingerprint": "117242ff5ee9e0274fc837d64909bae7",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 8105,
+   "fingerprint": "4c5098acd7dbea5b189216773c02d962",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 8217,
+   "fingerprint": "336e97b85ff2148bf2dc40e4a2a07be7",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 8233,
+   "fingerprint": "e379f8cf13562bc37dc1dee793b0254c",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 8802,
+   "fingerprint": "d9346496dca4fdf4cf99d75e5fc08b51",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 9120,
+   "fingerprint": "25dc3eebda3258449f06c2e3a4214f28",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 9239,
+   "fingerprint": "92d8b02104b984d2197de46df229415c",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 10168,
+   "fingerprint": "c7166d73e5498007d87a28edeb5e49f9",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "QA003",
+   "file": "static/app.js",
+   "line": 10467,
+   "fingerprint": "7f2e71f7f690d4f3a60d97be6fb4a0db",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch: best-effort browser storage, a JSON-parse fallback, or test tooling (.dev/parity)."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 10681,
+   "fingerprint": "e893603772a603875661885be256dc6f",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 10839,
+   "fingerprint": "013efc76105ac669d0c6b3250b2ca491",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 11465,
+   "fingerprint": "38a7a33ddf1d5453a414978617aa6383",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 11660,
+   "fingerprint": "29c6047f61d02c90b0ba3750a1496904",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 11815,
+   "fingerprint": "14ed93a60a5f7162f8c9e9f4d47b604c",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 11844,
+   "fingerprint": "2a05fef3d00d32dc8c850879224a5360",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "QA003",
+   "file": "static/app.js",
+   "line": 12003,
+   "fingerprint": "a1725dbf7953d4c9a82496eb8050082f",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch: best-effort browser storage, a JSON-parse fallback, or test tooling (.dev/parity)."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 12095,
+   "fingerprint": "8094ede61088a0070e3a7e52703a0919",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 12200,
+   "fingerprint": "47d5488c0c936510ed5a8e2d2bb8532e",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 12288,
+   "fingerprint": "3faa8316edf45431f33bb5926717e235",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 12332,
+   "fingerprint": "b1a7f4a2207336ce1a4eac77d03be220",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 12356,
+   "fingerprint": "f0c67de40253ef919c85c34de7d537b0",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 12365,
+   "fingerprint": "0004ff38131b4000e069015ac8fe85a3",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 12889,
+   "fingerprint": "b84403fc96f2c8384f8e7689191466e0",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 12990,
+   "fingerprint": "67fcd514c936ea46d5a6ab9ee101d977",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 13016,
+   "fingerprint": "347c8d3a6eede2240ac27141a9deb1f9",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 13255,
+   "fingerprint": "10ceeca7e4c360c90b61b1c1978351fe",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "QA003",
+   "file": "static/app.js",
+   "line": 13464,
+   "fingerprint": "989b967a1c19496117fb14d983a1b0c3",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch: best-effort browser storage, a JSON-parse fallback, or test tooling (.dev/parity)."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 13558,
+   "fingerprint": "765a0e32b8cb006aacf70695f1991e52",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 13592,
+   "fingerprint": "26f7ea937f659a5f45e6c70fe8117179",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 13913,
+   "fingerprint": "85509b9e084db7ade7bdf97e0472ffb6",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 14266,
+   "fingerprint": "54b2104e282a40eb618788de6ee8c339",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 14559,
+   "fingerprint": "b7af04a090a811c801af26056da1658d",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 14824,
+   "fingerprint": "f0488a363dd32c6485b286408d91a98d",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 14837,
+   "fingerprint": "bd4dfb71e942d5db90c3137e67737a70",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 15008,
+   "fingerprint": "ac1dfa539cd9c1dd757ee8d1181e6776",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 15598,
+   "fingerprint": "ca448fd7c287606ddc7704c2a2f47d4b",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "QA003",
+   "file": "static/app.js",
+   "line": 15662,
+   "fingerprint": "72a3165241136f114eb2d3db333e9bbc",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch: best-effort browser storage, a JSON-parse fallback, or test tooling (.dev/parity)."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 15955,
+   "fingerprint": "386dd6ec6313640d8e546221cbd36677",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 16327,
+   "fingerprint": "1f2f2118e5bfd936f25b4b8b6e478a39",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 16419,
+   "fingerprint": "f0abee009ebf0ff429557e94db5d393d",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 16838,
+   "fingerprint": "736302a9457c13413621a04e60d370d1",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 16911,
+   "fingerprint": "870472810273b7e7f01d649af16b0d1f",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 16947,
+   "fingerprint": "bc95dd5b06eda0acf4850cd910ede695",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 17279,
+   "fingerprint": "0527dbd6097567516ff23c2aaecdbb64",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 17628,
+   "fingerprint": "85ffaca9b8673b699898b9e9ebef5900",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 17787,
+   "fingerprint": "e45402a339ad5850a65f2a469dd0ee97",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 17788,
+   "fingerprint": "e87a748606a9fe3665cd5ff9b8d8a581",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 17859,
+   "fingerprint": "c3bd8e91e8a5ee651330af4c65908656",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "QA003",
+   "file": "static/app.js",
+   "line": 19547,
+   "fingerprint": "a6e43416f50ed3ceccf1b476d2d7909f",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch: best-effort browser storage, a JSON-parse fallback, or test tooling (.dev/parity)."
+  },
+  {
+   "rule": "QA003",
+   "file": "static/app.js",
+   "line": 19560,
+   "fingerprint": "38bab040612e107778136b5272cd67b5",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch: best-effort browser storage, a JSON-parse fallback, or test tooling (.dev/parity)."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/app.js",
+   "line": 20116,
+   "fingerprint": "0f98b469399c99a1de356709423f6b65",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "QA003",
+   "file": "static/app.js",
+   "line": 20599,
+   "fingerprint": "40deed32d66daac87cc7379fd598d0ec",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch: best-effort browser storage, a JSON-parse fallback, or test tooling (.dev/parity)."
+  },
+  {
+   "rule": "FE001",
+   "file": "static/pages.js",
+   "line": 1709,
+   "fingerprint": "09489112776d192709811d33796294ab",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own server-rendered fragments (markdown sanitised with ammonia), constant markup, or strings that escape user values with escapeHtml."
+  },
+  {
+   "rule": "QA003",
+   "file": "static/pages.js",
+   "line": 3122,
+   "fingerprint": "7b81ba8777bff9c9315d0ad01e93d70f",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch: best-effort browser storage, a JSON-parse fallback, or test tooling (.dev/parity)."
+  },
+  {
+   "rule": "QA003",
+   "file": "static/pages.js",
+   "line": 3170,
+   "fingerprint": "056c10f5833163db0722c5a17c7abbae",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch: best-effort browser storage, a JSON-parse fallback, or test tooling (.dev/parity)."
+  },
+  {
+   "rule": "UI016",
+   "file": "static/style.css",
+   "line": 5152,
+   "fingerprint": "a17211bd73704c212611121e00704268",
+   "verdict": "tp",
+   "reason": "The help search drops the outline and keeps the unfocused grey border, so focus is not visible."
+  },
+  {
+   "rule": "UI016",
+   "file": "static/style.css",
+   "line": 9079,
+   "fingerprint": "29a1dc238e6366492969988e41aee4df",
+   "verdict": "fp",
+   "reason": "Focus raises fill-opacity on the dot, a visible focus style."
+  },
+  {
+   "rule": "UI014",
+   "file": "templates/_topbar_account.html",
+   "line": 29,
+   "fingerprint": "9e490d8818049f3170ff72d42ab320d9",
+   "verdict": "fp",
+   "reason": "Avatar images are sized by style.css (width and height 100% inside a fixed-size disc)."
+  },
+  {
+   "rule": "UI014",
+   "file": "templates/board.html",
+   "line": 25,
+   "fingerprint": "397f0c90009662bf58066c84094c4112",
+   "verdict": "fp",
+   "reason": "Avatar images are sized by style.css (width and height 100% inside a fixed-size disc)."
+  },
+  {
+   "rule": "UI014",
+   "file": "templates/board.html",
+   "line": 26,
+   "fingerprint": "a51f3b80b24592e5d3de3a46f2a4560f",
+   "verdict": "fp",
+   "reason": "Avatar images are sized by style.css (width and height 100% inside a fixed-size disc)."
+  },
+  {
+   "rule": "UI014",
+   "file": "templates/circle.html",
+   "line": 2,
+   "fingerprint": "c86610bb7f25a3e043cac6cc487e00a4",
+   "verdict": "fp",
+   "reason": "Avatar images are sized by style.css (width and height 100% inside a fixed-size disc)."
+  },
+  {
+   "rule": "UI014",
+   "file": "templates/modal.html",
+   "line": 144,
+   "fingerprint": "05a9c13a4ba1dd494cc67af221e59313",
+   "verdict": "fp",
+   "reason": "Avatar images are sized by style.css (width and height 100% inside a fixed-size disc)."
+  },
+  {
+   "rule": "UI014",
+   "file": "templates/modal.html",
+   "line": 309,
+   "fingerprint": "9564202b7e19965bee069eaba3852fce",
+   "verdict": "fp",
+   "reason": "Avatar images are sized by style.css (width and height 100% inside a fixed-size disc)."
+  },
+  {
+   "rule": "UI014",
+   "file": "templates/settings.html",
+   "line": 47,
+   "fingerprint": "c377b3d182ae653c14b71699062ec3c8",
+   "verdict": "fp",
+   "reason": "Avatar images are sized by style.css (width and height 100% inside a fixed-size disc)."
+  },
+  {
+   "rule": "UI014",
+   "file": "templates/task_card.html",
+   "line": 34,
+   "fingerprint": "2c539db64a5dce641d781c750a3287ca",
+   "verdict": "fp",
+   "reason": "Avatar images are sized by style.css (width and height 100% inside a fixed-size disc)."
+  },
+  {
+   "rule": "UI014",
+   "file": "templates/task_card.html",
+   "line": 75,
+   "fingerprint": "ea76dfb6bb8bb663a96c5e7365536ed7",
+   "verdict": "fp",
+   "reason": "Avatar images are sized by style.css (width and height 100% inside a fixed-size disc)."
+  },
+  {
+   "rule": "UI014",
+   "file": "templates/task_card.html",
+   "line": 76,
+   "fingerprint": "fa45dbe22a53d27af315bc4f791310b2",
+   "verdict": "fp",
+   "reason": "Avatar images are sized by style.css (width and height 100% inside a fixed-size disc)."
+  },
+  {
+   "rule": "UI014",
+   "file": "templates/task_card.html",
+   "line": 80,
+   "fingerprint": "331d0236c7e36a3e27d6bba8b878dfe4",
+   "verdict": "fp",
+   "reason": "Avatar images are sized by style.css (width and height 100% inside a fixed-size disc)."
+  }
+ ]
+}

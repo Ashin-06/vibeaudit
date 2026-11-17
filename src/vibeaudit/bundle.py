@@ -31,7 +31,8 @@ from . import __version__
 from .store import cache_dir, loads_json, write_atomic
 
 OSV_DUMP = "https://osv-vulnerabilities.storage.googleapis.com/{}/all.zip"
-ECOSYSTEMS = ("PyPI", "npm", "Go", "Maven")
+ECOSYSTEMS = ("PyPI", "npm", "Go", "Maven", "crates.io")
+SEMVER_ECOSYSTEMS = ("Go", "crates.io")  # advisories give SEMVER ranges, not version lists
 MAX_DUMP = 1_500_000_000  # bytes of one OSV all.zip download
 MAX_INDEX = 400_000_000  # bytes of one uncompressed index
 MAX_DATA = 10_000_000
@@ -69,7 +70,7 @@ def build_index(dump: bytes, ecosystem: str) -> Tuple[bytes, Dict[str, int]]:
                     continue
                 versions = [v for v in aff.get("versions") or [] if isinstance(v, str)]
                 # Go advisories list no versions, only SEMVER ranges: keep those and match the ranges offline
-                semver = ecosystem == "Go" and any((r or {}).get("type") == "SEMVER" for r in aff.get("ranges") or [])
+                semver = ecosystem in SEMVER_ECOSYSTEMS and any((r or {}).get("type") == "SEMVER" for r in aff.get("ranges") or [])
                 if not versions and not semver:
                     counts["without_versions"] += 1
                     continue
@@ -154,7 +155,7 @@ def offline_vulns(deps) -> Tuple[Dict[Tuple[str, str, str], List[dict]], List[st
         want = version_key(d.version, d.ecosystem)
         hits = [e for e in index["packages"].get(norm(d.name, d.ecosystem), [])
                 if any(version_key(v, d.ecosystem) == want for v in e["versions"])
-                or (not e["versions"] and d.ecosystem == "Go" and semver_affected(d.version, e["affected"]))]
+                or (not e["versions"] and d.ecosystem in SEMVER_ECOSYSTEMS and semver_affected(d.version, e["affected"]))]
         if hits:
             out[(d.ecosystem, d.name, d.version)] = [{k: v for k, v in e.items() if k != "versions"} for e in hits]
     return out, sorted(missing)

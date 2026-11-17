@@ -40,7 +40,7 @@ DEFAULT_MAX_BYTES = 1_000_000
 
 TEST_PATH_RE = re.compile(
     r"(^|/)(tests?|__tests__|__mocks__|spec|specs|e2e|cypress|playwright|fixtures?|testdata|mocks?)/"
-    r"|(^|/)test_[^/]*\.py$|_test\.py$|(^|/)(conftest|tests?)\.py$|_test\.go$"
+    r"|(^|/)test_[^/]*\.py$|_test\.py$|(^|/)(conftest|tests?)\.py$|_test\.go$|(^|/)tests?\.rs$|_tests?\.rs$|(^|/)\w+_tests/"
     r"|\.(test|spec|stories|story|cy)\.[cm]?[jt]sx?$",
     re.I,
 )

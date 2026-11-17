@@ -228,7 +228,8 @@ class UiScanner:
                 continue
             body = code[m.end():close]
             sub = SUBSCRIBE.search(body)
-            if sub and not re.search(r"\breturn\b", bare[m.end():close]):
+            # `() => store.subscribe(...)` returns the unsubscribe function, which React runs as the cleanup
+            if sub and not re.search(r"\breturn\b", bare[m.end():close]) and not re.match(r"\s*\(\s*\)\s*=>(?!\s*\{)", body):
                 self.add(sf, "UI008", sf.line_at(m.start()),
                          f"The effect starts `{sub.group(0).strip(' (.')}` but never cleans it up; it leaks and runs twice.")
             if fetch_effect is None and FETCH.search(body):

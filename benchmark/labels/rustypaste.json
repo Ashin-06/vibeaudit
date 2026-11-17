@@ -1,0 +1,222 @@
+{
+ "repo": "rustypaste",
+ "commit": "115f3bfe730dddbfab897bf09b900e7e45da3f3c",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/audit.yml",
+   "line": 15,
+   "fingerprint": "30cd9e1e017b7697b56f9a8c9bad4e45",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/cd.yml",
+   "line": 27,
+   "fingerprint": "f3af0546438026238c6ed4c28d07aaf0",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/cd.yml",
+   "line": 47,
+   "fingerprint": "64c468ceabf354b90ed395586a3a8952",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/cd.yml",
+   "line": 63,
+   "fingerprint": "3f8ea45ccedacb9dd1ea47d46086f5b5",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 21,
+   "fingerprint": "f55817e2ae4346d2fe40989605294bc5",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 32,
+   "fingerprint": "5a8a0ca3410c68b531dc38565cd88641",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 34,
+   "fingerprint": "24317257d66c13919eb4a18cd3a7afa2",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 40,
+   "fingerprint": "cea79ef417c315c7290bd322bcc3627d",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 65,
+   "fingerprint": "0730f9a1e259e3293ae0366fb5518de3",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 82,
+   "fingerprint": "a5c08f3e3614a37d8e515ee297540c56",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 95,
+   "fingerprint": "b3075c4bf8bb3daa1e2b594012a79edb",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 108,
+   "fingerprint": "6f4204b0ff766513b5594fd1ffb8e52c",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yml",
+   "line": 25,
+   "fingerprint": "dc47890b5d7fdbf3a7540512cd04a8b8",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yml",
+   "line": 39,
+   "fingerprint": "ca0cd604c951f5b6da0d289e363447d7",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yml",
+   "line": 45,
+   "fingerprint": "f267d8279ecf77f51b2649760665392d",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yml",
+   "line": 57,
+   "fingerprint": "445fd513da937caceed7c6e4a1a97e04",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yml",
+   "line": 64,
+   "fingerprint": "7b7f3def2ae23ed48d125671134f3187",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yml",
+   "line": 72,
+   "fingerprint": "39eae173725270af19158b0ec6dc9c84",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yml",
+   "line": 87,
+   "fingerprint": "d72e4b1f279f88bc7efe3ac231f8625f",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG009",
+   "file": "Dockerfile",
+   "line": 10,
+   "fingerprint": "46bbcfae0c50166ae0752bf092841422",
+   "verdict": "fp",
+   "reason": "The only env file is .envrc with `use flake` (direnv), which holds no values."
+  },
+  {
+   "rule": "BE006",
+   "file": "src/server.rs",
+   "line": 193,
+   "fingerprint": "a5d7e89e0e3c715f7927f4be8bd0b6d3",
+   "verdict": "fp",
+   "reason": "The file name is rejected if it holds / or \\ and is joined under the upload folder."
+  },
+  {
+   "rule": "BE006",
+   "file": "src/server.rs",
+   "line": 202,
+   "fingerprint": "0f4182e5ea04cbcba1bb45f4289b022f",
+   "verdict": "fp",
+   "reason": "The file name is rejected if it holds / or \\ and is joined under the upload folder."
+  },
+  {
+   "rule": "BE006",
+   "file": "src/server.rs",
+   "line": 214,
+   "fingerprint": "25afe52b333832e54509c4c2e95d357f",
+   "verdict": "fp",
+   "reason": "The file name is rejected if it holds / or \\ and is joined under the upload folder."
+  },
+  {
+   "rule": "BE008",
+   "file": "src/server.rs",
+   "line": 214,
+   "fingerprint": "a7fe0fa6dcbbb46311d63d6b0fea4e9f",
+   "verdict": "fp",
+   "reason": "The Location is the stored URL paste the uploader created (the URL shortener feature), read from a checked path."
+  },
+  {
+   "rule": "BE006",
+   "file": "src/server.rs",
+   "line": 218,
+   "fingerprint": "421268dd136434c58ed1f0cbce56e1e7",
+   "verdict": "fp",
+   "reason": "The file name is rejected if it holds / or \\ and is joined under the upload folder."
+  },
+  {
+   "rule": "BE008",
+   "file": "src/server.rs",
+   "line": 218,
+   "fingerprint": "7620c3dd1e0a76f81c634d78c6b0cd5e",
+   "verdict": "fp",
+   "reason": "The Location is the stored URL paste the uploader created (the URL shortener feature), read from a checked path."
+  },
+  {
+   "rule": "BE006",
+   "file": "src/server.rs",
+   "line": 220,
+   "fingerprint": "c42332cf7b324e8881e20148d9d87681",
+   "verdict": "fp",
+   "reason": "The file name is rejected if it holds / or \\ and is joined under the upload folder."
+  }
+ ]
+}

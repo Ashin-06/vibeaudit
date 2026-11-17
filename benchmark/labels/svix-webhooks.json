@@ -1,0 +1,366 @@
+{
+ "repo": "svix-webhooks",
+ "commit": "bb44d9a55f2bd409cb502d8bdab6b2e28710846c",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/python-release.yml",
+   "line": 35,
+   "fingerprint": "5064f9ddd28a87a5cfe8b9457096ada7",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "REL001",
+   "file": "bridge/svix-bridge/src/http_output.rs",
+   "line": 46,
+   "fingerprint": "9989cc16220e7ac9db42c17e240ea64d",
+   "verdict": "tp",
+   "reason": "reqwest client built with no timeout."
+  },
+  {
+   "rule": "AUTH004",
+   "file": "bridge/svix-bridge/src/webhook_receiver/mod.rs",
+   "line": 38,
+   "fingerprint": "543eac22f176beca73cf32147ee8d817",
+   "verdict": "fp",
+   "reason": "The receiver checks each integration's configured verification (verification.rs) inside the shared route handler."
+  },
+  {
+   "rule": "AUTH004",
+   "file": "bridge/svix-bridge/src/webhook_receiver/mod.rs",
+   "line": 42,
+   "fingerprint": "5b563f2946a4d91c7507db3737d1b163",
+   "verdict": "fp",
+   "reason": "The receiver checks each integration's configured verification (verification.rs) inside the shared route handler."
+  },
+  {
+   "rule": "SEC003",
+   "file": "bridge/svix-bridge/src/webhook_receiver/verification.rs",
+   "line": 95,
+   "fingerprint": "8f94ba25852baa537d862442f8ffc8af",
+   "verdict": "fp",
+   "reason": "A test secret inside a #[cfg(test)] function."
+  },
+  {
+   "rule": "CFG007",
+   "file": "client-integration-tests/docker-compose.yml",
+   "line": 39,
+   "fingerprint": "395578863c00dcf39856b4b191f9d506",
+   "verdict": "tp",
+   "reason": "docker-compose sets the default postgres password."
+  },
+  {
+   "rule": "CFG007",
+   "file": "client-integration-tests/docker-compose.yml",
+   "line": 56,
+   "fingerprint": "1ce65e8a6faf722bbf70c56c56deef8a",
+   "verdict": "tp",
+   "reason": "docker-compose sets the default postgres password."
+  },
+  {
+   "rule": "SEC003",
+   "file": "csharp/Svix.Tests/WebhookTest.cs",
+   "line": 15,
+   "fingerprint": "ea1e7ec29f0a14e7071a7b8d72f2bd3b",
+   "verdict": "fp",
+   "reason": "A fixed secret in the C# library's unit tests."
+  },
+  {
+   "rule": "QA011",
+   "file": "javascript/src/api_internal/message.ts",
+   "line": 29,
+   "fingerprint": "e651b76eb2c2fb716add576dc2438ee0",
+   "verdict": "fp",
+   "reason": "Generated client code duplicated between the public and internal API modules."
+  },
+  {
+   "rule": "QA007",
+   "file": "python/example.py",
+   "line": 1,
+   "fingerprint": "4a0ecdd110ea5d43af6adaad86f12b3a",
+   "verdict": "fp",
+   "reason": "An example script using a client not published under that name, not app code."
+  },
+  {
+   "rule": "SEC003",
+   "file": "rust/src/webhooks.rs",
+   "line": 240,
+   "fingerprint": "41a8e0f75b4f76cf68dff37646af6f39",
+   "verdict": "fp",
+   "reason": "A test secret inside the #[cfg(test)] module."
+  },
+  {
+   "rule": "SEC003",
+   "file": "rust/src/webhooks.rs",
+   "line": 256,
+   "fingerprint": "08aa00fe60e652894cd2b51e6ce0022b",
+   "verdict": "fp",
+   "reason": "A test secret inside the #[cfg(test)] module."
+  },
+  {
+   "rule": "SEC003",
+   "file": "rust/src/webhooks.rs",
+   "line": 272,
+   "fingerprint": "09d7921c1a270e99c812e4b01420182f",
+   "verdict": "fp",
+   "reason": "A test secret inside the #[cfg(test)] module."
+  },
+  {
+   "rule": "SEC003",
+   "file": "rust/src/webhooks.rs",
+   "line": 307,
+   "fingerprint": "6674594888a9fb0ed0a4020d253556f5",
+   "verdict": "fp",
+   "reason": "A test secret inside the #[cfg(test)] module."
+  },
+  {
+   "rule": "SEC003",
+   "file": "rust/src/webhooks.rs",
+   "line": 347,
+   "fingerprint": "30eb89605607443a5fc4fad331b3efec",
+   "verdict": "fp",
+   "reason": "A test secret inside the #[cfg(test)] module."
+  },
+  {
+   "rule": "SEC003",
+   "file": "rust/src/webhooks.rs",
+   "line": 367,
+   "fingerprint": "694f7b9006afbe73ebdf39b837476ca1",
+   "verdict": "fp",
+   "reason": "A test secret inside the #[cfg(test)] module."
+  },
+  {
+   "rule": "SEC003",
+   "file": "rust/src/webhooks.rs",
+   "line": 389,
+   "fingerprint": "fcce3235e7e3a55cdcf2f25c030dcfeb",
+   "verdict": "fp",
+   "reason": "A test secret inside the #[cfg(test)] module."
+  },
+  {
+   "rule": "SEC003",
+   "file": "rust/src/webhooks.rs",
+   "line": 408,
+   "fingerprint": "1c431734686d41c07ddfb024e84afb37",
+   "verdict": "fp",
+   "reason": "A test secret inside the #[cfg(test)] module."
+  },
+  {
+   "rule": "SEC003",
+   "file": "server/docker-compose.override.yml",
+   "line": 5,
+   "fingerprint": "630a914fca23c7ddea53d5a6d1eab3a1",
+   "verdict": "fp",
+   "reason": "A local development JWT secret in the dev compose override, commented as such."
+  },
+  {
+   "rule": "CFG007",
+   "file": "server/docker-compose.yml",
+   "line": 35,
+   "fingerprint": "23a41ab8b7b483eab5a10911e1c507fc",
+   "verdict": "tp",
+   "reason": "docker-compose sets the default postgres password."
+  },
+  {
+   "rule": "CFG007",
+   "file": "server/docker-compose.yml",
+   "line": 49,
+   "fingerprint": "16d6e0472919ada7290e4dbf073e7508",
+   "verdict": "tp",
+   "reason": "docker-compose sets the default postgres password."
+  },
+  {
+   "rule": "SEC003",
+   "file": "server/svix-server/config.default.toml",
+   "line": 16,
+   "fingerprint": "6019558f31880169e2737bf386b0a42b",
+   "verdict": "fp",
+   "reason": "A commented-out example value in the default config."
+  },
+  {
+   "rule": "SEC004",
+   "file": "server/svix-server/config.default.toml",
+   "line": 19,
+   "fingerprint": "cf27d385db8e9833e0a3e2244fae1446",
+   "verdict": "fp",
+   "reason": "A commented-out example value in the default config."
+  },
+  {
+   "rule": "DATA012",
+   "file": "server/svix-server/migrations/20220125145204_foreign_keys.up.sql",
+   "line": 7,
+   "fingerprint": "f03686612ec8458dfc9a8c33d3221bbc",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA011",
+   "file": "server/svix-server/migrations/20220428190104_message_expiration.up.sql",
+   "line": 3,
+   "fingerprint": "6789ad1a549ac9f281e19654747e8643",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA003",
+   "file": "server/svix-server/migrations/20220506181355_remove_updated_at_from_static_entities.up.sql",
+   "line": 1,
+   "fingerprint": "993132c0df9bca5de82776ba0b1976fd",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "server/svix-server/migrations/20220506181355_remove_updated_at_from_static_entities.up.sql",
+   "line": 2,
+   "fingerprint": "7175da80526985327be7267542793547",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA011",
+   "file": "server/svix-server/migrations/20221206214656_missing_msg_dest_endpoint.up.sql",
+   "line": 2,
+   "fingerprint": "4da767f5d5f9a590d173972cf24760fa",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA012",
+   "file": "server/svix-server/migrations/20250905195339_messageattempt_updates.down.sql",
+   "line": 1,
+   "fingerprint": "7cb3833a726bc70e88ea01b18be07c1b",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA011",
+   "file": "server/svix-server/migrations/20250909214223_messageattempt_endp_idx.up.sql",
+   "line": 1,
+   "fingerprint": "2ced152288f4ce208111c2580d703a48",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "SEC004",
+   "file": "server/svix-server/src/cfg.rs",
+   "line": 690,
+   "fingerprint": "b983d5507df68c1d791e00397ed8de32",
+   "verdict": "fp",
+   "reason": "A test config string (`not_actually_a_secret`) in the #[cfg(test)] module."
+  },
+  {
+   "rule": "SEC004",
+   "file": "server/svix-server/src/cfg.rs",
+   "line": 704,
+   "fingerprint": "1b4d259a5497f37c6814f9face3223e0",
+   "verdict": "fp",
+   "reason": "A test config string (`not_actually_a_secret`) in the #[cfg(test)] module."
+  },
+  {
+   "rule": "REL001",
+   "file": "server/svix-server/src/core/idempotency.rs",
+   "line": 434,
+   "fingerprint": "7ed2e2dfa493b211041c3bb4002f7309",
+   "verdict": "fp",
+   "reason": "Test code inside a #[cfg(test)] module."
+  },
+  {
+   "rule": "REL001",
+   "file": "server/svix-server/src/core/idempotency.rs",
+   "line": 535,
+   "fingerprint": "150c48ce271c1967bedee0906f053ca5",
+   "verdict": "fp",
+   "reason": "Test code inside a #[cfg(test)] module."
+  },
+  {
+   "rule": "REL001",
+   "file": "server/svix-server/src/core/idempotency.rs",
+   "line": 626,
+   "fingerprint": "a1cb4e89d2f641e081021f9e94337505",
+   "verdict": "fp",
+   "reason": "Test code inside a #[cfg(test)] module."
+  },
+  {
+   "rule": "DATA001",
+   "file": "server/svix-server/src/db/background_migrations.rs",
+   "line": 151,
+   "fingerprint": "f7e11036378fc6b4482fec614194f4ca",
+   "verdict": "fp",
+   "reason": "Runs a fixed list of migration statements, not a per-row query."
+  },
+  {
+   "rule": "DATA001",
+   "file": "server/svix-server/src/db/background_migrations.rs",
+   "line": 186,
+   "fingerprint": "d423c639cb09ba3599c51c47518fc1cc",
+   "verdict": "fp",
+   "reason": "Runs a fixed list of migration statements, not a per-row query."
+  },
+  {
+   "rule": "DATA001",
+   "file": "server/svix-server/src/db/background_migrations.rs",
+   "line": 317,
+   "fingerprint": "00c94dbb31fa06660ffe62a81f899c64",
+   "verdict": "fp",
+   "reason": "Runs a fixed list of migration statements, not a per-row query."
+  },
+  {
+   "rule": "REL001",
+   "file": "server/svix-server/src/main.rs",
+   "line": 157,
+   "fingerprint": "b7d70b9a87a95fa93a70495e6610fcfb",
+   "verdict": "tp",
+   "reason": "reqwest client built with no timeout."
+  },
+  {
+   "rule": "SEC002",
+   "file": "server/svix-server/tests/static/ex_key.pem",
+   "line": 1,
+   "fingerprint": "ce3c594c869a46c799f3f08c4517f364",
+   "verdict": "fp",
+   "reason": "A key fixture under tests/static used by the server tests."
+  },
+  {
+   "rule": "REL001",
+   "file": "svix-cli/src/cmds/login.rs",
+   "line": 157,
+   "fingerprint": "9ccf147d1239c4e05d88b259c0294ff7",
+   "verdict": "tp",
+   "reason": "reqwest client built with no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "svix-cli/src/cmds/seed.rs",
+   "line": 153,
+   "fingerprint": "558ce8399985a142eb2b52686a439bc9",
+   "verdict": "tp",
+   "reason": "reqwest client built with no timeout."
+  },
+  {
+   "rule": "QA007",
+   "file": "tools/bump_version.py",
+   "line": 23,
+   "fingerprint": "3ee66e53add74e60a1e5a3c4d94ce731",
+   "verdict": "tp",
+   "reason": "The release tool imports semver, which no Python manifest declares."
+  },
+  {
+   "rule": "BE002",
+   "file": "tools/bump_version.py",
+   "line": 276,
+   "fingerprint": "94548cc6c4f218b4b3787ec4f73717e6",
+   "verdict": "fp",
+   "reason": "A release script running fixed maintainer commands, no request input."
+  },
+  {
+   "rule": "QA007",
+   "file": "tools/update_postman.js",
+   "line": 1,
+   "fingerprint": "fa7e07c80c1dfc8193dc80f40ada5560",
+   "verdict": "tp",
+   "reason": "The tool requires openapi-to-postmanv2, which no package.json lists."
+  }
+ ]
+}

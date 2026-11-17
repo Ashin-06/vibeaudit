@@ -10,10 +10,12 @@ from . import accessscan, agentscan, apiscan, iacscan as iac, opsscan, promptsca
 from .guard import GUARD, finditer
 from .files import ENV_EXAMPLE_RE, ENV_FILE_RE, TEST_PATH_RE, Project, SourceFile, read_ignore_file, _matches
 from .lexer import py_views
+from .rustscan import rust_views
 from .model import Finding, Route
 from .store import loads_json
 
 SUPABASE = re.compile(r"supabase", re.I)
+ENV_VALUE = re.compile(r"(?m)^[ \t]*(?:export[ \t]+)?\w+[ \t]*=[ \t]*[^\s#]")
 
 Emit = Callable[[Finding], None]
 
@@ -47,10 +49,14 @@ class ProjectScanner:
         # Go sources and go.mod count too: project-wide evidence (rate limiting, CSRF protection) in a Go service
         self.code_files = [f for f in project.files if f.kind in ("py", "js", "html")
                            or f.rel.endswith(("package.json", "requirements.txt", "pyproject.toml", "go.mod"))
-                           or (f.rel.endswith(".go") and not f.rel.endswith("_test.go"))]
+                           or (f.rel.endswith(".go") and not f.rel.endswith("_test.go"))
+                           or (f.rel.endswith(".rs") and not f.is_test)]
 
     def _piece(self, f: SourceFile) -> str:
         views = f.cache.get("views") if f.kind in ("py", "js", "html") else None
+        if f.rel.endswith(".rs") and f.text is not None:  # Rust without comments ("apply a rate-limit here")
+            views = f.cache.get("rust_views") or rust_views(f.text)
+            f.cache["rust_views"] = views
         return views.code if views is not None else (f.text or "")  # type: ignore[attr-defined]
 
     def any_code(self, rx: "re.Pattern[str]") -> bool:
@@ -144,7 +150,9 @@ class ProjectScanner:
                 self.add(sf, i, "CFG003", f"{m.group(1)} is baked into the image.")
             if re.match(r"(?i)^(?:COPY|ADD)\s+(?:--\S+\s+)*\.\s+\S+", line):
                 ctx = sf.path.parent
-                envs = [p for p in ctx.glob(".env*") if p.is_file() and not ENV_EXAMPLE_RE.search(p.name)]
+                # only env files that set a value (not `use flake` in .envrc, not `TOKEN=` left empty)
+                envs = [p for p in ctx.glob(".env*") if p.is_file() and not ENV_EXAMPLE_RE.search(p.name)
+                        and ENV_VALUE.search(p.read_text(encoding="utf-8", errors="replace")[:100000])]
                 ignore = read_ignore_file(ctx / ".dockerignore")
                 if envs and not any(_matches(e.name, [p for p in ignore if not p.startswith("!")]) for e in envs):
                     self.add(sf, i, "CFG009", f"`{line[:60]}` copies {envs[0].name} into the image (no .dockerignore entry).")
@@ -409,6 +417,7 @@ class ProjectScanner:
 
     def route_checks(self) -> None:
         rate_limited = self.any_code(H.RATE_LIMIT_EVIDENCE)
+        roles = self.any_code(H.ANY_ROLE)  # no roles anywhere: every signed-in user is the admin
         reads_body: Optional[Route] = None
         for r in self.routes:
             path = r.path
@@ -426,7 +435,7 @@ class ProjectScanner:
                 # an API key or login check on the route (alerta's @permission('write:webhooks')) replaces a signature
                 if not H.WEBHOOK_VERIFY.search(r.body) and not r.has_auth:
                     self.add(r.file, r.line, "AUTH004", f"Webhook {path} does not verify the sender's signature.")
-            elif is_admin and not H.ADMIN_ROLE_EVIDENCE.search(r.body):
+            elif is_admin and not H.ADMIN_ROLE_EVIDENCE.search(r.body) and (roles or not r.has_auth):
                 msg = "has no authentication or role check" if not r.has_auth else "checks login but not the admin role"
                 self.add(r.file, r.line, "AUTH002", f"{'/'.join(r.methods)} {path} {msg}.")
             elif mutating and not r.has_auth and not public and r.framework != "spring-unsecured":  # JAVA001 covers those

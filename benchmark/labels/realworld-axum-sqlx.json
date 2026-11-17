@@ -1,0 +1,46 @@
+{
+ "repo": "realworld-axum-sqlx",
+ "commit": "f1b25654773228297e35c292f357d33b7121a101",
+ "findings": [
+  {
+   "rule": "DATA012",
+   "file": "migrations/3_follow.sql",
+   "line": 14,
+   "fingerprint": "9a1bd53e1158109016f8b3f999e432e8",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "migrations/4_article.sql",
+   "line": 5,
+   "fingerprint": "26fe1baf2a271175c397d0609992f27b",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "migrations/4_article.sql",
+   "line": 45,
+   "fingerprint": "d3a66e581709aaa1dfd6d32286236136",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "migrations/4_article.sql",
+   "line": 89,
+   "fingerprint": "4087f1d6401418cbb6ec847c2d3e5ea4",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "src/http/users.rs",
+   "line": 17,
+   "fingerprint": "edb26edf745b8347139fe2ab02aa715b",
+   "verdict": "tp",
+   "reason": "The password login has no rate limit."
+  }
+ ]
+}

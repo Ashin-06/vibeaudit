@@ -1,0 +1,110 @@
+{
+ "repo": "actix-realworld-example-app",
+ "commit": "8348aedd51e1462ed38e51c8e66fc1c1995bf756",
+ "findings": [
+  {
+   "rule": "CFG002",
+   "file": ".gitpod.Dockerfile",
+   "line": 1,
+   "fingerprint": "f6167c658223ddfaf139b8a4ac956a1d",
+   "verdict": "tp",
+   "reason": "The base image uses latest or no tag."
+  },
+  {
+   "rule": "DATA006",
+   "file": "migrations/2019-03-06-144033_create_users/up.sql",
+   "line": 11,
+   "fingerprint": "82a1f1e6e7d379ef21a766cae5be0fe1",
+   "verdict": "tp",
+   "reason": "A timestamp column without time zone."
+  },
+  {
+   "rule": "DATA006",
+   "file": "migrations/2019-03-06-144033_create_users/up.sql",
+   "line": 12,
+   "fingerprint": "cc0cb9cb00d691d7186291a59ab920bc",
+   "verdict": "tp",
+   "reason": "A timestamp column without time zone."
+  },
+  {
+   "rule": "DATA006",
+   "file": "migrations/2019-03-06-144624_create_followers/up.sql",
+   "line": 5,
+   "fingerprint": "0ed39e0ddc7c19a6e55de1e1d918d9c5",
+   "verdict": "tp",
+   "reason": "A timestamp column without time zone."
+  },
+  {
+   "rule": "DATA006",
+   "file": "migrations/2019-03-06-144624_create_followers/up.sql",
+   "line": 6,
+   "fingerprint": "837efeec4d4d69fd7901ca9b7d7396cd",
+   "verdict": "tp",
+   "reason": "A timestamp column without time zone."
+  },
+  {
+   "rule": "DATA006",
+   "file": "migrations/2019-03-06-145146_create_articles/up.sql",
+   "line": 8,
+   "fingerprint": "9dbbbb4ac692dd334a3f182453162530",
+   "verdict": "tp",
+   "reason": "A timestamp column without time zone."
+  },
+  {
+   "rule": "DATA006",
+   "file": "migrations/2019-03-06-145146_create_articles/up.sql",
+   "line": 9,
+   "fingerprint": "0f23c337e050549a46ba4ba3a0d2277e",
+   "verdict": "tp",
+   "reason": "A timestamp column without time zone."
+  },
+  {
+   "rule": "DATA006",
+   "file": "migrations/2019-03-06-145146_create_articles/up.sql",
+   "line": 21,
+   "fingerprint": "a64d7f878b9621f4975b5fa608fcf77f",
+   "verdict": "tp",
+   "reason": "A timestamp column without time zone."
+  },
+  {
+   "rule": "DATA006",
+   "file": "migrations/2019-03-06-145146_create_articles/up.sql",
+   "line": 22,
+   "fingerprint": "a6bb9c0444659e1eb2087a1ba173785d",
+   "verdict": "tp",
+   "reason": "A timestamp column without time zone."
+  },
+  {
+   "rule": "DATA006",
+   "file": "migrations/2019-03-06-152302_create_comments/up.sql",
+   "line": 6,
+   "fingerprint": "68b238ad9dd3d09223e34b71c777ca45",
+   "verdict": "tp",
+   "reason": "A timestamp column without time zone."
+  },
+  {
+   "rule": "DATA006",
+   "file": "migrations/2019-03-06-152302_create_comments/up.sql",
+   "line": 7,
+   "fingerprint": "ff624cf3343ddca72614e87795214082",
+   "verdict": "tp",
+   "reason": "A timestamp column without time zone."
+  },
+  {
+   "rule": "DATA006",
+   "file": "migrations/2019-03-06-152831_create_article_tags/up.sql",
+   "line": 5,
+   "fingerprint": "93ded85d2ef52ea7033fddf6f9e964b4",
+   "verdict": "tp",
+   "reason": "A timestamp column without time zone."
+  },
+  {
+   "rule": "DATA006",
+   "file": "migrations/2019-03-06-152831_create_article_tags/up.sql",
+   "line": 6,
+   "fingerprint": "2d3e3ae3f4639965ee2da2401d24d18a",
+   "verdict": "tp",
+   "reason": "A timestamp column without time zone."
+  }
+ ]
+}

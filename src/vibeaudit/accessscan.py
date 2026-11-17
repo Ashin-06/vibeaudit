@@ -10,6 +10,7 @@ from __future__ import annotations
 import re
 from typing import Callable, Dict, List, Set
 
+from . import heuristics as H
 from .files import Project, SourceFile
 from .guard import GUARD, finditer
 from .model import Route
@@ -41,6 +42,7 @@ PY_MODEL = re.compile(r"(?m)^class\s+(\w+)\s*\([^)]*(?:Model|Base|SQLModel|Docum
 RLS = re.compile(r"(?i)enable\s+row\s+level\s+security")
 DB_TOUCH = r"(?:find\w*|filter|get|all|select|update\w*|delete\w*|insert|create\w*|query|exec\w*|raw|aggregate|count)"
 
+CODE_EXTS = (".go", ".rs", ".java", ".kt", ".cs", ".php", ".rb")
 ADMIN_ROUTE = re.compile(r"(?i)/admin\b|/feature[-_]?flags?\b|/flags?\b|/toggles?\b|/maintenance\b|/site[-_]?settings\b")
 ROLE_CHECK = re.compile(
     r"(?i)admin|\brole|is_?staff|is_?superuser|superuser|permission|\bcan\s*\(|authori[sz]e|ability|polic(?:y|ies)|has_?perm"
@@ -56,8 +58,10 @@ def run(project: Project, routes: List[Route], add: Add) -> None:
     files = [f for f in project.files if f.text is not None and not f.is_test and not f.is_example]
     GUARD.run("<project>", "password changes", _password_changes, project, routes, add)
     GUARD.run("<project>", "tenant scoping", _tenant_scoping, project, files, routes, add)
+    # no roles anywhere in the code: every signed-in user is the admin, so there is no role to check
+    roles = any(H.ANY_ROLE.search(f.text) for f in files if f.kind in ("py", "js", "html") or f.rel.endswith(CODE_EXTS))
     for r in routes:
-        if ADMIN_ROUTE.search(r.path) and r.has_auth and not ROLE_CHECK.search(r.body) \
+        if roles and ADMIN_ROUTE.search(r.path) and r.has_auth and not ROLE_CHECK.search(r.body) \
                 and set(m.upper() for m in r.methods) & {"POST", "PUT", "PATCH", "DELETE"}:
             add(r.file, r.line, "AUTH017", f"{r.path} changes admin or feature-flag state, and any signed-in user can call it: "
                                            "nothing checks a role.")

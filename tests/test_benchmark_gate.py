@@ -43,3 +43,15 @@ def test_seeded_manifests_pin_no_versions():
     for path in list(seeded.rglob("requirements*.txt")) + list(seeded.rglob("package.json")):
         text = path.read_text(encoding="utf-8")
         assert not re.search(r"==\s*\d|\"[~^]?\d+\.\d+", text), f"{path} pins a version"
+
+
+def test_stable_precision_counts_each_finding_by_its_own_preview_flag():
+    # AUTH001 is a stable rule, but 2 of its false positives come from a preview language, so they are preview
+    stable_rule = {"preview": False, "by_repo": {"a": [3, 3, 0]}, "preview_by_repo": {"a": [0, 2, 0]}}
+    preview_rule = {"preview": True, "by_repo": {"a": [1, 1, 0]}, "preview_by_repo": {"a": [1, 1, 0]}}
+    results = {"heldout": [], "scanned": 1, "rules": {"AUTH001": stable_rule, "QA001": preview_rule}}
+    assert benchmark._stable_split(results, False) == (3, 1)
+    assert benchmark._stable_split(results, True) == (0, 0)
+    assert "| Stable findings (what `--fail-on` acts on) | 75.0% (3/4) |" in benchmark.readme_accuracy(results)
+    del stable_rule["preview_by_repo"], preview_rule["preview_by_repo"]  # results from before the flag was recorded
+    assert benchmark._stable_split(results, False) == (3, 3)

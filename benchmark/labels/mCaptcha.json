@@ -1,0 +1,318 @@
+{
+ "repo": "mCaptcha",
+ "commit": "b215a411ed3e53e3c5d77465f73b40d35986ec93",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/clippy-fmt.yml",
+   "line": 17,
+   "fingerprint": "78d8ab6c944707465724f2081dcb694e",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/clippy-fmt.yml",
+   "line": 21,
+   "fingerprint": "486d068de2bfddfb40b062f84e1445af",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/clippy-fmt.yml",
+   "line": 27,
+   "fingerprint": "cee62e54c4ca479613ff6f1820d41e01",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/linux.yml",
+   "line": 89,
+   "fingerprint": "1ecffddd4dd94f3ab7d435cb6c60dad7",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/linux.yml",
+   "line": 123,
+   "fingerprint": "6b803db2997cb8950ec43e2453d10ac1",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/linux.yml",
+   "line": 150,
+   "fingerprint": "9901aef696d83baaf42bcd6e830ac267",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yml",
+   "line": 80,
+   "fingerprint": "048a1f38f9d09f2c823316c1f78b9163",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yml",
+   "line": 110,
+   "fingerprint": "6ea5040e38a61750ac4b8f8cc704ba57",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag, not a commit SHA."
+  },
+  {
+   "rule": "CFG002",
+   "file": "Dockerfile",
+   "line": 23,
+   "fingerprint": "904ef3ce785c8b4664534099895eee95",
+   "verdict": "tp",
+   "reason": "The build stage uses rust:latest."
+  },
+  {
+   "rule": "CFG009",
+   "file": "Dockerfile",
+   "line": 25,
+   "fingerprint": "46bbcfae0c50166ae0752bf092841422",
+   "verdict": "tp",
+   "reason": "COPY . . copies .env.docker-compose (cookie secret, database URL) into the image; .dockerignore does not exclude it."
+  },
+  {
+   "rule": "SEC003",
+   "file": "config/default.toml",
+   "line": 10,
+   "fingerprint": "b3c4923309849732c307f66e69799a52",
+   "verdict": "tp",
+   "reason": "default.toml ships a fixed cookie_secret that is used unless the operator overrides it."
+  },
+  {
+   "rule": "DATA012",
+   "file": "db/db-sqlx-maria/migrations/20210310122617_mcaptcha_config.sql",
+   "line": 16,
+   "fingerprint": "540e0109fa11cefff2dd6d3206c84d1a",
+   "verdict": "fp",
+   "reason": "MariaDB (InnoDB) creates an index for every foreign key automatically."
+  },
+  {
+   "rule": "DATA012",
+   "file": "db/db-sqlx-maria/migrations/20210310122902_mcaptcha_levels.sql",
+   "line": 12,
+   "fingerprint": "40196740eeccde217a166493918d882c",
+   "verdict": "fp",
+   "reason": "MariaDB (InnoDB) creates an index for every foreign key automatically."
+  },
+  {
+   "rule": "DATA012",
+   "file": "db/db-sqlx-maria/migrations/20210430032935_mcaptcha_pow_fetched_stats.sql",
+   "line": 9,
+   "fingerprint": "2433b46ecdfe0d87b8827be7ad99ecef",
+   "verdict": "fp",
+   "reason": "MariaDB (InnoDB) creates an index for every foreign key automatically."
+  },
+  {
+   "rule": "DATA012",
+   "file": "db/db-sqlx-maria/migrations/20210509135118_mcaptcha_pow_solved_stats.sql",
+   "line": 9,
+   "fingerprint": "2192858f0ed31d1d38774058e4acfefb",
+   "verdict": "fp",
+   "reason": "MariaDB (InnoDB) creates an index for every foreign key automatically."
+  },
+  {
+   "rule": "DATA012",
+   "file": "db/db-sqlx-maria/migrations/20210509135154_mcaptcha_pow_confirmed_stats.sql",
+   "line": 9,
+   "fingerprint": "59373884be2dedc1b71fcd73581241cb",
+   "verdict": "fp",
+   "reason": "MariaDB (InnoDB) creates an index for every foreign key automatically."
+  },
+  {
+   "rule": "DATA012",
+   "file": "db/db-sqlx-maria/migrations/20210509151150_mcaptcha_notifications.sql",
+   "line": 19,
+   "fingerprint": "f07b0847c9d6bf016311e0f79efab096",
+   "verdict": "fp",
+   "reason": "MariaDB (InnoDB) creates an index for every foreign key automatically."
+  },
+  {
+   "rule": "DATA012",
+   "file": "db/db-sqlx-maria/migrations/20230627132800_mcaptcha_pow_analytics.sql",
+   "line": 9,
+   "fingerprint": "aa6c65906aa679bfda1802d9fe767acb",
+   "verdict": "fp",
+   "reason": "MariaDB (InnoDB) creates an index for every foreign key automatically."
+  },
+  {
+   "rule": "DATA012",
+   "file": "db/db-sqlx-maria/migrations/20230629185331_mcaptcha_psuedo_campaign_id.sql",
+   "line": 8,
+   "fingerprint": "b175075fb90c4c91b945e9e4f5cef608",
+   "verdict": "fp",
+   "reason": "MariaDB (InnoDB) creates an index for every foreign key automatically."
+  },
+  {
+   "rule": "DATA012",
+   "file": "db/db-sqlx-maria/migrations/20231029000927_mcaptcha_track_nonce.sql",
+   "line": 8,
+   "fingerprint": "9d1af5a44b1e38ce1314be045c75804e",
+   "verdict": "fp",
+   "reason": "MariaDB (InnoDB) creates an index for every foreign key automatically."
+  },
+  {
+   "rule": "DATA001",
+   "file": "db/db-sqlx-maria/src/lib.rs",
+   "line": 416,
+   "fingerprint": "a4ab95159533ae9a9e40ba5bf9a278d7",
+   "verdict": "tp",
+   "reason": "One INSERT per captcha level in a loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "db/db-sqlx-maria/src/lib.rs",
+   "line": 444,
+   "fingerprint": "cc760c60c9102110f7bc529241789d4a",
+   "verdict": "tp",
+   "reason": "One INSERT per captcha level in a loop."
+  },
+  {
+   "rule": "DATA012",
+   "file": "db/db-sqlx-postgres/migrations/20210310122617_mcaptcha_config.sql",
+   "line": 7,
+   "fingerprint": "eba271f53a8e53c6a35391b681d4c093",
+   "verdict": "tp",
+   "reason": "Postgres does not index foreign keys; this one has no index."
+  },
+  {
+   "rule": "DATA012",
+   "file": "db/db-sqlx-postgres/migrations/20210310122902_mcaptcha_levels.sql",
+   "line": 6,
+   "fingerprint": "ac8c79038a1085118c4a5c871e6c5e57",
+   "verdict": "tp",
+   "reason": "Postgres does not index foreign keys; this one has no index."
+  },
+  {
+   "rule": "DATA012",
+   "file": "db/db-sqlx-postgres/migrations/20210430032935_mcaptcha_pow_fetched_stats.sql",
+   "line": 6,
+   "fingerprint": "86155dfa17b5abe388634cf4b0be0a8c",
+   "verdict": "tp",
+   "reason": "Postgres does not index foreign keys; this one has no index."
+  },
+  {
+   "rule": "DATA012",
+   "file": "db/db-sqlx-postgres/migrations/20210509135118_mcaptcha_pow_solved_stats.sql",
+   "line": 6,
+   "fingerprint": "6fe5c93eab7d9a70487c27ad440b940c",
+   "verdict": "tp",
+   "reason": "Postgres does not index foreign keys; this one has no index."
+  },
+  {
+   "rule": "DATA012",
+   "file": "db/db-sqlx-postgres/migrations/20210509135154_mcaptcha_pow_confirmed_stats.sql",
+   "line": 6,
+   "fingerprint": "38e6b4934601729efe9258044dbf6bc4",
+   "verdict": "tp",
+   "reason": "Postgres does not index foreign keys; this one has no index."
+  },
+  {
+   "rule": "DATA012",
+   "file": "db/db-sqlx-postgres/migrations/20210509151150_mcaptcha_notifications.sql",
+   "line": 8,
+   "fingerprint": "78c368b15d921d426ffd54e12da0f488",
+   "verdict": "tp",
+   "reason": "Postgres does not index foreign keys; this one has no index."
+  },
+  {
+   "rule": "DATA012",
+   "file": "db/db-sqlx-postgres/migrations/20210509151150_mcaptcha_notifications.sql",
+   "line": 9,
+   "fingerprint": "2d0b499726e648eceb62f396daf0f8f1",
+   "verdict": "tp",
+   "reason": "Postgres does not index foreign keys; this one has no index."
+  },
+  {
+   "rule": "DATA003",
+   "file": "db/db-sqlx-postgres/migrations/20220526114806_alter_notifications_table.sql",
+   "line": 6,
+   "fingerprint": "4a9d1b99eb443abc0f780c2025cc9718",
+   "verdict": "fp",
+   "reason": "ALTER COLUMN TYPE widens heading from varchar(30) to varchar(100); no data is lost."
+  },
+  {
+   "rule": "DATA012",
+   "file": "db/db-sqlx-postgres/migrations/20230627133023_mcaptcha_pow_analytics.sql",
+   "line": 2,
+   "fingerprint": "83bfced8171e6799cb9d45edb5538701",
+   "verdict": "tp",
+   "reason": "Postgres does not index foreign keys; this one has no index."
+  },
+  {
+   "rule": "DATA012",
+   "file": "db/db-sqlx-postgres/migrations/20230629174617_mcaptcha_psuedo_campaign.sql",
+   "line": 3,
+   "fingerprint": "74a311f10536b453bd9562bc70415c88",
+   "verdict": "tp",
+   "reason": "Postgres does not index foreign keys; this one has no index."
+  },
+  {
+   "rule": "DATA012",
+   "file": "db/db-sqlx-postgres/migrations/20231028235346_mcaptcha_track_nonce.sql",
+   "line": 4,
+   "fingerprint": "09921abb7d73d96a497b286820da2063",
+   "verdict": "tp",
+   "reason": "Postgres does not index foreign keys; this one has no index."
+  },
+  {
+   "rule": "DATA001",
+   "file": "db/db-sqlx-postgres/src/lib.rs",
+   "line": 428,
+   "fingerprint": "c6f49255eeb81b4007f3496c840c6640",
+   "verdict": "tp",
+   "reason": "One INSERT per captcha level in a loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "db/db-sqlx-postgres/src/lib.rs",
+   "line": 455,
+   "fingerprint": "0c3b70455952cf387b2cfbea6ebaacfe",
+   "verdict": "tp",
+   "reason": "One INSERT per captcha level in a loop."
+  },
+  {
+   "rule": "REL001",
+   "file": "src/survey.rs",
+   "line": 64,
+   "fingerprint": "cf5835aef057bb5a052e23c86c0b53f0",
+   "verdict": "tp",
+   "reason": "reqwest client built with no timeout."
+  },
+  {
+   "rule": "QA006",
+   "file": "templates/index.ts",
+   "line": 21,
+   "fingerprint": "929bb4414613039e8aeeba52f934eba7",
+   "verdict": "fp",
+   "reason": "logger.ts exports MODE as an `export const enum`, which the import check does not recognise."
+  },
+  {
+   "rule": "FE001",
+   "file": "templates/panel/sitekey/add/advance/ts/removeLevelButton/updateDom/setupTests.ts",
+   "line": 9,
+   "fingerprint": "50354c69cf7e138cef6686d3d1249f81",
+   "verdict": "fp",
+   "reason": "A test setup file writing a constant form template into the test DOM."
+  },
+  {
+   "rule": "SEC010",
+   "file": "templates/widget/sendWork.ts",
+   "line": 16,
+   "fingerprint": "75d5cc4a1af719942da94d9fefbbb7c8",
+   "verdict": "fp",
+   "reason": "The captcha token is logged in the visitor's own browser and handed to the embedding page anyway; it is not a server secret."
+  }
+ ]
+}

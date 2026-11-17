@@ -1,7 +1,7 @@
 {
  "tool": "vibeaudit benchmark",
- "corpus": 74,
- "scanned": 74,
+ "corpus": 85,
+ "scanned": 85,
  "skipped": {},
  "heldout": [
   "Schematic",
@@ -12,11 +12,14 @@
   "go-base",
   "govwa",
   "langchain-nextjs-template",
+  "mCaptcha",
   "next-saas-stripe-starter",
   "nodejs-whisper",
   "openai-assistants-quickstart",
   "piggymetrics",
   "podinfo",
+  "realworld-axum-sqlx",
+  "svix-webhooks",
   "terragoat",
   "thynk",
   "toWers",
@@ -541,6 +544,83 @@
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
+  },
+  "zero-to-production": {
+   "findings": 11,
+   "labelled": 11,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 8
+  },
+  "lldap": {
+   "findings": 35,
+   "labelled": 35,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 2
+  },
+  "rustypaste": {
+   "findings": 19,
+   "labelled": 19,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 8
+  },
+  "actix-realworld-example-app": {
+   "findings": 13,
+   "labelled": 13,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "realworld-axum-sqlx": {
+   "findings": 5,
+   "labelled": 5,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "realworld-rust-axum-sqlx": {
+   "findings": 17,
+   "labelled": 17,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "svix-webhooks": {
+   "findings": 42,
+   "labelled": 42,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 3
+  },
+  "jira-meridian": {
+   "findings": 72,
+   "labelled": 72,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 58
+  },
+  "pomb": {
+   "findings": 94,
+   "labelled": 94,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "chat-systems": {
+   "findings": 208,
+   "labelled": 208,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 3
+  },
+  "mCaptcha": {
+   "findings": 39,
+   "labelled": 39,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
   }
  },
  "rules": {
@@ -556,7 +636,8 @@
    "seeded_expected": 0,
    "seeded_found": 0,
    "seeded_recall": null,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "API001": {
    "title": "Frontend calls an API path that no route handles",
@@ -576,7 +657,8 @@
      3,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "API002": {
    "title": "Frontend calls an API route with the wrong method",
@@ -590,17 +672,18 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "AUTH001": {
    "title": "State-changing endpoint without authentication",
    "preview": false,
    "tp": 46,
-   "fp": 5,
+   "fp": 11,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.902,
-   "precision_pessimistic": 0.902,
+   "precision": 0.807,
+   "precision_pessimistic": 0.807,
    "seeded_expected": 8,
    "seeded_found": 8,
    "seeded_recall": 1.0,
@@ -655,6 +738,11 @@
      0,
      0
     ],
+    "jira-meridian": [
+     0,
+     6,
+     0
+    ],
     "langchain-nextjs-template": [
      7,
      0,
@@ -700,17 +788,44 @@
      0,
      0
     ]
+   },
+   "preview_by_repo": {
+    "conveyor": [
+     4,
+     0,
+     0
+    ],
+    "go-base": [
+     0,
+     3,
+     0
+    ],
+    "go-clean-arch": [
+     1,
+     0,
+     0
+    ],
+    "jira-meridian": [
+     0,
+     6,
+     0
+    ],
+    "piggymetrics": [
+     0,
+     1,
+     0
+    ]
    }
   },
   "AUTH002": {
    "title": "Admin endpoint without a role check",
    "preview": false,
    "tp": 19,
-   "fp": 7,
+   "fp": 10,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.7308,
-   "precision_pessimistic": 0.7308,
+   "precision": 0.6552,
+   "precision_pessimistic": 0.6552,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
@@ -730,6 +845,33 @@
      6,
      0
     ],
+    "jira-meridian": [
+     0,
+     3,
+     0
+    ],
+    "uniedit-server": [
+     17,
+     0,
+     0
+    ]
+   },
+   "preview_by_repo": {
+    "bella-openapi": [
+     0,
+     1,
+     0
+    ],
+    "go-base": [
+     0,
+     6,
+     0
+    ],
+    "jira-meridian": [
+     0,
+     3,
+     0
+    ],
     "uniedit-server": [
      17,
      0,
@@ -741,11 +883,11 @@
    "title": "Possible insecure direct object reference (IDOR)",
    "preview": false,
    "tp": 9,
-   "fp": 9,
+   "fp": 11,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5,
-   "precision_pessimistic": 0.5,
+   "precision": 0.45,
+   "precision_pessimistic": 0.45,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -753,6 +895,11 @@
     "bella-openapi": [
      0,
      1,
+     0
+    ],
+    "chat-systems": [
+     0,
+     2,
      0
     ],
     "conveyor": [
@@ -790,17 +937,49 @@
      2,
      0
     ]
+   },
+   "preview_by_repo": {
+    "bella-openapi": [
+     0,
+     1,
+     0
+    ],
+    "chat-systems": [
+     0,
+     2,
+     0
+    ],
+    "conveyor": [
+     0,
+     2,
+     0
+    ],
+    "golang-gin-realworld-example-app": [
+     0,
+     1,
+     0
+    ],
+    "jhipster-sample-app": [
+     9,
+     0,
+     0
+    ],
+    "toWers": [
+     0,
+     1,
+     0
+    ]
    }
   },
   "AUTH004": {
    "title": "Webhook without signature verification",
    "preview": false,
    "tp": 1,
-   "fp": 0,
+   "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.3333,
+   "precision_pessimistic": 0.3333,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -808,6 +987,18 @@
     "learnathon-leaderboard": [
      1,
      0,
+     0
+    ],
+    "svix-webhooks": [
+     0,
+     2,
+     0
+    ]
+   },
+   "preview_by_repo": {
+    "svix-webhooks": [
+     0,
+     2,
      0
     ]
    }
@@ -830,7 +1021,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "AUTH006": {
    "title": "Permissive Supabase policy",
@@ -860,7 +1052,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "AUTH007": {
    "title": "Open Firebase security rules",
@@ -874,7 +1067,8 @@
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "AUTH008": {
    "title": "Auth check stub always succeeds",
@@ -899,7 +1093,8 @@
      3,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "AUTH009": {
    "title": "CSRF protection disabled",
@@ -924,12 +1119,13 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "AUTH010": {
    "title": "Login endpoint without rate limiting",
    "preview": false,
-   "tp": 16,
+   "tp": 20,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -989,8 +1185,60 @@
      0,
      0
     ],
+    "realworld-axum-sqlx": [
+     1,
+     0,
+     0
+    ],
+    "realworld-rust-axum-sqlx": [
+     1,
+     0,
+     0
+    ],
     "spring-boot-realworld-example-app": [
      1,
+     0,
+     0
+    ],
+    "zero-to-production": [
+     2,
+     0,
+     0
+    ]
+   },
+   "preview_by_repo": {
+    "go-base": [
+     1,
+     0,
+     0
+    ],
+    "golang-gin-realworld-example-app": [
+     1,
+     0,
+     0
+    ],
+    "govwa": [
+     1,
+     0,
+     0
+    ],
+    "realworld-axum-sqlx": [
+     1,
+     0,
+     0
+    ],
+    "realworld-rust-axum-sqlx": [
+     1,
+     0,
+     0
+    ],
+    "spring-boot-realworld-example-app": [
+     1,
+     0,
+     0
+    ],
+    "zero-to-production": [
+     2,
      0,
      0
     ]
@@ -1008,7 +1256,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "AUTH012": {
    "title": "Session cookie without SameSite and no CSRF protection",
@@ -1022,7 +1271,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "AUTH013": {
    "title": "Webhook signature without replay protection",
@@ -1036,7 +1286,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "AUTH014": {
    "title": "Rate limit keyed on a client-controlled header",
@@ -1050,7 +1301,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "AUTH015": {
    "title": "Password change keeps old sessions valid",
@@ -1075,6 +1327,18 @@
      0,
      0
     ]
+   },
+   "preview_by_repo": {
+    "full-stack-fastapi-template": [
+     2,
+     0,
+     0
+    ],
+    "toWers": [
+     1,
+     0,
+     0
+    ]
    }
   },
   "AUTH016": {
@@ -1089,7 +1353,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "AUTH017": {
    "title": "Admin or feature-flag endpoint without a role check",
@@ -1109,17 +1374,24 @@
      0,
      0
     ]
+   },
+   "preview_by_repo": {
+    "sili-smart-hr": [
+     2,
+     0,
+     0
+    ]
    }
   },
   "BE001": {
    "title": "SQL injection",
    "preview": false,
    "tp": 30,
-   "fp": 8,
+   "fp": 10,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.7895,
-   "precision_pessimistic": 0.7895,
+   "precision": 0.75,
+   "precision_pessimistic": 0.75,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -1154,6 +1426,11 @@
      1,
      0
     ],
+    "jira-meridian": [
+     0,
+     2,
+     0
+    ],
     "pygoat": [
      1,
      0,
@@ -1174,17 +1451,29 @@
      0,
      0
     ]
+   },
+   "preview_by_repo": {
+    "JavaVulnerableLab": [
+     5,
+     0,
+     0
+    ],
+    "jira-meridian": [
+     0,
+     2,
+     0
+    ]
    }
   },
   "BE002": {
    "title": "Command injection",
    "preview": true,
    "tp": 4,
-   "fp": 4,
+   "fp": 5,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5,
-   "precision_pessimistic": 0.5,
+   "precision": 0.4444,
+   "precision_pessimistic": 0.4444,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -1224,6 +1513,58 @@
      0,
      0
     ],
+    "svix-webhooks": [
+     0,
+     1,
+     0
+    ],
+    "vibe-trading": [
+     1,
+     0,
+     0
+    ]
+   },
+   "preview_by_repo": {
+    "djangoproject.com": [
+     0,
+     1,
+     0
+    ],
+    "dvga": [
+     1,
+     0,
+     0
+    ],
+    "dvna": [
+     1,
+     0,
+     0
+    ],
+    "microblog": [
+     0,
+     1,
+     0
+    ],
+    "node-express-boilerplate": [
+     0,
+     1,
+     0
+    ],
+    "nodegoat": [
+     0,
+     1,
+     0
+    ],
+    "pygoat": [
+     1,
+     0,
+     0
+    ],
+    "svix-webhooks": [
+     0,
+     1,
+     0
+    ],
     "vibe-trading": [
      1,
      0,
@@ -1244,6 +1585,28 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "flask": [
+     0,
+     2,
+     0
+    ],
+    "nodegoat": [
+     3,
+     3,
+     0
+    ],
+    "pygoat": [
+     1,
+     0,
+     0
+    ],
+    "werkzeug": [
+     0,
+     2,
+     0
+    ]
+   },
+   "preview_by_repo": {
     "flask": [
      0,
      2,
@@ -1299,6 +1662,28 @@
      6,
      0
     ]
+   },
+   "preview_by_repo": {
+    "Vulnerable-Flask-App": [
+     1,
+     0,
+     0
+    ],
+    "opengpts": [
+     0,
+     1,
+     0
+    ],
+    "pygoat": [
+     3,
+     0,
+     0
+    ],
+    "wsgidav": [
+     0,
+     6,
+     0
+    ]
    }
   },
   "BE005": {
@@ -1329,7 +1714,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "BE006": {
    "title": "Path traversal",
@@ -1369,6 +1755,18 @@
      1,
      0
     ]
+   },
+   "preview_by_repo": {
+    "JavaVulnerableLab": [
+     2,
+     0,
+     0
+    ],
+    "podinfo": [
+     0,
+     1,
+     0
+    ]
    }
   },
   "BE007": {
@@ -1389,7 +1787,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "BE008": {
    "title": "Open redirect",
@@ -1404,6 +1803,43 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "JavaVulnerableLab": [
+     1,
+     0,
+     0
+    ],
+    "chatbot-ui": [
+     1,
+     0,
+     0
+    ],
+    "dvna": [
+     1,
+     0,
+     0
+    ],
+    "go-test-bench": [
+     1,
+     0,
+     0
+    ],
+    "nextjs-subscription-payments": [
+     0,
+     1,
+     0
+    ],
+    "nodegoat": [
+     1,
+     0,
+     0
+    ],
+    "pygoat": [
+     2,
+     0,
+     0
+    ]
+   },
+   "preview_by_repo": {
     "JavaVulnerableLab": [
      1,
      0,
@@ -1464,7 +1900,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "BE010": {
    "title": "NoSQL injection",
@@ -1478,7 +1915,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "BE011": {
    "title": "Debug mode enabled",
@@ -1508,7 +1946,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "BE012": {
    "title": "Insecure CORS policy",
@@ -1533,7 +1972,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "BE013": {
    "title": "TLS certificate verification disabled",
@@ -1553,7 +1993,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "BE014": {
    "title": "Weak or plaintext password storage",
@@ -1588,7 +2029,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "BE015": {
    "title": "Insecure randomness for secrets",
@@ -1613,7 +2055,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "BE016": {
    "title": "JWT signature not verified",
@@ -1638,7 +2081,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "BE017": {
    "title": "Internal error details sent to the client",
@@ -1678,7 +2122,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "BE018": {
    "title": "No server-side input validation",
@@ -1758,6 +2203,73 @@
      1,
      0
     ]
+   },
+   "preview_by_repo": {
+    "Vulnerable-Flask-App": [
+     1,
+     0,
+     0
+    ],
+    "act-solo-ai": [
+     0,
+     1,
+     0
+    ],
+    "alerta": [
+     0,
+     1,
+     0
+    ],
+    "careconnect": [
+     1,
+     0,
+     0
+    ],
+    "chatgpt-your-files": [
+     1,
+     0,
+     0
+    ],
+    "dvna": [
+     1,
+     0,
+     0
+    ],
+    "helpdesk-flow-verse": [
+     1,
+     0,
+     0
+    ],
+    "learnathon-leaderboard": [
+     1,
+     0,
+     0
+    ],
+    "node-express-realworld-example-app": [
+     0,
+     1,
+     0
+    ],
+    "openai-assistants-quickstart": [
+     1,
+     0,
+     0
+    ],
+    "physicalmediavault": [
+     1,
+     0,
+     0
+    ],
+    "prompt-sculptor-49": [
+     1,
+     0,
+     0
+    ],
+    "scriptforge-ai": [
+     0,
+     1,
+     0
+    ]
    }
   },
   "BE019": {
@@ -1772,7 +2284,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "BE020": {
    "title": "Email header injection",
@@ -1786,12 +2299,13 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "CFG001": {
    "title": "Container runs as root",
    "preview": false,
-   "tp": 86,
+   "tp": 98,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -1827,6 +2341,11 @@
      0
     ],
     "bella-openapi": [
+     3,
+     0,
+     0
+    ],
+    "chat-systems": [
      3,
      0,
      0
@@ -1896,6 +2415,11 @@
      0,
      0
     ],
+    "lldap": [
+     6,
+     0,
+     0
+    ],
     "microblog": [
      1,
      0,
@@ -1923,6 +2447,11 @@
     ],
     "pygoat": [
      25,
+     0,
+     0
+    ],
+    "realworld-rust-axum-sqlx": [
+     2,
      0,
      0
     ],
@@ -1975,18 +2504,24 @@
      1,
      0,
      0
+    ],
+    "zero-to-production": [
+     1,
+     0,
+     0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "CFG002": {
    "title": "Unpinned container base image",
    "preview": false,
-   "tp": 9,
+   "tp": 12,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9,
-   "precision_pessimistic": 0.9,
+   "precision": 0.9231,
+   "precision_pessimistic": 0.9231,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -1994,6 +2529,11 @@
     "Schematic": [
      0,
      1,
+     0
+    ],
+    "actix-realworld-example-app": [
+     1,
+     0,
      0
     ],
     "conveyor": [
@@ -2021,7 +2561,17 @@
      0,
      0
     ],
+    "mCaptcha": [
+     1,
+     0,
+     0
+    ],
     "opengpts": [
+     1,
+     0,
+     0
+    ],
+    "realworld-rust-axum-sqlx": [
      1,
      0,
      0
@@ -2036,7 +2586,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "CFG003": {
    "title": "Secret baked into the container image",
@@ -2050,7 +2601,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "CFG004": {
    "title": "GitHub Actions script injection",
@@ -2064,7 +2616,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "CFG005": {
    "title": "pull_request_target checks out untrusted code",
@@ -2078,7 +2631,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "CFG006": {
    "title": "Any Host header accepted",
@@ -2103,12 +2657,13 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "CFG007": {
    "title": "Default database credentials",
    "preview": false,
-   "tp": 14,
+   "tp": 19,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2163,6 +2718,11 @@
      0,
      0
     ],
+    "jira-meridian": [
+     1,
+     0,
+     0
+    ],
     "opengpts": [
      1,
      0,
@@ -2173,12 +2733,18 @@
      0,
      0
     ],
+    "svix-webhooks": [
+     4,
+     0,
+     0
+    ],
     "uniedit-server": [
      1,
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "CFG008": {
    "title": "Express app without security headers",
@@ -2203,12 +2769,13 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "CFG009": {
    "title": ".env file copied into the container image",
    "preview": false,
-   "tp": 5,
+   "tp": 6,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2228,6 +2795,11 @@
      0,
      0
     ],
+    "mCaptcha": [
+     1,
+     0,
+     0
+    ],
     "sec-insights": [
      1,
      0,
@@ -2238,12 +2810,13 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "CFG010": {
    "title": "Third-party GitHub Action not pinned to a commit",
    "preview": false,
-   "tp": 94,
+   "tp": 179,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2288,6 +2861,11 @@
      0,
      0
     ],
+    "chat-systems": [
+     14,
+     0,
+     0
+    ],
     "codbex-oceanus": [
      4,
      0,
@@ -2328,8 +2906,23 @@
      0,
      0
     ],
+    "jira-meridian": [
+     8,
+     0,
+     0
+    ],
+    "lldap": [
+     26,
+     0,
+     0
+    ],
     "llm-examples": [
      2,
+     0,
+     0
+    ],
+    "mCaptcha": [
+     8,
      0,
      0
     ],
@@ -2358,8 +2951,23 @@
      0,
      0
     ],
+    "realworld-rust-axum-sqlx": [
+     3,
+     0,
+     0
+    ],
+    "rustypaste": [
+     19,
+     0,
+     0
+    ],
     "spring-petclinic": [
      2,
+     0,
+     0
+    ],
+    "svix-webhooks": [
+     1,
      0,
      0
     ],
@@ -2387,8 +2995,14 @@
      2,
      0,
      0
+    ],
+    "zero-to-production": [
+     6,
+     0,
+     0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "CFG011": {
    "title": "Workflow token with write access to everything",
@@ -2402,7 +3016,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "CFG012": {
    "title": "Privileged or host-mounted Kubernetes container",
@@ -2416,7 +3031,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "CFG013": {
    "title": "Kubernetes container without resource limits",
@@ -2441,6 +3057,18 @@
      0,
      0
     ]
+   },
+   "preview_by_repo": {
+    "podinfo": [
+     1,
+     1,
+     0
+    ],
+    "spring-petclinic": [
+     2,
+     0,
+     0
+    ]
    }
   },
   "CFG014": {
@@ -2455,7 +3083,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "CFG015": {
    "title": "Admin or database port open to the internet",
@@ -2470,6 +3099,13 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "terragoat": [
+     1,
+     0,
+     0
+    ]
+   },
+   "preview_by_repo": {
     "terragoat": [
      1,
      0,
@@ -2495,7 +3131,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "CFG017": {
    "title": "Secret file or build argument in the final image",
@@ -2515,6 +3152,13 @@
      0,
      0
     ]
+   },
+   "preview_by_repo": {
+    "sec-insights": [
+     1,
+     0,
+     0
+    ]
    }
   },
   "CFG018": {
@@ -2529,17 +3173,18 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "DATA001": {
    "title": "Database query inside a loop (N+1)",
    "preview": true,
-   "tp": 13,
-   "fp": 9,
+   "tp": 26,
+   "fp": 13,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5909,
-   "precision_pessimistic": 0.5909,
+   "precision": 0.6667,
+   "precision_pessimistic": 0.6667,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -2550,6 +3195,11 @@
      0
     ],
     "alerta": [
+     2,
+     0,
+     0
+    ],
+    "chat-systems": [
      2,
      0,
      0
@@ -2574,6 +3224,16 @@
      0,
      0
     ],
+    "jira-meridian": [
+     7,
+     1,
+     0
+    ],
+    "mCaptcha": [
+     4,
+     0,
+     0
+    ],
     "pygoat": [
      0,
      1,
@@ -2582,6 +3242,78 @@
     "sili-smart-hr": [
      0,
      2,
+     0
+    ],
+    "svix-webhooks": [
+     0,
+     3,
+     0
+    ],
+    "waline": [
+     0,
+     1,
+     0
+    ]
+   },
+   "preview_by_repo": {
+    "Django-Styleguide-Example": [
+     0,
+     1,
+     0
+    ],
+    "alerta": [
+     2,
+     0,
+     0
+    ],
+    "chat-systems": [
+     2,
+     0,
+     0
+    ],
+    "djangoproject.com": [
+     1,
+     3,
+     0
+    ],
+    "flasky": [
+     0,
+     1,
+     0
+    ],
+    "flexible-graphrag": [
+     9,
+     0,
+     0
+    ],
+    "golang-gin-realworld-example-app": [
+     1,
+     0,
+     0
+    ],
+    "jira-meridian": [
+     7,
+     1,
+     0
+    ],
+    "mCaptcha": [
+     4,
+     0,
+     0
+    ],
+    "pygoat": [
+     0,
+     1,
+     0
+    ],
+    "sili-smart-hr": [
+     0,
+     2,
+     0
+    ],
+    "svix-webhooks": [
+     0,
+     3,
      0
     ],
     "waline": [
@@ -2603,21 +3335,27 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "DATA003": {
    "title": "Destructive database migration",
    "preview": false,
-   "tp": 3,
-   "fp": 1,
+   "tp": 42,
+   "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.75,
-   "precision_pessimistic": 0.75,
+   "precision": 0.9545,
+   "precision_pessimistic": 0.9545,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "chat-systems": [
+     34,
+     0,
+     0
+    ],
     "chatbot-ui": [
      1,
      0,
@@ -2628,8 +3366,23 @@
      0,
      0
     ],
+    "jira-meridian": [
+     2,
+     0,
+     0
+    ],
+    "mCaptcha": [
+     0,
+     1,
+     0
+    ],
     "node-express-realworld-example-app": [
      1,
+     0,
+     0
+    ],
+    "svix-webhooks": [
+     2,
      0,
      0
     ],
@@ -2637,8 +3390,14 @@
      0,
      1,
      0
+    ],
+    "zero-to-production": [
+     1,
+     0,
+     0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "DATA004": {
    "title": "Money stored as a floating-point number",
@@ -2652,7 +3411,8 @@
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "DATA005": {
    "title": "Private table readable by everyone",
@@ -2672,17 +3432,18 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "DATA006": {
    "title": "Timestamp without time zone",
    "preview": false,
-   "tp": 102,
+   "tp": 114,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9903,
-   "precision_pessimistic": 0.9903,
+   "precision": 0.9913,
+   "precision_pessimistic": 0.9913,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -2694,6 +3455,11 @@
     ],
     "Vulnerable-Flask-App": [
      2,
+     0,
+     0
+    ],
+    "actix-realworld-example-app": [
+     12,
      0,
      0
     ],
@@ -2747,17 +3513,18 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "DATA007": {
    "title": "Environment variable missing from the example env file",
    "preview": true,
    "tp": 18,
-   "fp": 12,
+   "fp": 15,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6,
-   "precision_pessimistic": 0.6,
+   "precision": 0.5455,
+   "precision_pessimistic": 0.5455,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -2775,6 +3542,58 @@
     "chat-langchain": [
      3,
      0,
+     0
+    ],
+    "chat-systems": [
+     0,
+     3,
+     0
+    ],
+    "opengpts": [
+     2,
+     2,
+     0
+    ],
+    "prompt-sculptor-49": [
+     1,
+     0,
+     0
+    ],
+    "thynk": [
+     1,
+     0,
+     0
+    ],
+    "vibe-trading": [
+     0,
+     1,
+     0
+    ],
+    "waline": [
+     0,
+     5,
+     0
+    ]
+   },
+   "preview_by_repo": {
+    "bakerydemo": [
+     0,
+     4,
+     0
+    ],
+    "bella-openapi": [
+     11,
+     0,
+     0
+    ],
+    "chat-langchain": [
+     3,
+     0,
+     0
+    ],
+    "chat-systems": [
+     0,
+     3,
      0
     ],
     "opengpts": [
@@ -2816,7 +3635,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "DATA009": {
    "title": "SQLite file database on a serverless host",
@@ -2830,7 +3650,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "DATA010": {
    "title": "Several writes without a transaction",
@@ -2870,12 +3691,39 @@
      1,
      0
     ]
+   },
+   "preview_by_repo": {
+    "ai-chatbot": [
+     3,
+     0,
+     0
+    ],
+    "chatbot-ui": [
+     2,
+     0,
+     0
+    ],
+    "helpdesk-flow-verse": [
+     2,
+     0,
+     0
+    ],
+    "learnathon-leaderboard": [
+     1,
+     0,
+     0
+    ],
+    "nextjs-subscription-payments": [
+     0,
+     1,
+     0
+    ]
    }
   },
   "DATA011": {
    "title": "Index built without CONCURRENTLY on an existing table",
    "preview": true,
-   "tp": 14,
+   "tp": 71,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2885,6 +3733,43 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "chat-systems": [
+     49,
+     0,
+     0
+    ],
+    "jira-meridian": [
+     5,
+     0,
+     0
+    ],
+    "svix-webhooks": [
+     3,
+     0,
+     0
+    ],
+    "uniedit-server": [
+     14,
+     0,
+     0
+    ]
+   },
+   "preview_by_repo": {
+    "chat-systems": [
+     49,
+     0,
+     0
+    ],
+    "jira-meridian": [
+     5,
+     0,
+     0
+    ],
+    "svix-webhooks": [
+     3,
+     0,
+     0
+    ],
     "uniedit-server": [
      14,
      0,
@@ -2895,12 +3780,12 @@
   "DATA012": {
    "title": "Foreign key without an index",
    "preview": false,
-   "tp": 76,
-   "fp": 0,
+   "tp": 201,
+   "fp": 9,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.9571,
+   "precision_pessimistic": 0.9571,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -2920,6 +3805,11 @@
      0,
      0
     ],
+    "chat-systems": [
+     76,
+     0,
+     0
+    ],
     "chatbot-ui": [
      16,
      0,
@@ -2933,6 +3823,16 @@
     "dvpwa": [
      3,
      0,
+     0
+    ],
+    "jira-meridian": [
+     25,
+     0,
+     0
+    ],
+    "mCaptcha": [
+     10,
+     9,
      0
     ],
     "nextjs-subscription-payments": [
@@ -2960,6 +3860,16 @@
      0,
      0
     ],
+    "realworld-axum-sqlx": [
+     4,
+     0,
+     0
+    ],
+    "realworld-rust-axum-sqlx": [
+     7,
+     0,
+     0
+    ],
     "saas-starter": [
      6,
      0,
@@ -2970,12 +3880,23 @@
      0,
      0
     ],
+    "svix-webhooks": [
+     2,
+     0,
+     0
+    ],
     "uniedit-server": [
      6,
      0,
      0
+    ],
+    "zero-to-production": [
+     1,
+     0,
+     0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "DATA013": {
    "title": "Redis key without an expiry",
@@ -3000,6 +3921,18 @@
      2,
      0
     ]
+   },
+   "preview_by_repo": {
+    "thynk": [
+     6,
+     0,
+     0
+    ],
+    "wsgidav": [
+     0,
+     2,
+     0
+    ]
    }
   },
   "DATA014": {
@@ -3014,7 +3947,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "DATA015": {
    "title": "Cache refilled without a lock (stampede)",
@@ -3034,6 +3968,13 @@
      0,
      0
     ]
+   },
+   "preview_by_repo": {
+    "djangoproject.com": [
+     1,
+     0,
+     0
+    ]
    }
   },
   "DATA016": {
@@ -3048,7 +3989,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "DEP001": {
    "title": "Dependency does not exist on the registry",
@@ -3062,7 +4004,8 @@
    "seeded_expected": 0,
    "seeded_found": 0,
    "seeded_recall": null,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "DEP002": {
    "title": "Package name looks like a typo of a popular package",
@@ -3087,7 +4030,8 @@
      1,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "DEP003": {
    "title": "Very new package",
@@ -3101,7 +4045,8 @@
    "seeded_expected": 0,
    "seeded_found": 0,
    "seeded_recall": null,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "DEP004": {
    "title": "Dependency with known vulnerabilities",
@@ -3115,7 +4060,8 @@
    "seeded_expected": 0,
    "seeded_found": 0,
    "seeded_recall": null,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "DEP005": {
    "title": "Dependencies are not locked",
@@ -3170,7 +4116,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "DEP006": {
    "title": "Install script downloads and runs remote code",
@@ -3184,7 +4131,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "DEP007": {
    "title": "MCP server launched from an unpinned package",
@@ -3204,7 +4152,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "DEP008": {
    "title": "Extra package index (dependency confusion)",
@@ -3218,7 +4167,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "DEP009": {
    "title": "Transitive dependency with known vulnerabilities",
@@ -3232,17 +4182,18 @@
    "seeded_expected": 0,
    "seeded_found": 0,
    "seeded_recall": null,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "FE001": {
    "title": "Cross-site scripting through a raw HTML sink",
    "preview": true,
    "tp": 45,
-   "fp": 41,
+   "fp": 103,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5233,
-   "precision_pessimistic": 0.5233,
+   "precision": 0.3041,
+   "precision_pessimistic": 0.3041,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -3287,6 +4238,11 @@
      1,
      0
     ],
+    "mCaptcha": [
+     0,
+     1,
+     0
+    ],
     "microblog": [
      0,
      1,
@@ -3305,6 +4261,103 @@
     "openui": [
      3,
      0,
+     0
+    ],
+    "pomb": [
+     0,
+     61,
+     0
+    ],
+    "pygoat": [
+     17,
+     20,
+     0
+    ],
+    "thynk": [
+     1,
+     1,
+     0
+    ],
+    "waline": [
+     2,
+     4,
+     0
+    ],
+    "werkzeug": [
+     0,
+     2,
+     0
+    ]
+   },
+   "preview_by_repo": {
+    "act-solo-ai": [
+     13,
+     0,
+     0
+    ],
+    "ai-chatbot": [
+     3,
+     1,
+     0
+    ],
+    "bella-openapi": [
+     0,
+     1,
+     0
+    ],
+    "careconnect": [
+     2,
+     3,
+     0
+    ],
+    "commerce": [
+     1,
+     1,
+     0
+    ],
+    "dvna": [
+     3,
+     0,
+     0
+    ],
+    "flasky": [
+     0,
+     1,
+     0
+    ],
+    "jhipster-sample-app": [
+     0,
+     1,
+     0
+    ],
+    "mCaptcha": [
+     0,
+     1,
+     0
+    ],
+    "microblog": [
+     0,
+     1,
+     0
+    ],
+    "next-learn": [
+     0,
+     4,
+     0
+    ],
+    "opengpts": [
+     0,
+     1,
+     0
+    ],
+    "openui": [
+     3,
+     0,
+     0
+    ],
+    "pomb": [
+     0,
+     61,
      0
     ],
     "pygoat": [
@@ -3347,7 +4400,8 @@
      3,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "FE003": {
    "title": "Authorization state kept in browser storage",
@@ -3361,21 +4415,27 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "FE004": {
    "title": "postMessage handler without origin check",
    "preview": false,
    "tp": 3,
-   "fp": 0,
+   "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.75,
+   "precision_pessimistic": 0.75,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "jira-meridian": [
+     0,
+     1,
+     0
+    ],
     "openui": [
      1,
      0,
@@ -3386,7 +4446,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "FE005": {
    "title": "Auth token stored in localStorage",
@@ -3426,12 +4487,13 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "FE006": {
    "title": "Production source maps enabled",
    "preview": false,
-   "tp": 1,
+   "tp": 2,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -3445,8 +4507,14 @@
      1,
      0,
      0
+    ],
+    "jira-meridian": [
+     1,
+     0,
+     0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "FE007": {
    "title": "Hardcoded localhost URL in frontend code",
@@ -3496,6 +4564,43 @@
      0,
      0
     ]
+   },
+   "preview_by_repo": {
+    "LinguaLearn": [
+     3,
+     0,
+     0
+    ],
+    "dvga": [
+     0,
+     1,
+     0
+    ],
+    "flexible-graphrag": [
+     15,
+     2,
+     0
+    ],
+    "langchain-nextjs-template": [
+     1,
+     0,
+     0
+    ],
+    "openui": [
+     0,
+     1,
+     0
+    ],
+    "thynk": [
+     2,
+     0,
+     0
+    ],
+    "waline": [
+     1,
+     0,
+     0
+    ]
    }
   },
   "FE008": {
@@ -3510,7 +4615,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "GO001": {
    "title": "Goroutine that never stops",
@@ -3524,7 +4630,8 @@
    "seeded_expected": 0,
    "seeded_found": 0,
    "seeded_recall": null,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "GO002": {
    "title": "HTTP response body never closed",
@@ -3538,7 +4645,8 @@
    "seeded_expected": 0,
    "seeded_found": 0,
    "seeded_recall": null,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "GO003": {
    "title": "Map written concurrently without a lock",
@@ -3552,7 +4660,8 @@
    "seeded_expected": 0,
    "seeded_found": 0,
    "seeded_recall": null,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "GO004": {
    "title": "SQL built with string formatting (Go)",
@@ -3567,6 +4676,28 @@
    "seeded_found": 0,
    "seeded_recall": null,
    "by_repo": {
+    "go-test-bench": [
+     1,
+     0,
+     0
+    ],
+    "govwa": [
+     2,
+     0,
+     0
+    ],
+    "sili-smart-hr": [
+     0,
+     1,
+     0
+    ],
+    "uniedit-server": [
+     1,
+     0,
+     0
+    ]
+   },
+   "preview_by_repo": {
     "go-test-bench": [
      1,
      0,
@@ -3617,6 +4748,23 @@
      0,
      0
     ]
+   },
+   "preview_by_repo": {
+    "Schematic": [
+     2,
+     0,
+     0
+    ],
+    "spring-petclinic": [
+     6,
+     0,
+     0
+    ],
+    "vulnerable-java-application": [
+     1,
+     0,
+     0
+    ]
    }
   },
   "JAVA002": {
@@ -3642,6 +4790,18 @@
      0,
      0
     ]
+   },
+   "preview_by_repo": {
+    "spring-petclinic": [
+     1,
+     0,
+     0
+    ],
+    "vulnerable-java-application": [
+     1,
+     0,
+     0
+    ]
    }
   },
   "JAVA003": {
@@ -3656,7 +4816,8 @@
    "seeded_expected": 0,
    "seeded_found": 0,
    "seeded_recall": null,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "JAVA004": {
    "title": "Polymorphic deserialization without an allow-list",
@@ -3670,7 +4831,8 @@
    "seeded_expected": 0,
    "seeded_found": 0,
    "seeded_recall": null,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "LLM001": {
    "title": "Untrusted input placed in the system prompt",
@@ -3684,7 +4846,8 @@
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "LLM002": {
    "title": "LLM output used in a dangerous operation",
@@ -3698,7 +4861,8 @@
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "LLM003": {
    "title": "LLM call without an output token limit",
@@ -3753,7 +4917,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "LLM004": {
    "title": "LLM endpoint without rate limiting",
@@ -3813,7 +4978,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "LLM005": {
    "title": "Agent tool with dangerous capability",
@@ -3833,7 +4999,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "LLM006": {
    "title": "Dangerous agent or framework option enabled",
@@ -3853,7 +5020,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "LLM007": {
    "title": "System prompt shipped to the browser",
@@ -3873,7 +5041,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "LLM008": {
    "title": "Unsafe model loading",
@@ -3893,7 +5062,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "LLM009": {
    "title": "Unbounded agent loop",
@@ -3913,7 +5083,8 @@
      2,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "LLM010": {
    "title": "Vector search without a user or tenant filter",
@@ -3933,7 +5104,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "LLM011": {
    "title": "Model output parsed as JSON without error handling",
@@ -3947,7 +5119,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "LLM012": {
    "title": "Retired or deprecated model hardcoded",
@@ -3992,7 +5165,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "LLM013": {
    "title": "MCP server with broad access",
@@ -4006,7 +5180,8 @@
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "LLM014": {
    "title": "Secret in an MCP configuration",
@@ -4020,7 +5195,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "LLM015": {
    "title": "Agent combines untrusted input with dangerous tools",
@@ -4034,7 +5210,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "LLM016": {
    "title": "Coding agent allowed to act without asking",
@@ -4048,7 +5225,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "LLM017": {
    "title": "Streamed completion not cancelled on disconnect",
@@ -4063,6 +5241,28 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "chatbot-ui": [
+     9,
+     0,
+     0
+    ],
+    "chatgpt-your-files": [
+     1,
+     0,
+     0
+    ],
+    "langchain-nextjs-template": [
+     2,
+     0,
+     0
+    ],
+    "openai-assistants-quickstart": [
+     1,
+     0,
+     0
+    ]
+   },
+   "preview_by_repo": {
     "chatbot-ui": [
      9,
      0,
@@ -4103,6 +5303,13 @@
      0,
      0
     ]
+   },
+   "preview_by_repo": {
+    "sec-insights": [
+     1,
+     0,
+     0
+    ]
    }
   },
   "LLM019": {
@@ -4117,7 +5324,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "LLM020": {
    "title": "Agent tool loop without a step limit",
@@ -4131,7 +5339,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "LLM021": {
    "title": "User text in a prompt without delimiters",
@@ -4145,7 +5354,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "LLM022": {
    "title": "Retrieved documents stored without cleaning (chunk poisoning)",
@@ -4159,7 +5369,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "LLM023": {
    "title": "No per-user usage or cost limit for model calls",
@@ -4174,6 +5385,23 @@
    "seeded_found": 0,
    "seeded_recall": null,
    "by_repo": {
+    "chatgpt-your-files": [
+     1,
+     0,
+     0
+    ],
+    "opengpts": [
+     1,
+     0,
+     0
+    ],
+    "sili-smart-hr": [
+     0,
+     1,
+     0
+    ]
+   },
+   "preview_by_repo": {
     "chatgpt-your-files": [
      1,
      0,
@@ -4214,6 +5442,18 @@
      0,
      0
     ]
+   },
+   "preview_by_repo": {
+    "chatbot-ui": [
+     1,
+     0,
+     0
+    ],
+    "scriptforge-ai": [
+     1,
+     0,
+     0
+    ]
    }
   },
   "LLM025": {
@@ -4228,7 +5468,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "QA001": {
    "title": "No automated tests",
@@ -4338,7 +5579,8 @@
      1,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "QA002": {
    "title": "No continuous integration",
@@ -4473,17 +5715,18 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "QA003": {
    "title": "Exception silently swallowed",
    "preview": true,
    "tp": 152,
-   "fp": 56,
+   "fp": 86,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.7308,
-   "precision_pessimistic": 0.7308,
+   "precision": 0.6387,
+   "precision_pessimistic": 0.6387,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -4508,6 +5751,11 @@
      0,
      0
     ],
+    "chat-systems": [
+     0,
+     10,
+     0
+    ],
     "flexible-graphrag": [
      116,
      0,
@@ -4521,6 +5769,83 @@
     "openui": [
      1,
      0,
+     0
+    ],
+    "pomb": [
+     0,
+     20,
+     0
+    ],
+    "pygoat": [
+     3,
+     0,
+     0
+    ],
+    "sili-smart-hr": [
+     0,
+     44,
+     0
+    ],
+    "vibe-trading": [
+     24,
+     0,
+     0
+    ],
+    "werkzeug": [
+     0,
+     4,
+     0
+    ],
+    "wsgidav": [
+     1,
+     6,
+     0
+    ]
+   },
+   "preview_by_repo": {
+    "Schematic": [
+     1,
+     0,
+     0
+    ],
+    "alerta": [
+     0,
+     1,
+     0
+    ],
+    "bella-openapi": [
+     4,
+     0,
+     0
+    ],
+    "chat-langchain": [
+     1,
+     0,
+     0
+    ],
+    "chat-systems": [
+     0,
+     10,
+     0
+    ],
+    "flexible-graphrag": [
+     116,
+     0,
+     0
+    ],
+    "next-saas-stripe-starter": [
+     1,
+     1,
+     0
+    ],
+    "openui": [
+     1,
+     0,
+     0
+    ],
+    "pomb": [
+     0,
+     20,
      0
     ],
     "pygoat": [
@@ -4613,6 +5938,58 @@
      0,
      0
     ]
+   },
+   "preview_by_repo": {
+    "Django-Styleguide-Example": [
+     1,
+     0,
+     0
+    ],
+    "LinguaLearn": [
+     4,
+     0,
+     0
+    ],
+    "alerta": [
+     1,
+     0,
+     0
+    ],
+    "flexible-graphrag": [
+     0,
+     1,
+     0
+    ],
+    "helpdesk-flow-verse": [
+     2,
+     0,
+     0
+    ],
+    "openui": [
+     1,
+     0,
+     0
+    ],
+    "pygoat": [
+     1,
+     0,
+     0
+    ],
+    "taxonomy": [
+     1,
+     0,
+     0
+    ],
+    "waline": [
+     0,
+     1,
+     0
+    ],
+    "wsgidav": [
+     2,
+     0,
+     0
+    ]
    }
   },
   "QA005": {
@@ -4643,17 +6020,34 @@
      1,
      0
     ]
+   },
+   "preview_by_repo": {
+    "flexible-graphrag": [
+     0,
+     3,
+     0
+    ],
+    "sec-insights": [
+     0,
+     1,
+     0
+    ],
+    "wsgidav": [
+     0,
+     1,
+     0
+    ]
    }
   },
   "QA006": {
    "title": "Import of a file or name that does not exist",
    "preview": true,
    "tp": 14,
-   "fp": 36,
+   "fp": 37,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.28,
-   "precision_pessimistic": 0.28,
+   "precision": 0.2745,
+   "precision_pessimistic": 0.2745,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -4674,6 +6068,58 @@
      0
     ],
     "jhipster-sample-app": [
+     0,
+     1,
+     0
+    ],
+    "mCaptcha": [
+     0,
+     1,
+     0
+    ],
+    "next-learn": [
+     7,
+     0,
+     0
+    ],
+    "sync-plan-flow": [
+     2,
+     0,
+     0
+    ],
+    "thynk": [
+     3,
+     0,
+     0
+    ],
+    "waline": [
+     0,
+     23,
+     0
+    ]
+   },
+   "preview_by_repo": {
+    "careconnect": [
+     1,
+     0,
+     0
+    ],
+    "chatbot-ui": [
+     1,
+     0,
+     0
+    ],
+    "govwa": [
+     0,
+     12,
+     0
+    ],
+    "jhipster-sample-app": [
+     0,
+     1,
+     0
+    ],
+    "mCaptcha": [
      0,
      1,
      0
@@ -4703,12 +6149,12 @@
   "QA007": {
    "title": "Package imported but not declared as a dependency",
    "preview": false,
-   "tp": 51,
-   "fp": 3,
+   "tp": 53,
+   "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9444,
-   "precision_pessimistic": 0.9444,
+   "precision": 0.9298,
+   "precision_pessimistic": 0.9298,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -4783,6 +6229,11 @@
      0,
      0
     ],
+    "svix-webhooks": [
+     2,
+     1,
+     0
+    ],
     "thynk": [
      2,
      0,
@@ -4793,7 +6244,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "QA008": {
    "title": "TypeScript checking disabled for a whole file",
@@ -4818,7 +6270,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "QA009": {
    "title": "Pages Router code in an App Router file",
@@ -4832,7 +6285,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "QA010": {
    "title": "Made-up data used as a fallback",
@@ -4852,17 +6306,24 @@
      0,
      0
     ]
+   },
+   "preview_by_repo": {
+    "conveyor": [
+     2,
+     0,
+     0
+    ]
    }
   },
   "QA011": {
    "title": "Same function copied into several files",
    "preview": false,
-   "tp": 64,
-   "fp": 0,
+   "tp": 66,
+   "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.9851,
+   "precision_pessimistic": 0.9851,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -4879,6 +6340,11 @@
     ],
     "careconnect": [
      6,
+     0,
+     0
+    ],
+    "chat-systems": [
+     2,
      0,
      0
     ],
@@ -4907,6 +6373,11 @@
      0,
      0
     ],
+    "svix-webhooks": [
+     0,
+     1,
+     0
+    ],
     "vulnerable-java-application": [
      4,
      0,
@@ -4917,12 +6388,13 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "REL001": {
    "title": "Outbound HTTP request without a timeout",
    "preview": false,
-   "tp": 57,
+   "tp": 67,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -4947,6 +6419,11 @@
      0,
      0
     ],
+    "chat-systems": [
+     1,
+     0,
+     0
+    ],
     "djangoproject.com": [
      4,
      0,
@@ -4958,6 +6435,21 @@
      0
     ],
     "go-test-bench": [
+     1,
+     0,
+     0
+    ],
+    "jira-meridian": [
+     1,
+     0,
+     0
+    ],
+    "lldap": [
+     3,
+     0,
+     0
+    ],
+    "mCaptcha": [
      1,
      0,
      0
@@ -4987,6 +6479,11 @@
      0,
      0
     ],
+    "svix-webhooks": [
+     4,
+     0,
+     0
+    ],
     "thynk": [
      4,
      0,
@@ -4999,6 +6496,48 @@
     ],
     "vibe-trading": [
      16,
+     0,
+     0
+    ]
+   },
+   "preview_by_repo": {
+    "bella-openapi": [
+     1,
+     0,
+     0
+    ],
+    "chat-systems": [
+     1,
+     0,
+     0
+    ],
+    "go-test-bench": [
+     1,
+     0,
+     0
+    ],
+    "jira-meridian": [
+     1,
+     0,
+     0
+    ],
+    "lldap": [
+     3,
+     0,
+     0
+    ],
+    "mCaptcha": [
+     1,
+     0,
+     0
+    ],
+    "svix-webhooks": [
+     4,
+     0,
+     0
+    ],
+    "toWers": [
+     1,
      0,
      0
     ]
@@ -5016,17 +6555,18 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "REL003": {
    "title": "Webhook handler is not idempotent",
    "preview": false,
    "tp": 2,
-   "fp": 1,
+   "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6667,
-   "precision_pessimistic": 0.6667,
+   "precision": 0.3333,
+   "precision_pessimistic": 0.3333,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -5034,6 +6574,11 @@
     "alerta": [
      1,
      0,
+     0
+    ],
+    "jira-meridian": [
+     0,
+     3,
      0
     ],
     "scriptforge-ai": [
@@ -5044,6 +6589,13 @@
     "taxonomy": [
      0,
      1,
+     0
+    ]
+   },
+   "preview_by_repo": {
+    "jira-meridian": [
+     0,
+     3,
      0
     ]
    }
@@ -5071,7 +6623,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "REL005": {
    "title": "In-memory state on a serverless host",
@@ -5085,7 +6638,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "REL006": {
    "title": "No health-check endpoint",
@@ -5140,7 +6694,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "SEC001": {
    "title": "Hardcoded API key or access token",
@@ -5180,17 +6735,18 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "SEC002": {
    "title": "Private key committed",
    "preview": false,
    "tp": 2,
-   "fp": 0,
+   "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.6667,
+   "precision_pessimistic": 0.6667,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -5200,22 +6756,28 @@
      0,
      0
     ],
+    "svix-webhooks": [
+     0,
+     1,
+     0
+    ],
     "wsgidav": [
      1,
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "SEC003": {
    "title": "High-entropy secret assigned in code",
    "preview": true,
-   "tp": 27,
-   "fp": 15,
+   "tp": 29,
+   "fp": 29,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6429,
-   "precision_pessimistic": 0.6429,
+   "precision": 0.5,
+   "precision_pessimistic": 0.5,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -5245,6 +6807,16 @@
      0,
      0
     ],
+    "jira-meridian": [
+     0,
+     1,
+     0
+    ],
+    "mCaptcha": [
+     1,
+     0,
+     0
+    ],
     "nodegoat": [
      2,
      0,
@@ -5265,9 +6837,106 @@
      1,
      0
     ],
+    "realworld-rust-axum-sqlx": [
+     1,
+     1,
+     0
+    ],
     "sili-smart-hr": [
      2,
      4,
+     0
+    ],
+    "svix-webhooks": [
+     0,
+     12,
+     0
+    ],
+    "terragoat": [
+     7,
+     0,
+     0
+    ],
+    "waline": [
+     0,
+     3,
+     0
+    ],
+    "wsgidav": [
+     0,
+     2,
+     0
+    ]
+   },
+   "preview_by_repo": {
+    "JavaVulnerableLab": [
+     1,
+     0,
+     0
+    ],
+    "bakerydemo": [
+     0,
+     1,
+     0
+    ],
+    "flexible-graphrag": [
+     0,
+     3,
+     0
+    ],
+    "go-clean-template": [
+     1,
+     0,
+     0
+    ],
+    "jhipster-sample-app": [
+     1,
+     0,
+     0
+    ],
+    "jira-meridian": [
+     0,
+     1,
+     0
+    ],
+    "mCaptcha": [
+     1,
+     0,
+     0
+    ],
+    "nodegoat": [
+     2,
+     0,
+     0
+    ],
+    "openui": [
+     0,
+     1,
+     0
+    ],
+    "prompt-sculptor-49": [
+     9,
+     0,
+     0
+    ],
+    "pygoat": [
+     4,
+     1,
+     0
+    ],
+    "realworld-rust-axum-sqlx": [
+     1,
+     1,
+     0
+    ],
+    "sili-smart-hr": [
+     2,
+     4,
+     0
+    ],
+    "svix-webhooks": [
+     0,
+     12,
      0
     ],
     "terragoat": [
@@ -5291,11 +6960,11 @@
    "title": "Hardcoded or default signing secret",
    "preview": false,
    "tp": 29,
-   "fp": 3,
+   "fp": 6,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9062,
-   "precision_pessimistic": 0.9062,
+   "precision": 0.8286,
+   "precision_pessimistic": 0.8286,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
@@ -5339,8 +7008,14 @@
      20,
      0,
      0
+    ],
+    "svix-webhooks": [
+     0,
+     3,
+     0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "SEC005": {
    "title": "Database URL with embedded password",
@@ -5370,17 +7045,18 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "SEC006": {
    "title": "Environment file committed to git",
    "preview": false,
-   "tp": 2,
+   "tp": 3,
    "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5,
-   "precision_pessimistic": 0.5,
+   "precision": 0.6,
+   "precision_pessimistic": 0.6,
    "seeded_expected": 0,
    "seeded_found": 0,
    "seeded_recall": null,
@@ -5399,8 +7075,14 @@
      2,
      0,
      0
+    ],
+    "realworld-rust-axum-sqlx": [
+     1,
+     0,
+     0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "SEC007": {
    "title": "Environment file not git-ignored",
@@ -5414,7 +7096,8 @@
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "SEC008": {
    "title": "Secret exposed to the browser through a public env var",
@@ -5434,7 +7117,8 @@
      1,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "SEC009": {
    "title": "Supabase service_role key outside the server",
@@ -5459,17 +7143,18 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "SEC010": {
    "title": "Secret written to logs",
    "preview": false,
    "tp": 3,
-   "fp": 3,
+   "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5,
-   "precision_pessimistic": 0.5,
+   "precision": 0.4286,
+   "precision_pessimistic": 0.4286,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -5484,12 +7169,18 @@
      0,
      0
     ],
+    "mCaptcha": [
+     0,
+     1,
+     0
+    ],
     "wsgidav": [
      0,
      3,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "SEC011": {
    "title": "Hardcoded password",
@@ -5504,6 +7195,53 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "LinguaLearn": [
+     1,
+     0,
+     0
+    ],
+    "Vulnerable-Flask-App": [
+     1,
+     0,
+     0
+    ],
+    "careconnect": [
+     1,
+     0,
+     0
+    ],
+    "dvga": [
+     0,
+     2,
+     0
+    ],
+    "flexible-graphrag": [
+     4,
+     0,
+     0
+    ],
+    "helpdesk-flow-verse": [
+     0,
+     1,
+     0
+    ],
+    "jhipster-sample-app": [
+     0,
+     1,
+     0
+    ],
+    "pygoat": [
+     17,
+     0,
+     0
+    ],
+    "sili-smart-hr": [
+     2,
+     31,
+     0
+    ]
+   },
+   "preview_by_repo": {
     "LinguaLearn": [
      1,
      0,
@@ -5624,17 +7362,18 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "UI002": {
    "title": "Click handler on a non-interactive element",
    "preview": false,
-   "tp": 54,
-   "fp": 1,
+   "tp": 55,
+   "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9818,
-   "precision_pessimistic": 0.9818,
+   "precision": 0.9322,
+   "precision_pessimistic": 0.9322,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
@@ -5642,6 +7381,11 @@
     "bella-openapi": [
      14,
      0,
+     0
+    ],
+    "chat-systems": [
+     1,
+     2,
      0
     ],
     "chatbot-ui": [
@@ -5656,6 +7400,11 @@
     ],
     "commerce": [
      1,
+     1,
+     0
+    ],
+    "jira-meridian": [
+     0,
      1,
      0
     ],
@@ -5694,7 +7443,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "UI003": {
    "title": "Form field without a label",
@@ -5804,7 +7554,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "UI004": {
    "title": "Control that does nothing",
@@ -5824,7 +7575,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "UI005": {
    "title": "Array index used as key for a changing list",
@@ -5838,17 +7590,18 @@
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "UI006": {
    "title": "Destructive action without confirmation",
    "preview": true,
-   "tp": 10,
+   "tp": 13,
    "fp": 3,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.7692,
-   "precision_pessimistic": 0.7692,
+   "precision": 0.8125,
+   "precision_pessimistic": 0.8125,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -5865,6 +7618,58 @@
     ],
     "careconnect": [
      1,
+     0,
+     0
+    ],
+    "chat-systems": [
+     3,
+     0,
+     0
+    ],
+    "helpdesk-flow-verse": [
+     1,
+     0,
+     0
+    ],
+    "physicalmediavault": [
+     3,
+     0,
+     0
+    ],
+    "prompt-sculptor-49": [
+     0,
+     1,
+     0
+    ],
+    "sync-plan-flow": [
+     0,
+     1,
+     0
+    ],
+    "thynk": [
+     0,
+     1,
+     0
+    ]
+   },
+   "preview_by_repo": {
+    "act-solo-ai": [
+     1,
+     0,
+     0
+    ],
+    "bella-openapi": [
+     4,
+     0,
+     0
+    ],
+    "careconnect": [
+     1,
+     0,
+     0
+    ],
+    "chat-systems": [
+     3,
      0,
      0
     ],
@@ -5907,7 +7712,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "UI008": {
    "title": "Effect without cleanup",
@@ -5921,7 +7727,8 @@
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "UI009": {
    "title": "Data loaded without loading or error state",
@@ -5966,7 +7773,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "UI010": {
    "title": "Placeholder content left in the UI",
@@ -5980,7 +7788,8 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {},
+   "preview_by_repo": {}
   },
   "UI011": {
    "title": "No error page",
@@ -6035,7 +7844,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "UI012": {
    "title": "Missing page metadata or viewport",
@@ -6055,7 +7865,8 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "UI013": {
    "title": "Link to a page that does not exist",
@@ -6075,21 +7886,27 @@
      0,
      0
     ]
-   }
+   },
+   "preview_by_repo": {}
   },
   "UI014": {
    "title": "Image without width and height",
    "preview": true,
-   "tp": 19,
-   "fp": 2,
+   "tp": 20,
+   "fp": 15,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9048,
-   "precision_pessimistic": 0.9048,
+   "precision": 0.5714,
+   "precision_pessimistic": 0.5714,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "chat-systems": [
+     1,
+     2,
+     0
+    ],
     "djangoproject.com": [
      5,
      1,
@@ -6123,6 +7940,68 @@
     "openai-assistants-quickstart": [
      1,
      0,
+     0
+    ],
+    "pomb": [
+     0,
+     11,
+     0
+    ],
+    "spring-petclinic": [
+     1,
+     0,
+     0
+    ],
+    "waline": [
+     4,
+     0,
+     0
+    ]
+   },
+   "preview_by_repo": {
+    "chat-systems": [
+     1,
+     2,
+     0
+    ],
+    "djangoproject.com": [
+     5,
+     1,
+     0
+    ],
+    "flasky": [
+     1,
+     0,
+     0
+    ],
+    "govwa": [
+     2,
+     0,
+     0
+    ],
+    "microblog": [
+     3,
+     0,
+     0
+    ],
+    "next-learn": [
+     2,
+     0,
+     0
+    ],
+    "next-saas-stripe-starter": [
+     0,
+     1,
+     0
+    ],
+    "openai-assistants-quickstart": [
+     1,
+     0,
+     0
+    ],
+    "pomb": [
+     0,
+     11,
      0
     ],
     "spring-petclinic": [
@@ -6180,17 +8059,49 @@
      0,
      0
     ]
+   },
+   "preview_by_repo": {
+    "act-solo-ai": [
+     1,
+     0,
+     0
+    ],
+    "bella-openapi": [
+     6,
+     0,
+     0
+    ],
+    "prompt-sculptor-49": [
+     5,
+     0,
+     0
+    ],
+    "sili-smart-hr": [
+     13,
+     0,
+     0
+    ],
+    "taxonomy": [
+     2,
+     0,
+     0
+    ],
+    "toWers": [
+     1,
+     0,
+     0
+    ]
    }
   },
   "UI016": {
    "title": "Focus outline removed",
    "preview": true,
-   "tp": 9,
-   "fp": 2,
+   "tp": 11,
+   "fp": 9,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8182,
-   "precision_pessimistic": 0.8182,
+   "precision": 0.55,
+   "precision_pessimistic": 0.55,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -6198,6 +8109,11 @@
     "ai-chatbot": [
      1,
      0,
+     0
+    ],
+    "chat-systems": [
+     0,
+     3,
      0
     ],
     "chatbot-ui": [
@@ -6210,6 +8126,11 @@
      0,
      0
     ],
+    "jira-meridian": [
+     1,
+     3,
+     0
+    ],
     "learnathon-leaderboard": [
      2,
      0,
@@ -6218,6 +8139,58 @@
     "next-saas-stripe-starter": [
      0,
      2,
+     0
+    ],
+    "pomb": [
+     1,
+     1,
+     0
+    ],
+    "spring-petclinic": [
+     3,
+     0,
+     0
+    ]
+   },
+   "preview_by_repo": {
+    "ai-chatbot": [
+     1,
+     0,
+     0
+    ],
+    "chat-systems": [
+     0,
+     3,
+     0
+    ],
+    "chatbot-ui": [
+     2,
+     0,
+     0
+    ],
+    "full-stack-fastapi-template": [
+     1,
+     0,
+     0
+    ],
+    "jira-meridian": [
+     1,
+     3,
+     0
+    ],
+    "learnathon-leaderboard": [
+     2,
+     0,
+     0
+    ],
+    "next-saas-stripe-starter": [
+     0,
+     2,
+     0
+    ],
+    "pomb": [
+     1,
+     1,
      0
     ],
     "spring-petclinic": [
@@ -6240,6 +8213,28 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "careconnect": [
+     1,
+     0,
+     0
+    ],
+    "full-stack-fastapi-template": [
+     1,
+     0,
+     0
+    ],
+    "prompt-sculptor-49": [
+     1,
+     0,
+     0
+    ],
+    "toWers": [
+     1,
+     0,
+     0
+    ]
+   },
+   "preview_by_repo": {
     "careconnect": [
      1,
      0,
