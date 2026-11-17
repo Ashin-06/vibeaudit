@@ -83,124 +83,44 @@
    "reason": "A third-party action used by tag."
   },
   {
-   "rule": "AUTH002",
-   "file": "src/Presentation.WebApi/Audio/AdminAudioController.cs",
-   "line": 37,
-   "fingerprint": "4298d8aa6bbe5b7699df2d7de0dc9f5f",
-   "verdict": "tp",
-   "reason": "An admin route checks only that the caller is signed in, not an admin role."
-  },
-  {
-   "rule": "AUTH002",
-   "file": "src/Presentation.WebApi/Audio/AdminAudioController.cs",
-   "line": 103,
-   "fingerprint": "1db97df3a3bcb769c0e15c3ed0e2f802",
-   "verdict": "tp",
-   "reason": "An admin route checks only that the caller is signed in, not an admin role."
-  },
-  {
-   "rule": "AUTH002",
+   "rule": "AUTH003",
    "file": "src/Presentation.WebApi/Audio/AdminAudioController.cs",
    "line": 158,
-   "fingerprint": "6dae234257f0fb769b1ed776f14f4fb1",
+   "fingerprint": "81da21b6dcd5031dfdea67050352325d",
    "verdict": "tp",
-   "reason": "An admin route checks only that the caller is signed in, not an admin role."
+   "reason": "The record is changed by id with no check that it belongs to the caller."
   },
   {
-   "rule": "AUTH002",
-   "file": "src/Presentation.WebApi/ChatCompletion/AdminChatMessageController.cs",
-   "line": 33,
-   "fingerprint": "7fa95745f53e128846d76af64b559281",
-   "verdict": "tp",
-   "reason": "An admin route checks only that the caller is signed in, not an admin role."
-  },
-  {
-   "rule": "AUTH002",
-   "file": "src/Presentation.WebApi/ChatCompletion/AdminChatMessageController.cs",
-   "line": 94,
-   "fingerprint": "f83d8031e453ca97dbc69ed381bd7487",
-   "verdict": "tp",
-   "reason": "An admin route checks only that the caller is signed in, not an admin role."
-  },
-  {
-   "rule": "AUTH002",
-   "file": "src/Presentation.WebApi/ChatCompletion/AdminChatSessionController.cs",
-   "line": 37,
-   "fingerprint": "76aab954761f67898f53e5be0c316cf4",
-   "verdict": "tp",
-   "reason": "An admin route checks only that the caller is signed in, not an admin role."
-  },
-  {
-   "rule": "AUTH002",
-   "file": "src/Presentation.WebApi/ChatCompletion/AdminChatSessionController.cs",
-   "line": 103,
-   "fingerprint": "b2b071aa99f4033527dcd6e53935a3ba",
-   "verdict": "tp",
-   "reason": "An admin route checks only that the caller is signed in, not an admin role."
-  },
-  {
-   "rule": "AUTH002",
+   "rule": "AUTH003",
    "file": "src/Presentation.WebApi/ChatCompletion/AdminChatSessionController.cs",
    "line": 207,
-   "fingerprint": "79be0087abea35ccc58c0736195a67a8",
+   "fingerprint": "a8f2ab0fcee06c34e3a71bfb827805fc",
    "verdict": "tp",
-   "reason": "An admin route checks only that the caller is signed in, not an admin role."
+   "reason": "The record is changed by id with no check that it belongs to the caller."
   },
   {
-   "rule": "AUTH002",
+   "rule": "AUTH003",
    "file": "src/Presentation.WebApi/ChatCompletion/AdminChatSessionController.cs",
    "line": 229,
-   "fingerprint": "af32c36bcb090ec1d61d9d44c54fab4b",
+   "fingerprint": "4c8e43a59ab8918fda51b8d3d0312de3",
    "verdict": "tp",
-   "reason": "An admin route checks only that the caller is signed in, not an admin role."
+   "reason": "The record is changed by id with no check that it belongs to the caller."
   },
   {
-   "rule": "AUTH002",
-   "file": "src/Presentation.WebApi/Image/AdminImageController.cs",
-   "line": 37,
-   "fingerprint": "c47774806c804aa93dde10e8fad31348",
-   "verdict": "tp",
-   "reason": "An admin route checks only that the caller is signed in, not an admin role."
-  },
-  {
-   "rule": "AUTH002",
-   "file": "src/Presentation.WebApi/Image/AdminImageController.cs",
-   "line": 103,
-   "fingerprint": "f241ef2ab3c21dcb1d997ce12fdc7b19",
-   "verdict": "tp",
-   "reason": "An admin route checks only that the caller is signed in, not an admin role."
-  },
-  {
-   "rule": "AUTH002",
+   "rule": "AUTH003",
    "file": "src/Presentation.WebApi/Image/AdminImageController.cs",
    "line": 158,
-   "fingerprint": "822a5cc6e85b04fd55363af8a7b2e8d6",
+   "fingerprint": "9a9cae4579344298302c564fbe887a4f",
    "verdict": "tp",
-   "reason": "An admin route checks only that the caller is signed in, not an admin role."
+   "reason": "The record is changed by id with no check that it belongs to the caller."
   },
   {
-   "rule": "AUTH002",
-   "file": "src/Presentation.WebApi/TextGeneration/AdminTextGenerationController.cs",
-   "line": 37,
-   "fingerprint": "220489f848399feb5824549e89b1e0e2",
-   "verdict": "tp",
-   "reason": "An admin route checks only that the caller is signed in, not an admin role."
-  },
-  {
-   "rule": "AUTH002",
-   "file": "src/Presentation.WebApi/TextGeneration/AdminTextGenerationController.cs",
-   "line": 103,
-   "fingerprint": "9dde25f81442ccd3a4f9cfd7a7c42042",
-   "verdict": "tp",
-   "reason": "An admin route checks only that the caller is signed in, not an admin role."
-  },
-  {
-   "rule": "AUTH002",
+   "rule": "AUTH003",
    "file": "src/Presentation.WebApi/TextGeneration/AdminTextGenerationController.cs",
    "line": 174,
-   "fingerprint": "c607a996e4f68f91c5deb8d21773b13c",
+   "fingerprint": "cb797abf11d93fa6b8cbb5d838308e56",
    "verdict": "tp",
-   "reason": "An admin route checks only that the caller is signed in, not an admin role."
+   "reason": "The record is changed by id with no check that it belongs to the caller."
   }
  ]
 }
