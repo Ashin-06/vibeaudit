@@ -1,0 +1,638 @@
+{
+ "repo": "DVWA",
+ "commit": "a1978a2fed195acd093010af6395f86a281537ca",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-image.yml",
+   "line": 16,
+   "fingerprint": "567191781bd70eca82f49b9fdcfb74a4",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-image.yml",
+   "line": 19,
+   "fingerprint": "b81c20c305fc1ca2b49778a65ca2ba66",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-image.yml",
+   "line": 22,
+   "fingerprint": "02e91a3828c379fe5c10d51e8f27328c",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/shiftleft-analysis.yml",
+   "line": 24,
+   "fingerprint": "2c8f9dcf84d1daf9178a487d4ff60727",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile",
+   "line": 1,
+   "fingerprint": "a0b749fb254799b84e88332a670ff902",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "DATA012",
+   "file": "database/bac_setup.sql",
+   "line": 10,
+   "fingerprint": "cb1699d2c0372deffc09afd59c6cb17e",
+   "verdict": "fp",
+   "reason": "MySQL InnoDB indexes every foreign key itself."
+  },
+  {
+   "rule": "DATA012",
+   "file": "database/bac_setup.sql",
+   "line": 11,
+   "fingerprint": "2f86f2ba0430bc9e08fc4340c2bc6889",
+   "verdict": "fp",
+   "reason": "MySQL InnoDB indexes every foreign key itself."
+  },
+  {
+   "rule": "DATA012",
+   "file": "database/bac_setup.sql",
+   "line": 22,
+   "fingerprint": "257be766b2c2258eeca94dbf983e0468",
+   "verdict": "fp",
+   "reason": "MySQL InnoDB indexes every foreign key itself."
+  },
+  {
+   "rule": "DATA012",
+   "file": "database/bac_setup.sql",
+   "line": 23,
+   "fingerprint": "2d3c12d6c555b36f6740d65a225aa9bb",
+   "verdict": "fp",
+   "reason": "MySQL InnoDB indexes every foreign key itself."
+  },
+  {
+   "rule": "BE001",
+   "file": "dvwa/includes/DBMS/PGSQL.php",
+   "line": 66,
+   "fingerprint": "cee9f4f1e9650450dbddef53829ab3ae",
+   "verdict": "fp",
+   "reason": "Setup script inserting fixed seed rows."
+  },
+  {
+   "rule": "BE001",
+   "file": "dvwa/includes/DBMS/PGSQL.php",
+   "line": 94,
+   "fingerprint": "94c56d9324a9ca660db74b6cbe8488a4",
+   "verdict": "fp",
+   "reason": "Setup script inserting fixed seed rows."
+  },
+  {
+   "rule": "BE006",
+   "file": "instructions.php",
+   "line": 26,
+   "fingerprint": "056762dcc423504858efbb2a42fce50c",
+   "verdict": "tp",
+   "reason": "The path is built from request parameters without a check."
+  },
+  {
+   "rule": "BE001",
+   "file": "login.php",
+   "line": 40,
+   "fingerprint": "f93dc46c7b645f09cd24f0133d15b50e",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE001",
+   "file": "login.php",
+   "line": 47,
+   "fingerprint": "2e3c7dc6b06cf221e6dcc358455d6c35",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE002",
+   "file": "vulnerabilities/api/src/HealthController.php",
+   "line": 88,
+   "fingerprint": "42547456da0e899c319e15e439e040e8",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: a request value is concatenated into the shell command."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/authbypass/authbypass.js",
+   "line": 43,
+   "fingerprint": "fe36cf3bbc8b9c29dc277746a69c1158",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: values from the server or URL are written into innerHTML."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/authbypass/authbypass.js",
+   "line": 45,
+   "fingerprint": "a99aaa1aa0add4e24f888a55a619f0f8",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: values from the server or URL are written into innerHTML."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/authbypass/authbypass.js",
+   "line": 47,
+   "fingerprint": "b49c997ae48797bda4215351cac2a303",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: values from the server or URL are written into innerHTML."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/authbypass/authbypass.js",
+   "line": 49,
+   "fingerprint": "27ad6d5080a5282c5c53800157c6b1cb",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: values from the server or URL are written into innerHTML."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/bac/source/low.php",
+   "line": 81,
+   "fingerprint": "5e67eca2915f70a6561b7eb25ec51053",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/bac/source/medium.php",
+   "line": 8,
+   "fingerprint": "3ddaac91f5bbad915c18f02990fb0e0b",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/bac/source/medium.php",
+   "line": 22,
+   "fingerprint": "1a1294738db5ead892df47a83d83770c",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/bac/source/medium.php",
+   "line": 29,
+   "fingerprint": "8ec6ffad8afeaec1e3cd6f36fa63e32f",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/bac/source/medium.php",
+   "line": 73,
+   "fingerprint": "bed96890ffcbc5d863e13e10d48aa038",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/brute/source/high.php",
+   "line": 20,
+   "fingerprint": "7a09777a1ebae5b657cec2bd09a4790a",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/brute/source/low.php",
+   "line": 13,
+   "fingerprint": "3c87967e9b09726889f6c2cfe92a0685",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/brute/source/medium.php",
+   "line": 15,
+   "fingerprint": "e5ac64f4f599e4eeb3396d77c6a8f346",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/captcha/source/high.php",
+   "line": 31,
+   "fingerprint": "f534df78c26d7f585eef0b572b6b2f84",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/captcha/source/low.php",
+   "line": 61,
+   "fingerprint": "4a247012b3447442a5557c1b066615d8",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/captcha/source/medium.php",
+   "line": 69,
+   "fingerprint": "880f1d59c3f575820c04d27dda36407d",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/csp/source/high.js",
+   "line": 9,
+   "fingerprint": "36e32c4f159ba804e00f110829bc2f13",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: values from the server or URL are written into innerHTML."
+  },
+  {
+   "rule": "QA011",
+   "file": "vulnerabilities/csp/source/impossible.js",
+   "line": 7,
+   "fingerprint": "47632d0c4d8ac760eee73f15576ea6da",
+   "verdict": "tp",
+   "reason": "The same function body is defined twice."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/csp/source/impossible.js",
+   "line": 9,
+   "fingerprint": "7b1a586b488f2d390c0207efcd7e18aa",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: values from the server or URL are written into innerHTML."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/csrf/source/high.php",
+   "line": 44,
+   "fingerprint": "90caa9bb667dc426a9fbd6fb8f131cd4",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/csrf/source/low.php",
+   "line": 17,
+   "fingerprint": "8e216a43d3ec5cb0f2b03e338268662b",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/csrf/source/medium.php",
+   "line": 19,
+   "fingerprint": "2a178814154a619145cd8163a79b1da6",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/csrf/test_credentials.php",
+   "line": 22,
+   "fingerprint": "a35a72c6d3010861a8587a2be1f56150",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE002",
+   "file": "vulnerabilities/exec/source/high.php",
+   "line": 26,
+   "fingerprint": "1245c5daea506977760fe208a0a396d1",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: a request value is concatenated into the shell command."
+  },
+  {
+   "rule": "BE002",
+   "file": "vulnerabilities/exec/source/high.php",
+   "line": 30,
+   "fingerprint": "0efe553d4efdd7de64ada682db244c69",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: a request value is concatenated into the shell command."
+  },
+  {
+   "rule": "BE002",
+   "file": "vulnerabilities/exec/source/impossible.php",
+   "line": 22,
+   "fingerprint": "b6b9d9e382874fe66138e94500c9c267",
+   "verdict": "fp",
+   "reason": "The impossible level checks that the target is four numeric octets before running ping."
+  },
+  {
+   "rule": "BE002",
+   "file": "vulnerabilities/exec/source/impossible.php",
+   "line": 26,
+   "fingerprint": "5ca2dcabb912f0e47cdf5e6833ef9f82",
+   "verdict": "fp",
+   "reason": "The impossible level checks that the target is four numeric octets before running ping."
+  },
+  {
+   "rule": "BE002",
+   "file": "vulnerabilities/exec/source/low.php",
+   "line": 10,
+   "fingerprint": "038ffb870f71478fac15b0875d7f697c",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: a request value is concatenated into the shell command."
+  },
+  {
+   "rule": "BE002",
+   "file": "vulnerabilities/exec/source/low.php",
+   "line": 14,
+   "fingerprint": "baec4959917998d2650c90b35b86ee14",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: a request value is concatenated into the shell command."
+  },
+  {
+   "rule": "BE002",
+   "file": "vulnerabilities/exec/source/medium.php",
+   "line": 19,
+   "fingerprint": "88fb837f2e8af4caf8a90ef0db09503f",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: a request value is concatenated into the shell command."
+  },
+  {
+   "rule": "BE002",
+   "file": "vulnerabilities/exec/source/medium.php",
+   "line": 23,
+   "fingerprint": "5a90363cb9759a7261076ed704e54617",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: a request value is concatenated into the shell command."
+  },
+  {
+   "rule": "BE008",
+   "file": "vulnerabilities/open_redirect/source/high.php",
+   "line": 5,
+   "fingerprint": "c4110d61ed6b7150cbe1099377bd5def",
+   "verdict": "tp",
+   "reason": "The high level only checks the redirect contains info.php; any host still works."
+  },
+  {
+   "rule": "BE008",
+   "file": "vulnerabilities/open_redirect/source/low.php",
+   "line": 4,
+   "fingerprint": "774f6753e865d6e9ff41016bbf4d5ef2",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: the redirect target comes from the query string."
+  },
+  {
+   "rule": "BE008",
+   "file": "vulnerabilities/open_redirect/source/medium.php",
+   "line": 11,
+   "fingerprint": "09b8d62ce366dd45b17dbf67b96a43fb",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: the redirect target comes from the query string."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/sqli/source/low.php",
+   "line": 11,
+   "fingerprint": "bce40e9ca51cd10506935f1e3d4f30d5",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/sqli/source/low.php",
+   "line": 34,
+   "fingerprint": "d408235af315a20cf090ed7864d6b973",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/sqli/source/medium.php",
+   "line": 12,
+   "fingerprint": "2e0f7dbf3de8ff9814c57acf6b7b977c",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/sqli/source/medium.php",
+   "line": 30,
+   "fingerprint": "a23b1441eaffa55d82a5a6ffca974b6e",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/sqli/source/medium.php",
+   "line": 55,
+   "fingerprint": "2f4cae5014016017612783e147108d7a",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/sqli_blind/source/high.php",
+   "line": 13,
+   "fingerprint": "6d575f333bf86faeff7f6c37b9084555",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/sqli_blind/source/high.php",
+   "line": 35,
+   "fingerprint": "d4a64189cf2b31ee46de0b833f12effa",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/sqli_blind/source/low.php",
+   "line": 13,
+   "fingerprint": "6ca56984908b02c096f5b197b0b9e6fd",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/sqli_blind/source/low.php",
+   "line": 34,
+   "fingerprint": "0c53fdb758682e292cabd3bd9dcc2ff6",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/sqli_blind/source/medium.php",
+   "line": 15,
+   "fingerprint": "e7eb35a44d1b0acbe1d80c511781cb1c",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/sqli_blind/source/medium.php",
+   "line": 36,
+   "fingerprint": "0ae6222657e006ca57351c96d7ac8b68",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE006",
+   "file": "vulnerabilities/upload/source/high.php",
+   "line": 20,
+   "fingerprint": "8945aa19b2e09f692b7e3172c341ebe2",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: the uploaded file keeps its user-chosen name in the web root."
+  },
+  {
+   "rule": "BE006",
+   "file": "vulnerabilities/upload/source/impossible.php",
+   "line": 43,
+   "fingerprint": "ff678f66ffcaa6cb62dda7f177db03cb",
+   "verdict": "fp",
+   "reason": "The impossible level stores the upload under a random md5 name in a fixed folder."
+  },
+  {
+   "rule": "BE006",
+   "file": "vulnerabilities/upload/source/impossible.php",
+   "line": 53,
+   "fingerprint": "284e48311849b6a3c34eb32b6a42f75c",
+   "verdict": "fp",
+   "reason": "The impossible level stores the upload under a random md5 name in a fixed folder."
+  },
+  {
+   "rule": "BE006",
+   "file": "vulnerabilities/upload/source/impossible.php",
+   "line": 54,
+   "fingerprint": "e9fce89e43df388669061f79938f995e",
+   "verdict": "fp",
+   "reason": "The impossible level stores the upload under a random md5 name in a fixed folder."
+  },
+  {
+   "rule": "BE006",
+   "file": "vulnerabilities/upload/source/low.php",
+   "line": 9,
+   "fingerprint": "3953cb10d6793fc49d21f37ff3b82422",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: the uploaded file keeps its user-chosen name in the web root."
+  },
+  {
+   "rule": "BE006",
+   "file": "vulnerabilities/upload/source/medium.php",
+   "line": 18,
+   "fingerprint": "0ee423201fe75b30fd1e14218d7b3f45",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: the uploaded file keeps its user-chosen name in the web root."
+  },
+  {
+   "rule": "BE003",
+   "file": "vulnerabilities/view_help.php",
+   "line": 20,
+   "fingerprint": "8e9f5f589157d9e7aa9d1fd6b2ee3093",
+   "verdict": "tp",
+   "reason": "eval() of a file whose path is built from request parameters."
+  },
+  {
+   "rule": "BE006",
+   "file": "vulnerabilities/view_help.php",
+   "line": 20,
+   "fingerprint": "e692cf07ac8a938d912cba99a8aedfef",
+   "verdict": "tp",
+   "reason": "The path is built from request parameters without a check."
+  },
+  {
+   "rule": "BE003",
+   "file": "vulnerabilities/view_help.php",
+   "line": 22,
+   "fingerprint": "f82cca553f5a27bedc1fab31d6008ef6",
+   "verdict": "tp",
+   "reason": "eval() of a file whose path is built from request parameters."
+  },
+  {
+   "rule": "BE006",
+   "file": "vulnerabilities/view_help.php",
+   "line": 22,
+   "fingerprint": "1a392b868dc3a277f53216a5161fef4b",
+   "verdict": "tp",
+   "reason": "The path is built from request parameters without a check."
+  },
+  {
+   "rule": "BE006",
+   "file": "vulnerabilities/view_source.php",
+   "line": 63,
+   "fingerprint": "df8d6eecac8402c7e93c18d6526ef11c",
+   "verdict": "tp",
+   "reason": "The path is built from request parameters without a check."
+  },
+  {
+   "rule": "BE006",
+   "file": "vulnerabilities/view_source.php",
+   "line": 67,
+   "fingerprint": "e3f0dfcceaaa6618d01fa8e78836f9cf",
+   "verdict": "tp",
+   "reason": "The path is built from request parameters without a check."
+  },
+  {
+   "rule": "BE006",
+   "file": "vulnerabilities/view_source.php",
+   "line": 68,
+   "fingerprint": "e70d5f123ade6282700410f95808b05a",
+   "verdict": "tp",
+   "reason": "The path is built from request parameters without a check."
+  },
+  {
+   "rule": "BE006",
+   "file": "vulnerabilities/view_source_all.php",
+   "line": 14,
+   "fingerprint": "05e5f80dfab3aef85a7119c1c2a3dd29",
+   "verdict": "tp",
+   "reason": "The path is built from request parameters without a check."
+  },
+  {
+   "rule": "BE006",
+   "file": "vulnerabilities/view_source_all.php",
+   "line": 18,
+   "fingerprint": "84c413b8cc1979178368735f6581a95b",
+   "verdict": "tp",
+   "reason": "The path is built from request parameters without a check."
+  },
+  {
+   "rule": "BE006",
+   "file": "vulnerabilities/view_source_all.php",
+   "line": 22,
+   "fingerprint": "000968bf25e1da65854811eee8a29de2",
+   "verdict": "tp",
+   "reason": "The path is built from request parameters without a check."
+  },
+  {
+   "rule": "BE006",
+   "file": "vulnerabilities/view_source_all.php",
+   "line": 26,
+   "fingerprint": "7378b74ae8ad771ef1f73f7af499a614",
+   "verdict": "tp",
+   "reason": "The path is built from request parameters without a check."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/xss_s/source/high.php",
+   "line": 19,
+   "fingerprint": "e558be9174fe00dc59db63249c0e7be0",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/xss_s/source/low.php",
+   "line": 17,
+   "fingerprint": "8afd38c90f84db13f90aa9a2e7492217",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerabilities/xss_s/source/medium.php",
+   "line": 19,
+   "fingerprint": "a03bd49b8de27f3415389ae857ec3b9a",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  }
+ ]
+}

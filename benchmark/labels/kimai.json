@@ -1,0 +1,118 @@
+{
+ "repo": "kimai",
+ "commit": "b4ac77a622ffa060a534424cbb02540d2e8ff690",
+ "findings": [
+  {
+   "rule": "CFG002",
+   "file": "Dockerfile",
+   "line": 38,
+   "fingerprint": "7840ade5ce62ce3275c4434af6297b90",
+   "verdict": "tp",
+   "reason": "A build stage uses composer:latest."
+  },
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile",
+   "line": 313,
+   "fingerprint": "126e094ce0e70a0bdc6c39593a4b9fb4",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "FE001",
+   "file": "assets/js/plugins/KimaiAjaxModalForm.js",
+   "line": 45,
+   "fingerprint": "d481512da5d8750658fda05327268a0e",
+   "verdict": "fp",
+   "reason": "HTML fragments from kimai's own server responses or app-built markup, not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "assets/js/plugins/KimaiAjaxModalForm.js",
+   "line": 152,
+   "fingerprint": "9601907ca02b165a3f4f9ac4771b4394",
+   "verdict": "fp",
+   "reason": "HTML fragments from kimai's own server responses or app-built markup, not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "assets/js/plugins/KimaiAjaxModalForm.js",
+   "line": 233,
+   "fingerprint": "2c4149afeed6e1848fe6e07dd0f97d16",
+   "verdict": "fp",
+   "reason": "HTML fragments from kimai's own server responses or app-built markup, not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "assets/js/plugins/KimaiAlert.js",
+   "line": 107,
+   "fingerprint": "a93195b16e2497fb03e2f4ba7263cae0",
+   "verdict": "fp",
+   "reason": "HTML fragments from kimai's own server responses or app-built markup, not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "assets/js/plugins/KimaiAlert.js",
+   "line": 204,
+   "fingerprint": "8b5ccf2212f079bb1c38c019f7add13b",
+   "verdict": "fp",
+   "reason": "HTML fragments from kimai's own server responses or app-built markup, not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "assets/js/plugins/KimaiAlert.js",
+   "line": 253,
+   "fingerprint": "21037c2d140f848a2ac6934577f3930c",
+   "verdict": "fp",
+   "reason": "HTML fragments from kimai's own server responses or app-built markup, not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "assets/js/plugins/KimaiDatatable.js",
+   "line": 69,
+   "fingerprint": "d4cd6725a90f7ae8fc6aab4c31a3e18e",
+   "verdict": "fp",
+   "reason": "HTML fragments from kimai's own server responses or app-built markup, not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "assets/js/plugins/KimaiRemoteModal.js",
+   "line": 76,
+   "fingerprint": "0eb731a5fb240c24ef30fb093417de51",
+   "verdict": "fp",
+   "reason": "HTML fragments from kimai's own server responses or app-built markup, not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "assets/js/widgets/KimaiContextMenu.js",
+   "line": 77,
+   "fingerprint": "2772a6090bead66433ae7c3be5045f8a",
+   "verdict": "fp",
+   "reason": "HTML fragments from kimai's own server responses or app-built markup, not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "assets/js/widgets/KimaiPaginatedBoxWidget.js",
+   "line": 69,
+   "fingerprint": "d64e3b2aabd5c083bc2e0db7afb70312",
+   "verdict": "fp",
+   "reason": "HTML fragments from kimai's own server responses or app-built markup, not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "assets/js/widgets/KimaiReloadPageWidget.js",
+   "line": 52,
+   "fingerprint": "d2fbf138109fa45792e940367ffcd6a1",
+   "verdict": "fp",
+   "reason": "HTML fragments from kimai's own server responses or app-built markup, not user input."
+  },
+  {
+   "rule": "DATA001",
+   "file": "src/Repository/InvoiceDocumentRepository.php",
+   "line": 162,
+   "fingerprint": "10b1a789b690dc015bfead7094b0180f",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  }
+ ]
+}

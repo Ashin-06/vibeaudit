@@ -1,0 +1,38 @@
+{
+ "repo": "Cachet",
+ "commit": "873e8223f611e9aaaae8a1122959f6d062b51e35",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/composer-compatibility.yml",
+   "line": 29,
+   "fingerprint": "c0657aae6129df15450e82861f2bf489",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/composer-compatibility.yml",
+   "line": 71,
+   "fingerprint": "85ec36cf143b2b8ac8a07313a7fab057",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/fix-code-styling.yml",
+   "line": 13,
+   "fingerprint": "36c7390ed226a696739a12cf8263f392",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/run-tests.yml",
+   "line": 21,
+   "fingerprint": "161ddc9223b3f32750c910e0177dac19",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  }
+ ]
+}

@@ -1,0 +1,374 @@
+{
+ "repo": "koel",
+ "commit": "9ec40db3ca9b01a0822d11ad24591b70cc6aca63",
+ "findings": [
+  {
+   "rule": "REL001",
+   "file": "app/Console/Commands/DoctorCommand.php",
+   "line": 268,
+   "fingerprint": "0c2407118bf5388b1a1e66915f05d5ab",
+   "verdict": "tp",
+   "reason": "The HTTP call has no timeout."
+  },
+  {
+   "rule": "BE008",
+   "file": "app/Http/Controllers/ViewSongOnITunesController.php",
+   "line": 24,
+   "fingerprint": "6da0349b99a6c8290aa6f2bfb00e56c2",
+   "verdict": "fp",
+   "reason": "The iTunes URL comes from koel's own lookup, not from the request."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Services/FavoriteService.php",
+   "line": 94,
+   "fingerprint": "ff2bce60126ca4c5e574d8ea77cfd189",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Services/Integrations/MusicBrainzRateLimiter.php",
+   "line": 76,
+   "fingerprint": "6bf675fdf6fff1c5ca7582915dbfef1e",
+   "verdict": "fp",
+   "reason": "A batch loop: one query per chunk, not per row."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Services/Upload/DuplicateUploadService.php",
+   "line": 136,
+   "fingerprint": "efe4677f294306d746cd1f806995b2b3",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "SEC003",
+   "file": "docs/.vitepress/config.mts",
+   "line": 38,
+   "fingerprint": "cbc7db5d9e7883f458a7019842e4ab6f",
+   "verdict": "fp",
+   "reason": "Algolia's public search-only key for the documentation site."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/assets/js/components/ai/AiChatMessage.vue",
+   "line": 7,
+   "fingerprint": "8f0ad7ac53e7cc674f4d5d9e1fa0b13e",
+   "verdict": "fp",
+   "reason": "The markdown is passed through DOMPurify.sanitize before v-html."
+  },
+  {
+   "rule": "UI003",
+   "file": "resources/assets/js/components/ai/AiPromptBox.vue",
+   "line": 4,
+   "fingerprint": "664e0438217718c80101b7de13d3fdc5",
+   "verdict": "tp",
+   "reason": "The field has no label, aria-label or associated label."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/assets/js/components/album/AlbumInfo.vue",
+   "line": 12,
+   "fingerprint": "be428e43213fa4fcfe4b27406e89b923",
+   "verdict": "fp",
+   "reason": "Last.fm text is reduced to plain text with strip_tags on the server (formatLastFmText)."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/assets/js/components/artist/ArtistInfo.vue",
+   "line": 11,
+   "fingerprint": "f08e97e4eb1620ee4f5cf62f654a56b1",
+   "verdict": "fp",
+   "reason": "Last.fm text is reduced to plain text with strip_tags on the server (formatLastFmText)."
+  },
+  {
+   "rule": "SEC011",
+   "file": "resources/assets/js/components/auth/CredentialsLoginForm.vue",
+   "line": 54,
+   "fingerprint": "86d00de3ea4f5aa0461ede6d5b6bb8b8",
+   "verdict": "fp",
+   "reason": "The documented demo account's password, filled in only in demo mode."
+  },
+  {
+   "rule": "UI003",
+   "file": "resources/assets/js/components/auth/two-factor/OneTimeCodeInput.vue",
+   "line": 3,
+   "fingerprint": "fdfa73415012c5e876f9574fcb60f61c",
+   "verdict": "tp",
+   "reason": "The field has no label, aria-label or associated label."
+  },
+  {
+   "rule": "QA011",
+   "file": "resources/assets/js/components/auth/two-factor/TwoFactorChallengeForm.vue",
+   "line": 45,
+   "fingerprint": "c9dfe860c524fd4bf18db89754f2c11b",
+   "verdict": "tp",
+   "reason": "The same function body is defined twice."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/assets/js/components/embed/CreateEmbedForm.vue",
+   "line": 24,
+   "fingerprint": "475e2ae9f1b6b0c45ac75b1434441ce4",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI008",
+   "file": "resources/assets/js/components/embed/widget/EmbedWidget.vue",
+   "line": 89,
+   "fingerprint": "6f22fbed670acd37fa9640b542dd4243",
+   "verdict": "tp",
+   "reason": "The listener or interval is never removed when the component unmounts."
+  },
+  {
+   "rule": "UI014",
+   "file": "resources/assets/js/components/embed/widget/EmbedWidgetBanner.vue",
+   "line": 24,
+   "fingerprint": "4638c50c293e003d170abed0b28ef0a0",
+   "verdict": "fp",
+   "reason": "The logo sits in a fixed-size box (size-10)."
+  },
+  {
+   "rule": "UI008",
+   "file": "resources/assets/js/components/layout/app-footer/FooterExtraControls.vue",
+   "line": 61,
+   "fingerprint": "e4a99bdeddb79f0a9f63846407a3856a",
+   "verdict": "tp",
+   "reason": "The listener or interval is never removed when the component unmounts."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/assets/js/components/playable/media-browser/MediaListItem.vue",
+   "line": 8,
+   "fingerprint": "4b1388c9cf58c843b803dc27683de67a",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/assets/js/components/playable/playable-list/PlayableListHeaderActionMenu.vue",
+   "line": 10,
+   "fingerprint": "917efba63d3e84646692890f739a89e2",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/assets/js/components/podcast/EpisodeItem.vue",
+   "line": 47,
+   "fingerprint": "35acceed3d466042ab19e4a1905f4bd4",
+   "verdict": "fp",
+   "reason": "The podcast description is sanitized with DOMPurify before v-html."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/assets/js/components/podcast/PodcastItem.vue",
+   "line": 46,
+   "fingerprint": "2960454545d4b6d24c32294f3d594390",
+   "verdict": "fp",
+   "reason": "The podcast description is sanitized with DOMPurify before v-html."
+  },
+  {
+   "rule": "UI003",
+   "file": "resources/assets/js/components/profile-preferences/TranscodingPreferenceRow.vue",
+   "line": 11,
+   "fingerprint": "d4e76644bc6d041cbf129ff376b19a99",
+   "verdict": "tp",
+   "reason": "The field has no label, aria-label or associated label."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/assets/js/components/screens/EpisodeScreen.vue",
+   "line": 53,
+   "fingerprint": "39e311fd42b2acf65e82835e350ffcb2",
+   "verdict": "fp",
+   "reason": "The description is sanitized with DOMPurify before v-html."
+  },
+  {
+   "rule": "UI014",
+   "file": "resources/assets/js/components/screens/PodcastScreen.vue",
+   "line": 11,
+   "fingerprint": "d2294ef38f259e3e85ee16e164105f04",
+   "verdict": "tp",
+   "reason": "The image has no width, height or sizing class."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/assets/js/components/screens/PodcastScreen.vue",
+   "line": 19,
+   "fingerprint": "a5928bf37f7d4abb424b5577b2ee4ab8",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/assets/js/components/screens/PodcastScreen.vue",
+   "line": 25,
+   "fingerprint": "c2cfc4e804d9d6e9e5c8e856345ed664",
+   "verdict": "fp",
+   "reason": "The description is sanitized with DOMPurify before v-html."
+  },
+  {
+   "rule": "UI009",
+   "file": "resources/assets/js/components/screens/settings/UsersSettingGroup.vue",
+   "line": 90,
+   "fingerprint": "7333b9bee71fb15a0cb1cf71a686d786",
+   "verdict": "tp",
+   "reason": "The fetch has no loading or error state."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/assets/js/components/ui/BasicListSorter.vue",
+   "line": 13,
+   "fingerprint": "5df27c8bd6972f6e84caad13d1255f2a",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "UI008",
+   "file": "resources/assets/js/components/ui/BtnScrollToTop.vue",
+   "line": 31,
+   "fingerprint": "a39b0377af215bd2ec7515541e84a095",
+   "verdict": "tp",
+   "reason": "The listener or interval is never removed when the component unmounts."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/assets/js/components/ui/Overlay.vue",
+   "line": 16,
+   "fingerprint": "32f5abb515129cd58c9426987b9819fd",
+   "verdict": "fp",
+   "reason": "Overlay messages are app strings."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/assets/js/components/ui/TableHeaderActionMenu.vue",
+   "line": 9,
+   "fingerprint": "3b0d6bf50597ccd175a8d3798fb9b3b9",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "QA011",
+   "file": "resources/assets/js/components/ui/album-artist/AlbumOrArtistThumbnail.vue",
+   "line": 54,
+   "fingerprint": "fa8396a1816f9a60fd8c2543f6b2338c",
+   "verdict": "tp",
+   "reason": "The same function body is defined twice."
+  },
+  {
+   "rule": "UI003",
+   "file": "resources/assets/js/components/ui/form/CheckBox.vue",
+   "line": 2,
+   "fingerprint": "f53a25b40f3ca733233039cbacd68ccb",
+   "verdict": "fp",
+   "reason": "A generic checkbox component; the caller supplies the label around it."
+  },
+  {
+   "rule": "UI002",
+   "file": "resources/assets/js/components/ui/form/TagInput.vue",
+   "line": 2,
+   "fingerprint": "6b9eb9cf43511dae1af82ac44ffe5b99",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element with no keyboard handler or role."
+  },
+  {
+   "rule": "QA003",
+   "file": "resources/assets/js/composables/useLocalStorage.ts",
+   "line": 18,
+   "fingerprint": "abee14b533bf93175c1d09f972c484c3",
+   "verdict": "fp",
+   "reason": "Deliberate: best-effort browser storage."
+  },
+  {
+   "rule": "QA003",
+   "file": "resources/assets/js/composables/useLocalStorage.ts",
+   "line": 24,
+   "fingerprint": "e9eb562c2bf5a6b9608758092701b552",
+   "verdict": "fp",
+   "reason": "Deliberate: best-effort browser storage."
+  },
+  {
+   "rule": "FE004",
+   "file": "resources/assets/js/composables/useOfflinePlayback.ts",
+   "line": 147,
+   "fingerprint": "a7069c215c4764370cb4eacf51ffeddc",
+   "verdict": "fp",
+   "reason": "Messages from the app's own service worker, which only same-origin code can send."
+  },
+  {
+   "rule": "QA003",
+   "file": "resources/assets/js/services/zipDownloadService.ts",
+   "line": 202,
+   "fingerprint": "e0db41495b1acf45e249854953a85303",
+   "verdict": "fp",
+   "reason": "Deliberate: best-effort cleanup of temporary files."
+  },
+  {
+   "rule": "QA003",
+   "file": "resources/assets/js/services/zipDownloadService.ts",
+   "line": 203,
+   "fingerprint": "9fc41efce15a31e8aef47223ec422d6b",
+   "verdict": "fp",
+   "reason": "Deliberate: best-effort cleanup of temporary files."
+  },
+  {
+   "rule": "QA003",
+   "file": "resources/assets/js/services/zipDownloadService.ts",
+   "line": 222,
+   "fingerprint": "bd2fd6e3c84e986972e5b1c1995774d1",
+   "verdict": "fp",
+   "reason": "Deliberate: best-effort cleanup of temporary files."
+  },
+  {
+   "rule": "QA003",
+   "file": "resources/assets/js/services/zipDownloadService.ts",
+   "line": 228,
+   "fingerprint": "997b802fb90df6dc7272932453d82972",
+   "verdict": "fp",
+   "reason": "Deliberate: best-effort cleanup of temporary files."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/assets/js/utils/formatters.ts",
+   "line": 82,
+   "fingerprint": "429813788887b27a529a7d1ebe06f328",
+   "verdict": "fp",
+   "reason": "A helper that reads text out of HTML (entity decoding, visible-text check), not rendering it."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/assets/js/utils/helpers.ts",
+   "line": 166,
+   "fingerprint": "7f2df0a83cb7ea8ca7a197b97737bd91",
+   "verdict": "fp",
+   "reason": "A helper that reads text out of HTML (entity decoding, visible-text check), not rendering it."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "routes/api.base.php",
+   "line": 136,
+   "fingerprint": "9cc998d4b8d09ce763f051234ab88866",
+   "verdict": "fp",
+   "reason": "Logout of the current token; it acts only on the caller's own session."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "routes/api.base.php",
+   "line": 277,
+   "fingerprint": "f5389277ff57b94deb236b6016a5d7f9",
+   "verdict": "fp",
+   "reason": "removePresetForUser($user, $id) scopes the delete to the caller."
+  },
+  {
+   "rule": "BE006",
+   "file": "server.php",
+   "line": 15,
+   "fingerprint": "c2ecafae656f523154256c2a8e098de9",
+   "verdict": "fp",
+   "reason": "Laravel's built-in development-server router."
+  }
+ ]
+}

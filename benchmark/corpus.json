@@ -654,6 +654,89 @@
    "kind": "well-maintained",
    "language": "rust",
    "split": "heldout"
+  },
+  {
+   "name": "BookStack",
+   "url": "https://github.com/BookStackApp/BookStack",
+   "commit": "0b6b667e0d84ebb3406de6de9fadbf4230c29c0b",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "php"
+  },
+  {
+   "name": "Cachet",
+   "url": "https://github.com/CachetHQ/Cachet",
+   "commit": "873e8223f611e9aaaae8a1122959f6d062b51e35",
+   "licence": "none declared",
+   "kind": "well-maintained",
+   "language": "php"
+  },
+  {
+   "name": "DVWA",
+   "url": "https://github.com/digininja/DVWA",
+   "commit": "a1978a2fed195acd093010af6395f86a281537ca",
+   "licence": "GPL-3.0",
+   "kind": "training",
+   "language": "php",
+   "split": "heldout"
+  },
+  {
+   "name": "kimai",
+   "url": "https://github.com/kimai/kimai",
+   "commit": "b4ac77a622ffa060a534424cbb02540d2e8ff690",
+   "licence": "AGPL-3.0",
+   "kind": "well-maintained",
+   "language": "php"
+  },
+  {
+   "name": "koel",
+   "url": "https://github.com/koel/koel",
+   "commit": "9ec40db3ca9b01a0822d11ad24591b70cc6aca63",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "php"
+  },
+  {
+   "name": "laravel-realworld-example-app",
+   "url": "https://github.com/gothinkster/laravel-realworld-example-app",
+   "commit": "e45c37c8a5f57131c9d239f1fc104c227e66b6ee",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "php",
+   "split": "heldout"
+  },
+  {
+   "name": "monica",
+   "url": "https://github.com/monicahq/monica",
+   "commit": "dab74273acc5c9e0ba713a9f7c2c71c24ab16993",
+   "licence": "AGPL-3.0",
+   "kind": "well-maintained",
+   "language": "php"
+  },
+  {
+   "name": "snipe-it",
+   "url": "https://github.com/snipe/snipe-it",
+   "commit": "cee9ffdaf06bcf28332726be5705672ced1bd2ef",
+   "licence": "AGPL-3.0",
+   "kind": "well-maintained",
+   "language": "php"
+  },
+  {
+   "name": "symfony-demo",
+   "url": "https://github.com/symfony/demo",
+   "commit": "f42980c690b4bf335fa41bbafdb075bb67b719c2",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "php",
+   "split": "heldout"
+  },
+  {
+   "name": "wallabag",
+   "url": "https://github.com/wallabag/wallabag",
+   "commit": "15a90c68cde2aaf2591740c949449e07ac477f32",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "php"
   }
  ]
 }

@@ -203,3 +203,16 @@ def test_backdrop_pattern_is_linear_on_long_class_lists():
     start = time.time()
     assert not BACKDROP.search("fixed " * 20000)
     assert time.time() - start < 1.5
+
+
+def test_tests_in_any_language_count_for_qa001(tmp_path):
+    # piggymetrics: a JavaScript frontend beside Java services whose tests live under src/test
+    for i in range(3):
+        write(tmp_path, f"gateway/src/main/resources/static/js/app{i}.js", "export const x = 1;\n")
+    assert found(tmp_path, "QA001")
+    for rel in ("svc/src/test/java/com/x/AccountServiceTest.java", "pkg/handler_test.go"):
+        root = tmp_path / rel.split("/")[0]
+        write(tmp_path, rel, "class T {}\n")
+        assert not found(tmp_path, "QA001"), rel
+        import shutil
+        shutil.rmtree(root)

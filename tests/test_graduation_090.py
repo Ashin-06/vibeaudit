@@ -18,7 +18,8 @@ def test_demotions_in_092_and_the_regraduation():
 
 
 def test_demotions_after_the_new_language_held_out_repositories():
-    for rid, measured in (("CFG002", "5 of 6"), ("QA001", "6 of 8"), ("QA007", "6 of 7"), ("DATA012", "19 of 28"),
+    assert not RULES["QA001"].preview  # stable again: tests in any language count (6/6 held-out)
+    for rid, measured in (("CFG002", "5 of 6"), ("QA007", "6 of 7"), ("DATA012", "19 of 28"),
                           ("UI009", "4 of 5")):
         assert RULES[rid].preview and measured in RULES[rid].preview_reason
         assert not RULES[rid].gates_in_preview  # none is a severe class

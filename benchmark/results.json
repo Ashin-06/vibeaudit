@@ -1,9 +1,10 @@
 {
  "tool": "vibeaudit benchmark",
- "corpus": 85,
- "scanned": 85,
+ "corpus": 95,
+ "scanned": 95,
  "skipped": {},
  "heldout": [
+  "DVWA",
   "Schematic",
   "careconnect",
   "damn-vulnerable-llm-agent",
@@ -12,6 +13,7 @@
   "go-base",
   "govwa",
   "langchain-nextjs-template",
+  "laravel-realworld-example-app",
   "mCaptcha",
   "next-saas-stripe-starter",
   "nodejs-whisper",
@@ -20,6 +22,7 @@
   "podinfo",
   "realworld-axum-sqlx",
   "svix-webhooks",
+  "symfony-demo",
   "terragoat",
   "thynk",
   "toWers",
@@ -385,11 +388,11 @@
    "fixed_fp": 1
   },
   "waline": {
-   "findings": 85,
-   "labelled": 85,
+   "findings": 84,
+   "labelled": 84,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 1
   },
   "wsgidav": {
    "findings": 40,
@@ -455,11 +458,11 @@
    "fixed_fp": 0
   },
   "vulnerable-java-application": {
-   "findings": 8,
-   "labelled": 8,
+   "findings": 7,
+   "labelled": 7,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 1
   },
   "JavaVulnerableLab": {
    "findings": 12,
@@ -469,11 +472,11 @@
    "fixed_fp": 0
   },
   "piggymetrics": {
-   "findings": 12,
-   "labelled": 12,
+   "findings": 11,
+   "labelled": 11,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 1
   },
   "uniedit-server": {
    "findings": 46,
@@ -483,11 +486,11 @@
    "fixed_fp": 0
   },
   "conveyor": {
-   "findings": 20,
-   "labelled": 20,
+   "findings": 19,
+   "labelled": 19,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 1
   },
   "toWers": {
    "findings": 23,
@@ -621,6 +624,76 @@
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
+  },
+  "BookStack": {
+   "findings": 75,
+   "labelled": 75,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "Cachet": {
+   "findings": 4,
+   "labelled": 4,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "DVWA": {
+   "findings": 79,
+   "labelled": 79,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "kimai": {
+   "findings": 14,
+   "labelled": 14,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "koel": {
+   "findings": 46,
+   "labelled": 46,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "laravel-realworld-example-app": {
+   "findings": 7,
+   "labelled": 7,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "monica": {
+   "findings": 299,
+   "labelled": 299,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "snipe-it": {
+   "findings": 240,
+   "labelled": 240,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "symfony-demo": {
+   "findings": 15,
+   "labelled": 15,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "wallabag": {
+   "findings": 11,
+   "labelled": 11,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
   }
  },
  "rules": {
@@ -679,11 +752,11 @@
    "title": "State-changing endpoint without authentication",
    "preview": false,
    "tp": 46,
-   "fp": 5,
+   "fp": 10,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.902,
-   "precision_pessimistic": 0.902,
+   "precision": 0.8214,
+   "precision_pessimistic": 0.8214,
    "seeded_expected": 8,
    "seeded_found": 8,
    "seeded_recall": 1.0,
@@ -738,9 +811,19 @@
      0,
      0
     ],
+    "koel": [
+     0,
+     1,
+     0
+    ],
     "langchain-nextjs-template": [
      7,
      0,
+     0
+    ],
+    "laravel-realworld-example-app": [
+     0,
+     1,
      0
     ],
     "learnathon-leaderboard": [
@@ -778,6 +861,16 @@
      0,
      0
     ],
+    "snipe-it": [
+     0,
+     1,
+     0
+    ],
+    "symfony-demo": [
+     0,
+     2,
+     0
+    ],
     "thynk": [
      3,
      0,
@@ -800,9 +893,29 @@
      0,
      0
     ],
+    "koel": [
+     0,
+     1,
+     0
+    ],
+    "laravel-realworld-example-app": [
+     0,
+     1,
+     0
+    ],
     "piggymetrics": [
      0,
      1,
+     0
+    ],
+    "snipe-it": [
+     0,
+     1,
+     0
+    ],
+    "symfony-demo": [
+     0,
+     2,
      0
     ]
    }
@@ -863,11 +976,11 @@
    "title": "Possible insecure direct object reference (IDOR)",
    "preview": false,
    "tp": 9,
-   "fp": 11,
+   "fp": 12,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.45,
-   "precision_pessimistic": 0.45,
+   "precision": 0.4286,
+   "precision_pessimistic": 0.4286,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -895,6 +1008,11 @@
     "jhipster-sample-app": [
      9,
      0,
+     0
+    ],
+    "koel": [
+     0,
+     1,
      0
     ],
     "microblog": [
@@ -944,6 +1062,11 @@
      0,
      0
     ],
+    "koel": [
+     0,
+     1,
+     0
+    ],
     "toWers": [
      0,
      1,
@@ -955,11 +1078,11 @@
    "title": "Webhook without signature verification",
    "preview": false,
    "tp": 1,
-   "fp": 2,
+   "fp": 3,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.3333,
-   "precision_pessimistic": 0.3333,
+   "precision": 0.25,
+   "precision_pessimistic": 0.25,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -969,6 +1092,11 @@
      0,
      0
     ],
+    "monica": [
+     0,
+     1,
+     0
+    ],
     "svix-webhooks": [
      0,
      2,
@@ -976,6 +1104,11 @@
     ]
    },
    "preview_by_repo": {
+    "monica": [
+     0,
+     1,
+     0
+    ],
     "svix-webhooks": [
      0,
      2,
@@ -1105,7 +1238,7 @@
   "AUTH010": {
    "title": "Login endpoint without rate limiting",
    "preview": false,
-   "tp": 20,
+   "tp": 21,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -1180,6 +1313,11 @@
      0,
      0
     ],
+    "symfony-demo": [
+     1,
+     0,
+     0
+    ],
     "zero-to-production": [
      2,
      0,
@@ -1213,6 +1351,11 @@
      0
     ],
     "spring-boot-realworld-example-app": [
+     1,
+     0,
+     0
+    ],
+    "symfony-demo": [
      1,
      0,
      0
@@ -1287,7 +1430,7 @@
   "AUTH015": {
    "title": "Password change keeps old sessions valid",
    "preview": true,
-   "tp": 3,
+   "tp": 6,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -1297,6 +1440,11 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "BookStack": [
+     3,
+     0,
+     0
+    ],
     "full-stack-fastapi-template": [
      2,
      0,
@@ -1309,6 +1457,11 @@
     ]
    },
    "preview_by_repo": {
+    "BookStack": [
+     3,
+     0,
+     0
+    ],
     "full-stack-fastapi-template": [
      2,
      0,
@@ -1366,16 +1519,26 @@
   "BE001": {
    "title": "SQL injection",
    "preview": false,
-   "tp": 30,
-   "fp": 8,
+   "tp": 61,
+   "fp": 13,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.7895,
-   "precision_pessimistic": 0.7895,
+   "precision": 0.8243,
+   "precision_pessimistic": 0.8243,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
    "by_repo": {
+    "BookStack": [
+     0,
+     1,
+     0
+    ],
+    "DVWA": [
+     31,
+     2,
+     0
+    ],
     "JavaVulnerableLab": [
      5,
      0,
@@ -1416,7 +1579,17 @@
      6,
      0
     ],
+    "snipe-it": [
+     0,
+     1,
+     0
+    ],
     "waline": [
+     0,
+     1,
+     0
+    ],
+    "wallabag": [
      0,
      1,
      0
@@ -1428,9 +1601,29 @@
     ]
    },
    "preview_by_repo": {
+    "BookStack": [
+     0,
+     1,
+     0
+    ],
+    "DVWA": [
+     31,
+     2,
+     0
+    ],
     "JavaVulnerableLab": [
      5,
      0,
+     0
+    ],
+    "snipe-it": [
+     0,
+     1,
+     0
+    ],
+    "wallabag": [
+     0,
+     1,
      0
     ]
    }
@@ -1438,16 +1631,21 @@
   "BE002": {
    "title": "Command injection",
    "preview": true,
-   "tp": 4,
-   "fp": 5,
+   "tp": 11,
+   "fp": 10,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.4444,
-   "precision_pessimistic": 0.4444,
+   "precision": 0.5238,
+   "precision_pessimistic": 0.5238,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
    "by_repo": {
+    "DVWA": [
+     7,
+     2,
+     0
+    ],
     "djangoproject.com": [
      0,
      1,
@@ -1481,6 +1679,11 @@
     "pygoat": [
      1,
      0,
+     0
+    ],
+    "snipe-it": [
+     0,
+     3,
      0
     ],
     "svix-webhooks": [
@@ -1495,6 +1698,11 @@
     ]
    },
    "preview_by_repo": {
+    "DVWA": [
+     7,
+     2,
+     0
+    ],
     "djangoproject.com": [
      0,
      1,
@@ -1528,6 +1736,11 @@
     "pygoat": [
      1,
      0,
+     0
+    ],
+    "snipe-it": [
+     0,
+     3,
      0
     ],
     "svix-webhooks": [
@@ -1545,16 +1758,21 @@
   "BE003": {
    "title": "Dynamic code execution",
    "preview": true,
-   "tp": 4,
+   "tp": 6,
    "fp": 7,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.3636,
-   "precision_pessimistic": 0.3636,
+   "precision": 0.4615,
+   "precision_pessimistic": 0.4615,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "DVWA": [
+     2,
+     0,
+     0
+    ],
     "flask": [
      0,
      2,
@@ -1577,6 +1795,11 @@
     ]
    },
    "preview_by_repo": {
+    "DVWA": [
+     2,
+     0,
+     0
+    ],
     "flask": [
      0,
      2,
@@ -1660,11 +1883,11 @@
    "title": "Server-side request forgery (SSRF)",
    "preview": false,
    "tp": 3,
-   "fp": 1,
+   "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.75,
-   "precision_pessimistic": 0.75,
+   "precision": 0.6,
+   "precision_pessimistic": 0.6,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -1672,6 +1895,11 @@
     "bella-openapi": [
      2,
      0,
+     0
+    ],
+    "monica": [
+     0,
+     1,
      0
     ],
     "physicalmediavault": [
@@ -1690,22 +1918,37 @@
   "BE006": {
    "title": "Path traversal",
    "preview": false,
-   "tp": 3,
-   "fp": 3,
+   "tp": 16,
+   "fp": 12,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5,
-   "precision_pessimistic": 0.5,
+   "precision": 0.5714,
+   "precision_pessimistic": 0.5714,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "DVWA": [
+     13,
+     3,
+     0
+    ],
     "JavaVulnerableLab": [
      2,
      0,
      0
     ],
     "flexible-graphrag": [
+     0,
+     1,
+     0
+    ],
+    "koel": [
+     0,
+     1,
+     0
+    ],
+    "laravel-realworld-example-app": [
      0,
      1,
      0
@@ -1720,6 +1963,11 @@
      0,
      0
     ],
+    "snipe-it": [
+     0,
+     4,
+     0
+    ],
     "vibe-trading": [
      0,
      1,
@@ -1727,14 +1975,34 @@
     ]
    },
    "preview_by_repo": {
+    "DVWA": [
+     13,
+     3,
+     0
+    ],
     "JavaVulnerableLab": [
      2,
      0,
      0
     ],
+    "koel": [
+     0,
+     1,
+     0
+    ],
+    "laravel-realworld-example-app": [
+     0,
+     1,
+     0
+    ],
     "podinfo": [
      0,
      1,
+     0
+    ],
+    "snipe-it": [
+     0,
+     4,
      0
     ]
    }
@@ -1763,16 +2031,26 @@
   "BE008": {
    "title": "Open redirect",
    "preview": true,
-   "tp": 7,
-   "fp": 1,
+   "tp": 11,
+   "fp": 8,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.875,
-   "precision_pessimistic": 0.875,
+   "precision": 0.5789,
+   "precision_pessimistic": 0.5789,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "BookStack": [
+     0,
+     1,
+     0
+    ],
+    "DVWA": [
+     3,
+     0,
+     0
+    ],
     "JavaVulnerableLab": [
      1,
      0,
@@ -1793,6 +2071,11 @@
      0,
      0
     ],
+    "koel": [
+     0,
+     1,
+     0
+    ],
     "nextjs-subscription-payments": [
      0,
      1,
@@ -1806,10 +2089,30 @@
     "pygoat": [
      2,
      0,
+     0
+    ],
+    "snipe-it": [
+     0,
+     2,
+     0
+    ],
+    "wallabag": [
+     1,
+     3,
      0
     ]
    },
    "preview_by_repo": {
+    "BookStack": [
+     0,
+     1,
+     0
+    ],
+    "DVWA": [
+     3,
+     0,
+     0
+    ],
     "JavaVulnerableLab": [
      1,
      0,
@@ -1830,6 +2133,11 @@
      0,
      0
     ],
+    "koel": [
+     0,
+     1,
+     0
+    ],
     "nextjs-subscription-payments": [
      0,
      1,
@@ -1843,6 +2151,16 @@
     "pygoat": [
      2,
      0,
+     0
+    ],
+    "snipe-it": [
+     0,
+     2,
+     0
+    ],
+    "wallabag": [
+     1,
+     3,
      0
     ]
    }
@@ -2275,7 +2593,7 @@
   "CFG001": {
    "title": "Container runs as root",
    "preview": false,
-   "tp": 98,
+   "tp": 105,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2285,6 +2603,16 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "BookStack": [
+     2,
+     0,
+     0
+    ],
+    "DVWA": [
+     1,
+     0,
+     0
+    ],
     "Django-Styleguide-Example": [
      2,
      0,
@@ -2385,12 +2713,27 @@
      0,
      0
     ],
+    "kimai": [
+     1,
+     0,
+     0
+    ],
+    "laravel-realworld-example-app": [
+     1,
+     0,
+     0
+    ],
     "lldap": [
      6,
      0,
      0
     ],
     "microblog": [
+     1,
+     0,
+     0
+    ],
+    "monica": [
      1,
      0,
      0
@@ -2431,6 +2774,11 @@
      0
     ],
     "sili-smart-hr": [
+     1,
+     0,
+     0
+    ],
+    "snipe-it": [
      1,
      0,
      0
@@ -2486,12 +2834,12 @@
   "CFG002": {
    "title": "Unpinned container base image",
    "preview": true,
-   "tp": 12,
+   "tp": 14,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9231,
-   "precision_pessimistic": 0.9231,
+   "precision": 0.9333,
+   "precision_pessimistic": 0.9333,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -2531,6 +2879,11 @@
      0,
      0
     ],
+    "kimai": [
+     1,
+     0,
+     0
+    ],
     "mCaptcha": [
      1,
      0,
@@ -2552,6 +2905,11 @@
      0
     ],
     "toWers": [
+     1,
+     0,
+     0
+    ],
+    "wallabag": [
      1,
      0,
      0
@@ -2593,6 +2951,11 @@
      0,
      0
     ],
+    "kimai": [
+     1,
+     0,
+     0
+    ],
     "mCaptcha": [
      1,
      0,
@@ -2614,6 +2977,11 @@
      0
     ],
     "toWers": [
+     1,
+     0,
+     0
+    ],
+    "wallabag": [
      1,
      0,
      0
@@ -2694,7 +3062,7 @@
   "CFG007": {
    "title": "Default database credentials",
    "preview": false,
-   "tp": 19,
+   "tp": 21,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2754,6 +3122,11 @@
      0,
      0
     ],
+    "laravel-realworld-example-app": [
+     2,
+     0,
+     0
+    ],
     "opengpts": [
      1,
      0,
@@ -2806,12 +3179,12 @@
   "CFG009": {
    "title": ".env file copied into the container image",
    "preview": false,
-   "tp": 6,
-   "fp": 0,
+   "tp": 8,
+   "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.8,
+   "precision_pessimistic": 0.8,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -2831,8 +3204,18 @@
      0,
      0
     ],
+    "monica": [
+     0,
+     2,
+     0
+    ],
     "sec-insights": [
      1,
+     0,
+     0
+    ],
+    "snipe-it": [
+     2,
      0,
      0
     ],
@@ -2847,7 +3230,7 @@
   "CFG010": {
    "title": "Third-party GitHub Action not pinned to a commit",
    "preview": false,
-   "tp": 179,
+   "tp": 217,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2857,6 +3240,16 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "Cachet": [
+     4,
+     0,
+     0
+    ],
+    "DVWA": [
+     4,
+     0,
+     0
+    ],
     "Schematic": [
      1,
      0,
@@ -2957,6 +3350,11 @@
      0,
      0
     ],
+    "monica": [
+     15,
+     0,
+     0
+    ],
     "next-learn": [
      1,
      0,
@@ -2992,6 +3390,11 @@
      0,
      0
     ],
+    "snipe-it": [
+     9,
+     0,
+     0
+    ],
     "spring-petclinic": [
      2,
      0,
@@ -2999,6 +3402,11 @@
     ],
     "svix-webhooks": [
      1,
+     0,
+     0
+    ],
+    "symfony-demo": [
+     6,
      0,
      0
     ],
@@ -3169,15 +3577,20 @@
    "title": "Secret file or build argument in the final image",
    "preview": true,
    "tp": 1,
-   "fp": 0,
+   "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.5,
+   "precision_pessimistic": 0.5,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "monica": [
+     0,
+     1,
+     0
+    ],
     "sec-insights": [
      1,
      0,
@@ -3185,6 +3598,11 @@
     ]
    },
    "preview_by_repo": {
+    "monica": [
+     0,
+     1,
+     0
+    ],
     "sec-insights": [
      1,
      0,
@@ -3210,16 +3628,21 @@
   "DATA001": {
    "title": "Database query inside a loop (N+1)",
    "preview": true,
-   "tp": 26,
-   "fp": 13,
+   "tp": 182,
+   "fp": 28,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6667,
-   "precision_pessimistic": 0.6667,
+   "precision": 0.8667,
+   "precision_pessimistic": 0.8667,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
    "by_repo": {
+    "BookStack": [
+     12,
+     0,
+     0
+    ],
     "Django-Styleguide-Example": [
      0,
      1,
@@ -3260,9 +3683,24 @@
      1,
      0
     ],
+    "kimai": [
+     1,
+     0,
+     0
+    ],
+    "koel": [
+     2,
+     1,
+     0
+    ],
     "mCaptcha": [
      4,
      0,
+     0
+    ],
+    "monica": [
+     15,
+     2,
      0
     ],
     "pygoat": [
@@ -3273,6 +3711,11 @@
     "sili-smart-hr": [
      0,
      2,
+     0
+    ],
+    "snipe-it": [
+     126,
+     12,
      0
     ],
     "svix-webhooks": [
@@ -3287,6 +3730,11 @@
     ]
    },
    "preview_by_repo": {
+    "BookStack": [
+     12,
+     0,
+     0
+    ],
     "Django-Styleguide-Example": [
      0,
      1,
@@ -3327,9 +3775,24 @@
      1,
      0
     ],
+    "kimai": [
+     1,
+     0,
+     0
+    ],
+    "koel": [
+     2,
+     1,
+     0
+    ],
     "mCaptcha": [
      4,
      0,
+     0
+    ],
+    "monica": [
+     15,
+     2,
      0
     ],
     "pygoat": [
@@ -3340,6 +3803,11 @@
     "sili-smart-hr": [
      0,
      2,
+     0
+    ],
+    "snipe-it": [
+     126,
+     12,
      0
     ],
     "svix-webhooks": [
@@ -3812,15 +4280,20 @@
    "title": "Foreign key without an index",
    "preview": true,
    "tp": 201,
-   "fp": 9,
+   "fp": 13,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9571,
-   "precision_pessimistic": 0.9571,
+   "precision": 0.9393,
+   "precision_pessimistic": 0.9393,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
    "by_repo": {
+    "DVWA": [
+     0,
+     4,
+     0
+    ],
     "LinguaLearn": [
      2,
      0,
@@ -3928,6 +4401,11 @@
     ]
    },
    "preview_by_repo": {
+    "DVWA": [
+     0,
+     4,
+     0
+    ],
     "LinguaLearn": [
      2,
      0,
@@ -4325,16 +4803,26 @@
   "FE001": {
    "title": "Cross-site scripting through a raw HTML sink",
    "preview": true,
-   "tp": 45,
-   "fp": 103,
+   "tp": 53,
+   "fp": 225,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.3041,
-   "precision_pessimistic": 0.3041,
+   "precision": 0.1906,
+   "precision_pessimistic": 0.1906,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
    "by_repo": {
+    "BookStack": [
+     0,
+     38,
+     0
+    ],
+    "DVWA": [
+     6,
+     0,
+     0
+    ],
     "act-solo-ai": [
      13,
      0,
@@ -4375,6 +4863,16 @@
      1,
      0
     ],
+    "kimai": [
+     0,
+     11,
+     0
+    ],
+    "koel": [
+     0,
+     10,
+     0
+    ],
     "mCaptcha": [
      0,
      1,
@@ -4383,6 +4881,11 @@
     "microblog": [
      0,
      1,
+     0
+    ],
+    "monica": [
+     0,
+     18,
      0
     ],
     "next-learn": [
@@ -4408,6 +4911,16 @@
     "pygoat": [
      17,
      20,
+     0
+    ],
+    "snipe-it": [
+     2,
+     41,
+     0
+    ],
+    "symfony-demo": [
+     0,
+     4,
      0
     ],
     "thynk": [
@@ -4427,6 +4940,16 @@
     ]
    },
    "preview_by_repo": {
+    "BookStack": [
+     0,
+     38,
+     0
+    ],
+    "DVWA": [
+     6,
+     0,
+     0
+    ],
     "act-solo-ai": [
      13,
      0,
@@ -4467,6 +4990,16 @@
      1,
      0
     ],
+    "kimai": [
+     0,
+     11,
+     0
+    ],
+    "koel": [
+     0,
+     10,
+     0
+    ],
     "mCaptcha": [
      0,
      1,
@@ -4475,6 +5008,11 @@
     "microblog": [
      0,
      1,
+     0
+    ],
+    "monica": [
+     0,
+     18,
      0
     ],
     "next-learn": [
@@ -4500,6 +5038,16 @@
     "pygoat": [
      17,
      20,
+     0
+    ],
+    "snipe-it": [
+     2,
+     41,
+     0
+    ],
+    "symfony-demo": [
+     0,
+     4,
      0
     ],
     "thynk": [
@@ -4559,16 +5107,21 @@
    "title": "postMessage handler without origin check",
    "preview": false,
    "tp": 3,
-   "fp": 1,
+   "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.75,
-   "precision_pessimistic": 0.75,
+   "precision": 0.6,
+   "precision_pessimistic": 0.6,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
     "jira-meridian": [
+     0,
+     1,
+     0
+    ],
+    "koel": [
      0,
      1,
      0
@@ -5610,215 +6163,8 @@
   },
   "QA001": {
    "title": "No automated tests",
-   "preview": true,
-   "tp": 16,
-   "fp": 3,
-   "needs_review": 0,
-   "lost_tp": 0,
-   "precision": 0.8421,
-   "precision_pessimistic": 0.8421,
-   "seeded_expected": 2,
-   "seeded_found": 2,
-   "seeded_recall": 1.0,
-   "by_repo": {
-    "careconnect": [
-     1,
-     0,
-     0
-    ],
-    "chatgpt-your-files": [
-     1,
-     0,
-     0
-    ],
-    "commerce": [
-     1,
-     0,
-     0
-    ],
-    "conveyor": [
-     0,
-     1,
-     0
-    ],
-    "damn-vulnerable-llm-agent": [
-     1,
-     0,
-     0
-    ],
-    "dvna": [
-     1,
-     0,
-     0
-    ],
-    "dvpwa": [
-     1,
-     0,
-     0
-    ],
-    "govwa": [
-     1,
-     0,
-     0
-    ],
-    "helpdesk-flow-verse": [
-     1,
-     0,
-     0
-    ],
-    "learnathon-leaderboard": [
-     1,
-     0,
-     0
-    ],
-    "next-learn": [
-     1,
-     0,
-     0
-    ],
-    "next-saas-stripe-starter": [
-     1,
-     0,
-     0
-    ],
-    "nextjs-subscription-payments": [
-     1,
-     0,
-     0
-    ],
-    "openai-assistants-quickstart": [
-     1,
-     0,
-     0
-    ],
-    "piggymetrics": [
-     0,
-     1,
-     0
-    ],
-    "prompt-sculptor-49": [
-     1,
-     0,
-     0
-    ],
-    "saas-starter": [
-     1,
-     0,
-     0
-    ],
-    "taxonomy": [
-     1,
-     0,
-     0
-    ],
-    "vulnerable-java-application": [
-     0,
-     1,
-     0
-    ]
-   },
-   "preview_by_repo": {
-    "careconnect": [
-     1,
-     0,
-     0
-    ],
-    "chatgpt-your-files": [
-     1,
-     0,
-     0
-    ],
-    "commerce": [
-     1,
-     0,
-     0
-    ],
-    "conveyor": [
-     0,
-     1,
-     0
-    ],
-    "damn-vulnerable-llm-agent": [
-     1,
-     0,
-     0
-    ],
-    "dvna": [
-     1,
-     0,
-     0
-    ],
-    "dvpwa": [
-     1,
-     0,
-     0
-    ],
-    "govwa": [
-     1,
-     0,
-     0
-    ],
-    "helpdesk-flow-verse": [
-     1,
-     0,
-     0
-    ],
-    "learnathon-leaderboard": [
-     1,
-     0,
-     0
-    ],
-    "next-learn": [
-     1,
-     0,
-     0
-    ],
-    "next-saas-stripe-starter": [
-     1,
-     0,
-     0
-    ],
-    "nextjs-subscription-payments": [
-     1,
-     0,
-     0
-    ],
-    "openai-assistants-quickstart": [
-     1,
-     0,
-     0
-    ],
-    "piggymetrics": [
-     0,
-     1,
-     0
-    ],
-    "prompt-sculptor-49": [
-     1,
-     0,
-     0
-    ],
-    "saas-starter": [
-     1,
-     0,
-     0
-    ],
-    "taxonomy": [
-     1,
-     0,
-     0
-    ],
-    "vulnerable-java-application": [
-     0,
-     1,
-     0
-    ]
-   }
-  },
-  "QA002": {
-   "title": "No continuous integration",
    "preview": false,
-   "tp": 24,
+   "tp": 16,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -5828,6 +6174,107 @@
    "seeded_found": 2,
    "seeded_recall": 1.0,
    "by_repo": {
+    "careconnect": [
+     1,
+     0,
+     0
+    ],
+    "chatgpt-your-files": [
+     1,
+     0,
+     0
+    ],
+    "commerce": [
+     1,
+     0,
+     0
+    ],
+    "damn-vulnerable-llm-agent": [
+     1,
+     0,
+     0
+    ],
+    "dvna": [
+     1,
+     0,
+     0
+    ],
+    "dvpwa": [
+     1,
+     0,
+     0
+    ],
+    "govwa": [
+     1,
+     0,
+     0
+    ],
+    "helpdesk-flow-verse": [
+     1,
+     0,
+     0
+    ],
+    "learnathon-leaderboard": [
+     1,
+     0,
+     0
+    ],
+    "next-learn": [
+     1,
+     0,
+     0
+    ],
+    "next-saas-stripe-starter": [
+     1,
+     0,
+     0
+    ],
+    "nextjs-subscription-payments": [
+     1,
+     0,
+     0
+    ],
+    "openai-assistants-quickstart": [
+     1,
+     0,
+     0
+    ],
+    "prompt-sculptor-49": [
+     1,
+     0,
+     0
+    ],
+    "saas-starter": [
+     1,
+     0,
+     0
+    ],
+    "taxonomy": [
+     1,
+     0,
+     0
+    ]
+   },
+   "preview_by_repo": {}
+  },
+  "QA002": {
+   "title": "No continuous integration",
+   "preview": false,
+   "tp": 25,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
+   "seeded_expected": 2,
+   "seeded_found": 2,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "BookStack": [
+     1,
+     0,
+     0
+    ],
     "LinguaLearn": [
      1,
      0,
@@ -5954,16 +6401,21 @@
   "QA003": {
    "title": "Exception silently swallowed",
    "preview": true,
-   "tp": 152,
-   "fp": 86,
+   "tp": 161,
+   "fp": 115,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6387,
-   "precision_pessimistic": 0.6387,
+   "precision": 0.5833,
+   "precision_pessimistic": 0.5833,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
    "by_repo": {
+    "BookStack": [
+     0,
+     1,
+     0
+    ],
     "Schematic": [
      1,
      0,
@@ -5994,6 +6446,21 @@
      0,
      0
     ],
+    "koel": [
+     0,
+     6,
+     0
+    ],
+    "laravel-realworld-example-app": [
+     0,
+     1,
+     0
+    ],
+    "monica": [
+     9,
+     0,
+     0
+    ],
     "next-saas-stripe-starter": [
      1,
      1,
@@ -6017,6 +6484,11 @@
     "sili-smart-hr": [
      0,
      44,
+     0
+    ],
+    "snipe-it": [
+     0,
+     21,
      0
     ],
     "vibe-trading": [
@@ -6036,6 +6508,11 @@
     ]
    },
    "preview_by_repo": {
+    "BookStack": [
+     0,
+     1,
+     0
+    ],
     "Schematic": [
      1,
      0,
@@ -6066,6 +6543,21 @@
      0,
      0
     ],
+    "koel": [
+     0,
+     6,
+     0
+    ],
+    "laravel-realworld-example-app": [
+     0,
+     1,
+     0
+    ],
+    "monica": [
+     9,
+     0,
+     0
+    ],
     "next-saas-stripe-starter": [
      1,
      1,
@@ -6089,6 +6581,11 @@
     "sili-smart-hr": [
      0,
      44,
+     0
+    ],
+    "snipe-it": [
+     0,
+     21,
      0
     ],
     "vibe-trading": [
@@ -6111,16 +6608,21 @@
   "QA004": {
    "title": "Security placeholder or TODO left in code",
    "preview": true,
-   "tp": 13,
-   "fp": 2,
+   "tp": 14,
+   "fp": 3,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8667,
-   "precision_pessimistic": 0.8667,
+   "precision": 0.8235,
+   "precision_pessimistic": 0.8235,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "BookStack": [
+     1,
+     0,
+     0
+    ],
     "Django-Styleguide-Example": [
      1,
      0,
@@ -6154,6 +6656,11 @@
     "pygoat": [
      1,
      0,
+     0
+    ],
+    "symfony-demo": [
+     0,
+     1,
      0
     ],
     "taxonomy": [
@@ -6173,6 +6680,11 @@
     ]
    },
    "preview_by_repo": {
+    "BookStack": [
+     1,
+     0,
+     0
+    ],
     "Django-Styleguide-Example": [
      1,
      0,
@@ -6206,6 +6718,11 @@
     "pygoat": [
      1,
      0,
+     0
+    ],
+    "symfony-demo": [
+     0,
+     1,
      0
     ],
     "taxonomy": [
@@ -6276,15 +6793,20 @@
    "title": "Import of a file or name that does not exist",
    "preview": true,
    "tp": 14,
-   "fp": 37,
+   "fp": 42,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.2745,
-   "precision_pessimistic": 0.2745,
+   "precision": 0.25,
+   "precision_pessimistic": 0.25,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
    "by_repo": {
+    "BookStack": [
+     0,
+     5,
+     0
+    ],
     "careconnect": [
      1,
      0,
@@ -6332,6 +6854,11 @@
     ]
    },
    "preview_by_repo": {
+    "BookStack": [
+     0,
+     5,
+     0
+    ],
     "careconnect": [
      1,
      0,
@@ -6382,16 +6909,21 @@
   "QA007": {
    "title": "Package imported but not declared as a dependency",
    "preview": true,
-   "tp": 53,
-   "fp": 4,
+   "tp": 56,
+   "fp": 6,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9298,
-   "precision_pessimistic": 0.9298,
+   "precision": 0.9032,
+   "precision_pessimistic": 0.9032,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
    "by_repo": {
+    "BookStack": [
+     0,
+     2,
+     0
+    ],
     "LinguaLearn": [
      8,
      0,
@@ -6437,6 +6969,11 @@
      0,
      0
     ],
+    "monica": [
+     2,
+     0,
+     0
+    ],
     "opengpts": [
      5,
      0,
@@ -6459,6 +6996,11 @@
     ],
     "sec-insights": [
      4,
+     0,
+     0
+    ],
+    "snipe-it": [
+     1,
      0,
      0
     ],
@@ -6479,6 +7021,11 @@
     ]
    },
    "preview_by_repo": {
+    "BookStack": [
+     0,
+     2,
+     0
+    ],
     "LinguaLearn": [
      8,
      0,
@@ -6524,6 +7071,11 @@
      0,
      0
     ],
+    "monica": [
+     2,
+     0,
+     0
+    ],
     "opengpts": [
      5,
      0,
@@ -6546,6 +7098,11 @@
     ],
     "sec-insights": [
      4,
+     0,
+     0
+    ],
+    "snipe-it": [
+     1,
      0,
      0
     ],
@@ -6637,16 +7194,26 @@
   "QA011": {
    "title": "Same function copied into several files",
    "preview": false,
-   "tp": 66,
+   "tp": 73,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9851,
-   "precision_pessimistic": 0.9851,
+   "precision": 0.9865,
+   "precision_pessimistic": 0.9865,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "BookStack": [
+     1,
+     0,
+     0
+    ],
+    "DVWA": [
+     1,
+     0,
+     0
+    ],
     "act-solo-ai": [
      2,
      0,
@@ -6672,8 +7239,18 @@
      0,
      0
     ],
+    "koel": [
+     2,
+     0,
+     0
+    ],
     "langchain-nextjs-template": [
      2,
+     0,
+     0
+    ],
+    "monica": [
+     3,
      0,
      0
     ],
@@ -6713,7 +7290,7 @@
   "REL001": {
    "title": "Outbound HTTP request without a timeout",
    "preview": false,
-   "tp": 67,
+   "tp": 71,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -6763,6 +7340,11 @@
      0,
      0
     ],
+    "koel": [
+     1,
+     0,
+     0
+    ],
     "lldap": [
      3,
      0,
@@ -6775,6 +7357,11 @@
     ],
     "microblog": [
      1,
+     0,
+     0
+    ],
+    "monica": [
+     3,
      0,
      0
     ],
@@ -6840,6 +7427,11 @@
      0,
      0
     ],
+    "koel": [
+     1,
+     0,
+     0
+    ],
     "lldap": [
      3,
      0,
@@ -6847,6 +7439,11 @@
     ],
     "mCaptcha": [
      1,
+     0,
+     0
+    ],
+    "monica": [
+     3,
      0,
      0
     ],
@@ -7020,11 +7617,11 @@
    "title": "Hardcoded API key or access token",
    "preview": false,
    "tp": 28,
-   "fp": 1,
+   "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9655,
-   "precision_pessimistic": 0.9655,
+   "precision": 0.9333,
+   "precision_pessimistic": 0.9333,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
@@ -7049,6 +7646,11 @@
      0,
      0
     ],
+    "snipe-it": [
+     0,
+     1,
+     0
+    ],
     "terragoat": [
      2,
      0,
@@ -7061,15 +7663,20 @@
    "title": "Private key committed",
    "preview": false,
    "tp": 2,
-   "fp": 1,
+   "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6667,
-   "precision_pessimistic": 0.6667,
+   "precision": 0.5,
+   "precision_pessimistic": 0.5,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "BookStack": [
+     0,
+     1,
+     0
+    ],
     "nodegoat": [
      1,
      0,
@@ -7091,12 +7698,12 @@
   "SEC003": {
    "title": "High-entropy secret assigned in code",
    "preview": true,
-   "tp": 29,
-   "fp": 29,
+   "tp": 32,
+   "fp": 37,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5,
-   "precision_pessimistic": 0.5,
+   "precision": 0.4638,
+   "precision_pessimistic": 0.4638,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -7127,6 +7734,11 @@
      0
     ],
     "jira-meridian": [
+     0,
+     1,
+     0
+    ],
+    "koel": [
      0,
      1,
      0
@@ -7166,6 +7778,11 @@
      4,
      0
     ],
+    "snipe-it": [
+     2,
+     6,
+     0
+    ],
     "svix-webhooks": [
      0,
      12,
@@ -7178,7 +7795,12 @@
     ],
     "waline": [
      0,
-     3,
+     2,
+     0
+    ],
+    "wallabag": [
+     1,
+     2,
      0
     ],
     "wsgidav": [
@@ -7218,6 +7840,11 @@
      1,
      0
     ],
+    "koel": [
+     0,
+     1,
+     0
+    ],
     "mCaptcha": [
      1,
      0,
@@ -7253,6 +7880,11 @@
      4,
      0
     ],
+    "snipe-it": [
+     2,
+     6,
+     0
+    ],
     "svix-webhooks": [
      0,
      12,
@@ -7265,7 +7897,12 @@
     ],
     "waline": [
      0,
-     3,
+     2,
+     0
+    ],
+    "wallabag": [
+     1,
+     2,
      0
     ],
     "wsgidav": [
@@ -7370,16 +8007,21 @@
   "SEC006": {
    "title": "Environment file committed to git",
    "preview": false,
-   "tp": 3,
-   "fp": 2,
+   "tp": 6,
+   "fp": 8,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6,
-   "precision_pessimistic": 0.6,
+   "precision": 0.4286,
+   "precision_pessimistic": 0.4286,
    "seeded_expected": 0,
    "seeded_found": 0,
    "seeded_recall": null,
    "by_repo": {
+    "BookStack": [
+     0,
+     1,
+     0
+    ],
     "LinguaLearn": [
      0,
      1,
@@ -7398,6 +8040,21 @@
     "realworld-rust-axum-sqlx": [
      1,
      0,
+     0
+    ],
+    "snipe-it": [
+     2,
+     3,
+     0
+    ],
+    "symfony-demo": [
+     0,
+     1,
+     0
+    ],
+    "wallabag": [
+     1,
+     1,
      0
     ]
    },
@@ -7505,11 +8162,11 @@
    "title": "Hardcoded password",
    "preview": true,
    "tp": 26,
-   "fp": 35,
+   "fp": 36,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.4262,
-   "precision_pessimistic": 0.4262,
+   "precision": 0.4194,
+   "precision_pessimistic": 0.4194,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -7545,6 +8202,11 @@
      0
     ],
     "jhipster-sample-app": [
+     0,
+     1,
+     0
+    ],
+    "koel": [
      0,
      1,
      0
@@ -7596,6 +8258,11 @@
      1,
      0
     ],
+    "koel": [
+     0,
+     1,
+     0
+    ],
     "pygoat": [
      17,
      0,
@@ -7611,7 +8278,7 @@
   "UI001": {
    "title": "Image without alt text",
    "preview": false,
-   "tp": 35,
+   "tp": 38,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -7651,6 +8318,11 @@
      0,
      0
     ],
+    "monica": [
+     3,
+     0,
+     0
+    ],
     "nodegoat": [
      1,
      0,
@@ -7687,12 +8359,12 @@
   "UI002": {
    "title": "Click handler on a non-interactive element",
    "preview": false,
-   "tp": 55,
-   "fp": 4,
+   "tp": 251,
+   "fp": 11,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9322,
-   "precision_pessimistic": 0.9322,
+   "precision": 0.958,
+   "precision_pessimistic": 0.958,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
@@ -7725,6 +8397,16 @@
     "jira-meridian": [
      0,
      1,
+     0
+    ],
+    "koel": [
+     7,
+     0,
+     0
+    ],
+    "monica": [
+     189,
+     7,
      0
     ],
     "openai-assistants-quickstart": [
@@ -7768,12 +8450,12 @@
   "UI003": {
    "title": "Form field without a label",
    "preview": false,
-   "tp": 72,
-   "fp": 1,
+   "tp": 92,
+   "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9863,
-   "precision_pessimistic": 0.9863,
+   "precision": 0.9583,
+   "precision_pessimistic": 0.9583,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -7808,9 +8490,19 @@
      0,
      0
     ],
+    "koel": [
+     3,
+     1,
+     0
+    ],
     "langchain-nextjs-template": [
      1,
      0,
+     0
+    ],
+    "monica": [
+     17,
+     2,
      0
     ],
     "next-learn": [
@@ -7915,12 +8607,12 @@
   "UI006": {
    "title": "Destructive action without confirmation",
    "preview": true,
-   "tp": 13,
+   "tp": 15,
    "fp": 3,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8125,
-   "precision_pessimistic": 0.8125,
+   "precision": 0.8333,
+   "precision_pessimistic": 0.8333,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -7947,6 +8639,11 @@
     ],
     "helpdesk-flow-verse": [
      1,
+     0,
+     0
+    ],
+    "monica": [
+     2,
      0,
      0
     ],
@@ -7994,6 +8691,11 @@
     ],
     "helpdesk-flow-verse": [
      1,
+     0,
+     0
+    ],
+    "monica": [
+     2,
      0,
      0
     ],
@@ -8037,33 +8739,44 @@
   "UI008": {
    "title": "Effect without cleanup",
    "preview": false,
-   "tp": 0,
+   "tp": 3,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
-   "by_repo": {},
+   "by_repo": {
+    "koel": [
+     3,
+     0,
+     0
+    ]
+   },
    "preview_by_repo": {}
   },
   "UI009": {
    "title": "Data loaded without loading or error state",
    "preview": true,
-   "tp": 7,
+   "tp": 8,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.875,
-   "precision_pessimistic": 0.875,
+   "precision": 0.8889,
+   "precision_pessimistic": 0.8889,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
    "by_repo": {
     "careconnect": [
      2,
+     0,
+     0
+    ],
+    "koel": [
+     1,
      0,
      0
     ],
@@ -8096,6 +8809,11 @@
    "preview_by_repo": {
     "careconnect": [
      2,
+     0,
+     0
+    ],
+    "koel": [
+     1,
      0,
      0
     ],
@@ -8242,12 +8960,12 @@
   "UI014": {
    "title": "Image without width and height",
    "preview": true,
-   "tp": 20,
-   "fp": 15,
+   "tp": 27,
+   "fp": 16,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5714,
-   "precision_pessimistic": 0.5714,
+   "precision": 0.6279,
+   "precision_pessimistic": 0.6279,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -8272,8 +8990,18 @@
      0,
      0
     ],
+    "koel": [
+     1,
+     1,
+     0
+    ],
     "microblog": [
      3,
+     0,
+     0
+    ],
+    "monica": [
+     6,
      0,
      0
     ],
@@ -8329,8 +9057,18 @@
      0,
      0
     ],
+    "koel": [
+     1,
+     1,
+     0
+    ],
     "microblog": [
      3,
+     0,
+     0
+    ],
+    "monica": [
+     6,
      0,
      0
     ],
@@ -8446,16 +9184,21 @@
   "UI016": {
    "title": "Focus outline removed",
    "preview": true,
-   "tp": 11,
-   "fp": 9,
+   "tp": 14,
+   "fp": 12,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.55,
-   "precision_pessimistic": 0.55,
+   "precision": 0.5385,
+   "precision_pessimistic": 0.5385,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "BookStack": [
+     3,
+     2,
+     0
+    ],
     "ai-chatbot": [
      1,
      0,
@@ -8479,6 +9222,11 @@
     "jira-meridian": [
      1,
      3,
+     0
+    ],
+    "laravel-realworld-example-app": [
+     0,
+     1,
      0
     ],
     "learnathon-leaderboard": [
@@ -8503,6 +9251,11 @@
     ]
    },
    "preview_by_repo": {
+    "BookStack": [
+     3,
+     2,
+     0
+    ],
     "ai-chatbot": [
      1,
      0,
@@ -8526,6 +9279,11 @@
     "jira-meridian": [
      1,
      3,
+     0
+    ],
+    "laravel-realworld-example-app": [
+     0,
+     1,
      0
     ],
     "learnathon-leaderboard": [

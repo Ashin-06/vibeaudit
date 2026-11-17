@@ -47,7 +47,9 @@ ADMIN_ROLE_EVIDENCE = re.compile(
     r"(?i)(?:get_current_active_superuser|require_superuser)|\b(?:is_?admin|is_staff|is_superuser|superuser|roles?\b|permissions?|has_?role|require_?role|require_?admin"
     r"|admin_required|check_?role|authorize\s*\(|ability|can\s*\(|isStaff|staff_member_required|scopes?\b"
     # Spring and Jakarta: @PreAuthorize("hasAuthority(...)"), @Secured, @RolesAllowed
-    r"|has_?(?:any_?)?authority|has_?any_?role|secured|roles_?allowed)"
+    r"|has_?(?:any_?)?authority|has_?any_?role|secured|roles_?allowed"
+    # Symfony: #[IsGranted('ROLE_ADMIN')], #[IsGranted('edit', 'activity')], $this->denyAccessUnlessGranted(...)
+    r"|is_?granted|denyAccessUnlessGranted|can:|check_?permissions?\w*\s*\()"  # Laravel ->middleware('can:manage-users')
     # Rust and PHP enum paths: `ctx.require(OrgPermission::ManageOrganization)`, `UserRole::Admin`
     r"|\b[A-Z]\w*(?:Permission|Role)\s*::"
 )
@@ -60,7 +62,9 @@ OWNERSHIP_EVIDENCE = re.compile(
     r"|\baccount_?id\b|\bsub\b"
     # Java and Kotlin: user.getId(), principal.getName(), canWriteArticle(user, a), isOwner(...)
     r"|\b(?:user|principal|currentUser|authentication)\s*\.\s*get(?:Id|Name|Username)\s*\(|\bcan(?:Write|Edit|Delete|Modify|Update|Access)\w{0,30}\s*\("
-    r"|\bis_?owner\w{0,20}\s*\()"
+    r"|\bis_?owner\w{0,20}\s*\("
+    # PHP: BookStack's findVisibleByIdOrFail() / deleteForCurrentUser() scope the record to what the caller may see
+    r"|\bfind_?visible\w*\s*\(|for_?current_?user\w*\s*\()"
 )
 # a reset that needs a signed, emailed token, or a route that takes no credential: nothing to guess or rate-limit
 TOKEN_RESET = re.compile(r"(?i)verify\w*token\w*\s*\(|[<{:]token\b")

@@ -1,0 +1,94 @@
+{
+ "repo": "wallabag",
+ "commit": "15a90c68cde2aaf2591740c949449e07ac477f32",
+ "findings": [
+  {
+   "rule": "SEC006",
+   "file": ".env",
+   "line": 0,
+   "fingerprint": "c3a1c3a42a11a866b4ab7fa1978bee47",
+   "verdict": "tp",
+   "reason": ".env is tracked and holds a default APP_SECRET used unless the operator changes it."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env",
+   "line": 1,
+   "fingerprint": "a98bc2453eb65b18cb9ba99ffc04ef16",
+   "verdict": "tp",
+   "reason": "A default APP_SECRET ships in the tracked .env."
+  },
+  {
+   "rule": "SEC006",
+   "file": ".env.test",
+   "line": 0,
+   "fingerprint": "dc54e7fd9051e4fea7eb274499d9bc64",
+   "verdict": "fp",
+   "reason": "The test environment's throwaway secret."
+  },
+  {
+   "rule": "CFG002",
+   "file": "docker/php/Dockerfile",
+   "line": 1,
+   "fingerprint": "d6b21e6ff315f70deb03609c0b01ac90",
+   "verdict": "tp",
+   "reason": "A build stage uses an untagged golang image."
+  },
+  {
+   "rule": "BE008",
+   "file": "src/Controller/ConfigController.php",
+   "line": 681,
+   "fingerprint": "5a043a9b7d4a3f80ba91eeb662ff8bdd",
+   "verdict": "tp",
+   "reason": "Redirects to the Referer header without checking it."
+  },
+  {
+   "rule": "BE008",
+   "file": "src/Controller/OpdsController.php",
+   "line": 110,
+   "fingerprint": "215d1f488fb150493c9736b9674b04eb",
+   "verdict": "fp",
+   "reason": "The target comes from the router or from redirectHelper->to(), which only allows absolute paths on this site."
+  },
+  {
+   "rule": "BE008",
+   "file": "src/Controller/TagController.php",
+   "line": 161,
+   "fingerprint": "b72f467362322764c1bd146300e757d6",
+   "verdict": "fp",
+   "reason": "The target comes from the router or from redirectHelper->to(), which only allows absolute paths on this site."
+  },
+  {
+   "rule": "BE008",
+   "file": "src/Controller/TagController.php",
+   "line": 266,
+   "fingerprint": "116f6d90b2f59aedff8dfbbdaf8fa3c3",
+   "verdict": "fp",
+   "reason": "The target comes from the router or from redirectHelper->to(), which only allows absolute paths on this site."
+  },
+  {
+   "rule": "BE001",
+   "file": "src/Repository/TagRepository.php",
+   "line": 115,
+   "fingerprint": "68cd034d6deffcd7b9a03b4f61a02fcf",
+   "verdict": "fp",
+   "reason": "Only the table prefix and the generated select clause are interpolated; the user id is bound."
+  },
+  {
+   "rule": "SEC003",
+   "file": "templates/Developer/howto_app.html.twig",
+   "line": 36,
+   "fingerprint": "6a3760b07973813b304b4a1f624672f3",
+   "verdict": "fp",
+   "reason": "An example token in the developer documentation page."
+  },
+  {
+   "rule": "SEC003",
+   "file": "templates/Developer/howto_app.html.twig",
+   "line": 38,
+   "fingerprint": "857ef6bd8f232d76849e57487719acb9",
+   "verdict": "fp",
+   "reason": "An example token in the developer documentation page."
+  }
+ ]
+}

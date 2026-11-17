@@ -1,0 +1,1926 @@
+{
+ "repo": "snipe-it",
+ "commit": "cee9ffdaf06bcf28332726be5705672ced1bd2ef",
+ "findings": [
+  {
+   "rule": "SEC006",
+   "file": ".env.dev.docker",
+   "line": 0,
+   "fingerprint": "c9ae3674baf5fa2bbdf8b9703a856ea1",
+   "verdict": "tp",
+   "reason": ".env.dev.docker is tracked and holds a fixed APP_KEY and database passwords used by the dev compose setup."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.dev.docker",
+   "line": 16,
+   "fingerprint": "8d7001f82195cdde8cf76a6eeb50cd21",
+   "verdict": "tp",
+   "reason": "A fixed APP_KEY is committed in the env file the dev compose setup uses."
+  },
+  {
+   "rule": "SEC006",
+   "file": ".env.docker",
+   "line": 0,
+   "fingerprint": "4d077817827bdebfe82d65abc7602d86",
+   "verdict": "tp",
+   "reason": ".env.docker is tracked and holds a fixed APP_KEY used by the compose setup."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.docker",
+   "line": 13,
+   "fingerprint": "96afd72b03900b711577f0eba0c0480a",
+   "verdict": "tp",
+   "reason": "A fixed APP_KEY is committed in the env file the compose setup uses."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.dusk.example",
+   "line": 6,
+   "fingerprint": "bbeec33498dfece32514e0ea1f265358",
+   "verdict": "fp",
+   "reason": "An example or test env file with a throwaway APP_KEY."
+  },
+  {
+   "rule": "SEC006",
+   "file": ".env.testing-ci",
+   "line": 0,
+   "fingerprint": "a0591cdd79adb0ffd8affcc807725910",
+   "verdict": "fp",
+   "reason": "A test environment file with throwaway values."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.testing-ci",
+   "line": 6,
+   "fingerprint": "30e859b6315f95c9ca955b542eecff79",
+   "verdict": "fp",
+   "reason": "An example or test env file with a throwaway APP_KEY."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.testing.example",
+   "line": 6,
+   "fingerprint": "0633eb8597215d6898449e27cfe539c0",
+   "verdict": "fp",
+   "reason": "An example or test env file with a throwaway APP_KEY."
+  },
+  {
+   "rule": "SEC006",
+   "file": ".env.tests",
+   "line": 0,
+   "fingerprint": "7c2363ffd88d16a7b1c39ff66d635336",
+   "verdict": "fp",
+   "reason": "A test environment file with throwaway values."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.tests",
+   "line": 11,
+   "fingerprint": "47527a04e98b649c8545c85a52e80527",
+   "verdict": "fp",
+   "reason": "An example or test env file with a throwaway APP_KEY."
+  },
+  {
+   "rule": "SEC006",
+   "file": ".env.unit-tests",
+   "line": 0,
+   "fingerprint": "e0b0f8c0ded080d1be2cbc2a6443489e",
+   "verdict": "fp",
+   "reason": "A test environment file with throwaway values."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.unit-tests",
+   "line": 8,
+   "fingerprint": "d1d8d8cf998ed314c17e7c227963e3a6",
+   "verdict": "fp",
+   "reason": "An example or test env file with a throwaway APP_KEY."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/crowdin-upload.yml",
+   "line": 17,
+   "fingerprint": "88a9bd6f36e4013eb4fcdd6f0afda6e9",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-alpine.yml",
+   "line": 67,
+   "fingerprint": "a4229884db056d80b3ba3b0f3d7e4d89",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-alpine.yml",
+   "line": 73,
+   "fingerprint": "06fe1a855ae7acb197fc6f77e75033a5",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-alpine.yml",
+   "line": 85,
+   "fingerprint": "7c3964183a199467e12f601b0b265b00",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-alpine.yml",
+   "line": 96,
+   "fingerprint": "4fabcaea9bab090e061e0d018bfe7749",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-ubuntu.yml",
+   "line": 67,
+   "fingerprint": "137978fac5f596057eb4379299543217",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-ubuntu.yml",
+   "line": 73,
+   "fingerprint": "76c80588e1fb33e752e6f9f506fd43e2",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-ubuntu.yml",
+   "line": 85,
+   "fingerprint": "963888bbc02b0e2b7397c8b78a5bf1ac",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-ubuntu.yml",
+   "line": 96,
+   "fingerprint": "17e91b13eb132862f8a3bc6cfe13fd3d",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "QA003",
+   "file": ".screenshotter/src/screenshotter.mjs",
+   "line": 217,
+   "fingerprint": "56b966fe03205b8b2913ae36a216790f",
+   "verdict": "fp",
+   "reason": "Deliberate in a documentation screenshot tool: best-effort waits."
+  },
+  {
+   "rule": "QA003",
+   "file": ".screenshotter/src/screenshotter.mjs",
+   "line": 385,
+   "fingerprint": "5caa10b27fc8ddde2dd7cf7c4e35f922",
+   "verdict": "fp",
+   "reason": "Deliberate in a documentation screenshot tool: best-effort waits."
+  },
+  {
+   "rule": "QA003",
+   "file": ".screenshotter/src/screenshotter.mjs",
+   "line": 396,
+   "fingerprint": "cc12f80d9b5364b5504788ff44b69423",
+   "verdict": "fp",
+   "reason": "Deliberate in a documentation screenshot tool: best-effort waits."
+  },
+  {
+   "rule": "QA003",
+   "file": ".screenshotter/src/screenshotter.mjs",
+   "line": 446,
+   "fingerprint": "571e55365af392c5febc80a5e0f7af0a",
+   "verdict": "fp",
+   "reason": "Deliberate in a documentation screenshot tool: best-effort waits."
+  },
+  {
+   "rule": "QA003",
+   "file": ".screenshotter/src/screenshotter.mjs",
+   "line": 453,
+   "fingerprint": "92f6e2d01aca4e49e5ab69696de7d44f",
+   "verdict": "fp",
+   "reason": "Deliberate in a documentation screenshot tool: best-effort waits."
+  },
+  {
+   "rule": "QA003",
+   "file": ".screenshotter/src/screenshotter.mjs",
+   "line": 459,
+   "fingerprint": "544d6aae3755fe53c5fa987c63acb7ca",
+   "verdict": "fp",
+   "reason": "Deliberate in a documentation screenshot tool: best-effort waits."
+  },
+  {
+   "rule": "QA003",
+   "file": ".screenshotter/src/screenshotter.mjs",
+   "line": 492,
+   "fingerprint": "5f81402ba38c6148bd27b7b84803255e",
+   "verdict": "fp",
+   "reason": "Deliberate in a documentation screenshot tool: best-effort waits."
+  },
+  {
+   "rule": "QA003",
+   "file": ".screenshotter/src/screenshotter.mjs",
+   "line": 499,
+   "fingerprint": "166c492a320c1a68c5954c6cbcbe5adf",
+   "verdict": "fp",
+   "reason": "Deliberate in a documentation screenshot tool: best-effort waits."
+  },
+  {
+   "rule": "QA003",
+   "file": ".screenshotter/src/screenshotter.mjs",
+   "line": 519,
+   "fingerprint": "85bfece97618e0d4da26f56ecbe8446b",
+   "verdict": "fp",
+   "reason": "Deliberate in a documentation screenshot tool: best-effort waits."
+  },
+  {
+   "rule": "QA003",
+   "file": ".screenshotter/src/screenshotter.mjs",
+   "line": 585,
+   "fingerprint": "deb7c2f4a5d87eb57db81ffdaf6029ad",
+   "verdict": "fp",
+   "reason": "Deliberate in a documentation screenshot tool: best-effort waits."
+  },
+  {
+   "rule": "QA003",
+   "file": ".screenshotter/src/screenshotter.mjs",
+   "line": 588,
+   "fingerprint": "d5f1c4e17e42566467b3403da7e11450",
+   "verdict": "fp",
+   "reason": "Deliberate in a documentation screenshot tool: best-effort waits."
+  },
+  {
+   "rule": "QA003",
+   "file": ".screenshotter/src/screenshotter.mjs",
+   "line": 605,
+   "fingerprint": "0ade3549b238fcce0cae76fef56a6a55",
+   "verdict": "fp",
+   "reason": "Deliberate in a documentation screenshot tool: best-effort waits."
+  },
+  {
+   "rule": "QA003",
+   "file": ".screenshotter/src/screenshotter.mjs",
+   "line": 632,
+   "fingerprint": "4998f1b3c5a86570ae8add73e1820613",
+   "verdict": "fp",
+   "reason": "Deliberate in a documentation screenshot tool: best-effort waits."
+  },
+  {
+   "rule": "QA003",
+   "file": ".screenshotter/src/screenshotter.mjs",
+   "line": 638,
+   "fingerprint": "77c8267a7f17344138f9293092dde781",
+   "verdict": "fp",
+   "reason": "Deliberate in a documentation screenshot tool: best-effort waits."
+  },
+  {
+   "rule": "QA003",
+   "file": ".screenshotter/src/screenshotter.mjs",
+   "line": 644,
+   "fingerprint": "30201c1b31fcb8b339be9b7eb8b7f396",
+   "verdict": "fp",
+   "reason": "Deliberate in a documentation screenshot tool: best-effort waits."
+  },
+  {
+   "rule": "QA003",
+   "file": ".screenshotter/src/screenshotter.mjs",
+   "line": 652,
+   "fingerprint": "5900505bdf59ae02e20cdf73e084cf10",
+   "verdict": "fp",
+   "reason": "Deliberate in a documentation screenshot tool: best-effort waits."
+  },
+  {
+   "rule": "QA003",
+   "file": ".screenshotter/src/screenshotter.mjs",
+   "line": 676,
+   "fingerprint": "4b2046898348cc25d7eb73739cda85c5",
+   "verdict": "fp",
+   "reason": "Deliberate in a documentation screenshot tool: best-effort waits."
+  },
+  {
+   "rule": "QA003",
+   "file": ".screenshotter/src/screenshotter.mjs",
+   "line": 771,
+   "fingerprint": "dfa89676d4de8c9d289036e0eaac2236",
+   "verdict": "fp",
+   "reason": "Deliberate in a documentation screenshot tool: best-effort waits."
+  },
+  {
+   "rule": "QA003",
+   "file": ".screenshotter/src/screenshotter.mjs",
+   "line": 877,
+   "fingerprint": "9b098d3cf3e8543d9d2ab381551a4960",
+   "verdict": "fp",
+   "reason": "Deliberate in a documentation screenshot tool: best-effort waits."
+  },
+  {
+   "rule": "QA003",
+   "file": ".screenshotter/src/screenshotter.mjs",
+   "line": 896,
+   "fingerprint": "7d0009b33d3585338f58b7de3902ae54",
+   "verdict": "fp",
+   "reason": "Deliberate in a documentation screenshot tool: best-effort waits."
+  },
+  {
+   "rule": "QA003",
+   "file": ".screenshotter/src/screenshotter.mjs",
+   "line": 900,
+   "fingerprint": "1cdcb6721f54bd1f0189dc8626342a79",
+   "verdict": "fp",
+   "reason": "Deliberate in a documentation screenshot tool: best-effort waits."
+  },
+  {
+   "rule": "CFG009",
+   "file": "Dockerfile",
+   "line": 73,
+   "fingerprint": "e288712778ce5c421be5e9c0baa3143e",
+   "verdict": "tp",
+   "reason": "COPY copies .env.dev.docker (fixed APP_KEY, passwords) into the image and .dockerignore does not exclude it."
+  },
+  {
+   "rule": "CFG009",
+   "file": "Dockerfile.alpine",
+   "line": 61,
+   "fingerprint": "945bd60a937083ba5918d7e3363d6b06",
+   "verdict": "tp",
+   "reason": "COPY copies .env.dev.docker (fixed APP_KEY, passwords) into the image and .dockerignore does not exclude it."
+  },
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile.fpm-alpine",
+   "line": 12,
+   "fingerprint": "1e2ccf63fc37f58da27e5f19b4c0352a",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Actions/AssetModels/MergeAssetModelsAction.php",
+   "line": 34,
+   "fingerprint": "a5372f751817b9ea7fb944a822bf55d8",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/BulkDelete.php",
+   "line": 349,
+   "fingerprint": "f4614bc2ff5eb59b525fb94cad7dc134",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/BulkDelete.php",
+   "line": 464,
+   "fingerprint": "3cd8f1c03162911668c6bfb4bbe00279",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/BulkDelete.php",
+   "line": 586,
+   "fingerprint": "50f413a700de794e76eb3176665bcc9d",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/BulkDelete.php",
+   "line": 599,
+   "fingerprint": "260d0797e0fd0f7375a350da2a47f1b0",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/BulkDelete.php",
+   "line": 679,
+   "fingerprint": "0add848eb0b84280aa7588e4ba7706cc",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/BulkDelete.php",
+   "line": 689,
+   "fingerprint": "c7125a13a8fb05fc952905a2e72b9b17",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/BulkDelete.php",
+   "line": 775,
+   "fingerprint": "a9a40e8690e3c6372c3cad79f015e8b7",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/BulkDelete.php",
+   "line": 780,
+   "fingerprint": "0de54d7ce984398a4e3cf8fab514960f",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/BulkDelete.php",
+   "line": 877,
+   "fingerprint": "c90a69507aa045304f1a6564dcf6508e",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/BulkDelete.php",
+   "line": 1098,
+   "fingerprint": "a0ff2a57bc31805ab3171570e08c786d",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/CheckinAndDeleteItems.php",
+   "line": 126,
+   "fingerprint": "9fb6fc0388440d5a988e50f11aa346e6",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/CheckinAndDeleteItems.php",
+   "line": 171,
+   "fingerprint": "7b27a22e2b13d3db8e5467d93a831e77",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/CheckinAndDeleteItems.php",
+   "line": 183,
+   "fingerprint": "d96c6e291663b512b6fc6e5f81953bb1",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/CheckinAndDeleteItems.php",
+   "line": 223,
+   "fingerprint": "e00a00e314da94cf0d78f5e25838b103",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/CheckinAndDeleteItems.php",
+   "line": 232,
+   "fingerprint": "4f87f54e7ca1f14b4d5bc88cb3cab8da",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/CheckinAndDeleteItems.php",
+   "line": 271,
+   "fingerprint": "9b1069f6fe66859b165d535f73d6d960",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/CheckinAndDeleteItems.php",
+   "line": 276,
+   "fingerprint": "10b9adcbf9ab1cfbe85df1d0c3505784",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/CheckinLicensesFromAllUsers.php",
+   "line": 74,
+   "fingerprint": "ea6c1a8c5a7f42638fc77feb8b638d92",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/CheckoutLicenseToAllUsers.php",
+   "line": 93,
+   "fingerprint": "871b217deb37a5347917e0ffcc1284d8",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/CleanUpActionLogs.php",
+   "line": 64,
+   "fingerprint": "68d24b87197299edb59cc2a57d4d25f6",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/CleanupOrphanActionLogs.php",
+   "line": 92,
+   "fingerprint": "7c80cec8b06f509dd0a33086cda63441",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/CleanupOrphanActionLogs.php",
+   "line": 281,
+   "fingerprint": "1e9e10ac6b2dbd53f2bcae36dbbefaf1",
+   "verdict": "fp",
+   "reason": "The loop runs over a small fixed list, not over rows."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/CleanupOrphanActionLogs.php",
+   "line": 326,
+   "fingerprint": "8c96438484ee2f6be05781eccbf3b693",
+   "verdict": "fp",
+   "reason": "A batch loop: one query per chunk, not per row."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/CleanupOrphanActionLogs.php",
+   "line": 361,
+   "fingerprint": "2db39e9bb09eff434b445a078c18b552",
+   "verdict": "fp",
+   "reason": "A batch loop: one query per chunk, not per row."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/DedupeAssets.php",
+   "line": 107,
+   "fingerprint": "2ae73f779a71713fbda74cc8d317ec17",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/FixDoubleEscape.php",
+   "line": 86,
+   "fingerprint": "9b0672a2b8efbcdb48086f8a51ebc44d",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/FixMismatchedAssetsAndLogs.php",
+   "line": 65,
+   "fingerprint": "a2d0697e4eeff067bb90eda0ec31494c",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/ImportLocations.php",
+   "line": 129,
+   "fingerprint": "d5ff27a4a3f41fada89b382bb8bf6dd1",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/LdapSync.php",
+   "line": 168,
+   "fingerprint": "717e1099786d0e0b34fb29c004a23fd3",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/LdapSync.php",
+   "line": 228,
+   "fingerprint": "c08f54c32d1550f536a934dd1633b869",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/LdapSync.php",
+   "line": 467,
+   "fingerprint": "ed7e3f7a01ee93d5937bbb24284eff3f",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/LdapSync.php",
+   "line": 510,
+   "fingerprint": "f7e68f71c2690cf67117ce6fe73bd0ea",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/MergeUsersByUsername.php",
+   "line": 51,
+   "fingerprint": "d5cf892ed08cbf81018b59a603c69451",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/MergeUsersByUsername.php",
+   "line": 63,
+   "fingerprint": "0bc9477e9f4a4b794c51b91690ea5f87",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/MergeUsersByUsername.php",
+   "line": 91,
+   "fingerprint": "1b223d291cabcc5cd357ad07a64236cb",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/MergeUsersByUsername.php",
+   "line": 102,
+   "fingerprint": "f93ea7f35b22192f56f6568d707efa44",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/MergeUsersByUsername.php",
+   "line": 108,
+   "fingerprint": "c4df15f0ec6c6eae559513e0ee36119e",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/MergeUsersByUsername.php",
+   "line": 114,
+   "fingerprint": "eacc138494fa1f136e5d7710af7cfb30",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/NormalizeUserNames.php",
+   "line": 49,
+   "fingerprint": "a32697983a1e7ba09b406c1bbbc63877",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/Purge.php",
+   "line": 197,
+   "fingerprint": "2c7f4796be2650186226bd087b11fd36",
+   "verdict": "fp",
+   "reason": "A batch loop: one query per chunk, not per row."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/Purge.php",
+   "line": 272,
+   "fingerprint": "06846aabe4a4ac140e76665d9742ec32",
+   "verdict": "fp",
+   "reason": "A batch loop: one query per chunk, not per row."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/Purge.php",
+   "line": 344,
+   "fingerprint": "06868cd0fb18dc221a59f20b8891f832",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/Purge.php",
+   "line": 424,
+   "fingerprint": "b771e0d61e6f098c344dff8e42c442fd",
+   "verdict": "fp",
+   "reason": "A batch loop: one query per chunk, not per row."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/Purge.php",
+   "line": 487,
+   "fingerprint": "a5cc82396cd6b1ba927d7360ef7abe51",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/PurgeEulaPDFs.php",
+   "line": 151,
+   "fingerprint": "729fdf3cd9757d07bbe45d9a7b85b0ea",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/RemoveExplicitEols.php",
+   "line": 55,
+   "fingerprint": "60e3e52bd9174785e9f7b9b878414554",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/RestoreDeletedUsers.php",
+   "line": 65,
+   "fingerprint": "f9a49318991593ee050b1af129d1ceca",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/RestoreDeletedUsers.php",
+   "line": 76,
+   "fingerprint": "9188bb861c1aec00990d461a1df8fea6",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/RotateAppKey.php",
+   "line": 114,
+   "fingerprint": "75023db44dd895fe10adc37b36ff32ce",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/SyncAssetCounters.php",
+   "line": 59,
+   "fingerprint": "d125987da6f17ed5e0f155ee8653b3c4",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/SyncAssetLocations.php",
+   "line": 60,
+   "fingerprint": "b6aa29460617b42ef8dcd8194bbb0966",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/SyncAssetLocations.php",
+   "line": 86,
+   "fingerprint": "a9e65abfef396a0141d8121360c04286",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/SyncAssetLocations.php",
+   "line": 107,
+   "fingerprint": "4e675887e57eec81de007a2928e11716",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/SyncAssetLocations.php",
+   "line": 132,
+   "fingerprint": "04fc34124104af359a9ff8bf3d7d7b52",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Console/Commands/ToggleCustomfieldEncryption.php",
+   "line": 58,
+   "fingerprint": "9e97489de6b0b779dde025d0837364cf",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "BE002",
+   "file": "app/Console/Commands/Version.php",
+   "line": 148,
+   "fingerprint": "f98f5deb6f8b4eec156eb3a61cb61a6d",
+   "verdict": "fp",
+   "reason": "A maintainer CLI script or console command building a command from its own options, not request data."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Accessories/AccessoryCheckinController.php",
+   "line": 158,
+   "fingerprint": "682da238fff5e9180aceb9a6fa74b03c",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Accessories/AccessoryCheckoutController.php",
+   "line": 138,
+   "fingerprint": "95c5120a1b0d1938047a7965e425dea9",
+   "verdict": "fp",
+   "reason": "The loop runs over a small fixed list, not over rows."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Accessories/AccessoryCheckoutController.php",
+   "line": 308,
+   "fingerprint": "2a114b0d920aeb81ad0b7f596ef89617",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Accessories/AccessoryCheckoutController.php",
+   "line": 344,
+   "fingerprint": "22d10e5783b1dc62320afd3c6e5f4274",
+   "verdict": "fp",
+   "reason": "The loop runs over a small fixed list, not over rows."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Accessories/BulkAccessoriesController.php",
+   "line": 144,
+   "fingerprint": "bd9210a58054448f8c5875cb57319a3b",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Accessories/BulkAccessoriesController.php",
+   "line": 192,
+   "fingerprint": "59e5f3a8caa93b18b719e282279da560",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "BE008",
+   "file": "app/Http/Controllers/ActionlogController.php",
+   "line": 33,
+   "fingerprint": "1371f9ee7be6018e4244226cb8dd8ae3",
+   "verdict": "fp",
+   "reason": "The target comes from Helper::sameOriginUrl() or route(), which keep it on this site."
+  },
+  {
+   "rule": "BE006",
+   "file": "app/Http/Controllers/ActionlogController.php",
+   "line": 38,
+   "fingerprint": "ee6689202afd7b68e69cfa89441503dd",
+   "verdict": "fp",
+   "reason": "The file name is a route parameter, which cannot contain a slash, under a fixed folder."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Api/AccessoriesController.php",
+   "line": 549,
+   "fingerprint": "277d20d3edefdb371afde97d701dc318",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Api/AccessoriesController.php",
+   "line": 587,
+   "fingerprint": "996ef7865486ce1344647f349308fdf2",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Api/AccessoriesController.php",
+   "line": 717,
+   "fingerprint": "409be3145292f1877f1e59af2036acb9",
+   "verdict": "fp",
+   "reason": "The loop runs over a small fixed list, not over rows."
+  },
+  {
+   "rule": "BE001",
+   "file": "app/Http/Controllers/Api/AssetsController.php",
+   "line": 524,
+   "fingerprint": "ddcd889fd8e074980620ca2eb46743f7",
+   "verdict": "fp",
+   "reason": "The sort column is only used after it matched a custom field column, and the order is asc or desc."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Api/ComponentsController.php",
+   "line": 473,
+   "fingerprint": "68f63034d34023960e22fc892cebf57a",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Api/ComponentsController.php",
+   "line": 511,
+   "fingerprint": "6a481e77a61b3871eb4593b6a41b76b2",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Api/ConsumablesController.php",
+   "line": 712,
+   "fingerprint": "915872eb9b81d2d80c4b59f04e2b5121",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Api/ConsumablesController.php",
+   "line": 795,
+   "fingerprint": "e2f004c52dd5f0d35fed330eb7cbeb4c",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Api/ConsumablesController.php",
+   "line": 833,
+   "fingerprint": "992583d1023045fb71e431ecb4cb810b",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Api/MaintenancesController.php",
+   "line": 235,
+   "fingerprint": "f27fd893957564b163191963cc963056",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/AssetModelsController.php",
+   "line": 451,
+   "fingerprint": "fb7eee7eab10c9f0a5e330a584b14f0d",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Assets/AssetCheckinController.php",
+   "line": 176,
+   "fingerprint": "75e76b024c30fdbe88cd1a2ee23ab987",
+   "verdict": "fp",
+   "reason": "The loop runs over a small fixed list, not over rows."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Assets/AssetCheckoutController.php",
+   "line": 136,
+   "fingerprint": "a3a3be2bbadea91fd12b39af85c1d3af",
+   "verdict": "fp",
+   "reason": "The loop runs over a small fixed list, not over rows."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Assets/AssetCheckoutController.php",
+   "line": 194,
+   "fingerprint": "06e5f187e7bccd09124836a44d4d588e",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Assets/BulkAssetsController.php",
+   "line": 361,
+   "fingerprint": "7140416bc26d779e675d0010e725155e",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Assets/BulkAssetsController.php",
+   "line": 610,
+   "fingerprint": "c84d37357bd6c056d2a4ee4f35059b36",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "BE008",
+   "file": "app/Http/Controllers/Assets/BulkAssetsController.php",
+   "line": 803,
+   "fingerprint": "823c03ce8144fefe307d295edc6f2063",
+   "verdict": "fp",
+   "reason": "The target comes from Helper::sameOriginUrl() or route(), which keep it on this site."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Assets/BulkAssetsController.php",
+   "line": 921,
+   "fingerprint": "55e973aaf01a002607abde6ad19aaed5",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/BulkAssetModelsController.php",
+   "line": 164,
+   "fingerprint": "db12db0ab8c19d322660c80c4e76a8f4",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/BulkCategoriesController.php",
+   "line": 93,
+   "fingerprint": "1da690194ef6d5195837b737150c385c",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/BulkCompaniesController.php",
+   "line": 27,
+   "fingerprint": "db6fa4124b97b80202202fcd3d678813",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/BulkCustomFieldsController.php",
+   "line": 31,
+   "fingerprint": "7972195784a42d740c05d95940432fd9",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/BulkCustomFieldsetsController.php",
+   "line": 31,
+   "fingerprint": "299d7ae1782ba8cd9d470255920babb4",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/BulkDepartmentsController.php",
+   "line": 21,
+   "fingerprint": "b8fb8a787fd0178efa2a84be72bcf998",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/BulkDepreciationsController.php",
+   "line": 23,
+   "fingerprint": "4c85f49dde258ce462db76c032f8b3a7",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/BulkLocationsController.php",
+   "line": 229,
+   "fingerprint": "35e1aee468d3d7433792e8204c19a2d2",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/BulkMaintenanceTypesController.php",
+   "line": 28,
+   "fingerprint": "ffc96e9c750850d2ee7ad55ff9c5ded2",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/BulkManufacturersController.php",
+   "line": 24,
+   "fingerprint": "d67d55f870f5acb8d6fcfcf5ffacc795",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/BulkStatuslabelsController.php",
+   "line": 21,
+   "fingerprint": "48f1490471c73dac3c76df3e6347da8a",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/BulkSuppliersController.php",
+   "line": 26,
+   "fingerprint": "1c0fd60ac51107c9abab7f1b6820f9df",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Components/BulkComponentsController.php",
+   "line": 154,
+   "fingerprint": "86dd92567744ea9a19b65fbb68829cf5",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Components/BulkComponentsController.php",
+   "line": 204,
+   "fingerprint": "7ed3fc3297c41e1991607573a553a81e",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Components/ComponentCheckinController.php",
+   "line": 207,
+   "fingerprint": "6b3e95b9e17ba56ffb214d8a0b8927d7",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Components/ComponentCheckoutController.php",
+   "line": 336,
+   "fingerprint": "01315b332e086c945a27436d0584c82e",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Consumables/BulkConsumablesController.php",
+   "line": 144,
+   "fingerprint": "a76d1e84b83ef9fea996cc92aac4bbac",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Consumables/BulkConsumablesController.php",
+   "line": 192,
+   "fingerprint": "80d989a12cdf3bd6ed7790fdd3d3b716",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Consumables/ConsumableCheckoutController.php",
+   "line": 309,
+   "fingerprint": "1aa73e3de1387e69d8c8cb3aa27b4d3d",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Consumables/ConsumableCheckoutController.php",
+   "line": 489,
+   "fingerprint": "f8ad5120daf65bd9703f559e7616b2fd",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Licenses/BulkLicensesController.php",
+   "line": 25,
+   "fingerprint": "5a008017b9702e7c81866c1d0d94473c",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Licenses/BulkLicensesController.php",
+   "line": 94,
+   "fingerprint": "c07c954cfa3942cad79375db092220ce",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Licenses/LicenseCheckinController.php",
+   "line": 193,
+   "fingerprint": "a5a2a3afd0f42fc78aac5176abcc7b3f",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Licenses/LicenseCheckinController.php",
+   "line": 238,
+   "fingerprint": "c2c31725ec9e6dc9ff9b0b5dc6ce4913",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Licenses/LicenseCheckinController.php",
+   "line": 256,
+   "fingerprint": "4c5c728f6aea57b41528ecfd0c644855",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Licenses/LicenseCheckoutController.php",
+   "line": 342,
+   "fingerprint": "247a8f6e3276ce9c97ea6a142ffa8b11",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Licenses/LicenseCheckoutController.php",
+   "line": 481,
+   "fingerprint": "7b885890039c494d2829f9adbbd71dfc",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Licenses/LicenseCheckoutController.php",
+   "line": 508,
+   "fingerprint": "4f056f7b5fc90c4f5a4a5c5c9c31e619",
+   "verdict": "fp",
+   "reason": "The loop runs over a small fixed list, not over rows."
+  },
+  {
+   "rule": "BE006",
+   "file": "app/Http/Controllers/QrCodeController.php",
+   "line": 67,
+   "fingerprint": "f1dd5d0b63b7ea72296b13c01c360627",
+   "verdict": "fp",
+   "reason": "The storage key is built from the asset id and settings, not a user path."
+  },
+  {
+   "rule": "BE006",
+   "file": "app/Http/Controllers/QrCodeController.php",
+   "line": 76,
+   "fingerprint": "3672696e43211cb90fa172198dc1d68a",
+   "verdict": "fp",
+   "reason": "The storage key is built from the asset id and settings, not a user path."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Users/BulkUsersController.php",
+   "line": 341,
+   "fingerprint": "3acbcff149b4f20acb478a91f6348b35",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Users/BulkUsersController.php",
+   "line": 523,
+   "fingerprint": "06710cef7626aa248852cc51d7fb4abf",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Users/BulkUsersController.php",
+   "line": 625,
+   "fingerprint": "b9f7533ecaa42e80842111c968a78dc9",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Users/BulkUsersController.php",
+   "line": 644,
+   "fingerprint": "001b51fc0f0b42aea25c43f80ddf209c",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Users/BulkUsersController.php",
+   "line": 649,
+   "fingerprint": "deba99ea1dd62e0da1921e67e849c626",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Users/BulkUsersController.php",
+   "line": 654,
+   "fingerprint": "0b11ff5a60ab18b564d86ea04fb51983",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/Users/BulkUsersController.php",
+   "line": 661,
+   "fingerprint": "92be82ad4fdc53c3e74cd035a0d70de6",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Livewire/Importer.php",
+   "line": 1594,
+   "fingerprint": "34ae72bcf31657e6e19bbc7ae0cdc585",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Mcp/Tools/DeleteAccessoryTool.php",
+   "line": 318,
+   "fingerprint": "51a5326851457908a2334c8a01623336",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Mcp/Tools/DeleteAssetTool.php",
+   "line": 350,
+   "fingerprint": "119c6ef0144ff51d651d66ee6f53499f",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Mcp/Tools/DeleteComponentTool.php",
+   "line": 314,
+   "fingerprint": "2293a37a1b83aa63c243e524d95f1462",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Mcp/Tools/DeleteConsumableTool.php",
+   "line": 306,
+   "fingerprint": "54fb55a423a814dc46c94f151c1f4ba6",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Mcp/Tools/DeleteUserTool.php",
+   "line": 327,
+   "fingerprint": "8e0afdb076e77f6510d75d0f6fb8096e",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Mcp/Tools/OffboardUserTool.php",
+   "line": 234,
+   "fingerprint": "a72c1f51712a630dacc8113636e92907",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Mcp/Tools/OffboardUserTool.php",
+   "line": 241,
+   "fingerprint": "217a4c723d18750b2207fc7b239d992b",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Mcp/Tools/TransferAssetsTool.php",
+   "line": 172,
+   "fingerprint": "b59c6a4aec745b7b2f7e6978042a0f02",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Mcp/Tools/TransferAssetsTool.php",
+   "line": 185,
+   "fingerprint": "44696dcebf0f99a235519192449ffd8b",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Models/Accessory.php",
+   "line": 497,
+   "fingerprint": "494e2109b5356af46077e91eb4b49b74",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Models/Asset.php",
+   "line": 623,
+   "fingerprint": "7f4169a287d6550c1b2722bd3df453c5",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Models/AssetModel.php",
+   "line": 294,
+   "fingerprint": "813c69888c75084cd1c1a4b6a028e4cc",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Models/Company.php",
+   "line": 625,
+   "fingerprint": "581682706fb992305d13a6f5cbee476c",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Models/Component.php",
+   "line": 420,
+   "fingerprint": "af6170b31513a16c4f9dc42f79c8de3f",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Models/Consumable.php",
+   "line": 416,
+   "fingerprint": "efd9df4a976324c6cc39119d34329423",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Models/Department.php",
+   "line": 180,
+   "fingerprint": "b1c952e1bde1c4d489674a3b354b2ca4",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Models/Location.php",
+   "line": 204,
+   "fingerprint": "760d581c114634eb152d7803a4e0e5b0",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Models/SnipeSCIMConfig.php",
+   "line": 571,
+   "fingerprint": "65ce410664bca4f58a6b28bff8017eaf",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Models/SnipeSCIMConfig.php",
+   "line": 577,
+   "fingerprint": "049387825a87e84b6b62e20ea30f0d1f",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Models/Supplier.php",
+   "line": 183,
+   "fingerprint": "1b285b5012a2a6a7f27bb177d5d17293",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Providers/ValidationServiceProvider.php",
+   "line": 274,
+   "fingerprint": "515e033843f0ac472ec9190ebbc2186e",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Services/AssetCheckoutService.php",
+   "line": 82,
+   "fingerprint": "84089e322eb3530774245996cba138cd",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Services/PredefinedKitCheckoutService.php",
+   "line": 279,
+   "fingerprint": "6cbe7717304c3a4c05debe8e155afdca",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Services/PredefinedKitCheckoutService.php",
+   "line": 337,
+   "fingerprint": "ee3be67371d0bf07b84473c5864e8921",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "SEC003",
+   "file": "docker/001-default-ssl.conf",
+   "line": 90,
+   "fingerprint": "0a0cd0f8e696f120b405435401658696",
+   "verdict": "fp",
+   "reason": "A quoted example in an Apache config comment."
+  },
+  {
+   "rule": "QA007",
+   "file": "pa11y.js",
+   "line": 1,
+   "fingerprint": "9c45826b179f39cb289d47e39fa4706f",
+   "verdict": "tp",
+   "reason": "The package is required but not declared in package.json."
+  },
+  {
+   "rule": "FE001",
+   "file": "public/js/html5shiv.js",
+   "line": 4,
+   "fingerprint": "612a765ef11726dd8fc626bf62e34d7e",
+   "verdict": "fp",
+   "reason": "A vendored third-party library."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/blade/form/checkbox-row.blade.php",
+   "line": 176,
+   "fingerprint": "99f9ba549b413247e6a03195732fa9e9",
+   "verdict": "fp",
+   "reason": "Help text or HTML supplied by the template author (translation strings), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/blade/form/legend.blade.php",
+   "line": 13,
+   "fingerprint": "765135edc747d9d3c1154dcc7ecf3f81",
+   "verdict": "fp",
+   "reason": "Help text or HTML supplied by the template author (translation strings), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/blade/form/radio-row.blade.php",
+   "line": 80,
+   "fingerprint": "48a4e129da813cf7f76c314c70510b87",
+   "verdict": "fp",
+   "reason": "Help text or HTML supplied by the template author (translation strings), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/blade/form/row.blade.php",
+   "line": 156,
+   "fingerprint": "83200f5a7dc23bb1fdaa6aa5fd27ab0a",
+   "verdict": "fp",
+   "reason": "Help text or HTML supplied by the template author (translation strings), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/blade/icon.blade.php",
+   "line": 6,
+   "fingerprint": "2f471baafad6c6924ad236dd659389fc",
+   "verdict": "tp",
+   "reason": "An attribute is built by concatenating an unescaped value into the HTML."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/blade/info-element/index.blade.php",
+   "line": 14,
+   "fingerprint": "775726a23deef1a5ad2491df0319ea7a",
+   "verdict": "tp",
+   "reason": "An attribute is built by concatenating an unescaped value into the HTML."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/blade/input/category-select.blade.php",
+   "line": 66,
+   "fingerprint": "0c8533361d0df938cbb118f2f7933f73",
+   "verdict": "fp",
+   "reason": "Help text or HTML supplied by the template author (translation strings), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/blade/input/company-select.blade.php",
+   "line": 80,
+   "fingerprint": "496ba034c4540c79fe72dc7b60deec94",
+   "verdict": "fp",
+   "reason": "Help text or HTML supplied by the template author (translation strings), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/blade/input/select2-checkboxes-scrollbox.blade.php",
+   "line": 114,
+   "fingerprint": "4e1d2bc125849e3dda342645cd2458d0",
+   "verdict": "fp",
+   "reason": "Help text or HTML supplied by the template author (translation strings), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/blade/input/select2-checkboxes.blade.php",
+   "line": 105,
+   "fingerprint": "3cf8f4a76d5780b7613a0f5cceca9518",
+   "verdict": "fp",
+   "reason": "Help text or HTML supplied by the template author (translation strings), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/blade/modals/index.blade.php",
+   "line": 55,
+   "fingerprint": "ff690d7d0439337fd85c7bb67f53b5a6",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/blade/modals/index.blade.php",
+   "line": 65,
+   "fingerprint": "faabf204f5d9ca193a4f963d2843315f",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/blade/modals/index.blade.php",
+   "line": 69,
+   "fingerprint": "78f47eeecfbeee4cf089ac453b890c7b",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/blade/modals/index.blade.php",
+   "line": 79,
+   "fingerprint": "c2c6a1129bcdbff93cc45022b1840e8f",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/blade/notifications.blade.php",
+   "line": 36,
+   "fingerprint": "d73b7a62295cd9aaf44fe16adc0f7d18",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/blade/sync-adapter/credentials.blade.php",
+   "line": 129,
+   "fingerprint": "b80b04d1dd6b536b9011b1b4390f5c4c",
+   "verdict": "fp",
+   "reason": "Help text or HTML supplied by the template author (translation strings), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/blade/sync-adapter/credentials.blade.php",
+   "line": 181,
+   "fingerprint": "1ae7f2818d3aeff1ce4f5be746a90796",
+   "verdict": "fp",
+   "reason": "Help text or HTML supplied by the template author (translation strings), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/blade/sync-adapter/form.blade.php",
+   "line": 118,
+   "fingerprint": "a9ea0972a429d661d8aab8cf99237398",
+   "verdict": "fp",
+   "reason": "Help text or HTML supplied by the template author (translation strings), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/blade/sync-adapter/form.blade.php",
+   "line": 789,
+   "fingerprint": "86cd4182831ddc25b9b3272b329e87e4",
+   "verdict": "fp",
+   "reason": "Help text or HTML supplied by the template author (translation strings), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/hardware/labels.blade.php",
+   "line": 105,
+   "fingerprint": "f0e9460822c0df5beae23e0cabdc999f",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/hardware/view.blade.php",
+   "line": 149,
+   "fingerprint": "93d517b71400b3060e23f84da2b70100",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/hardware/view.blade.php",
+   "line": 160,
+   "fingerprint": "948d354b14f11c1e3bacf479821ef064",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/layouts/basic.blade.php",
+   "line": 45,
+   "fingerprint": "47aca7cf61873fe4e321fc3dd6390bca",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/layouts/default.blade.php",
+   "line": 50,
+   "fingerprint": "185ca7bee2d0b62860203fadb0a584ed",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/livewire/alert-menu.blade.php",
+   "line": 30,
+   "fingerprint": "bde77e28dc5a735ba64264a920bb8352",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/livewire/importer.blade.php",
+   "line": 373,
+   "fingerprint": "b75c2e0a9fb1af011c13b82f498ca0fd",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/livewire/importer.blade.php",
+   "line": 656,
+   "fingerprint": "b7b3678b513098a7c34494dd8faebf14",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/livewire/integration-settings-form.blade.php",
+   "line": 6,
+   "fingerprint": "7fb5efd7f3b24ba35c2f8470c664cf76",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/livewire/ldap-settings.blade.php",
+   "line": 359,
+   "fingerprint": "b7aefd30f96db709be5ddb635def7227",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/livewire/ldap-settings.blade.php",
+   "line": 695,
+   "fingerprint": "942821868f055f10d78c07857ecbac1c",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/mail/markdown/bulk-asset-checkout-mail.blade.php",
+   "line": 76,
+   "fingerprint": "f179f46b089327c07d980f3c54fdb117",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/mail/markdown/bulk-asset-checkout-mail.blade.php",
+   "line": 84,
+   "fingerprint": "1dd2f191a66e66fba75bbb396b04c397",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/mail/markdown/checkout-accessory.blade.php",
+   "line": 53,
+   "fingerprint": "1f76ef4384b7082778dffce5e6ae0a02",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/mail/markdown/checkout-asset.blade.php",
+   "line": 76,
+   "fingerprint": "5bcac27b92e2a8d7cdc77d7ad434766d",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/mail/markdown/checkout-component.blade.php",
+   "line": 47,
+   "fingerprint": "46207e0571b717969cf51f6f64ccd3c8",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/mail/markdown/checkout-consumable.blade.php",
+   "line": 44,
+   "fingerprint": "2937f883eb594eb23800ef20fffbddca",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/mail/markdown/checkout-license.blade.php",
+   "line": 41,
+   "fingerprint": "47ab39bc131e8dcb14e417a658d56e6b",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/models/custom_fields_form.blade.php",
+   "line": 169,
+   "fingerprint": "1e5736a13f3ff0fdfa981717773533e6",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/models/custom_fields_form.blade.php",
+   "line": 173,
+   "fingerprint": "b07c94944275299158fa19edd217437e",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/users/ldap.blade.php",
+   "line": 101,
+   "fingerprint": "e7fbd7016b0c306818c76a78eee64cff",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/users/ldap.blade.php",
+   "line": 103,
+   "fingerprint": "0032dc06d9c2dde5c45b05e5ddfe4e8a",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/users/print.blade.php",
+   "line": 491,
+   "fingerprint": "a58ea1c36d27690265f03d7cddc858a0",
+   "verdict": "fp",
+   "reason": "Markup or messages the application builds itself (constant-string ternaries, admin custom CSS, admin-written EULA, status and validation messages), not user input."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "routes/web.php",
+   "line": 930,
+   "fingerprint": "3145d4f4ecc14e4f265aa1cc240aca3f",
+   "verdict": "fp",
+   "reason": "First-run setup: the global CheckForSetup middleware redirects /setup* away once setup is complete."
+  },
+  {
+   "rule": "BE006",
+   "file": "server.php",
+   "line": 17,
+   "fingerprint": "c2ecafae656f523154256c2a8e098de9",
+   "verdict": "fp",
+   "reason": "Laravel's built-in development-server router."
+  },
+  {
+   "rule": "SEC001",
+   "file": "tests/Support/Settings.php",
+   "line": 141,
+   "fingerprint": "9f0696c738a9076b1cc09c560f51b1f9",
+   "verdict": "fp",
+   "reason": "A fake webhook key in the test settings fixture."
+  },
+  {
+   "rule": "BE002",
+   "file": "upgrade.php",
+   "line": 473,
+   "fingerprint": "4db61f8a4e588dcc2ca6542470671909",
+   "verdict": "fp",
+   "reason": "A maintainer CLI script or console command building a command from its own options, not request data."
+  },
+  {
+   "rule": "BE002",
+   "file": "upgrade.php",
+   "line": 480,
+   "fingerprint": "5fb61bc2be258378bd50c714fb37b27a",
+   "verdict": "fp",
+   "reason": "A maintainer CLI script or console command building a command from its own options, not request data."
+  }
+ ]
+}

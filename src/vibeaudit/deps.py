@@ -149,6 +149,11 @@ def _collect(project: Project) -> List[Dep]:
             for mod, version, line, indirect in go_requires(f.text):
                 if not indirect:
                     deps.append(Dep(mod, "Go", f.rel, line, version))
+        if name == "composer.json" and f.text is not None and not f.is_test and "/vendor/" not in "/" + f.rel:
+            locked = composer_locked(project, f.rel)
+            for pkg, line in composer_dependencies(f.text):
+                deps.append(Dep(pkg, "Packagist", f.rel, line, locked.get(pkg.lower())))
+            continue
         if name == "Cargo.toml" and f.text is not None and not f.is_test:
             locked = cargo_locked(project, f.rel)
             for crate, line in cargo_dependencies(f.text):
@@ -656,6 +661,39 @@ def _vkey(v: str) -> Tuple:
     return tuple(int(x) if x.isdigit() else 0 for x in re.split(r"[.+-]", v))
 
 
+# ------------------------------------------------------------------ Composer (PHP)
+def composer_dependencies(text: str) -> List[Tuple[str, int]]:
+    """(package, line) of a composer.json's `require` (not `require-dev`; not php, ext-* or lib-* platform packages)."""
+    data = _dict(_parsed_json(text))
+    out: List[Tuple[str, int]] = []
+    start = text.find('"require"')
+    for pkg in _dict(data.get("require")):
+        if not isinstance(pkg, str) or "/" not in pkg:
+            continue  # php, ext-json, composer-plugin-api
+        at = text.find('"' + pkg + '"', max(0, start))
+        out.append((pkg, text.count("\n", 0, at) + 1 if at >= 0 else 1))
+    return out
+
+
+def _composer_lock(text: str) -> List[Tuple[str, str, int]]:
+    """(name, version without a leading v, offset) of every non-dev package in a composer.lock."""
+    data = _dict(_parsed_json(text))
+    out: List[Tuple[str, str, int]] = []
+    for pkg in data.get("packages") or []:
+        if isinstance(pkg, dict) and isinstance(pkg.get("name"), str) and isinstance(pkg.get("version"), str):
+            version = pkg["version"][1:] if pkg["version"].startswith("v") else pkg["version"]
+            out.append((pkg["name"], version, max(0, text.find('"name": "' + pkg["name"] + '"'))))
+    return out
+
+
+def composer_locked(project: Project, manifest: str) -> Dict[str, str]:
+    """Package (lower case) -> locked version, from the composer.lock beside the manifest."""
+    lock = project.get("/".join(manifest.split("/")[:-1] + ["composer.lock"]))
+    if lock is None or not lock.text:
+        return {}
+    return {n.lower(): v for n, v, _off in _composer_lock(lock.text)}
+
+
 # ------------------------------------------------------------------ Cargo (Rust)
 CARGO_SECTION = re.compile(r"^\[(?:target\.[^\]]+\.)?(dependencies|dev-dependencies|build-dependencies|workspace\.dependencies)\]\s*$", re.M)
 CARGO_LOCK_PACKAGE = re.compile(r'^\[\[package\]\]\s*\nname\s*=\s*"([^"\n]+)"\s*\nversion\s*=\s*"([^"\n]+)"(?:\s*\nsource\s*=\s*"([^"\n]*)")?', re.M)
@@ -701,11 +739,13 @@ def cargo_locked(project: Project, manifest: str) -> Dict[str, str]:
 
 
 # ------------------------------------------------------------------ transitive dependencies (DEP009)
-LOCK_MANIFESTS = {"package.json": "npm", "pyproject.toml": "PyPI", "Pipfile": "PyPI", "go.mod": "Go", "Cargo.toml": "crates.io"}
+LOCK_MANIFESTS = {"package.json": "npm", "pyproject.toml": "PyPI", "Pipfile": "PyPI", "go.mod": "Go", "Cargo.toml": "crates.io",
+                  "composer.json": "Packagist"}
 LOCKS = {"npm": ("package-lock.json", "pnpm-lock.yaml", "yarn.lock", "bun.lock"),
          "PyPI": ("poetry.lock", "uv.lock", "pdm.lock", "Pipfile.lock"),
          "Go": ("go.mod",),  # its `// indirect` requirements
-         "crates.io": ("Cargo.lock",)}
+         "crates.io": ("Cargo.lock",),
+         "Packagist": ("composer.lock",)}
 MAX_LOCK_BYTES = 30_000_000
 
 
@@ -750,6 +790,8 @@ def _lock_entries(lock: str, text: str) -> List[Tuple[str, str, int]]:
     newlines = [m.start() for m in re.finditer("\n", text)]
     if lock == "Cargo.lock":
         return [(n, v, _line_at(newlines, off)) for n, v, off, registry in _cargo_lock(text) if registry]
+    if lock == "composer.lock":
+        return [(n, v, _line_at(newlines, off)) for n, v, off in _composer_lock(text)]
     line = functools.partial(_line_at, newlines)
     out: List[Tuple[str, str, int]] = []
     if lock == "package-lock.json":
