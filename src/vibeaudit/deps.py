@@ -149,6 +149,11 @@ def _collect(project: Project) -> List[Dep]:
             for mod, version, line, indirect in go_requires(f.text):
                 if not indirect:
                     deps.append(Dep(mod, "Go", f.rel, line, version))
+        if name == "Cargo.toml" and f.text is not None and not f.is_test:
+            locked = cargo_locked(project, f.rel)
+            for crate, line in cargo_dependencies(f.text):
+                deps.append(Dep(crate, "crates.io", f.rel, line, locked.get(crate)))
+            continue
         if name in ("pom.xml", "build.gradle", "build.gradle.kts") and f.text is not None and not f.is_test:
             deps.extend(Dep(mod, "Maven", f.rel, line, version) for mod, version, line in maven_dependencies(name, f.text))
             continue
@@ -651,11 +656,56 @@ def _vkey(v: str) -> Tuple:
     return tuple(int(x) if x.isdigit() else 0 for x in re.split(r"[.+-]", v))
 
 
+# ------------------------------------------------------------------ Cargo (Rust)
+CARGO_SECTION = re.compile(r"^\[(?:target\.[^\]]+\.)?(dependencies|dev-dependencies|build-dependencies|workspace\.dependencies)\]\s*$", re.M)
+CARGO_LOCK_PACKAGE = re.compile(r'^\[\[package\]\]\s*\nname\s*=\s*"([^"\n]+)"\s*\nversion\s*=\s*"([^"\n]+)"(?:\s*\nsource\s*=\s*"([^"\n]*)")?', re.M)
+
+
+def cargo_dependencies(text: str) -> List[Tuple[str, int]]:
+    """(crate, line) of the runtime dependencies of a Cargo.toml (not dev- or build-dependencies; not path or
+    git dependencies, which are not on crates.io; a `package = "..."` rename uses the real crate name)."""
+    out: List[Tuple[str, int]] = []
+    sections = list(CARGO_SECTION.finditer(text))
+    for i, s in enumerate(sections):
+        if s.group(1) in ("dev-dependencies", "build-dependencies"):
+            continue
+        end = text.find("\n[", s.end())
+        block = text[s.end():end if end >= 0 else len(text)]
+        for m in re.finditer(r'(?m)^[ \t]*([A-Za-z0-9_-]+)[ \t]*=[ \t]*(.+)$', block):
+            value = m.group(2)
+            if re.search(r"\b(?:path|git)\s*=", value) or re.search(r"\bworkspace\s*=\s*true", value):
+                continue
+            renamed = re.search(r'\bpackage\s*=\s*"([^"]+)"', value)
+            out.append((renamed.group(1) if renamed else m.group(1), text.count("\n", 0, s.end() + m.start()) + 1))
+    return out
+
+
+def _cargo_lock(text: str) -> List[Tuple[str, str, int, bool]]:
+    """(name, version, offset, from a registry) of every package in a Cargo.lock."""
+    return [(m.group(1), m.group(2), m.start(), bool(m.group(3) and m.group(3).startswith("registry+")))
+            for m in CARGO_LOCK_PACKAGE.finditer(text)]
+
+
+def cargo_locked(project: Project, manifest: str) -> Dict[str, str]:
+    """Crate -> locked version, from the Cargo.lock beside the manifest or in a parent folder (a workspace)."""
+    parts = manifest.split("/")[:-1]
+    for k in range(len(parts), -1, -1):
+        lock = project.get("/".join(parts[:k] + ["Cargo.lock"]))
+        if lock is not None and lock.text:
+            out: Dict[str, str] = {}
+            for name, version, _off, registry in _cargo_lock(lock.text):
+                if registry:
+                    out.setdefault(name, version)
+            return out
+    return {}
+
+
 # ------------------------------------------------------------------ transitive dependencies (DEP009)
-LOCK_MANIFESTS = {"package.json": "npm", "pyproject.toml": "PyPI", "Pipfile": "PyPI", "go.mod": "Go"}
+LOCK_MANIFESTS = {"package.json": "npm", "pyproject.toml": "PyPI", "Pipfile": "PyPI", "go.mod": "Go", "Cargo.toml": "crates.io"}
 LOCKS = {"npm": ("package-lock.json", "pnpm-lock.yaml", "yarn.lock", "bun.lock"),
          "PyPI": ("poetry.lock", "uv.lock", "pdm.lock", "Pipfile.lock"),
-         "Go": ("go.mod",)}  # its `// indirect` requirements
+         "Go": ("go.mod",),  # its `// indirect` requirements
+         "crates.io": ("Cargo.lock",)}
 MAX_LOCK_BYTES = 30_000_000
 
 
@@ -698,6 +748,8 @@ def _line_at(offsets: List[int], off: int) -> int:
 def _lock_entries(lock: str, text: str) -> List[Tuple[str, str, int]]:
     """(name, version, line) of every non-development package in a lockfile."""
     newlines = [m.start() for m in re.finditer("\n", text)]
+    if lock == "Cargo.lock":
+        return [(n, v, _line_at(newlines, off)) for n, v, off, registry in _cargo_lock(text) if registry]
     line = functools.partial(_line_at, newlines)
     out: List[Tuple[str, str, int]] = []
     if lock == "package-lock.json":

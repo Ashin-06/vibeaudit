@@ -563,6 +563,89 @@
    "licence": "none declared",
    "kind": "training",
    "language": "go"
+  },
+  {
+   "name": "zero-to-production",
+   "url": "https://github.com/LukeMathWalker/zero-to-production",
+   "commit": "970987c5f793af6fc8e557731c9bbb23b620451e",
+   "licence": "Apache-2.0",
+   "kind": "well-maintained",
+   "language": "rust"
+  },
+  {
+   "name": "lldap",
+   "url": "https://github.com/lldap/lldap",
+   "commit": "99c510a7a603df1cdaca00a9ffff95ec73b296eb",
+   "licence": "GPL-3.0",
+   "kind": "well-maintained",
+   "language": "rust"
+  },
+  {
+   "name": "rustypaste",
+   "url": "https://github.com/orhun/rustypaste",
+   "commit": "115f3bfe730dddbfab897bf09b900e7e45da3f3c",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "rust"
+  },
+  {
+   "name": "actix-realworld-example-app",
+   "url": "https://github.com/fairingrey/actix-realworld-example-app",
+   "commit": "8348aedd51e1462ed38e51c8e66fc1c1995bf756",
+   "licence": "none declared",
+   "kind": "well-maintained",
+   "language": "rust"
+  },
+  {
+   "name": "realworld-axum-sqlx",
+   "url": "https://github.com/launchbadge/realworld-axum-sqlx",
+   "commit": "f1b25654773228297e35c292f357d33b7121a101",
+   "licence": "AGPL-3.0",
+   "kind": "well-maintained",
+   "language": "rust",
+   "split": "heldout"
+  },
+  {
+   "name": "realworld-rust-axum-sqlx",
+   "url": "https://github.com/JoeyMckenzie/realworld-rust-axum-sqlx",
+   "commit": "248e6f82f713487a89a65e33351ad1fa59b89835",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "rust"
+  },
+  {
+   "name": "svix-webhooks",
+   "url": "https://github.com/svix/svix-webhooks",
+   "commit": "bb44d9a55f2bd409cb502d8bdab6b2e28710846c",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "rust",
+   "split": "heldout"
+  },
+  {
+   "name": "jira-meridian",
+   "url": "https://github.com/IshaanNene/Jira",
+   "commit": "9cc61e14dbd9710a8139914003851be38046676f",
+   "licence": "none declared",
+   "kind": "small-app",
+   "language": "rust",
+   "split": "heldout"
+  },
+  {
+   "name": "pomb",
+   "url": "https://github.com/chipsenkbeil/pomb",
+   "commit": "02df75b765294060422c66a51f94860294fb51ed",
+   "licence": "AGPL-3.0",
+   "kind": "small-app",
+   "language": "rust"
+  },
+  {
+   "name": "chat-systems",
+   "url": "https://github.com/petar-basic/chat-systems",
+   "commit": "76b80362d60432ebc5acda4542dc06e98bedcfb7",
+   "licence": "MIT",
+   "kind": "small-app",
+   "language": "rust"
   }
  ]
 }

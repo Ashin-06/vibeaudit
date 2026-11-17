@@ -1,0 +1,1694 @@
+{
+ "repo": "chat-systems",
+ "commit": "76b80362d60432ebc5acda4542dc06e98bedcfb7",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 28,
+   "fingerprint": "0b412ba748a83f85d2bbd4d880d9a8d9",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 98,
+   "fingerprint": "d47a1149a066a51c95200abc748d6e49",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 106,
+   "fingerprint": "d0587bbbba581108904edc55e9dec91f",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 112,
+   "fingerprint": "5b8d2712eb2baec1c6a25b4f7e93f6e3",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 227,
+   "fingerprint": "8006bb7d56ccec77c6b08e9027f08eab",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 232,
+   "fingerprint": "778face9e0b8651521b90b5ab8b3fe0e",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 291,
+   "fingerprint": "f545fa573124025040ecb306c58ec62e",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 298,
+   "fingerprint": "b184ab50a16076721b862292343092d5",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 307,
+   "fingerprint": "f58604e0317977c6202b5582b987c637",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/desktop-release.yml",
+   "line": 47,
+   "fingerprint": "31acfe56dd98a86e3e7c1a644a4fdaf2",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/desktop-release.yml",
+   "line": 75,
+   "fingerprint": "ff51a3345a7670e70723fcd12b0da017",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yml",
+   "line": 60,
+   "fingerprint": "a5c754cdaf71bcdcc0eb1a8d35d6ffa4",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yml",
+   "line": 62,
+   "fingerprint": "e4acb2c164ba6e698ce08070d74c0105",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yml",
+   "line": 68,
+   "fingerprint": "ef62d1b110aaa9ab224c34c1c63563c1",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "DATA001",
+   "file": "backend/api/src/auth/totp_repo.rs",
+   "line": 131,
+   "fingerprint": "cf3f08097867fbcd337ab32cccd15e39",
+   "verdict": "tp",
+   "reason": "One INSERT per recovery code hash in a loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "backend/api/src/conversations/repo.rs",
+   "line": 150,
+   "fingerprint": "33b1df0f8261a29df4512f7fbd00234b",
+   "verdict": "tp",
+   "reason": "One INSERT per participant in a loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "backend/api/src/messaging/repo.rs",
+   "line": 1488,
+   "fingerprint": "4221b89cb3b33b140c4ddd01fc6a9742",
+   "verdict": "fp",
+   "reason": "Seeding rows inside the #[cfg(test)] module."
+  },
+  {
+   "rule": "DATA001",
+   "file": "backend/api/src/messaging/repo.rs",
+   "line": 1568,
+   "fingerprint": "7ab8cc5f9a5647d072f93d1f346cbafb",
+   "verdict": "fp",
+   "reason": "Seeding rows inside the #[cfg(test)] module."
+  },
+  {
+   "rule": "REL001",
+   "file": "backend/api/src/push/sender.rs",
+   "line": 65,
+   "fingerprint": "58b23d8399b5a8d8a61ca5bd2bc11d7e",
+   "verdict": "tp",
+   "reason": "reqwest client built with no timeout."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "backend/api/src/scim/routes.rs",
+   "line": 36,
+   "fingerprint": "9451e76239ece145bbd0cb20bbc7e164",
+   "verdict": "fp",
+   "reason": "A SCIM provisioning token manages every user of the instance by design; there is no per-caller ownership."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "backend/api/src/scim/routes.rs",
+   "line": 37,
+   "fingerprint": "669a4e5215678b09c82a1c0bfa7965a0",
+   "verdict": "fp",
+   "reason": "A SCIM provisioning token manages every user of the instance by design; there is no per-caller ownership."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000001_initial_schema.sql",
+   "line": 23,
+   "fingerprint": "b0f3723da854139f6bb93d24a14306e4",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000001_initial_schema.sql",
+   "line": 52,
+   "fingerprint": "2296ba6076d9edb70d55163da3d5f542",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000001_initial_schema.sql",
+   "line": 95,
+   "fingerprint": "ab2ce5129372c76c771e27ab2891ad66",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000001_initial_schema.sql",
+   "line": 155,
+   "fingerprint": "0050b9a98e3489426933581a0e107b5c",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000001_initial_schema.sql",
+   "line": 167,
+   "fingerprint": "99416ca083d6c661780314589efe9ae7",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000001_initial_schema.sql",
+   "line": 188,
+   "fingerprint": "c1d0e5e5ea602dd551f900377c4eb619",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000001_initial_schema.sql",
+   "line": 189,
+   "fingerprint": "d5fc4fdc1844976fe41706e1ea7c06f2",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000001_initial_schema.sql",
+   "line": 199,
+   "fingerprint": "205db483b38bed74813a02076a97e011",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000001_initial_schema.sql",
+   "line": 213,
+   "fingerprint": "f4ef418e929f66e10931ac0713cda97b",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000001_initial_schema.sql",
+   "line": 214,
+   "fingerprint": "93614aabaa40901394633d0b702d4bf8",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000001_initial_schema.sql",
+   "line": 236,
+   "fingerprint": "67ad63b2f35d329a63495511bee2484c",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000001_initial_schema.sql",
+   "line": 237,
+   "fingerprint": "de06ea1a8f682a710ce2a887fcfbe6f2",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000001_initial_schema.sql",
+   "line": 239,
+   "fingerprint": "a4d75e6fabf3e214b2ad65e1199c6124",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000001_initial_schema.sql",
+   "line": 240,
+   "fingerprint": "4f29d5bff4d124ebc026b789134c7fd8",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000001_initial_schema.sql",
+   "line": 275,
+   "fingerprint": "324bb259f764fb39418d4ed06938ebca",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000001_initial_schema.sql",
+   "line": 284,
+   "fingerprint": "3e139cd833bd51031d40ebecd933f97a",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000001_initial_schema.sql",
+   "line": 285,
+   "fingerprint": "34335d6faba6d0fc7b3216245fa02c98",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000003_direct_messages.sql",
+   "line": 4,
+   "fingerprint": "ef5d39553fc3172ed6613b6fb854080e",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000003_direct_messages.sql",
+   "line": 5,
+   "fingerprint": "d283b880b7e24fa9212aa44c2a54c0af",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000005_hook_execution_indexes.sql",
+   "line": 7,
+   "fingerprint": "deac2537f14591c6dfb8c61b3aeabf1e",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000005_hook_execution_indexes.sql",
+   "line": 11,
+   "fingerprint": "5f6e1977dc2eeddc7a7c50b7703e5db8",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000006_fk_indexes.sql",
+   "line": 7,
+   "fingerprint": "28e2a1c99e81756ee37831d507adb3ea",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000006_fk_indexes.sql",
+   "line": 11,
+   "fingerprint": "97174e799a4f44e45551034e2277e603",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000006_fk_indexes.sql",
+   "line": 16,
+   "fingerprint": "ac87d45b38cf7cdbdfb1c27514251573",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000006_fk_indexes.sql",
+   "line": 21,
+   "fingerprint": "f2e89a25ec3141bca0a0ab0c27a84039",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000006_fk_indexes.sql",
+   "line": 26,
+   "fingerprint": "1e0e1116decb2fc2e11413ae9baa64d7",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000006_fk_indexes.sql",
+   "line": 30,
+   "fingerprint": "e5d041c67f4e63cb70ff029951e273cd",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000006_fk_indexes.sql",
+   "line": 34,
+   "fingerprint": "390ce9d464e16c3ba866a5ce8a197dc5",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000007_dm_reads.sql",
+   "line": 6,
+   "fingerprint": "7c5d376138e2b6b15ff085c37be5b682",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000007_dm_reads.sql",
+   "line": 7,
+   "fingerprint": "64c710fd0b5127e8ce19e6d170586d3e",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000008_dm_reactions.sql",
+   "line": 7,
+   "fingerprint": "3b62c19167022201d2d1424beda87d50",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000011_huddle_history.sql",
+   "line": 10,
+   "fingerprint": "17b0e6fdb46623739d8f377b227980e2",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000011_huddle_history.sql",
+   "line": 11,
+   "fingerprint": "448d530d5d2c20b1e420e28508d28bcb",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000011_huddle_history.sql",
+   "line": 21,
+   "fingerprint": "f0c999229b1aab8161d59d1f71be7b96",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000013_conversations.sql",
+   "line": 10,
+   "fingerprint": "667b93fcf2afc60e012b5a87f82cae84",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000013_conversations.sql",
+   "line": 31,
+   "fingerprint": "e4f06db6e07f0cca6073714f9351ed46",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000013_conversations.sql",
+   "line": 46,
+   "fingerprint": "2b81a575503b406752146ddb8042ea4b",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000013_conversations.sql",
+   "line": 98,
+   "fingerprint": "376cce84091d50982d7461c9674b12d0",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000013_conversations.sql",
+   "line": 100,
+   "fingerprint": "2ce8d279be6f904277d76ecb5a90e9af",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000013_conversations.sql",
+   "line": 101,
+   "fingerprint": "87cd96f3f61b238fa138e106d5e91b30",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000013_conversations.sql",
+   "line": 102,
+   "fingerprint": "c2498a51cb600860257bc00f67cb9f64",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000014_scheduled_messages.sql",
+   "line": 4,
+   "fingerprint": "34bddfaef17f994fe240d425484e12e6",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000014_scheduled_messages.sql",
+   "line": 6,
+   "fingerprint": "a92d1afa65d8882d6084f51ea05f1f52",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000014_scheduled_messages.sql",
+   "line": 7,
+   "fingerprint": "192ffde305674467f76524e605e1515f",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000015_worker_split.sql",
+   "line": 14,
+   "fingerprint": "229c600e52fbcb16c99d5855701440ed",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000015_worker_split.sql",
+   "line": 21,
+   "fingerprint": "470245c6171501be56a28b97485003e2",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000016_invite_lifecycle.sql",
+   "line": 18,
+   "fingerprint": "96e812350f4623cc2592a7f774afc502",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000017_conversation_attachments.sql",
+   "line": 9,
+   "fingerprint": "49f870d3320c905aca8e6de19aec32cb",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000018_audit_trail.sql",
+   "line": 12,
+   "fingerprint": "483d26e8bb2611e9e3d0da812325698b",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000018_audit_trail.sql",
+   "line": 14,
+   "fingerprint": "a151990518007955f91af1a70b39941f",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000018_audit_trail.sql",
+   "line": 16,
+   "fingerprint": "a81a655dbfd9e2015237a719be5d358b",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000020_client_message_id.sql",
+   "line": 7,
+   "fingerprint": "b0cb0566aa23b6d08f03b53c827ec8bb",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000020_client_message_id.sql",
+   "line": 16,
+   "fingerprint": "36a4c760c62b2d55a57c3545eeaa21c5",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000021_unread_counters.sql",
+   "line": 30,
+   "fingerprint": "a9b85f5912e2b08c5d16cef212bd7c16",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000022_hook_execution_dedupe.sql",
+   "line": 8,
+   "fingerprint": "35578c75763c972af099bf797bec3ab7",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000023_message_edit_history.sql",
+   "line": 12,
+   "fingerprint": "a0aa117f1798eb0bbb3a7a74db45c52d",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000023_message_edit_history.sql",
+   "line": 22,
+   "fingerprint": "08b3c7d329a532b7fb6a9e972c2c73ab",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000024_retention_policies.sql",
+   "line": 14,
+   "fingerprint": "cbd309e75191989ee9378a6f4d534ee8",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000024_retention_policies.sql",
+   "line": 25,
+   "fingerprint": "e0dd70a978c45f2e6d0829dce871c2b3",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000024_retention_policies.sql",
+   "line": 26,
+   "fingerprint": "2f71891194814097cc0eb0fd5e234c24",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000024_retention_policies.sql",
+   "line": 27,
+   "fingerprint": "77c462dc97c11335b19c978df8e59ddc",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000024_retention_policies.sql",
+   "line": 28,
+   "fingerprint": "2ace80fc154c581ba322461728c2bf0d",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000024_retention_policies.sql",
+   "line": 29,
+   "fingerprint": "bb48fc2510e925ed45fb899f6b4ce0d5",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000025_export_jobs.sql",
+   "line": 14,
+   "fingerprint": "c78b5203b645594597c854ecdc187a24",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000025_export_jobs.sql",
+   "line": 15,
+   "fingerprint": "17c625853abd0db9a350a073451b91f1",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000026_totp_and_scim.sql",
+   "line": 35,
+   "fingerprint": "98f24397e549e5e94af1a02ec903e02f",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000032_search_drop_english_vector.sql",
+   "line": 11,
+   "fingerprint": "8e982ba2c07bcf547024d3f2a78a7a95",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000034_workspace_emojis.sql",
+   "line": 8,
+   "fingerprint": "dd1ea6d8bac53fdf83c719de9b7476ce",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000035_user_groups.sql",
+   "line": 10,
+   "fingerprint": "5c302ead0f883b9cd7089f02c1a63cc0",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000036_parity_gaps.sql",
+   "line": 11,
+   "fingerprint": "c4312af277a81c47bc836ba557aa0001",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000036_parity_gaps.sql",
+   "line": 17,
+   "fingerprint": "761b93af4c3222432ecee57b7b428601",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000036_parity_gaps.sql",
+   "line": 26,
+   "fingerprint": "93d354c949a5e615e8afbc55eb1b90fe",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000036_parity_gaps.sql",
+   "line": 27,
+   "fingerprint": "d97694e991bfc80c6052910d1774b25c",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000036_parity_gaps.sql",
+   "line": 28,
+   "fingerprint": "3813f4cf079eddcdf0400482cac6e1d7",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000036_parity_gaps.sql",
+   "line": 52,
+   "fingerprint": "1f80a3e17275db55cb4823c6adc21628",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000037_slack_import.sql",
+   "line": 24,
+   "fingerprint": "925a74f96237d47571dc66253bd51515",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000037_slack_import.sql",
+   "line": 32,
+   "fingerprint": "938e291b473e41549c1d6a6670939973",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000037_slack_import.sql",
+   "line": 42,
+   "fingerprint": "531117f8097b6139dd788e302e45648b",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000037_slack_import.sql",
+   "line": 52,
+   "fingerprint": "8042d37dc1b07d1b65dea3d2f4707784",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000037_slack_import.sql",
+   "line": 55,
+   "fingerprint": "c43e0e628c2030bdc8f40e8f5c2870b7",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000038_slack_import_jobs.sql",
+   "line": 18,
+   "fingerprint": "0aa08e80fba034452a1ea444b8cba009",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000039_mention_emails.sql",
+   "line": 11,
+   "fingerprint": "b1f299a8689a774024cf5e31c5b643b4",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000039_mention_emails.sql",
+   "line": 12,
+   "fingerprint": "e24a646da589c664664e739b3f809119",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000041_channel_name_unique.sql",
+   "line": 19,
+   "fingerprint": "aaa859406ffc080abd9ae7d56961b693",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000042_ring_on_stream.sql",
+   "line": 14,
+   "fingerprint": "852e83b81479518e8d296c654573645f",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000042_ring_on_stream.sql",
+   "line": 18,
+   "fingerprint": "3863e9a588d68a0b13f7092a0ccb360a",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000045_unify_conversations.sql",
+   "line": 54,
+   "fingerprint": "69049a48f7f2bcf6e1f28894d1907139",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000045_unify_conversations.sql",
+   "line": 60,
+   "fingerprint": "bcbca298b15cd24ab4f0c407a48b8d4f",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000045_unify_conversations.sql",
+   "line": 62,
+   "fingerprint": "f5dd6396d3a1f858d5ede485f1607371",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000045_unify_conversations.sql",
+   "line": 66,
+   "fingerprint": "22dd0a4b9a15db11b3b63006f783f476",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000045_unify_conversations.sql",
+   "line": 72,
+   "fingerprint": "1ada9ff47b58fe8fdebc8c943a35509d",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000045_unify_conversations.sql",
+   "line": 74,
+   "fingerprint": "09d26802d32d0b635f8043cad58aab61",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000045_unify_conversations.sql",
+   "line": 75,
+   "fingerprint": "41314ce5e23c8cd4b6a259f9773d3031",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000045_unify_conversations.sql",
+   "line": 76,
+   "fingerprint": "b210771ba5d98869fa298fba8ee981c4",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000045_unify_conversations.sql",
+   "line": 77,
+   "fingerprint": "7de5c0b7b65fbcfdd7679d77fcc2af70",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000045_unify_conversations.sql",
+   "line": 78,
+   "fingerprint": "184e066bd275fa37e724d3052e68ad37",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000047_sidebar_sections.sql",
+   "line": 4,
+   "fingerprint": "5b89a22afb5100dc5e23e6e4f047842f",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000047_sidebar_sections.sql",
+   "line": 21,
+   "fingerprint": "c3c1323cfb6f38c9f06a46cd874781db",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000048_workspace_apps.sql",
+   "line": 8,
+   "fingerprint": "6ff0f2946cfe177e939a600ae6d14e43",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000052_attachments_on_messages.sql",
+   "line": 2,
+   "fingerprint": "fc3f6baf98b05b6fcd8e652837900b55",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000054_files_lookup_indexes.sql",
+   "line": 1,
+   "fingerprint": "0b8336ae3f97a805ee3f961e105a03f6",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000054_files_lookup_indexes.sql",
+   "line": 2,
+   "fingerprint": "2fd457eeee369de6efa68242ff65ede1",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000054_files_lookup_indexes.sql",
+   "line": 3,
+   "fingerprint": "271dcb0e8587c37143b1b03452860da1",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000055_later_items.sql",
+   "line": 5,
+   "fingerprint": "e6bb755c7574e436c456e5af7eb69a0b",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000055_later_items.sql",
+   "line": 6,
+   "fingerprint": "886b12d4a2008d9661e5877b7420454d",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000055_later_items.sql",
+   "line": 7,
+   "fingerprint": "c52283812f0338d37939f582c14dc998",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000055_later_items.sql",
+   "line": 45,
+   "fingerprint": "7cca3b05d289cec14efdfb2e2101772b",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000055_later_items.sql",
+   "line": 46,
+   "fingerprint": "ed9ccbaf9fc5b6bf043861bba648b51d",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000057_notification_levels.sql",
+   "line": 7,
+   "fingerprint": "13b84fb4e183dc8197ee939684516edd",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000057_notification_levels.sql",
+   "line": 8,
+   "fingerprint": "7dd7f62c4b4c1493b68e93f378859a24",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000060_file_name_search.sql",
+   "line": 4,
+   "fingerprint": "f7ec461558cbad762ef84f79645bbb19",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000060_file_name_search.sql",
+   "line": 7,
+   "fingerprint": "2d43cfe31c9245c0ea4ad96f02183ac8",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000062_polls.sql",
+   "line": 9,
+   "fingerprint": "4c7ea6cba0da673101c60a41ba3006b5",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000062_polls.sql",
+   "line": 27,
+   "fingerprint": "3629694286451d952e06a372b39e0d59",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000063_lists.sql",
+   "line": 11,
+   "fingerprint": "17dfc67a5bfb5d45de29205be2714625",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000063_lists.sql",
+   "line": 38,
+   "fingerprint": "1806af5bdc454bdcc5872ab502e0e182",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000065_list_views.sql",
+   "line": 10,
+   "fingerprint": "0d1abca65db0784fcb65fc2460f49b96",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000066_list_comments_due.sql",
+   "line": 9,
+   "fingerprint": "8dc435270195c6f6c7723cf0895f65a1",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000066_list_comments_due.sql",
+   "line": 19,
+   "fingerprint": "919e10dd378311a4fe54799c8d18e8be",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000066_list_comments_due.sql",
+   "line": 22,
+   "fingerprint": "9bd947dc51ce03466f2f96e6effca168",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000067_workflows.sql",
+   "line": 15,
+   "fingerprint": "bf499489237d1e45f0b554c8d003cc1c",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000069_workflow_forms.sql",
+   "line": 7,
+   "fingerprint": "983a7fa85abcd51e93550e0c7de7817f",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000069_workflow_forms.sql",
+   "line": 8,
+   "fingerprint": "7b72c2059b5661f330550ce7fd24616b",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000071_channel_retention.sql",
+   "line": 6,
+   "fingerprint": "8f5f252f5e1946f77da8d7207a8c8729",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000073_workspace_profiles.sql",
+   "line": 25,
+   "fingerprint": "dd1a3be5112ea0930189683d340cde07",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000073_workspace_profiles.sql",
+   "line": 26,
+   "fingerprint": "322602b70b419a2b88059c224594bef1",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000073_workspace_profiles.sql",
+   "line": 27,
+   "fingerprint": "cb1143ef9b8349d2265b567386b6939c",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000073_workspace_profiles.sql",
+   "line": 29,
+   "fingerprint": "abaca7a1f1ababb4871df633ea392733",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000073_workspace_profiles.sql",
+   "line": 30,
+   "fingerprint": "decf21b3cff8b226ceb4ea371eb7cf9d",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000074_workspace_notifications.sql",
+   "line": 17,
+   "fingerprint": "7b17e067b07bd090945f310e0d249202",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000074_workspace_notifications.sql",
+   "line": 39,
+   "fingerprint": "61a173baed7915927cc7040d3d21083d",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000074_workspace_notifications.sql",
+   "line": 42,
+   "fingerprint": "42b94d17864dbb9c301cb6e6237a3339",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000074_workspace_notifications.sql",
+   "line": 43,
+   "fingerprint": "33b1f62fa3e4816f5119c78e019ca406",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000074_workspace_notifications.sql",
+   "line": 44,
+   "fingerprint": "845094ae088f7f5d07f3b6579bc0b4f4",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000075_huddle_invites.sql",
+   "line": 3,
+   "fingerprint": "20846abd9c329a02b275afc33c7cf0f3",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000075_huddle_invites.sql",
+   "line": 4,
+   "fingerprint": "a5c6ef95079ede5fa9245a6c84a47518",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000078_mention_emails_once.sql",
+   "line": 7,
+   "fingerprint": "5bef9785933774efe92e1ee604dd00bf",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000079_slack_import_heartbeat.sql",
+   "line": 3,
+   "fingerprint": "740f0c996d2dc0c8fd199471d578c1ab",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000084_command_invocations.sql",
+   "line": 3,
+   "fingerprint": "5fbe151759c65cbf62ed76bdc2285a40",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000084_command_invocations.sql",
+   "line": 4,
+   "fingerprint": "9441609db43f7c787506d18f3e7a52c1",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000084_command_invocations.sql",
+   "line": 5,
+   "fingerprint": "715c77c2dac272ad87e52d4a09ea9fff",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000084_command_invocations.sql",
+   "line": 6,
+   "fingerprint": "85f54f1284c92f535df048d95045a33f",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000085_bot_apps.sql",
+   "line": 19,
+   "fingerprint": "2dc36acbb9e608d152868e8033254289",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000093_conversation_departures.sql",
+   "line": 51,
+   "fingerprint": "db29415cb15268617fd0c06a6d9da056",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000096_workspace_analytics.sql",
+   "line": 3,
+   "fingerprint": "3365ade8504955dbe593c2910b33fafa",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000097_channel_analytics.sql",
+   "line": 3,
+   "fingerprint": "56ec7429f7652813206de5582cfd6f2a",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000097_channel_analytics.sql",
+   "line": 13,
+   "fingerprint": "6c0c35e448337b506bd2d2d39fd7370a",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000100_bot_app_stops.sql",
+   "line": 5,
+   "fingerprint": "c3de81cc27b58325a194758956867c9d",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000100_bot_app_stops.sql",
+   "line": 6,
+   "fingerprint": "c3f9242bfa1e62053c92bfc5c017c812",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000101_slack_import_respects_changes.sql",
+   "line": 2,
+   "fingerprint": "c942b283f4435ab68fe101b5d556c593",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000101_slack_import_respects_changes.sql",
+   "line": 10,
+   "fingerprint": "ff7e23928578475e54939e0a33d85eed",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000105_notification_words_from_data.sql",
+   "line": 48,
+   "fingerprint": "ce5170e0b2259fdcc8aa88c8b3848e10",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "backend/migrations/20240305000110_link_tokens.sql",
+   "line": 1,
+   "fingerprint": "0ead01c4680822499c00abf96fdc8094",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000112_guest_kinds.sql",
+   "line": 15,
+   "fingerprint": "bb4b4c3a2e5dabe7e98f44962697e987",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000113_invite_requests.sql",
+   "line": 6,
+   "fingerprint": "51800ad2b0bee3f616b157acd358b7f4",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000113_invite_requests.sql",
+   "line": 13,
+   "fingerprint": "ee74bc165644c2f42272656f3387a5ad",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000115_drafts_and_sent.sql",
+   "line": 5,
+   "fingerprint": "70d93b385c1d819367dc194e0b61584b",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "backend/migrations/20240305000115_drafts_and_sent.sql",
+   "line": 6,
+   "fingerprint": "b0b20b65e82bdbd7d8af6d8fd4a419f3",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA011",
+   "file": "backend/migrations/20240305000115_drafts_and_sent.sql",
+   "line": 16,
+   "fingerprint": "1f3517aca2048af2d055459d5e6f5f2c",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "QA003",
+   "file": "desktop/src-tauri/src/bridge.js",
+   "line": 3,
+   "fingerprint": "ddba07cdbf4813550fec5d727d421a6d",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch on fire-and-forget calls (app badge, Tauri hints, logout, push unsubscribe) or best-effort storage."
+  },
+  {
+   "rule": "QA003",
+   "file": "desktop/src-tauri/src/menu_keys.js",
+   "line": 17,
+   "fingerprint": "e518519dbfb744d83326769a612aca52",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch on fire-and-forget calls (app badge, Tauri hints, logout, push unsubscribe) or best-effort storage."
+  },
+  {
+   "rule": "QA003",
+   "file": "desktop/ui/rail.js",
+   "line": 15,
+   "fingerprint": "5b0e2a2243d3f153a6f9f2a4dcac1a4b",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch on fire-and-forget calls (app badge, Tauri hints, logout, push unsubscribe) or best-effort storage."
+  },
+  {
+   "rule": "CFG001",
+   "file": "docker/backup.Dockerfile",
+   "line": 1,
+   "fingerprint": "17383ef1b0c47a6278ce02df5c0b4603",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "CFG001",
+   "file": "docker/postgres/Dockerfile",
+   "line": 14,
+   "fingerprint": "2a1fd2c4d429548e89a2b372c694d7a2",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "CFG001",
+   "file": "frontend/Dockerfile",
+   "line": 36,
+   "fingerprint": "9d611a820c4add8f462b22101803ade3",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "UI016",
+   "file": "frontend/src/features/channel/BrowseChannelsModal.tsx",
+   "line": 64,
+   "fingerprint": "15e08c14938c57c902a7817db62ce482",
+   "verdict": "fp",
+   "reason": "The row shows focus with focus-within:bg-raised on its parent."
+  },
+  {
+   "rule": "UI006",
+   "file": "frontend/src/features/channel/ChannelBookmarksBar.tsx",
+   "line": 92,
+   "fingerprint": "9a86f5219d564b8820b2732fa8d77c25",
+   "verdict": "tp",
+   "reason": "The delete runs straight from the click, with no confirm or undo."
+  },
+  {
+   "rule": "UI016",
+   "file": "frontend/src/features/lists/CellEditor.tsx",
+   "line": 182,
+   "fingerprint": "16dd5b0ca23f742fc56a03f64a91e2c6",
+   "verdict": "fp",
+   "reason": "A listbox using aria-activedescendant; the active option is highlighted."
+  },
+  {
+   "rule": "UI016",
+   "file": "frontend/src/features/lists/ListGrid.tsx",
+   "line": 322,
+   "fingerprint": "848884b086daea973a9f5fe326e94072",
+   "verdict": "fp",
+   "reason": "A grid using aria-activedescendant; the active cell is highlighted."
+  },
+  {
+   "rule": "UI002",
+   "file": "frontend/src/features/messaging/ImageGallery.tsx",
+   "line": 128,
+   "fingerprint": "86a474563ba225872e74ff40de6634e6",
+   "verdict": "tp",
+   "reason": "Zoom is on an img click with no keyboard path."
+  },
+  {
+   "rule": "UI014",
+   "file": "frontend/src/features/messaging/MessageContent.tsx",
+   "line": 48,
+   "fingerprint": "3333dc93081512c98171d9730656cf3b",
+   "verdict": "fp",
+   "reason": "Custom emoji are sized by the .custom-emoji CSS rule."
+  },
+  {
+   "rule": "UI008",
+   "file": "frontend/src/features/workspace/hooks/useRightPanel.ts",
+   "line": 48,
+   "fingerprint": "5caa708a8202f8528fc9b88f2f78ab03",
+   "verdict": "fp",
+   "reason": "The concise arrow returns subscribe's unsubscribe function, which React runs as the cleanup."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/features/workspace/hooks/useWorkspaceController.ts",
+   "line": 135,
+   "fingerprint": "b9a53baa3e06125e19b7b69eef26bff5",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch on fire-and-forget calls (app badge, Tauri hints, logout, push unsubscribe) or best-effort storage."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/features/workspace/hooks/useWorkspaceData.ts",
+   "line": 117,
+   "fingerprint": "3985d5d33252a3e9336c44d5f4cafe22",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch on fire-and-forget calls (app badge, Tauri hints, logout, push unsubscribe) or best-effort storage."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/features/workspace/hooks/useWorkspaceData.ts",
+   "line": 119,
+   "fingerprint": "28d91fdccfb6ddbf34c0092fc1b7a547",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch on fire-and-forget calls (app badge, Tauri hints, logout, push unsubscribe) or best-effort storage."
+  },
+  {
+   "rule": "UI006",
+   "file": "frontend/src/features/workspace/settings/CustomEmojiSection.tsx",
+   "line": 129,
+   "fingerprint": "65487e7facd6dd5e4c28029b374ce3b1",
+   "verdict": "tp",
+   "reason": "The delete runs straight from the click, with no confirm or undo."
+  },
+  {
+   "rule": "UI006",
+   "file": "frontend/src/features/workspace/settings/UserGroupsSection.tsx",
+   "line": 131,
+   "fingerprint": "02aadf0df76a46b9e62b52ad45183e19",
+   "verdict": "tp",
+   "reason": "The delete runs straight from the click, with no confirm or undo."
+  },
+  {
+   "rule": "DATA007",
+   "file": "frontend/src/lib/appVersion.ts",
+   "line": 3,
+   "fingerprint": "1b3cf2042792ccf827c9798cb35fa13b",
+   "verdict": "fp",
+   "reason": "A build id injected by the build, not a config value to document."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/lib/push.ts",
+   "line": 123,
+   "fingerprint": "eb9a181232954a27f4bc585346cf21eb",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch on fire-and-forget calls (app badge, Tauri hints, logout, push unsubscribe) or best-effort storage."
+  },
+  {
+   "rule": "QA011",
+   "file": "frontend/src/pages/ResetPasswordPage.tsx",
+   "line": 23,
+   "fingerprint": "8b83824473d454aa9e179837276dca6d",
+   "verdict": "tp",
+   "reason": "The same helper is copied between two pages."
+  },
+  {
+   "rule": "QA011",
+   "file": "frontend/src/pages/ResetPasswordPage.tsx",
+   "line": 48,
+   "fingerprint": "6c4a2e981eda1cdbf0db0fa022817632",
+   "verdict": "tp",
+   "reason": "The same helper is copied between two pages."
+  },
+  {
+   "rule": "UI002",
+   "file": "frontend/src/pages/WorkspacePage.tsx",
+   "line": 171,
+   "fingerprint": "d3656a56b82d623d0b8a889426bb0b22",
+   "verdict": "fp",
+   "reason": "An aria-hidden backdrop behind the mobile nav."
+  },
+  {
+   "rule": "UI014",
+   "file": "frontend/src/shared/components/Avatar/Avatar.tsx",
+   "line": 29,
+   "fingerprint": "89a4790c1346525b75af6c462fc6f7cf",
+   "verdict": "fp",
+   "reason": "Sized by the w-/h- classes from SIZES."
+  },
+  {
+   "rule": "UI002",
+   "file": "frontend/src/shared/components/Popover/HoverCard.tsx",
+   "line": 95,
+   "fingerprint": "48234d979050dba8db13226f5ab279e6",
+   "verdict": "fp",
+   "reason": "The click only toggles the hover card on touch; keyboard users reach the same content through the trigger's focus."
+  },
+  {
+   "rule": "QA003",
+   "file": "frontend/src/stores/instances.ts",
+   "line": 364,
+   "fingerprint": "f8fc3f202606fdafdd1b29323c9a57b9",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch on fire-and-forget calls (app badge, Tauri hints, logout, push unsubscribe) or best-effort storage."
+  },
+  {
+   "rule": "DATA007",
+   "file": "measure-scale.py",
+   "line": 19,
+   "fingerprint": "2f3387e0c4e1cbaed59664b76e13d009",
+   "verdict": "fp",
+   "reason": "Optional inputs of a load-test script, not app configuration."
+  },
+  {
+   "rule": "DATA007",
+   "file": "measure-scale.py",
+   "line": 20,
+   "fingerprint": "817324d9b646cf12d06d94b34bf245b1",
+   "verdict": "fp",
+   "reason": "Optional inputs of a load-test script, not app configuration."
+  },
+  {
+   "rule": "UI014",
+   "file": "site/index.html",
+   "line": 210,
+   "fingerprint": "27648fac9913ae7f5c2e0a28faef2e8b",
+   "verdict": "tp",
+   "reason": "The brand img has no width or height."
+  },
+  {
+   "rule": "QA003",
+   "file": "site/index.html",
+   "line": 388,
+   "fingerprint": "98656d6dc5f645f7c5dd116bf03c5c2e",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch on fire-and-forget calls (app badge, Tauri hints, logout, push unsubscribe) or best-effort storage."
+  },
+  {
+   "rule": "QA003",
+   "file": "site/index.html",
+   "line": 394,
+   "fingerprint": "6c8d7b05eae5179b7b6532d9c8bc2643",
+   "verdict": "fp",
+   "reason": "A deliberate empty catch on fire-and-forget calls (app badge, Tauri hints, logout, push unsubscribe) or best-effort storage."
+  }
+ ]
+}

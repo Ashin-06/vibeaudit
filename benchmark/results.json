@@ -1,7 +1,7 @@
 {
  "tool": "vibeaudit benchmark",
- "corpus": 74,
- "scanned": 74,
+ "corpus": 84,
+ "scanned": 84,
  "skipped": {},
  "heldout": [
   "Schematic",
@@ -11,12 +11,15 @@
   "flasky",
   "go-base",
   "govwa",
+  "jira-meridian",
   "langchain-nextjs-template",
   "next-saas-stripe-starter",
   "nodejs-whisper",
   "openai-assistants-quickstart",
   "piggymetrics",
   "podinfo",
+  "realworld-axum-sqlx",
+  "svix-webhooks",
   "terragoat",
   "thynk",
   "toWers",
@@ -541,6 +544,76 @@
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
+  },
+  "zero-to-production": {
+   "findings": 11,
+   "labelled": 11,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 8
+  },
+  "lldap": {
+   "findings": 35,
+   "labelled": 35,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 2
+  },
+  "rustypaste": {
+   "findings": 19,
+   "labelled": 19,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 8
+  },
+  "actix-realworld-example-app": {
+   "findings": 13,
+   "labelled": 13,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "realworld-axum-sqlx": {
+   "findings": 5,
+   "labelled": 5,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "realworld-rust-axum-sqlx": {
+   "findings": 17,
+   "labelled": 17,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "svix-webhooks": {
+   "findings": 42,
+   "labelled": 42,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 3
+  },
+  "jira-meridian": {
+   "findings": 130,
+   "labelled": 130,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "pomb": {
+   "findings": 94,
+   "labelled": 94,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "chat-systems": {
+   "findings": 208,
+   "labelled": 208,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 3
   }
  },
  "rules": {
@@ -596,11 +669,11 @@
    "title": "State-changing endpoint without authentication",
    "preview": false,
    "tp": 46,
-   "fp": 5,
+   "fp": 62,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.902,
-   "precision_pessimistic": 0.902,
+   "precision": 0.4259,
+   "precision_pessimistic": 0.4259,
    "seeded_expected": 8,
    "seeded_found": 8,
    "seeded_recall": 1.0,
@@ -655,6 +728,11 @@
      0,
      0
     ],
+    "jira-meridian": [
+     0,
+     57,
+     0
+    ],
     "langchain-nextjs-template": [
      7,
      0,
@@ -706,11 +784,11 @@
    "title": "Admin endpoint without a role check",
    "preview": false,
    "tp": 19,
-   "fp": 7,
+   "fp": 10,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.7308,
-   "precision_pessimistic": 0.7308,
+   "precision": 0.6552,
+   "precision_pessimistic": 0.6552,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
@@ -730,6 +808,11 @@
      6,
      0
     ],
+    "jira-meridian": [
+     0,
+     3,
+     0
+    ],
     "uniedit-server": [
      17,
      0,
@@ -741,11 +824,11 @@
    "title": "Possible insecure direct object reference (IDOR)",
    "preview": false,
    "tp": 9,
-   "fp": 9,
+   "fp": 11,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5,
-   "precision_pessimistic": 0.5,
+   "precision": 0.45,
+   "precision_pessimistic": 0.45,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -753,6 +836,11 @@
     "bella-openapi": [
      0,
      1,
+     0
+    ],
+    "chat-systems": [
+     0,
+     2,
      0
     ],
     "conveyor": [
@@ -796,18 +884,28 @@
    "title": "Webhook without signature verification",
    "preview": false,
    "tp": 1,
-   "fp": 0,
+   "fp": 8,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.1111,
+   "precision_pessimistic": 0.1111,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "jira-meridian": [
+     0,
+     6,
+     0
+    ],
     "learnathon-leaderboard": [
      1,
      0,
+     0
+    ],
+    "svix-webhooks": [
+     0,
+     2,
      0
     ]
    }
@@ -929,7 +1027,7 @@
   "AUTH010": {
    "title": "Login endpoint without rate limiting",
    "preview": false,
-   "tp": 16,
+   "tp": 20,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -989,8 +1087,23 @@
      0,
      0
     ],
+    "realworld-axum-sqlx": [
+     1,
+     0,
+     0
+    ],
+    "realworld-rust-axum-sqlx": [
+     1,
+     0,
+     0
+    ],
     "spring-boot-realworld-example-app": [
      1,
+     0,
+     0
+    ],
+    "zero-to-production": [
+     2,
      0,
      0
     ]
@@ -1115,11 +1228,11 @@
    "title": "SQL injection",
    "preview": false,
    "tp": 30,
-   "fp": 8,
+   "fp": 11,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.7895,
-   "precision_pessimistic": 0.7895,
+   "precision": 0.7317,
+   "precision_pessimistic": 0.7317,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -1154,6 +1267,11 @@
      1,
      0
     ],
+    "jira-meridian": [
+     0,
+     3,
+     0
+    ],
     "pygoat": [
      1,
      0,
@@ -1180,11 +1298,11 @@
    "title": "Command injection",
    "preview": true,
    "tp": 4,
-   "fp": 4,
+   "fp": 5,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5,
-   "precision_pessimistic": 0.5,
+   "precision": 0.4444,
+   "precision_pessimistic": 0.4444,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -1222,6 +1340,11 @@
     "pygoat": [
      1,
      0,
+     0
+    ],
+    "svix-webhooks": [
+     0,
+     1,
      0
     ],
     "vibe-trading": [
@@ -1791,7 +1914,7 @@
   "CFG001": {
    "title": "Container runs as root",
    "preview": false,
-   "tp": 86,
+   "tp": 98,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -1827,6 +1950,11 @@
      0
     ],
     "bella-openapi": [
+     3,
+     0,
+     0
+    ],
+    "chat-systems": [
      3,
      0,
      0
@@ -1896,6 +2024,11 @@
      0,
      0
     ],
+    "lldap": [
+     6,
+     0,
+     0
+    ],
     "microblog": [
      1,
      0,
@@ -1923,6 +2056,11 @@
     ],
     "pygoat": [
      25,
+     0,
+     0
+    ],
+    "realworld-rust-axum-sqlx": [
+     2,
      0,
      0
     ],
@@ -1975,18 +2113,23 @@
      1,
      0,
      0
+    ],
+    "zero-to-production": [
+     1,
+     0,
+     0
     ]
    }
   },
   "CFG002": {
    "title": "Unpinned container base image",
    "preview": false,
-   "tp": 9,
+   "tp": 11,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9,
-   "precision_pessimistic": 0.9,
+   "precision": 0.9167,
+   "precision_pessimistic": 0.9167,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -1994,6 +2137,11 @@
     "Schematic": [
      0,
      1,
+     0
+    ],
+    "actix-realworld-example-app": [
+     1,
+     0,
      0
     ],
     "conveyor": [
@@ -2022,6 +2170,11 @@
      0
     ],
     "opengpts": [
+     1,
+     0,
+     0
+    ],
+    "realworld-rust-axum-sqlx": [
      1,
      0,
      0
@@ -2108,7 +2261,7 @@
   "CFG007": {
    "title": "Default database credentials",
    "preview": false,
-   "tp": 14,
+   "tp": 19,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2163,6 +2316,11 @@
      0,
      0
     ],
+    "jira-meridian": [
+     1,
+     0,
+     0
+    ],
     "opengpts": [
      1,
      0,
@@ -2170,6 +2328,11 @@
     ],
     "sec-insights": [
      1,
+     0,
+     0
+    ],
+    "svix-webhooks": [
+     4,
      0,
      0
     ],
@@ -2243,7 +2406,7 @@
   "CFG010": {
    "title": "Third-party GitHub Action not pinned to a commit",
    "preview": false,
-   "tp": 94,
+   "tp": 171,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2288,6 +2451,11 @@
      0,
      0
     ],
+    "chat-systems": [
+     14,
+     0,
+     0
+    ],
     "codbex-oceanus": [
      4,
      0,
@@ -2328,6 +2496,16 @@
      0,
      0
     ],
+    "jira-meridian": [
+     8,
+     0,
+     0
+    ],
+    "lldap": [
+     26,
+     0,
+     0
+    ],
     "llm-examples": [
      2,
      0,
@@ -2358,8 +2536,23 @@
      0,
      0
     ],
+    "realworld-rust-axum-sqlx": [
+     3,
+     0,
+     0
+    ],
+    "rustypaste": [
+     19,
+     0,
+     0
+    ],
     "spring-petclinic": [
      2,
+     0,
+     0
+    ],
+    "svix-webhooks": [
+     1,
      0,
      0
     ],
@@ -2385,6 +2578,11 @@
     ],
     "wsgidav": [
      2,
+     0,
+     0
+    ],
+    "zero-to-production": [
+     6,
      0,
      0
     ]
@@ -2534,12 +2732,12 @@
   "DATA001": {
    "title": "Database query inside a loop (N+1)",
    "preview": true,
-   "tp": 13,
-   "fp": 9,
+   "tp": 22,
+   "fp": 13,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5909,
-   "precision_pessimistic": 0.5909,
+   "precision": 0.6286,
+   "precision_pessimistic": 0.6286,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -2550,6 +2748,11 @@
      0
     ],
     "alerta": [
+     2,
+     0,
+     0
+    ],
+    "chat-systems": [
      2,
      0,
      0
@@ -2574,6 +2777,11 @@
      0,
      0
     ],
+    "jira-meridian": [
+     7,
+     1,
+     0
+    ],
     "pygoat": [
      0,
      1,
@@ -2582,6 +2790,11 @@
     "sili-smart-hr": [
      0,
      2,
+     0
+    ],
+    "svix-webhooks": [
+     0,
+     3,
      0
     ],
     "waline": [
@@ -2608,16 +2821,21 @@
   "DATA003": {
    "title": "Destructive database migration",
    "preview": false,
-   "tp": 3,
+   "tp": 42,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.75,
-   "precision_pessimistic": 0.75,
+   "precision": 0.9767,
+   "precision_pessimistic": 0.9767,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "chat-systems": [
+     34,
+     0,
+     0
+    ],
     "chatbot-ui": [
      1,
      0,
@@ -2628,14 +2846,29 @@
      0,
      0
     ],
+    "jira-meridian": [
+     2,
+     0,
+     0
+    ],
     "node-express-realworld-example-app": [
      1,
+     0,
+     0
+    ],
+    "svix-webhooks": [
+     2,
      0,
      0
     ],
     "uniedit-server": [
      0,
      1,
+     0
+    ],
+    "zero-to-production": [
+     1,
+     0,
      0
     ]
    }
@@ -2677,12 +2910,12 @@
   "DATA006": {
    "title": "Timestamp without time zone",
    "preview": false,
-   "tp": 102,
+   "tp": 114,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9903,
-   "precision_pessimistic": 0.9903,
+   "precision": 0.9913,
+   "precision_pessimistic": 0.9913,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -2694,6 +2927,11 @@
     ],
     "Vulnerable-Flask-App": [
      2,
+     0,
+     0
+    ],
+    "actix-realworld-example-app": [
+     12,
      0,
      0
     ],
@@ -2753,11 +2991,11 @@
    "title": "Environment variable missing from the example env file",
    "preview": true,
    "tp": 18,
-   "fp": 12,
+   "fp": 15,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6,
-   "precision_pessimistic": 0.6,
+   "precision": 0.5455,
+   "precision_pessimistic": 0.5455,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -2775,6 +3013,11 @@
     "chat-langchain": [
      3,
      0,
+     0
+    ],
+    "chat-systems": [
+     0,
+     3,
      0
     ],
     "opengpts": [
@@ -2875,7 +3118,7 @@
   "DATA011": {
    "title": "Index built without CONCURRENTLY on an existing table",
    "preview": true,
-   "tp": 14,
+   "tp": 71,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2885,6 +3128,21 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "chat-systems": [
+     49,
+     0,
+     0
+    ],
+    "jira-meridian": [
+     5,
+     0,
+     0
+    ],
+    "svix-webhooks": [
+     3,
+     0,
+     0
+    ],
     "uniedit-server": [
      14,
      0,
@@ -2895,7 +3153,7 @@
   "DATA012": {
    "title": "Foreign key without an index",
    "preview": false,
-   "tp": 76,
+   "tp": 191,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2920,6 +3178,11 @@
      0,
      0
     ],
+    "chat-systems": [
+     76,
+     0,
+     0
+    ],
     "chatbot-ui": [
      16,
      0,
@@ -2932,6 +3195,11 @@
     ],
     "dvpwa": [
      3,
+     0,
+     0
+    ],
+    "jira-meridian": [
+     25,
      0,
      0
     ],
@@ -2960,6 +3228,16 @@
      0,
      0
     ],
+    "realworld-axum-sqlx": [
+     4,
+     0,
+     0
+    ],
+    "realworld-rust-axum-sqlx": [
+     7,
+     0,
+     0
+    ],
     "saas-starter": [
      6,
      0,
@@ -2970,8 +3248,18 @@
      0,
      0
     ],
+    "svix-webhooks": [
+     2,
+     0,
+     0
+    ],
     "uniedit-server": [
      6,
+     0,
+     0
+    ],
+    "zero-to-production": [
+     1,
      0,
      0
     ]
@@ -3238,11 +3526,11 @@
    "title": "Cross-site scripting through a raw HTML sink",
    "preview": true,
    "tp": 45,
-   "fp": 41,
+   "fp": 102,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5233,
-   "precision_pessimistic": 0.5233,
+   "precision": 0.3061,
+   "precision_pessimistic": 0.3061,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -3307,6 +3595,11 @@
      0,
      0
     ],
+    "pomb": [
+     0,
+     61,
+     0
+    ],
     "pygoat": [
      17,
      20,
@@ -3367,15 +3660,20 @@
    "title": "postMessage handler without origin check",
    "preview": false,
    "tp": 3,
-   "fp": 0,
+   "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.75,
+   "precision_pessimistic": 0.75,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "jira-meridian": [
+     0,
+     1,
+     0
+    ],
     "openui": [
      1,
      0,
@@ -3431,7 +3729,7 @@
   "FE006": {
    "title": "Production source maps enabled",
    "preview": false,
-   "tp": 1,
+   "tp": 2,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -3442,6 +3740,11 @@
    "seeded_recall": 1.0,
    "by_repo": {
     "conveyor": [
+     1,
+     0,
+     0
+    ],
+    "jira-meridian": [
      1,
      0,
      0
@@ -4479,11 +4782,11 @@
    "title": "Exception silently swallowed",
    "preview": true,
    "tp": 152,
-   "fp": 56,
+   "fp": 86,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.7308,
-   "precision_pessimistic": 0.7308,
+   "precision": 0.6387,
+   "precision_pessimistic": 0.6387,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -4508,6 +4811,11 @@
      0,
      0
     ],
+    "chat-systems": [
+     0,
+     10,
+     0
+    ],
     "flexible-graphrag": [
      116,
      0,
@@ -4521,6 +4829,11 @@
     "openui": [
      1,
      0,
+     0
+    ],
+    "pomb": [
+     0,
+     20,
      0
     ],
     "pygoat": [
@@ -4703,12 +5016,12 @@
   "QA007": {
    "title": "Package imported but not declared as a dependency",
    "preview": false,
-   "tp": 51,
-   "fp": 3,
+   "tp": 53,
+   "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9444,
-   "precision_pessimistic": 0.9444,
+   "precision": 0.9298,
+   "precision_pessimistic": 0.9298,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -4781,6 +5094,11 @@
     "sec-insights": [
      4,
      0,
+     0
+    ],
+    "svix-webhooks": [
+     2,
+     1,
      0
     ],
     "thynk": [
@@ -4857,12 +5175,12 @@
   "QA011": {
    "title": "Same function copied into several files",
    "preview": false,
-   "tp": 64,
-   "fp": 0,
+   "tp": 66,
+   "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.9851,
+   "precision_pessimistic": 0.9851,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -4879,6 +5197,11 @@
     ],
     "careconnect": [
      6,
+     0,
+     0
+    ],
+    "chat-systems": [
+     2,
      0,
      0
     ],
@@ -4907,6 +5230,11 @@
      0,
      0
     ],
+    "svix-webhooks": [
+     0,
+     1,
+     0
+    ],
     "vulnerable-java-application": [
      4,
      0,
@@ -4922,7 +5250,7 @@
   "REL001": {
    "title": "Outbound HTTP request without a timeout",
    "preview": false,
-   "tp": 57,
+   "tp": 66,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -4947,6 +5275,11 @@
      0,
      0
     ],
+    "chat-systems": [
+     1,
+     0,
+     0
+    ],
     "djangoproject.com": [
      4,
      0,
@@ -4959,6 +5292,16 @@
     ],
     "go-test-bench": [
      1,
+     0,
+     0
+    ],
+    "jira-meridian": [
+     1,
+     0,
+     0
+    ],
+    "lldap": [
+     3,
      0,
      0
     ],
@@ -4984,6 +5327,11 @@
     ],
     "sec-insights": [
      6,
+     0,
+     0
+    ],
+    "svix-webhooks": [
+     4,
      0,
      0
     ],
@@ -5022,11 +5370,11 @@
    "title": "Webhook handler is not idempotent",
    "preview": false,
    "tp": 2,
-   "fp": 1,
+   "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6667,
-   "precision_pessimistic": 0.6667,
+   "precision": 0.3333,
+   "precision_pessimistic": 0.3333,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -5034,6 +5382,11 @@
     "alerta": [
      1,
      0,
+     0
+    ],
+    "jira-meridian": [
+     0,
+     3,
      0
     ],
     "scriptforge-ai": [
@@ -5186,11 +5539,11 @@
    "title": "Private key committed",
    "preview": false,
    "tp": 2,
-   "fp": 0,
+   "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.6667,
+   "precision_pessimistic": 0.6667,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -5198,6 +5551,11 @@
     "nodegoat": [
      1,
      0,
+     0
+    ],
+    "svix-webhooks": [
+     0,
+     1,
      0
     ],
     "wsgidav": [
@@ -5210,12 +5568,12 @@
   "SEC003": {
    "title": "High-entropy secret assigned in code",
    "preview": true,
-   "tp": 27,
-   "fp": 15,
+   "tp": 28,
+   "fp": 29,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6429,
-   "precision_pessimistic": 0.6429,
+   "precision": 0.4912,
+   "precision_pessimistic": 0.4912,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -5245,6 +5603,11 @@
      0,
      0
     ],
+    "jira-meridian": [
+     0,
+     1,
+     0
+    ],
     "nodegoat": [
      2,
      0,
@@ -5265,9 +5628,19 @@
      1,
      0
     ],
+    "realworld-rust-axum-sqlx": [
+     1,
+     1,
+     0
+    ],
     "sili-smart-hr": [
      2,
      4,
+     0
+    ],
+    "svix-webhooks": [
+     0,
+     12,
      0
     ],
     "terragoat": [
@@ -5291,11 +5664,11 @@
    "title": "Hardcoded or default signing secret",
    "preview": false,
    "tp": 29,
-   "fp": 3,
+   "fp": 6,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9062,
-   "precision_pessimistic": 0.9062,
+   "precision": 0.8286,
+   "precision_pessimistic": 0.8286,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
@@ -5339,6 +5712,11 @@
      20,
      0,
      0
+    ],
+    "svix-webhooks": [
+     0,
+     3,
+     0
     ]
    }
   },
@@ -5375,12 +5753,12 @@
   "SEC006": {
    "title": "Environment file committed to git",
    "preview": false,
-   "tp": 2,
+   "tp": 3,
    "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5,
-   "precision_pessimistic": 0.5,
+   "precision": 0.6,
+   "precision_pessimistic": 0.6,
    "seeded_expected": 0,
    "seeded_found": 0,
    "seeded_recall": null,
@@ -5397,6 +5775,11 @@
     ],
     "prompt-sculptor-49": [
      2,
+     0,
+     0
+    ],
+    "realworld-rust-axum-sqlx": [
+     1,
      0,
      0
     ]
@@ -5629,12 +6012,12 @@
   "UI002": {
    "title": "Click handler on a non-interactive element",
    "preview": false,
-   "tp": 54,
-   "fp": 1,
+   "tp": 55,
+   "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9818,
-   "precision_pessimistic": 0.9818,
+   "precision": 0.9322,
+   "precision_pessimistic": 0.9322,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
@@ -5642,6 +6025,11 @@
     "bella-openapi": [
      14,
      0,
+     0
+    ],
+    "chat-systems": [
+     1,
+     2,
      0
     ],
     "chatbot-ui": [
@@ -5656,6 +6044,11 @@
     ],
     "commerce": [
      1,
+     1,
+     0
+    ],
+    "jira-meridian": [
+     0,
      1,
      0
     ],
@@ -5843,12 +6236,12 @@
   "UI006": {
    "title": "Destructive action without confirmation",
    "preview": true,
-   "tp": 10,
+   "tp": 13,
    "fp": 3,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.7692,
-   "precision_pessimistic": 0.7692,
+   "precision": 0.8125,
+   "precision_pessimistic": 0.8125,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -5865,6 +6258,11 @@
     ],
     "careconnect": [
      1,
+     0,
+     0
+    ],
+    "chat-systems": [
+     3,
      0,
      0
     ],
@@ -6080,16 +6478,21 @@
   "UI014": {
    "title": "Image without width and height",
    "preview": true,
-   "tp": 19,
-   "fp": 2,
+   "tp": 20,
+   "fp": 15,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9048,
-   "precision_pessimistic": 0.9048,
+   "precision": 0.5714,
+   "precision_pessimistic": 0.5714,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "chat-systems": [
+     1,
+     2,
+     0
+    ],
     "djangoproject.com": [
      5,
      1,
@@ -6123,6 +6526,11 @@
     "openai-assistants-quickstart": [
      1,
      0,
+     0
+    ],
+    "pomb": [
+     0,
+     11,
      0
     ],
     "spring-petclinic": [
@@ -6185,12 +6593,12 @@
   "UI016": {
    "title": "Focus outline removed",
    "preview": true,
-   "tp": 9,
-   "fp": 2,
+   "tp": 11,
+   "fp": 9,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8182,
-   "precision_pessimistic": 0.8182,
+   "precision": 0.55,
+   "precision_pessimistic": 0.55,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -6198,6 +6606,11 @@
     "ai-chatbot": [
      1,
      0,
+     0
+    ],
+    "chat-systems": [
+     0,
+     3,
      0
     ],
     "chatbot-ui": [
@@ -6210,6 +6623,11 @@
      0,
      0
     ],
+    "jira-meridian": [
+     1,
+     3,
+     0
+    ],
     "learnathon-leaderboard": [
      2,
      0,
@@ -6218,6 +6636,11 @@
     "next-saas-stripe-starter": [
      0,
      2,
+     0
+    ],
+    "pomb": [
+     1,
+     1,
      0
     ],
     "spring-petclinic": [

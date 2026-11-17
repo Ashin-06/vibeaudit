@@ -88,6 +88,7 @@ def test_effects_cleanup_and_loading_error_states(tmp_path):
         "  useEffect(() => {\n    const t = setInterval(tick, 1000);\n  }, []);\n"              # 3 UI008
         "  useEffect(() => {\n    window.addEventListener('resize', f);\n"
         "    return () => window.removeEventListener('resize', f);\n  }, []);\n"
+        "  useEffect(() => store.subscribe(onChange), []);\n"  # returns the unsubscribe function
         "  return <p>x</p>"))
     write(tmp_path, "b.tsx", component(
         "  const [rows, setRows] = useState([]);\n"

@@ -49,6 +49,8 @@ ADMIN_ROLE_EVIDENCE = re.compile(
     # Spring and Jakarta: @PreAuthorize("hasAuthority(...)"), @Secured, @RolesAllowed
     r"|has_?(?:any_?)?authority|has_?any_?role|secured|roles_?allowed)"
 )
+# role evidence anywhere in the project; not a path such as Actix's `web::scope`
+ANY_ROLE = re.compile(r"(?i)(?<!::)(?:" + ADMIN_ROLE_EVIDENCE.pattern.replace("(?i)", "", 1) + ")")
 
 OWNERSHIP_EVIDENCE = re.compile(
     r"(?i)(?:\buser_?id\b|\bowner(?:_?id)?\b|\bauthor(?:_?id)?\b|\bcreated_?by\b|current_user\s*(?:\(\s*\))?\s*\.\s*id"

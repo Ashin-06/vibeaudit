@@ -81,6 +81,16 @@ class ContractScanner:
         self.emit(Finding(rule, sf.rel, line, msg, "", sf.line(line).strip()[:200]))
 
     def run(self) -> None:
+        if not self.routes or self._backend_unread():
+            return
+        self._run()
+
+    def _backend_unread(self) -> bool:
+        """A backend source file too large (or unreadable) to scan may hold routes: calls would look unhandled."""
+        return any(f.rel.endswith((".py", ".rs", ".go", ".java", ".kt", ".cs", ".php", ".rb")) and not f.is_test
+                   and f.rel not in self.p.binary and f.text is None for f in self.p.files)
+
+    def _run(self) -> None:
         if not self.routes:
             return
         for sf in self.p.files:

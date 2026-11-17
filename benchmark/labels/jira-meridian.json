@@ -1,0 +1,1046 @@
+{
+ "repo": "jira-meridian",
+ "commit": "9cc61e14dbd9710a8139914003851be38046676f",
+ "findings": [
+  {
+   "rule": "SEC003",
+   "file": ".env.example",
+   "line": 48,
+   "fingerprint": "8d543a59668011c01c7594f8639abeef",
+   "verdict": "fp",
+   "reason": "A labelled dev-only key (base64 of a dev-only string) in the example env file."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 35,
+   "fingerprint": "d1d0559e5a52cb2fb808900e1d0dbe83",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 37,
+   "fingerprint": "9312c0915a8227ba5f7d3192318aa8a5",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 61,
+   "fingerprint": "b7cac956507d703e4843e9c968a39078",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 70,
+   "fingerprint": "48f9a34d1436b85b7cce40565cb0e6f2",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 85,
+   "fingerprint": "92ae182b1f77704af74162d43d8710ea",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 119,
+   "fingerprint": "c39e6b42a3c76fa527f3c2eb117dc092",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 142,
+   "fingerprint": "98e04117b76542e1dcea9e15bda79f78",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 170,
+   "fingerprint": "5886ff522d074a319204d4551d5e4189",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "UI016",
+   "file": "apps/web/src/app/AppShell.tsx",
+   "line": 135,
+   "fingerprint": "9facedddacdb296a3b7fd5f75528a8d8",
+   "verdict": "fp",
+   "reason": "main with tabIndex=-1 is only a programmatic focus target, not a keyboard stop."
+  },
+  {
+   "rule": "UI016",
+   "file": "apps/web/src/components/ui/toast.tsx",
+   "line": 62,
+   "fingerprint": "80264efc035eedaf29484caca653272a",
+   "verdict": "fp",
+   "reason": "The Radix toast viewport region, not an interactive control."
+  },
+  {
+   "rule": "UI016",
+   "file": "apps/web/src/modules/agile/components/dnd.tsx",
+   "line": 58,
+   "fingerprint": "2412a297904355b43d0fb00c1aa04e5d",
+   "verdict": "tp",
+   "reason": "The keyboard-draggable issue removes the outline with no other focus style."
+  },
+  {
+   "rule": "FE004",
+   "file": "apps/web/src/modules/auth/session-service.ts",
+   "line": 88,
+   "fingerprint": "c59cb3488d86d7d1cadd795acb429253",
+   "verdict": "fp",
+   "reason": "A BroadcastChannel message, which only same-origin pages can send."
+  },
+  {
+   "rule": "UI002",
+   "file": "apps/web/src/modules/workflows/components/Canvas.tsx",
+   "line": 39,
+   "fingerprint": "996a90995abbcc6db3b144a7841b5bb5",
+   "verdict": "fp",
+   "reason": "A background click that clears the selection; the nodes themselves are focusable."
+  },
+  {
+   "rule": "UI016",
+   "file": "apps/web/src/styles/index.css",
+   "line": 91,
+   "fingerprint": "c16449b916537588e6d59ba34dba20f9",
+   "verdict": "fp",
+   "reason": "The rich-text editing surface shows the caret when focused."
+  },
+  {
+   "rule": "FE006",
+   "file": "apps/web/vite.config.ts",
+   "line": 25,
+   "fingerprint": "589d6919174edb4926cc494331dd8725",
+   "verdict": "tp",
+   "reason": "The production build emits public source maps."
+  },
+  {
+   "rule": "REL001",
+   "file": "crates/auth-middleware/src/verifier.rs",
+   "line": 51,
+   "fingerprint": "a6f8aead56dd3618b8f734b749aee1d4",
+   "verdict": "tp",
+   "reason": "reqwest client built with no timeout."
+  },
+  {
+   "rule": "CFG007",
+   "file": "docker-compose.yml",
+   "line": 11,
+   "fingerprint": "7a944ebd944a807294159d6d1ddbd55c",
+   "verdict": "tp",
+   "reason": "docker-compose sets the default postgres password."
+  },
+  {
+   "rule": "DATA012",
+   "file": "services/agile-service/migrations/0001_init.sql",
+   "line": 29,
+   "fingerprint": "87442c07c616ce4edc0f89fd706f866d",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "services/agile-service/migrations/0001_init.sql",
+   "line": 62,
+   "fingerprint": "d18774338aa27531e00a1f402fb4c135",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "services/agile-service/migrations/0001_init.sql",
+   "line": 73,
+   "fingerprint": "218206bbd971f5bc3406ff66b510ea11",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/agile-service/src/http.rs",
+   "line": 1198,
+   "fingerprint": "b8482618cd323df498d1e8ded53c3f86",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/agile-service/src/http.rs",
+   "line": 1198,
+   "fingerprint": "6684522e9f231a8adbd30f3e2efef349",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/agile-service/src/http.rs",
+   "line": 1204,
+   "fingerprint": "a6eebf3feb8db36e006c5f6e7862eea3",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/agile-service/src/http.rs",
+   "line": 1204,
+   "fingerprint": "05bb5e6793fa97dac3f9cb8454a59059",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "DATA001",
+   "file": "services/agile-service/src/store.rs",
+   "line": 377,
+   "fingerprint": "e219017e0a5f0b463559d923233d06f5",
+   "verdict": "tp",
+   "reason": "One INSERT per issue in a loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "services/analytics-service/src/http.rs",
+   "line": 405,
+   "fingerprint": "fa82aa1c636f32bb17ba1bb09e6febdb",
+   "verdict": "tp",
+   "reason": "One INSERT or UPDATE per widget in a loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "services/analytics-service/src/http.rs",
+   "line": 476,
+   "fingerprint": "3100a0901384f70b54ee08ec0f494868",
+   "verdict": "tp",
+   "reason": "One INSERT or UPDATE per widget in a loop."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/analytics-service/src/http.rs",
+   "line": 614,
+   "fingerprint": "37fe944daf1f1f8f993de247bc844c20",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/analytics-service/src/http.rs",
+   "line": 615,
+   "fingerprint": "380d01a893467301df0185cbbe9bbb16",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/analytics-service/src/http.rs",
+   "line": 615,
+   "fingerprint": "a94607a41a97cda3f3add6f2fe27c089",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/analytics-service/src/http.rs",
+   "line": 616,
+   "fingerprint": "20a59bc6123130132caa482aaaa5c532",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/analytics-service/src/http.rs",
+   "line": 617,
+   "fingerprint": "f39c924c1d0839444d6ab09932b3c72c",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/analytics-service/src/http.rs",
+   "line": 618,
+   "fingerprint": "a36e30bf56b7ad4c2c6a59c401d883e0",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/analytics-service/src/http.rs",
+   "line": 618,
+   "fingerprint": "6a6f90eb8225b8507621648e327324c6",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "DATA012",
+   "file": "services/identity-service/migrations/0002_mfa.sql",
+   "line": 30,
+   "fingerprint": "5dab7f589b319c49394f416b40700a54",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "services/identity-service/migrations/0006_passkeys.sql",
+   "line": 28,
+   "fingerprint": "f792fa299e0d506aa3e61c57868e352b",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "services/identity-service/migrations/0007_sso.sql",
+   "line": 47,
+   "fingerprint": "1e98269339d32e2512fead5061577ba2",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA001",
+   "file": "services/identity-service/src/http/mfa.rs",
+   "line": 198,
+   "fingerprint": "0ba29306cd5a765862f75e3609ac9ba5",
+   "verdict": "tp",
+   "reason": "One INSERT per recovery code in a loop."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/identity-service/src/http/mod.rs",
+   "line": 145,
+   "fingerprint": "61053c7ea554962c3a378e786ee9b677",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "services/identity-service/src/http/mod.rs",
+   "line": 172,
+   "fingerprint": "d1b8d6d17abc071767c055d1bc492fb1",
+   "verdict": "fp",
+   "reason": "The handler calls admin(&auth, &ctx) first; the role check is one call deep."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "services/identity-service/src/http/mod.rs",
+   "line": 173,
+   "fingerprint": "1c946b2857b84f5903e140caa22020f0",
+   "verdict": "fp",
+   "reason": "The handler calls admin(&auth, &ctx) first; the role check is one call deep."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "services/identity-service/src/http/mod.rs",
+   "line": 174,
+   "fingerprint": "4b6b20b91dfacbe2abf3842daf71b2c8",
+   "verdict": "fp",
+   "reason": "The handler calls admin(&auth, &ctx) first; the role check is one call deep."
+  },
+  {
+   "rule": "DATA001",
+   "file": "services/identity-service/src/keys.rs",
+   "line": 37,
+   "fingerprint": "cf7838665dc2b1a580aec0678f9ea551",
+   "verdict": "fp",
+   "reason": "A three-try retry loop around a single load-or-create, not a per-item query."
+  },
+  {
+   "rule": "DATA012",
+   "file": "services/issue-service/migrations/0001_init.sql",
+   "line": 32,
+   "fingerprint": "04d1a4a63b67690cca935065ad2cc64b",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "services/issue-service/migrations/0001_init.sql",
+   "line": 54,
+   "fingerprint": "b6718dabefac3ea5eff01a0356316ed0",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "services/issue-service/migrations/0001_init.sql",
+   "line": 66,
+   "fingerprint": "2eb01966cc14023c66b9d3a3a4f47350",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "services/issue-service/migrations/0001_init.sql",
+   "line": 67,
+   "fingerprint": "f52bc959e527511f0104de610609f98c",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "services/issue-service/migrations/0001_init.sql",
+   "line": 80,
+   "fingerprint": "55d4b81d59b414613daff318a47bd6d0",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "services/issue-service/migrations/0001_init.sql",
+   "line": 91,
+   "fingerprint": "decddd82afc302609d9c29d7089e9bea",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA011",
+   "file": "services/issue-service/migrations/0002_fields_and_attachments.sql",
+   "line": 9,
+   "fingerprint": "9337c560d55ab196d7d224608fed3e86",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "services/issue-service/migrations/0002_fields_and_attachments.sql",
+   "line": 10,
+   "fingerprint": "08a3ba9969a33a661620306e9a78509b",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA011",
+   "file": "services/issue-service/migrations/0002_fields_and_attachments.sql",
+   "line": 11,
+   "fingerprint": "d1a79117236ce3a73a4626cd431fa01a",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA012",
+   "file": "services/issue-service/migrations/0002_fields_and_attachments.sql",
+   "line": 35,
+   "fingerprint": "2ca3f5537406ce55c7515a18dc03643f",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA011",
+   "file": "services/issue-service/migrations/0003_status_category.sql",
+   "line": 8,
+   "fingerprint": "9f75f026c608435f05493850bba0be54",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "DATA012",
+   "file": "services/issue-service/migrations/0006_votes.sql",
+   "line": 4,
+   "fingerprint": "59c55a9fb0075478564f219108f1908d",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "services/issue-service/migrations/0007_automation.sql",
+   "line": 21,
+   "fingerprint": "6bcdd6f6d99cb89d1528a875f74d4720",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "BE001",
+   "file": "services/issue-service/src/attachments.rs",
+   "line": 164,
+   "fingerprint": "af680aef397526709022e2e970db44bb",
+   "verdict": "fp",
+   "reason": "`.execute(tx.conn())` takes the executor, not SQL; the query uses bind parameters."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/issue-service/src/attachments.rs",
+   "line": 291,
+   "fingerprint": "ce505d01227400b97ef46a0e04a2b16b",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/issue-service/src/attachments.rs",
+   "line": 292,
+   "fingerprint": "2ff2f0213dd272ad206d2e09777cb5a4",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/issue-service/src/http.rs",
+   "line": 1323,
+   "fingerprint": "dd079fe025344fb9dffa172662ed4a71",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/issue-service/src/http.rs",
+   "line": 1323,
+   "fingerprint": "c515020649d58971084baea4ced95e98",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/issue-service/src/http.rs",
+   "line": 1325,
+   "fingerprint": "9f00c7c95dee5e2549ad1a9d41808378",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/issue-service/src/http.rs",
+   "line": 1325,
+   "fingerprint": "90f2d7b987446c0ebc2d4d7a9257d2d6",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/issue-service/src/http.rs",
+   "line": 1328,
+   "fingerprint": "a5b2cd5a99dae9f96bc29ce6ac1a5f65",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/issue-service/src/http.rs",
+   "line": 1331,
+   "fingerprint": "4c12e421fc016725eb119454d752fcd8",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/issue-service/src/http.rs",
+   "line": 1331,
+   "fingerprint": "9c364152ade9e9d41e74b0b9cecbc576",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/issue-service/src/http.rs",
+   "line": 1332,
+   "fingerprint": "3793e6258104f7707c7cfbe2a8caed98",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/issue-service/src/http.rs",
+   "line": 1332,
+   "fingerprint": "3fccc35cf52165cc3ae4d4038fd44da7",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/issue-service/src/http_automation.rs",
+   "line": 263,
+   "fingerprint": "5da9a7d1d5db658dc604af7eeac9703e",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/issue-service/src/http_automation.rs",
+   "line": 263,
+   "fingerprint": "45a8ccd9f85716763e6ca9678dace819",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/issue-service/src/http_fields.rs",
+   "line": 118,
+   "fingerprint": "ccf428ec3319aaa4114706867667babc",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/issue-service/src/http_fields.rs",
+   "line": 118,
+   "fingerprint": "fcc485c27485cf6bfbc9cdcd85d0e081",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "DATA012",
+   "file": "services/notification-service/migrations/0005_integrations.sql",
+   "line": 29,
+   "fingerprint": "4ecee1662777528fd08f5c31c3a20222",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA011",
+   "file": "services/notification-service/migrations/0006_digests_suppressions.sql",
+   "line": 13,
+   "fingerprint": "6c400d913f5c717c869593980f86f769",
+   "verdict": "tp",
+   "reason": "A PostgreSQL migration creates an index on an existing table without CONCURRENTLY, which blocks writes."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/notification-service/src/http.rs",
+   "line": 424,
+   "fingerprint": "c0a6ab658676723854bba21860251818",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/notification-service/src/http.rs",
+   "line": 425,
+   "fingerprint": "5bcfc0a619deca5862902078fb3ffcae",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "BE001",
+   "file": "services/notification-service/src/http_source.rs",
+   "line": 239,
+   "fingerprint": "7953c9045ae629c2598afbaee5df310b",
+   "verdict": "fp",
+   "reason": "format! only inserts a constant column list; values are bound."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/notification-service/src/http_source.rs",
+   "line": 377,
+   "fingerprint": "9a27371ca9a7812823ac93d60603f84a",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/notification-service/src/http_source.rs",
+   "line": 378,
+   "fingerprint": "a7b7b9e524e6745b6afce38733142e0f",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/notification-service/src/http_source.rs",
+   "line": 379,
+   "fingerprint": "9aa130b4b5a270c1801be12336560b6f",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/notification-service/src/http_source.rs",
+   "line": 385,
+   "fingerprint": "7ad922ba34686530ef52c53082cec5ba",
+   "verdict": "fp",
+   "reason": "GitHub webhook receiver: it checks the x-hub-signature-256 HMAC against the connection secret."
+  },
+  {
+   "rule": "BE001",
+   "file": "services/notification-service/src/http_webhooks.rs",
+   "line": 335,
+   "fingerprint": "a98fdf4ceaea44d0187fde6e82b8ad35",
+   "verdict": "fp",
+   "reason": "format! only inserts a constant column list; values are bound."
+  },
+  {
+   "rule": "AUTH004",
+   "file": "services/notification-service/src/http_webhooks.rs",
+   "line": 391,
+   "fingerprint": "6b25ad54a068aa9df51b67976749c4c2",
+   "verdict": "fp",
+   "reason": "The webhook management API (signed-in admins), not an inbound webhook receiver."
+  },
+  {
+   "rule": "REL003",
+   "file": "services/notification-service/src/http_webhooks.rs",
+   "line": 391,
+   "fingerprint": "06b73d50a50fef046022fcda3ac8cfed",
+   "verdict": "fp",
+   "reason": "The webhook management API, not an inbound webhook receiver."
+  },
+  {
+   "rule": "AUTH004",
+   "file": "services/notification-service/src/http_webhooks.rs",
+   "line": 392,
+   "fingerprint": "5c7dabb58eec39670ce777489d9eb54a",
+   "verdict": "fp",
+   "reason": "The webhook management API (signed-in admins), not an inbound webhook receiver."
+  },
+  {
+   "rule": "AUTH004",
+   "file": "services/notification-service/src/http_webhooks.rs",
+   "line": 393,
+   "fingerprint": "e93e26045cd7faf1b15b5a25830bc520",
+   "verdict": "fp",
+   "reason": "The webhook management API (signed-in admins), not an inbound webhook receiver."
+  },
+  {
+   "rule": "REL003",
+   "file": "services/notification-service/src/http_webhooks.rs",
+   "line": 393,
+   "fingerprint": "076f5ec64584aabfa32b25c05bcf119f",
+   "verdict": "fp",
+   "reason": "The webhook management API, not an inbound webhook receiver."
+  },
+  {
+   "rule": "AUTH004",
+   "file": "services/notification-service/src/http_webhooks.rs",
+   "line": 394,
+   "fingerprint": "063bd8a07dd86497e7bb856ad41bb64d",
+   "verdict": "fp",
+   "reason": "The webhook management API (signed-in admins), not an inbound webhook receiver."
+  },
+  {
+   "rule": "REL003",
+   "file": "services/notification-service/src/http_webhooks.rs",
+   "line": 394,
+   "fingerprint": "c8e081aaad8a864521a58918cc282c9b",
+   "verdict": "fp",
+   "reason": "The webhook management API, not an inbound webhook receiver."
+  },
+  {
+   "rule": "AUTH004",
+   "file": "services/notification-service/src/http_webhooks.rs",
+   "line": 395,
+   "fingerprint": "0afa63fd77d9a046c8a3b199dc490cb9",
+   "verdict": "fp",
+   "reason": "The webhook management API (signed-in admins), not an inbound webhook receiver."
+  },
+  {
+   "rule": "AUTH004",
+   "file": "services/notification-service/src/http_webhooks.rs",
+   "line": 396,
+   "fingerprint": "ac208bf5fa744eec6690964fa681fa8b",
+   "verdict": "fp",
+   "reason": "The webhook management API (signed-in admins), not an inbound webhook receiver."
+  },
+  {
+   "rule": "DATA001",
+   "file": "services/notification-service/src/source.rs",
+   "line": 357,
+   "fingerprint": "c0cbba902d59b954cd20de82c64ba378",
+   "verdict": "tp",
+   "reason": "One INSERT per dev link in a loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "services/notification-service/src/webhook_sender.rs",
+   "line": 208,
+   "fingerprint": "f395e0b40d8d3622e1b0b40736b8e8c2",
+   "verdict": "tp",
+   "reason": "One UPDATE per claimed delivery in the sender loop."
+  },
+  {
+   "rule": "DATA012",
+   "file": "services/project-service/migrations/0001_init.sql",
+   "line": 32,
+   "fingerprint": "33445a6df820805a499eacdb76a028ed",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "services/project-service/migrations/0001_init.sql",
+   "line": 43,
+   "fingerprint": "b9bd4dc3d81d545b32e70444f47dcafa",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/project-service/src/http.rs",
+   "line": 840,
+   "fingerprint": "48255bb0810124b3f90e2a4bcc31ad95",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/project-service/src/http.rs",
+   "line": 840,
+   "fingerprint": "5fe0c63b5452a0afe45f629244e85b55",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/project-service/src/http.rs",
+   "line": 844,
+   "fingerprint": "0cc759349aecdf9859e7a3172ba17cf3",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/project-service/src/http.rs",
+   "line": 846,
+   "fingerprint": "0f3163096bbcc7c23c757db4286c5e61",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/project-service/src/http.rs",
+   "line": 850,
+   "fingerprint": "483be8c086e690c2b45b50ada76e0481",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/project-service/src/http.rs",
+   "line": 850,
+   "fingerprint": "215b90a92af73816b4b6ed69b4bdbac3",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/project-service/src/http.rs",
+   "line": 851,
+   "fingerprint": "c609ec78bf407ef132a72c2f0ebc418f",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "DATA012",
+   "file": "services/search-service/migrations/0002_filter_subscriptions.sql",
+   "line": 7,
+   "fingerprint": "ada77cf7c319964eb12e2558020693ca",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/search-service/src/http.rs",
+   "line": 370,
+   "fingerprint": "b3e8e1d9f1da03f17fde85a11adafdff",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/search-service/src/http.rs",
+   "line": 370,
+   "fingerprint": "93ab427bce9842790b26199eec43ddb2",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/search-service/src/http.rs",
+   "line": 371,
+   "fingerprint": "6b700e5cf9b28d8969434e5d939e1b5d",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/search-service/src/http.rs",
+   "line": 371,
+   "fingerprint": "f0d253a1147e39067dae1b91f8b6227e",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "DATA012",
+   "file": "services/user-service/migrations/0001_init.sql",
+   "line": 69,
+   "fingerprint": "fb0a7f4f88b8de4f37ca955884d4c8f3",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "services/user-service/migrations/0001_init.sql",
+   "line": 81,
+   "fingerprint": "3640301fcc9c2662ab93f2d43b16e7cf",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA003",
+   "file": "services/user-service/migrations/0002_audit.sql",
+   "line": 42,
+   "fingerprint": "7ea683c992543116768963fa0585911f",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "services/user-service/migrations/0002_audit.sql",
+   "line": 51,
+   "fingerprint": "d1d4985a7b6d8ff77659a097cf925410",
+   "verdict": "tp",
+   "reason": "The migration drops a table or column (or truncates), which destroys data."
+  },
+  {
+   "rule": "DATA012",
+   "file": "services/user-service/migrations/0005_scim.sql",
+   "line": 11,
+   "fingerprint": "72191561e6f22e95359a22c411763b3c",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "services/user-service/migrations/0005_scim.sql",
+   "line": 35,
+   "fingerprint": "45c644b1d1b82fe98c1bd4c7dde8d0e4",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "services/user-service/migrations/0006_scim_groups.sql",
+   "line": 10,
+   "fingerprint": "185a5ded1d0bced30b9c5ea31dcc839f",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/user-service/src/http/mod.rs",
+   "line": 89,
+   "fingerprint": "cc078603dab2d959f91259269da0a371",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/user-service/src/http/mod.rs",
+   "line": 91,
+   "fingerprint": "3803dba88ef929cb30f63be25eef501b",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/user-service/src/http/mod.rs",
+   "line": 100,
+   "fingerprint": "d3a7296280a3a42fa4e831e7f61b84a9",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/user-service/src/http/mod.rs",
+   "line": 101,
+   "fingerprint": "67f785d977005f5cd9e4a30d41b973cc",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/user-service/src/http/mod.rs",
+   "line": 104,
+   "fingerprint": "d8520ee833000a0f24f80f929adb183c",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/user-service/src/http/mod.rs",
+   "line": 112,
+   "fingerprint": "b719742aa8e6ce778d63aeb34b96d9de",
+   "verdict": "fp",
+   "reason": "SCIM endpoint: change() calls authenticate() on the provisioning bearer token first."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/user-service/src/http/mod.rs",
+   "line": 112,
+   "fingerprint": "0d7a929f0dc2805c261d6ff994a1f8bd",
+   "verdict": "fp",
+   "reason": "SCIM endpoint: change() calls authenticate() on the provisioning bearer token first."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/user-service/src/http/mod.rs",
+   "line": 114,
+   "fingerprint": "9a2a624e0f87a7844d7c878c86ee1142",
+   "verdict": "fp",
+   "reason": "SCIM endpoint: change() calls authenticate() on the provisioning bearer token first."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/user-service/src/http/mod.rs",
+   "line": 114,
+   "fingerprint": "3c71055363b4fab798c048c3cf14b676",
+   "verdict": "fp",
+   "reason": "SCIM endpoint: change() calls authenticate() on the provisioning bearer token first."
+  },
+  {
+   "rule": "DATA001",
+   "file": "services/user-service/src/http/scim.rs",
+   "line": 159,
+   "fingerprint": "2b335377bb3656c030ad9a78ca0ad2b5",
+   "verdict": "tp",
+   "reason": "One UPDATE per SCIM user row in a loop."
+  },
+  {
+   "rule": "DATA012",
+   "file": "services/workflow-service/migrations/0001_init.sql",
+   "line": 44,
+   "fingerprint": "a0b5146bbfa95d402098a7c27d506f1c",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/workflow-service/src/http.rs",
+   "line": 642,
+   "fingerprint": "1bb81ee98e4446f3922e7c2d14fd818a",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/workflow-service/src/http.rs",
+   "line": 642,
+   "fingerprint": "534e1463d24e3aca6b1f9ba4e6965471",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/workflow-service/src/http.rs",
+   "line": 643,
+   "fingerprint": "ac54ae3e6e7862b79f42eb4d3abe8460",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "services/workflow-service/src/http.rs",
+   "line": 643,
+   "fingerprint": "dfd7594cc4945a16d961bba8b60aa65d",
+   "verdict": "fp",
+   "reason": "The handler takes the OrgContext extractor, which requires a signed-in member; the scanner does not know that type."
+  }
+ ]
+}

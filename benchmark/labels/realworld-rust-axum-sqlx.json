@@ -1,0 +1,142 @@
+{
+ "repo": "realworld-rust-axum-sqlx",
+ "commit": "248e6f82f713487a89a65e33351ad1fa59b89835",
+ "findings": [
+  {
+   "rule": "SEC006",
+   "file": ".env.docker",
+   "line": 0,
+   "fingerprint": "4d077817827bdebfe82d65abc7602d86",
+   "verdict": "tp",
+   "reason": ".env.docker is tracked and holds the token secret and Argon salt used by the compose setup."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.docker",
+   "line": 4,
+   "fingerprint": "eecfa177b90d1a39f1c0a1cb412a9577",
+   "verdict": "tp",
+   "reason": "A fixed TOKEN_SECRET is committed in the env file the compose setup uses."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.example",
+   "line": 4,
+   "fingerprint": "82d76fdb23e7e381ffc33555c6bd59c1",
+   "verdict": "fp",
+   "reason": "A placeholder value in the example env file."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 23,
+   "fingerprint": "f55817e2ae4346d2fe40989605294bc5",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/coverage.yml",
+   "line": 27,
+   "fingerprint": "3276be7602d25f2cab83dc3703640f74",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/coverage.yml",
+   "line": 36,
+   "fingerprint": "7fff66951ed3ed651a956c1dfcced5cd",
+   "verdict": "tp",
+   "reason": "A third-party action pinned to a movable tag, not a commit."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "crates/conduit-api/src/endpoints/users_endpoints.rs",
+   "line": 20,
+   "fingerprint": "ebf6ea03543d6d60bf9fb69f0cdd06e3",
+   "verdict": "tp",
+   "reason": "The password login has no rate limit."
+  },
+  {
+   "rule": "CFG001",
+   "file": "crates/conduit-bin/src/Dockerfile",
+   "line": 33,
+   "fingerprint": "d7c59e84acddfe40852530882d145c87",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "DATA012",
+   "file": "crates/conduit-infrastructure/migrations/20220610234429_add_user_follows.sql",
+   "line": 5,
+   "fingerprint": "e60ae4ffd6fe939f0279714238d3dba5",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "crates/conduit-infrastructure/migrations/20220610234429_add_user_follows.sql",
+   "line": 6,
+   "fingerprint": "45e4f7cfda186ecf5572b70e2163aec7",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "crates/conduit-infrastructure/migrations/20220613214350_add_articles.sql",
+   "line": 9,
+   "fingerprint": "54da32e4584f411796a56c03c688734e",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "crates/conduit-infrastructure/migrations/20220613214350_add_articles.sql",
+   "line": 36,
+   "fingerprint": "5e21f1b8829bf0adc58bc29dc7d5a836",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "crates/conduit-infrastructure/migrations/20220613214350_add_articles.sql",
+   "line": 37,
+   "fingerprint": "6f8b6af499b7ddea631d44ea429ff9f4",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "crates/conduit-infrastructure/migrations/20220617192340_add_comments.sql",
+   "line": 5,
+   "fingerprint": "58b7565e3b23fe5406ce24952e47bde6",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "DATA012",
+   "file": "crates/conduit-infrastructure/migrations/20220617192340_add_comments.sql",
+   "line": 6,
+   "fingerprint": "5712805692d380d738a9c6c3f843b7ed",
+   "verdict": "tp",
+   "reason": "The PostgreSQL foreign key column has no index in any migration."
+  },
+  {
+   "rule": "CFG001",
+   "file": "crates/conduit-web/src/Dockerfile",
+   "line": 21,
+   "fingerprint": "60556b47a77086abc3fe2ee49c5db2c8",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "CFG002",
+   "file": "crates/conduit-web/src/Dockerfile",
+   "line": 21,
+   "fingerprint": "7bfae49e9a660397fbb56e8a72fe2521",
+   "verdict": "tp",
+   "reason": "The base image uses latest or no tag."
+  }
+ ]
+}

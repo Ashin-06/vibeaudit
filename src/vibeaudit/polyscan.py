@@ -11,6 +11,7 @@ from typing import Callable, Dict, List, Optional, Tuple
 
 from . import heuristics as H
 from .files import Project, SourceFile
+from .rustscan import rust_views, without_test_modules
 from .guard import GUARD, finditer
 from .model import Finding, Route, join_path
 
@@ -24,16 +25,12 @@ GO_SQLI = re.compile(
     r"""\b(?:db|tx|conn|pool)\s*\.\s*(?:Raw|Exec|Query|QueryRow|Where|Order)\s*\(\s*(?:fmt\.Sprintf\s*\(|"[^"\n]{0,200}"\s*\+)""")
 CS_SQLI = re.compile(
     r"""\.\s*(?:FromSqlRaw|ExecuteSqlRaw|SqlQueryRaw)\s*\(\s*(?:\$"|"[^"\n]{0,200}"\s*\+|string\.Format\s*\()""")
-RS_SQLI = re.compile(
-    r"""\b(?:sqlx::query(?:_as)?|diesel::sql_query)\s*\(\s*&?\s*format!\s*\(""")
 PHP_SQLI = re.compile(
     r"""(?:\bDB::(?:raw|select|statement)|->\s*(?:whereRaw|selectRaw|orderByRaw|query|exec))\s*\(\s*(?:"[^"\n]{0,200}\$\w+|'[^'\n]{0,200}'\s*\.\s*\$)""")
 
 GO_CMDI = re.compile(r"""\bexec\.Command\s*\(\s*"(?:sh|bash|cmd|powershell)"\s*,\s*"(?:-c|/c)"\s*,\s*(?!")""")
 CS_CMDI = re.compile(
     r"""\bProcess\.Start\s*\(\s*(?:new\s+ProcessStartInfo\s*\(\s*)?"(?:cmd|powershell|sh|bash)(?:\.exe)?"\s*,\s*(?:\$"|"[^"\n]{0,200}"\s*\+)""")
-RS_CMDI = re.compile(
-    r"""\bCommand::new\s*\(\s*"(?:sh|bash|cmd)"\s*\)\s*\.arg\s*\(\s*"(?:-c|/c)"\s*\)\s*\.arg\s*\(\s*(?!")""")
 PHP_CMDI = re.compile(
     r"""\b(?:shell_exec|system|passthru)\s*\(\s*(?:"[^"\n]{0,200}\$|\$\w+|(?:"[^"\n]{0,200}"|'[^'\n]{0,200}')\s*\.\s*\$)""")
 
@@ -44,6 +41,8 @@ RS_HTTP = re.compile(r"""\breqwest::get\s*\(|\breqwest::Client::new\s*\(\s*\)|\b
 PHP_HTTP = re.compile(r"""\bHttp::(?:get|post|put|delete)\s*\(""")
 
 LOOP_HEAD = re.compile(r"""\b(?:for|foreach)\b""")
+# Rust: `for x in`, `while`, `loop {` (not `impl Trait for Type {` or a `for<'a>` bound)
+RS_LOOP_HEAD = re.compile(r"""\bfor\s+[\w(),&\s]{1,80}?\s+in\b|\bwhile\b|\bloop\s*\{""")
 GO_LOOP_DB = re.compile(r"""\b(?:db|tx)\s*\.\s*(?:First|Find|Take|Last|Where|Create|Save|Exec|Query|QueryRow)\s*\(""")
 JAVA_LOOP_DB = re.compile(
     r"""\b\w{1,40}Repository\s*\.\s*(?:find|get|save|delete)\w*\s*\(|\bentityManager\s*\.\s*(?:find|create(?:Native)?Query)\s*\(|\bjdbcTemplate\s*\.\s*(?:query|update)\w*\s*\(""")
@@ -75,11 +74,6 @@ CS_CLASS_ROUTE = re.compile(r"""\[Route\s*\(\s*"([^"\n]{1,200})"\s*\)\s*]""")
 CS_ATTR_ROUTE = re.compile(r"""\[Http(Get|Post|Put|Delete|Patch)(?:\s*\(\s*"([^"\n]{0,200})"\s*\))?\s*]""")
 CS_MINIMAL_ROUTE = re.compile(r"""\b\w+\.Map(Get|Post|Put|Delete|Patch)\s*\(\s*"([^"\n]{1,200})"\s*,""")
 
-RS_ACTIX_ATTR = re.compile(r"""#\[(get|post|put|delete|patch)\s*\(\s*"([^"\n]{1,200})"\s*\)\]""")
-RS_RESOURCE_ROUTE = re.compile(
-    r"""\bweb::resource\s*\(\s*"([^"\n]{1,200})"\s*\)\s*\.route\s*\(\s*web::(get|post|put|delete|patch)\s*\(\s*\)(?:\s*\.to\s*\(\s*(\w+)\s*\))?""")
-RS_AXUM_ROUTE = re.compile(
-    r"""\.route\s*\(\s*"([^"\n]{1,200})"\s*,\s*(?:routing::)?(get|post|put|delete|patch)\s*\(\s*(\w+)?""")
 
 PHP_LARAVEL_ROUTE = re.compile(
     r"""\bRoute::(get|post|put|delete|patch)\s*\(\s*['"]([^'"\n]{1,200})['"]\s*,\s*([^;\n]{1,200})""")
@@ -257,8 +251,11 @@ class PolyScanner:
             self._java(sf, code)
         elif lang == "cs":
             self._cs(sf, code)
-        elif lang == "rs":
-            self._rs(sf, code)
+        elif lang == "rs":  # routes and injection are rustscan's; these two checks stay here
+            v = rust_views(raw)
+            code = without_test_modules(v.code, v.bare)
+            self._loop_n_plus_one(sf, code, RS_LOOP_DB, RS_LOOP_HEAD)
+            self._check_timeout(sf, code, RS_HTTP, "reqwest")
         elif lang == "php":
             self._php(sf, code)
 
@@ -273,9 +270,9 @@ class PolyScanner:
         )
         self.routes.append(r)
 
-    def _loop_n_plus_one(self, sf: SourceFile, code: str, db_rx: re.Pattern) -> None:
+    def _loop_n_plus_one(self, sf: SourceFile, code: str, db_rx: re.Pattern, head: re.Pattern = LOOP_HEAD) -> None:
         seen = set()
-        for m in finditer(LOOP_HEAD, code):
+        for m in finditer(head, code):
             line_end = code.find("\n", m.end())
             brace = code.find("{", m.end(), len(code) if line_end < 0 else line_end + 80)
             if brace < 0:
@@ -401,31 +398,6 @@ class PolyScanner:
             self.add(sf, sf.line_at(m.start()), "BE002", "Shell process started with formatted command string.")
         self._loop_n_plus_one(sf, code, CS_LOOP_DB)
         self._check_timeout(sf, code, CS_HTTP, "new HttpClient()")
-
-    # ---------------------------------------------------------------- Rust
-    def _rs(self, sf: SourceFile, code: str) -> None:
-        for m in finditer(RS_ACTIX_ATTR, code):
-            verb, path = m.group(1).upper(), m.group(2)
-            brace = code.find("{", m.end(), m.end() + 400)
-            body = code[m.end():brace] + _brace_block(code, brace) if brace >= 0 else code[m.end():m.end() + 600]
-            self._emit_route(sf, m.start(), path, [verb], body, "actix", "rs")
-
-        for m in finditer(RS_RESOURCE_ROUTE, code):
-            path, verb, fn_name = m.group(1), m.group(2).upper(), m.group(3) or ""
-            body = _named_body(code, fn_name, "rs") or code[m.start():m.end() + 200]
-            self._emit_route(sf, m.start(), path, [verb], body, "actix", "rs")
-
-        for m in finditer(RS_AXUM_ROUTE, code):
-            path, verb, fn_name = m.group(1), m.group(2).upper(), m.group(3) or ""
-            body = _named_body(code, fn_name, "rs") or code[m.start():m.end() + 200]
-            self._emit_route(sf, m.start(), path, [verb], body, "axum", "rs")
-
-        for m in finditer(RS_SQLI, code):
-            self.add(sf, sf.line_at(m.start()), "BE001", "SQL query built dynamically with format!() instead of bound parameters.")
-        for m in finditer(RS_CMDI, code):
-            self.add(sf, sf.line_at(m.start()), "BE002", "Shell command executed with dynamic input.")
-        self._loop_n_plus_one(sf, code, RS_LOOP_DB)
-        self._check_timeout(sf, code, RS_HTTP, "reqwest")
 
     # ----------------------------------------------------------------- PHP
     def _php(self, sf: SourceFile, code: str) -> None:
