@@ -4,6 +4,48 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.10.0] - 2026-11-17
+
+Five more languages in preview, with lexer-based scanners and labelled corpora for Go and Java/Kotlin, and the
+first release published to PyPI from the release workflow.
+
+### Added
+
+- Go: a lexer; routes for net/http (including Go 1.22 `"GET /path"` patterns), Gin, Echo, Fiber and Chi, with
+  groups, `Route`/`Mount` prefixes and auth middleware, feeding the shared route checks (AUTH001-AUTH003, AUTH010,
+  LLM004); request data followed into SQL (database/sql, sqlx, GORM), commands, outbound HTTP, file paths and
+  redirects; `go.mod` dependencies checked against OSV, offline bundle included. Four preview rules: GO001
+  (goroutine started by a handler that never stops), GO002 (response body never closed), GO003 (map written
+  concurrently without a lock), GO004 (SQL built with formatting).
+- Java and Kotlin (Spring Boot, Quarkus): a lexer; Spring `@*Mapping` and JAX-RS routes with the Spring Security
+  chain (path and HTTP-method scoped matchers), Quarkus permissions and hand-written auth interceptors; request
+  data followed into SQL, commands, deserialization, outbound HTTP, file paths and redirects; Maven and Gradle
+  dependencies checked against OSV. Four preview rules: JAVA001 (controllers with no security configuration),
+  JAVA002 (Actuator endpoints exposed), JAVA003 (security chain permits every request), JAVA004 (polymorphic
+  deserialization without an allow-list).
+- C#, Rust and PHP: route and auth discovery, SQL and command injection, template XSS, N+1 queries in loops and
+  HTTP clients without a timeout.
+- `vibeaudit test-exploit`: a proof-of-concept request for a finding, without destructive payloads. Dry run by default; `--send`
+  goes to a loopback address only (checked after DNS resolution) and never follows redirects.
+- `vibeaudit.runtime`: FastAPI and Express middleware for staging, off unless `VIBEAUDIT_RUNTIME=1` and refused in
+  production.
+- `openrouter` as an LLM review provider. Keys are read from the environment only, never from a `.env` in the
+  scanned project.
+- Benchmark: 10 Go and 10 Java/Kotlin repositories, every finding labelled, held-out repositories chosen and
+  pinned before scanning.
+
+### Changed
+
+- Findings in Go, Java/Kotlin, C#, Rust and PHP are preview until measured on enough held-out findings
+  (STABILITY.md); SQL injection, command injection and XSS still gate. Held-out so far: Java 10 of 12 true; Go
+  GO004 2 of 2 and AUTH010 2 of 2.
+- QA006 falls back to packages when a tsconfig maps the catch-all `"*"` path (409 false positives on one Java
+  project's front end).
+- AUTH010 reads rate limiting in Go code; BE018 recognises Go validation tags and libraries; `_test.go` files
+  count as tests.
+- Installation: `pip install vibeaudit` from PyPI. Releases are published there by trusted publishing from the
+  same attested wheel and sdist as the GitHub release.
+
 ## [0.9.3] - 2026-11-16
 
 Full route paths behind router prefixes, UI checks for Vue and Svelte, and AUTH001 stable again.

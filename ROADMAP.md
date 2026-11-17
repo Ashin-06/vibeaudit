@@ -120,21 +120,21 @@ mapping and reports first; the threat feed after the Phase 3 items).
 | Head-to-head with Semgrep and Bandit on the same corpus, in CI | done (0.9.1; same 6 of 17 advisory locations for all three tools) |
 | Public sample report on GitHub Pages | done (0.9.1) |
 | Second-labeller kit: blind sample, instructions, Cohen's kappa | done (0.9.1); waiting for volunteer labellers |
-| PyPI trusted publishing | done (0.9.1); off until the owner's one-time setup (docs/PUBLISHING.md) |
+| PyPI trusted publishing | done (0.9.1); on since 0.9.3 (docs/PUBLISHING.md) |
 | Cross-function taint: Python (0.9.1) and JavaScript/TypeScript (0.9.2) | done |
 | Router prefixes for FastAPI, Flask and Express | done (0.9.3) |
 | UI checks on Vue and Svelte components | done (0.9.3) |
 | Demotions after a fresh held-out repository: AUTH001 (stable again in 0.9.3), UI014 | done; UI014 stays preview (6 of 7 held-out) |
 
-## Phase 5: more languages (preview: no labelled corpus for these languages yet)
+## Phase 5: more languages (preview until measured on held-out repositories)
 
 | Item | Status |
 | --- | --- |
-| Go (net/http, Gin, Fiber, Chi, GORM) | preview (findings are preview until benchmarked) |
-| Java/Kotlin (Spring Boot, Quarkus) | preview (a lexer, Spring and JAX-RS routes with the security configuration, data flow into the generic sinks, Maven/Gradle dependencies, JAVA001-JAVA004; preview until benchmarked) |
-| C#/.NET (ASP.NET Core, EF Core) | preview (findings are preview until benchmarked) |
-| Rust (Actix, Axum) | preview (findings are preview until benchmarked) |
-| PHP (Laravel, Symfony) | preview (findings are preview until benchmarked) |
+| Go (net/http, Gin, Echo, Fiber, Chi, GORM) | preview (0.10.0: a lexer, routes with auth middleware, data flow into the generic sinks, go.mod dependencies, GO001-GO004; 10 labelled repositories, 3 held out) |
+| Java/Kotlin (Spring Boot, Quarkus) | preview (0.10.0: a lexer, Spring and JAX-RS routes with the security configuration, data flow into the generic sinks, Maven/Gradle dependencies, JAVA001-JAVA004; 10 labelled repositories, held-out 10 of 12) |
+| C#/.NET (ASP.NET Core, EF Core) | preview (0.10.0: route and auth discovery, injection, N+1; a lexer-based scanner with a labelled corpus is in progress) |
+| Rust (Actix, Axum) | preview (0.10.0: route and auth discovery, injection, N+1, client timeouts; no labelled corpus yet) |
+| PHP (Laravel, Symfony) | preview (0.10.0: route and auth discovery, injection, template XSS, N+1, client timeouts; no labelled corpus yet) |
 
 ## Phase 6: opt-in extras (done)
 
