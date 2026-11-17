@@ -21,9 +21,13 @@
    "by_repo": {}
   },
   "AUTH001": {
-   "precision": 0.8214,
+   "precision": 0.8514,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     16,
+     0
+    ],
     "LinguaLearn": [
      2,
      0
@@ -42,6 +46,10 @@
     ],
     "conveyor": [
      4,
+     0
+    ],
+    "dvcsharp-api": [
+     1,
      0
     ],
     "dvna": [
@@ -64,17 +72,13 @@
      5,
      0
     ],
-    "koel": [
+    "jira-meridian": [
      0,
-     1
+     6
     ],
     "langchain-nextjs-template": [
      7,
      0
-    ],
-    "laravel-realworld-example-app": [
-     0,
-     1
     ],
     "learnathon-leaderboard": [
      1,
@@ -104,14 +108,6 @@
      1,
      0
     ],
-    "snipe-it": [
-     0,
-     1
-    ],
-    "symfony-demo": [
-     0,
-     2
-    ],
     "thynk": [
      3,
      0
@@ -119,7 +115,7 @@
    }
   },
   "AUTH002": {
-   "precision": 0.7308,
+   "precision": 0.6552,
    "seeded_recall": 1.0,
    "by_repo": {
     "bella-openapi": [
@@ -134,6 +130,10 @@
      0,
      6
     ],
+    "jira-meridian": [
+     0,
+     3
+    ],
     "uniedit-server": [
      17,
      0
@@ -141,9 +141,13 @@
    }
   },
   "AUTH003": {
-   "precision": 0.4286,
+   "precision": 0.5682,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     10,
+     1
+    ],
     "bella-openapi": [
      0,
      1
@@ -156,6 +160,10 @@
      0,
      2
     ],
+    "dvcsharp-api": [
+     1,
+     0
+    ],
     "golang-gin-realworld-example-app": [
      0,
      1
@@ -163,10 +171,6 @@
     "jhipster-sample-app": [
      9,
      0
-    ],
-    "koel": [
-     0,
-     1
     ],
     "microblog": [
      0,
@@ -176,27 +180,35 @@
      0,
      1
     ],
+    "semantickernel-microservice": [
+     5,
+     0
+    ],
     "toWers": [
      0,
      1
     ],
+    "torrent-aggregator": [
+     0,
+     6
+    ],
     "vibe-trading": [
      0,
      2
+    ],
+    "vibecodementor": [
+     0,
+     1
     ]
    }
   },
   "AUTH004": {
-   "precision": 0.25,
+   "precision": 0.3333,
    "seeded_recall": 1.0,
    "by_repo": {
     "learnathon-leaderboard": [
      1,
      0
-    ],
-    "monica": [
-     0,
-     1
     ],
     "svix-webhooks": [
      0,
@@ -266,10 +278,18 @@
    }
   },
   "AUTH010": {
-   "precision": 1.0,
+   "precision": 0.9565,
    "seeded_recall": 1.0,
    "by_repo": {
+    "TodoApp": [
+     1,
+     1
+    ],
     "Vulnerable-Flask-App": [
+     1,
+     0
+    ],
+    "aspnetcore-realworld-example-app": [
      1,
      0
     ],
@@ -321,10 +341,6 @@
      1,
      0
     ],
-    "symfony-demo": [
-     1,
-     0
-    ],
     "zero-to-production": [
      2,
      0
@@ -355,8 +371,8 @@
    "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
-    "BookStack": [
-     3,
+    "dvcsharp-api": [
+     1,
      0
     ],
     "full-stack-fastapi-template": [
@@ -385,17 +401,9 @@
    }
   },
   "BE001": {
-   "precision": 0.8243,
+   "precision": 0.7561,
    "seeded_recall": 1.0,
    "by_repo": {
-    "BookStack": [
-     0,
-     1
-    ],
-    "DVWA": [
-     31,
-     2
-    ],
     "JavaVulnerableLab": [
      5,
      0
@@ -406,6 +414,10 @@
     ],
     "damn-vulnerable-llm-agent": [
      2,
+     0
+    ],
+    "dvcsharp-api": [
+     1,
      0
     ],
     "dvna": [
@@ -420,6 +432,10 @@
      11,
      1
     ],
+    "jira-meridian": [
+     0,
+     2
+    ],
     "pygoat": [
      1,
      0
@@ -428,15 +444,7 @@
      0,
      6
     ],
-    "snipe-it": [
-     0,
-     1
-    ],
     "waline": [
-     0,
-     1
-    ],
-    "wallabag": [
      0,
      1
     ],
@@ -447,13 +455,9 @@
    }
   },
   "BE002": {
-   "precision": 0.5238,
+   "precision": 0.4444,
    "seeded_recall": 1.0,
    "by_repo": {
-    "DVWA": [
-     7,
-     2
-    ],
     "djangoproject.com": [
      0,
      1
@@ -482,10 +486,6 @@
      1,
      0
     ],
-    "snipe-it": [
-     0,
-     3
-    ],
     "svix-webhooks": [
      0,
      1
@@ -497,13 +497,9 @@
    }
   },
   "BE003": {
-   "precision": 0.4615,
+   "precision": 0.3636,
    "seeded_recall": 1.0,
    "by_repo": {
-    "DVWA": [
-     2,
-     0
-    ],
     "flask": [
      0,
      2
@@ -545,16 +541,20 @@
    }
   },
   "BE005": {
-   "precision": 0.6,
+   "precision": 0.8333,
    "seeded_recall": 1.0,
    "by_repo": {
     "bella-openapi": [
      2,
      0
     ],
-    "monica": [
-     0,
-     1
+    "chat-copilot": [
+     1,
+     0
+    ],
+    "dvcsharp-api": [
+     1,
+     0
     ],
     "physicalmediavault": [
      0,
@@ -567,26 +567,14 @@
    }
   },
   "BE006": {
-   "precision": 0.5714,
+   "precision": 0.5,
    "seeded_recall": 1.0,
    "by_repo": {
-    "DVWA": [
-     13,
-     3
-    ],
     "JavaVulnerableLab": [
      2,
      0
     ],
     "flexible-graphrag": [
-     0,
-     1
-    ],
-    "koel": [
-     0,
-     1
-    ],
-    "laravel-realworld-example-app": [
      0,
      1
     ],
@@ -597,10 +585,6 @@
     "pygoat": [
      1,
      0
-    ],
-    "snipe-it": [
-     0,
-     4
     ],
     "vibe-trading": [
      0,
@@ -619,17 +603,9 @@
    }
   },
   "BE008": {
-   "precision": 0.5789,
+   "precision": 0.875,
    "seeded_recall": 1.0,
    "by_repo": {
-    "BookStack": [
-     0,
-     1
-    ],
-    "DVWA": [
-     3,
-     0
-    ],
     "JavaVulnerableLab": [
      1,
      0
@@ -646,10 +622,6 @@
      1,
      0
     ],
-    "koel": [
-     0,
-     1
-    ],
     "nextjs-subscription-payments": [
      0,
      1
@@ -661,14 +633,6 @@
     "pygoat": [
      2,
      0
-    ],
-    "snipe-it": [
-     0,
-     2
-    ],
-    "wallabag": [
-     1,
-     3
     ]
    }
   },
@@ -759,6 +723,10 @@
    "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     1,
+     0
+    ],
     "pygoat": [
      1,
      0
@@ -881,11 +849,7 @@
    "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
-    "BookStack": [
-     2,
-     0
-    ],
-    "DVWA": [
+    "ClaudeCodeProxy": [
      1,
      0
     ],
@@ -913,6 +877,10 @@
      3,
      0
     ],
+    "chat-copilot": [
+     5,
+     0
+    ],
     "chat-systems": [
      3,
      0
@@ -933,12 +901,20 @@
      1,
      0
     ],
+    "dvcsharp-api": [
+     1,
+     0
+    ],
     "dvna": [
      1,
      0
     ],
     "dvpwa": [
      1,
+     0
+    ],
+    "eShopOnWeb": [
+     2,
      0
     ],
     "flexible-graphrag": [
@@ -969,23 +945,11 @@
      1,
      0
     ],
-    "kimai": [
-     1,
-     0
-    ],
-    "laravel-realworld-example-app": [
-     1,
-     0
-    ],
     "lldap": [
      6,
      0
     ],
     "microblog": [
-     1,
-     0
-    ],
-    "monica": [
      1,
      0
     ],
@@ -1021,10 +985,6 @@
      1,
      0
     ],
-    "snipe-it": [
-     1,
-     0
-    ],
     "spring-petclinic": [
      1,
      0
@@ -1041,7 +1001,15 @@
      1,
      0
     ],
+    "torrent-aggregator": [
+     1,
+     0
+    ],
     "vibe-trading": [
+     1,
+     0
+    ],
+    "vibecodementor": [
      1,
      0
     ],
@@ -1064,7 +1032,7 @@
    }
   },
   "CFG002": {
-   "precision": 0.9333,
+   "precision": 0.9286,
    "seeded_recall": 1.0,
    "by_repo": {
     "Schematic": [
@@ -1076,6 +1044,10 @@
      0
     ],
     "conveyor": [
+     1,
+     0
+    ],
+    "dvcsharp-api": [
      1,
      0
     ],
@@ -1092,10 +1064,6 @@
      0
     ],
     "go-test-bench": [
-     1,
-     0
-    ],
-    "kimai": [
      1,
      0
     ],
@@ -1116,10 +1084,6 @@
      0
     ],
     "toWers": [
-     1,
-     0
-    ],
-    "wallabag": [
      1,
      0
     ]
@@ -1198,10 +1162,6 @@
      1,
      0
     ],
-    "laravel-realworld-example-app": [
-     2,
-     0
-    ],
     "opengpts": [
      1,
      0
@@ -1215,6 +1175,10 @@
      0
     ],
     "uniedit-server": [
+     1,
+     0
+    ],
+    "vibecodementor": [
      1,
      0
     ]
@@ -1235,7 +1199,7 @@
    }
   },
   "CFG009": {
-   "precision": 0.8,
+   "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
     "LinguaLearn": [
@@ -1250,16 +1214,8 @@
      1,
      0
     ],
-    "monica": [
-     0,
-     2
-    ],
     "sec-insights": [
      1,
-     0
-    ],
-    "snipe-it": [
-     2,
      0
     ],
     "toWers": [
@@ -1272,16 +1228,16 @@
    "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
-    "Cachet": [
-     4,
-     0
-    ],
-    "DVWA": [
-     4,
+    "ClaudeCodeProxy": [
+     10,
      0
     ],
     "Schematic": [
      1,
+     0
+    ],
+    "Timinute": [
+     6,
      0
     ],
     "Vulnerable-Flask-App": [
@@ -1300,12 +1256,20 @@
      2,
      0
     ],
+    "aspnetcore-realworld-example-app": [
+     1,
+     0
+    ],
     "bakerydemo": [
      1,
      0
     ],
     "bella-openapi": [
      3,
+     0
+    ],
+    "chat-copilot": [
+     13,
      0
     ],
     "chat-systems": [
@@ -1322,6 +1286,10 @@
     ],
     "djangoproject.com": [
      7,
+     0
+    ],
+    "eShopOnWeb": [
+     1,
      0
     ],
     "flexible-graphrag": [
@@ -1360,10 +1328,6 @@
      8,
      0
     ],
-    "monica": [
-     15,
-     0
-    ],
     "next-learn": [
      1,
      0
@@ -1392,8 +1356,8 @@
      19,
      0
     ],
-    "snipe-it": [
-     9,
+    "semantickernel-microservice": [
+     10,
      0
     ],
     "spring-petclinic": [
@@ -1402,10 +1366,6 @@
     ],
     "svix-webhooks": [
      1,
-     0
-    ],
-    "symfony-demo": [
-     6,
      0
     ],
     "terragoat": [
@@ -1418,6 +1378,10 @@
     ],
     "toWers": [
      6,
+     0
+    ],
+    "torrent-aggregator": [
+     9,
      0
     ],
     "waline": [
@@ -1484,13 +1448,9 @@
    }
   },
   "CFG017": {
-   "precision": 0.5,
+   "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
-    "monica": [
-     0,
-     1
-    ],
     "sec-insights": [
      1,
      0
@@ -1502,20 +1462,35 @@
    "seeded_recall": 1.0,
    "by_repo": {}
   },
+  "CSHARP001": {
+   "precision": null,
+   "seeded_recall": null,
+   "by_repo": {}
+  },
+  "CSHARP002": {
+   "precision": null,
+   "seeded_recall": null,
+   "by_repo": {}
+  },
+  "CSHARP003": {
+   "precision": null,
+   "seeded_recall": null,
+   "by_repo": {}
+  },
   "DATA001": {
-   "precision": 0.8667,
+   "precision": 0.6818,
    "seeded_recall": 1.0,
    "by_repo": {
-    "BookStack": [
-     12,
-     0
-    ],
     "Django-Styleguide-Example": [
      0,
      1
     ],
     "alerta": [
      2,
+     0
+    ],
+    "aspnetcore-realworld-example-app": [
+     1,
      0
     ],
     "chat-systems": [
@@ -1542,21 +1517,9 @@
      7,
      1
     ],
-    "kimai": [
-     1,
-     0
-    ],
-    "koel": [
-     2,
-     1
-    ],
     "mCaptcha": [
      4,
      0
-    ],
-    "monica": [
-     15,
-     2
     ],
     "pygoat": [
      0,
@@ -1566,13 +1529,17 @@
      0,
      2
     ],
-    "snipe-it": [
-     126,
-     12
-    ],
     "svix-webhooks": [
      0,
      3
+    ],
+    "torrent-aggregator": [
+     18,
+     7
+    ],
+    "vibecodementor": [
+     0,
+     1
     ],
     "waline": [
      0,
@@ -1701,7 +1668,7 @@
    }
   },
   "DATA007": {
-   "precision": 0.5455,
+   "precision": 0.5714,
    "seeded_recall": 1.0,
    "by_repo": {
     "bakerydemo": [
@@ -1710,6 +1677,10 @@
     ],
     "bella-openapi": [
      11,
+     0
+    ],
+    "chat-copilot": [
+     1,
      0
     ],
     "chat-langchain": [
@@ -1729,6 +1700,10 @@
      0
     ],
     "thynk": [
+     1,
+     0
+    ],
+    "torrent-aggregator": [
      1,
      0
     ],
@@ -1801,13 +1776,9 @@
    }
   },
   "DATA012": {
-   "precision": 0.9393,
+   "precision": 0.9571,
    "seeded_recall": 1.0,
    "by_repo": {
-    "DVWA": [
-     0,
-     4
-    ],
     "LinguaLearn": [
      2,
      0
@@ -2004,6 +1975,10 @@
    "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
+    "Timinute": [
+     1,
+     0
+    ],
     "bella-openapi": [
      1,
      0
@@ -2021,17 +1996,9 @@
    "by_repo": {}
   },
   "FE001": {
-   "precision": 0.1906,
+   "precision": 0.3,
    "seeded_recall": 1.0,
    "by_repo": {
-    "BookStack": [
-     0,
-     38
-    ],
-    "DVWA": [
-     6,
-     0
-    ],
     "act-solo-ai": [
      13,
      0
@@ -2064,14 +2031,6 @@
      0,
      1
     ],
-    "kimai": [
-     0,
-     11
-    ],
-    "koel": [
-     0,
-     10
-    ],
     "mCaptcha": [
      0,
      1
@@ -2079,10 +2038,6 @@
     "microblog": [
      0,
      1
-    ],
-    "monica": [
-     0,
-     18
     ],
     "next-learn": [
      0,
@@ -2104,17 +2059,13 @@
      17,
      20
     ],
-    "snipe-it": [
-     2,
-     41
-    ],
-    "symfony-demo": [
-     0,
-     4
-    ],
     "thynk": [
      1,
      1
+    ],
+    "vibecodementor": [
+     0,
+     2
     ],
     "waline": [
      2,
@@ -2130,9 +2081,13 @@
    "precision": 0.0,
    "seeded_recall": 1.0,
    "by_repo": {
-    "sili-smart-hr": [
+    "ClaudeCodeProxy": [
      0,
      3
+    ],
+    "sili-smart-hr": [
+     0,
+     2
     ]
    }
   },
@@ -2142,14 +2097,10 @@
    "by_repo": {}
   },
   "FE004": {
-   "precision": 0.6,
+   "precision": 0.75,
    "seeded_recall": 1.0,
    "by_repo": {
     "jira-meridian": [
-     0,
-     1
-    ],
-    "koel": [
      0,
      1
     ],
@@ -2167,6 +2118,10 @@
    "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     2,
+     0
+    ],
     "LinguaLearn": [
      5,
      0
@@ -2200,13 +2155,21 @@
     "jira-meridian": [
      1,
      0
+    ],
+    "torrent-aggregator": [
+     1,
+     0
     ]
    }
   },
   "FE007": {
-   "precision": 0.8462,
+   "precision": 0.8148,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     0,
+     1
+    ],
     "LinguaLearn": [
      3,
      0
@@ -2477,9 +2440,13 @@
    "by_repo": {}
   },
   "LLM012": {
-   "precision": 0.96,
+   "precision": 0.9643,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     3,
+     0
+    ],
     "chatbot-ui": [
      11,
      0
@@ -2512,9 +2479,14 @@
    "by_repo": {}
   },
   "LLM014": {
-   "precision": null,
+   "precision": 1.0,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "vibecodementor": [
+     1,
+     0
+    ]
+   }
   },
   "LLM015": {
    "precision": null,
@@ -2619,6 +2591,10 @@
    "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     1,
+     0
+    ],
     "careconnect": [
      1,
      0
@@ -2689,10 +2665,6 @@
    "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
-    "BookStack": [
-     1,
-     0
-    ],
     "LinguaLearn": [
      1,
      0
@@ -2788,19 +2760,23 @@
     "taxonomy": [
      1,
      0
+    ],
+    "vibecodementor": [
+     1,
+     0
     ]
    }
   },
   "QA003": {
-   "precision": 0.5833,
+   "precision": 0.6417,
    "seeded_recall": 1.0,
    "by_repo": {
-    "BookStack": [
-     0,
-     1
-    ],
     "Schematic": [
      1,
+     0
+    ],
+    "Timinute": [
+     2,
      0
     ],
     "alerta": [
@@ -2823,18 +2799,6 @@
      116,
      0
     ],
-    "koel": [
-     0,
-     6
-    ],
-    "laravel-realworld-example-app": [
-     0,
-     1
-    ],
-    "monica": [
-     9,
-     0
-    ],
     "next-saas-stripe-starter": [
      1,
      1
@@ -2855,10 +2819,6 @@
      0,
      44
     ],
-    "snipe-it": [
-     0,
-     21
-    ],
     "vibe-trading": [
      24,
      0
@@ -2874,10 +2834,10 @@
    }
   },
   "QA004": {
-   "precision": 0.8235,
+   "precision": 0.8824,
    "seeded_recall": 1.0,
    "by_repo": {
-    "BookStack": [
+    "ClaudeCodeProxy": [
      1,
      0
     ],
@@ -2890,6 +2850,10 @@
      0
     ],
     "alerta": [
+     1,
+     0
+    ],
+    "chat-copilot": [
      1,
      0
     ],
@@ -2908,10 +2872,6 @@
     "pygoat": [
      1,
      0
-    ],
-    "symfony-demo": [
-     0,
-     1
     ],
     "taxonomy": [
      1,
@@ -2946,13 +2906,9 @@
    }
   },
   "QA006": {
-   "precision": 0.25,
+   "precision": 0.28,
    "seeded_recall": 1.0,
    "by_repo": {
-    "BookStack": [
-     0,
-     5
-    ],
     "careconnect": [
      1,
      0
@@ -2966,10 +2922,6 @@
      12
     ],
     "jhipster-sample-app": [
-     0,
-     1
-    ],
-    "mCaptcha": [
      0,
      1
     ],
@@ -2992,13 +2944,9 @@
    }
   },
   "QA007": {
-   "precision": 0.9032,
+   "precision": 0.9322,
    "seeded_recall": 1.0,
    "by_repo": {
-    "BookStack": [
-     0,
-     2
-    ],
     "LinguaLearn": [
      8,
      0
@@ -3019,6 +2967,10 @@
      1,
      0
     ],
+    "chat-copilot": [
+     1,
+     0
+    ],
     "conveyor": [
      1,
      0
@@ -3033,10 +2985,6 @@
     ],
     "flexible-graphrag": [
      7,
-     0
-    ],
-    "monica": [
-     2,
      0
     ],
     "opengpts": [
@@ -3059,10 +3007,6 @@
      4,
      0
     ],
-    "snipe-it": [
-     1,
-     0
-    ],
     "svix-webhooks": [
      2,
      1
@@ -3073,6 +3017,10 @@
     ],
     "vibe-trading": [
      4,
+     0
+    ],
+    "vibecodementor": [
+     1,
      0
     ]
    }
@@ -3100,24 +3048,24 @@
    "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     1,
+     0
+    ],
     "conveyor": [
      2,
+     0
+    ],
+    "vibecodementor": [
+     1,
      0
     ]
    }
   },
   "QA011": {
-   "precision": 0.9865,
+   "precision": 0.9851,
    "seeded_recall": 1.0,
    "by_repo": {
-    "BookStack": [
-     1,
-     0
-    ],
-    "DVWA": [
-     1,
-     0
-    ],
     "act-solo-ai": [
      2,
      0
@@ -3138,16 +3086,8 @@
      1,
      0
     ],
-    "koel": [
-     2,
-     0
-    ],
     "langchain-nextjs-template": [
      2,
-     0
-    ],
-    "monica": [
-     3,
      0
     ],
     "next-saas-stripe-starter": [
@@ -3212,10 +3152,6 @@
      1,
      0
     ],
-    "koel": [
-     1,
-     0
-    ],
     "lldap": [
      3,
      0
@@ -3226,10 +3162,6 @@
     ],
     "microblog": [
      1,
-     0
-    ],
-    "monica": [
-     3,
      0
     ],
     "opengpts": [
@@ -3351,7 +3283,7 @@
    }
   },
   "SEC001": {
-   "precision": 0.9333,
+   "precision": 0.9655,
    "seeded_recall": 1.0,
    "by_repo": {
     "Django-Styleguide-Example": [
@@ -3370,10 +3302,6 @@
      24,
      0
     ],
-    "snipe-it": [
-     0,
-     1
-    ],
     "terragoat": [
      2,
      0
@@ -3381,13 +3309,9 @@
    }
   },
   "SEC002": {
-   "precision": 0.5,
+   "precision": 0.6667,
    "seeded_recall": 1.0,
    "by_repo": {
-    "BookStack": [
-     0,
-     1
-    ],
     "nodegoat": [
      1,
      0
@@ -3403,16 +3327,36 @@
    }
   },
   "SEC003": {
-   "precision": 0.4638,
+   "precision": 0.32,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     1,
+     0
+    ],
     "JavaVulnerableLab": [
      1,
      0
     ],
+    "Timinute": [
+     0,
+     36
+    ],
     "bakerydemo": [
      0,
      1
+    ],
+    "chat-copilot": [
+     0,
+     4
+    ],
+    "dvcsharp-api": [
+     1,
+     0
+    ],
+    "eShopOnWeb": [
+     1,
+     0
     ],
     "flexible-graphrag": [
      0,
@@ -3427,10 +3371,6 @@
      0
     ],
     "jira-meridian": [
-     0,
-     1
-    ],
-    "koel": [
      0,
      1
     ],
@@ -3462,13 +3402,9 @@
      2,
      4
     ],
-    "snipe-it": [
-     2,
-     6
-    ],
     "svix-webhooks": [
      0,
-     12
+     11
     ],
     "terragoat": [
      7,
@@ -3476,11 +3412,7 @@
     ],
     "waline": [
      0,
-     2
-    ],
-    "wallabag": [
-     1,
-     2
+     3
     ],
     "wsgidav": [
      0,
@@ -3489,7 +3421,7 @@
    }
   },
   "SEC004": {
-   "precision": 0.8286,
+   "precision": 0.8333,
    "seeded_recall": 1.0,
    "by_repo": {
     "Vulnerable-Flask-App": [
@@ -3505,6 +3437,10 @@
      0
     ],
     "dvna": [
+     1,
+     0
+    ],
+    "eShopOnWeb": [
      1,
      0
     ],
@@ -3549,13 +3485,9 @@
    }
   },
   "SEC006": {
-   "precision": 0.4286,
+   "precision": 0.6,
    "seeded_recall": null,
    "by_repo": {
-    "BookStack": [
-     0,
-     1
-    ],
     "LinguaLearn": [
      0,
      1
@@ -3571,18 +3503,6 @@
     "realworld-rust-axum-sqlx": [
      1,
      0
-    ],
-    "snipe-it": [
-     2,
-     3
-    ],
-    "symfony-demo": [
-     0,
-     1
-    ],
-    "wallabag": [
-     1,
-     1
     ]
    }
   },
@@ -3595,6 +3515,10 @@
    "precision": 0.0,
    "seeded_recall": 1.0,
    "by_repo": {
+    "chat-copilot": [
+     0,
+     4
+    ],
     "prompt-sculptor-49": [
      0,
      1
@@ -3638,7 +3562,7 @@
    }
   },
   "SEC011": {
-   "precision": 0.4194,
+   "precision": 0.4262,
    "seeded_recall": 1.0,
    "by_repo": {
     "LinguaLearn": [
@@ -3666,10 +3590,6 @@
      1
     ],
     "jhipster-sample-app": [
-     0,
-     1
-    ],
-    "koel": [
      0,
      1
     ],
@@ -3711,10 +3631,6 @@
      4,
      0
     ],
-    "monica": [
-     3,
-     0
-    ],
     "nodegoat": [
      1,
      0
@@ -3742,11 +3658,19 @@
    }
   },
   "UI002": {
-   "precision": 0.958,
+   "precision": 0.942,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     2,
+     0
+    ],
     "bella-openapi": [
      14,
+     0
+    ],
+    "chat-copilot": [
+     2,
      0
     ],
     "chat-systems": [
@@ -3768,14 +3692,6 @@
     "jira-meridian": [
      0,
      1
-    ],
-    "koel": [
-     7,
-     0
-    ],
-    "monica": [
-     189,
-     7
     ],
     "openai-assistants-quickstart": [
      1,
@@ -3801,6 +3717,10 @@
      1,
      0
     ],
+    "vibecodementor": [
+     6,
+     0
+    ],
     "waline": [
      4,
      0
@@ -3808,9 +3728,13 @@
    }
   },
   "UI003": {
-   "precision": 0.9583,
+   "precision": 0.991,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     16,
+     0
+    ],
     "LinguaLearn": [
      1,
      0
@@ -3822,6 +3746,10 @@
     "careconnect": [
      13,
      1
+    ],
+    "chat-copilot": [
+     1,
+     0
     ],
     "chatgpt-your-files": [
      2,
@@ -3835,17 +3763,9 @@
      3,
      0
     ],
-    "koel": [
-     3,
-     1
-    ],
     "langchain-nextjs-template": [
      1,
      0
-    ],
-    "monica": [
-     17,
-     2
     ],
     "next-learn": [
      3,
@@ -3891,6 +3811,10 @@
      3,
      0
     ],
+    "vibecodementor": [
+     21,
+     0
+    ],
     "waline": [
      4,
      0
@@ -3901,6 +3825,10 @@
    "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     5,
+     0
+    ],
     "prompt-sculptor-49": [
      4,
      0
@@ -3913,7 +3841,7 @@
    "by_repo": {}
   },
   "UI006": {
-   "precision": 0.8333,
+   "precision": 0.8125,
    "seeded_recall": 1.0,
    "by_repo": {
     "act-solo-ai": [
@@ -3936,10 +3864,6 @@
      1,
      0
     ],
-    "monica": [
-     2,
-     0
-    ],
     "physicalmediavault": [
      3,
      0
@@ -3959,30 +3883,26 @@
    }
   },
   "UI007": {
-   "precision": null,
-   "seeded_recall": 1.0,
-   "by_repo": {}
-  },
-  "UI008": {
    "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
-    "koel": [
+    "vibecodementor": [
      3,
      0
     ]
    }
   },
+  "UI008": {
+   "precision": null,
+   "seeded_recall": 1.0,
+   "by_repo": {}
+  },
   "UI009": {
-   "precision": 0.8889,
+   "precision": 0.875,
    "seeded_recall": 1.0,
    "by_repo": {
     "careconnect": [
      2,
-     0
-    ],
-    "koel": [
-     1,
      0
     ],
     "openai-assistants-quickstart": [
@@ -4047,6 +3967,10 @@
     "taxonomy": [
      1,
      0
+    ],
+    "vibecodementor": [
+     1,
+     0
     ]
    }
   },
@@ -4071,7 +3995,7 @@
    }
   },
   "UI014": {
-   "precision": 0.6279,
+   "precision": 0.5714,
    "seeded_recall": 1.0,
    "by_repo": {
     "chat-systems": [
@@ -4090,16 +4014,8 @@
      2,
      0
     ],
-    "koel": [
-     1,
-     1
-    ],
     "microblog": [
      3,
-     0
-    ],
-    "monica": [
-     6,
      0
     ],
     "next-learn": [
@@ -4132,6 +4048,10 @@
    "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     5,
+     0
+    ],
     "act-solo-ai": [
      1,
      0
@@ -4159,12 +4079,12 @@
    }
   },
   "UI016": {
-   "precision": 0.5385,
+   "precision": 0.5556,
    "seeded_recall": 1.0,
    "by_repo": {
-    "BookStack": [
-     3,
-     2
+    "Timinute": [
+     0,
+     3
     ],
     "ai-chatbot": [
      1,
@@ -4186,10 +4106,6 @@
      1,
      3
     ],
-    "laravel-realworld-example-app": [
-     0,
-     1
-    ],
     "learnathon-leaderboard": [
      2,
      0
@@ -4205,6 +4121,14 @@
     "spring-petclinic": [
      3,
      0
+    ],
+    "torrent-aggregator": [
+     3,
+     0
+    ],
+    "vibecodementor": [
+     1,
+     0
     ]
    }
   },
@@ -4212,6 +4136,10 @@
    "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ClaudeCodeProxy": [
+     1,
+     0
+    ],
     "careconnect": [
      1,
      0

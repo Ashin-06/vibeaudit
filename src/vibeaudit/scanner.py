@@ -16,6 +16,7 @@ from . import heuristics as H
 from .files import Project
 from .guard import GUARD
 from .jsscan import JsScanner
+from .csharp import CsScanner
 from .jvm import JvmScanner
 from .model import SEVERITY_RANK, SUPPRESS, TEST_FILE_RULES, Finding, at_least
 from .projectscan import ProjectScanner
@@ -188,8 +189,9 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
     py_routes = PyScanner(project, emit).run() + JvmScanner(project, emit).run()  # Python, then Java and Kotlin
     go_routes = GoScanner(project, emit).run()  # Go: lexer-based; polyscan covers the other new languages
     go_routes += RustScanner(project, emit).run()  # Rust: Actix and Axum
+    go_routes += CsScanner(project, emit).run()  # C#: ASP.NET Core controllers and minimal APIs
     go_routes += PhpScanner(project, emit).run()  # PHP: Laravel and Symfony
-    poly_routes = PolyScanner(project, emit).run()  # C#, Rust, PHP; for Go and Java only the checks they lack
+    poly_routes = PolyScanner(project, emit).run()  # for Go, Java, Rust, C# and PHP only the checks they lack
     all_routes = js_routes + py_routes + go_routes + poly_routes
     SecretScanner(project, emit).run()
     ProjectScanner(project, emit, all_routes).run()

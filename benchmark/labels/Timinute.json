@@ -1,0 +1,390 @@
+{
+ "repo": "Timinute",
+ "commit": "d768c477d3002c449a0869b61ddacee6b687b006",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-publish.yml",
+   "line": 19,
+   "fingerprint": "fbbc49737c4742b541bd76757cf4272f",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-publish.yml",
+   "line": 23,
+   "fingerprint": "72458817795633ba229fcfede40adb18",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-publish.yml",
+   "line": 25,
+   "fingerprint": "4f6fa80aba4b789ef33ed2deadc38f5e",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-publish.yml",
+   "line": 32,
+   "fingerprint": "2ffb00ec36af65e9821cf4a4c9836066",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-publish.yml",
+   "line": 43,
+   "fingerprint": "331bc3409a9833f9543a85463afb3e8a",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yml",
+   "line": 88,
+   "fingerprint": "e320b9960c2b346142552ee4ce97cad1",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "DEP007",
+   "file": ".mcp.json",
+   "line": 9,
+   "fingerprint": "e59ed21de0393b2dc584dfbc6909856f",
+   "verdict": "tp",
+   "reason": "The MCP server runs an unpinned package."
+  },
+  {
+   "rule": "UI016",
+   "file": "Timinute/Client/Shared/AuroraModal.razor.css",
+   "line": 43,
+   "fingerprint": "0947d8c338e60281a17c0073cf97c282",
+   "verdict": "fp",
+   "reason": "A container or heading focused by script (Blazor's h1:focus default, a modal panel), not a control users tab to."
+  },
+  {
+   "rule": "UI016",
+   "file": "Timinute/Client/Shared/NotificationBell.razor.css",
+   "line": 73,
+   "fingerprint": "24a443eca7edd27f46c830e726d67546",
+   "verdict": "fp",
+   "reason": "A container or heading focused by script (Blazor's h1:focus default, a modal panel), not a control users tab to."
+  },
+  {
+   "rule": "UI016",
+   "file": "Timinute/Client/wwwroot/css/app.css",
+   "line": 5,
+   "fingerprint": "a6b770d88c1d6134cf1411faa2f9c754",
+   "verdict": "fp",
+   "reason": "A container or heading focused by script (Blazor's h1:focus default, a modal panel), not a control users tab to."
+  },
+  {
+   "rule": "QA003",
+   "file": "Timinute/Client/wwwroot/js/browser-notify.js",
+   "line": 26,
+   "fingerprint": "48afad5cafb1f1070d838099ee460fb6",
+   "verdict": "tp",
+   "reason": "The error is caught and ignored with no comment."
+  },
+  {
+   "rule": "QA003",
+   "file": "Timinute/Client/wwwroot/js/idle.js",
+   "line": 19,
+   "fingerprint": "2378373590179b3c20596c229271b062",
+   "verdict": "tp",
+   "reason": "The error is caught and ignored with no comment."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/ApplicationDbContext.cs",
+   "line": 238,
+   "fingerprint": "9e36907eed429510749c1a11d3e83639",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/ApplicationDbContext.cs",
+   "line": 239,
+   "fingerprint": "43072e4d42f87cc5f978e7a8403b65b0",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/ApplicationDbContext.cs",
+   "line": 240,
+   "fingerprint": "cf0f2fd492df097dc6d6e8fec8f1637a",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20220216195456_InitialCreate.Designer.cs",
+   "line": 395,
+   "fingerprint": "379e86a93e48741bebc1c46789e145d6",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20220216195456_InitialCreate.Designer.cs",
+   "line": 411,
+   "fingerprint": "c76327ab4d0af600268c6069f8c66fe5",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20220216195456_InitialCreate.Designer.cs",
+   "line": 427,
+   "fingerprint": "649dfcd99501ec9f2eab312ba672ea8c",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20260401195250_MigrateDateTimeToDateTimeOffset.Designer.cs",
+   "line": 271,
+   "fingerprint": "90f6daa9e6b5257bb2c746766e86701d",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20260401195250_MigrateDateTimeToDateTimeOffset.Designer.cs",
+   "line": 287,
+   "fingerprint": "0039b9f92302b597436876a61f296e73",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20260401195250_MigrateDateTimeToDateTimeOffset.Designer.cs",
+   "line": 303,
+   "fingerprint": "e9e1eabe089c9ec411f852bc2354137d",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20260419213740_AddSoftDelete.Designer.cs",
+   "line": 271,
+   "fingerprint": "fc0037a7e2bd81a2ffa76b9fb77d5ca2",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20260419213740_AddSoftDelete.Designer.cs",
+   "line": 287,
+   "fingerprint": "80378bba0b96037c7635bcb923b6b44c",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20260419213740_AddSoftDelete.Designer.cs",
+   "line": 303,
+   "fingerprint": "21957b0bf55888ead82011cf35ef6253",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20260426195556_AddProjectColorAndUserCreatedAt.Designer.cs",
+   "line": 275,
+   "fingerprint": "195af9bc01255901ff86bfba4bc95b9d",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20260426195556_AddProjectColorAndUserCreatedAt.Designer.cs",
+   "line": 292,
+   "fingerprint": "6e490dd6465465a07ab1594f7f30dd10",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20260426195556_AddProjectColorAndUserCreatedAt.Designer.cs",
+   "line": 309,
+   "fingerprint": "e2142825a06f38ed6d740f9f5d59ca9a",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20260428152240_AddUserPreferences.Designer.cs",
+   "line": 275,
+   "fingerprint": "b8d21c88a2624e7afc807d1c15659010",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20260428152240_AddUserPreferences.Designer.cs",
+   "line": 292,
+   "fingerprint": "95f2538641c0239f763c7e41fb8f1435",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20260428152240_AddUserPreferences.Designer.cs",
+   "line": 309,
+   "fingerprint": "ae155153f50e74a8f78808c1f187e389",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20260602221538_v2_2_Tags_TechDebt.Designer.cs",
+   "line": 290,
+   "fingerprint": "277f0bbe25a14cfab5ecc02973a4ff01",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20260602221538_v2_2_Tags_TechDebt.Designer.cs",
+   "line": 307,
+   "fingerprint": "e102f34a7b9c5bb488c66c85fdfde657",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20260602221538_v2_2_Tags_TechDebt.Designer.cs",
+   "line": 324,
+   "fingerprint": "4838299712d420ae3da44c301237c71b",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20260718200418_AddPersonalAccessTokens.Designer.cs",
+   "line": 290,
+   "fingerprint": "9148e4e24842bb8b70691d033cbd1eec",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20260718200418_AddPersonalAccessTokens.Designer.cs",
+   "line": 307,
+   "fingerprint": "2839d781362aae4f33f1f0541ff49088",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20260718200418_AddPersonalAccessTokens.Designer.cs",
+   "line": 324,
+   "fingerprint": "83598fa84e4b5a139a889fa78075570e",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20260719134402_AddMcpActivityLog.Designer.cs",
+   "line": 290,
+   "fingerprint": "071d4ef91b8f38f9065d347c5807131d",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20260719134402_AddMcpActivityLog.Designer.cs",
+   "line": 307,
+   "fingerprint": "e1fad111adebef54e30eea226f0386be",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20260719134402_AddMcpActivityLog.Designer.cs",
+   "line": 324,
+   "fingerprint": "a15052beab0b8557f797d7bbef3e48a0",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20261114143522_AddRunningTimer.Designer.cs",
+   "line": 290,
+   "fingerprint": "1ec18987b8b46d21b551b77ad5f6a329",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20261114143522_AddRunningTimer.Designer.cs",
+   "line": 307,
+   "fingerprint": "8902f1129078c72ed6dfce9258569082",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20261114143522_AddRunningTimer.Designer.cs",
+   "line": 324,
+   "fingerprint": "47d0da10d8a8aa07ca91d053fe16c07d",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20261114225726_AddTimerNotificationPreferences.Designer.cs",
+   "line": 290,
+   "fingerprint": "e12e1b95d3114033bc748b0b82660417",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20261114225726_AddTimerNotificationPreferences.Designer.cs",
+   "line": 307,
+   "fingerprint": "25c2f5d86e81a04690cdab7fc50420de",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/20261114225726_AddTimerNotificationPreferences.Designer.cs",
+   "line": 324,
+   "fingerprint": "4d0520a0aa76a0f400ab66f70ac9721c",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/ApplicationDbContextModelSnapshot.cs",
+   "line": 287,
+   "fingerprint": "643ecb71399ae78eb1f6015cf9e10d25",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/ApplicationDbContextModelSnapshot.cs",
+   "line": 304,
+   "fingerprint": "cb845ceea51ddca8c5ba45d2f669c73f",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  },
+  {
+   "rule": "SEC003",
+   "file": "Timinute/Server/Data/Migrations/ApplicationDbContextModelSnapshot.cs",
+   "line": 321,
+   "fingerprint": "76a8257dcd9928ea9f680d427d7d37b7",
+   "verdict": "fp",
+   "reason": "The password hash of seeded test users in EF Core seed data; a hash is not a credential."
+  }
+ ]
+}

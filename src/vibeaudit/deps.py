@@ -162,6 +162,9 @@ def _collect(project: Project) -> List[Dep]:
         if name in ("pom.xml", "build.gradle", "build.gradle.kts") and f.text is not None and not f.is_test:
             deps.extend(Dep(mod, "Maven", f.rel, line, version) for mod, version, line in maven_dependencies(name, f.text))
             continue
+        if (name.endswith(".csproj") or name == "Directory.Packages.props") and f.text is not None and not f.is_test:
+            deps.extend(Dep(pkg, "NuGet", f.rel, line, version) for pkg, version, line in nuget_dependencies(f.text))
+            continue
         requirements = bool(re.fullmatch(r"requirements[\w.-]*\.(?:txt|in)", name) or re.search(r"(?:^|/)requirements/[^/]+\.txt$", f.rel))
         # the name first: only manifests are read, so a long-lived Project keeps the result while code changes
         if not (requirements or name in ("pyproject.toml", "package.json")) or f.is_test or f.text is None:
@@ -898,4 +901,21 @@ def maven_dependencies(name: str, text: str) -> List[Tuple[str, str, int]]:
     for m in GRADLE_DEP.finditer(text):
         if re.match(r"\d", m.group(4)):
             out.append((f"{m.group(2)}:{m.group(3)}", m.group(4), text.count("\n", 0, m.start()) + 1))
+    return out
+
+
+# ------------------------------------------------------------------ NuGet (C#)
+NUGET_REF = re.compile(r"<Package(?:Reference|Version)\s+([^>]{0,400}?)(?:/>|>(.{0,400}?)</Package(?:Reference|Version)>)", re.S)
+
+
+def nuget_dependencies(text: str) -> List[Tuple[str, str, int]]:
+    """(package, version, line) of the pinned PackageReference / PackageVersion items of a .csproj or
+    Directory.Packages.props. Floating (1.*) and range versions are left out."""
+    out: List[Tuple[str, str, int]] = []
+    for m in NUGET_REF.finditer(text):
+        attrs, body = m.group(1), m.group(2) or ""
+        pkg = re.search(r"\bInclude\s*=\s*\"([\w.\-]{1,200})\"", attrs)
+        version = re.search(r"\bVersion\s*=\s*\"([^\"]{1,60})\"", attrs) or re.search(r"<Version>\s*([^<]{1,60}?)\s*</Version>", body)
+        if pkg and version and re.fullmatch(r"\[?\d[\w.\-+]{0,50}\]?", version.group(1)):
+            out.append((pkg.group(1), version.group(1).strip("[]"), text.count("\n", 0, m.start()) + 1))
     return out

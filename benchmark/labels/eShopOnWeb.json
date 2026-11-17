@@ -1,0 +1,46 @@
+{
+ "repo": "eShopOnWeb",
+ "commit": "4da8212117e87d808d4bbc7da6286fd2147ce606",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/richnav.yml",
+   "line": 20,
+   "fingerprint": "9a1cabfdf224c619f07879d6e8f569c3",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "SEC003",
+   "file": "src/ApplicationCore/Constants/AuthorizationConstants.cs",
+   "line": 5,
+   "fingerprint": "8994070b488ebcf18c261d522b34abe6",
+   "verdict": "tp",
+   "reason": "A real-looking secret is committed."
+  },
+  {
+   "rule": "SEC004",
+   "file": "src/ApplicationCore/Constants/AuthorizationConstants.cs",
+   "line": 11,
+   "fingerprint": "1eb2aa87acbbc88db8e7300a6356d132",
+   "verdict": "tp",
+   "reason": "The JWT signing key is hard-coded."
+  },
+  {
+   "rule": "CFG001",
+   "file": "src/PublicApi/Dockerfile",
+   "line": 22,
+   "fingerprint": "12e5cfdb6a99ff78500c7635ae2c1ab3",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "CFG001",
+   "file": "src/Web/Dockerfile",
+   "line": 20,
+   "fingerprint": "4d1af141d9204c54c37683d26db6abf1",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  }
+ ]
+}

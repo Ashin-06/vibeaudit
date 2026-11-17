@@ -575,7 +575,7 @@ class QualityScanner:
                       for item in lst.split(",")}
             names = {re.sub(r"^type\s+", "", n) for n in listed}
             names.update(re.findall(
-                r"\bexport\s+(?:declare\s+)?(?:default\s+)?(?:async\s+)?(?:function\*?|class|const|let|var|type|interface|enum"
+                r"\bexport\s+(?:declare\s+)?(?:default\s+)?(?:async\s+)?(?:function\*?|class|const\s+enum|const|let|var|type|interface|enum"
                 r"|abstract\s+class|namespace)\s+([A-Za-z_$][\w$]*)", text))
             for pattern in re.findall(r"\bexport\s+(?:const|let|var)\s*([{\[](?:[^{}\[\]]|[{\[][^{}\[\]]*[}\]])*)", text):
                 names.update(re.findall(r"[A-Za-z_$][\w$]*", pattern))  # destructured: `export const { a, b: c } = x`

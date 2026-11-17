@@ -20,7 +20,6 @@ ENV_VALUE = re.compile(r"(?m)^[ \t]*(?:export[ \t]+)?\w+[ \t]*=[ \t]*[^\s#]")
 
 Emit = Callable[[Finding], None]
 
-TEST_CODE_EXTS = (".go", ".java", ".kt", ".rs", ".cs", ".php", ".rb")
 LOCKS = ("package-lock.json", "yarn.lock", "pnpm-lock.yaml", "bun.lockb", "bun.lock", "npm-shrinkwrap.json")
 PY_LOCKS = ("poetry.lock", "uv.lock", "Pipfile.lock", "pdm.lock", "requirements.lock")
 CI_FILES = re.compile(
@@ -39,6 +38,9 @@ UNTRUSTED_EXPR = re.compile(
     r"[\w.\[\]*]*\.(?:title|body|message|name|label|ref|head_ref|default_branch|email|description|page_name)"
     r"|github\.head_ref)\s*\}\}"
 )
+
+
+TEST_SOURCE_EXTS = (".cs", ".java", ".kt", ".go", ".rs", ".php", ".rb")
 
 
 class ProjectScanner:
@@ -393,7 +395,7 @@ class ProjectScanner:
         if len(sources) < 3:
             return
         # tests in any language count: Go `_test.go`, Java/Kotlin under src/test, Rust, C#, PHP (conveyor, piggymetrics)
-        has_tests = any(f.is_test and (f.kind in ("py", "js") or f.rel.endswith(TEST_CODE_EXTS)) and not re.search(r"(?:^|/)(?:fixtures?|mocks?|__mocks__|testdata)/", f.rel) for f in self.p.files) \
+        has_tests = any(f.is_test and (f.kind in ("py", "js") or f.rel.endswith(TEST_SOURCE_EXTS)) and not re.search(r"(?:^|/)(?:fixtures?|mocks?|__mocks__|testdata)/", f.rel) for f in self.p.files) \
             or any(TEST_CONFIG.search(f.rel) for f in self.p.files)
         anchor = self.p.anchor()
         if not has_tests:
@@ -446,7 +448,7 @@ class ProjectScanner:
             elif is_admin and not H.ADMIN_ROLE_EVIDENCE.search(r.body) and (roles or not r.has_auth):
                 msg = "has no authentication or role check" if not r.has_auth else "checks login but not the admin role"
                 self.add(r.file, r.line, "AUTH002", f"{'/'.join(r.methods)} {path} {msg}.")
-            elif (mutating and not r.has_auth and not public and r.framework != "spring-unsecured"  # JAVA001 covers those
+            elif (mutating and not r.has_auth and not public and not r.framework.endswith("-unsecured")  # JAVA001/CSHARP001
                   and not H.WEBHOOK_VERIFY.search(r.body)):  # a signed webhook receiver (`x-hub-signature-256`)
                 what = "has no authentication check" if writes else "calls a paid AI API without an authentication check"
                 self.add(r.file, r.line, "AUTH001", f"{'/'.join(r.methods)} {path} {what}.")

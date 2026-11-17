@@ -1,0 +1,270 @@
+{
+ "repo": "chat-copilot",
+ "commit": "23b27821baa11b2a1639070434628e5b151ce706",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/copilot-build-backend.yml",
+   "line": 41,
+   "fingerprint": "a7c84f1484da9b122dced2fcef41de59",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/copilot-build-backend.yml",
+   "line": 47,
+   "fingerprint": "55fb8ec5d7374254379dafacf5162fc6",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/copilot-build-images.yml",
+   "line": 54,
+   "fingerprint": "b444a30ec20b742715ed6db4bfd72eb2",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/copilot-build-images.yml",
+   "line": 62,
+   "fingerprint": "7f2ff7528b836b68323f8f6ac2d8e8a9",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/copilot-build-images.yml",
+   "line": 73,
+   "fingerprint": "6956cdd743572690aeafcca49de98cae",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/copilot-build-memorypipeline.yml",
+   "line": 35,
+   "fingerprint": "446e9fcb9b224b987ebe6ed8cece8098",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/copilot-build-memorypipeline.yml",
+   "line": 41,
+   "fingerprint": "1046f06acb9bd7be647a43f8ecbce681",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/copilot-build-plugins.yml",
+   "line": 35,
+   "fingerprint": "29e8b7c9165993ac74c85df27e7e9a2b",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/copilot-build-plugins.yml",
+   "line": 41,
+   "fingerprint": "2e5bf66d9281ad087ce92d5311e15940",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "SEC008",
+   "file": ".github/workflows/copilot-test-e2e.yml",
+   "line": 88,
+   "fingerprint": "35a75a13ae05dfba28014443a4189449",
+   "verdict": "fp",
+   "reason": "Read only by the Playwright end-to-end tests; the app never references it, so it is not bundled."
+  },
+  {
+   "rule": "SEC008",
+   "file": ".github/workflows/copilot-test-e2e.yml",
+   "line": 89,
+   "fingerprint": "cd482c46a39b7fd4d81e5779cc1c940e",
+   "verdict": "fp",
+   "reason": "Read only by the Playwright end-to-end tests; the app never references it, so it is not bundled."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/dotnet-format.yml",
+   "line": 29,
+   "fingerprint": "781b0db43ca1c2af2919653500a29fac",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/markdown-link-check.yml",
+   "line": 20,
+   "fingerprint": "f20aceb05093cb98fdc26d2fd04c9874",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/merge-gatekeeper.yml",
+   "line": 26,
+   "fingerprint": "83a80ab961a0aa0043cbf9fec54c5086",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/typos.yaml",
+   "line": 26,
+   "fingerprint": "19442b1d0c72f812b3a2175f1e1647c9",
+   "verdict": "tp",
+   "reason": "A third-party action used by tag."
+  },
+  {
+   "rule": "CFG001",
+   "file": "docker/memorypipeline/Dockerfile",
+   "line": 20,
+   "fingerprint": "d1f84fc5df51e306556af884ed058552",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "CFG001",
+   "file": "docker/plugins/web-searcher/Dockerfile",
+   "line": 16,
+   "fingerprint": "4fc93a4a104b1293cd9d7071f822b587",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "CFG001",
+   "file": "docker/webapi/Dockerfile",
+   "line": 18,
+   "fingerprint": "db33b9867d9e254ee3127283de045cdb",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "CFG001",
+   "file": "docker/webapp/Dockerfile",
+   "line": 14,
+   "fingerprint": "0d290551e977511bdd031545df0b8033",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "CFG001",
+   "file": "docker/webapp/Dockerfile.nginx",
+   "line": 17,
+   "fingerprint": "0f46feb4137190694710bc490dad4e93",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "BE005",
+   "file": "webapi/Controllers/PluginController.cs",
+   "line": 49,
+   "fingerprint": "52e3af7ff0e40b7390ffa516a089bba3",
+   "verdict": "tp",
+   "reason": "The server fetches a URL taken from the request."
+  },
+  {
+   "rule": "SEC003",
+   "file": "webapi/Plugins/OpenApi/GitHubPlugin/openapi.json",
+   "line": 5142,
+   "fingerprint": "77ad7ed44b5d04330fe2833352ee0fe9",
+   "verdict": "fp",
+   "reason": "An example value in a vendored GitHub OpenAPI description."
+  },
+  {
+   "rule": "SEC003",
+   "file": "webapi/Plugins/OpenApi/GitHubPlugin/openapi.json",
+   "line": 5284,
+   "fingerprint": "a713d3cfd7b3f19ff3efe08c226b44a8",
+   "verdict": "fp",
+   "reason": "An example value in a vendored GitHub OpenAPI description."
+  },
+  {
+   "rule": "SEC003",
+   "file": "webapi/Plugins/OpenApi/GitHubPlugin/openapi.json",
+   "line": 5684,
+   "fingerprint": "6190304021a513c9760c06bd0b48c3be",
+   "verdict": "fp",
+   "reason": "An example value in a vendored GitHub OpenAPI description."
+  },
+  {
+   "rule": "SEC003",
+   "file": "webapi/Plugins/OpenApi/GitHubPlugin/openapi.json",
+   "line": 5832,
+   "fingerprint": "205e190c5e792093741e145004189ec2",
+   "verdict": "fp",
+   "reason": "An example value in a vendored GitHub OpenAPI description."
+  },
+  {
+   "rule": "SEC008",
+   "file": "webapp/.env.example",
+   "line": 13,
+   "fingerprint": "30523b7b88bdd5c1edba90c630a5f95a",
+   "verdict": "fp",
+   "reason": "Read only by the Playwright end-to-end tests; the app never references it, so it is not bundled."
+  },
+  {
+   "rule": "SEC008",
+   "file": "webapp/.env.example",
+   "line": 15,
+   "fingerprint": "0d86a5c82ad81ceee7bc45ce23eaa767",
+   "verdict": "fp",
+   "reason": "Read only by the Playwright end-to-end tests; the app never references it, so it is not bundled."
+  },
+  {
+   "rule": "QA007",
+   "file": "webapp/playwright.config.ts",
+   "line": 2,
+   "fingerprint": "edf8f0d727080c4b964af9be9fd5bfed",
+   "verdict": "tp",
+   "reason": "The package is imported but not declared in package.json."
+  },
+  {
+   "rule": "UI002",
+   "file": "webapp/src/components/chat/chat-list/ChatListItem.tsx",
+   "line": 113,
+   "fingerprint": "b28a81f1fb234f10dc06a28bb766eef8",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
+  },
+  {
+   "rule": "UI003",
+   "file": "webapp/src/components/chat/plan-viewer/PlanStepInput.tsx",
+   "line": 130,
+   "fingerprint": "4f3db55662494fec632526d34fe34afe",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "DATA007",
+   "file": "webapp/src/components/header/settings-dialog/SettingsDialog.tsx",
+   "line": 107,
+   "fingerprint": "e78372100a23eb572aa676919b00dd20",
+   "verdict": "tp",
+   "reason": "The variable is read from the environment but missing from the example env file."
+  },
+  {
+   "rule": "UI002",
+   "file": "webapp/src/components/shared/Alerts.tsx",
+   "line": 43,
+   "fingerprint": "bd0574c61f3a54633b0bff0525779155",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
+  },
+  {
+   "rule": "QA004",
+   "file": "webapp/src/components/utils/PluginUtils.ts",
+   "line": 65,
+   "fingerprint": "2091b4bb5b4cc410b5457140a196e5a2",
+   "verdict": "tp",
+   "reason": "A TODO or stub comment left in shipped code."
+  }
+ ]
+}

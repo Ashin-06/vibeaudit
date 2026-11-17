@@ -3,9 +3,9 @@
 Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do not edit by hand.
 `vibeaudit rules` prints the same list, and `vibeaudit rules --format json` includes every field.
 
-169 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
+172 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-70 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+73 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -269,6 +269,7 @@ References: CWE-1395, A06:2021
 | [BE018](#be018) | medium | preview | No server-side input validation |
 | [BE019](#be019) | high | preview | Payment amount taken from the client |
 | [BE020](#be020) | medium | preview | Email header injection |
+| [CSHARP002](#csharp002) | critical | preview | Deserialization that lets the payload pick the type |
 | [GO004](#go004) | medium | preview | SQL built with string formatting (Go) |
 | [JAVA004](#java004) | critical | preview | Polymorphic deserialization without an allow-list |
 
@@ -486,6 +487,18 @@ How to fix: Reject values with CR or LF, and build messages with an API that val
 
 References: CWE-93, A03:2021
 
+### CSHARP002
+
+**Deserialization that lets the payload pick the type** (critical, preview)
+
+Preview: New with C# support: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: Json.NET with TypeNameHandling other than None (and no SerializationBinder), or BinaryFormatter and its relatives, create whatever type the payload names. A gadget type turns a request into remote code execution.
+
+How to fix: Leave TypeNameHandling at None (or add an ISerializationBinder that allows only your own types), and replace BinaryFormatter with System.Text.Json.
+
+References: CWE-502, A08:2021
+
 ### GO004
 
 **SQL built with string formatting (Go)** (medium, preview)
@@ -630,6 +643,7 @@ References: CWE-200, A02:2021
 | [AUTH015](#auth015) | medium | preview | Password change keeps old sessions valid |
 | [AUTH016](#auth016) | high | preview | Query not scoped to the current tenant |
 | [AUTH017](#auth017) | high | preview | Admin or feature-flag endpoint without a role check |
+| [CSHARP001](#csharp001) | high | preview | ASP.NET Core endpoints with no authorization |
 | [JAVA001](#java001) | high | preview | Spring controllers with no security configuration |
 | [JAVA003](#java003) | high | preview | Security chain permits every request |
 
@@ -817,6 +831,18 @@ How to fix: Check an admin role or permission in the handler or in middleware on
 
 References: CWE-285, A01:2021
 
+### CSHARP001
+
+**ASP.NET Core endpoints with no authorization** (high, preview)
+
+Preview: New with C# support: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: The project uses no [Authorize], RequireAuthorization or fallback policy anywhere, so every controller action and minimal-API endpoint answers anyone. (A single endpoint left open in a project that does authorize is AUTH001.)
+
+How to fix: Add authentication and a fallback policy that requires an authenticated user (`options.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build()`), and mark the public endpoints with [AllowAnonymous].
+
+References: CWE-306, A01:2021
+
 ### JAVA001
 
 **Spring controllers with no security configuration** (high, preview)
@@ -863,6 +889,7 @@ References: CWE-862, A01:2021
 | [CFG016](#cfg016) | medium | stable | Unencrypted database or disk storage |
 | [CFG017](#cfg017) | high | preview | Secret file or build argument in the final image |
 | [CFG018](#cfg018) | critical | preview | Pull request code run with secrets (pull_request_target) |
+| [CSHARP003](#csharp003) | medium | preview | Developer error page outside Development |
 | [JAVA002](#java002) | high | preview | Spring Boot Actuator endpoints exposed |
 
 ### CFG001
@@ -1060,6 +1087,18 @@ Why it matters: A pull_request_target workflow runs with this repository's secre
 How to fix: Use the pull_request trigger for code from forks, or keep pull_request_target jobs to the base branch's code and pass untrusted data only as inputs or artifacts.
 
 References: CWE-829, A08:2021
+
+### CSHARP003
+
+**Developer error page outside Development** (medium, preview)
+
+Preview: New with C# support: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: UseDeveloperExceptionPage (or UseDatabaseErrorPage) is called without an IsDevelopment() check, so stack traces, source lines and configuration are shown to anyone who triggers an error in production.
+
+How to fix: Call it only inside `if (app.Environment.IsDevelopment())` and use UseExceptionHandler elsewhere.
+
+References: CWE-209, A05:2021
 
 ### JAVA002
 

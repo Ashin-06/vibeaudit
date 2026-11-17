@@ -132,7 +132,7 @@ mapping and reports first; the threat feed after the Phase 3 items).
 | --- | --- |
 | Go (net/http, Gin, Echo, Fiber, Chi, GORM) | preview (0.10.0: a lexer, routes with auth middleware, data flow into the generic sinks, go.mod dependencies, GO001-GO004; 10 labelled repositories, 3 held out) |
 | Java/Kotlin (Spring Boot, Quarkus) | preview (0.10.0: a lexer, Spring and JAX-RS routes with the security configuration, data flow into the generic sinks, Maven/Gradle dependencies, JAVA001-JAVA004; 10 labelled repositories, held-out 10 of 12) |
-| C#/.NET (ASP.NET Core, EF Core) | preview (0.10.0: route and auth discovery, injection, N+1; a lexer-based scanner with a labelled corpus is in progress) |
+| C#/.NET (ASP.NET Core, EF Core) | preview (a lexer, controller and minimal-API routes with the authorization model, data flow into the generic sinks, NuGet dependencies, CSHARP001-CSHARP003; 11 labelled repositories, 2 held out) |
 | Rust (Actix, Axum) | preview (a lexer, Actix and Axum routes with scopes, nesting and auth middleware, data flow into the generic sinks, Cargo dependencies; 10 labelled repositories, 3 held out) |
 | PHP (Laravel, Symfony) | preview (a lexer, Laravel routes with groups, middleware groups and controller middleware, Symfony attributes with IsGranted and access_control, data flow into the generic sinks, Blade output, Composer dependencies; 10 labelled repositories, 3 held out) |
 

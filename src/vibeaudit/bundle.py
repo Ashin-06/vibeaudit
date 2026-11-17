@@ -31,7 +31,7 @@ from . import __version__
 from .store import cache_dir, loads_json, write_atomic
 
 OSV_DUMP = "https://osv-vulnerabilities.storage.googleapis.com/{}/all.zip"
-ECOSYSTEMS = ("PyPI", "npm", "Go", "Maven", "crates.io", "Packagist")
+ECOSYSTEMS = ("PyPI", "npm", "Go", "Maven", "crates.io", "NuGet", "Packagist")
 SEMVER_ECOSYSTEMS = ("Go", "crates.io", "Packagist")  # advisories give SEMVER ranges, not version lists
 
 
