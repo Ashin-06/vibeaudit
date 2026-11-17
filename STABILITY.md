@@ -54,7 +54,7 @@ cause is fixed on tuned-split cases only, and the rule leaves preview again once
 | UI014 Image without width and height | 0.9.2 | 6/7 (85.7%) | an `<img>` sized by CSS classes | no |
 | AUTH001 State-changing endpoint without authentication | 0.9.2 | 14/16 (87.5%) | server actions guarded by `assertDevelopment()` | yes (severe); stable again after the fix (14/14) |
 | CFG002 Unpinned container base image | after 0.10.0 | 5/6 (83.3%) | a Gitpod development workspace image | no |
-| QA001 No automated tests | after 0.10.0 | 6/8 (75.0%) | Java tests under src/test are not counted | no; stable again after the fix (6/6), which also covers the same cause on the tuned split (Go tests in conveyor) |
+| QA001 No automated tests | after 0.10.0 | 6/8 (75.0%) | Java tests under src/test are not counted | no; fixed (tests in every language count); re-graduate on fresh held-out data, since 6/6 on the repositories that showed the cause is not independent evidence |
 | QA007 Package imported but not declared as a dependency | after 0.10.0 | 6/7 (85.7%) | an example script importing an unpublished client | no |
 | DATA012 Foreign key without an index | after 0.10.0 | 19/28 (67.9%) | MariaDB/MySQL migrations, where InnoDB indexes foreign keys itself | no |
 | UI009 Data loaded without loading or error state | after 0.10.0 | 4/5 (80.0%) | an effect that only fills a form field | no |

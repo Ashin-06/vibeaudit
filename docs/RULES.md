@@ -5,7 +5,7 @@ Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do n
 
 169 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-69 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+70 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -1375,7 +1375,7 @@ References: CWE-77, LLM01:2025
 
 | ID | Severity | Status | Rule |
 | --- | --- | --- | --- |
-| [QA001](#qa001) | medium | stable | No automated tests |
+| [QA001](#qa001) | medium | preview | No automated tests |
 | [QA002](#qa002) | low | stable | No continuous integration |
 | [QA003](#qa003) | low | preview | Exception silently swallowed |
 | [QA004](#qa004) | medium | preview | Security placeholder or TODO left in code |
@@ -1389,7 +1389,9 @@ References: CWE-77, LLM01:2025
 
 ### QA001
 
-**No automated tests** (medium)
+**No automated tests** (medium, preview)
+
+Preview: Held-out 6 of 8 (75.0%) after the Java held-out repositories: Java tests under src/test were not counted. Fixed (tests in every language count); it leaves preview again on fresh held-out data, not on the repositories that showed the cause.
 
 Why it matters: AI-generated code often looks right and is subtly wrong. Without tests nobody notices until users do, and every future AI edit can silently break existing behaviour.
 

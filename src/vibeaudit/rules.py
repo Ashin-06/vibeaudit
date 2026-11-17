@@ -597,7 +597,10 @@ _R = [
     Rule("QA001", "No automated tests", "quality", "medium",
          "AI-generated code often looks right and is subtly wrong. Without tests nobody notices until users "
          "do, and every future AI edit can silently break existing behaviour.",
-         "Add tests for the critical paths first (auth, payments, data writes) and run them in CI.", "", ""),
+         "Add tests for the critical paths first (auth, payments, data writes) and run them in CI.", "", "",
+         preview=True, preview_reason="Held-out 6 of 8 (75.0%) after the Java held-out repositories: Java tests under "
+                                      "src/test were not counted. Fixed (tests in every language count); it leaves "
+                                      "preview again on fresh held-out data, not on the repositories that showed the cause."),
     Rule("QA002", "No continuous integration", "quality", "low",
          "Without CI, tests and security checks only run when someone remembers to run them.",
          "Add a CI workflow (for example GitHub Actions) that runs tests and `vibeaudit scan` on every push.",
