@@ -20,7 +20,7 @@ nothing, inaccessible forms and frontend calls to API routes that do not exist.
 - Works offline with no API key. The network is used only for package-registry and vulnerability
   lookups (`--offline` turns that off); an LLM is used only if you ask for it.
 - Pure Python, no dependencies on 3.11+ (`tomli` on 3.9 and 3.10). Linux, macOS and Windows.
-- 171 rules in 12 categories, mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
+- 172 rules: 171 rules in 12 categories plus the optional LLM review, mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
 - Terminal output plus JSON, SARIF 2.1.0 (GitHub code scanning), Markdown, HTML, an SVG badge and a fix
   brief you can paste into an AI assistant.
 - Fits into CI (GitHub Action, `--diff`), pre-commit (`--staged`) and coding agents (an MCP server).
@@ -33,7 +33,7 @@ Contents: [Quickstart](#quickstart) - [Example output](#example-output) - [What 
 ## Quickstart
 
 ```bash
-pip install vibeaudit==0.11.0
+pip install vibeaudit
 ```
 
 ```bash
@@ -77,18 +77,25 @@ That project is one of the deliberately vulnerable sample apps in `tests/fixture
 
 | Category | What it finds |
 | --- | --- |
-| Secrets (SEC) | provider keys and tokens, private keys, high-entropy secrets, hard-coded or default signing secrets, database URLs with passwords, committed or un-ignored `.env` files, secrets in `NEXT_PUBLIC_`/`VITE_` variables, a Supabase `service_role` key outside the server, secrets in logs, hard-coded passwords, keys baked into committed bundles |
-| Supply chain (DEP) | packages that do not exist (hallucinated names), typosquats of popular packages, packages first published in the last 30 days, known vulnerabilities (OSV) for pinned versions, missing lockfiles, install scripts that run remote code, unpinned MCP servers, extra package indexes (dependency confusion; preview) |
-| Backend (BE) | SQL, NoSQL and command injection, `eval`/`exec`, unsafe deserialization, SSRF, path traversal, server-side template injection, open redirects, mass assignment, debug mode, permissive CORS, disabled TLS verification, weak password hashing, insecure randomness, unverified JWTs, leaked error details, no server-side validation; in preview: payment amounts taken from the client, email header injection |
-| Frontend (FE) | XSS through raw HTML sinks, LLM APIs called from the browser, authorization decisions in browser storage, `postMessage` without origin checks, tokens in `localStorage`, production source maps, hard-coded localhost URLs |
-| Auth (AUTH) | endpoints that change data or spend money without authentication, admin routes without a role check, IDOR-shaped handlers, unverified webhooks, tables without Row Level Security, permissive policies, open Firebase rules, auth functions that always return true, CSRF disabled, login without rate limiting; in preview: JWTs accepted without pinned algorithms, session cookies without SameSite or CSRF protection, webhook signatures without replay protection, rate limits keyed on X-Forwarded-For |
-| Config (CFG) | containers running as root, unpinned base images, secrets in images, GitHub Actions script injection, unsafe `pull_request_target`, any Host header accepted, default database passwords, missing security headers, `.env` copied into an image; in preview: third-party GitHub Actions not pinned to a commit, `permissions: write-all`, privileged or host-mounted Kubernetes containers and missing resource limits, public S3 buckets, admin and database ports open to the internet, unencrypted RDS and EBS storage (Terraform and CloudFormation) |
-| LLM and agents (LLM) | untrusted input in the system prompt, model output in a dangerous sink, no token limit, LLM endpoints without rate limiting, agent tools with dangerous capabilities, dangerous agent options, system prompts shipped to the browser, unsafe model loading, unbounded agent loops, vector search without a tenant filter, model output parsed as JSON without error handling, retired model ids, MCP servers with whole-disk access or plain HTTP, secrets in MCP configs, agents that read untrusted content and also have dangerous tools; in preview: coding agents configured to act without asking, streamed completions not cancelled on disconnect, prompts and completions written to logs |
-| Code completeness (QA) | no tests, no CI, swallowed exceptions, security TODOs, unfinished stubs, imports of files or names that do not exist, packages imported but not declared, TypeScript checking disabled |
-| Data (DATA) | N+1 queries, whole user records returned to the client, destructive migrations, money as float, private tables readable by everyone, timestamps without time zone, env vars missing from the example env file, a database client per request, SQLite on a serverless host, several writes without a transaction |
+| Secrets (SEC) | provider keys and tokens, private keys, hard-coded or default signing secrets, database URLs with passwords, committed or un-ignored `.env` files, secrets in `NEXT_PUBLIC_`/`VITE_` variables, a Supabase `service_role` key outside the server, secrets in logs, keys baked into committed bundles; in preview: other high-entropy secrets, hard-coded passwords |
+| Supply chain (DEP) | packages that do not exist (hallucinated names), typosquats of popular packages, packages first published in the last 30 days, known vulnerabilities (OSV) for pinned versions, missing lockfiles, install scripts that run remote code, unpinned MCP servers; in preview: extra package indexes (dependency confusion), vulnerable transitive dependencies |
+| Backend (BE) | SQL and NoSQL injection, SSRF, path traversal, server-side template injection, mass assignment, debug mode, permissive CORS, disabled TLS verification, weak password hashing, insecure randomness, unverified JWTs, leaked error details; in preview: command injection, `eval`/`exec`, unsafe deserialization and open redirects (these four still gate), no server-side validation, payment amounts taken from the client, email header injection |
+| Frontend (FE) | LLM APIs called from the browser, authorization decisions in browser storage, `postMessage` without origin checks, tokens in `localStorage`, production source maps; in preview: XSS through raw HTML sinks (still gates), hard-coded localhost URLs, server actions that expose a server secret |
+| Auth (AUTH) | endpoints that change data or spend money without authentication, admin routes without a role check, IDOR-shaped handlers, unverified webhooks, tables without Row Level Security, permissive policies, open Firebase rules, auth functions that always return true, CSRF disabled, login without rate limiting; in preview: JWTs accepted without pinned algorithms, session cookies without SameSite or CSRF protection, webhook signatures without replay protection, rate limits keyed on X-Forwarded-For, password changes that keep old sessions, queries not scoped to the tenant, admin or feature-flag endpoints without a role check |
+| Config (CFG) | containers running as root, secrets in images, GitHub Actions script injection, `pull_request_target` checking out untrusted code, any Host header accepted, default database passwords, missing security headers, `.env` copied into an image, third-party GitHub Actions not pinned to a commit, unencrypted RDS and EBS storage (Terraform and CloudFormation); in preview: unpinned base images, `permissions: write-all`, privileged or host-mounted Kubernetes containers and missing resource limits, public S3 buckets, admin and database ports open to the internet, secret files or build arguments in the final image, pull request code run with secrets |
+| LLM and agents (LLM) | untrusted input in the system prompt, model output in a dangerous sink, no token limit, LLM endpoints without rate limiting, agent tools with dangerous capabilities, dangerous agent options, system prompts shipped to the browser, unsafe model loading, unbounded agent loops, vector search without a tenant filter, model output parsed as JSON without error handling, retired model ids, MCP servers with whole-disk access or plain HTTP, secrets in MCP configs, agents that read untrusted content and also have dangerous tools; in preview: coding agents configured to act without asking, streamed completions not cancelled on disconnect, prompts and completions written to logs, model output as a command argument, agent tool loops without a step limit, user text in a prompt without delimiters, retrieved documents stored without cleaning, no per-user cost limit, LLM code without tests or evals, prompt-injection text in an agent instruction file |
+| Code completeness (QA) | no CI, TypeScript checking disabled, the same function copied into several files; in preview: no tests, swallowed exceptions, security TODOs, unfinished stubs, imports of files or names that do not exist, packages imported but not declared, Pages Router code in an App Router file, made-up data used as a fallback |
+| Data (DATA) | whole user records returned to the client, destructive migrations, money as float, private tables readable by everyone, timestamps without time zone, a database client per request, SQLite on a serverless host; in preview: N+1 queries, env vars missing from the example env file, several writes without a transaction, indexes built without CONCURRENTLY, foreign keys without an index, Redis keys without an expiry, personal data in vector store metadata, cache stampedes, background jobs that are not safe to retry |
 | Reliability (REL) | HTTP requests without a timeout, blocking calls in async handlers, webhooks that are not idempotent, uploads without a size limit, in-memory state on serverless hosts, no health-check endpoint |
-| UI, UX and accessibility (UI) | images without alt text, click handlers the keyboard cannot reach, unlabeled form fields, controls that do nothing, index keys on changing lists, deletes without confirmation, hydration mismatches, effects without cleanup, no loading or error state, lorem ipsum, no error page, missing metadata or viewport, links to pages that do not exist; in preview: images without width and height, form errors that screen readers do not hear, focus outlines removed without a replacement, links to assets that are not in the public folder |
+| UI, UX and accessibility (UI) | images without alt text, click handlers the keyboard cannot reach, unlabeled form fields, controls that do nothing, index keys on changing lists, hydration mismatches, effects without cleanup, lorem ipsum, no error page, missing metadata or viewport, links to pages that do not exist; in preview: deletes without confirmation, no loading or error state, images without width and height, form errors that screen readers do not hear, focus outlines removed without a replacement, links to assets that are not in the public folder |
 | Frontend-backend contracts (API) | frontend calls to API paths no route handles, and calls with a method the route does not accept |
+| Go, Java/Kotlin and C# (GO, JAVA, CSHARP), all in preview | goroutines started by a handler that never stop (GO001), response bodies never closed (GO002), maps written concurrently without a lock (GO003), SQL built with formatting (GO004); Spring controllers with no security configuration (JAVA001), exposed Actuator endpoints (JAVA002), a security chain that permits every request (JAVA003), polymorphic deserialization without an allow-list (JAVA004); ASP.NET Core with no authorization anywhere (CSHARP001), deserialization that lets the payload pick the type (CSHARP002), the developer error page outside Development (CSHARP003) |
+
+73 of 172 rules are preview; `vibeaudit rules` lists them. Preview findings are reported but do not
+fail a build, with one exception: the severe classes (command injection, code execution, unsafe
+deserialization, open redirects and XSS) still gate while in preview, so a high-impact bug is never let through
+because its rule is new. Findings of any rule in Go, Java/Kotlin, C#, Rust and PHP code are preview; there, SQL
+injection, command injection and XSS still gate. [STABILITY.md](STABILITY.md) explains how a rule leaves preview.
 
 Every rule, with its severity, why it matters and how to fix it, is in the
 **[rule catalogue (docs/RULES.md)](docs/RULES.md)**; `vibeaudit rules` prints the same list.
@@ -115,13 +122,13 @@ Good tools exist, and vibeaudit runs them when they are installed instead of rep
 vibeaudit is on [PyPI](https://pypi.org/project/vibeaudit/). Python 3.9 or newer:
 
 ```bash
-pip install vibeaudit==0.11.0
+pip install vibeaudit
 ```
 
 or, to keep it in its own environment:
 
 ```bash
-pipx install vibeaudit==0.11.0
+pipx install vibeaudit
 ```
 
 To install from this repository instead: `pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.11.0"`.
@@ -139,11 +146,12 @@ your `PATH`, their findings are merged into the report and de-duplicated.
 | `vibeaudit review [PATH] --diff REV` | Pull request review comments, with suggested fixes, for the findings on changed lines; `--post` sends them to GitHub, `--max-comments N` caps them (see [Pull request review](#pull-request-review)). |
 | `vibeaudit fix [PATH]` | Print a diff that fixes the findings with one obvious repair; `--apply` writes it (see [Automatic fixes](#automatic-fixes-vibeaudit-fix)). |
 | `vibeaudit studio [PATH]` | A local web UI: routes with auth and write badges, data flows, and the score by domain, category and rule (see [Studio](#studio)). |
+| `vibeaudit test-exploit FINDING` | Build a non-destructive proof-of-concept request for one finding; a dry run by default, and `--send` sends it once to localhost only, never following redirects. |
 | `vibeaudit explain FINDING` | Explain one finding (`FILE:LINE`, `FILE:LINE:RULE` or a fingerprint prefix): the rule, the code and the data flow that led to it (`--format json`, `--path DIR` for another project). |
 | `vibeaudit routes [PATH]` | List every HTTP entry point with method, path, location and whether it has a visible auth check, writes data or calls a paid AI API (`--format text\|json\|md`). |
 | `vibeaudit rules` | List every rule (`--format text\|json\|md`; JSON includes the why and fix text). |
 | `vibeaudit feedback` | Record that a finding is a false positive or confirmed, or list recorded feedback (`--path DIR` for another project; see [False positives](#false-positives-and-suppressing-findings)). |
-| `vibeaudit update` | Refresh the popular-package lists, the retired-model list and the signed threat feed; `--self` upgrades vibeaudit with pip; `--export FILE [--osv PyPI,npm]` and `--import FILE` carry the data to a machine without network (see [Offline and air-gapped use](#offline-and-air-gapped-use)). |
+| `vibeaudit update` | Refresh the popular-package lists and the retired-model list (and the signed threat feed, once it is active; see [Caching and updates](#caching-and-updates)); `--self` upgrades vibeaudit with pip; `--export FILE [--osv PyPI,npm]` and `--import FILE` carry the data to a machine without network (see [Offline and air-gapped use](#offline-and-air-gapped-use)). |
 | `vibeaudit lsp` | Run the language server for editors: diagnostics and fix code actions (see [Editors](#editors-vs-code-cursor-and-other-lsp-clients)). |
 | `vibeaudit mcp` | Run the MCP server for coding agents (see [MCP server](#mcp-server-for-coding-agents)). |
 
@@ -208,6 +216,8 @@ GEMINI_API_KEY=... vibeaudit scan . --llm gemini --llm-review --llm-max-requests
   for any compatible server such as Ollama), `openrouter` (`OPENROUTER_API_KEY`, default `qwen/qwen4-max`)
   and `anthropic` (`ANTHROPIC_API_KEY`). Verdicts are cached, so
   an unchanged finding costs no request the next time.
+- Model: `--llm-model` (or `llm_model` in the configuration) picks the model; otherwise the
+  `VIBEAUDIT_LLM_MODEL` environment variable does, and then the provider's default.
 
 ### Monorepos
 
@@ -639,7 +649,11 @@ overrides it). `--no-cache` or `VIBEAUDIT_NO_CACHE=1` turns it off.
 list (LLM012) from this repository; a file is used only if it passes validation. Set `GITHUB_TOKEN` if you
 hit GitHub's rate limit.
 
-It also downloads the signed threat feed: slopsquatted package names (DEP001, also offline), a model sunset
+**The signed feed is not active yet.** No release ships the feed's public key and nothing is published on the
+`threat-feed` branch until the maintainer does the one-time key setup in docs/THREAT_FEED.md, so for now
+`vibeaudit update` installs no feed and scans use only the data packaged with vibeaudit.
+
+Once it is set up, `vibeaudit update` also downloads the signed threat feed: slopsquatted package names (DEP001, also offline), a model sunset
 calendar with retirement dates and replacements (LLM012) and prompt-injection patterns for agent instruction
 files such as CLAUDE.md and .cursorrules (LLM025). The same data ships with vibeaudit, so every check works
 offline; the feed only adds what was published since the release. A feed is used only when its signature
@@ -656,7 +670,7 @@ How it reads code:
   calls are not followed. In JavaScript and TypeScript, calls are followed into functions of the same file and
   named imports from project files (3 calls deep); methods of objects and default imports are not.
 - JavaScript and TypeScript are read with a lexer and patterns, not a full parser.
-- Java and Kotlin (in progress): Spring and JAX-RS/Quarkus routes feed the route checks, with @PreAuthorize,
+- Java and Kotlin: Spring and JAX-RS/Quarkus routes feed the route checks, with @PreAuthorize,
   @Secured, @RolesAllowed and the Spring Security filter chain counted as authentication (JAVA001 when there
   is no filter chain). Mappings inherited from annotated interfaces are not followed yet.
 - "Authenticated" means an auth check is visible in the route or its helpers, not that the check is correct.
@@ -668,7 +682,7 @@ How it reads code:
   Remix routes are only partly covered.
 - UI rules cover React, Next.js, Vue and Svelte single-file components (templates and `onMounted`/`onMount`
   hooks) and HTML templates; Astro files get only the alt-text and placeholder checks.
-- Go (net/http, Gin, Fiber, Chi, GORM), Java/Kotlin (Spring Boot, Quarkus), C#/.NET (ASP.NET Core, EF Core),
+- Go (net/http, Gin, Echo, Fiber, Chi, GORM), Java/Kotlin (Spring Boot, Quarkus), C#/.NET (ASP.NET Core, EF Core),
   Rust (Actix, Axum) and PHP (Laravel, Symfony) get route/auth discovery, SQL and command injection (BE001, BE002),
   template XSS (FE001), loop N+1 queries (DATA001) and HTTP client timeout checks (REL001). Go, Java/Kotlin,
   C#, Rust and PHP also follow request data into file paths, outbound URLs and redirects and have a labelled corpus;
@@ -740,15 +754,15 @@ A sample report for a deliberately vulnerable app (HTML and the six compliance r
   is timed against input designed to make it backtrack.
 - **Scale.** A generated 10,000-file repository scans in about a minute (59 s on a Windows laptop, 130 MB
   peak traced memory); CI runs 2,000 files on every platform and 10,000 on Linux.
-- **Real projects.** The rules were run on 19 public repositories, from AI chat apps and Next.js SaaS
-  templates to Flask and Werkzeug themselves and a deliberately vulnerable Flask app, and every finding was
-  read. False alarms were fixed at the root with a regression test; confirmed problems included an
+- **Real projects.** The rules were run on 106 public repositories ([benchmark/corpus.json](benchmark/corpus.json)),
+  from AI chat apps and Next.js SaaS templates to Flask and Werkzeug themselves and deliberately vulnerable apps,
+  and every finding was read. False alarms were fixed at the root with a regression test; confirmed problems included an
   unauthenticated route in a popular chat UI that loads any user's API key by id with the service-role key.
 - **Four external audits.** Each finding was reproduced with a failing test before it was fixed; see the
   [CHANGELOG](CHANGELOG.md).
 - **Packaging.** The built wheel was installed in fresh environments on Python 3.9, 3.11, 3.12 and 3.13 and
-  every command was run; CI runs the tests on 3.9 to 3.13 on Linux, macOS and Windows, and also from a plain
-  checkout without installing.
+  every command was run; CI runs the tests on 3.10 to 3.13 on Linux, macOS and Windows and on 3.9 on macOS and
+  Windows (the current Ubuntu runner has no 3.9), and also from a plain checkout without installing.
 
 ## Verifying a release
 

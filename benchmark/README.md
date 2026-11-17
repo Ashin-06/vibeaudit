@@ -7,7 +7,7 @@ table per rule) and [results.json](results.json). The policy that uses them: [ST
 
 | Path | What it is |
 | --- | --- |
-| `corpus.json` | 53 public repositories, each pinned to an exact commit, with its licence, kind, split (12 are held out) and, for pre-fix commits, the advisory. |
+| `corpus.json` | The public repositories, each pinned to an exact commit, with its licence, kind, language, split (tuned or held out) and, for pre-fix commits, the advisory. The README and docs/BENCHMARK.md give the current counts. |
 | `labels/<repo>.json` | One entry per reviewed finding: rule, file, line, fingerprint, `tp` or `fp`, and a one-line reason. |
 | `seeded/` | Small known-vulnerable apps with `expect: RULE` markers, for rules that real projects rarely trigger. |
 | `baseline.json` | Per-rule precision and seeded recall (and per-repository counts) that the CI gate compares against. |
@@ -21,7 +21,8 @@ only clone them for analysis and redistribute nothing from them.
 
 ## Corpus
 
-Chosen to cover what vibeaudit is for and to keep it honest on code written by people who know what they
+The initial 53 repositories (0.6.0 to 0.8.x) are described and listed below; the Go, Java/Kotlin, C#, Rust and
+PHP repositories added since are in corpus.json, with notes further down. The initial set was chosen to cover what vibeaudit is for and to keep it honest on code written by people who know what they
 are doing:
 
 - **ai-built (8):** apps generated with Lovable (found by the `lovable-tagger` dev dependency) that have
@@ -72,9 +73,9 @@ are doing:
 Fixing a rule while looking at its false positives, and then measuring it on the same findings, flatters
 the rule. So the corpus has two parts:
 
-- **Tuned (41 repositories):** used to find and fix false positives. Its precision shows that known causes
+- **Tuned:** used to find and fix false positives. Its precision shows that known causes
   are fixed, nothing more.
-- **Held-out (12 repositories, `"split": "heldout"` in corpus.json):** careconnect, thynk,
+- **Held-out (`"split": "heldout"` in corpus.json):** each language has its own; the first twelve were careconnect, thynk,
   langchain-nextjs-template, openai-assistants-quickstart, next-saas-stripe-starter, flasky, podinfo, terragoat and,
   since 0.8.0, damn-vulnerable-llm-agent, dvpwa, nodejs-whisper and waline.
   Their findings are labelled the same way, but **no rule is changed because of them**. Held-out precision
@@ -152,7 +153,9 @@ python tools/benchmark.py baseline              # after labelling: record baseli
 Seeded recall runs over `tests/fixtures` and `benchmark/seeded`; fake credentials are generated at run time,
 so nothing credential-shaped is committed.
 
-## Phase 0 results (0.6.0)
+## Phase 0 results (0.6.0, historical)
+
+Kept as a record of the first run; current numbers are in [RESULTS.md](RESULTS.md).
 
 The first full run on 0.5.2 found 818 findings: 460 true and 358 false, 56% precision. Fixing the causes
 of the false positives brought it to 524 findings, 461 true and 63 false (88%), with no true positive lost

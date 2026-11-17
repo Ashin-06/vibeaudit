@@ -10,7 +10,7 @@ stratified by rule category so every category is represented. Each item has the 
 the file and line, the rule and its explanation. The maintainers' verdicts are not in it, and neither is any code:
 the corpus is third-party code.
 
-Check out the corpus with `python tools/benchmark.py fetch` (about 800 MB, outside this repository), then run
+Check out the corpus with `python tools/benchmark.py fetch` (about 1.3 GB, outside this repository), then run
 `python tools/labelling_kit.py show` to print each item with the code around it.
 
 ## How to label

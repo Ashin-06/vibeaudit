@@ -53,14 +53,14 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | Cron and queue jobs that are not idempotent | preview (DATA016; 0.8.8) |
 | Dockerfile multi-stage builds copying secrets into layers | preview (CFG017; 0.8.3) |
 | Kubernetes: no resource limits, privileged containers, hostPath | preview (CFG012, CFG013; 0.7.0) |
-| Terraform and CloudFormation: public S3, open security groups, unencrypted storage | preview (CFG014, CFG015, CFG016; 0.7.0, AWS) |
-| Third-party GitHub Actions not pinned to a SHA | preview (CFG010; 0.7.0, 19 of 19 true on the corpus) |
+| Terraform and CloudFormation: public S3, open security groups, unencrypted storage | preview (CFG014, CFG015; 0.7.0, AWS); CFG016 stable since 0.9.0 |
+| Third-party GitHub Actions not pinned to a SHA | stable (CFG010; 0.7.0, stable since 0.9.0) |
 | Secrets passed to untrusted steps or forks | preview (CFG018, pull_request_target with the head checked out; 0.8.8) |
 | Over-broad `GITHUB_TOKEN` | preview (CFG011, `write-all`; 0.7.0) |
 | Transitive vulnerabilities from lockfiles, with OSV offline data | preview (DEP009; 0.8.5) |
-| Phantom JS dependencies (only transitive in the lockfile) | done (QA007 reports every import missing from package.json) |
+| Phantom JS dependencies (only transitive in the lockfile) | done (QA007 reports every import missing from package.json); QA007 back in preview since 0.11.0 |
 | Registry confusion (private scopes without a registry, `extra-index-url`) | preview (DEP008, pip extra indexes; 0.7.0). npm scopes: done (DEP001 reports a scoped package that is not on npm and has no registry in .npmrc; online; regression test in 0.9.0) |
-| Duplicate utility functions across files | preview (QA011; 0.8.4) |
+| Duplicate utility functions across files | stable (QA011; 0.8.4, stable since 0.9.0) |
 | Mixed framework idioms (App Router and Pages Router in one app) | preview (QA009; 0.8.4) |
 | Fake fallbacks and mock relics in production code | preview (QA010; 0.8.4) |
 
@@ -96,7 +96,7 @@ as preview first and leave preview only at 90% precision or more on the [benchma
 | --- | --- |
 | Rule mapping to OWASP Top 10 2021, OWASP LLM Top 10 2025, EU AI Act themes, SOC 2, HIPAA, GDPR (a mapping, not certification or legal advice) | done (data/compliance_map.json; a test requires every rule to have an entry; 0.9.0) |
 | `--report compliance:<framework>` (HTML and printable output) | done (0.9.0) |
-| Signed threat-intel feed in `vibeaudit update`: slopsquatted names, model sunset calendar, prompt-injection patterns, community submissions; works offline | done (DEP001, LLM012, LLM025; 0.9.0) |
+| Signed threat-intel feed in `vibeaudit update`: slopsquatted names, model sunset calendar, prompt-injection patterns, community submissions; works offline | done (DEP001, LLM012, LLM025; 0.9.0); the packaged data is used, and the signed feed is not active until the maintainer's one-time key setup (docs/THREAT_FEED.md) |
 
 ## Completion gate: 0.9.0, "Phases 0-4 complete" (done)
 
@@ -143,5 +143,5 @@ mapping and reports first; the threat feed after the Phase 3 items).
 | `vibeaudit test-exploit <finding>`: proof-of-concept request, localhost only, no destructive payloads | done |
 | Runtime observability middleware for Express and FastAPI (staging only, off by default) | done |
 
-vibeaudit is not published to PyPI or any marketplace by this project; packages are built in CI and
-attached to GitHub releases.
+vibeaudit is on PyPI: each release's attested wheel and sdist are uploaded by trusted publishing from the release
+workflow (docs/PUBLISHING.md). The VS Code extension is not on a marketplace.

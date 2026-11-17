@@ -35,6 +35,13 @@ def test_api_and_cli_default_to_the_same_minimum_severity(tmp_path):
     assert project_options(str(tmp_path)).min_severity == "low"
 
 
+def test_project_options_read_external_from_the_config(tmp_path):
+    assert project_options(str(tmp_path)).external == "auto"
+    (tmp_path / ".vibeaudit.toml").write_text('external = "none"\n')
+    assert project_options(str(tmp_path)).external == "none"
+    assert project_options(str(tmp_path), external="gitleaks").external == "gitleaks"  # a caller's choice wins
+
+
 def test_added_line_that_looks_like_a_file_header_is_content():
     diff = ("diff --git a/a.md b/a.md\n--- a/a.md\n+++ a.md\n@@ -1,0 +2,2 @@\n+++ counter\n+x\n@@ -9 +10 @@\n+y\n"
             "diff --git a/b.py b/b.py\n--- a/b.py\n+++ b.py\n@@ -0,0 +1 @@\n+z\n")
