@@ -46,7 +46,8 @@ CODE_EXTS = (".go", ".rs", ".java", ".kt", ".cs", ".php", ".rb")
 ADMIN_ROUTE = re.compile(r"(?i)/admin\b|/feature[-_]?(?:flags?|toggles?)\b|/flags?\b|/toggles?\b|/maintenance\b|/site[-_]?settings\b")
 # `/contacts/{contact}/quickFacts/toggle` flips one record's field and `/preferences/toggle-dark-mode` the caller's own
 # setting; `/accounts/toggle-enabled` and `/toggles` are switches
-OWN_TOGGLE = re.compile(r"(?i)\{[^}]*\}.*/toggles?\b|/(?:preferences|profile|me|my[-_]\w+|account)/(?:[^/]+/)*toggle")
+OWN_TOGGLE = re.compile(r"(?i)\{[^}\n]{0,200}\}[^\n]{0,500}/toggles?\b"
+                        r"|/(?:preferences|profile|me|my[-_]\w{1,40}|account)/(?:[^/\n]{1,100}/){0,8}toggle")
 ROLE_CHECK = re.compile(
     r"(?i)admin|\brole|is_?staff|is_?superuser|superuser|permission|\bcan\s*\(|authori[sz]e|ability|polic(?:y|ies)|has_?perm"
     r"|requireRole|require_role|is_?owner|isOwner|owner_?only|staff_?member_required|user_passes_test|\bscopes?\b|\bclaims?\b")

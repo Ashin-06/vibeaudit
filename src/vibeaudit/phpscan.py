@@ -174,12 +174,12 @@ BLADE_SAFE = re.compile(r"(?i)^\$(?:slot|attributes)\b|\b(?:clean|purify|Purifie
 SHELL_LIKE = re.compile(r"(?i)^\s{0,40}(?:['\"]\s{0,40})?(?:sh|bash|ls|cat|ping|nslookup|cd|rm|cp|mv|git|convert|ffmpeg|php|python|curl|wget)\b")
 SQL_WORDS = re.compile(r"(?i)\b(?:select\b[\s\S]{0,200}\bfrom|insert\s+into|update\s+\w+\s+set|delete\s+from)\b")
 # a redirect to a path on this site, to a fixed host, or to a URL the router builds is not an open redirect
-LOCAL_TARGET = re.compile(r"""\s{0,40}(?:['"](?:/(?!/)|https?://[\w.-]+(?:[:/?'"]|$))|(?:\$this\s*->\s*)?(?:route|url|action|generateUrl|"""
+LOCAL_TARGET = re.compile(r"""\A\s{0,40}(?:['"](?:/(?!/)|https?://[\w.-]+(?:[:/?'"]|$))|(?:\$this\s*->\s*)?(?:route|url|action|generateUrl|"""
                           r"""redirectToRoute|path)\s*\(|(?:url|URL)\s*(?:\(\s*\))?\s*(?:::|->)\s*(?:route|to|action|signedRoute|temporarySignedRoute)\s*\("""
                           # a helper that checks the target: Helper::sameOriginUrl(), wallabag's $this->redirectHelper->to()
                           r"""|[\w\\:$>-]{0,80}(?i:same_?origin|safe|internal|local|validated?)\w{0,40}(?i:url|redirect|target)\w{0,40}\s*\("""
                           r"""|(?:\$this\s*->\s*)?\w{0,40}redirect_?helper\w{0,40}\s*->\s*\w+\s*\()""", re.I)
-SANITIZED = re.compile(r"\s{0,40}(?:" + SANITIZERS.pattern[4:] + ")", re.I)  # a value that starts with a sanitizer
+SANITIZED = re.compile(r"\A\s{0,40}(?:" + SANITIZERS.pattern[4:] + ")", re.I)  # \A: only ever .match()ed  # a value that starts with a sanitizer
 
 
 def _strings(text: str) -> List[str]:
