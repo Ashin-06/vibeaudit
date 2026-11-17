@@ -169,6 +169,16 @@ class RustScanner:
             known |= more
         self.auth_extractors = known
 
+    def _helper_auth(self, sf: SourceFile, body: str) -> str:
+        """A function of the same file that the handler calls first checks the caller (SCIM's `change()` calls
+        `authenticate()` on the bearer token): one call deep, like the Python and JavaScript helpers. Returns that
+        helper's code (empty if none), so the route checks also see its scoping (`WHERE tenant_id = $1`)."""
+        for name in list(dict.fromkeys(re.findall(r"(?<![.:\w])([a-z_]\w*)\s*\(", body)))[:20]:
+            for f, a, _po, pc, b in self.funcs.get(name, []):
+                if f is sf and H.AUTH_EVIDENCE.search(f.cache["rust_views"].code[pc:b]):  # type: ignore[attr-defined]
+                    return f.cache["rust_views"].code[a:b]  # type: ignore[attr-defined]
+        return ""
+
     def _fn(self, name: str, sf: SourceFile) -> Optional[Tuple[SourceFile, int, int, int, int]]:
         found = self.funcs.get(name.rsplit("::", 1)[-1], [])
         same = [f for f in found if f[0] is sf]
@@ -298,7 +308,9 @@ class RustScanner:
         # attributes on the handler, such as `#[actix_web_grants::protect(...)]` (names only: a path may say "auth")
         above = FN_ATTRS.search(code, max(0, a - 600), a)
         guards = " ".join(re.findall(r"#\[\s*([\w:]+)", attrs + (above.group(0) if above else "")))
-        custom = bool(self.auth_extractors & set(re.findall(r"\b[A-Z]\w*", types)))
+        helper = self._helper_auth(fsf, code[pc:b])
+        body += "\n" + helper if helper else ""
+        custom = bool(self.auth_extractors & set(re.findall(r"\b[A-Z]\w*", types))) or bool(helper)
         has_auth = (layered or custom or bool(AUTH_TYPE.search(types)) or bool(AUTH_MW.search(guards))
                     or bool(H.AUTH_EVIDENCE.search(code[pc:b])) or H.CUSTOM.is_auth(body))
         self.handlers.add((fsf.rel, a))
@@ -429,7 +441,12 @@ def _formatted(arg: str, assigned: Dict[str, str]) -> bool:
     a = arg.strip().lstrip("&*").strip()
     text = assigned.get(a, a) if re.fullmatch(r"[a-z_]\w*", a) else a
     m = re.search(r"\bformat!\s*\(\s*\"((?:\\.|[^\"\\])*)\"\s*,", text)
-    return bool(m) and bool(re.search(r"(?i)\b(?:select|insert|update|delete)\b", m.group(1)))
+    if not m or not re.search(r"(?i)\b(?:select|insert|update|delete)\b", m.group(1)):
+        return False
+    end = text.find(")", m.end())
+    args = [x.strip() for x in text[m.end():end if end > 0 else len(text)].split(",") if x.strip()]
+    # only constants formatted in (`RETURNING {}`, `source::CONNECTION`): a fixed column list, not data
+    return not (args and all(re.fullmatch(r"(?:\w+::)*[A-Z][A-Z0-9_]*", x) for x in args))
 
 
 def _fixed_host(arg: str, assigned: Dict[str, str]) -> bool:

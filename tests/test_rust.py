@@ -238,3 +238,54 @@ def test_sqlx_executor_argument_is_not_sql(tmp_path):
            '}\n')
     root = write(tmp_path, {"src/main.rs": src})
     assert found(root, "BE001") == [("BE001", "main.rs", 6)]  # rusqlite's execute takes SQL; sqlx's takes the executor
+
+
+PUBLIC_BY_DESIGN = '''use axum::{http::HeaderMap, routing::{patch, post}, Router};
+
+const COLUMNS: &str = "id, name";
+
+async fn authenticate(headers: &HeaderMap) -> Result<Caller, StatusCode> { Err(StatusCode::UNAUTHORIZED) }
+async fn change(headers: &HeaderMap, id: &str) -> Result<(), StatusCode> {
+    let caller = authenticate(headers).await?;
+    sqlx::query("UPDATE users SET active = false WHERE id = $1").bind(id).execute(&pool).await;
+    Ok(())
+}
+
+async fn patch_user(headers: HeaderMap, Path(id): Path<String>) -> StatusCode { change(&headers, &id).await; StatusCode::OK }
+async fn saml_acs(Form(form): Form<SamlPost>) -> Redirect { store(form).await; Redirect::to("/") }
+async fn github_hook(headers: HeaderMap, body: Bytes) -> StatusCode {
+    let signature = headers.get("x-hub-signature-256");
+    if !verify(&body, signature) { return StatusCode::UNAUTHORIZED; }
+    sqlx::query("INSERT INTO events (body) VALUES ($1)").bind(&body[..]).execute(&pool).await;
+    StatusCode::OK
+}
+async fn rename(Path(id): Path<i64>, Json(body): Json<Rename>) -> StatusCode {
+    let q = sqlx::query_as(&format!("UPDATE items SET name = $1 WHERE id = $2 RETURNING {}", COLUMNS));
+    let r = sqlx::query(&format!("UPDATE items SET name = '{}'", body.name));
+    StatusCode::OK
+}
+
+pub fn app() -> Router {
+    Router::new().route("/scim/v2/Users/{id}", patch(patch_user)).route("/sso/saml/acs", post(saml_acs))
+        .route("/hooks/github", post(github_hook)).route("/items/{id}", patch(rename))
+}
+'''
+
+
+def test_helper_auth_saml_signed_hooks_and_constant_columns(tmp_path):
+    root = write(tmp_path, {"src/main.rs": PUBLIC_BY_DESIGN})
+    got = found(root, "AUTH001", "BE001")
+    assert [g for g in got if g[0] == "AUTH001"] == [("AUTH001", "main.rs", 28)]  # only rename(); not the SCIM helper, SAML ACS, signed hook
+    assert [g for g in got if g[0] == "BE001"] == [("BE001", "main.rs", 22)]  # the column-list format! is not reported
+
+
+def test_a_helper_that_checks_the_role_and_scopes_the_query_is_followed(tmp_path):
+    src = ('use axum::{routing::{delete, put}, Router};\n'
+           'fn admin(auth: &AuthContext) -> Result<(), ApiError> { require_session(auth)?; auth.require(OrgPermission::Manage)?; Ok(()) }\n'
+           'async fn load(caller: &Caller, id: i64) { sqlx::query("SELECT * FROM t WHERE tenant_id = $1 AND id = $2").bind(caller.tenant_id).bind(id); }\n'
+           'async fn change(headers: &HeaderMap, id: i64) { let caller = authenticate(headers).await; load(caller.tenant_id, id).await; }\n'
+           'async fn revoke(auth: AuthContext, Path(id): Path<i64>) -> StatusCode { admin(&auth)?; StatusCode::OK }\n'
+           'async fn replace(headers: HeaderMap, Path(id): Path<i64>) -> StatusCode { change(&headers, id).await; StatusCode::OK }\n'
+           'pub fn app() -> Router { Router::new().route("/admin/tokens/{id}", delete(revoke)).route("/Users/{id}", put(replace)) }\n')
+    root = write(tmp_path, {"src/main.rs": src, "src/roles.rs": "pub enum OrgRole { Admin, Member }\n"})
+    assert found(root, "AUTH001", "AUTH002", "AUTH003") == []

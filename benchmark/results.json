@@ -595,11 +595,11 @@
    "fixed_fp": 3
   },
   "jira-meridian": {
-   "findings": 72,
-   "labelled": 72,
+   "findings": 61,
+   "labelled": 61,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 58
+   "fixed_fp": 69
   },
   "pomb": {
    "findings": 94,
@@ -679,11 +679,11 @@
    "title": "State-changing endpoint without authentication",
    "preview": false,
    "tp": 46,
-   "fp": 11,
+   "fp": 5,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.807,
-   "precision_pessimistic": 0.807,
+   "precision": 0.902,
+   "precision_pessimistic": 0.902,
    "seeded_expected": 8,
    "seeded_found": 8,
    "seeded_recall": 1.0,
@@ -736,11 +736,6 @@
     "helpdesk-flow-verse": [
      5,
      0,
-     0
-    ],
-    "jira-meridian": [
-     0,
-     6,
      0
     ],
     "langchain-nextjs-template": [
@@ -805,11 +800,6 @@
      0,
      0
     ],
-    "jira-meridian": [
-     0,
-     6,
-     0
-    ],
     "piggymetrics": [
      0,
      1,
@@ -821,11 +811,11 @@
    "title": "Admin endpoint without a role check",
    "preview": false,
    "tp": 19,
-   "fp": 10,
+   "fp": 7,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6552,
-   "precision_pessimistic": 0.6552,
+   "precision": 0.7308,
+   "precision_pessimistic": 0.7308,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
@@ -845,11 +835,6 @@
      6,
      0
     ],
-    "jira-meridian": [
-     0,
-     3,
-     0
-    ],
     "uniedit-server": [
      17,
      0,
@@ -865,11 +850,6 @@
     "go-base": [
      0,
      6,
-     0
-    ],
-    "jira-meridian": [
-     0,
-     3,
      0
     ],
     "uniedit-server": [
@@ -1387,11 +1367,11 @@
    "title": "SQL injection",
    "preview": false,
    "tp": 30,
-   "fp": 10,
+   "fp": 8,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.75,
-   "precision_pessimistic": 0.75,
+   "precision": 0.7895,
+   "precision_pessimistic": 0.7895,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -1426,11 +1406,6 @@
      1,
      0
     ],
-    "jira-meridian": [
-     0,
-     2,
-     0
-    ],
     "pygoat": [
      1,
      0,
@@ -1456,11 +1431,6 @@
     "JavaVulnerableLab": [
      5,
      0,
-     0
-    ],
-    "jira-meridian": [
-     0,
-     2,
      0
     ]
    }
@@ -2515,7 +2485,7 @@
   },
   "CFG002": {
    "title": "Unpinned container base image",
-   "preview": false,
+   "preview": true,
    "tp": 12,
    "fp": 1,
    "needs_review": 0,
@@ -2587,7 +2557,68 @@
      0
     ]
    },
-   "preview_by_repo": {}
+   "preview_by_repo": {
+    "Schematic": [
+     0,
+     1,
+     0
+    ],
+    "actix-realworld-example-app": [
+     1,
+     0,
+     0
+    ],
+    "conveyor": [
+     1,
+     0,
+     0
+    ],
+    "flexible-graphrag": [
+     1,
+     0,
+     0
+    ],
+    "go-base": [
+     2,
+     0,
+     0
+    ],
+    "go-clean-arch": [
+     1,
+     0,
+     0
+    ],
+    "go-test-bench": [
+     1,
+     0,
+     0
+    ],
+    "mCaptcha": [
+     1,
+     0,
+     0
+    ],
+    "opengpts": [
+     1,
+     0,
+     0
+    ],
+    "realworld-rust-axum-sqlx": [
+     1,
+     0,
+     0
+    ],
+    "thynk": [
+     1,
+     0,
+     0
+    ],
+    "toWers": [
+     1,
+     0,
+     0
+    ]
+   }
   },
   "CFG003": {
    "title": "Secret baked into the container image",
@@ -3779,7 +3810,7 @@
   },
   "DATA012": {
    "title": "Foreign key without an index",
-   "preview": false,
+   "preview": true,
    "tp": 201,
    "fp": 9,
    "needs_review": 0,
@@ -3896,7 +3927,113 @@
      0
     ]
    },
-   "preview_by_repo": {}
+   "preview_by_repo": {
+    "LinguaLearn": [
+     2,
+     0,
+     0
+    ],
+    "act-solo-ai": [
+     1,
+     0,
+     0
+    ],
+    "ai-chatbot": [
+     6,
+     0,
+     0
+    ],
+    "chat-systems": [
+     76,
+     0,
+     0
+    ],
+    "chatbot-ui": [
+     16,
+     0,
+     0
+    ],
+    "chatgpt-your-files": [
+     4,
+     0,
+     0
+    ],
+    "dvpwa": [
+     3,
+     0,
+     0
+    ],
+    "jira-meridian": [
+     25,
+     0,
+     0
+    ],
+    "mCaptcha": [
+     10,
+     9,
+     0
+    ],
+    "nextjs-subscription-payments": [
+     6,
+     0,
+     0
+    ],
+    "node-express-realworld-example-app": [
+     4,
+     0,
+     0
+    ],
+    "opengpts": [
+     3,
+     0,
+     0
+    ],
+    "physicalmediavault": [
+     1,
+     0,
+     0
+    ],
+    "prompt-sculptor-49": [
+     17,
+     0,
+     0
+    ],
+    "realworld-axum-sqlx": [
+     4,
+     0,
+     0
+    ],
+    "realworld-rust-axum-sqlx": [
+     7,
+     0,
+     0
+    ],
+    "saas-starter": [
+     6,
+     0,
+     0
+    ],
+    "scriptforge-ai": [
+     1,
+     0,
+     0
+    ],
+    "svix-webhooks": [
+     2,
+     0,
+     0
+    ],
+    "uniedit-server": [
+     6,
+     0,
+     0
+    ],
+    "zero-to-production": [
+     1,
+     0,
+     0
+    ]
+   }
   },
   "DATA013": {
    "title": "Redis key without an expiry",
@@ -5473,7 +5610,7 @@
   },
   "QA001": {
    "title": "No automated tests",
-   "preview": false,
+   "preview": true,
    "tp": 16,
    "fp": 3,
    "needs_review": 0,
@@ -5580,7 +5717,103 @@
      0
     ]
    },
-   "preview_by_repo": {}
+   "preview_by_repo": {
+    "careconnect": [
+     1,
+     0,
+     0
+    ],
+    "chatgpt-your-files": [
+     1,
+     0,
+     0
+    ],
+    "commerce": [
+     1,
+     0,
+     0
+    ],
+    "conveyor": [
+     0,
+     1,
+     0
+    ],
+    "damn-vulnerable-llm-agent": [
+     1,
+     0,
+     0
+    ],
+    "dvna": [
+     1,
+     0,
+     0
+    ],
+    "dvpwa": [
+     1,
+     0,
+     0
+    ],
+    "govwa": [
+     1,
+     0,
+     0
+    ],
+    "helpdesk-flow-verse": [
+     1,
+     0,
+     0
+    ],
+    "learnathon-leaderboard": [
+     1,
+     0,
+     0
+    ],
+    "next-learn": [
+     1,
+     0,
+     0
+    ],
+    "next-saas-stripe-starter": [
+     1,
+     0,
+     0
+    ],
+    "nextjs-subscription-payments": [
+     1,
+     0,
+     0
+    ],
+    "openai-assistants-quickstart": [
+     1,
+     0,
+     0
+    ],
+    "piggymetrics": [
+     0,
+     1,
+     0
+    ],
+    "prompt-sculptor-49": [
+     1,
+     0,
+     0
+    ],
+    "saas-starter": [
+     1,
+     0,
+     0
+    ],
+    "taxonomy": [
+     1,
+     0,
+     0
+    ],
+    "vulnerable-java-application": [
+     0,
+     1,
+     0
+    ]
+   }
   },
   "QA002": {
    "title": "No continuous integration",
@@ -6148,7 +6381,7 @@
   },
   "QA007": {
    "title": "Package imported but not declared as a dependency",
-   "preview": false,
+   "preview": true,
    "tp": 53,
    "fp": 4,
    "needs_review": 0,
@@ -6245,7 +6478,93 @@
      0
     ]
    },
-   "preview_by_repo": {}
+   "preview_by_repo": {
+    "LinguaLearn": [
+     8,
+     0,
+     0
+    ],
+    "act-solo-ai": [
+     1,
+     0,
+     0
+    ],
+    "alerta": [
+     4,
+     2,
+     0
+    ],
+    "bakerydemo": [
+     4,
+     0,
+     0
+    ],
+    "bella-openapi": [
+     1,
+     0,
+     0
+    ],
+    "conveyor": [
+     1,
+     0,
+     0
+    ],
+    "damn-vulnerable-llm-agent": [
+     2,
+     0,
+     0
+    ],
+    "dvna": [
+     1,
+     0,
+     0
+    ],
+    "flexible-graphrag": [
+     7,
+     0,
+     0
+    ],
+    "opengpts": [
+     5,
+     0,
+     0
+    ],
+    "openui": [
+     4,
+     0,
+     0
+    ],
+    "pygoat": [
+     2,
+     1,
+     0
+    ],
+    "scriptforge-ai": [
+     1,
+     0,
+     0
+    ],
+    "sec-insights": [
+     4,
+     0,
+     0
+    ],
+    "svix-webhooks": [
+     2,
+     1,
+     0
+    ],
+    "thynk": [
+     2,
+     0,
+     0
+    ],
+    "vibe-trading": [
+     4,
+     0,
+     0
+    ]
+   }
   },
   "QA008": {
    "title": "TypeScript checking disabled for a whole file",
@@ -7732,7 +8051,7 @@
   },
   "UI009": {
    "title": "Data loaded without loading or error state",
-   "preview": false,
+   "preview": true,
    "tp": 7,
    "fp": 1,
    "needs_review": 0,
@@ -7774,7 +8093,38 @@
      0
     ]
    },
-   "preview_by_repo": {}
+   "preview_by_repo": {
+    "careconnect": [
+     2,
+     0,
+     0
+    ],
+    "openai-assistants-quickstart": [
+     1,
+     0,
+     0
+    ],
+    "opengpts": [
+     2,
+     0,
+     0
+    ],
+    "scriptforge-ai": [
+     1,
+     0,
+     0
+    ],
+    "toWers": [
+     0,
+     1,
+     0
+    ],
+    "waline": [
+     1,
+     0,
+     0
+    ]
+   }
   },
   "UI010": {
    "title": "Placeholder content left in the UI",

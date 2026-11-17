@@ -48,6 +48,8 @@ ADMIN_ROLE_EVIDENCE = re.compile(
     r"|admin_required|check_?role|authorize\s*\(|ability|can\s*\(|isStaff|staff_member_required|scopes?\b"
     # Spring and Jakarta: @PreAuthorize("hasAuthority(...)"), @Secured, @RolesAllowed
     r"|has_?(?:any_?)?authority|has_?any_?role|secured|roles_?allowed)"
+    # Rust and PHP enum paths: `ctx.require(OrgPermission::ManageOrganization)`, `UserRole::Admin`
+    r"|\b[A-Z]\w*(?:Permission|Role)\s*::"
 )
 # role evidence anywhere in the project; not a path such as Actix's `web::scope`
 ANY_ROLE = re.compile(r"(?i)(?<!::)(?:" + ADMIN_ROLE_EVIDENCE.pattern.replace("(?i)", "", 1) + ")")
@@ -69,7 +71,7 @@ PUBLIC_PATH = re.compile(
     r"(?i)(?:^|[/_.\-\s])(?:login|logout|signin|sign-in|sign_in|signup|sign-up|sign_up|register|auth|oauth|token|refresh"
     r"|sessions?|health|healthz|ready|readyz|live|livez|ping|status|version|webhooks?|callback|public|forgot|reset"
     r"|verify|confirm|csrf|contact|subscribe|unsubscribe|newsletter|waitlist|feedback|track|analytics|og|robots"
-    r"|sitemap|metrics|nextauth)(?:$|[/_.\-\s\[{<:])"
+    r"|sitemap|metrics|nextauth|saml|acs)(?:$|[/_.\-\s\[{<:])"
 )
 
 LOGIN_PATH = re.compile(
