@@ -4,6 +4,14 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- `external` in `.vibeaudit.toml` is read by the Python API's default options, the MCP server and `vibeaudit watch`.
+  An inline comment had swallowed the key, so they always ran the external tools in `auto` mode; `vibeaudit scan`
+  was not affected.
+
 ## [0.11.0] - 2026-11-17
 
 Lexer-based scanners with labelled corpora for Rust, C# and PHP, which completes Phase 5 as preview; benchmark

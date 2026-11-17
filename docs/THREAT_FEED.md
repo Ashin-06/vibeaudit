@@ -8,7 +8,11 @@ vibeaudit's threat data lives in [`src/vibeaudit/data/threat_data.json`](../src/
 | `model_sunsets` | LLM012 | `id`, `date` (retirement, `YYYY-MM-DD`), `replacement` (optional), `source` |
 | `prompt_injection` | LLM025 | `id` (`PI` and a number), `pattern` (a Python regular expression), `description`, `source` |
 
-The file ships with every release, so all three checks work offline. Between releases, a scheduled workflow
+**The signed feed is not active yet.** No release ships the feed's public key and nothing is published on the
+`threat-feed` branch until the maintainer does the one-time key setup in docs/THREAT_FEED.md, so for now
+`vibeaudit update` installs no feed and scans use only the data packaged with vibeaudit.
+
+The file ships with every release, so all three checks work offline. Once the key is set up, between releases, a scheduled workflow
 ([`.github/workflows/feed.yml`](../.github/workflows/feed.yml)) signs the file as it is on `main` every day and
 publishes it as `threat_feed.json` on the `threat-feed` branch. `vibeaudit update` downloads it, and scans add
 its entries to the shipped ones.

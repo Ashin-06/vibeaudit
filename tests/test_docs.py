@@ -111,3 +111,17 @@ def test_readme_accuracy_numbers_match_the_benchmark_results():
     a, b = README.index(B.README_START), README.index(B.README_END)
     assert README[a + len(B.README_START):b].strip() == B.readme_accuracy(results).strip(), \
         "README accuracy numbers are stale: run `python tools/benchmark.py baseline`"
+
+
+def test_benchmark_doc_counts_every_corpus_repository():
+    # docs/BENCHMARK.md is written by `tools/benchmark.py report` from results.json; a corpus change without a
+    # re-run leaves it describing an older corpus
+    import json
+    repos = len(json.loads((ROOT / "benchmark" / "corpus.json").read_text(encoding="utf-8"))["repos"])
+    doc = (ROOT / "docs" / "BENCHMARK.md").read_text(encoding="utf-8")
+    assert f" on {repos} pinned repositories" in doc
+
+
+def test_readme_counts_the_preview_rules():
+    preview = sum(1 for r in RULES.values() if r.preview)
+    assert f"{preview} of {len(RULES)} rules are preview" in " ".join(README.split())

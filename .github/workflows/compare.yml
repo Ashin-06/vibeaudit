@@ -1,7 +1,7 @@
 name: Compare with Semgrep and Bandit
 
 # Head-to-head on the pinned benchmark corpus (tools/compare.py). Manual and weekly; never on pull requests,
-# because it clones 53 repositories and runs three scanners. Results are uploaded as an artifact; a maintainer
+# because it clones every corpus repository and runs three scanners. Results are uploaded as an artifact; a maintainer
 # labels the precision sample and commits benchmark/compare.json.
 on:
   workflow_dispatch:
