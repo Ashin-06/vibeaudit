@@ -94,8 +94,9 @@ class FileCtx:
 
     def unit(self) -> str:
         """The file's indentation step: a tab, two or four spaces."""
-        tabs = len(re.findall(r"(?m)^\t+\S", self.text))
-        spaces = [len(m.group(1)) for m in re.finditer(r"(?m)^( +)[^ \t*\n]", self.text)]
+        code = self.views.bare  # strings and comments blanked, so a docstring's indent does not count
+        tabs = len(re.findall(r"(?m)^\t+\S", code))
+        spaces = [len(m.group(1)) for m in re.finditer(r"(?m)^( +)[^ \t*\n]", code)]
         if tabs > len(spaces):
             return "\t"
         if self.kind == "py":

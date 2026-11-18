@@ -226,6 +226,35 @@ def fragment_safe(node: ast.AST, assigned: Dict[str, ast.AST], depth: int = 0) -
     return False
 
 
+def _ident_only(pattern: str) -> bool:
+    """True when a regex accepts a plain SQL identifier and rejects quotes, spaces and separators."""
+    try:
+        rx = re.compile(pattern)
+    except re.error:
+        return False
+    return bool(rx.fullmatch("users")) and not any(rx.fullmatch(bad)
+                                                   for bad in ("a b", "a'b", 'a"b', "a;b", "a-b", "a)b", "a\nb"))
+
+
+def validated_attrs(tree: ast.AST) -> Set[str]:
+    """Attributes set as `self.X = name` after `if not re.fullmatch(IDENT, name): raise ...` in the
+    same function: identifiers checked against a strict pattern, safe to format into SQL."""
+    out: Set[str] = set()
+    for fn in ast.walk(tree):
+        if not isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            continue
+        checked: Set[str] = set()
+        for node in ast.walk(fn):
+            if isinstance(node, ast.If) and isinstance(node.test, ast.UnaryOp) and isinstance(node.test.op, ast.Not)                     and isinstance(node.test.operand, ast.Call) and last_name(node.test.operand.func) == "fullmatch"                     and len(node.test.operand.args) >= 2 and isinstance(node.test.operand.args[0], ast.Constant)                     and isinstance(node.test.operand.args[0].value, str) and isinstance(node.test.operand.args[1], ast.Name)                     and node.body and isinstance(node.body[-1], ast.Raise) and _ident_only(node.test.operand.args[0].value):
+                checked.add(node.test.operand.args[1].id)
+        for node in ast.walk(fn):
+            if isinstance(node, ast.Assign) and isinstance(node.value, ast.Name) and node.value.id in checked:
+                for t in node.targets:
+                    if isinstance(t, ast.Attribute) and isinstance(t.value, ast.Name) and t.value.id == "self":
+                        out.add(t.attr)
+    return out
+
+
 def _sequence_safe(node: ast.AST, assigned: Dict[str, ast.AST], bound: Set[str], depth: int) -> bool:
     """True when every element of the iterable passed to str.join is a bind marker."""
     if isinstance(node, ast.Name) and node.id in assigned and depth <= 6:
@@ -324,6 +353,7 @@ class PyScanner:
         self.sf: SourceFile = None  # type: ignore[assignment]
         self.reported: Set[tuple] = set()
         self.tool_methods: Set[int] = set()
+        self._idents: Dict[str, Set[str]] = {}
         self.auth_aliases: Set[str] = set()
         self.tool_lambda_nodes: Set[int] = set()
         # cross-function taint: per file, top-level functions, methods and imported names; calls to follow
@@ -756,6 +786,16 @@ class PyScanner:
         return False
 
     # -------------------------------------------------------------- taint
+    def _checked_ident(self, node: ast.AST) -> bool:
+        """self.X where X was checked against a strict identifier pattern in this file (V4)."""
+        if not (isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name) and node.value.id == "self"):
+            return False
+        rel = self.sf.rel
+        if rel not in self._idents:
+            tree = next((t for f, t in self.trees if f.rel == rel), None)
+            self._idents[rel] = validated_attrs(tree) if tree is not None else set()
+        return node.attr in self._idents[rel]
+
     def taint(self, node: Optional[ast.AST], ctx: Ctx) -> Taint:
         if node is None or isinstance(node, ast.Constant):
             return {}
@@ -778,6 +818,11 @@ class PyScanner:
                 return {}
             if name in SANITIZERS or name in H.CUSTOM.sanitizers or re.match(r"(?i)(sanitize|validate|escape|clean)", name or ""):
                 return {}
+            if name == "get" and isinstance(node.func, ast.Attribute) and node.args:
+                # mapping.get(key[, default]): the key only selects a value; the result comes from the
+                # mapping or the default, so a user-chosen key into a server-side dict is not tainted
+                return merge(self.taint(node.func.value, ctx), *[self.taint(a, ctx) for a in node.args[1:]],
+                             *[self.taint(k.value, ctx) for k in node.keywords])
             parts = [self.taint(a, ctx) for a in node.args] + [self.taint(k.value, ctx) for k in node.keywords]
             if isinstance(node.func, ast.Attribute):
                 parts.append(self.taint(node.func, ctx))
@@ -951,7 +996,7 @@ class PyScanner:
             if arg0 is not None:
                 src = self.resolve(arg0, ctx)
                 formatted = is_formatted(src) and re.search(r"(?i)\b(select|insert|update|delete|drop|create|alter|where)\b", string_parts(src))
-                if formatted and all(fragment_safe(p, ctx.assigned) for p in interpolated(src)):
+                if formatted and all(fragment_safe(p, ctx.assigned) or self._checked_ident(p) for p in interpolated(src)):
                     pass  # only bind markers are formatted in; the values are passed as parameters
                 elif t0 and (formatted or ctx.kind == "tool" or not isinstance(src, (ast.Constant, ast.JoinedStr, ast.BinOp))) \
                         and not (isinstance(src, ast.Call) and last_name(src.func) in ORM_BUILDERS):

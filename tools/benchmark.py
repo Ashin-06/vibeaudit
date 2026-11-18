@@ -244,6 +244,13 @@ def _split(results: dict, rule: dict, heldout: bool) -> Tuple[int, int]:
     return sum(v[0] for v in rows), sum(v[1] for v in rows)
 
 
+def _gating_split(results: dict, rule: dict, heldout: bool) -> Tuple[int, int]:
+    """(TP, FP) of a stable rule's findings that gate, leaving out its findings in preview languages."""
+    a = _split(results, rule, heldout)
+    b = _split(results, {"by_repo": rule.get("preview_by_repo", {})}, heldout)
+    return a[0] - b[0], a[1] - b[1]
+
+
 def _stable_split(results: dict, heldout: bool) -> Tuple[int, int]:
     """(TP, FP) of the findings that gate as stable: each finding counts by its own preview flag, not its rule's
     (a stable rule's findings in a preview language are preview and do not gate)."""
@@ -266,7 +273,9 @@ def table(results: dict) -> str:
     rows = ["| Rule | Title | Status | Tuned precision | Held-out precision | Needs review | Seeded recall |",
             "| --- | --- | --- | --- | --- | --- | --- |"]
     for rid, r in results["rules"].items():
-        tuned, held = _precision(*_split(results, r, False)), _precision(*_split(results, r, True))
+        # a stable rule's row shows the findings that gate: its findings in preview languages are left out
+        split = _split if r["preview"] else _gating_split
+        tuned, held = _precision(*split(results, r, False)), _precision(*split(results, r, True))
         if rid in NETWORK_RULES:
             tuned = held = "network rule: not measured offline"
         rec = "n/a" if r["seeded_recall"] is None else f"{r['seeded_found']}/{r['seeded_expected']}"
