@@ -4,10 +4,22 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.11.1] - 2026-11-18
+
+Bug fixes from an external review.
 
 ### Fixed
 
+- `vibeaudit test-exploit` no longer gives an authentication verdict ("401 or 403", "2xx without
+  authentication") for rules it has no automatic oracle for, such as BE006; it says to check the response by hand.
+- `vibeaudit fix` reads a Python file's indentation from its code, not from text inside strings, so a docstring or
+  prompt indented by two spaces no longer makes it insert two-space blocks into a four-space file.
+- Python taint: `mapping.get(key)` takes its taint from the mapping and the default, not the key, so a user-chosen
+  key into a server-side dict (`FILES.get(request.args["name"])`) is no longer a path traversal or injection source.
+- BE001 no longer reports `f"... FROM {self.table}"` when the class checked `table` with `re.fullmatch` against a
+  pattern that only accepts identifiers before storing it.
+- The per-rule table in `benchmark/RESULTS.md` shows a stable rule's precision on the findings that gate, leaving out
+  its findings in preview languages, as the headline numbers already did.
 - `external` in `.vibeaudit.toml` is read by the Python API's default options, the MCP server and `vibeaudit watch`.
   An inline comment had swallowed the key, so they always ran the external tools in `auto` mode; `vibeaudit scan`
   was not affected.
