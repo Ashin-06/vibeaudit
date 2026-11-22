@@ -2,12 +2,12 @@ name: Threat feed
 
 # Daily: sign src/vibeaudit/data/threat_data.json as it is on main and publish it as threat_feed.json on the
 # threat-feed branch, where `vibeaudit update` downloads it. The signing key is the VIBEAUDIT_FEED_KEY secret of
-# the "feed" environment, which only main may use. One-time setup: docs/THREAT_FEED.md. Until the secret
-# exists, the run logs a notice, publishes nothing and succeeds.
+# the "feed" environment, which only main may use. One-time setup: docs/THREAT_FEED.md.
+# The daily schedule is off until that setup is done; add it back then:
+#   schedule:
+#     - cron: "17 4 * * *"
 
 on:
-  schedule:
-    - cron: "17 4 * * *"
   workflow_dispatch:
 
 permissions:

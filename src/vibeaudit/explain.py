@@ -59,7 +59,8 @@ def trace(rel: str, text: str, line: int) -> List[Step]:
         return _python(text, line)
     if re.search(r"\.(?:[cm]?[jt]sx?)$", rel):
         return _javascript(text, line)
-    return []
+    lang = next((k for k, exts in POLY_EXTS.items() if rel.endswith(exts)), None)
+    return _polyglot(text, line, POLY_SOURCES[lang]) if lang else []
 
 
 # ------------------------------------------------------------------ python
@@ -245,6 +246,83 @@ def _javascript(text: str, line: int) -> List[Step]:
         if not frontier:
             break
     if not any(s.role == "source" for s in found):
+        return []
+    return _ordered(found, sink)
+
+
+# ------------------------------------------------------------------ Go, Java/Kotlin, C#, Rust, PHP
+POLY_EXTS = {"go": (".go",), "jvm": (".java", ".kt"), "cs": (".cs",), "rs": (".rs",), "php": (".php",)}
+# request data as each language's common frameworks expose it (handler parameters included)
+POLY_SOURCES = {
+    "go": re.compile(r"\b\w+\.(?:Query|DefaultQuery|Param|PostForm|FormValue|PostFormValue|GetHeader|Bind\w*|ShouldBind\w*)\s*\("
+                     r"|\br\.(?:URL\.Query\(\)|Body|Form|Header)\b|\bmux\.Vars\s*\(|\bchi\.URLParam\s*\("),
+    "jvm": re.compile(r"@(?:RequestParam|PathVariable|RequestBody|RequestHeader|QueryParam|PathParam|FormParam|HeaderParam)\b"
+                      r"|\b\w+\.(?:getParameter|getHeader|getQueryString|getInputStream|getReader)\s*\("),
+    "cs": re.compile(r"\[From(?:Query|Body|Route|Form|Header)\b|\bRequest\.(?:Query|Form|Body|Headers|RouteValues)\b"),
+    "rs": re.compile(r"\b(?:web::)?(?:Query|Path|Json|Form)\s*(?:<|\()|\bHttpRequest\b|\.match_info\s*\("),
+    "php": re.compile(r"\$_(?:GET|POST|REQUEST|COOKIE|SERVER|FILES)\b|\$request->(?:input|get|query|post|all|route|header)\s*\("
+                      r"|\brequest\(\)->"),
+}
+
+
+def _polyglot(text: str, line: int, source: "re.Pattern[str]") -> List[Step]:
+    """The JS tracer's approach for C-like languages: follow `name = ...`, `name := ...`, `let name = ...`
+    and `$name = ...` back from the line, up to a request-data expression or an annotated handler parameter."""
+    from .lexer import js_views, stmt_end
+
+    views = js_views(text)  # C-style strings and comments; close enough for these languages
+    code, bare = views.code, views.bare
+    starts = [0] + [m.end() for m in re.finditer("\n", text)]
+    lines = text.split("\n")
+
+    def line_of(off: int) -> int:
+        import bisect
+
+        return bisect.bisect_right(starts, off)
+
+    def idents(expr: str) -> Set[str]:
+        return {m.group(1) for m in re.finditer(r"(?<![\w.])(\$?[A-Za-z_]\w*)", expr)} - JS_KEYWORDS
+
+    a = starts[line - 1] if line - 1 < len(starts) else len(code)
+    sink_code = code[a:stmt_end(bare, a) if a < len(bare) else a] or lines[line - 1]
+    sink = Step(line, lines[line - 1].strip(), "sink")
+    if source.search(sink_code):
+        sink.note = "user input is used directly on this line"
+        return [sink]
+    seen: Set[str] = set()
+    found: List[Step] = []
+    frontier = [(idents(sink_code), a)]
+    for _ in range(MAX_DEPTH):
+        nxt = []
+        for names, before in frontier:
+            for name in sorted(names - seen):
+                seen.add(name)
+                user = line_of(before) if before != a else line
+                rx = re.compile(r"(?<![\w.$])" + re.escape(name) + r"\s*(?::=|=(?![=>]))")
+                hits = list(rx.finditer(bare, 0, before))
+                if hits:
+                    m = hits[-1]
+                    rhs = code[m.end():stmt_end(bare, m.end())]
+                    at = line_of(m.start())
+                    if source.search(rhs):
+                        found.append(Step(at, lines[at - 1].strip(), "source", f"`{name}` comes from user input", user))
+                    else:
+                        found.append(Step(at, lines[at - 1].strip(), "assignment", f"`{name}`", user))
+                        nxt.append((idents(rhs), m.start()))
+                    continue
+                # a handler parameter bound from the request: `@RequestParam String name`, `[FromQuery] string name`,
+                # `Query(params): Query<T>`
+                pm = None
+                for pm in re.finditer(r"(?:" + source.pattern + r")[^;{}]{0,120}?(?<![\w$])" + re.escape(name) + r"\b",
+                                      code[:before]):
+                    pass
+                if pm:
+                    at = line_of(pm.start())
+                    found.append(Step(at, lines[at - 1].strip(), "source", f"`{name}` comes from user input", user))
+        frontier = nxt
+        if not frontier:
+            break
+    if not any(st.role == "source" for st in found):
         return []
     return _ordered(found, sink)
 

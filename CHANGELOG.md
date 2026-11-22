@@ -4,7 +4,34 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
-## [0.11.1] - 2026-11-18
+## [0.11.2] - 2026-11-23
+
+### Added
+
+- `vibeaudit explain` traces data flow in Go, Java/Kotlin, C#, Rust and PHP: assignments followed back to request
+  data or to a handler parameter bound from the request.
+
+### Fixed
+
+- BE001 also accepts a table name checked with `re.fullmatch` when it is stored through tuple assignment
+  (`self.conninfo, self.table = conninfo, table`) or formatted in directly in the function that checks it.
+- REL006 (no health-check endpoint) also counts Fastify and Hono routes, not only Python and Express. Other
+  languages stay out: their frameworks often serve health checks outside the routes vibeaudit sees (Spring
+  Actuator, ASP.NET `MapHealthChecks`).
+- The MCP `check_package` and `verify_package` tools accept Go, Maven, crates.io, NuGet and Packagist and report
+  their known vulnerabilities; `verify_package` says "caution" for them, as existence and age are only looked up on
+  PyPI and npm.
+- The CI-template test is skipped on Windows when `bash` is the WSL launcher rather than Git Bash.
+
+### Changed
+
+- A release also rebuilds the sample report on GitHub Pages (a release made by the workflow does not trigger
+  `pages.yml` itself).
+- The daily threat-feed run is off until the one-time signing-key setup in docs/THREAT_FEED.md is done.
+- CI uploads vibeaudit's own SARIF report to GitHub code scanning.
+- Issue and pull request templates and a code of conduct.
+
+ - 2026-11-18
 
 Bug fixes from an external review.
 

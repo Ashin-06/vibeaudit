@@ -74,10 +74,11 @@ The repository secret holds the private key. The public key is committed. To set
 
    Then delete the file, or keep it somewhere offline if you want a backup.
 4. Commit `src/vibeaudit/data/feed_key.json` in a pull request and merge it.
-5. Run the "Threat feed" workflow once by hand (Actions, Threat feed, Run workflow) and check that the
+5. Put the daily `schedule` back in `.github/workflows/feed.yml` (it is commented out until this setup is
+   done), then run the "Threat feed" workflow once by hand (Actions, Threat feed, Run workflow) and check that the
    `threat-feed` branch has a `threat_feed.json`.
 
-Until the secret exists, the daily run logs "feed signing key not configured", publishes nothing and
+Until the secret exists, a manual run logs "feed signing key not configured", publishes nothing and
 succeeds. Once it exists, a key that does not match the committed public key, or any other error, fails the
 run. Releases made before step 4 have no public key. Their `vibeaudit update` says so and they use their shipped
 data.

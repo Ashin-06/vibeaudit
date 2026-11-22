@@ -72,7 +72,9 @@ def _git(cwd, *args):
                    cwd=cwd, check=True, capture_output=True)
 
 
-@pytest.mark.skipif(not (shutil.which("bash") and shutil.which("git")), reason="needs bash and git")
+@pytest.mark.skipif(not (shutil.which("bash") and shutil.which("git"))
+                    or "system32" in (shutil.which("bash") or "").lower(),  # WSL launcher, not Git Bash
+                    reason="needs bash and git")
 def test_templates_run(tmp_path):
     """Run the templates' shell steps in a scratch repository, with this checkout as `vibeaudit`."""
     yaml = pytest.importorskip("yaml")
