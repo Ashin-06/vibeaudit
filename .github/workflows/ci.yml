@@ -38,6 +38,24 @@ jobs:
       - name: Scan this repository with itself
         run: vibeaudit scan . --external none --fail-on high --no-color -q
 
+  code-scanning:
+    # vibeaudit's own SARIF, shown in the repository's Security tab
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e .
+      - run: vibeaudit scan . --external none --include-preview -r sarif:vibeaudit.sarif
+      - uses: github/codeql-action/upload-sarif@1bd86f2fdb4b86187fa4059f16f31a3202acc9ea  # v4.39.4
+        with:
+          sarif_file: vibeaudit.sarif
+
   no-install:
     # the suite must also pass from a plain checkout, without `pip install -e`
     strategy:

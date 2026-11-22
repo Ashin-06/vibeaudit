@@ -160,4 +160,4 @@ def test_verify_package_verdicts(registry, tmp_path):
     assert call("verify_package", {"name": "brand-new-pkg", "ecosystem": "PyPI"})[0]["verdict"] == "caution"
     vulnerable = call("verify_package", {"name": "requests", "ecosystem": "PyPI", "version": "2.0.0"})[0]
     assert vulnerable["verdict"] == "block" and "GHSA-x" in " ".join(vulnerable["reasons"])
-    assert call("verify_package", {"name": "x", "ecosystem": "Maven"})[1]
+    assert call("verify_package", {"name": "x", "ecosystem": "CPAN"})[1]

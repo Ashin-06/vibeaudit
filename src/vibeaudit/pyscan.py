@@ -236,23 +236,39 @@ def _ident_only(pattern: str) -> bool:
                                                    for bad in ("a b", "a'b", 'a"b', "a;b", "a-b", "a)b", "a\nb"))
 
 
-def validated_attrs(tree: ast.AST) -> Set[str]:
-    """Attributes set as `self.X = name` after `if not re.fullmatch(IDENT, name): raise ...` in the
-    same function: identifiers checked against a strict pattern, safe to format into SQL."""
-    out: Set[str] = set()
+def _ident_check(node: ast.AST) -> Optional[str]:
+    """The name checked by `if not re.fullmatch(IDENT, name): raise ...`, with an identifier-only IDENT."""
+    if not (isinstance(node, ast.If) and isinstance(node.test, ast.UnaryOp) and isinstance(node.test.op, ast.Not)):
+        return None
+    call = node.test.operand
+    if not (isinstance(call, ast.Call) and last_name(call.func) == "fullmatch" and len(call.args) >= 2):
+        return None
+    pat, name = call.args[0], call.args[1]
+    if isinstance(pat, ast.Constant) and isinstance(pat.value, str) and isinstance(name, ast.Name)             and node.body and isinstance(node.body[-1], ast.Raise) and _ident_only(pat.value):
+        return name.id
+    return None
+
+
+def validated_idents(tree: ast.AST) -> Tuple[Set[str], List[Tuple[int, int, str]]]:
+    """Identifiers checked against a strict pattern, safe to format into SQL: attributes set as
+    `self.X = name` (or `self.a, self.X = a, name`) after the check, and the checked local names
+    themselves, as (first line, last line, name) of the function that checks them."""
+    attrs: Set[str] = set()
+    local: List[Tuple[int, int, str]] = []
     for fn in ast.walk(tree):
         if not isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef)):
             continue
-        checked: Set[str] = set()
+        checked = {n for n in (_ident_check(x) for x in ast.walk(fn)) if n}
+        local += [(fn.lineno, getattr(fn, "end_lineno", fn.lineno), n) for n in checked]
         for node in ast.walk(fn):
-            if isinstance(node, ast.If) and isinstance(node.test, ast.UnaryOp) and isinstance(node.test.op, ast.Not)                     and isinstance(node.test.operand, ast.Call) and last_name(node.test.operand.func) == "fullmatch"                     and len(node.test.operand.args) >= 2 and isinstance(node.test.operand.args[0], ast.Constant)                     and isinstance(node.test.operand.args[0].value, str) and isinstance(node.test.operand.args[1], ast.Name)                     and node.body and isinstance(node.body[-1], ast.Raise) and _ident_only(node.test.operand.args[0].value):
-                checked.add(node.test.operand.args[1].id)
-        for node in ast.walk(fn):
-            if isinstance(node, ast.Assign) and isinstance(node.value, ast.Name) and node.value.id in checked:
-                for t in node.targets:
-                    if isinstance(t, ast.Attribute) and isinstance(t.value, ast.Name) and t.value.id == "self":
-                        out.add(t.attr)
-    return out
+            if not isinstance(node, ast.Assign):
+                continue
+            for t in node.targets:
+                pairs = zip(t.elts, node.value.elts) if isinstance(t, (ast.Tuple, ast.List))                     and isinstance(node.value, (ast.Tuple, ast.List)) else [(t, node.value)]
+                for tgt, val in pairs:
+                    if isinstance(val, ast.Name) and val.id in checked and isinstance(tgt, ast.Attribute)                             and isinstance(tgt.value, ast.Name) and tgt.value.id == "self":
+                        attrs.add(tgt.attr)
+    return attrs, local
 
 
 def _sequence_safe(node: ast.AST, assigned: Dict[str, ast.AST], bound: Set[str], depth: int) -> bool:
@@ -353,7 +369,7 @@ class PyScanner:
         self.sf: SourceFile = None  # type: ignore[assignment]
         self.reported: Set[tuple] = set()
         self.tool_methods: Set[int] = set()
-        self._idents: Dict[str, Set[str]] = {}
+        self._idents: Dict[str, Tuple[Set[str], List[Tuple[int, int, str]]]] = {}
         self.auth_aliases: Set[str] = set()
         self.tool_lambda_nodes: Set[int] = set()
         # cross-function taint: per file, top-level functions, methods and imported names; calls to follow
@@ -787,14 +803,17 @@ class PyScanner:
 
     # -------------------------------------------------------------- taint
     def _checked_ident(self, node: ast.AST) -> bool:
-        """self.X where X was checked against a strict identifier pattern in this file (V4)."""
-        if not (isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name) and node.value.id == "self"):
-            return False
+        """self.X, or a local name, checked against a strict identifier pattern in this file."""
         rel = self.sf.rel
         if rel not in self._idents:
             tree = next((t for f, t in self.trees if f.rel == rel), None)
-            self._idents[rel] = validated_attrs(tree) if tree is not None else set()
-        return node.attr in self._idents[rel]
+            self._idents[rel] = validated_idents(tree) if tree is not None else (set(), [])
+        attrs, local = self._idents[rel]
+        if isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name) and node.value.id == "self":
+            return node.attr in attrs
+        if isinstance(node, ast.Name):
+            return any(a <= node.lineno <= b and n == node.id for a, b, n in local)
+        return False
 
     def taint(self, node: Optional[ast.AST], ctx: Ctx) -> Taint:
         if node is None or isinstance(node, ast.Constant):

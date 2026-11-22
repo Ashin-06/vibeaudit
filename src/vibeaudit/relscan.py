@@ -25,6 +25,10 @@ DEPLOY_FILES = re.compile(r"(?:^|/)(?:Dockerfile[\w.-]*|Containerfile[\w.-]*|doc
 STATE_NAME = r"[A-Za-z_$]*(?:rate|limit|attempt|session|cache|store|counter|visits|requests|tokens|users|memory|queue|jobs)[A-Za-z_$]*"
 
 
+# Python and JS servers, where a health route is an ordinary route; Spring Actuator, ASP.NET MapHealthChecks and
+# similar framework endpoints are not routes this scanner sees, so other languages are left out.
+HEALTH_FRAMEWORKS = frozenset({"python", "drf", "express", "fastify", "hono"})
+
 class ReliabilityScanner:
     def __init__(self, project: Project, emit: Emit, routes: List[Route]):
         self.p = project
@@ -126,7 +130,7 @@ class ReliabilityScanner:
     def _health(self) -> None:
         # development containers and test setups are not deployments
         deploy = [f for f in self.p.files if DEPLOY_FILES.search(f.rel) and not re.search(r"(?:^|/)\.devcontainer/|(?:^|/)tests?/|\.test\.|\.dev\.", f.rel)]
-        servers = [r for r in self.routes if r.framework in ("python", "express", "drf")]
+        servers = [r for r in self.routes if r.framework in HEALTH_FRAMEWORKS]
         if not deploy or len(servers) < 5 or any(HEALTH.search(r.path) for r in self.routes):
             return
         sf = deploy[0]

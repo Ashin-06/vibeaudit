@@ -17,6 +17,8 @@ from typing import IO, Any, Callable, Dict, List, Optional
 from . import __version__
 from .store import loads_json
 
+ECOSYSTEMS = ("PyPI", "npm", "Go", "Maven", "crates.io", "NuGet", "Packagist")
+
 SUPPORTED_PROTOCOLS = ("2025-06-18", "2025-03-26", "2024-11-05")
 MAX_FINDINGS = 200
 
@@ -62,7 +64,7 @@ TOOLS = [
             "type": "object",
             "properties": {
                 "name": {"type": "string"},
-                "ecosystem": {"type": "string", "enum": ["PyPI", "npm"]},
+                "ecosystem": {"type": "string", "enum": list(ECOSYSTEMS)},
                 "version": {"type": "string", "description": "Exact version to check against OSV (optional)."},
             },
             "required": ["name", "ecosystem"],
@@ -113,7 +115,7 @@ TOOLS = [
             "type": "object",
             "properties": {
                 "name": {"type": "string", "description": "Package name, or a Python import name."},
-                "ecosystem": {"type": "string", "enum": ["PyPI", "npm"]},
+                "ecosystem": {"type": "string", "enum": list(ECOSYSTEMS)},
                 "version": {"type": "string", "description": "Exact version to check against OSV (optional)."},
                 "project": {"type": "string", "description": "Project directory, to report whether it already declares the package."},
             },
@@ -138,6 +140,7 @@ TOOLS = [
 
 class ToolError(Exception):
     pass
+
 
 
 def _dir(path: Any) -> str:
@@ -231,14 +234,17 @@ def _package_report(args: Dict[str, Any]) -> Dict[str, Any]:
     from . import deps
 
     name, eco = args.get("name"), args.get("ecosystem")
-    if not isinstance(name, str) or not name or eco not in ("PyPI", "npm"):
-        raise ToolError("name (string) and ecosystem (PyPI or npm) are required")
+    if not isinstance(name, str) or not name or eco not in ECOSYSTEMS:
+        raise ToolError(f"name (string) and ecosystem ({', '.join(ECOSYSTEMS)}) are required")
     version = args.get("version")
     if version is not None and not isinstance(version, str):
         raise ToolError("version must be a string such as \"2.31.0\"")
     dep = deps.Dep(name, eco, "", 0, version or None)
     deps.BREAKER.reset()  # the server lives long: one network blip must not disable lookups for good
-    status, first, note = deps.registry_info(dep)
+    if eco in ("PyPI", "npm"):
+        status, first, note = deps.registry_info(dep)
+    else:  # existence and age are looked up on PyPI and npm only; OSV covers every ecosystem below
+        status, first, note = "ok", None, f"registry existence is not checked for {eco}; vulnerabilities are"
     out: Dict[str, Any] = {"name": name, "ecosystem": eco, "registry": status,
                            "first_release": first.isoformat() if first else None,
                            "similar_popular_package": deps.typosquat_target(name, eco)}
@@ -354,8 +360,8 @@ def tool_verify_package(args: Dict[str, Any]) -> Dict[str, Any]:
     from .qualityscan import IMPORT_TO_DIST
 
     name, eco = args.get("name"), args.get("ecosystem")
-    if not isinstance(name, str) or not name or eco not in ("PyPI", "npm"):
-        raise ToolError("name (string) and ecosystem (PyPI or npm) are required")
+    if not isinstance(name, str) or not name or eco not in ECOSYSTEMS:
+        raise ToolError(f"name (string) and ecosystem ({', '.join(ECOSYSTEMS)}) are required")
     out: Dict[str, Any] = {"requested": name}
     reasons: List[str] = []
     checked = name
@@ -387,6 +393,9 @@ def tool_verify_package(args: Dict[str, Any]) -> Dict[str, Any]:
     if out.get("registry") == "error":
         verdict = "block" if verdict == "block" else "caution"
         reasons.append("The registry could not be reached; the package was not verified.")
+    if eco not in ("PyPI", "npm"):
+        verdict = "block" if verdict == "block" else "caution"
+        reasons.append(f"Existence and age are not checked for {eco}; only known vulnerabilities are.")
     if args.get("project"):
         from .files import Project
 

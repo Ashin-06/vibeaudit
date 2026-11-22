@@ -61,3 +61,40 @@ def test_regex_checked_table_name_is_not_sql_injection(tmp_path):
     # a pattern that lets quotes through is not a check
     (tmp_path / "store.py").write_text(code.replace("[A-Za-z_][A-Za-z0-9_]*", ".+"), encoding="utf-8")
     assert _rules(tmp_path, "BE001")
+
+
+def test_tuple_assigned_and_local_checked_table_names(tmp_path):
+    (tmp_path / "pg.py").write_text(
+        "import re\n"
+        "class Journal:\n"
+        "    def __init__(self, conninfo, table='j'):\n"
+        "        if not re.fullmatch(r'[A-Za-z_][A-Za-z0-9_]{0,62}', table):\n"
+        "            raise ValueError(table)\n"
+        "        self.conninfo, self.table = conninfo, table\n"
+        "        self.db.execute(f'CREATE TABLE IF NOT EXISTS {table} (tx TEXT)')\n"
+        "    def rows(self, tx):\n"
+        "        return self.db.execute(f'SELECT * FROM {self.table} WHERE tx = %s', (tx,))\n", encoding="utf-8")
+    assert _rules(tmp_path, "BE001") == []
+
+
+def test_health_check_rule_covers_js_servers_beyond_express():
+    from vibeaudit.relscan import HEALTH_FRAMEWORKS
+    assert {"fastify", "hono", "express", "python"} <= HEALTH_FRAMEWORKS and "spring" not in HEALTH_FRAMEWORKS
+
+
+def test_mcp_package_tool_accepts_every_osv_ecosystem():
+    from vibeaudit.mcp_server import ECOSYSTEMS
+    assert {"Go", "Maven", "crates.io", "NuGet", "Packagist"} <= set(ECOSYSTEMS)
+
+
+def test_explain_traces_request_data_in_other_languages():
+    from vibeaudit.explain import trace
+    go = 'func h(c *gin.Context) {\n  name := c.Query("name")\n  q := "SELECT * FROM u WHERE n=" + name\n  db.Raw(q)\n}\n'
+    steps = trace("main.go", go, 4)
+    assert [s.role for s in steps][0] == "source" and steps[0].line == 2 and steps[-1].role == "sink"
+    java = ('@GetMapping("/u")\npublic List<U> u(@RequestParam String name) {\n'
+            '  String q = "SELECT * FROM u WHERE n=" + name;\n  return jdbc.queryForList(q);\n}\n')
+    assert trace("A.java", java, 4)[0].role == "source"
+    php = '<?php\n$id = $_GET["id"];\n$sql = "SELECT * FROM t WHERE id=" . $id;\nmysqli_query($db, $sql);\n'
+    assert trace("a.php", php, 4)[0].line == 2
+    assert trace("main.go", 'func f() {\n  x := 1\n  db.Raw(x)\n}\n', 3) == []
