@@ -6,6 +6,9 @@
 
 **A security and quality audit for apps built with AI coding assistants, and for apps that use LLMs.**
 
+![vibeaudit scanning a vulnerable Flask and OpenAI app](https://raw.githubusercontent.com/Ashin-06/vibeaudit/main/docs/demo.gif)
+
+
 vibeaudit reads a whole repository (frontend, backend, database rules, CI config and the AI parts) and
 gives you a prioritised list of what is actually dangerous or broken, each with file and line, why it
 matters and how to fix it.
