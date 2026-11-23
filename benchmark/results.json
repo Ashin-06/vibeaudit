@@ -1,7 +1,7 @@
 {
  "tool": "vibeaudit benchmark",
- "corpus": 106,
- "scanned": 106,
+ "corpus": 105,
+ "scanned": 105,
  "skipped": {},
  "heldout": [
   "DVWA",
@@ -52,13 +52,6 @@
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 4
-  },
-  "LinguaLearn": {
-   "findings": 50,
-   "labelled": 50,
-   "needs_review": 0,
-   "lost_tp": [],
-   "fixed_fp": 6
   },
   "physicalmediavault": {
    "findings": 9,
@@ -425,8 +418,8 @@
    "fixed_fp": 0
   },
   "bella-openapi": {
-   "findings": 82,
-   "labelled": 82,
+   "findings": 84,
+   "labelled": 84,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
@@ -460,8 +453,8 @@
    "fixed_fp": 0
   },
   "vulnerable-java-application": {
-   "findings": 7,
-   "labelled": 7,
+   "findings": 8,
+   "labelled": 8,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 1
@@ -495,8 +488,8 @@
    "fixed_fp": 1
   },
   "toWers": {
-   "findings": 23,
-   "labelled": 23,
+   "findings": 27,
+   "labelled": 27,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
@@ -537,8 +530,8 @@
    "fixed_fp": 0
   },
   "govwa": {
-   "findings": 20,
-   "labelled": 20,
+   "findings": 23,
+   "labelled": 23,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
@@ -565,8 +558,8 @@
    "fixed_fp": 2
   },
   "rustypaste": {
-   "findings": 19,
-   "labelled": 19,
+   "findings": 22,
+   "labelled": 22,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 8
@@ -677,8 +670,8 @@
    "fixed_fp": 0
   },
   "torrent-aggregator": {
-   "findings": 46,
-   "labelled": 46,
+   "findings": 50,
+   "labelled": 50,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
@@ -705,8 +698,8 @@
    "fixed_fp": 0
   },
   "BookStack": {
-   "findings": 75,
-   "labelled": 75,
+   "findings": 83,
+   "labelled": 83,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
@@ -719,15 +712,15 @@
    "fixed_fp": 0
   },
   "DVWA": {
-   "findings": 79,
-   "labelled": 79,
+   "findings": 82,
+   "labelled": 82,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
   },
   "kimai": {
-   "findings": 14,
-   "labelled": 14,
+   "findings": 15,
+   "labelled": 15,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
@@ -754,8 +747,8 @@
    "fixed_fp": 0
   },
   "snipe-it": {
-   "findings": 240,
-   "labelled": 240,
+   "findings": 248,
+   "labelled": 248,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
@@ -830,23 +823,18 @@
   "AUTH001": {
    "title": "State-changing endpoint without authentication",
    "preview": false,
-   "tp": 63,
+   "tp": 61,
    "fp": 10,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.863,
-   "precision_pessimistic": 0.863,
+   "precision": 0.8592,
+   "precision_pessimistic": 0.8592,
    "seeded_expected": 8,
    "seeded_found": 8,
    "seeded_recall": 1.0,
    "by_repo": {
     "ClaudeCodeProxy": [
      16,
-     0,
-     0
-    ],
-    "LinguaLearn": [
-     2,
      0,
      0
     ],
@@ -1699,18 +1687,18 @@
    "title": "SQL injection",
    "preview": false,
    "tp": 62,
-   "fp": 13,
+   "fp": 18,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8267,
-   "precision_pessimistic": 0.8267,
+   "precision": 0.775,
+   "precision_pessimistic": 0.775,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
    "by_repo": {
     "BookStack": [
      0,
-     1,
+     3,
      0
     ],
     "DVWA": [
@@ -1753,6 +1741,11 @@
      1,
      0
     ],
+    "govwa": [
+     0,
+     3,
+     0
+    ],
     "pygoat": [
      1,
      0,
@@ -1787,7 +1780,7 @@
    "preview_by_repo": {
     "BookStack": [
      0,
-     1,
+     3,
      0
     ],
     "DVWA": [
@@ -1803,6 +1796,11 @@
     "dvcsharp-api": [
      1,
      0,
+     0
+    ],
+    "govwa": [
+     0,
+     3,
      0
     ],
     "snipe-it": [
@@ -2072,11 +2070,11 @@
    "title": "Server-side request forgery (SSRF)",
    "preview": false,
    "tp": 5,
-   "fp": 2,
+   "fp": 6,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.7143,
-   "precision_pessimistic": 0.7143,
+   "precision": 0.4545,
+   "precision_pessimistic": 0.4545,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -2110,6 +2108,16 @@
      1,
      0,
      0
+    ],
+    "toWers": [
+     0,
+     3,
+     0
+    ],
+    "torrent-aggregator": [
+     0,
+     1,
+     0
     ]
    },
    "preview_by_repo": {
@@ -2122,22 +2130,37 @@
      1,
      0,
      0
+    ],
+    "toWers": [
+     0,
+     3,
+     0
+    ],
+    "torrent-aggregator": [
+     0,
+     1,
+     0
     ]
    }
   },
   "BE006": {
    "title": "Path traversal",
    "preview": false,
-   "tp": 16,
-   "fp": 12,
+   "tp": 19,
+   "fp": 32,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5714,
-   "precision_pessimistic": 0.5714,
+   "precision": 0.3725,
+   "precision_pessimistic": 0.3725,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "BookStack": [
+     0,
+     6,
+     0
+    ],
     "DVWA": [
      13,
      3,
@@ -2148,7 +2171,17 @@
      0,
      0
     ],
+    "bella-openapi": [
+     2,
+     0,
+     0
+    ],
     "flexible-graphrag": [
+     0,
+     1,
+     0
+    ],
+    "kimai": [
      0,
      1,
      0
@@ -2173,18 +2206,43 @@
      0,
      0
     ],
+    "rustypaste": [
+     0,
+     3,
+     0
+    ],
     "snipe-it": [
      0,
-     4,
+     10,
+     0
+    ],
+    "toWers": [
+     0,
+     1,
+     0
+    ],
+    "torrent-aggregator": [
+     0,
+     3,
      0
     ],
     "vibe-trading": [
      0,
      1,
      0
+    ],
+    "vulnerable-java-application": [
+     1,
+     0,
+     0
     ]
    },
    "preview_by_repo": {
+    "BookStack": [
+     0,
+     6,
+     0
+    ],
     "DVWA": [
      13,
      3,
@@ -2193,6 +2251,16 @@
     "JavaVulnerableLab": [
      2,
      0,
+     0
+    ],
+    "bella-openapi": [
+     2,
+     0,
+     0
+    ],
+    "kimai": [
+     0,
+     1,
      0
     ],
     "koel": [
@@ -2210,9 +2278,29 @@
      1,
      0
     ],
+    "rustypaste": [
+     0,
+     3,
+     0
+    ],
     "snipe-it": [
      0,
-     4,
+     10,
+     0
+    ],
+    "toWers": [
+     0,
+     1,
+     0
+    ],
+    "torrent-aggregator": [
+     0,
+     3,
+     0
+    ],
+    "vulnerable-java-application": [
+     1,
+     0,
      0
     ]
    }
@@ -2241,12 +2329,12 @@
   "BE008": {
    "title": "Open redirect",
    "preview": true,
-   "tp": 11,
-   "fp": 8,
+   "tp": 12,
+   "fp": 10,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5789,
-   "precision_pessimistic": 0.5789,
+   "precision": 0.5455,
+   "precision_pessimistic": 0.5455,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -2257,7 +2345,7 @@
      0
     ],
     "DVWA": [
-     3,
+     4,
      0,
      0
     ],
@@ -2303,7 +2391,7 @@
     ],
     "snipe-it": [
      0,
-     2,
+     4,
      0
     ],
     "wallabag": [
@@ -2319,7 +2407,7 @@
      0
     ],
     "DVWA": [
-     3,
+     4,
      0,
      0
     ],
@@ -2365,7 +2453,7 @@
     ],
     "snipe-it": [
      0,
-     2,
+     4,
      0
     ],
     "wallabag": [
@@ -2379,20 +2467,15 @@
    "title": "Mass assignment",
    "preview": false,
    "tp": 2,
-   "fp": 2,
+   "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5,
-   "precision_pessimistic": 0.5,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
    "by_repo": {
-    "LinguaLearn": [
-     0,
-     2,
-     0
-    ],
     "alerta": [
      2,
      0,
@@ -2450,7 +2533,7 @@
   "BE012": {
    "title": "Insecure CORS policy",
    "preview": false,
-   "tp": 2,
+   "tp": 1,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2460,11 +2543,6 @@
    "seeded_found": 3,
    "seeded_recall": 1.0,
    "by_repo": {
-    "LinguaLearn": [
-     1,
-     0,
-     0
-    ],
     "flexible-graphrag": [
      1,
      0,
@@ -2590,7 +2668,7 @@
   "BE017": {
    "title": "Internal error details sent to the client",
    "preview": false,
-   "tp": 29,
+   "tp": 23,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2600,11 +2678,6 @@
    "seeded_found": 2,
    "seeded_recall": 1.0,
    "by_repo": {
-    "LinguaLearn": [
-     6,
-     0,
-     0
-    ],
     "alerta": [
      8,
      0,
@@ -2808,7 +2881,7 @@
   "CFG001": {
    "title": "Container runs as root",
    "preview": false,
-   "tp": 116,
+   "tp": 115,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2839,11 +2912,6 @@
      0
     ],
     "JavaVulnerableLab": [
-     1,
-     0,
-     0
-    ],
-    "LinguaLearn": [
      1,
      0,
      0
@@ -3439,21 +3507,16 @@
   "CFG009": {
    "title": ".env file copied into the container image",
    "preview": false,
-   "tp": 8,
+   "tp": 7,
    "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8,
-   "precision_pessimistic": 0.8,
+   "precision": 0.7778,
+   "precision_pessimistic": 0.7778,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
-    "LinguaLearn": [
-     1,
-     0,
-     0
-    ],
     "conveyor": [
      2,
      0,
@@ -4307,21 +4370,16 @@
   "DATA006": {
    "title": "Timestamp without time zone",
    "preview": false,
-   "tp": 114,
+   "tp": 106,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9913,
-   "precision_pessimistic": 0.9913,
+   "precision": 0.9907,
+   "precision_pessimistic": 0.9907,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
    "by_repo": {
-    "LinguaLearn": [
-     8,
-     0,
-     0
-    ],
     "Vulnerable-Flask-App": [
      2,
      0,
@@ -4669,12 +4727,12 @@
   "DATA012": {
    "title": "Foreign key without an index",
    "preview": true,
-   "tp": 201,
+   "tp": 199,
    "fp": 13,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9393,
-   "precision_pessimistic": 0.9393,
+   "precision": 0.9387,
+   "precision_pessimistic": 0.9387,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -4682,11 +4740,6 @@
     "DVWA": [
      0,
      4,
-     0
-    ],
-    "LinguaLearn": [
-     2,
-     0,
      0
     ],
     "act-solo-ai": [
@@ -4794,11 +4847,6 @@
     "DVWA": [
      0,
      4,
-     0
-    ],
-    "LinguaLearn": [
-     2,
-     0,
      0
     ],
     "act-solo-ai": [
@@ -5071,7 +5119,7 @@
   "DEP005": {
    "title": "Dependencies are not locked",
    "preview": false,
-   "tp": 9,
+   "tp": 8,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -5081,11 +5129,6 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
-    "LinguaLearn": [
-     1,
-     0,
-     0
-    ],
     "alerta": [
      2,
      0,
@@ -5198,12 +5241,12 @@
   "FE001": {
    "title": "Cross-site scripting through a raw HTML sink",
    "preview": true,
-   "tp": 53,
-   "fp": 227,
+   "tp": 54,
+   "fp": 228,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.1893,
-   "precision_pessimistic": 0.1893,
+   "precision": 0.1915,
+   "precision_pessimistic": 0.1915,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -5214,8 +5257,8 @@
      0
     ],
     "DVWA": [
-     6,
-     0,
+     7,
+     1,
      0
     ],
     "act-solo-ai": [
@@ -5346,8 +5389,8 @@
      0
     ],
     "DVWA": [
-     6,
-     0,
+     7,
+     1,
      0
     ],
     "act-solo-ai": [
@@ -5552,7 +5595,7 @@
   "FE005": {
    "title": "Auth token stored in localStorage",
    "preview": false,
-   "tp": 13,
+   "tp": 8,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -5564,11 +5607,6 @@
    "by_repo": {
     "ClaudeCodeProxy": [
      2,
-     0,
-     0
-    ],
-    "LinguaLearn": [
-     5,
      0,
      0
     ],
@@ -5629,12 +5667,12 @@
   "FE007": {
    "title": "Hardcoded localhost URL in frontend code",
    "preview": true,
-   "tp": 22,
+   "tp": 19,
    "fp": 5,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8148,
-   "precision_pessimistic": 0.8148,
+   "precision": 0.7917,
+   "precision_pessimistic": 0.7917,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -5642,11 +5680,6 @@
     "ClaudeCodeProxy": [
      0,
      1,
-     0
-    ],
-    "LinguaLearn": [
-     3,
-     0,
      0
     ],
     "dvga": [
@@ -5684,11 +5717,6 @@
     "ClaudeCodeProxy": [
      0,
      1,
-     0
-    ],
-    "LinguaLearn": [
-     3,
-     0,
      0
     ],
     "dvga": [
@@ -6167,22 +6195,16 @@
   "LLM008": {
    "title": "Unsafe model loading",
    "preview": false,
-   "tp": 1,
+   "tp": 0,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": null,
+   "precision_pessimistic": null,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
-   "by_repo": {
-    "LinguaLearn": [
-     1,
-     0,
-     0
-    ]
-   },
+   "by_repo": {},
    "preview_by_repo": {}
   },
   "LLM009": {
@@ -6792,7 +6814,7 @@
   "QA002": {
    "title": "No continuous integration",
    "preview": false,
-   "tp": 26,
+   "tp": 25,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -6803,11 +6825,6 @@
    "seeded_recall": 1.0,
    "by_repo": {
     "BookStack": [
-     1,
-     0,
-     0
-    ],
-    "LinguaLearn": [
      1,
      0,
      0
@@ -7155,12 +7172,12 @@
   "QA004": {
    "title": "Security placeholder or TODO left in code",
    "preview": true,
-   "tp": 16,
+   "tp": 12,
    "fp": 3,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8421,
-   "precision_pessimistic": 0.8421,
+   "precision": 0.8,
+   "precision_pessimistic": 0.8,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -7177,11 +7194,6 @@
     ],
     "Django-Styleguide-Example": [
      1,
-     0,
-     0
-    ],
-    "LinguaLearn": [
-     4,
      0,
      0
     ],
@@ -7249,11 +7261,6 @@
     ],
     "Django-Styleguide-Example": [
      1,
-     0,
-     0
-    ],
-    "LinguaLearn": [
-     4,
      0,
      0
     ],
@@ -7466,12 +7473,12 @@
   "QA007": {
    "title": "Package imported but not declared as a dependency",
    "preview": true,
-   "tp": 58,
+   "tp": 50,
    "fp": 6,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9062,
-   "precision_pessimistic": 0.9062,
+   "precision": 0.8929,
+   "precision_pessimistic": 0.8929,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -7479,11 +7486,6 @@
     "BookStack": [
      0,
      2,
-     0
-    ],
-    "LinguaLearn": [
-     8,
-     0,
      0
     ],
     "act-solo-ai": [
@@ -7591,11 +7593,6 @@
     "BookStack": [
      0,
      2,
-     0
-    ],
-    "LinguaLearn": [
-     8,
-     0,
      0
     ],
     "act-solo-ai": [
@@ -8116,7 +8113,7 @@
   "REL004": {
    "title": "Upload accepted without a size limit",
    "preview": false,
-   "tp": 2,
+   "tp": 1,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -8126,11 +8123,6 @@
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
-    "LinguaLearn": [
-     1,
-     0,
-     0
-    ],
     "Vulnerable-Flask-App": [
      1,
      0,
@@ -8660,21 +8652,16 @@
    "title": "Environment file committed to git",
    "preview": false,
    "tp": 6,
-   "fp": 8,
+   "fp": 7,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.4286,
-   "precision_pessimistic": 0.4286,
+   "precision": 0.4615,
+   "precision_pessimistic": 0.4615,
    "seeded_expected": 0,
    "seeded_found": 0,
    "seeded_recall": null,
    "by_repo": {
     "BookStack": [
-     0,
-     1,
-     0
-    ],
-    "LinguaLearn": [
      0,
      1,
      0
@@ -8818,21 +8805,16 @@
   "SEC011": {
    "title": "Hardcoded password",
    "preview": true,
-   "tp": 26,
+   "tp": 25,
    "fp": 36,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.4194,
-   "precision_pessimistic": 0.4194,
+   "precision": 0.4098,
+   "precision_pessimistic": 0.4098,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
-    "LinguaLearn": [
-     1,
-     0,
-     0
-    ],
     "Vulnerable-Flask-App": [
      1,
      0,
@@ -8880,11 +8862,6 @@
     ]
    },
    "preview_by_repo": {
-    "LinguaLearn": [
-     1,
-     0,
-     0
-    ],
     "Vulnerable-Flask-App": [
      1,
      0,
@@ -9122,23 +9099,18 @@
   "UI003": {
    "title": "Form field without a label",
    "preview": false,
-   "tp": 130,
+   "tp": 129,
    "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9701,
-   "precision_pessimistic": 0.9701,
+   "precision": 0.9699,
+   "precision_pessimistic": 0.9699,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
    "by_repo": {
     "ClaudeCodeProxy": [
      16,
-     0,
-     0
-    ],
-    "LinguaLearn": [
-     1,
      0,
      0
     ],

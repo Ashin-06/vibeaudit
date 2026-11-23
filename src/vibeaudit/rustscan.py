@@ -14,6 +14,7 @@ from typing import Callable, Dict, List, Optional, Set, Tuple
 
 from . import heuristics as H
 from .files import Project, SourceFile
+from .calls import Fn, Follower, rust_params, via_note
 from .goscan import _split_top
 from .guard import GUARD, finditer
 from .lexer import Views, match_close
@@ -115,9 +116,20 @@ class RustScanner:
         self.fn_prefix: Dict[str, str] = {}  # function name -> prefix it is nested or scoped under
         self.extractors: Dict[str, str] = {}  # type -> body of its FromRequest(Parts) impl
         self.auth_extractors: Set[str] = set()  # those that reject unauthenticated requests
+        self.follower = Follower(rust_params)  # cross-function taint
+        self.depth, self.via = 0, None  # while a followed call is checked: how deep, and the call it came through
+        self.reported: Set[Tuple[str, int, str, bool]] = set()
 
     def add(self, sf: SourceFile, off: int, rule: str, msg: str, sev: str = "") -> None:
         line = sf.line_at(off)
+        if self.via is not None:
+            if not msg.startswith("Request data"):
+                return  # a followed call only adds what the request data reaches; the rest is reported once already
+            msg += via_note(self.via)
+        key = (sf.rel, line, rule, self.via is not None)  # a followed finding replaces the plain one (scanner.finalize)
+        if key in self.reported:
+            return
+        self.reported.add(key)
         self.emit(Finding(rule, sf.rel, line, msg, sev, sf.line(line).strip()[:200]))
 
     def run(self) -> List[Route]:
@@ -133,7 +145,16 @@ class RustScanner:
             GUARD.run(sf.rel, "Rust routes", self._routes, sf)
         for sf in self.files:
             GUARD.run(sf.rel, "Rust checks", self._checks, sf)
+        GUARD.run("<project>", "Rust calls", self.follower.follow, self._follow)
         return self.routes
+
+    def _follow(self, fn: Fn, seed: Set[str], depth: int, via: str) -> None:
+        v = fn.sf.cache["rust_views"]
+        self.depth, self.via = depth, via
+        try:
+            self._function(fn.sf, v.code, v.bare, fn.start, fn.body[0], fn.body[1], set(seed))  # type: ignore[attr-defined]
+        finally:
+            self.depth, self.via = 0, None
 
     # ------------------------------------------------------------------ index
     def _load(self, sf: SourceFile) -> None:
@@ -152,6 +173,7 @@ class RustScanner:
             end = match_close(bare, brace)
             if end > 0:
                 self.funcs.setdefault(m.group(1), []).append((sf, m.start(), po, pc, end + 1))
+                self.follower.define(m.group(1), Fn(sf, m.start(), v.code[po + 1:pc], (pc, end + 1)))
         for m in finditer(EXTRACTOR_IMPL, bare):
             end = match_close(bare, m.end() - 1)
             body = v.code[m.end():end if end > 0 else m.end() + 4000]
@@ -351,6 +373,8 @@ class RustScanner:
             names = [n for n in re.findall(r"\b([a-z_]\w*)\b", m.group(1)) if n not in ("mut", "ref")]
             for n in names:
                 assigned.setdefault(n, rhs)
+        # `let sql = if above { "... <" } else { "... >" };` is one of two constants, whatever `above` is
+        assigned = {n: rhs for n, rhs in assigned.items() if not CONST_IF.match(rhs)}
         # a name checked for path separators with an early return cannot climb out of its folder
         guarded = {g.group(1) for g in finditer(PATH_GUARD, body_c)}
         path_tainted = _spread(tainted - guarded, assigned)
@@ -364,6 +388,9 @@ class RustScanner:
                         body_b, max(body_b.rfind(";", 0, m.start()), body_b.rfind("{", 0, m.start()), 0), m.start()):
                     continue  # sqlx `query(...).bind(x).execute(&pool)`: the argument is the executor, not SQL
                 argv = _split_top(body_c[m.end():close])
+                if rule == "BE001" and m.group(0).lstrip().startswith(".") and argv \
+                        and re.match(r"\s*(?:sqlx\s*::\s*)?query(?:_as|_scalar)?(?:_unchecked)?!", assigned.get(argv[0].strip().lstrip("&"), "")):
+                    continue  # `tx.execute(query)` with `let query = sqlx::query!(...)`: a checked query with bound values
                 pick = argv[:1] if rule != "BE008" or "Location" not in body_c[m.start():close] else argv
                 if rule == "BE002":
                     pick = argv[:1]
@@ -383,6 +410,8 @@ class RustScanner:
                 # sh -c with a variable command: no request data traced, but one step from command injection
                 self.add(sf, pc + m.start(), "BE002", "A shell runs a command built from a variable; if any part comes "
                                                       "from users or a model this is command injection.", "medium")
+        if tainted:
+            self.follower.note(sf, body_c, body_b, pc, lambda x: _mentions(x, tainted) or _direct_source(x), self.depth, self.via)
 
 
 LET = re.compile(r"\blet\s+(?:mut\s+)?([^=;:]{1,120}?)\s*(?::[^=;]{1,120})?=(?!=)")
@@ -398,6 +427,7 @@ SINKS = [
     (re.compile(r"\bRedirect\s*::\s*(?:to|temporary|permanent|see_other)\s*\(|\.\s*(?:append_header|insert_header)\s*\("),
      "BE008", "a redirect target", "medium"),
 ]
+CONST_IF = re.compile(r'\A\s{0,40}if\b[^{;]{0,200}\{\s*(?:r#*)?"[^"]{0,2000}"#*\s*\}\s*else\s*\{\s*(?:r#*)?"[^"]{0,2000}"#*\s*\}\s*$')
 SQLX_CHAIN = re.compile(r"\b(?:query|query_as|query_scalar|sql_query)\s*(?:::\s*<[^>\n]{0,120}>\s*)?\(")
 SHELL_ARG = re.compile(r"\"(?:sh|bash|/bin/sh|/bin/bash|cmd|powershell)\"\s*\)\s*\.\s*args?\s*\(\s*(?:\[\s*)?\"(?:-c|/C|-Command)\"\s*[,)]\s*(?:\.\s*arg\s*\()?")
 SOURCE = re.compile(r"\b(?:req|request)\s*\.\s*(?:match_info|query_string|uri|headers)\s*\(")

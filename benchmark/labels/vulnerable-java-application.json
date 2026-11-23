@@ -11,6 +11,14 @@
    "reason": "The container runs as root (no USER)."
   },
   {
+   "rule": "QA001",
+   "file": "README.md",
+   "line": 1,
+   "fingerprint": "728d76adeaeabf284b655496a9d2c265",
+   "verdict": "fp",
+   "reason": "The project has a Java test under src/test; QA001 does not count Java test files."
+  },
+  {
    "rule": "JAVA001",
    "file": "src/main/java/com/datadoghq/workshops/samplevulnerablejavaapp/controller/MainController.java",
    "line": 34,
@@ -19,20 +27,20 @@
    "reason": "No Spring Security configuration and no annotations: these endpoints answer anyone."
   },
   {
+   "rule": "BE006",
+   "file": "src/main/java/com/datadoghq/workshops/samplevulnerablejavaapp/service/FileService.java",
+   "line": 17,
+   "fingerprint": "a261206e01688ecd6d5fd1dfea1092b4",
+   "verdict": "tp",
+   "reason": "The startsWith prefix check is bypassed with ../ in the requested path."
+  },
+  {
    "rule": "JAVA002",
    "file": "src/main/resources/application.properties",
    "line": 2,
    "fingerprint": "7ca210e5069dbd4a6e8a9c5d5a19202c",
    "verdict": "tp",
    "reason": "Actuator exposes every endpoint (include=*) with no security configuration."
-  },
-  {
-   "rule": "QA001",
-   "file": "README.md",
-   "line": 1,
-   "fingerprint": "728d76adeaeabf284b655496a9d2c265",
-   "verdict": "fp",
-   "reason": "The project has a Java test under src/test; QA001 does not count Java test files."
   },
   {
    "rule": "QA011",

@@ -147,6 +147,14 @@
    "reason": "The login form has no rate limiting (a deliberately vulnerable app)."
   },
   {
+   "rule": "BE001",
+   "file": "user/user.go",
+   "line": 154,
+   "fingerprint": "47dfaf7e6066e71b05cdec936a810678",
+   "verdict": "fp",
+   "reason": "A prepared statement's QueryRow/Exec arguments are bound parameters, not SQL."
+  },
+  {
    "rule": "GO004",
    "file": "util/database/database.go",
    "line": 24,
@@ -155,12 +163,28 @@
    "reason": "CREATE DATABASE is built by concatenating the configured name."
   },
   {
+   "rule": "BE001",
+   "file": "vulnerability/idor/function.go",
+   "line": 70,
+   "fingerprint": "8906195b65c500d5d8a575a333bbcfb9",
+   "verdict": "fp",
+   "reason": "A prepared statement's QueryRow/Exec arguments are bound parameters, not SQL."
+  },
+  {
    "rule": "GO004",
    "file": "vulnerability/sqli/function.go",
    "line": 41,
    "fingerprint": "17d8f0152f21ab1d79b35586b095e3d5",
    "verdict": "tp",
    "reason": "The deliberately vulnerable profile query is built with fmt.Sprintf."
+  },
+  {
+   "rule": "BE001",
+   "file": "vulnerability/sqli/function.go",
+   "line": 75,
+   "fingerprint": "964eeffb69b84a7433dfb7ebd10402c3",
+   "verdict": "fp",
+   "reason": "A prepared statement's QueryRow/Exec arguments are bound parameters, not SQL."
   }
  ]
 }

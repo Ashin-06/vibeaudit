@@ -3,78 +3,6 @@
  "commit": "af2a7a9cf091d70d9184a5c10ce0f029a943c670",
  "findings": [
   {
-   "rule": "AUTH002",
-   "file": "api/server/src/main/java/com/ke/bella/openapi/console/BillingConsoleController.java",
-   "line": 44,
-   "fingerprint": "598595d8a492ee6cd29fb6a042380204",
-   "verdict": "fp",
-   "reason": "The service method it calls starts with assertAdminPermission(); the role check is one call deep."
-  },
-  {
-   "rule": "AUTH003",
-   "file": "api/server/src/main/java/com/ke/bella/openapi/endpoints/VideoController.java",
-   "line": 121,
-   "fingerprint": "b5d6d41518de3d865341f21e87e3ea8b",
-   "verdict": "fp",
-   "reason": "The task is fetched with the caller's API key (getTaskDetail(taskId, apikey)), so it is scoped to the caller."
-  },
-  {
-   "rule": "BE005",
-   "file": "web/src/app/api/fetch-image/route.ts",
-   "line": 15,
-   "fingerprint": "89af789b675cd3e42f3263ad8b22426e",
-   "verdict": "tp",
-   "reason": "The server fetches a URL taken from the request."
-  },
-  {
-   "rule": "BE005",
-   "file": "web/src/app/api/prometheus/route.ts",
-   "line": 47,
-   "fingerprint": "8f1fd285a1ee2f88e146739a3c6f2975",
-   "verdict": "tp",
-   "reason": "The server fetches a URL taken from the request."
-  },
-  {
-   "rule": "CFG001",
-   "file": "api/Dockerfile",
-   "line": 1,
-   "fingerprint": "32039f1cf5fef6bda601bc5407531e76",
-   "verdict": "tp",
-   "reason": "The container runs as root (no USER)."
-  },
-  {
-   "rule": "CFG001",
-   "file": "api/Dockerfile.ci",
-   "line": 57,
-   "fingerprint": "0b29ef8b09922f40bddf4afff2998361",
-   "verdict": "tp",
-   "reason": "The container runs as root (no USER)."
-  },
-  {
-   "rule": "CFG001",
-   "file": "web/Dockerfile",
-   "line": 47,
-   "fingerprint": "a148124e707f888d7d4a56916ba5a815",
-   "verdict": "tp",
-   "reason": "The container runs as root (no USER)."
-  },
-  {
-   "rule": "CFG007",
-   "file": "docker-compose.yml",
-   "line": 68,
-   "fingerprint": "9d97c2be23eebf77ec750105c2938298",
-   "verdict": "tp",
-   "reason": "A default database password is committed in the compose file."
-  },
-  {
-   "rule": "CFG007",
-   "file": "docker-compose.yml",
-   "line": 71,
-   "fingerprint": "fe8a5d3efdc3b77a9eafbd822e0b4174",
-   "verdict": "tp",
-   "reason": "A default database password is committed in the compose file."
-  },
-  {
    "rule": "CFG010",
    "file": ".github/workflows/claude.yml",
    "line": 53,
@@ -99,6 +27,30 @@
    "reason": "A third-party action used by tag."
   },
   {
+   "rule": "DEP007",
+   "file": ".mcp.json",
+   "line": 6,
+   "fingerprint": "7d3dce603a80a8852cf8a2eba06da818",
+   "verdict": "tp",
+   "reason": "The MCP server runs an unpinned package."
+  },
+  {
+   "rule": "CFG001",
+   "file": "api/Dockerfile",
+   "line": 1,
+   "fingerprint": "32039f1cf5fef6bda601bc5407531e76",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "CFG001",
+   "file": "api/Dockerfile.ci",
+   "line": 57,
+   "fingerprint": "0b29ef8b09922f40bddf4afff2998361",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
    "rule": "DATA006",
    "file": "api/server/sql/16-20251209_video.sql",
    "line": 15,
@@ -115,12 +67,500 @@
    "reason": "The timestamp column has no time zone."
   },
   {
+   "rule": "AUTH002",
+   "file": "api/server/src/main/java/com/ke/bella/openapi/console/BillingConsoleController.java",
+   "line": 44,
+   "fingerprint": "598595d8a492ee6cd29fb6a042380204",
+   "verdict": "fp",
+   "reason": "The service method it calls starts with assertAdminPermission(); the role check is one call deep."
+  },
+  {
+   "rule": "BE006",
+   "file": "api/server/src/main/java/com/ke/bella/openapi/db/log/RocksDBLogReader.java",
+   "line": 136,
+   "fingerprint": "dfc08093a22f03e5433fd928397f20ac",
+   "verdict": "tp",
+   "reason": "The shard path from the request opens a RocksDB folder with no check (passed in from LogController)."
+  },
+  {
+   "rule": "BE006",
+   "file": "api/server/src/main/java/com/ke/bella/openapi/db/log/RocksDBLogReader.java",
+   "line": 141,
+   "fingerprint": "f001fedf94707ff6b92322a2ec3edd1f",
+   "verdict": "tp",
+   "reason": "The shard path from the request opens a RocksDB folder with no check (passed in from LogController)."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "api/server/src/main/java/com/ke/bella/openapi/endpoints/VideoController.java",
+   "line": 121,
+   "fingerprint": "b5d6d41518de3d865341f21e87e3ea8b",
+   "verdict": "fp",
+   "reason": "The task is fetched with the caller's API key (getTaskDetail(taskId, apikey)), so it is scoped to the caller."
+  },
+  {
+   "rule": "REL001",
+   "file": "api/spi/src/main/java/com/ke/bella/openapi/login/config/BellaLoginConfiguration.java",
+   "line": 87,
+   "fingerprint": "7312d7387c971c48fe502d221281d070",
+   "verdict": "tp",
+   "reason": "The HTTP client has no timeout."
+  },
+  {
+   "rule": "CFG007",
+   "file": "docker-compose.yml",
+   "line": 68,
+   "fingerprint": "9d97c2be23eebf77ec750105c2938298",
+   "verdict": "tp",
+   "reason": "A default database password is committed in the compose file."
+  },
+  {
+   "rule": "CFG007",
+   "file": "docker-compose.yml",
+   "line": 71,
+   "fingerprint": "fe8a5d3efdc3b77a9eafbd822e0b4174",
+   "verdict": "tp",
+   "reason": "A default database password is committed in the compose file."
+  },
+  {
+   "rule": "QA007",
+   "file": "playwright.config.ts",
+   "line": 2,
+   "fingerprint": "719318a2cf365e59b757062c2bf96283",
+   "verdict": "tp",
+   "reason": "dotenv is imported by the root Playwright config but the root package.json does not declare it."
+  },
+  {
+   "rule": "CFG001",
+   "file": "web/Dockerfile",
+   "line": 47,
+   "fingerprint": "a148124e707f888d7d4a56916ba5a815",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
    "rule": "DATA007",
    "file": "web/next.config.mjs",
    "line": 16,
    "fingerprint": "380301e82a7d3ce23c7753bcb6b50168",
    "verdict": "tp",
    "reason": "The variable is read from the environment but missing from the example env file."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/app/[locale]/(dashboard)/(admin)/apikey-admin/components/AdminCreateDialog.tsx",
+   "line": 183,
+   "fingerprint": "ca5ccecec33bd8eee43acf2c64b9d20b",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/app/[locale]/(dashboard)/(admin)/apikey-admin/components/AdminCreateDialog.tsx",
+   "line": 197,
+   "fingerprint": "4141cb5e029554ad000598f8a34ada4c",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/app/[locale]/(dashboard)/(admin)/apikey-admin/components/AdminCreateDialog.tsx",
+   "line": 209,
+   "fingerprint": "222cbbc894da0fbf1705eddaf0b33652",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/app/[locale]/(dashboard)/(admin)/apikey-admin/components/AdminCreateDialog.tsx",
+   "line": 221,
+   "fingerprint": "05a914c92c4a1a40d761594d9da36a90",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/app/[locale]/(dashboard)/(admin)/apikey-admin/components/AdminCreateDialog.tsx",
+   "line": 234,
+   "fingerprint": "1421dc1a5280d298358ceb60e105be5b",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/app/[locale]/(dashboard)/(admin)/apikey-admin/components/AdminCreateDialog.tsx",
+   "line": 266,
+   "fingerprint": "7a440c41ddbd4ffdbe23dedd6d6be911",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI002",
+   "file": "web/src/app/[locale]/(dashboard)/(admin)/apikey-admin/components/AdminCreateDialog.tsx",
+   "line": 284,
+   "fingerprint": "89a67f7d5eb965360bd48bf564e2e8aa",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
+  },
+  {
+   "rule": "UI006",
+   "file": "web/src/app/[locale]/(dashboard)/(admin)/apikey-admin/components/AdminKeysTable.tsx",
+   "line": 370,
+   "fingerprint": "6aea3cbf9753ac7904193dede76d5a2a",
+   "verdict": "tp",
+   "reason": "An array index is used as the React key."
+  },
+  {
+   "rule": "SEC010",
+   "file": "web/src/app/[locale]/(dashboard)/apikey/components/ApiKeyCreatedDialog.tsx",
+   "line": 32,
+   "fingerprint": "b8a5c961288c951802352460fd95eda7",
+   "verdict": "tp",
+   "reason": "A secret value is written to the log."
+  },
+  {
+   "rule": "QA011",
+   "file": "web/src/app/[locale]/(dashboard)/apikey/components/KeysTable.tsx",
+   "line": 32,
+   "fingerprint": "b8fa755b7eae6b2e7dbac183664a19e0",
+   "verdict": "tp",
+   "reason": "The same function body is copied into another file of the same package."
+  },
+  {
+   "rule": "UI006",
+   "file": "web/src/app/[locale]/(dashboard)/apikey/components/KeysTable.tsx",
+   "line": 236,
+   "fingerprint": "95a059db2457ed48231ce8aba468d8fa",
+   "verdict": "tp",
+   "reason": "An array index is used as the React key."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/app/[locale]/(dashboard)/apikey/components/ManagerDialog.tsx",
+   "line": 179,
+   "fingerprint": "2c843e1e9401b7775e7ebcc34ec98ec5",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/app/[locale]/(dashboard)/apikey/components/SearchInput.tsx",
+   "line": 23,
+   "fingerprint": "f099767c54646aab47d597ef99c49cae",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/app/[locale]/(dashboard)/apikey/components/apiKeyTransferDialog/components/UserSearchView.tsx",
+   "line": 87,
+   "fingerprint": "eb6cfda3729a123c846ae631e13027b7",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI015",
+   "file": "web/src/app/[locale]/(dashboard)/apikey/sub-ak/[akCode]/components/CreateSubApiKeyDialog.tsx",
+   "line": 234,
+   "fingerprint": "9181bee0c0a4e348d019ff83faf3f508",
+   "verdict": "tp",
+   "reason": "The form error is not linked to its field with aria-describedby."
+  },
+  {
+   "rule": "QA011",
+   "file": "web/src/app/[locale]/(dashboard)/apikey/sub-ak/[akCode]/components/SubAkTable.tsx",
+   "line": 54,
+   "fingerprint": "55393f39820e4b84b82e1d4cc02ecd8b",
+   "verdict": "tp",
+   "reason": "The same function body is copied into another file of the same package."
+  },
+  {
+   "rule": "UI006",
+   "file": "web/src/app/[locale]/(dashboard)/apikey/sub-ak/[akCode]/components/SubAkTable.tsx",
+   "line": 352,
+   "fingerprint": "ff71e065fb0c4e6bb4d0902c5ab2d294",
+   "verdict": "tp",
+   "reason": "An array index is used as the React key."
+  },
+  {
+   "rule": "QA011",
+   "file": "web/src/app/[locale]/(dashboard)/logs/components/openapiLogsContent/components/logsTable/components/components/metadataPanel.tsx",
+   "line": 22,
+   "fingerprint": "a6bbbc27757bd07d21440e62094f5a4f",
+   "verdict": "tp",
+   "reason": "The same function body is copied into another file of the same package."
+  },
+  {
+   "rule": "QA011",
+   "file": "web/src/app/[locale]/(dashboard)/logs/components/openapiLogsContent/components/logsTable/utils/index.ts",
+   "line": 6,
+   "fingerprint": "b79f1b32badb683642c5c2ed9a72a642",
+   "verdict": "tp",
+   "reason": "The same function body is copied into another file of the same package."
+  },
+  {
+   "rule": "QA011",
+   "file": "web/src/app/[locale]/(dashboard)/logs/components/openapiLogsContent/components/logsTable/utils/index.ts",
+   "line": 18,
+   "fingerprint": "a281b67da44e2d9f0ba29e769a7cdc77",
+   "verdict": "tp",
+   "reason": "The same function body is copied into another file of the same package."
+  },
+  {
+   "rule": "UI006",
+   "file": "web/src/app/[locale]/(dashboard)/manager/components/ManagedKeysTable.tsx",
+   "line": 422,
+   "fingerprint": "0b1655ef45407176e72742953ca93436",
+   "verdict": "tp",
+   "reason": "An array index is used as the React key."
+  },
+  {
+   "rule": "UI015",
+   "file": "web/src/app/[locale]/(dashboard)/metadata/components/ChannelConfigDialog.tsx",
+   "line": 1379,
+   "fingerprint": "94c49a66d4e40554ed91177ad9e076d8",
+   "verdict": "tp",
+   "reason": "The form error is not linked to its field with aria-describedby."
+  },
+  {
+   "rule": "QA003",
+   "file": "web/src/app/[locale]/(dashboard)/metadata/components/ChannelsTable.tsx",
+   "line": 91,
+   "fingerprint": "af7f8b2209064aadd8923741f5e8594a",
+   "verdict": "tp",
+   "reason": "The error is caught and ignored with no comment."
+  },
+  {
+   "rule": "UI015",
+   "file": "web/src/app/[locale]/(dashboard)/metadata/components/CreateModelDialog.tsx",
+   "line": 409,
+   "fingerprint": "e9920ed4d8499cd3c596567e9a637fd4",
+   "verdict": "tp",
+   "reason": "The form error is not linked to its field with aria-describedby."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/app/[locale]/(dashboard)/metadata/components/ModelInfoSection.tsx",
+   "line": 53,
+   "fingerprint": "e047fcb2cb4eea83a4562bca5ec30316",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI015",
+   "file": "web/src/app/[locale]/(dashboard)/metadata/components/channelConfigDialog/components/ChannelBasicFields.tsx",
+   "line": 161,
+   "fingerprint": "b83952a23cd2dc60313d2391adcbcd57",
+   "verdict": "tp",
+   "reason": "The form error is not linked to its field with aria-describedby."
+  },
+  {
+   "rule": "UI015",
+   "file": "web/src/app/[locale]/(dashboard)/metadata/components/channelConfigDialog/components/PriceInfoFields.tsx",
+   "line": 73,
+   "fingerprint": "26bade38a7e0254b6c86ba274652a061",
+   "verdict": "tp",
+   "reason": "The form error is not linked to its field with aria-describedby."
+  },
+  {
+   "rule": "UI015",
+   "file": "web/src/app/[locale]/(dashboard)/metadata/components/channelConfigDialog/components/QueueFields.tsx",
+   "line": 61,
+   "fingerprint": "ee769d4c9c35ecbe79b4a83d8b71d7e6",
+   "verdict": "tp",
+   "reason": "The form error is not linked to its field with aria-describedby."
+  },
+  {
+   "rule": "UI002",
+   "file": "web/src/app/[locale]/(dashboard)/metadata/components/fieldRenderer/components/PriceRangeConfig/components/RangeHeader.tsx",
+   "line": 41,
+   "fingerprint": "3e9e86ca918022ac54800f06c630d114",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
+  },
+  {
+   "rule": "UI002",
+   "file": "web/src/app/[locale]/(dashboard)/playground/audio/asr/realtime/chat/page.tsx",
+   "line": 344,
+   "fingerprint": "2f30161ae3c50ee064510db2612a6ad6",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/app/[locale]/(dashboard)/playground/audio/asr/realtime/chat/page.tsx",
+   "line": 363,
+   "fingerprint": "57d485ad027bc19a2162a96835e6abb1",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI002",
+   "file": "web/src/app/[locale]/(dashboard)/playground/audio/asr/transcription/page.tsx",
+   "line": 223,
+   "fingerprint": "396018ef598273a4955ad79ba3deb620",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/app/[locale]/(dashboard)/playground/audio/asr/transcription/page.tsx",
+   "line": 356,
+   "fingerprint": "bbf9931f977b6690c45d4ebc73c786e3",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/app/[locale]/(dashboard)/playground/audio/asr/transcription/page.tsx",
+   "line": 391,
+   "fingerprint": "ea1dbbac866b352da8174ca5bc544a15",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI002",
+   "file": "web/src/app/[locale]/(dashboard)/playground/chat/components/conversation/ChatList/MessageItem/UserBubble/index.tsx",
+   "line": 158,
+   "fingerprint": "cb6e1e41b90c62697d020e6191741b4f",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
+  },
+  {
+   "rule": "UI002",
+   "file": "web/src/app/[locale]/(dashboard)/playground/chat/components/conversation/ChatList/MessageItem/UserBubble/index.tsx",
+   "line": 209,
+   "fingerprint": "ddeac4265f4710b6d150aed998420636",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
+  },
+  {
+   "rule": "UI002",
+   "file": "web/src/app/[locale]/(dashboard)/playground/chat/components/conversation/chatInput/index.tsx",
+   "line": 543,
+   "fingerprint": "9c198c6fdb225d7dc8a2e394e3f8f557",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
+  },
+  {
+   "rule": "UI002",
+   "file": "web/src/app/[locale]/(dashboard)/playground/chat/components/conversation/chatInput/media-preview.tsx",
+   "line": 121,
+   "fingerprint": "222a23d7eb6816d6653a6a0dc6e0eb76",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
+  },
+  {
+   "rule": "UI002",
+   "file": "web/src/app/[locale]/(dashboard)/playground/images/components/ImageResultCard.tsx",
+   "line": 41,
+   "fingerprint": "44c4a993b3df4646254a381a1065fb16",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
+  },
+  {
+   "rule": "UI002",
+   "file": "web/src/app/[locale]/(dashboard)/playground/images/edits/page.tsx",
+   "line": 258,
+   "fingerprint": "90f58dfcf8b7913e6ae41593e6055837",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
+  },
+  {
+   "rule": "UI003",
+   "file": "web/src/app/[locale]/(dashboard)/playground/images/edits/page.tsx",
+   "line": 332,
+   "fingerprint": "725d4f666571c87f47dd2a79faa875e5",
+   "verdict": "tp",
+   "reason": "A form control without a label."
+  },
+  {
+   "rule": "UI002",
+   "file": "web/src/app/[locale]/(dashboard)/playground/ocr/components/ImageInputArea.tsx",
+   "line": 113,
+   "fingerprint": "2b0690bc991b6bc1ec411ae341c4d39e",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
+  },
+  {
+   "rule": "QA011",
+   "file": "web/src/app/[locale]/(dashboard)/status/components/statusFilter/hooks/useModelSelect.ts",
+   "line": 6,
+   "fingerprint": "c9822286c859c5b61f9995bc705a0124",
+   "verdict": "tp",
+   "reason": "The same function body is copied into another file of the same package."
+  },
+  {
+   "rule": "QA011",
+   "file": "web/src/app/[locale]/(dashboard)/status/components/statusFilter/hooks/useModelSelect.ts",
+   "line": 20,
+   "fingerprint": "9ac948d216732f5932fa2ea607a77661",
+   "verdict": "tp",
+   "reason": "The same function body is copied into another file of the same package."
+  },
+  {
+   "rule": "BE005",
+   "file": "web/src/app/api/fetch-image/route.ts",
+   "line": 15,
+   "fingerprint": "89af789b675cd3e42f3263ad8b22426e",
+   "verdict": "tp",
+   "reason": "The server fetches a URL taken from the request."
+  },
+  {
+   "rule": "SEC010",
+   "file": "web/src/app/api/openapi/login/route.ts",
+   "line": 32,
+   "fingerprint": "cd07a28626157e730eca317ba08235ef",
+   "verdict": "tp",
+   "reason": "A secret value is written to the log."
+  },
+  {
+   "rule": "BE005",
+   "file": "web/src/app/api/prometheus/route.ts",
+   "line": 47,
+   "fingerprint": "8f1fd285a1ee2f88e146739a3c6f2975",
+   "verdict": "tp",
+   "reason": "The server fetches a URL taken from the request."
+  },
+  {
+   "rule": "UI002",
+   "file": "web/src/components/channel-health/ChannelHealthDashboard.tsx",
+   "line": 720,
+   "fingerprint": "8ccc62544b59b9819ae38f5fcb41b65c",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
+  },
+  {
+   "rule": "UI002",
+   "file": "web/src/components/channel-health/ChannelHealthDashboard.tsx",
+   "line": 762,
+   "fingerprint": "c3e7cd23efab71bf83495709aabea974",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
+  },
+  {
+   "rule": "QA003",
+   "file": "web/src/components/channel-health/ChannelHealthDashboard.tsx",
+   "line": 1733,
+   "fingerprint": "6ced86ed1bee9934f832b65b8d6ea36b",
+   "verdict": "tp",
+   "reason": "The error is caught and ignored with no comment."
+  },
+  {
+   "rule": "QA011",
+   "file": "web/src/components/ui/iframe-playground.tsx",
+   "line": 28,
+   "fingerprint": "842efcc4c501c55f8fe66c87bd817f55",
+   "verdict": "tp",
+   "reason": "The same function body is copied into another file of the same package."
+  },
+  {
+   "rule": "UI002",
+   "file": "web/src/components/ui/multiselect/index.tsx",
+   "line": 93,
+   "fingerprint": "c9785b46b28d3a4fbf3c9826808202ca",
+   "verdict": "tp",
+   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
   },
   {
    "rule": "DATA007",
@@ -203,12 +643,20 @@
    "reason": "The variable is read from the environment but missing from the example env file."
   },
   {
-   "rule": "DEP007",
-   "file": ".mcp.json",
-   "line": 6,
-   "fingerprint": "7d3dce603a80a8852cf8a2eba06da818",
+   "rule": "QA011",
+   "file": "web/src/lib/integrations/apiKeyQuotaApply.ts",
+   "line": 21,
+   "fingerprint": "9224a012c9c7a7106d246cfc0238f40a",
    "verdict": "tp",
-   "reason": "The MCP server runs an unpinned package."
+   "reason": "The same function body is copied into another file of the same package."
+  },
+  {
+   "rule": "QA003",
+   "file": "web/src/lib/integrations/riskControl.tsx",
+   "line": 44,
+   "fingerprint": "82c953f62d773035eb9102367cdf0c4b",
+   "verdict": "tp",
+   "reason": "The error is caught and ignored with no comment."
   },
   {
    "rule": "FE001",
@@ -220,443 +668,11 @@
   },
   {
    "rule": "QA003",
-   "file": "web/src/app/[locale]/(dashboard)/metadata/components/ChannelsTable.tsx",
-   "line": 91,
-   "fingerprint": "af7f8b2209064aadd8923741f5e8594a",
-   "verdict": "tp",
-   "reason": "The error is caught and ignored with no comment."
-  },
-  {
-   "rule": "QA003",
-   "file": "web/src/components/channel-health/ChannelHealthDashboard.tsx",
-   "line": 1733,
-   "fingerprint": "6ced86ed1bee9934f832b65b8d6ea36b",
-   "verdict": "tp",
-   "reason": "The error is caught and ignored with no comment."
-  },
-  {
-   "rule": "QA003",
-   "file": "web/src/lib/integrations/riskControl.tsx",
-   "line": 44,
-   "fingerprint": "82c953f62d773035eb9102367cdf0c4b",
-   "verdict": "tp",
-   "reason": "The error is caught and ignored with no comment."
-  },
-  {
-   "rule": "QA003",
    "file": "web/src/lib/utils/image.ts",
    "line": 55,
    "fingerprint": "82281db7690777fce4ea4f8ce74feec7",
    "verdict": "tp",
    "reason": "The error is caught and ignored with no comment."
-  },
-  {
-   "rule": "QA011",
-   "file": "web/src/app/[locale]/(dashboard)/apikey/components/KeysTable.tsx",
-   "line": 32,
-   "fingerprint": "b8fa755b7eae6b2e7dbac183664a19e0",
-   "verdict": "tp",
-   "reason": "The same function body is copied into another file of the same package."
-  },
-  {
-   "rule": "QA011",
-   "file": "web/src/app/[locale]/(dashboard)/apikey/sub-ak/[akCode]/components/SubAkTable.tsx",
-   "line": 54,
-   "fingerprint": "55393f39820e4b84b82e1d4cc02ecd8b",
-   "verdict": "tp",
-   "reason": "The same function body is copied into another file of the same package."
-  },
-  {
-   "rule": "QA011",
-   "file": "web/src/app/[locale]/(dashboard)/logs/components/openapiLogsContent/components/logsTable/components/components/metadataPanel.tsx",
-   "line": 22,
-   "fingerprint": "a6bbbc27757bd07d21440e62094f5a4f",
-   "verdict": "tp",
-   "reason": "The same function body is copied into another file of the same package."
-  },
-  {
-   "rule": "QA011",
-   "file": "web/src/app/[locale]/(dashboard)/logs/components/openapiLogsContent/components/logsTable/utils/index.ts",
-   "line": 6,
-   "fingerprint": "b79f1b32badb683642c5c2ed9a72a642",
-   "verdict": "tp",
-   "reason": "The same function body is copied into another file of the same package."
-  },
-  {
-   "rule": "QA011",
-   "file": "web/src/app/[locale]/(dashboard)/logs/components/openapiLogsContent/components/logsTable/utils/index.ts",
-   "line": 18,
-   "fingerprint": "a281b67da44e2d9f0ba29e769a7cdc77",
-   "verdict": "tp",
-   "reason": "The same function body is copied into another file of the same package."
-  },
-  {
-   "rule": "QA011",
-   "file": "web/src/app/[locale]/(dashboard)/status/components/statusFilter/hooks/useModelSelect.ts",
-   "line": 6,
-   "fingerprint": "c9822286c859c5b61f9995bc705a0124",
-   "verdict": "tp",
-   "reason": "The same function body is copied into another file of the same package."
-  },
-  {
-   "rule": "QA011",
-   "file": "web/src/app/[locale]/(dashboard)/status/components/statusFilter/hooks/useModelSelect.ts",
-   "line": 20,
-   "fingerprint": "9ac948d216732f5932fa2ea607a77661",
-   "verdict": "tp",
-   "reason": "The same function body is copied into another file of the same package."
-  },
-  {
-   "rule": "QA011",
-   "file": "web/src/components/ui/iframe-playground.tsx",
-   "line": 28,
-   "fingerprint": "842efcc4c501c55f8fe66c87bd817f55",
-   "verdict": "tp",
-   "reason": "The same function body is copied into another file of the same package."
-  },
-  {
-   "rule": "QA011",
-   "file": "web/src/lib/integrations/apiKeyQuotaApply.ts",
-   "line": 21,
-   "fingerprint": "9224a012c9c7a7106d246cfc0238f40a",
-   "verdict": "tp",
-   "reason": "The same function body is copied into another file of the same package."
-  },
-  {
-   "rule": "REL001",
-   "file": "api/spi/src/main/java/com/ke/bella/openapi/login/config/BellaLoginConfiguration.java",
-   "line": 87,
-   "fingerprint": "7312d7387c971c48fe502d221281d070",
-   "verdict": "tp",
-   "reason": "The HTTP client has no timeout."
-  },
-  {
-   "rule": "SEC010",
-   "file": "web/src/app/[locale]/(dashboard)/apikey/components/ApiKeyCreatedDialog.tsx",
-   "line": 32,
-   "fingerprint": "b8a5c961288c951802352460fd95eda7",
-   "verdict": "tp",
-   "reason": "A secret value is written to the log."
-  },
-  {
-   "rule": "SEC010",
-   "file": "web/src/app/api/openapi/login/route.ts",
-   "line": 32,
-   "fingerprint": "cd07a28626157e730eca317ba08235ef",
-   "verdict": "tp",
-   "reason": "A secret value is written to the log."
-  },
-  {
-   "rule": "UI002",
-   "file": "web/src/app/[locale]/(dashboard)/(admin)/apikey-admin/components/AdminCreateDialog.tsx",
-   "line": 284,
-   "fingerprint": "89a67f7d5eb965360bd48bf564e2e8aa",
-   "verdict": "tp",
-   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
-  },
-  {
-   "rule": "UI002",
-   "file": "web/src/app/[locale]/(dashboard)/metadata/components/fieldRenderer/components/PriceRangeConfig/components/RangeHeader.tsx",
-   "line": 41,
-   "fingerprint": "3e9e86ca918022ac54800f06c630d114",
-   "verdict": "tp",
-   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
-  },
-  {
-   "rule": "UI002",
-   "file": "web/src/app/[locale]/(dashboard)/playground/audio/asr/realtime/chat/page.tsx",
-   "line": 344,
-   "fingerprint": "2f30161ae3c50ee064510db2612a6ad6",
-   "verdict": "tp",
-   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
-  },
-  {
-   "rule": "UI002",
-   "file": "web/src/app/[locale]/(dashboard)/playground/audio/asr/transcription/page.tsx",
-   "line": 223,
-   "fingerprint": "396018ef598273a4955ad79ba3deb620",
-   "verdict": "tp",
-   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
-  },
-  {
-   "rule": "UI002",
-   "file": "web/src/app/[locale]/(dashboard)/playground/chat/components/conversation/ChatList/MessageItem/UserBubble/index.tsx",
-   "line": 158,
-   "fingerprint": "cb6e1e41b90c62697d020e6191741b4f",
-   "verdict": "tp",
-   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
-  },
-  {
-   "rule": "UI002",
-   "file": "web/src/app/[locale]/(dashboard)/playground/chat/components/conversation/ChatList/MessageItem/UserBubble/index.tsx",
-   "line": 209,
-   "fingerprint": "ddeac4265f4710b6d150aed998420636",
-   "verdict": "tp",
-   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
-  },
-  {
-   "rule": "UI002",
-   "file": "web/src/app/[locale]/(dashboard)/playground/chat/components/conversation/chatInput/index.tsx",
-   "line": 543,
-   "fingerprint": "9c198c6fdb225d7dc8a2e394e3f8f557",
-   "verdict": "tp",
-   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
-  },
-  {
-   "rule": "UI002",
-   "file": "web/src/app/[locale]/(dashboard)/playground/chat/components/conversation/chatInput/media-preview.tsx",
-   "line": 121,
-   "fingerprint": "222a23d7eb6816d6653a6a0dc6e0eb76",
-   "verdict": "tp",
-   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
-  },
-  {
-   "rule": "UI002",
-   "file": "web/src/app/[locale]/(dashboard)/playground/images/components/ImageResultCard.tsx",
-   "line": 41,
-   "fingerprint": "44c4a993b3df4646254a381a1065fb16",
-   "verdict": "tp",
-   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
-  },
-  {
-   "rule": "UI002",
-   "file": "web/src/app/[locale]/(dashboard)/playground/images/edits/page.tsx",
-   "line": 258,
-   "fingerprint": "90f58dfcf8b7913e6ae41593e6055837",
-   "verdict": "tp",
-   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
-  },
-  {
-   "rule": "UI002",
-   "file": "web/src/app/[locale]/(dashboard)/playground/ocr/components/ImageInputArea.tsx",
-   "line": 113,
-   "fingerprint": "2b0690bc991b6bc1ec411ae341c4d39e",
-   "verdict": "tp",
-   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
-  },
-  {
-   "rule": "UI002",
-   "file": "web/src/components/channel-health/ChannelHealthDashboard.tsx",
-   "line": 720,
-   "fingerprint": "8ccc62544b59b9819ae38f5fcb41b65c",
-   "verdict": "tp",
-   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
-  },
-  {
-   "rule": "UI002",
-   "file": "web/src/components/channel-health/ChannelHealthDashboard.tsx",
-   "line": 762,
-   "fingerprint": "c3e7cd23efab71bf83495709aabea974",
-   "verdict": "tp",
-   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
-  },
-  {
-   "rule": "UI002",
-   "file": "web/src/components/ui/multiselect/index.tsx",
-   "line": 93,
-   "fingerprint": "c9785b46b28d3a4fbf3c9826808202ca",
-   "verdict": "tp",
-   "reason": "A click handler on a non-interactive element, unreachable with the keyboard."
-  },
-  {
-   "rule": "UI003",
-   "file": "web/src/app/[locale]/(dashboard)/(admin)/apikey-admin/components/AdminCreateDialog.tsx",
-   "line": 183,
-   "fingerprint": "ca5ccecec33bd8eee43acf2c64b9d20b",
-   "verdict": "tp",
-   "reason": "A form control without a label."
-  },
-  {
-   "rule": "UI003",
-   "file": "web/src/app/[locale]/(dashboard)/(admin)/apikey-admin/components/AdminCreateDialog.tsx",
-   "line": 197,
-   "fingerprint": "4141cb5e029554ad000598f8a34ada4c",
-   "verdict": "tp",
-   "reason": "A form control without a label."
-  },
-  {
-   "rule": "UI003",
-   "file": "web/src/app/[locale]/(dashboard)/(admin)/apikey-admin/components/AdminCreateDialog.tsx",
-   "line": 209,
-   "fingerprint": "222cbbc894da0fbf1705eddaf0b33652",
-   "verdict": "tp",
-   "reason": "A form control without a label."
-  },
-  {
-   "rule": "UI003",
-   "file": "web/src/app/[locale]/(dashboard)/(admin)/apikey-admin/components/AdminCreateDialog.tsx",
-   "line": 221,
-   "fingerprint": "05a914c92c4a1a40d761594d9da36a90",
-   "verdict": "tp",
-   "reason": "A form control without a label."
-  },
-  {
-   "rule": "UI003",
-   "file": "web/src/app/[locale]/(dashboard)/(admin)/apikey-admin/components/AdminCreateDialog.tsx",
-   "line": 234,
-   "fingerprint": "1421dc1a5280d298358ceb60e105be5b",
-   "verdict": "tp",
-   "reason": "A form control without a label."
-  },
-  {
-   "rule": "UI003",
-   "file": "web/src/app/[locale]/(dashboard)/(admin)/apikey-admin/components/AdminCreateDialog.tsx",
-   "line": 266,
-   "fingerprint": "7a440c41ddbd4ffdbe23dedd6d6be911",
-   "verdict": "tp",
-   "reason": "A form control without a label."
-  },
-  {
-   "rule": "UI003",
-   "file": "web/src/app/[locale]/(dashboard)/apikey/components/ManagerDialog.tsx",
-   "line": 179,
-   "fingerprint": "2c843e1e9401b7775e7ebcc34ec98ec5",
-   "verdict": "tp",
-   "reason": "A form control without a label."
-  },
-  {
-   "rule": "UI003",
-   "file": "web/src/app/[locale]/(dashboard)/apikey/components/SearchInput.tsx",
-   "line": 23,
-   "fingerprint": "f099767c54646aab47d597ef99c49cae",
-   "verdict": "tp",
-   "reason": "A form control without a label."
-  },
-  {
-   "rule": "UI003",
-   "file": "web/src/app/[locale]/(dashboard)/apikey/components/apiKeyTransferDialog/components/UserSearchView.tsx",
-   "line": 87,
-   "fingerprint": "eb6cfda3729a123c846ae631e13027b7",
-   "verdict": "tp",
-   "reason": "A form control without a label."
-  },
-  {
-   "rule": "UI003",
-   "file": "web/src/app/[locale]/(dashboard)/metadata/components/ModelInfoSection.tsx",
-   "line": 53,
-   "fingerprint": "e047fcb2cb4eea83a4562bca5ec30316",
-   "verdict": "tp",
-   "reason": "A form control without a label."
-  },
-  {
-   "rule": "UI003",
-   "file": "web/src/app/[locale]/(dashboard)/playground/audio/asr/realtime/chat/page.tsx",
-   "line": 363,
-   "fingerprint": "57d485ad027bc19a2162a96835e6abb1",
-   "verdict": "tp",
-   "reason": "A form control without a label."
-  },
-  {
-   "rule": "UI003",
-   "file": "web/src/app/[locale]/(dashboard)/playground/audio/asr/transcription/page.tsx",
-   "line": 356,
-   "fingerprint": "bbf9931f977b6690c45d4ebc73c786e3",
-   "verdict": "tp",
-   "reason": "A form control without a label."
-  },
-  {
-   "rule": "UI003",
-   "file": "web/src/app/[locale]/(dashboard)/playground/audio/asr/transcription/page.tsx",
-   "line": 391,
-   "fingerprint": "ea1dbbac866b352da8174ca5bc544a15",
-   "verdict": "tp",
-   "reason": "A form control without a label."
-  },
-  {
-   "rule": "UI003",
-   "file": "web/src/app/[locale]/(dashboard)/playground/images/edits/page.tsx",
-   "line": 332,
-   "fingerprint": "725d4f666571c87f47dd2a79faa875e5",
-   "verdict": "tp",
-   "reason": "A form control without a label."
-  },
-  {
-   "rule": "UI006",
-   "file": "web/src/app/[locale]/(dashboard)/(admin)/apikey-admin/components/AdminKeysTable.tsx",
-   "line": 370,
-   "fingerprint": "6aea3cbf9753ac7904193dede76d5a2a",
-   "verdict": "tp",
-   "reason": "An array index is used as the React key."
-  },
-  {
-   "rule": "UI006",
-   "file": "web/src/app/[locale]/(dashboard)/apikey/components/KeysTable.tsx",
-   "line": 236,
-   "fingerprint": "95a059db2457ed48231ce8aba468d8fa",
-   "verdict": "tp",
-   "reason": "An array index is used as the React key."
-  },
-  {
-   "rule": "UI006",
-   "file": "web/src/app/[locale]/(dashboard)/apikey/sub-ak/[akCode]/components/SubAkTable.tsx",
-   "line": 352,
-   "fingerprint": "ff71e065fb0c4e6bb4d0902c5ab2d294",
-   "verdict": "tp",
-   "reason": "An array index is used as the React key."
-  },
-  {
-   "rule": "UI006",
-   "file": "web/src/app/[locale]/(dashboard)/manager/components/ManagedKeysTable.tsx",
-   "line": 422,
-   "fingerprint": "0b1655ef45407176e72742953ca93436",
-   "verdict": "tp",
-   "reason": "An array index is used as the React key."
-  },
-  {
-   "rule": "UI015",
-   "file": "web/src/app/[locale]/(dashboard)/apikey/sub-ak/[akCode]/components/CreateSubApiKeyDialog.tsx",
-   "line": 234,
-   "fingerprint": "9181bee0c0a4e348d019ff83faf3f508",
-   "verdict": "tp",
-   "reason": "The form error is not linked to its field with aria-describedby."
-  },
-  {
-   "rule": "UI015",
-   "file": "web/src/app/[locale]/(dashboard)/metadata/components/ChannelConfigDialog.tsx",
-   "line": 1379,
-   "fingerprint": "94c49a66d4e40554ed91177ad9e076d8",
-   "verdict": "tp",
-   "reason": "The form error is not linked to its field with aria-describedby."
-  },
-  {
-   "rule": "UI015",
-   "file": "web/src/app/[locale]/(dashboard)/metadata/components/CreateModelDialog.tsx",
-   "line": 409,
-   "fingerprint": "e9920ed4d8499cd3c596567e9a637fd4",
-   "verdict": "tp",
-   "reason": "The form error is not linked to its field with aria-describedby."
-  },
-  {
-   "rule": "UI015",
-   "file": "web/src/app/[locale]/(dashboard)/metadata/components/channelConfigDialog/components/ChannelBasicFields.tsx",
-   "line": 161,
-   "fingerprint": "b83952a23cd2dc60313d2391adcbcd57",
-   "verdict": "tp",
-   "reason": "The form error is not linked to its field with aria-describedby."
-  },
-  {
-   "rule": "UI015",
-   "file": "web/src/app/[locale]/(dashboard)/metadata/components/channelConfigDialog/components/PriceInfoFields.tsx",
-   "line": 73,
-   "fingerprint": "26bade38a7e0254b6c86ba274652a061",
-   "verdict": "tp",
-   "reason": "The form error is not linked to its field with aria-describedby."
-  },
-  {
-   "rule": "UI015",
-   "file": "web/src/app/[locale]/(dashboard)/metadata/components/channelConfigDialog/components/QueueFields.tsx",
-   "line": 61,
-   "fingerprint": "ee769d4c9c35ecbe79b4a83d8b71d7e6",
-   "verdict": "tp",
-   "reason": "The form error is not linked to its field with aria-describedby."
-  },
-  {
-   "rule": "QA007",
-   "file": "playwright.config.ts",
-   "line": 2,
-   "fingerprint": "719318a2cf365e59b757062c2bf96283",
-   "verdict": "tp",
-   "reason": "dotenv is imported by the root Playwright config but the root package.json does not declare it."
   }
  ]
 }

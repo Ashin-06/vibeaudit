@@ -75,6 +75,22 @@
    "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
   },
   {
+   "rule": "BE005",
+   "file": "backend/api/handler/market.go",
+   "line": 411,
+   "fingerprint": "14c084b9c25045300117ca673ad75d76",
+   "verdict": "fp",
+   "reason": "A fixed host with the package name or code appended; the request does not pick the host."
+  },
+  {
+   "rule": "BE005",
+   "file": "backend/api/handler/wechat.go",
+   "line": 26,
+   "fingerprint": "3ac4dfa711edecdabaa4a022557f75ed",
+   "verdict": "fp",
+   "reason": "A fixed host with the package name or code appended; the request does not pick the host."
+  },
+  {
    "rule": "REL001",
    "file": "backend/api/middleware/turnstile-check.go",
    "line": 35,
@@ -97,6 +113,22 @@
    "fingerprint": "0b382c35e9421efb5db4d76dfe9723ec",
    "verdict": "fp",
    "reason": "An admin-only MCP service setting, not a user-owned record."
+  },
+  {
+   "rule": "BE005",
+   "file": "backend/library/market/npm.go",
+   "line": 195,
+   "fingerprint": "2032c3420fd9b5953bbdc67d786826e1",
+   "verdict": "fp",
+   "reason": "A fixed host with the package name or code appended; the request does not pick the host."
+  },
+  {
+   "rule": "BE006",
+   "file": "backend/library/market/pypi.go",
+   "line": 164,
+   "fingerprint": "92675108b54a2138447e893a5fb07da6",
+   "verdict": "fp",
+   "reason": "The package name comes from the stored service record, not the request."
   },
   {
    "rule": "UI017",

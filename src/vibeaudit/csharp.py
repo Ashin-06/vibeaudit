@@ -143,10 +143,17 @@ class CsScanner:
             self._no_authorization(routes)
         from . import cssinks
 
+        from .calls import Follower, cs_params
+
+        follower = Follower(cs_params)  # cross-function taint
         for sf in files:
             if not sf.is_example:
-                GUARD.run(sf.rel, "C# data flow", cssinks.check, sf, views_of(sf), self.add)
+                GUARD.run(sf.rel, "C# methods", cssinks.index, sf, views_of(sf), follower)
+        for sf in files:
+            if not sf.is_example:
+                GUARD.run(sf.rel, "C# data flow", cssinks.check, sf, views_of(sf), self.add, follower)
                 GUARD.run(sf.rel, "C# configuration", self._config, sf)
+        GUARD.run("<project>", "C# calls", cssinks.follow, follower, self.add)
         return routes
 
     def _routes(self, sf: SourceFile, controllers: bool, everywhere: bool) -> List[Route]:

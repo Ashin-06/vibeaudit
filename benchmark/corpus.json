@@ -23,13 +23,6 @@
    "kind": "ai-built"
   },
   {
-   "name": "LinguaLearn",
-   "url": "https://github.com/josephkamau32/LinguaLearn",
-   "commit": "f1cc2e2ea82ec7e7504da0d931503112e80ec25e",
-   "licence": "none declared",
-   "kind": "ai-built"
-  },
-  {
    "name": "physicalmediavault",
    "url": "https://github.com/thamarakandabada/physicalmediavault",
    "commit": "c411c1698cf6cc68541536e3981526a51e7606ba",

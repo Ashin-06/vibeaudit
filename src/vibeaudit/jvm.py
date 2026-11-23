@@ -464,9 +464,15 @@ class JvmScanner:
         from . import jvmconfig, jvmsinks
 
         jvmconfig.run(self.p, security.present, self.add)
-        for sf in self.p.files:
-            if is_jvm(sf.rel) and sf.text is not None and not sf.is_test and not sf.is_example:
-                GUARD.run(sf.rel, "JVM data flow", jvmsinks.check, sf, views_of(sf), self.add)
+        from .calls import Follower, jvm_params
+
+        follower = Follower(jvm_params)  # cross-function taint
+        mine = [sf for sf in self.p.files if is_jvm(sf.rel) and sf.text is not None and not sf.is_test and not sf.is_example]
+        for sf in mine:
+            GUARD.run(sf.rel, "JVM methods", jvmsinks.index, sf, views_of(sf), follower)
+        for sf in mine:
+            GUARD.run(sf.rel, "JVM data flow", jvmsinks.check, sf, views_of(sf), self.add, follower)
+        GUARD.run("<project>", "JVM calls", jvmsinks.follow, follower, self.add)
         return found
 
     def _no_security(self, found: List[Route]) -> None:
