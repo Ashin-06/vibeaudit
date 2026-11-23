@@ -98,3 +98,10 @@ def test_explain_traces_request_data_in_other_languages():
     php = '<?php\n$id = $_GET["id"];\n$sql = "SELECT * FROM t WHERE id=" . $id;\nmysqli_query($db, $sql);\n'
     assert trace("a.php", php, 4)[0].line == 2
     assert trace("main.go", 'func f() {\n  x := 1\n  db.Raw(x)\n}\n', 3) == []
+
+
+def test_platform_injected_env_is_not_expected_in_env_example():
+    from vibeaudit.datascan import PLATFORM_ENV
+    for name in ("KUBERNETES_SERVICE_HOST", "KUBERNETES_SERVICE_PORT", "POD_NAME", "OTEL_EXPORTER_OTLP_ENDPOINT"):
+        assert PLATFORM_ENV.match(name)
+    assert not PLATFORM_ENV.match("STRIPE_SECRET_KEY")
