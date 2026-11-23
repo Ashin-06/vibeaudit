@@ -89,8 +89,8 @@
    "fixed_fp": 0
   },
   "chat-langchain": {
-   "findings": 4,
-   "labelled": 4,
+   "findings": 5,
+   "labelled": 5,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 4
@@ -355,11 +355,11 @@
    "fixed_fp": 8
   },
   "nodegoat": {
-   "findings": 14,
-   "labelled": 14,
+   "findings": 12,
+   "labelled": 12,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 3
+   "fixed_fp": 5
   },
   "nodejs-whisper": {
    "findings": 1,
@@ -369,8 +369,8 @@
    "fixed_fp": 0
   },
   "pygoat": {
-   "findings": 176,
-   "labelled": 176,
+   "findings": 184,
+   "labelled": 184,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
@@ -5241,12 +5241,12 @@
   "FE001": {
    "title": "Cross-site scripting through a raw HTML sink",
    "preview": true,
-   "tp": 54,
-   "fp": 228,
+   "tp": 61,
+   "fp": 230,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.1915,
-   "precision_pessimistic": 0.1915,
+   "precision": 0.2096,
+   "precision_pessimistic": 0.2096,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -5279,6 +5279,11 @@
     "careconnect": [
      2,
      3,
+     0
+    ],
+    "chat-langchain": [
+     0,
+     1,
      0
     ],
     "commerce": [
@@ -5347,8 +5352,8 @@
      0
     ],
     "pygoat": [
-     17,
-     20,
+     24,
+     21,
      0
     ],
     "snipe-it": [
@@ -5413,6 +5418,11 @@
      3,
      0
     ],
+    "chat-langchain": [
+     0,
+     1,
+     0
+    ],
     "commerce": [
      1,
      1,
@@ -5479,8 +5489,8 @@
      0
     ],
     "pygoat": [
-     17,
-     20,
+     24,
+     21,
      0
     ],
     "snipe-it": [
@@ -8555,11 +8565,11 @@
    "title": "Hardcoded or default signing secret",
    "preview": false,
    "tp": 30,
-   "fp": 6,
+   "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8333,
-   "precision_pessimistic": 0.8333,
+   "precision": 0.8824,
+   "precision_pessimistic": 0.8824,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
@@ -8597,11 +8607,6 @@
     "node-express-realworld-example-app": [
      3,
      0,
-     0
-    ],
-    "nodegoat": [
-     0,
-     2,
      0
     ],
     "pygoat": [

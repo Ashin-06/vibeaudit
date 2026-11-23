@@ -2180,7 +2180,7 @@
    "by_repo": {}
   },
   "FE001": {
-   "precision": 0.1915,
+   "precision": 0.2096,
    "seeded_recall": 1.0,
    "by_repo": {
     "BookStack": [
@@ -2206,6 +2206,10 @@
     "careconnect": [
      2,
      3
+    ],
+    "chat-langchain": [
+     0,
+     1
     ],
     "commerce": [
      1,
@@ -2260,8 +2264,8 @@
      61
     ],
     "pygoat": [
-     17,
-     20
+     24,
+     21
     ],
     "snipe-it": [
      2,
@@ -3700,7 +3704,7 @@
    }
   },
   "SEC004": {
-   "precision": 0.8333,
+   "precision": 0.8824,
    "seeded_recall": 1.0,
    "by_repo": {
     "Vulnerable-Flask-App": [
@@ -3730,10 +3734,6 @@
     "node-express-realworld-example-app": [
      3,
      0
-    ],
-    "nodegoat": [
-     0,
-     2
     ],
     "pygoat": [
      20,
