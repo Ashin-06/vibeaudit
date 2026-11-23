@@ -10,7 +10,7 @@ def check(paths):
     bad = []
     for p in paths:
         path = Path(p)
-        if not path.is_file() or path.suffix in (".gz",):
+        if not path.is_file() or path.suffix in (".gz", ".gif", ".png", ".jpg", ".ico"):
             continue
         data = path.read_bytes()
         for i, b in enumerate(data):
