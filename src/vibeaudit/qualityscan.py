@@ -577,6 +577,8 @@ class QualityScanner:
             names.update(re.findall(
                 r"\bexport\s+(?:declare\s+)?(?:default\s+)?(?:async\s+)?(?:function\*?|class|const\s+enum|const|let|var|type|interface|enum"
                 r"|abstract\s+class|namespace)\s+([A-Za-z_$][\w$]*)", text))
+            # a namespace re-export from a barrel file: `export * as userService from './userService'`
+            names.update(re.findall(r"\bexport\s*\*\s*as\s+([A-Za-z_$][\w$]*)\s+from\b", text))
             for pattern in re.findall(r"\bexport\s+(?:const|let|var)\s*([{\[](?:[^{}\[\]]|[{\[][^{}\[\]]*[}\]])*)", text):
                 names.update(re.findall(r"[A-Za-z_$][\w$]*", pattern))  # destructured: `export const { a, b: c } = x`
         tf.cache["js_exports"] = names

@@ -49,7 +49,11 @@ ADMIN_ROLE_EVIDENCE = re.compile(
     # Spring and Jakarta: @PreAuthorize("hasAuthority(...)"), @Secured, @RolesAllowed
     r"|has_?(?:any_?)?authority|has_?any_?role|secured|roles_?allowed"
     # Symfony: #[IsGranted('ROLE_ADMIN')], #[IsGranted('edit', 'activity')], $this->denyAccessUnlessGranted(...)
-    r"|is_?granted|denyAccessUnlessGranted|can:|check_?permissions?\w*\s*\()"  # Laravel ->middleware('can:manage-users')
+    r"|is_?granted|denyAccessUnlessGranted|can:|check_?permissions?\w*\s*\("
+    # an extractor or guard type that only admits admins: Axum `user: AdminUser`, `RequireAdmin`
+    r"|admin_?(?:user|only|guard|context|session|claims)|require_?admin)"
+    # Laravel `'middleware' => 'admin'`, `$user->role === 'admin'`: the admin role named as a string
+    r"""|['"](?:super_?)?admin['"]"""
     # Rust and PHP enum paths: `ctx.require(OrgPermission::ManageOrganization)`, `UserRole::Admin`
     r"|\b[A-Z]\w*(?:Permission|Role)\s*::"
 )

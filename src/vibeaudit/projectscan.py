@@ -405,7 +405,7 @@ class ProjectScanner:
 
     def express_headers(self) -> None:
         deps = self.p.all_js_deps()
-        if "express" not in deps or "helmet" in deps:
+        if "express" not in deps or "helmet" in deps or "lusca" in deps:  # lusca sets the same headers (xframe, hsts, ...)
             return
         for f in self.p.files:
             if f.kind == "js" and not f.is_test and f.text and re.search(r"\bexpress\s*\(\s*\)", f.text):

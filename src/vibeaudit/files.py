@@ -57,7 +57,9 @@ ONE_OFF_PATH_RE = re.compile(
 # well-known libraries copied into the project unminified (static/jquery/jquery.js, bootstrap.css)
 VENDORED_NAME_RE = re.compile(
     r"(^|/)(?:jquery|bootstrap|materialize|popper|lodash|underscore|moment|angular|d3|chart|fontawesome|font-awesome"
-    r"|select2|datatables|tinymce|codemirror|highlight|prism|swagger-ui)[\w.-]*\.(?:js|css)$", re.I)
+    r"|select2|datatables|tinymce|codemirror|highlight|prism|swagger-ui|vue|js\.cookie|hope-ui)[\w.-]*\.(?:js|css)$"
+    # a folder of third-party code copied in (linkstack's assets/external-dependencies/)
+    r"|(^|/)(?:external[-_]dependencies|third[-_]?party)/[^\n]*\.(?:js|css)$", re.I)
 # a vendored copy of a built library kept readable: "// Original source: .../dist/x-min.js"
 VENDORED_HEADER_RE = re.compile(r"(?im)^[ \t]*(?://|/\*|\*)[^\n]*(?:original source:|\bdist/[\w.-]+\.js\b|\w[.-]min\.js\b)")
 ENV_FILE_RE = re.compile(r"(^|/)\.env(\.[\w.-]+)?$")
