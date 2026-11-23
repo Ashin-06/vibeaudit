@@ -39,6 +39,16 @@ SENSITIVE_TABLE = re.compile(
 API_CLIENTS = re.compile(
     r"(?i)^(?:openai|anthropic|groq|mistral|cohere|replicate|together|stripe|resend|twilio|sgMail|sendgrid|mailgun|"
     r"postmark|slack|octokit|github|cloudinary|s3|s3Client|pusher|ably|clerk|clerkClient|posthog|analytics|sentry)$")
+OTHER_DIALECT = re.compile(r"(?i)mysql|maria|sqlite|(?:^|[/_.-])h2(?:[/_.-]|$)|mssql|sqlserver|oracle")
+OTHER_DIALECT_SQL = re.compile(r"(?i)\bengine\s*=|\bauto_increment\b|\bautoincrement\b|\bpragma\b|`\w+`|\bidentity\s*\(\s*1")
+PG_PATH = re.compile(r"(?i)postgres|(?:^|[/_.-])pg(?:[/_.-]|$)|supabase")
+PG_SQL = re.compile(r"(?i)\b(?:big)?serial\b|\btimestamptz\b|\bjsonb\b|::\s*\w|gen_random_uuid|uuid_generate|plpgsql"
+                    r"|\bcreate\s+extension\b|generated\s+(?:always|by\s+default)\s+as\s+identity")
+PG_DEPS = re.compile(r"""(?i)["'](?:pg|postgres|@neondatabase/serverless|@vercel/postgres|@supabase/supabase-js)["']\s*:"""
+                     r"""|\bpsycopg|\basyncpg\b|postgresql://|\bprovider\s*=\s*"postgresql"|jackc/pgx|lib/pq\b"""
+                     r"|\bimage:\s*['\"]?postgres|[\"']postgres(?:ql)?[\"']|\bpostgresql\b")  # Cargo features, Maven/Gradle
+MANIFESTS = ("package.json", "requirements.txt", "pyproject.toml", "go.mod", "Cargo.toml", "Gemfile", "composer.json",
+             "pom.xml", "build.gradle", "build.gradle.kts", "schema.prisma", "docker-compose.yml", "docker-compose.yaml")
 NAIVE_COLUMN = re.compile(r"(?i)\b(\w+_at|created|updated|deleted|timestamp)\s+timestamp(?:\s+without\s+time\s+zone)?\b(?!\s+with\s+time\s+zone)(?!tz)")
 PLATFORM_ENV = re.compile(
     r"^(?:NODE_ENV|PORT|HOST|HOSTNAME|HOME|PATH|PWD|USER|SHELL|LANG|TZ|CI|DEBUG|VERCEL\w*|NETLIFY\w*|RENDER\w*|RAILWAY\w*|"
@@ -68,6 +78,13 @@ class DataScanner:
 
     def add(self, sf: SourceFile, rule: str, line: int, msg: str, sev: str = "") -> None:
         self.emit(Finding(rule, sf.rel, line, msg, sev, sf.line(line).strip()[:200]))
+
+    @property
+    def postgres_project(self) -> bool:
+        """A manifest or compose file names Postgres: an unmarked .sql file is then Postgres too."""
+        if not hasattr(self, "_pg"):
+            self._pg = any(PG_DEPS.search(f.text or "") for f in self.p.files if f.rel.rsplit("/", 1)[-1] in MANIFESTS)
+        return self._pg
 
     def run(self) -> None:
         self.serverless_config = self._serverless_config()
@@ -275,7 +292,11 @@ class DataScanner:
         for m in finditer(r"(?i)\b(" + MONEY + r")\b\s+(float4?|float8|real|double\s+precision|double)\b", clean):
             self.add(sf, "DATA004", sf.line_at(m.start()), f"Column `{m.group(1)}` stores money as `{m.group(2).upper()}`.")
         # only column definitions: `SELECT created_at timestamp` is an alias, not a column type
-        for st in finditer(r"(?i)\b(?:create\s+(?:(?:temp|temporary|unlogged)\s+)?table|alter\s+table)\b[^;]*", clean):
+        # `timestamp` is naive only in Postgres: MySQL converts it to UTC, SQLite has no such type
+        postgres = not OTHER_DIALECT.search(sf.rel) and not OTHER_DIALECT_SQL.search(clean) \
+            and bool(PG_PATH.search(sf.rel) or PG_SQL.search(clean) or self.postgres_project)
+        for st in finditer(r"(?i)\b(?:create\s+(?:(?:temp|temporary|unlogged)\s+)?table|alter\s+table)\b[^;]*",
+                           clean if postgres else ""):
             for m in NAIVE_COLUMN.finditer(clean, st.start(), st.end()):
                 self.add(sf, "DATA006", sf.line_at(m.start()), f"Column `{m.group(1)}` is a timestamp without time zone.")
         for m in finditer(r"(?is)\bcreate\s+policy\s+(?:\"[^\"]*\"|\w+)\s+on\s+((?:\"?\w+\"?\.)?\"?\w+\"?)([^;]*);", clean):

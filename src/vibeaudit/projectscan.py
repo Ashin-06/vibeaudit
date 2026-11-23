@@ -15,7 +15,10 @@ from .rustscan import rust_views
 from .model import Finding, Route
 from .store import loads_json
 
-SUPABASE = re.compile(r"supabase", re.I)
+# a Supabase client in use, not the word: a secret-redaction table naming "Supabase secret key" is not a project
+SUPABASE = re.compile(r"@supabase/|\bsupabase\s*\.\s*(?:from|auth|storage|rpc|channel)\b|\b(?:from|import)\s+supabase\b"
+                      r"|\bSUPABASE_(?:URL|ANON_KEY|SERVICE_ROLE_KEY|KEY)\b|\bsupabase[-_](?:js|py|flutter|go|rs|kt|swift)\b"
+                      r"|\bsupabase\.co\b")
 ENV_VALUE = re.compile(r"(?m)^[ \t]*(?:export[ \t]+)?\w+[ \t]*=[ \t]*[^\s#]")
 
 Emit = Callable[[Finding], None]

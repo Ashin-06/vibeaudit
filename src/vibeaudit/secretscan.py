@@ -87,12 +87,14 @@ DEFAULT_PASSWORD_VALUES = {
 PASSWORD_ASSIGN = re.compile(
     r"""(?i)\b((?:[a-z_]*_)?(?:password|passwd|pwd|pass)|(?:admin|db|root|master|default)_?pass(?:word)?)["']?\s*(?:[:=]|=>)\s*["'`]([^"'`\n]{4,64})["'`]"""
 )
+SESSION_CALL = re.compile(
+    r"""(?<!\.)\b(?:session|expressSession|cookieSession|cookieParser)\s*\(\s*(?:\{[^}]*?\bsecret\s*:\s*)?["'`]([^"'`$]+)["'`]""")
 SIGNING_LITERAL = [
     re.compile(r"""\b(?:app\s*\.\s*)?(?:secret_key|SECRET_KEY|JWT_SECRET(?:_KEY)?|jwt_secret(?:_key)?|SESSION_SECRET|session_secret|SIGNING_KEY|TOKEN_SECRET|COOKIE_SECRET|AUTH_SECRET|NEXTAUTH_SECRET)\s*=\s*["']([^"']+)["']"""),
     re.compile(r"""\bconfig\s*\[\s*["'](?:SECRET_KEY|JWT_SECRET_KEY|SESSION_SECRET)["']\s*\]\s*=\s*["']([^"']+)["']"""),
     re.compile(r"""\bjwt\s*\.\s*sign\s*\([^;]*?,\s*["'`]([^"'`$]+)["'`]"""),
     # not a method (`synth.session("genuine", ...)`): express-session and cookie-parser are called bare
-    re.compile(r"""(?<!\.)\b(?:session|expressSession|cookieSession|cookieParser)\s*\(\s*(?:\{[^}]*?\bsecret\s*:\s*)?["'`]([^"'`$]+)["'`]"""),
+    SESSION_CALL,
     re.compile(r"""\b(?:const|let|var)\s+(?:JWT_SECRET|jwtSecret|SECRET_KEY|secretKey|SESSION_SECRET|sessionSecret)\s*=\s*["'`]([^"'`$]+)["'`]"""),
 ]
 # not a setting about secrets (SECRETS_PROVIDER, SECRET_STORE_PATH, SIGNING_KEY_ID): those defaults are not keys
@@ -115,6 +117,32 @@ def _jwt_role(payload: str) -> Optional[str]:
     if not isinstance(data, dict) or data.get("iss") == "supabase-demo":
         return None  # the Supabase CLI's well-known local development keys
     return data.get("role")
+
+
+REDACTOR = re.compile(r"(?i)\bredact|\bscrub|sanitiz|secret[_ ]?(?:scan|detect)|\bmask_?secret")
+RUST_CFG_TEST = re.compile(r"#\[\s*cfg\s*\(\s*test\s*\)\s*\]")
+
+
+def test_vector(sf: SourceFile, text: str, off: int) -> bool:
+    """A key in the test code of a file that redacts or detects secrets: a known sample, not a leaked credential.
+    Rust tests are inline: a `#[cfg(test)]` module, or a `#[cfg(test)]` item up to two lines above."""
+    if not REDACTOR.search(text):
+        return False
+    if sf.is_test:
+        return True
+    if not sf.rel.endswith(".rs"):
+        return False
+    start = text.rfind("\n", 0, off)
+    for _ in range(2):
+        start = text.rfind("\n", 0, max(0, start))
+    if RUST_CFG_TEST.search(text, max(0, start), off):
+        return True
+    blank = sf.cache.get("rs_no_tests")
+    if not isinstance(blank, str):
+        from .rustscan import rust_views, without_test_modules
+        bare = rust_views(text).bare
+        blank = sf.cache["rs_no_tests"] = without_test_modules(text, bare)
+    return len(blank) == len(text) and not blank[off].strip()
 
 
 class SecretScanner:
@@ -162,6 +190,9 @@ class SecretScanner:
                     continue
                 if label == "Mailgun API key" and not re.search(r"(?i)mailgun", text):
                     continue
+                if test_vector(sf, text, m.start()):
+                    once(m.start())  # no generic secret rule on that line either
+                    continue  # a sample key in the tests of a secret scanner or redactor
                 if once(m.start()):
                     sev = ""
                     if label == "AWS access key id" and not AWS_SECRET.search(text):
@@ -210,9 +241,11 @@ class SecretScanner:
             for m in finditer(rx, code):
                 if bare is not None and len(bare) == len(code) and not bare[m.start()].strip():
                     continue  # inside a string: an error message naming cookieParser("secret"), not a call
-                if sf.rel.endswith(".php") and m.group(0).startswith("session"):
-                    continue  # Laravel's session('key') reads a session value
+                if rx is SESSION_CALL and sf.kind not in ("js", "html"):
+                    continue  # express-session and cookie-parser are JavaScript; PHP/Rust session("x") reads or builds
                 val = m.group(1)
+                if re.fullmatch(r"\s*(?:\{\{.*\}\}|\{%.*%\}|\$\{\w+\})\s*", val):
+                    continue  # a template placeholder ({{cookiecutter.secret_key}}) filled in when the project is generated
                 if H.PLACEHOLDER.search(val) and not re.search(r"(?i)changeme|change_me|secret|dev|insecure", val):
                     continue
                 if sf.kind == "py" and m.group(0).startswith("SECRET_KEY") and production_overrides(self.p, sf.rel, "SECRET_KEY"):

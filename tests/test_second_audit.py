@@ -58,6 +58,7 @@ def test_a5_naive_datetime_through_aliases_and_explicit_none(tmp_path):
 
 
 def test_a6_sql_timestamps_only_in_table_definitions(tmp_path):
+    write(tmp_path, "package.json", '{"dependencies": {"pg": "8"}}')  # Postgres: DATA006 is Postgres-only
     write(tmp_path, "db/reports.sql", "SELECT created_at timestamp, id FROM events;\n"
           "CREATE TABLE logs (\n  id int,\n  created_at timestamp\n);\n"
           "ALTER TABLE logs ADD COLUMN updated_at timestamp;\n")

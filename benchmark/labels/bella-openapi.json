@@ -55,16 +55,16 @@
    "file": "api/server/sql/16-20251209_video.sql",
    "line": 15,
    "fingerprint": "86b6c883a0f87833a525a6ec8a1550f3",
-   "verdict": "tp",
-   "reason": "The timestamp column has no time zone."
+   "verdict": "fp",
+   "reason": "MySQL table (auto_increment, backtick keys): MySQL TIMESTAMP is stored as UTC; the Postgres advice does not apply."
   },
   {
    "rule": "DATA006",
    "file": "api/server/sql/16-20251209_video.sql",
    "line": 16,
    "fingerprint": "5e3d7a4174d95a1f7667f6ee3e1bc8b7",
-   "verdict": "tp",
-   "reason": "The timestamp column has no time zone."
+   "verdict": "fp",
+   "reason": "MySQL table (auto_increment, backtick keys): MySQL TIMESTAMP is stored as UTC; the Postgres advice does not apply."
   },
   {
    "rule": "AUTH002",
