@@ -6,7 +6,7 @@ A per-method approximation: values passed to other methods are not followed.
 from __future__ import annotations
 
 import re
-from typing import Callable, List, Set, Tuple
+from typing import Callable, List, Optional, Set, Tuple
 
 from .csharp import _body_end
 from .files import SourceFile
@@ -47,9 +47,50 @@ SINKS: List[Tuple["re.Pattern[str]", str, str, str, str]] = [
 ]
 
 
-def check(sf: SourceFile, v: Views, add: Add) -> None:
+# every method with a body (private helpers too), for cross-function taint
+METHOD = re.compile(r"(?m)^[ \t]*(?:(?:public|private|protected|internal|static|async|virtual|override|new|sealed|unsafe)\s+){1,6}"
+                    r"[\w<>\[\],.? ]{1,120}?\s(\w+)\s*\(")
+
+
+def index(sf: SourceFile, v: Views, follower) -> None:
+    from .calls import Fn
+
+    code, bare = v.code, v.bare
+    for m in finditer(METHOD, bare):
+        close = match_close(bare, m.end() - 1)
+        end = _body_end(bare, close) if close >= 0 else -1
+        if end > 0:
+            follower.define(m.group(1), Fn(sf, m.start(), code[m.end():close], (close + 1, end + 1)))
+
+
+def follow(follower, add: Add) -> None:
+    """Check the methods that receive request data from a call, CALL_DEPTH calls deep."""
+    from .calls import via_note
+    from .csharp import views_of
+
+    seen: Set[Tuple[str, int, str]] = set()
+
+    def run(fn, seed: Set[str], depth: int, via: str) -> None:
+        v = views_of(fn.sf)
+        a, b = fn.body
+
+        def report(rule: str, offset: int, msg: str, sev: str) -> None:
+            line = fn.sf.line_at(offset)
+            if msg.startswith("Request data") and (fn.sf.rel, line, rule) not in seen:
+                seen.add((fn.sf.rel, line, rule))
+                add(fn.sf, rule, line, msg + via_note(via), sev)
+
+        clients = {n for m in finditer(CLIENT_DECL, v.code) for n in m.groups() if n}
+        note = lambda c, bb, base, t: follower.note(fn.sf, c, bb, base, t, depth, via)  # noqa: E731
+        _method(v.code[a:b], v.bare[a:b], a, set(seed), report, clients, note)
+
+    follower.follow(run)
+
+
+def check(sf: SourceFile, v: Views, add: Add, follower=None) -> None:
     code, bare = v.code, v.bare
     seen: Set[Tuple[str, int]] = set()
+    note = (lambda c, bb, base, t: follower.note(sf, c, bb, base, t, 0, None)) if follower else None  # noqa: E731
 
     def report(rule: str, offset: int, msg: str, sev: str) -> None:
         line = sf.line_at(offset)
@@ -69,7 +110,7 @@ def check(sf: SourceFile, v: Views, add: Add) -> None:
         tainted = _params(code[open_paren + 1:close])
         start = close + 1
         if tainted or SOURCE.search(code, start, end):
-            _method(code[start:end + 1], bare[start:end + 1], start, tainted, report, clients)
+            _method(code[start:end + 1], bare[start:end + 1], start, tainted, report, clients, note)
     # SQL or a shell command built from a string in place, whatever the data (the earlier polyglot patterns)
     for m in finditer(CS_SQLI, code):
         report("BE001", m.start(), "A raw SQL query is built with string interpolation or concatenation.", "high")
@@ -89,7 +130,8 @@ def _params(params: str) -> Set[str]:
     return out
 
 
-def _method(code: str, bare: str, base: int, tainted: Set[str], report: Callable[..., None], clients: Set[str]) -> None:
+def _method(code: str, bare: str, base: int, tainted: Set[str], report: Callable[..., None], clients: Set[str],
+            note: Optional[Callable[[str, str, int, Callable[[str], bool]], None]] = None) -> None:
     def is_tainted(text: str) -> bool:
         return bool(SOURCE.search(text) or any(re.search(r"\b%s\b" % re.escape(t), text) for t in tainted))
 
@@ -126,3 +168,5 @@ def _method(code: str, bare: str, base: int, tainted: Set[str], report: Callable
                 picked = argv
             if any(is_tainted(a) for a in picked):
                 report(rule, base + m.start(), f"Request data flows into {what}.", sev)
+    if note is not None:
+        note(code, bare, base, is_tainted)

@@ -43,6 +43,38 @@
    "reason": "The return URL's host, scheme and port are compared with the app's own first."
   },
   {
+   "rule": "BE006",
+   "file": "app/Http/DownloadResponseFactory.php",
+   "line": 45,
+   "fingerprint": "aeae5be167204ac89f5abcddb91567b9",
+   "verdict": "fp",
+   "reason": "A server-built export file or a cleaned theme path, not a path from the request."
+  },
+  {
+   "rule": "BE006",
+   "file": "app/Http/DownloadResponseFactory.php",
+   "line": 50,
+   "fingerprint": "20d28ba2a6dd478bb9538e7d041d2eea",
+   "verdict": "fp",
+   "reason": "A server-built export file or a cleaned theme path, not a path from the request."
+  },
+  {
+   "rule": "BE006",
+   "file": "app/Http/DownloadResponseFactory.php",
+   "line": 51,
+   "fingerprint": "be34db80cff7094343f1feceb0022af0",
+   "verdict": "fp",
+   "reason": "A server-built export file or a cleaned theme path, not a path from the request."
+  },
+  {
+   "rule": "BE006",
+   "file": "app/Http/DownloadResponseFactory.php",
+   "line": 90,
+   "fingerprint": "67c09bdbc21b641208093e062d450729",
+   "verdict": "fp",
+   "reason": "A server-built export file or a cleaned theme path, not a path from the request."
+  },
+  {
    "rule": "DATA001",
    "file": "app/Permissions/JointPermissionBuilder.php",
    "line": 171,
@@ -77,6 +109,22 @@
   {
    "rule": "BE001",
    "file": "app/Search/SearchRunner.php",
+   "line": 180,
+   "fingerprint": "b33b70fa41707cb12d7d26538dd673c7",
+   "verdict": "fp",
+   "reason": "Values are quoted with the PDO connection and operators come from a whitelist; the score select uses bindings."
+  },
+  {
+   "rule": "BE001",
+   "file": "app/Search/SearchRunner.php",
+   "line": 312,
+   "fingerprint": "9ccd746037e4ca9931dfc07f39c274a4",
+   "verdict": "fp",
+   "reason": "Values are quoted with the PDO connection and operators come from a whitelist; the score select uses bindings."
+  },
+  {
+   "rule": "BE001",
+   "file": "app/Search/SearchRunner.php",
    "line": 446,
    "fingerprint": "4a0672b2bb07617b306ec98ec109009d",
    "verdict": "fp",
@@ -97,6 +145,22 @@
    "fingerprint": "9f94122b54faa961d50945933f639073",
    "verdict": "tp",
    "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "BE006",
+   "file": "app/Theming/ThemeService.php",
+   "line": 149,
+   "fingerprint": "4f4f2b18a67bb3b7f34fb6b6a3cf3db7",
+   "verdict": "fp",
+   "reason": "A server-built export file or a cleaned theme path, not a path from the request."
+  },
+  {
+   "rule": "BE006",
+   "file": "app/Theming/ThemeService.php",
+   "line": 155,
+   "fingerprint": "323df70010f25718003de1f07caab63a",
+   "verdict": "fp",
+   "reason": "A server-built export file or a cleaned theme path, not a path from the request."
   },
   {
    "rule": "FE001",

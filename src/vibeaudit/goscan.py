@@ -122,9 +122,19 @@ class GoScanner:
         self.routes: List[Route] = []
         self.injection_lines: Set[Tuple[str, int]] = set()  # lines with BE001
         self.formatted: List[Finding] = []  # GO004, held back until every BE001 is known
+        from .calls import Follower, go_params
+
+        self.follower = Follower(go_params)  # cross-function taint
+        self.depth, self.via = 0, None  # while a followed call is checked: how deep, and the call it came through
 
     def add(self, sf: SourceFile, off: int, rule: str, msg: str, sev: str = "") -> None:
         line = sf.line_at(off)
+        if self.via is not None:
+            if not msg.startswith("Request data"):
+                return  # a followed call only adds what the request data reaches; the rest is reported once already
+            from .calls import via_note
+
+            msg += via_note(self.via)
         f = Finding(rule, sf.rel, line, msg, sev, sf.line(line).strip())
         if rule == "GO004":
             self.formatted.append(f)
@@ -145,6 +155,7 @@ class GoScanner:
         for sf in self.files:
             if not sf.is_test and not sf.is_example:
                 GUARD.run(sf.rel, "Go checks", self._checks, sf)
+        GUARD.run("<project>", "Go calls", self.follower.follow, self._follow)
         # GO004 is for formatted SQL with no traced request data; where BE001 reports the line, it says more
         for f in self.formatted:
             if (f.file, f.line) not in self.injection_lines:
@@ -157,9 +168,15 @@ class GoScanner:
         sf.cache["views"] = sf.cache["go_views"] = v
         spans = _func_spans(v)
         sf.cache["go_funcs"] = spans
+        from .calls import Fn
+
         for name, lst in spans.items():
             for a, b in lst:
                 self.funcs.setdefault(name, []).append((sf, a, b))
+                m = FUNC_DECL.match(v.bare, a)
+                close = match_close(v.bare, m.end() - 1) if m else -1
+                if close > 0 and not sf.is_test:
+                    self.follower.define(name, Fn(sf, a, v.code[m.end():close], (a, b)))
 
     # -------------------------------------------------------------- routes
     def _parents(self, sf: SourceFile) -> Dict[str, Tuple[str, str, bool]]:
@@ -345,9 +362,16 @@ class GoScanner:
         self._goroutines(sf, v)
         self._shared_maps(sf, v)
 
-    def _function(self, sf: SourceFile, v: Views, a: int, b: int) -> None:
+    def _follow(self, fn, seed: Set[str], depth: int, via: str) -> None:
+        self.depth, self.via = depth, via
+        try:
+            self._function(fn.sf, fn.sf.cache["views"], fn.body[0], fn.body[1], seed)  # type: ignore[arg-type]
+        finally:
+            self.depth, self.via = 0, None
+
+    def _function(self, sf: SourceFile, v: Views, a: int, b: int, seed: Set[str] = frozenset()) -> None:  # type: ignore[assignment]
         code, bare = v.code[a:b], v.bare[a:b]
-        tainted = _taint(code, bare)
+        tainted = _taint(code, bare, seed)
         # variables holding SQL text built with Sprintf or +: `q := fmt.Sprintf("... %d", n); db.Exec(q)`
         # name -> [(offset, built?)]: a variable counts as built SQL only if its latest assignment before the sink
         # formats SQL text (`query := "SELECT ... ?"` in a safe branch after a Sprintf branch is not)
@@ -385,6 +409,10 @@ class GoScanner:
                                                    or built_at(pick[0].strip(), m.start())):
                     self.add(sf, a + m.start(), "GO004", "SQL is built with string formatting; pass values as query parameters.")
         self._response_bodies(sf, v, a, b)
+        open_paren = bare.find("(", bare.find(")") + 1 if bare.startswith("func (") or bare.startswith("func(") else 0)
+        body = bare.find("{", match_close(bare, open_paren) if open_paren >= 0 else 0)
+        if body > 0:  # calls in the body (not the signature), passing request data on
+            self.follower.note(sf, code[body:], bare[body:], a + body, lambda x: _is_tainted(x, tainted), self.depth, self.via)
 
     def _response_bodies(self, sf: SourceFile, v: Views, a: int, b: int) -> None:
         code, bare = v.code[a:b], v.bare[a:b]
@@ -514,8 +542,8 @@ BINDS = re.compile(
 ASSIGN = re.compile(r"(?m)^[ \t]*((?:\w+\s*,\s*)*\w+)\s*:?=\s*([^\n]{1,400})")
 
 
-def _taint(code: str, bare: str) -> Set[str]:
-    tainted: Set[str] = set()
+def _taint(code: str, bare: str, seed: Set[str] = frozenset()) -> Set[str]:  # type: ignore[assignment]
+    tainted: Set[str] = set(seed)
     for m in finditer(BINDS, bare):
         tainted.add(next(g for g in m.groups() if g))
     assigns = [(m.group(1), code[m.start(2):m.end(2)], bare[m.start(2):m.end(2)]) for m in finditer(ASSIGN, bare)]
