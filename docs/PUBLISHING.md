@@ -32,3 +32,22 @@ Keep the trusted publisher's workflow name as `publish.yml`. The release workflo
 requested the token.
 
 To stop publishing, delete the `PYPI_PUBLISH` variable (or set it to anything else): runs are then skipped.
+
+
+## VS Code extension (VS Code Marketplace and Open VSX)
+
+`release.yml` publishes `editors/vscode` on every release once this one-time setup is done. Cursor and
+VSCodium install from Open VSX, VS Code from the Marketplace; each is optional.
+
+1. **Publisher.** Create a publisher at https://marketplace.visualstudio.com/manage and set `"publisher"` in
+   `editors/vscode/package.json` to its ID (the same namespace is used on Open VSX).
+2. **VS Code Marketplace token.** In Azure DevOps (https://dev.azure.com), create a personal access token with
+   organization "All accessible organizations" and scope **Marketplace > Manage**.
+3. **Open VSX token.** Sign in at https://open-vsx.org with GitHub, sign the publisher agreement, create an
+   access token, and create the namespace once: `npx ovsx create-namespace <publisher> -p <token>`.
+4. **GitHub.** Create the environment `vscode-marketplace` (Settings > Environments; allow only `main` and
+   `v*` tags), add the secrets `VSCE_PAT` and `OVSX_PAT` to it, and set the repository variable
+   `VSCODE_PUBLISH` to `true`.
+
+The next tag then publishes the extension with the same version as the Python package. To publish an
+existing release by hand: `cd editors/vscode && npm ci && npx vsce publish -p <VSCE_PAT>`.

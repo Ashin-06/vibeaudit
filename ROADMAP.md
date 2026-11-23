@@ -144,4 +144,5 @@ mapping and reports first; the threat feed after the Phase 3 items).
 | Runtime observability middleware for Express and FastAPI (staging only, off by default) | done |
 
 vibeaudit is on PyPI: each release's attested wheel and sdist are uploaded by trusted publishing from the release
-workflow (docs/PUBLISHING.md). The VS Code extension is not on a marketplace.
+workflow (docs/PUBLISHING.md). The VS Code extension is built for the VS Code Marketplace and Open VSX and is published by a release once its
+store tokens are set up (docs/PUBLISHING.md).

@@ -85,3 +85,41 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           BRANCH: ${{ github.event.repository.default_branch }}
         run: gh workflow run pages.yml --repo "$GITHUB_REPOSITORY" --ref "$BRANCH"
+
+  vscode-extension:
+    # Publishes editors/vscode to the VS Code Marketplace and to Open VSX (used by Cursor and VSCodium).
+    # Off until the repository variable VSCODE_PUBLISH is "true"; each store also needs its token as a secret
+    # of the "vscode-marketplace" environment (VSCE_PAT, OVSX_PAT). A store without a token is skipped.
+    needs: release
+    if: github.event_name == 'push' && vars.VSCODE_PUBLISH == 'true'
+    runs-on: ubuntu-latest
+    environment: vscode-marketplace
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: editors/vscode
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1  # v7.1.0
+        with:
+          node-version: "22"
+      - name: Check the extension version against the tag
+        env:
+          TAG: ${{ github.ref_name }}
+        run: test "$TAG" = "v$(node -p "require('./package.json').version")"
+      - run: npm ci --no-audit --no-fund
+      - name: Build the bundled .vsix
+        run: npx --no-install vsce package --out vibeaudit.vsix
+      - name: Publish to the VS Code Marketplace
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: |
+          if [ -z "$VSCE_PAT" ]; then echo "::notice::VSCE_PAT not set; skipped"; exit 0; fi
+          npx --no-install vsce publish --packagePath vibeaudit.vsix
+      - name: Publish to Open VSX
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+        run: |
+          if [ -z "$OVSX_PAT" ]; then echo "::notice::OVSX_PAT not set; skipped"; exit 0; fi
+          npx --yes ovsx@0.10.6 publish vibeaudit.vsix --pat "$OVSX_PAT"

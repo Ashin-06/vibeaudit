@@ -1,5 +1,9 @@
+# only dist/extension.js (the bundle), package.json, README, CHANGELOG, LICENSE and the icon ship
+node_modules/**
+extension.js
+package-lock.json
+.gitignore
 *.vsix
 .vscode/**
 **/*.map
 **/*.ts
-!**/*.d.ts
