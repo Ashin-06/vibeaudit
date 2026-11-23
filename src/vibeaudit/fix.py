@@ -205,8 +205,15 @@ def multiline_string(node: ast.AST) -> bool:
 
 # --------------------------------------------------------------------- REL001
 def fix_timeout(ctx: FileCtx, f: Finding) -> Result:
+    low = ctx.rel.lower()
+    if low.endswith(".go"):
+        return _go_timeout(ctx, f)
+    if low.endswith((".java", ".kt")):
+        return _java_timeout(ctx, f)
+    if low.endswith(".rs"):
+        return _rust_timeout(ctx, f)
     if ctx.kind != "py":
-        return "only Python requests and urlopen calls are rewritten"
+        return "only Python requests/urlopen, Go net/http, Java HttpClient and Rust reqwest calls are rewritten"
     calls = py_calls_on_line(ctx, f.line, lambda c, d: (d.startswith("requests.") or d.endswith("urlopen")) and not any(
         k.arg in (None, "timeout") for k in c.keywords))
     if not calls:
@@ -218,6 +225,102 @@ def fix_timeout(ctx: FileCtx, f: Finding) -> Result:
         if not (dotted(call.func).endswith("urlopen") and len(call.args) >= 3):  # urlopen(url, data, timeout)
             edits += py_append_arg(ctx, call, f"timeout={TIMEOUT_SECONDS}")
     return edits or "the timeout is passed positionally"
+
+
+def _line_text(ctx: FileCtx, n: int) -> Tuple[int, str]:
+    a = ctx.line_start(n)
+    return a, ctx.text[a:ctx.line_end(n)]
+
+
+def _go_ensure_import(ctx: FileCtx, pkg: str) -> List[Edit]:
+    """An edit adding `pkg` to the imports (none if it is already imported)."""
+    if re.search(r'(?m)^\s*(?:import\s+)?(?:\w+\s+)?"%s"' % re.escape(pkg), ctx.text):
+        return []
+    block = re.search(r"(?m)^import\s*\(\n", ctx.text)
+    if block:
+        return [(block.end(), block.end(), f'\t"{pkg}"\n')]
+    single = re.search(r'(?m)^import\s+(?:\w+\s+)?"[^"\n]+"[^\n]*\n', ctx.text)
+    if single:
+        return [(single.end(), single.end(), f'import "{pkg}"\n')]
+    pkg_line = re.search(r"(?m)^package\s+\w+[^\n]*\n", ctx.text)
+    return [(pkg_line.end(), pkg_line.end(), f'\nimport "{pkg}"\n')] if pkg_line else []
+
+
+def _go_timeout(ctx: FileCtx, f: Finding) -> Result:
+    """`http.Get(u)` -> `(&http.Client{Timeout: 10 * time.Second}).Get(u)`, importing "time"."""
+    a, line = _line_text(ctx, f.line)
+    calls = list(re.finditer(r"\bhttp\.(Get|Post|PostForm)\s*\(", line))
+    if not calls:
+        return "no http.Get/Post/PostForm call on this line"
+    edits: List[Edit] = [(a + m.start(), a + m.end(), f"(&http.Client{{Timeout: {TIMEOUT_SECONDS} * time.Second}}).{m.group(1)}(")
+                         for m in calls]
+    return edits + _go_ensure_import(ctx, "time")
+
+
+def _java_timeout(ctx: FileCtx, f: Finding) -> Result:
+    """`HttpClient.newHttpClient()` -> a client built with a connect timeout. RestTemplate needs a request factory."""
+    a, line = _line_text(ctx, f.line)
+    calls = list(re.finditer(r"\bHttpClient\s*\.\s*newHttpClient\s*\(\s*\)", line))
+    if not calls:
+        return "only HttpClient.newHttpClient() is rewritten (RestTemplate needs a request factory with timeouts)"
+    new = f"HttpClient.newBuilder().connectTimeout(java.time.Duration.ofSeconds({TIMEOUT_SECONDS})).build()"
+    return [(a + m.start(), a + m.end(), new) for m in calls]
+
+
+def _rust_timeout(ctx: FileCtx, f: Finding) -> Result:
+    """`reqwest::Client::new()` -> `reqwest::Client::builder().timeout(...).build().expect(...)` (blocking too)."""
+    if "reqwest" not in ctx.text:
+        return "the file does not use reqwest"
+    a, line = _line_text(ctx, f.line)
+    calls = list(re.finditer(r"\bClient\s*::\s*new\s*\(\s*\)", line))
+    if not calls:
+        return "only Client::new() is rewritten (reqwest::get has no client to configure)"
+    new = (f"Client::builder().timeout(std::time::Duration::from_secs({TIMEOUT_SECONDS}))"
+           '.build().expect("HTTP client")')
+    return [(a + m.start(), a + m.end(), new) for m in calls]
+
+
+# ---------------------------------------------------------------------- GO002
+def fix_go_body_close(ctx: FileCtx, f: Finding) -> Result:
+    """`resp, err := http.Get(u)` + `if err != nil {...}` -> add `defer resp.Body.Close()` after the error check."""
+    a, line = _line_text(ctx, f.line)
+    m = re.match(r"\s*(\w+)\s*,\s*(\w+)\s*:?=", line)
+    if not m:
+        return "the response is not assigned as `resp, err :=` on this line"
+    name, err = m.group(1), m.group(2)
+    if re.search(r"\bdefer\s+%s\s*\.\s*Body\s*\.\s*Close\s*\(" % re.escape(name), ctx.text[a:]):
+        return []
+    after = ctx.line_end(f.line)
+    nxt = re.compile(r"\n[ \t]*if\s+%s\s*!=\s*nil\s*\{" % re.escape(err)).match(ctx.text, after)
+    if not nxt:
+        return "no `if err != nil` check right after the call"
+    depth, i = 0, nxt.end() - 1
+    while i < len(ctx.text):
+        depth += {"{": 1, "}": -1}.get(ctx.text[i], 0)
+        if depth == 0:
+            break
+        i += 1
+    else:
+        return "the error check is not closed"
+    end = ctx.text.find("\n", i)
+    end = len(ctx.text) if end < 0 else end
+    return [(end, end, f"\n{ctx.indent_of(a + len(line) - len(line.lstrip()))}defer {name}.Body.Close()")]
+
+
+# ------------------------------------------------------------------ CSHARP003
+def fix_dev_page(ctx: FileCtx, f: Finding) -> Result:
+    """`app.UseDeveloperExceptionPage();` -> wrapped in an IsDevelopment() check."""
+    a, line = _line_text(ctx, f.line)
+    m = re.match(r"([ \t]*)(\w+)\s*\.\s*Use(?:DeveloperExceptionPage|DatabaseErrorPage|MigrationsEndPoint)\s*\([^;\n]*\)\s*;\s*$", line)
+    if not m:
+        return "the call is not a single statement on its own line"
+    indent, recv = m.group(1), m.group(2)
+    env = re.search(r"\b(?:IWebHostEnvironment|IHostingEnvironment|IHostEnvironment)\s+(\w+)", ctx.text)
+    check = f"{env.group(1)}.IsDevelopment()" if env else f"{recv}.Environment.IsDevelopment()"
+    # a top-level Program.cs has no indented line to learn from: C#'s four spaces
+    unit = "\t" if "\t" in indent else (ctx.unit() if re.search(r"(?m)^[ \t]+\S", ctx.text) else "    ")
+    body = line.strip()
+    return [(a, a + len(line), f"{indent}if ({check})\n{indent}{{\n{indent}{unit}{body}\n{indent}}}")]
 
 
 # --------------------------------------------------------------------- LLM003
@@ -594,6 +697,8 @@ FIXERS: Dict[str, Callable[[FileCtx, Finding], Result]] = {
     "AUTH011": fix_jwt,
     "DATA004": fix_money,
     "BE012": fix_cors,
+    "GO002": fix_go_body_close,
+    "CSHARP003": fix_dev_page,
 }
 
 

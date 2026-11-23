@@ -65,6 +65,14 @@
    "fingerprint": "d00c593a8777fde5668b5e831e9c3599",
    "verdict": "fp",
    "reason": "The revision id is optional metadata, used only when set."
+  },
+  {
+   "rule": "FE001",
+   "file": "frontend/app/layout.tsx",
+   "line": 43,
+   "fingerprint": "b011e6a7b8f453a5a31ea5f5f0119e2e",
+   "verdict": "fp",
+   "reason": "The Segment snippet interpolates only the configured write key from the build environment."
   }
  ]
 }

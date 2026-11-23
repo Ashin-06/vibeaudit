@@ -249,6 +249,17 @@ def _ident_check(node: ast.AST) -> Optional[str]:
     return None
 
 
+def _path_guarded(test: ast.AST) -> Set[str]:
+    """Names a traversal guard rejects: `p.is_absolute() or ".." in p.parts` (both checks on the same name)."""
+    absolute = {n.func.value.id for n in ast.walk(test) if isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)
+                and n.func.attr == "is_absolute" and isinstance(n.func.value, ast.Name)}
+    dotdot = {c.comparators[0].value.id for c in ast.walk(test) if isinstance(c, ast.Compare) and len(c.ops) == 1
+              and isinstance(c.ops[0], ast.In) and const_str(c.left) == ".."
+              and isinstance(c.comparators[0], ast.Attribute) and c.comparators[0].attr == "parts"
+              and isinstance(c.comparators[0].value, ast.Name)}
+    return absolute & dotdot
+
+
 def validated_idents(tree: ast.AST) -> Tuple[Set[str], List[Tuple[int, int, str]]]:
     """Identifiers checked against a strict pattern, safe to format into SQL: attributes set as
     `self.X = name` (or `self.a, self.X = a, name`) after the check, and the checked local names
@@ -364,6 +375,7 @@ class PyScanner:
         self.llm_funcs: Set[str] = set()
         self.routes: List[Route] = []
         self.global_auth = False
+        self.global_roles = False  # that global auth hook also enforces roles
         self.file_auth: Set[str] = set()
         self.drf_default_auth = False
         self.sf: SourceFile = None  # type: ignore[assignment]
@@ -401,7 +413,7 @@ class PyScanner:
             GUARD.sink("py routes", self.routes)
             GUARD.sink("py calls", self.calls)
             GUARD.memo.context["Python checks"] = (
-                frozenset(self.llm_funcs), self.global_auth, frozenset(self.file_auth), self.drf_default_auth,
+                frozenset(self.llm_funcs), self.global_auth, self.global_roles, frozenset(self.file_auth), self.drf_default_auth,
                 frozenset(self.auth_aliases), H.CUSTOM.signature())
         for sf, tree in self.trees:
             self.sf = sf
@@ -444,10 +456,13 @@ class PyScanner:
                         elif d.endswith(("FastAPI", "include_router")):
                             self.global_auth = True
                 if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                    if any(last_name(d.func if isinstance(d, ast.Call) else d) == "before_request" for d in node.decorator_list):
+                    # Flask's before_request, or a FastAPI / Starlette `@app.middleware("http")` that authenticates
+                    if any(last_name(d.func if isinstance(d, ast.Call) else d) in ("before_request", "middleware")
+                           for d in node.decorator_list):
                         seg = ast.get_source_segment(sf.text, node) or ""
                         if H.AUTH_EVIDENCE.search(seg) or re.search(r"abort\s*\(\s*40[13]|redirect\s*\(", seg):
                             self.global_auth = True
+                            self.global_roles = self.global_roles or bool(H.ADMIN_ROLE_EVIDENCE.search(seg))
             for node in tree.body:
                 # AuthedUser = Annotated[User, Depends(get_current_user)]
                 if isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):
@@ -775,6 +790,8 @@ class PyScanner:
         first = min([d.lineno for d in fn.decorator_list] + [fn.lineno])  # type: ignore[attr-defined]
         lines = (self.sf.text or "").split("\n")[first - 1: fn.end_lineno]  # type: ignore[attr-defined]
         body = "\n".join(lines)
+        if self.global_roles:
+            body += "\n# role checked by the global auth middleware"  # the route body carries its middleware's checks
         calls_llm = any(isinstance(n, ast.Call) and is_llm_call(n, self.llm_funcs) for n in walk_shallow(fn))
         auth = bool(H.AUTH_EVIDENCE.search(body)) or self.global_auth or self.sf.rel in self.file_auth or H.CUSTOM.is_auth(body)
         for a in fn.args.args + fn.args.kwonlyargs:  # type: ignore[attr-defined]
@@ -874,6 +891,13 @@ class PyScanner:
             if value is not None:
                 ctx.assigned[target.id] = value
         elif isinstance(target, (ast.Tuple, ast.List)):
+            if isinstance(value, (ast.Tuple, ast.List)) and len(value.elts) == len(target.elts) \
+                    and not any(isinstance(e, ast.Starred) for e in (*target.elts, *value.elts)):
+                # `sql, args["r"] = sql + " WHERE r = :r", risk`: each target gets its own element's taint
+                taints = [self.taint(v, ctx) for v in value.elts]  # the right side is evaluated before any binding
+                for e, v, et in zip(target.elts, value.elts, taints):
+                    self.assign(e, et, ctx, v)
+                return
             for e in target.elts:
                 self.assign(e, t, ctx)
         elif isinstance(target, ast.Starred):
@@ -930,6 +954,9 @@ class PyScanner:
                 if checked and isinstance(st.test.ops[0], ast.NotIn) and st.body and isinstance(st.body[-1], (ast.Raise, ast.Return)):  # type: ignore[attr-defined]
                     for n in checked:
                         ctx.env.pop(n, None)  # rejected unless it is in the allow-list
+                if st.body and isinstance(st.body[-1], (ast.Raise, ast.Return)):
+                    for n in _path_guarded(st.test):
+                        ctx.env.pop(n, None)  # `if p.is_absolute() or ".." in p.parts: raise`: p is a safe relative path
             elif isinstance(st, (ast.With, ast.AsyncWith)):
                 for item in st.items:
                     if item.optional_vars is not None:
@@ -1233,7 +1260,13 @@ class PyScanner:
             return  # a helper script that fetches a token prints it on purpose
         for arg in call.args:
             sliced = {id(n.value) for n in ast.walk(arg) if isinstance(n, ast.Subscript) and isinstance(n.slice, ast.Slice)}
+            # a secret passed into a one-way function prints its output (a signature, a digest), not the secret
+            one_way = {id(s) for n in ast.walk(arg) if isinstance(n, ast.Call)
+                       and re.search(r"(?i)(?:^|_)(?:sign|hmac|hash|digest|sha\d|blake|fingerprint|redact|mask)", last_name(n.func) or "")
+                       for a in (*n.args, *(k.value for k in n.keywords)) for s in ast.walk(a)}
             for n in ast.walk(arg):
+                if id(n) in one_way:
+                    continue
                 if isinstance(n, ast.Name) and SECRET_VAR.match(n.id) and id(n) not in sliced:
                     self.add("SEC010", call, f"`{n.id}` is written to the logs.")
                     return
