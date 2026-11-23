@@ -426,11 +426,11 @@
    "fixed_fp": 0
   },
   "bella-openapi": {
-   "findings": 84,
-   "labelled": 84,
+   "findings": 82,
+   "labelled": 82,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 2
   },
   "codbex-oceanus": {
    "findings": 5,
@@ -447,11 +447,11 @@
    "fixed_fp": 0
   },
   "spring-boot-realworld-example-app": {
-   "findings": 5,
-   "labelled": 5,
+   "findings": 1,
+   "labelled": 1,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 4
   },
   "jhipster-sample-app": {
    "findings": 16,
@@ -818,11 +818,11 @@
    "fixed_fp": 0
   },
   "fastapi-react": {
-   "findings": 19,
-   "labelled": 19,
+   "findings": 18,
+   "labelled": 18,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 1
   },
   "hackathon-starter": {
    "findings": 23,
@@ -895,11 +895,11 @@
    "fixed_fp": 0
   },
   "atuin": {
-   "findings": 155,
-   "labelled": 155,
+   "findings": 75,
+   "labelled": 75,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 80
   },
   "linkstack": {
    "findings": 48,
@@ -1480,20 +1480,15 @@
    "title": "Supabase table without Row Level Security",
    "preview": true,
    "tp": 2,
-   "fp": 29,
+   "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.0645,
-   "precision_pessimistic": 0.0645,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
-    "atuin": [
-     0,
-     29,
-     0
-    ],
     "prompt-sculptor-49": [
      2,
      0,
@@ -1501,11 +1496,6 @@
     ]
    },
    "preview_by_repo": {
-    "atuin": [
-     0,
-     29,
-     0
-    ],
     "prompt-sculptor-49": [
      2,
      0,
@@ -4915,12 +4905,12 @@
   "DATA006": {
    "title": "Timestamp without time zone",
    "preview": true,
-   "tp": 118,
-   "fp": 13,
+   "tp": 112,
+   "fp": 5,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9008,
-   "precision_pessimistic": 0.9008,
+   "precision": 0.9573,
+   "precision_pessimistic": 0.9573,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -4947,11 +4937,6 @@
     ],
     "atuin": [
      8,
-     8,
-     0
-    ],
-    "bella-openapi": [
-     2,
      0,
      0
     ],
@@ -4998,11 +4983,6 @@
     "sili-smart-hr": [
      0,
      1,
-     0
-    ],
-    "spring-boot-realworld-example-app": [
-     4,
-     0,
      0
     ],
     "uniedit-server": [
@@ -5034,11 +5014,6 @@
     ],
     "atuin": [
      8,
-     8,
-     0
-    ],
-    "bella-openapi": [
-     2,
      0,
      0
     ],
@@ -5085,11 +5060,6 @@
     "sili-smart-hr": [
      0,
      1,
-     0
-    ],
-    "spring-boot-realworld-example-app": [
-     4,
-     0,
      0
     ],
     "uniedit-server": [
@@ -9293,11 +9263,11 @@
    "title": "Hardcoded API key or access token",
    "preview": true,
    "tp": 28,
-   "fp": 17,
+   "fp": 3,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6222,
-   "precision_pessimistic": 0.6222,
+   "precision": 0.9032,
+   "precision_pessimistic": 0.9032,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
@@ -9314,7 +9284,7 @@
     ],
     "atuin": [
      0,
-     15,
+     1,
      0
     ],
     "bakerydemo": [
@@ -9351,7 +9321,7 @@
     ],
     "atuin": [
      0,
-     15,
+     1,
      0
     ],
     "bakerydemo": [
@@ -9728,11 +9698,11 @@
    "title": "Hardcoded or default signing secret",
    "preview": true,
    "tp": 30,
-   "fp": 34,
+   "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.4688,
-   "precision_pessimistic": 0.4688,
+   "precision": 0.8824,
+   "precision_pessimistic": 0.8824,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
@@ -9745,11 +9715,6 @@
     "alerta": [
      2,
      0,
-     0
-    ],
-    "atuin": [
-     0,
-     29,
      0
     ],
     "dvga": [
@@ -9765,11 +9730,6 @@
     "eShopOnWeb": [
      1,
      0,
-     0
-    ],
-    "fastapi-react": [
-     0,
-     1,
      0
     ],
     "next-saas-stripe-starter": [
@@ -9804,11 +9764,6 @@
      0,
      0
     ],
-    "atuin": [
-     0,
-     29,
-     0
-    ],
     "dvga": [
      2,
      0,
@@ -9822,11 +9777,6 @@
     "eShopOnWeb": [
      1,
      0,
-     0
-    ],
-    "fastapi-react": [
-     0,
-     1,
      0
     ],
     "next-saas-stripe-starter": [

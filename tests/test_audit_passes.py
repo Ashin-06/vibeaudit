@@ -66,7 +66,7 @@ def test_thousands_of_findings_on_one_long_line_stay_linear(tmp_path):
 
     from vibeaudit.scanner import Options, scan
 
-    write(tmp_path, "m.sql", "CREATE TABLE t (" + ", ".join(f"c{i}_at timestamp" for i in range(8000)) + ");\n")
+    write(tmp_path, "postgres/m.sql", "CREATE TABLE t (" + ", ".join(f"c{i}_at timestamp" for i in range(8000)) + ");\n")
     start = time.perf_counter()
     res = scan(str(tmp_path), Options(offline=True, external="none"))
     assert len(res.findings) == 8000

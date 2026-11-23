@@ -269,13 +269,9 @@
    }
   },
   "AUTH005": {
-   "precision": 0.0645,
+   "precision": 1.0,
    "seeded_recall": 1.0,
    "by_repo": {
-    "atuin": [
-     0,
-     29
-    ],
     "prompt-sculptor-49": [
      2,
      0
@@ -2018,7 +2014,7 @@
    }
   },
   "DATA006": {
-   "precision": 0.9008,
+   "precision": 0.9573,
    "seeded_recall": 1.0,
    "by_repo": {
     "Vulnerable-Flask-App": [
@@ -2039,10 +2035,6 @@
     ],
     "atuin": [
      8,
-     8
-    ],
-    "bella-openapi": [
-     2,
      0
     ],
     "fastapi-react": [
@@ -2080,10 +2072,6 @@
     "sili-smart-hr": [
      0,
      1
-    ],
-    "spring-boot-realworld-example-app": [
-     4,
-     0
     ],
     "uniedit-server": [
      6,
@@ -3986,7 +3974,7 @@
    }
   },
   "SEC001": {
-   "precision": 0.6222,
+   "precision": 0.9032,
    "seeded_recall": 1.0,
    "by_repo": {
     "Django-Styleguide-Example": [
@@ -3999,7 +3987,7 @@
     ],
     "atuin": [
      0,
-     15
+     1
     ],
     "bakerydemo": [
      1,
@@ -4172,7 +4160,7 @@
    }
   },
   "SEC004": {
-   "precision": 0.4688,
+   "precision": 0.8824,
    "seeded_recall": 1.0,
    "by_repo": {
     "Vulnerable-Flask-App": [
@@ -4182,10 +4170,6 @@
     "alerta": [
      2,
      0
-    ],
-    "atuin": [
-     0,
-     29
     ],
     "dvga": [
      2,
@@ -4198,10 +4182,6 @@
     "eShopOnWeb": [
      1,
      0
-    ],
-    "fastapi-react": [
-     0,
-     1
     ],
     "next-saas-stripe-starter": [
      0,
