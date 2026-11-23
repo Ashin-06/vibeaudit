@@ -322,7 +322,9 @@ and rewrites the findings that have one obvious, deterministic repair:
 
 | Rule | Codemod |
 | --- | --- |
-| REL001 | Adds `timeout=10` to `requests` and `urlopen` calls. |
+| REL001 | Adds `timeout=10` to `requests` and `urlopen` calls; Go `http.Get/Post/PostForm` go through `&http.Client{Timeout: 10 * time.Second}` (importing `time`); Java and Kotlin `HttpClient.newHttpClient()` gets a 10-second connect timeout; Rust reqwest `Client::new()` (async or blocking) becomes a builder with a 10-second timeout. |
+| GO002 | Adds `defer resp.Body.Close()` after the `if err != nil` check that follows the request. |
+| CSHARP003 | Wraps `UseDeveloperExceptionPage()` (or the database error page) in `if (app.Environment.IsDevelopment())`, or `env.IsDevelopment()` in a Startup class. |
 | LLM003 | Adds an output token limit of 4096: `max_completion_tokens` (Chat Completions), `max_output_tokens` (Responses, Gemini config, `ChatGoogleGenerativeAI`), `max_tokens` (LangChain and LiteLLM), `maxOutputTokens` or `maxTokens` for the AI SDK by its major version in package.json. |
 | LLM011 | Wraps the assignment or `return` that parses model output in `try`/`except ValueError` (Python) or `try`/`catch` (JavaScript); the fallback value is `None` / `null`, which the caller must handle. |
 | BE016, AUTH011 | Removes `'none'` from an algorithms list, turns `ignoreExpiration: true` off, adds `algorithms=[...]` to PyJWT `jwt.decode()` (the algorithm the file signs with, else HS256), and narrows a mixed HMAC and RSA list to the algorithm the file signs with. |
