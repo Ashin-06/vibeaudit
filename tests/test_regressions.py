@@ -170,6 +170,73 @@ def test_fastapi_auth_through_an_annotated_dependency_alias(tmp_path):
     assert _rules(_scan(tmp_path), "AUTH001") == [("api.py", 6, "AUTH001")]
 
 
+def test_fastapi_auth_through_a_permission_dependency_factory(tmp_path):
+    (tmp_path / "api.py").write_text(
+        "@app.post('/v1/score')\ndef score(req: Req, ident: dict = Depends(ops.require('score'))):\n    db.insert(req)\n\n"
+        "@app.post('/v1/open')\ndef open_(req: Req, x: dict = Depends(parse_body)):\n    db.insert(req)\n")
+    assert _rules(_scan(tmp_path), "AUTH001") == [("api.py", 6, "AUTH001")]
+
+
+def test_status_verdicts_and_enum_labels_are_not_passwords(tmp_path):
+    (tmp_path / "a.js").write_text(
+        "const s = ok ? 'PASS' : 'FAIL';\nconst c = {'PASS': 'green'};\nconst t = {password: 'SECRET'};\nconst db = {pass: 'hunter2x'};\n")
+    assert [ln for _, ln, _ in _rules(_scan(tmp_path), "SEC011")] == [4]
+
+
+def test_a_session_method_is_not_express_session(tmp_path):
+    (tmp_path / "a.py").write_text("w = S.session('genuine', person, rng, 60)\n")
+    (tmp_path / "b.js").write_text("app.use(session('keyboard cat'));\n")
+    assert _rules(_scan(tmp_path), "SEC004") == [("b.js", 1, "SEC004")]
+
+
+def test_aws_documented_example_key_variants_are_not_secrets(tmp_path):
+    real = "AKIA" + "Z3KQ7TWPLM4VXR2D"  # split so vibeaudit's self-scan does not see a key here
+    (tmp_path / "a.py").write_text(f'LOG = {{"accessKeyId": "AKIAIOSFODNN7COMPROM"}}\nREAL = "{real}"\n')
+    assert [ln for _, ln, _ in _rules(_scan(tmp_path), "SEC001")] == [2]
+
+
+def test_short_esc_helper_counts_as_html_escaping(tmp_path):
+    (tmp_path / "a.js").write_text(
+        "const esc = (s) => String(s).replace(/[&<>\"]/g, (c) => ({'&': '&amp;', '<': '&lt;'})[c]);\n"
+        "el.innerHTML = `<b>${esc(r.name)}</b>`;\nel.innerHTML = `<b>${r.name}</b>`;\n")
+    assert [ln for _, ln, _ in _rules(_scan(tmp_path), "FE001")] == [3]
+
+
+def test_a_setting_about_secrets_is_not_a_signing_fallback(tmp_path):
+    (tmp_path / "a.py").write_text('import os\nP = os.getenv("SECRETS_PROVIDER", "env")\nK = os.getenv("JWT_SECRET", "devkey")\n')
+    assert [ln for _, ln, _ in _rules(_scan(tmp_path), "SEC004")] == [3]
+
+
+def test_honeytoken_bait_is_not_a_secret(tmp_path):
+    (tmp_path / "a.py").write_text('BAIT = {"ENV_SECRET": "SECRET_DB_PASS=honeytoken_p@ssw0rd_99812"}\n'
+                                   'REAL = {"ENV_SECRET": "SECRET_DB_PASS=Zq8v_p@ssw0rd_99812xK"}\n')
+    assert [ln for _, ln, _ in _rules(_scan(tmp_path), "SEC003")] == [2]
+
+
+def test_printing_a_signature_made_with_an_env_key_is_not_logging_the_key(tmp_path):
+    (tmp_path / "a.py").write_text(
+        "import os\n\ndef main():\n    print(f\"signed: {sign(ART, b64decode(os.environ['MODEL_KEY']))}\")\n"
+        "    print(f\"key: {b64decode(os.environ['MODEL_KEY'])}\")\n")
+    assert [ln for _, ln, _ in _rules(_scan(tmp_path), "SEC010")] == [5]
+
+
+def test_zip_member_guarded_against_traversal_is_not_path_injection(tmp_path):
+    (tmp_path / "a.py").write_text(
+        "@app.post('/up')\ndef up(name: str):\n    p = PurePosixPath(name)\n"
+        "    if p.is_absolute() or '..' in p.parts:\n        raise HTTPException(422)\n    open(dest.joinpath(*p.parts), 'wb')\n\n"
+        "@app.post('/raw')\ndef raw(name: str):\n    p = PurePosixPath(name)\n    open(dest.joinpath(*p.parts), 'wb')\n")
+    assert [ln for _, ln, _ in _rules(_scan(tmp_path), "BE006")] == [11]
+
+
+def test_tuple_assignment_keeps_each_elements_taint(tmp_path):
+    (tmp_path / "a.py").write_text(
+        "@app.get('/c')\ndef c(risk: str):\n    sql, args = 'SELECT * FROM t', {}\n    if risk:\n"
+        "        sql, args['r'] = sql + ' WHERE risk = :r', risk\n    db.execute(text(sql), args)\n\n"
+        "@app.get('/d')\ndef d(risk: str):\n    sql, n = 'SELECT * FROM t WHERE r = ' + risk, 1\n    db.execute(text(sql))\n")
+    tainted = [f.line for f in _scan(tmp_path).findings if f.rule_id == "BE001" and f.message.startswith("Request data")]
+    assert tainted == [11]
+
+
 def test_browser_client_pointed_at_own_backend(tmp_path):
     (tmp_path / "package.json").write_text('{"dependencies": {"vite": "5.0.0"}}')
     (tmp_path / "package-lock.json").write_text("{}")
@@ -345,3 +412,25 @@ def test_committed_virtualenv_is_skipped_in_git_mode(tmp_path):
     git("add", ".")
     res = _scan(tmp_path)
     assert res.meta["git"] and [f for f, _, _ in _rules(res)] == ["src/env/client.ts"]
+
+
+def test_multiline_innerhtml_template_is_judged_as_a_whole(tmp_path):
+    (tmp_path / "a.js").write_text(
+        "const esc = (s) => String(s);\n"
+        "el.innerHTML = `<div class=\"card\">\n  <b>${esc(v.name)}</b>\n</div>`;\n"
+        "el.innerHTML = `<div class=\"card\">\n  <b>${v.name}</b>\n</div>`;\n")
+    assert [ln for _, ln, _ in _rules(_scan(tmp_path), "FE001")] == [5]
+
+
+def test_fastapi_http_middleware_that_authenticates_covers_routes(tmp_path):
+    route = "@app.delete('/api/alerts')\ndef clear(host: str):\n    db.delete(host)\n"
+    (tmp_path / "auth").mkdir()
+    (tmp_path / "auth" / "a.py").write_text(
+        "@app.middleware('http')\nasync def policy(request, call_next):\n"
+        "    if request.method != 'GET':\n        await authenticate(request.headers.get('authorization'))\n"
+        "    return await call_next(request)\n\n" + route)
+    (tmp_path / "timing").mkdir()
+    (tmp_path / "timing" / "a.py").write_text(
+        "@app.middleware('http')\nasync def timing(request, call_next):\n    return await call_next(request)\n\n" + route)
+    assert _rules(_scan(tmp_path / "auth"), "AUTH001") == []
+    assert len(_rules(_scan(tmp_path / "timing"), "AUTH001")) == 1

@@ -29,7 +29,9 @@ AUTH_EVIDENCE = re.compile(
     | @\s*(?:\w+\s*\.\s*)?(?:login_required|jwt_required|auth_required|token_required|requires_auth|admin_required
         |roles_required|roles_accepted|permission_required|fresh_jwt_required|user_required|staff_member_required
         |permission_classes|authentication_classes|permission\s*\()
-    | Depends\s*\(\s*[\w.]*(?:user|auth|token|verify|current|admin|security|session|api_key|apikey|scheme)
+    | Depends\s*\(\s*[\w.]*(?:user|auth|token|verify|current|admin|security|session|api_key|apikey|scheme|perm|role|guard)
+    # an RBAC dependency factory: `Depends(ops.require("score"))`, `Depends(requires("admin"))`
+    | Depends\s*\(\s*(?:\w+\s*\.\s*)?requires?\s*\(\s*['"]
     | \bSecurity\s*\(
     | \bpassport\s*\.\s*authenticate\b
     | \bIsAuthenticated\b
@@ -159,6 +161,8 @@ PLACEHOLDER = re.compile(
     r"(?i)your|example|xxx|\*\*\*|placeholder|changeme|change_me|replace|dummy|fake|sample|redacted|insert|todo"
     r"|<[^<>]{0,100}>|\$\{|\{\{|%\(|^\$|process\.env|import\.meta|os\.environ|getenv|0000000000|1234567890|abcdef"
     r"|lorem|test_?key|mock|not.?real|my_?(?:api|secret)|_here\b|\.\.\.|^sk-\.+$|^none$|^null$|^env\(|^\$\(|^vault:|changethis"
+    r"|honeytoken|canarytoken"  # bait planted on purpose to catch exfiltration
+    r"|AKIAIOSFODNN7"  # AWS's documented example key id, reused in synthetic logs and fixtures
 )
 
 
