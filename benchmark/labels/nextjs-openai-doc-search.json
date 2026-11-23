@@ -1,0 +1,54 @@
+{
+ "repo": "nextjs-openai-doc-search",
+ "commit": "50d6bb71706b50a83c2a52dc4a7d3e426ac34adf",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/build.yml",
+   "line": 20,
+   "fingerprint": "faec3c9c4241c06ac74ac7f2c36109ca",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "QA001",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "6ebc345ae714486cf41d50d631704e0c",
+   "verdict": "tp",
+   "reason": "No test files in the project."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "pages/api/vector-search.ts",
+   "line": 26,
+   "fingerprint": "fed737939c3df1ca0db5f71fec5c2258",
+   "verdict": "tp",
+   "reason": "The endpoint calls the paid model with no user check."
+  },
+  {
+   "rule": "BE018",
+   "file": "pages/api/vector-search.ts",
+   "line": 26,
+   "fingerprint": "a72b4f90374fa23315ef11801966639a",
+   "verdict": "tp",
+   "reason": "The request body is read without validation."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20230406025118_init.sql",
+   "line": 7,
+   "fingerprint": "55c004af605bd22d36d06f09484dc3b7",
+   "verdict": "tp",
+   "reason": "Postgres does not index foreign keys; this one has no index."
+  },
+  {
+   "rule": "DATA012",
+   "file": "supabase/migrations/20230406025118_init.sql",
+   "line": 18,
+   "fingerprint": "4d27087ee43c1740709218db79daaf38",
+   "verdict": "tp",
+   "reason": "Postgres does not index foreign keys; this one has no index."
+  }
+ ]
+}

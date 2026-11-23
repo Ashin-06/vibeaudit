@@ -1,0 +1,190 @@
+{
+ "repo": "hackathon-starter",
+ "commit": "926460c8f59dd955c614af8bcc06391ffddc5a7a",
+ "findings": [
+  {
+   "rule": "SEC003",
+   "file": ".env.example",
+   "line": 29,
+   "fingerprint": "c2510860fda883cbb4be8be548baa65a",
+   "verdict": "fp",
+   "reason": "Documented demo values in .env.example, not the deployment's keys."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.example",
+   "line": 38,
+   "fingerprint": "3c15f76fdadd7ac85852d97c2924a077",
+   "verdict": "fp",
+   "reason": "Documented demo values in .env.example, not the deployment's keys."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.example",
+   "line": 46,
+   "fingerprint": "02a0ef68e53c579331e6ae2106b99bc2",
+   "verdict": "fp",
+   "reason": "Documented demo values in .env.example, not the deployment's keys."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.example",
+   "line": 62,
+   "fingerprint": "618ea354939a78b05b832f55321ebbe5",
+   "verdict": "fp",
+   "reason": "Documented demo values in .env.example, not the deployment's keys."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.example",
+   "line": 66,
+   "fingerprint": "c5932ae878836bc50fa7207150ce8bc5",
+   "verdict": "fp",
+   "reason": "Documented demo values in .env.example, not the deployment's keys."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.example",
+   "line": 69,
+   "fingerprint": "e8a89217ef8857876e8281faf5b8ad44",
+   "verdict": "fp",
+   "reason": "Documented demo values in .env.example, not the deployment's keys."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.example",
+   "line": 71,
+   "fingerprint": "84769f37e5f7c6193139772eb27a0dfc",
+   "verdict": "fp",
+   "reason": "Documented demo values in .env.example, not the deployment's keys."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.example",
+   "line": 73,
+   "fingerprint": "d0950f86214c1c79d996ae60882f1706",
+   "verdict": "fp",
+   "reason": "Documented demo values in .env.example, not the deployment's keys."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.example",
+   "line": 78,
+   "fingerprint": "e219f8ed66798e405f5576214224acfb",
+   "verdict": "fp",
+   "reason": "Documented demo values in .env.example, not the deployment's keys."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.example",
+   "line": 83,
+   "fingerprint": "82e219b8b3d67dd2be4c11335e5c6375",
+   "verdict": "fp",
+   "reason": "Documented demo values in .env.example, not the deployment's keys."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.example",
+   "line": 85,
+   "fingerprint": "445efd7d13a34b86a88e556b3ac92069",
+   "verdict": "fp",
+   "reason": "Documented demo values in .env.example, not the deployment's keys."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.example",
+   "line": 88,
+   "fingerprint": "7ac5e083e7a0dab0c4b3f1e1a6c34236",
+   "verdict": "fp",
+   "reason": "Documented demo values in .env.example, not the deployment's keys."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.example",
+   "line": 89,
+   "fingerprint": "d934e342c05db872dbb5240671d98269",
+   "verdict": "fp",
+   "reason": "Documented demo values in .env.example, not the deployment's keys."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.example",
+   "line": 92,
+   "fingerprint": "1eec8b4289c014178eb75bf1dd6d8e5e",
+   "verdict": "fp",
+   "reason": "Documented demo values in .env.example, not the deployment's keys."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.example",
+   "line": 98,
+   "fingerprint": "af1b68375f9ab9cf39b3d5f21cbee8cd",
+   "verdict": "fp",
+   "reason": "Documented demo values in .env.example, not the deployment's keys."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.example",
+   "line": 99,
+   "fingerprint": "3793230d97d49fe2786481a489f2da29",
+   "verdict": "fp",
+   "reason": "Documented demo values in .env.example, not the deployment's keys."
+  },
+  {
+   "rule": "DATA002",
+   "file": "config/passport.js",
+   "line": 80,
+   "fingerprint": "abcedf8c7092817c8a75567323d9ca50",
+   "verdict": "fp",
+   "reason": "The user record goes to passport's done() callback, which serializes only the id; it is not sent to the client."
+  },
+  {
+   "rule": "DATA002",
+   "file": "config/passport.js",
+   "line": 117,
+   "fingerprint": "60f00d7185baefb71c5fed3b7f4b6d1f",
+   "verdict": "fp",
+   "reason": "The user record goes to passport's done() callback, which serializes only the id; it is not sent to the client."
+  },
+  {
+   "rule": "DATA002",
+   "file": "config/passport.js",
+   "line": 198,
+   "fingerprint": "3c23a9eadb423428f0b5f2901a7e4629",
+   "verdict": "fp",
+   "reason": "The user record goes to passport's done() callback, which serializes only the id; it is not sent to the client."
+  },
+  {
+   "rule": "QA007",
+   "file": "controllers/ai-agent.js",
+   "line": 7,
+   "fingerprint": "8193f8c5058175555343f0bc2450f060",
+   "verdict": "tp",
+   "reason": "zod is required but not declared in package.json."
+  },
+  {
+   "rule": "LLM021",
+   "file": "controllers/ai.js",
+   "line": 615,
+   "fingerprint": "d8f79cdbf83f481c3d8f4869efad9c5c",
+   "verdict": "tp",
+   "reason": "The user's question is placed in the prompt without delimiters."
+  },
+  {
+   "rule": "LLM021",
+   "file": "controllers/ai.js",
+   "line": 617,
+   "fingerprint": "75279fc26e52a444d55965a573dbbb54",
+   "verdict": "tp",
+   "reason": "The user's question is placed in the prompt without delimiters."
+  },
+  {
+   "rule": "BE010",
+   "file": "controllers/webauthn.js",
+   "line": 62,
+   "fingerprint": "3c95183e675ecae382eb99fcd4b52715",
+   "verdict": "fp",
+   "reason": "The value is compared with $eq, which blocks operator injection."
+  }
+ ]
+}

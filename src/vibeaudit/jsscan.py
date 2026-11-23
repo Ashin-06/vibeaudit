@@ -771,6 +771,8 @@ class JsScanner:
                 if not args:
                     continue
                 a_code, a_bare, _ = args[0]
+                # `{ email: { $eq: req.body.email } }` compares the value as a literal: the usual fix for operator injection
+                a_code, a_bare = (re.sub(r"\{\s*\$eq\s*:[^{}]{0,300}\}", "0", x) for x in (a_code, a_bare))
                 direct = re.fullmatch(r"\s*(?:req|request)\s*\.\s*(?:body|query)\s*", a_code) or re.search(
                     r":\s*(?:req|request)\s*\.\s*(?:body|query|params)\s*\.\s*[\w$]+\s*(?=[,}])", a_code)
                 if not direct and a_code.strip().startswith("{"):

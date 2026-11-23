@@ -140,6 +140,7 @@ def check(root: Path, changes: Staged, cfg: dict) -> List[Finding]:
             continue
         f.severity = f.severity or rule.severity
         f.title, f.category, f.preview = rule.title, rule.category, rule.preview
+        f.gates_in_preview = rule.preview and rule.gates_in_preview
         if f.rule_id in disabled or rule.category in disabled or not at_least(f.severity, min_sev):
             continue
         if (sf.is_test or sf.is_example) and f.rule_id not in TEST_FILE_RULES:
@@ -196,7 +197,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     fail_on = a.fail_on or str(cfg.get("fail_on", "high"))
     for f in findings:
         print(f"{f.file}:{f.line}: {f.severity} {f.rule_id} {f.title}: {f.message}")
-    blocking = [f for f in findings if fail_on != "none" and not f.preview and at_least(f.severity, fail_on)]
+    # severe preview rules (injection, XSS, committed secrets) still block, as in `vibeaudit scan`
+    blocking = [f for f in findings if fail_on != "none" and (not f.preview or f.gates_in_preview) and at_least(f.severity, fail_on)]
     if findings:
         print(f"vibeaudit: {len(findings)} findings in {len(changes)} staged files"
               + (f"; commit blocked ({len(blocking)} at or above {fail_on})" if blocking else ""), file=sys.stderr)

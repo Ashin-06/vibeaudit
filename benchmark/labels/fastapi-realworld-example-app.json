@@ -1,0 +1,94 @@
+{
+ "repo": "fastapi-realworld-example-app",
+ "commit": "029eb7781c60d5f563ee8990a0cbfb79b244538c",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/conduit.yml",
+   "line": 41,
+   "fingerprint": "3efc9973914fe5b5ea782ada7006bc77",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/styles.yml",
+   "line": 30,
+   "fingerprint": "f92e127a1f4dcf0b4c0375d9944f55e0",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/tests.yml",
+   "line": 42,
+   "fingerprint": "125aceb299cc0e551244eb79729edede",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/tests.yml",
+   "line": 70,
+   "fingerprint": "85c532e41c5320118072d32fd66f5a79",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile",
+   "line": 1,
+   "fingerprint": "0cde34cacb69d3282f99677d7859d65f",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "REL006",
+   "file": "Dockerfile",
+   "line": 1,
+   "fingerprint": "6e14f7cc4ec82407c1afe06f189b5447",
+   "verdict": "tp",
+   "reason": "The service has no health-check endpoint."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "app/api/routes/articles/articles_common.py",
+   "line": 82,
+   "fingerprint": "1733911d62887c0455b822572756832b",
+   "verdict": "fp",
+   "reason": "Unfavoriting acts on the caller's own favorite (the current user is a dependency)."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "app/api/routes/authentication.py",
+   "line": 23,
+   "fingerprint": "d62cc4ab4df2532e289ef6afe1f58306",
+   "verdict": "tp",
+   "reason": "The password login has no rate limit."
+  },
+  {
+   "rule": "QA007",
+   "file": "app/db/migrations/env.py",
+   "line": 6,
+   "fingerprint": "4609608b4a975835788496951811ba6d",
+   "verdict": "tp",
+   "reason": "The package is imported but not declared directly in the dependencies."
+  },
+  {
+   "rule": "DATA006",
+   "file": "app/services/jwt.py",
+   "line": 22,
+   "fingerprint": "06f04037868189cc4ea7b00cacfa131c",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() returns a naive datetime."
+  },
+  {
+   "rule": "QA007",
+   "file": "app/services/security.py",
+   "line": 1,
+   "fingerprint": "78aff27fb1ab57d25e506dd1ff27e873",
+   "verdict": "tp",
+   "reason": "The package is imported but not declared directly in the dependencies."
+  }
+ ]
+}

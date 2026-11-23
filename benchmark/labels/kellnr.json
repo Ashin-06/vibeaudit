@@ -1,0 +1,374 @@
+{
+ "repo": "kellnr",
+ "commit": "e91d77aea13310c02589e521871849bc3edd07ea",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/build.yaml",
+   "line": 59,
+   "fingerprint": "ba1d367760a3cc1e82141fe496e16127",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/build.yaml",
+   "line": 121,
+   "fingerprint": "a38a03fe5bf96fd8be84fc30cf2c7bf8",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/build.yaml",
+   "line": 128,
+   "fingerprint": "3048e22c3b0919447d541e4966f72b94",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/build.yaml",
+   "line": 289,
+   "fingerprint": "f35201c24226cfb6d520146ecf20017a",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/build.yaml",
+   "line": 293,
+   "fingerprint": "e1b79e2e65bf9967f84f4146b39fbcc8",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/k-releaser.yaml",
+   "line": 26,
+   "fingerprint": "58d4ec7a8ed2a170c900f77a5f10d092",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/k-releaser.yaml",
+   "line": 28,
+   "fingerprint": "adbdd397dbc22670f0149345527837b9",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/k-releaser.yaml",
+   "line": 49,
+   "fingerprint": "83ee5670cf78a236a1183cac4767350d",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yaml",
+   "line": 66,
+   "fingerprint": "f7bbd9a24a853ec24494435e5c039d7d",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yaml",
+   "line": 79,
+   "fingerprint": "76886cf3b08298d7c79dab16fc3567b5",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yaml",
+   "line": 216,
+   "fingerprint": "3d43a3fe3a91aa5f9b481949fc214a76",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yaml",
+   "line": 252,
+   "fingerprint": "90b63cdfc3b1bfae33274afe3de6f8b6",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yaml",
+   "line": 256,
+   "fingerprint": "be74a1454c29e28a70a4acdecd9d0b04",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yaml",
+   "line": 264,
+   "fingerprint": "595cd638cd7b818c6febf89fdfc9fc90",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yaml",
+   "line": 336,
+   "fingerprint": "e1e6fcce75303aab085d72d2ca7d7359",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yaml",
+   "line": 339,
+   "fingerprint": "20fe868743cee20d335041e971c28b8f",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yaml",
+   "line": 342,
+   "fingerprint": "2fe3f3a18ba7d11590c021a86465b1e1",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yaml",
+   "line": 354,
+   "fingerprint": "db0565371522d5be2bc248a4bb1ca019",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yaml",
+   "line": 372,
+   "fingerprint": "911c841558567dfe648a5da2d1dbba3d",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/test.yaml",
+   "line": 51,
+   "fingerprint": "2113332137df1f7e0455fb35c556e4f1",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/test.yaml",
+   "line": 83,
+   "fingerprint": "3bca01d990288883fbdea9d1ec547551",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/test.yaml",
+   "line": 133,
+   "fingerprint": "81920a7904909f93bac504ca9a0fa14d",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/test.yaml",
+   "line": 144,
+   "fingerprint": "04b051bce411aa5c84692e8322016ba3",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/test.yaml",
+   "line": 152,
+   "fingerprint": "b9b6e5ad5e45369eec0d8b2421b3c664",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/test.yaml",
+   "line": 170,
+   "fingerprint": "1fb6c680004a52c2572f498be73bbb1b",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/test.yaml",
+   "line": 201,
+   "fingerprint": "3de906c01afa7de4f9dc4cd64fb9bb26",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/test.yaml",
+   "line": 233,
+   "fingerprint": "50ecaa2927c921f6d11ce219cbb4381c",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/test.yaml",
+   "line": 328,
+   "fingerprint": "619738e9e5ea2ff0b61a35fbb79d0568",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/test.yaml",
+   "line": 331,
+   "fingerprint": "dde45de9b06e91a61480ac6ebc7fd719",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/test.yaml",
+   "line": 334,
+   "fingerprint": "286db62dc35bb541d53c32ca3b355484",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "SEC002",
+   "file": "crates/oauth2/src/lib.rs",
+   "line": 1015,
+   "fingerprint": "1a883807afff0c30408ea5c25283ff4c",
+   "verdict": "fp",
+   "reason": "Test keys for simulating key rotation in a test module."
+  },
+  {
+   "rule": "SEC002",
+   "file": "crates/oauth2/src/lib.rs",
+   "line": 1043,
+   "fingerprint": "6efd62baacc06f388099084885221125",
+   "verdict": "fp",
+   "reason": "Test keys for simulating key rotation in a test module."
+  },
+  {
+   "rule": "SEC003",
+   "file": "crates/webhooks/src/client.rs",
+   "line": 174,
+   "fingerprint": "6aeb7c2471c7bbc1ed524373a44795f5",
+   "verdict": "fp",
+   "reason": "A test webhook secret in a test function."
+  },
+  {
+   "rule": "SEC003",
+   "file": "crates/webhooks/src/endpoints.rs",
+   "line": 302,
+   "fingerprint": "4cfb569216aad15f47a7ee4e35c6d44e",
+   "verdict": "fp",
+   "reason": "A test webhook secret in a test function."
+  },
+  {
+   "rule": "CFG001",
+   "file": "docker/Dockerfile",
+   "line": 31,
+   "fingerprint": "170e8889a0fc2ca008210f922e1fae2d",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "CFG001",
+   "file": "docker/Dockerfile.minimal",
+   "line": 30,
+   "fingerprint": "30682e9023cd199d663cb9fb84f7093b",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "QA007",
+   "file": "ui/src/common/readme.ts",
+   "line": 5,
+   "fingerprint": "2d559a41f8a8666a2401d74e471106e9",
+   "verdict": "tp",
+   "reason": "highlight.js is imported but not declared in package.json."
+  },
+  {
+   "rule": "FE007",
+   "file": "ui/src/common/url.ts",
+   "line": 3,
+   "fingerprint": "e0651b45339e3ee7a07a8727813ad5cc",
+   "verdict": "fp",
+   "reason": "A base used only to parse relative URLs, never requested."
+  },
+  {
+   "rule": "UI002",
+   "file": "ui/src/components/CrateSidebar.vue",
+   "line": 92,
+   "fingerprint": "958aba027b9db091f9d82319711de1f2",
+   "verdict": "tp",
+   "reason": "A clickable div with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "ui/src/components/Dependency.vue",
+   "line": 2,
+   "fingerprint": "f7fa9c5333769d4c239e0250152501ad",
+   "verdict": "tp",
+   "reason": "A clickable div with no keyboard handler or role."
+  },
+  {
+   "rule": "FE001",
+   "file": "ui/src/components/Readme.vue",
+   "line": 3,
+   "fingerprint": "c906b55e0582dec9de07884d9a2cd703",
+   "verdict": "fp",
+   "reason": "The README markdown is sanitized before v-html."
+  },
+  {
+   "rule": "UI002",
+   "file": "ui/src/components/Version.vue",
+   "line": 2,
+   "fingerprint": "6f0ef1d83d4d4f08e6e89b8faca0f5b5",
+   "verdict": "tp",
+   "reason": "A clickable div with no keyboard handler or role."
+  },
+  {
+   "rule": "UI002",
+   "file": "ui/src/components/toolchain/ToolchainUploadForm.vue",
+   "line": 86,
+   "fingerprint": "bdb835565be734e3983e571ea8aba80e",
+   "verdict": "tp",
+   "reason": "A clickable div with no keyboard handler or role."
+  },
+  {
+   "rule": "QA011",
+   "file": "ui/src/components/toolchain/ToolchainUploadForm.vue",
+   "line": 231,
+   "fingerprint": "a2fb018f22d82a7e1b147e0e16488434",
+   "verdict": "tp",
+   "reason": "The same function body is defined twice."
+  },
+  {
+   "rule": "SEC011",
+   "file": "ui/src/remote-routes.ts",
+   "line": 15,
+   "fingerprint": "db802077c2a6dd739a1163f2cc9647dd",
+   "verdict": "fp",
+   "reason": "An API route path constant, not a password."
+  },
+  {
+   "rule": "FE006",
+   "file": "ui/vite.config.ts",
+   "line": 11,
+   "fingerprint": "6d90e945f8bbea97858663204aea5d51",
+   "verdict": "tp",
+   "reason": "The production build emits public source maps."
+  }
+ ]
+}

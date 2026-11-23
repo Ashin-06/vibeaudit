@@ -33,7 +33,7 @@ A rule is in **preview** when it is new or when its measured precision is not go
 
 A few preview rules cover bug classes where a missed finding costs far more than a false alarm: command
 injection (BE002), dynamic code execution (BE003), unsafe deserialization (BE004), open redirect (BE008)
-and cross-site scripting (FE001). One missed instance can mean remote code execution or account takeover,
+and cross-site scripting (FE001), and, while they are in preview, committed API keys (SEC001) and signing secrets (SEC004). One missed instance can mean remote code execution or account takeover,
 while a false alarm costs a reviewer a few minutes and an inline `vibeaudit: ignore`. So these rules are
 marked `gates_in_preview`:
 
@@ -58,6 +58,15 @@ cause is fixed on tuned-split cases only, and the rule leaves preview again once
 | QA007 Package imported but not declared as a dependency | 0.11.0 | 6/7 (85.7%) | an example script importing an unpublished client | no |
 | DATA012 Foreign key without an index | 0.11.0 | 19/28 (67.9%) | MariaDB/MySQL migrations, where InnoDB indexes foreign keys itself | no |
 | UI009 Data loaded without loading or error state | 0.11.0 | 4/5 (80.0%) | an effect that only fills a form field | no |
+| SEC001 Hardcoded API key or access token | after 0.11.4 | 2/17 (11.8%) | test vectors of a secret-redaction library (atuin) | yes (secrets still gate) |
+| SEC004 Hardcoded or default signing secret | after 0.11.4 | 0/34 | Rust test helpers named `session(...)` (atuin), a cookiecutter placeholder | yes (secrets still gate) |
+| AUTH005 Supabase table without Row Level Security | after 0.11.4 | 0/29 | SQL migrations of a project that does not use Supabase (atuin) | no |
+| DATA006 Timestamp without time zone | after 0.11.4 | 11/23 (47.8%) | MySQL, SQLite and H2 timestamp columns (atuin, realworld-springboot-java) | no |
+
+These four were measured when 20 repositories joined the corpus (8 held out) and stable held-out precision fell
+from 94.1% to 76.8%. Their causes are fixed separately, but because the causes were seen on held-out repositories,
+those repositories are not re-scored to graduate them: each rule leaves preview only when a fresh held-out batch,
+chosen and pinned before it is scanned, measures it at 90% or more on at least 5 findings.
 
 ## What the benchmark guards
 

@@ -1,0 +1,86 @@
+{
+ "repo": "realworld-springboot-java",
+ "commit": "b5ba0712a3fa446b3e6eae8c2a4ba3269f3fb8ba",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/build.yml",
+   "line": 30,
+   "fingerprint": "5b144eebf51afdc77caba94a55969594",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "src/main/java/io/github/raeperd/realworld/application/article/ArticleRestController.java",
+   "line": 68,
+   "fingerprint": "fc200328690f0c1da30cfed156ebd98f",
+   "verdict": "fp",
+   "reason": "anyRequest().authenticated() covers these writes; the GET-only permitAll() matchers use a statically imported HttpMethod.GET, which is not read."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "src/main/java/io/github/raeperd/realworld/application/article/ArticleRestController.java",
+   "line": 83,
+   "fingerprint": "6b89a9eae963533d597319888a54a399",
+   "verdict": "fp",
+   "reason": "anyRequest().authenticated() covers these writes; the GET-only permitAll() matchers use a statically imported HttpMethod.GET, which is not read."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "src/main/java/io/github/raeperd/realworld/application/article/ArticleRestController.java",
+   "line": 90,
+   "fingerprint": "db790a7106f132543257d1b2530a5c6f",
+   "verdict": "fp",
+   "reason": "anyRequest().authenticated() covers these writes; the GET-only permitAll() matchers use a statically imported HttpMethod.GET, which is not read."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "src/main/java/io/github/raeperd/realworld/application/article/comment/CommentRestController.java",
+   "line": 39,
+   "fingerprint": "f56b4eda6edc55a54222678d8967f0b0",
+   "verdict": "fp",
+   "reason": "anyRequest().authenticated() covers these writes; the GET-only permitAll() matchers use a statically imported HttpMethod.GET, which is not read."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "src/main/java/io/github/raeperd/realworld/application/user/UserRestController.java",
+   "line": 34,
+   "fingerprint": "e2dc89409a5778f700c6311c9e36369a",
+   "verdict": "tp",
+   "reason": "The password login has no rate limit."
+  },
+  {
+   "rule": "DATA006",
+   "file": "src/main/resources/schema.sql",
+   "line": 28,
+   "fingerprint": "c00565d74bc32d7783f05923a85cfc68",
+   "verdict": "fp",
+   "reason": "H2/MySQL-style schema: TIMESTAMP columns stored without the Postgres time-zone distinction the rule is about."
+  },
+  {
+   "rule": "DATA006",
+   "file": "src/main/resources/schema.sql",
+   "line": 29,
+   "fingerprint": "15b0469f0c0066fe412aad26f77aea85",
+   "verdict": "fp",
+   "reason": "H2/MySQL-style schema: TIMESTAMP columns stored without the Postgres time-zone distinction the rule is about."
+  },
+  {
+   "rule": "DATA006",
+   "file": "src/main/resources/schema.sql",
+   "line": 64,
+   "fingerprint": "f2df2a080dc297754d303f15a6e24ebe",
+   "verdict": "fp",
+   "reason": "H2/MySQL-style schema: TIMESTAMP columns stored without the Postgres time-zone distinction the rule is about."
+  },
+  {
+   "rule": "DATA006",
+   "file": "src/main/resources/schema.sql",
+   "line": 65,
+   "fingerprint": "b3db0efb2ff43f63f88c59093f36fbeb",
+   "verdict": "fp",
+   "reason": "H2/MySQL-style schema: TIMESTAMP columns stored without the Postgres time-zone distinction the rule is about."
+  }
+ ]
+}

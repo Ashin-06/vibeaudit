@@ -51,7 +51,11 @@ ADMIN_ROLE_EVIDENCE = re.compile(
     # Spring and Jakarta: @PreAuthorize("hasAuthority(...)"), @Secured, @RolesAllowed
     r"|has_?(?:any_?)?authority|has_?any_?role|secured|roles_?allowed"
     # Symfony: #[IsGranted('ROLE_ADMIN')], #[IsGranted('edit', 'activity')], $this->denyAccessUnlessGranted(...)
-    r"|is_?granted|denyAccessUnlessGranted|can:|check_?permissions?\w*\s*\()"  # Laravel ->middleware('can:manage-users')
+    r"|is_?granted|denyAccessUnlessGranted|can:|check_?permissions?\w*\s*\("
+    # an extractor or guard type that only admits admins: Axum `user: AdminUser`, `RequireAdmin`
+    r"|admin_?(?:user|only|guard|context|session|claims)\b|require_?admin)"
+    # Laravel `'middleware' => 'admin'`, `$user->role === 'admin'`: the admin role named as a string
+    r"""|['"](?:super_?)?admin['"]"""
     # Rust and PHP enum paths: `ctx.require(OrgPermission::ManageOrganization)`, `UserRole::Admin`
     r"|\b[A-Z]\w*(?:Permission|Role)\s*::"
 )
@@ -66,7 +70,9 @@ OWNERSHIP_EVIDENCE = re.compile(
     r"|\b(?:user|principal|currentUser|authentication)\s*\.\s*get(?:Id|Name|Username)\s*\(|\bcan(?:Write|Edit|Delete|Modify|Update|Access)\w{0,30}\s*\("
     r"|\bis_?owner\w{0,20}\s*\("
     # PHP: BookStack's findVisibleByIdOrFail() / deleteForCurrentUser() scope the record to what the caller may see
-    r"|\bfind_?visible\w*\s*\(|for_?current_?user\w*\s*\()"
+    r"|\bfind_?visible\w*\s*\(|for_?current_?user\w*\s*\("
+    # a dependency that checks the caller may change this record: `Depends(check_article_modification_permissions)`
+    r"|\bcheck_\w{0,60}?(?:permissions?|owner(?:ship)?)\b)"
 )
 # a reset that needs a signed, emailed token, or a route that takes no credential: nothing to guess or rate-limit
 TOKEN_RESET = re.compile(r"(?i)verify\w*token\w*\s*\(|[<{:]token\b")

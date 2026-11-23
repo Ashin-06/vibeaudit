@@ -1,0 +1,150 @@
+{
+ "repo": "ardanlabs-service",
+ "commit": "1bb579cbba7d380ec1e92395da31e9f651f270f7",
+ "findings": [
+  {
+   "rule": "SEC002",
+   "file": "app/sdk/apitest/keystore.go",
+   "line": 19,
+   "fingerprint": "71dcf62b5017518351df98cf746c1175",
+   "verdict": "fp",
+   "reason": "A test key in test helpers."
+  },
+  {
+   "rule": "SEC002",
+   "file": "app/sdk/auth/auth_test.go",
+   "line": 348,
+   "fingerprint": "fdcb3923bf144550789c07f147b35812",
+   "verdict": "fp",
+   "reason": "A test key in test helpers."
+  },
+  {
+   "rule": "GO004",
+   "file": "business/sdk/dbtest/dbtest.go",
+   "line": 72,
+   "fingerprint": "39e9769d08a054a2fb0e3e0ebfe3c359",
+   "verdict": "fp",
+   "reason": "Test helper creating and dropping a generated database name."
+  },
+  {
+   "rule": "GO004",
+   "file": "business/sdk/dbtest/dbtest.go",
+   "line": 106,
+   "fingerprint": "a8ad96e05209a14f4968418b658d6fbc",
+   "verdict": "fp",
+   "reason": "Test helper creating and dropping a generated database name."
+  },
+  {
+   "rule": "DATA012",
+   "file": "business/sdk/migrate/sql/migrate.sql",
+   "line": 29,
+   "fingerprint": "5849f62bc816c913d9676c47efaaec43",
+   "verdict": "tp",
+   "reason": "Postgres does not index foreign keys; this one has no index."
+  },
+  {
+   "rule": "DATA012",
+   "file": "business/sdk/migrate/sql/migrate.sql",
+   "line": 65,
+   "fingerprint": "0cb2d5e06b2c302fea2218ae3c4cb51a",
+   "verdict": "tp",
+   "reason": "Postgres does not index foreign keys; this one has no index."
+  },
+  {
+   "rule": "DATA006",
+   "file": "business/sdk/migrate/sql/migrate.sql",
+   "line": 79,
+   "fingerprint": "1f747f780d3c5c571c3c8d5d4a55b561",
+   "verdict": "tp",
+   "reason": "A Postgres TIMESTAMP column without time zone."
+  },
+  {
+   "rule": "CFG012",
+   "file": "zarf/helm/charts/auth/templates/deployment.yaml",
+   "line": 22,
+   "fingerprint": "f763d674f63bb3feda6ebb6258ef1e6f",
+   "verdict": "tp",
+   "reason": "The pod uses hostNetwork (dev manifests, but the rule's claim holds)."
+  },
+  {
+   "rule": "CFG013",
+   "file": "zarf/helm/charts/auth/templates/deployment.yaml",
+   "line": 31,
+   "fingerprint": "6fed93339c09bb0230e718048bc486e4",
+   "verdict": "tp",
+   "reason": "No container sets resource limits."
+  },
+  {
+   "rule": "CFG012",
+   "file": "zarf/helm/charts/sales/templates/deployment.yaml",
+   "line": 22,
+   "fingerprint": "a266ecc19adfa4562f498843e8332063",
+   "verdict": "tp",
+   "reason": "The pod uses hostNetwork (dev manifests, but the rule's claim holds)."
+  },
+  {
+   "rule": "CFG013",
+   "file": "zarf/helm/charts/sales/templates/deployment.yaml",
+   "line": 42,
+   "fingerprint": "8fb783f180dd92303abe87ad00d9731e",
+   "verdict": "tp",
+   "reason": "No container sets resource limits."
+  },
+  {
+   "rule": "CFG013",
+   "file": "zarf/k8s/base/auth/base-auth.yaml",
+   "line": 26,
+   "fingerprint": "71ea5ea9892552d9d95d25f0e08df619",
+   "verdict": "tp",
+   "reason": "No container sets resource limits."
+  },
+  {
+   "rule": "CFG013",
+   "file": "zarf/k8s/base/sales/base-sales.yaml",
+   "line": 71,
+   "fingerprint": "f56441b811d273e9d3284bd786772355",
+   "verdict": "tp",
+   "reason": "No container sets resource limits."
+  },
+  {
+   "rule": "CFG012",
+   "file": "zarf/k8s/dev/auth/dev-auth-patch-deploy.yaml",
+   "line": 16,
+   "fingerprint": "9f2ae023de8147f8af2e7b4b6293f85d",
+   "verdict": "tp",
+   "reason": "The pod uses hostNetwork (dev manifests, but the rule's claim holds)."
+  },
+  {
+   "rule": "CFG012",
+   "file": "zarf/k8s/dev/database/dev-database.yaml",
+   "line": 35,
+   "fingerprint": "5dd87d992ba0afab829be4d48487e861",
+   "verdict": "tp",
+   "reason": "The pod uses hostNetwork (dev manifests, but the rule's claim holds)."
+  },
+  {
+   "rule": "CFG012",
+   "file": "zarf/k8s/dev/grafana/dev-grafana.yaml",
+   "line": 393,
+   "fingerprint": "1dd0742066c1067f3f923199818da2be",
+   "verdict": "tp",
+   "reason": "The pod uses hostNetwork (dev manifests, but the rule's claim holds)."
+  },
+  {
+   "rule": "CFG012",
+   "file": "zarf/k8s/dev/sales/dev-sales-patch-deploy.yaml",
+   "line": 16,
+   "fingerprint": "40cbf0754f94240e7e743551d7d9084d",
+   "verdict": "tp",
+   "reason": "The pod uses hostNetwork (dev manifests, but the rule's claim holds)."
+  },
+  {
+   "rule": "SEC002",
+   "file": "zarf/keys/54bb2165-71e1-41a6-af3e-7da4a0e1e2c1.pem",
+   "line": 1,
+   "fingerprint": "10ed033f8394fe3184ed243e04e1770b",
+   "verdict": "tp",
+   "reason": "A private signing key is committed (used by the local dev deployment)."
+  }
+ ]
+}

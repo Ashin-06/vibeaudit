@@ -1,0 +1,46 @@
+{
+ "repo": "node-express-mongoose-demo",
+ "commit": "8a134ab5deeef553d6de51d91d4ed8ee378acace",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/test.yml",
+   "line": 23,
+   "fingerprint": "4d7fed5a3266d4086b0b28aa74a114b0",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile",
+   "line": 32,
+   "fingerprint": "7babaf34dde44653ce5ea86271a2deb4",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "BE009",
+   "file": "app/controllers/articles.js",
+   "line": 69,
+   "fingerprint": "7bc59134cc327c51ef5d41006f8356b3",
+   "verdict": "tp",
+   "reason": "The whole request body is written to the model."
+  },
+  {
+   "rule": "BE009",
+   "file": "app/controllers/users.js",
+   "line": 31,
+   "fingerprint": "d6e838d9361bdb70bccfc98838f5165b",
+   "verdict": "tp",
+   "reason": "The whole request body is written to the model."
+  },
+  {
+   "rule": "CFG001",
+   "file": "docker/node/Dockerfile",
+   "line": 1,
+   "fingerprint": "9bab5f24e86c6d45cc09ea6c8d66895a",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  }
+ ]
+}

@@ -8,7 +8,8 @@ from vibeaudit.cli import main
 from vibeaudit.rules import RULES
 
 SEVERE = ("BE002", "BE003", "BE004", "BE008", "FE001")
-GATING = SEVERE  # AUTH001 gated in preview in 0.9.2 and is stable again
+# AUTH001 gated in preview in 0.9.2 and is stable again; committed secrets keep gating while SEC001/SEC004 are preview
+GATING = SEVERE + ("SEC001", "SEC004")
 # one file per rule, each with request data reaching the sink
 SAMPLES = {
     "BE002": ("app.py", "import os\nfrom flask import request\n@app.get('/ping')\ndef ping():\n"

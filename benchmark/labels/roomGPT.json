@@ -1,0 +1,54 @@
+{
+ "repo": "roomGPT",
+ "commit": "611398c78da64f1794df2d99018c3d02d3ab0048",
+ "findings": [
+  {
+   "rule": "AUTH001",
+   "file": "app/generate/route.ts",
+   "line": 15,
+   "fingerprint": "130eeb20e13c0f76991add191cb198bd",
+   "verdict": "tp",
+   "reason": "The endpoint calls the paid image model with no user check (only an IP rate limit)."
+  },
+  {
+   "rule": "BE018",
+   "file": "app/generate/route.ts",
+   "line": 15,
+   "fingerprint": "52e9e3e30b52c10bd2c97ab045396571",
+   "verdict": "tp",
+   "reason": "The request body is read without validation."
+  },
+  {
+   "rule": "BE005",
+   "file": "app/generate/route.ts",
+   "line": 72,
+   "fingerprint": "7d77cfcdc5d6923b0c5c01d96aebbac9",
+   "verdict": "fp",
+   "reason": "The polling URL comes from the Replicate API response, not the request."
+  },
+  {
+   "rule": "UI016",
+   "file": "components/Toggle.tsx",
+   "line": 32,
+   "fingerprint": "b65cd029d90de082354d3490471efdd1",
+   "verdict": "fp",
+   "reason": "The toggle shows focus with its focus ring classes."
+  },
+  {
+   "rule": "QA001",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "6ebc345ae714486cf41d50d631704e0c",
+   "verdict": "tp",
+   "reason": "No test files in the project."
+  },
+  {
+   "rule": "QA002",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
+   "verdict": "tp",
+   "reason": "No CI configuration is committed."
+  }
+ ]
+}

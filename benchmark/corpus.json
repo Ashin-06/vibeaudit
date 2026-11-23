@@ -829,6 +829,164 @@
    "licence": "MIT",
    "kind": "well-maintained",
    "language": "php"
+  },
+  {
+   "name": "roomGPT",
+   "url": "https://github.com/Nutlope/roomGPT",
+   "commit": "611398c78da64f1794df2d99018c3d02d3ab0048",
+   "licence": "MIT",
+   "kind": "llm-app"
+  },
+  {
+   "name": "llamacoder",
+   "url": "https://github.com/Nutlope/llamacoder",
+   "commit": "5d57b706208d1de6718853e3b18c66e97cda420c",
+   "licence": "MIT",
+   "kind": "llm-app",
+   "split": "heldout"
+  },
+  {
+   "name": "nextjs-openai-doc-search",
+   "url": "https://github.com/supabase-community/nextjs-openai-doc-search",
+   "commit": "50d6bb71706b50a83c2a52dc4a7d3e426ac34adf",
+   "licence": "Apache-2.0",
+   "kind": "llm-app"
+  },
+  {
+   "name": "platforms",
+   "url": "https://github.com/vercel/platforms",
+   "commit": "ec12e65709c8263dd3462c4d33261851b8a3157d",
+   "licence": "none declared",
+   "kind": "well-maintained",
+   "split": "heldout"
+  },
+  {
+   "name": "ai-pdf-chatbot-langchain",
+   "url": "https://github.com/mayooear/ai-pdf-chatbot-langchain",
+   "commit": "4b2647c41992a50b72ff6befb9a0bd71461e3dbe",
+   "licence": "MIT",
+   "kind": "llm-app"
+  },
+  {
+   "name": "fastapi-realworld-example-app",
+   "url": "https://github.com/nsidnev/fastapi-realworld-example-app",
+   "commit": "029eb7781c60d5f563ee8990a0cbfb79b244538c",
+   "licence": "MIT",
+   "kind": "well-maintained"
+  },
+  {
+   "name": "fastapi-react",
+   "url": "https://github.com/Buuntu/fastapi-react",
+   "commit": "af17f2d422d0ebc5f173e83f2c6931045ab055b0",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "split": "heldout"
+  },
+  {
+   "name": "hackathon-starter",
+   "url": "https://github.com/sahat/hackathon-starter",
+   "commit": "926460c8f59dd955c614af8bcc06391ffddc5a7a",
+   "licence": "MIT",
+   "kind": "well-maintained"
+  },
+  {
+   "name": "node-express-mongoose-demo",
+   "url": "https://github.com/madhums/node-express-mongoose-demo",
+   "commit": "8a134ab5deeef553d6de51d91d4ed8ee378acace",
+   "licence": "MIT",
+   "kind": "well-maintained"
+  },
+  {
+   "name": "chathn",
+   "url": "https://github.com/steven-tey/chathn",
+   "commit": "b5634ae80fe6974e317c7c06eaa9e97a7c02b6b5",
+   "licence": "MIT",
+   "kind": "llm-app"
+  },
+  {
+   "name": "go-gin-example",
+   "url": "https://github.com/eddycjy/go-gin-example",
+   "commit": "4f5174ca325b37f23edadad7c88d49586816a69c",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "go",
+   "split": "heldout"
+  },
+  {
+   "name": "ardanlabs-service",
+   "url": "https://github.com/ardanlabs/service",
+   "commit": "1bb579cbba7d380ec1e92395da31e9f651f270f7",
+   "licence": "Apache-2.0",
+   "kind": "well-maintained",
+   "language": "go"
+  },
+  {
+   "name": "spring-petclinic-rest",
+   "url": "https://github.com/spring-petclinic/spring-petclinic-rest",
+   "commit": "220f4ba8e92cec9ad1faa03324723a3e9da63d95",
+   "licence": "Apache-2.0",
+   "kind": "well-maintained",
+   "language": "java"
+  },
+  {
+   "name": "realworld-springboot-java",
+   "url": "https://github.com/raeperd/realworld-springboot-java",
+   "commit": "b5ba0712a3fa446b3e6eae8c2a4ba3269f3fb8ba",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "java",
+   "split": "heldout"
+  },
+  {
+   "name": "jasontaylordev-CleanArchitecture",
+   "url": "https://github.com/jasontaylordev/CleanArchitecture",
+   "commit": "45734d28c855301e1332f87a8652eb196b73efda",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "csharp"
+  },
+  {
+   "name": "ardalis-CleanArchitecture",
+   "url": "https://github.com/ardalis/CleanArchitecture",
+   "commit": "c2781d2fb5703de98dc1019d65ab7246fb95e3e6",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "csharp",
+   "split": "heldout"
+  },
+  {
+   "name": "kellnr",
+   "url": "https://github.com/kellnr/kellnr",
+   "commit": "e91d77aea13310c02589e521871849bc3edd07ea",
+   "licence": "Apache-2.0",
+   "kind": "well-maintained",
+   "language": "rust"
+  },
+  {
+   "name": "atuin",
+   "url": "https://github.com/atuinsh/atuin",
+   "commit": "86573ef2dbeb8be5eea3835b91fbf5d5fc93991f",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "rust",
+   "split": "heldout"
+  },
+  {
+   "name": "linkstack",
+   "url": "https://github.com/linkstackorg/linkstack",
+   "commit": "35d8205f017014f457f517d3a3285bdc82f151d5",
+   "licence": "AGPL-3.0",
+   "kind": "well-maintained",
+   "language": "php"
+  },
+  {
+   "name": "laravel.io",
+   "url": "https://github.com/laravelio/laravel.io",
+   "commit": "3fd7b3347282cf824782efb42d1e9e5c779b6cb9",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "php",
+   "split": "heldout"
   }
  ]
 }

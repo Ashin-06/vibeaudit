@@ -182,7 +182,18 @@ class RustScanner:
     def _auth_extractors(self) -> None:
         """Extractor types whose impl rejects with 401/403, names an auth type, or builds on one that does
         (`OrgContext` from `AuthContext::from_request_parts`)."""
-        known = {t for t, body in self.extractors.items() if REJECTS.search(body) or AUTH_TYPE.search(t)}
+        def helper_rejects(body: str, depth: int = 0) -> bool:
+            """kellnr's `Ok(Self(identify(parts, state, Accepts::Token).await?))`: a function of the project that
+            rejects, two calls deep (identify -> from_session -> StatusCode::UNAUTHORIZED)"""
+            # calls only: not the `fn from_request_parts(` declaration itself, nor another extractor's method
+            for name in set(re.findall(r"(?<![.:\w])(?<!fn )([a-z_]\w{0,60})\s*\(", body)) - {"from_request_parts", "from_request"}:
+                for f, _a, _po, pc, b in self.funcs.get(name, [])[:3]:
+                    inner = f.cache["rust_views"].code[pc:b]  # type: ignore[attr-defined]
+                    if REJECTS.search(inner) or (depth < 1 and helper_rejects(inner, depth + 1)):
+                        return True
+            return False
+
+        known = {t for t, body in self.extractors.items() if REJECTS.search(body) or AUTH_TYPE.search(t) or helper_rejects(body)}
         for _ in range(3):
             more = {t for t, body in self.extractors.items() if t not in known and any(
                 re.search(r"\b" + re.escape(k) + r"\b", body) for k in known)}
@@ -250,7 +261,8 @@ class RustScanner:
     # ------------------------------------------------------------------ routes
     def _routes(self, sf: SourceFile) -> None:
         v = sf.cache["rust_views"]
-        code, bare = v.code, v.bare  # type: ignore[attr-defined]
+        # routers built inside `#[cfg(test)]` modules are test fixtures, not the app's routes
+        code, bare = without_test_modules(v.code, v.bare), without_test_modules(v.bare, v.bare)  # type: ignore[attr-defined]
         if not re.search(r"\bactix_web\b|\baxum\b|#\[\s*(?:get|post|put|patch|delete)\s*\(", code):
             return
         actix = "actix_web" in code or "actix-web" in code

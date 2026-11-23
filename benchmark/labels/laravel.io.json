@@ -1,0 +1,102 @@
+{
+ "repo": "laravel.io",
+ "commit": "3fd7b3347282cf824782efb42d1e9e5c779b6cb9",
+ "findings": [
+  {
+   "rule": "DATA001",
+   "file": "app/Concerns/ReceivesReplies.php",
+   "line": 49,
+   "fingerprint": "2581b3801c22d19009db65b22cc07658",
+   "verdict": "tp",
+   "reason": "One delete per related record inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Models/User.php",
+   "line": 275,
+   "fingerprint": "16ce8d3e4afae6d847fabec4512720f8",
+   "verdict": "tp",
+   "reason": "One delete per related record inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Models/User.php",
+   "line": 329,
+   "fingerprint": "3152560ba155e1ad0ad620271f89e023",
+   "verdict": "tp",
+   "reason": "One delete per related record inside the loop."
+  },
+  {
+   "rule": "SEC008",
+   "file": "resources/js/search.js",
+   "line": 3,
+   "fingerprint": "8a8c2c1a6516869244f815f1a3efe1d3",
+   "verdict": "fp",
+   "reason": "Algolia's search-only key, which browser search uses by design."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/components/articles/overview-summary.blade.php",
+   "line": 90,
+   "fingerprint": "50c7866067f5c89b91e254ea719dcb11",
+   "verdict": "fp",
+   "reason": "excerpt() is strip_tags() of rendered markdown, so no tags remain."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/components/articles/user-summary.blade.php",
+   "line": 46,
+   "fingerprint": "248040879e50cbd192ba57a469c03b7c",
+   "verdict": "fp",
+   "reason": "excerpt() is strip_tags() of rendered markdown, so no tags remain."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/components/threads/overview-summary.blade.php",
+   "line": 51,
+   "fingerprint": "c4ae69cf572013fcfffff02a58d2a0a0",
+   "verdict": "fp",
+   "reason": "excerpt() is strip_tags() of rendered markdown, so no tags remain."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/components/threads/summary.blade.php",
+   "line": 31,
+   "fingerprint": "7c40bbea7bfce8bd47c518de63d9d1e0",
+   "verdict": "fp",
+   "reason": "excerpt() is strip_tags() of rendered markdown, so no tags remain."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/components/users/reply.blade.php",
+   "line": 32,
+   "fingerprint": "9193eb0e72d2e51c36ec1bf747c7b44c",
+   "verdict": "fp",
+   "reason": "excerpt() is strip_tags() of rendered markdown, so no tags remain."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/livewire/editor.blade.php",
+   "line": 99,
+   "fingerprint": "c7a20419ac7fbcca60d6c695cb806488",
+   "verdict": "fp",
+   "reason": "An attribute string built by the component, not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/livewire/editor.blade.php",
+   "line": 122,
+   "fingerprint": "0d266513df73b36e65e880c1cf05fcd1",
+   "verdict": "fp",
+   "reason": "The preview is markdown rendered by the app's own md_to_html, which escapes HTML."
+  },
+  {
+   "rule": "AUTH015",
+   "file": "routes/web.php",
+   "line": 82,
+   "fingerprint": "288a363b486c247806863b66a162a963",
+   "verdict": "tp",
+   "reason": "Changing the password does not end other sessions."
+  }
+ ]
+}
