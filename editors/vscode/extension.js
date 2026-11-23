@@ -16,7 +16,10 @@ function serverOptions() {
 }
 
 async function start(context) {
-  const languages = ["python", "javascript", "javascriptreact", "typescript", "typescriptreact"];
+  const languages = [
+    "python", "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte",
+    "go", "java", "kotlin", "csharp", "rust", "php",
+  ];
   client = new LanguageClient(
     "vibeaudit",
     "vibeaudit",
