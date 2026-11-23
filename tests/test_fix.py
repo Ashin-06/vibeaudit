@@ -429,3 +429,66 @@ def test_redis_ttl_attribute_clients(tmp_path):
     out = roundtrip(tmp_path, {"store.py": src}, "DATA013")["store.py"]
     assert "        await self.client.hset(key, 'v', value)\n        await self.client.expire(key, 3600)\n" in out
     assert "        await self.client.zadd('recent', {key: ts})\n        await self.client.expire('recent', 3600)" in out
+
+
+# ------------------------------------------------ Go, Java, Rust and C# codemods
+GO_HTTP = '''package main
+
+import (
+	"fmt"
+	"net/http"
+)
+
+func fetch(u string) error {
+	resp, err := http.Get(u)
+	if err != nil {
+		return err
+	}
+	fmt.Println(resp.Status)
+	return nil
+}
+'''
+
+
+def test_go_timeout_and_body_close(tmp_path):
+    out = roundtrip(tmp_path, {"main.go": GO_HTTP}, "REL001")["main.go"]
+    assert "(&http.Client{Timeout: 10 * time.Second}).Get(u)" in out and '\t"time"\n' in out
+    out = roundtrip(tmp_path / "b", {"main.go": GO_HTTP.replace("http.Get(u)", "client.Get(u)")}, "GO002")["main.go"]
+    assert "\t\treturn err\n\t}\n\tdefer resp.Body.Close()\n" in out
+
+
+def test_go_body_close_needs_an_error_check(tmp_path):
+    write(tmp_path, {"main.go": GO_HTTP.replace("http.Get(u)", "client.Get(u)").replace("\tif err != nil {\n\t\treturn err\n\t}\n", "")})
+    plan = fix.plan(str(tmp_path))
+    assert ("GO002", "no `if err != nil` check right after the call") in {(f.rule_id, why) for f, why in plan.skipped}
+
+
+def test_java_and_kotlin_timeout(tmp_path):
+    java = ("package com.x;\n\nimport java.net.http.HttpClient;\n\npublic class Api {\n"
+            "    private final HttpClient client = HttpClient.newHttpClient();\n}\n")
+    out = roundtrip(tmp_path, {"src/main/java/com/x/Api.java": java}, "REL001")["src/main/java/com/x/Api.java"]
+    assert "HttpClient.newBuilder().connectTimeout(java.time.Duration.ofSeconds(10)).build();" in out
+    kt = "package com.x\n\nimport java.net.http.HttpClient\n\nclass Api {\n    val client = HttpClient.newHttpClient()\n}\n"
+    out = roundtrip(tmp_path / "k", {"src/main/kotlin/com/x/Api.kt": kt}, "REL001")["src/main/kotlin/com/x/Api.kt"]
+    assert "connectTimeout(java.time.Duration.ofSeconds(10))" in out
+
+
+def test_rust_reqwest_timeout(tmp_path):
+    src = ("use reqwest::Client;\n\npub fn client() -> Client {\n    Client::new()\n}\n\n"
+	       "pub fn blocking() -> reqwest::blocking::Client {\n    reqwest::blocking::Client::new()\n}\n")
+    out = roundtrip(tmp_path, {"src/http.rs": src}, "REL001")["src/http.rs"]
+    assert out.count('.timeout(std::time::Duration::from_secs(10)).build().expect("HTTP client")') == 2
+    assert "reqwest::blocking::Client::builder()" in out
+
+
+def test_csharp_developer_page_guard(tmp_path):
+    src = ("var builder = WebApplication.CreateBuilder(args);\nvar app = builder.Build();\n\n"
+           "app.UseDeveloperExceptionPage();\napp.MapGet(\"/\", () => \"ok\");\napp.Run();\n")
+    out = roundtrip(tmp_path, {"Program.cs": src, "App.csproj": "<Project Sdk=\"Microsoft.NET.Sdk.Web\"></Project>\n"},
+	                "CSHARP003")["Program.cs"]
+    assert "if (app.Environment.IsDevelopment())\n{\n    app.UseDeveloperExceptionPage();\n}\n" in out
+    startup = ("public class Startup\n{\n    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)\n    {\n"
+	           "        app.UseDeveloperExceptionPage();\n    }\n}\n")
+    out = roundtrip(tmp_path / "s", {"Startup.cs": startup, "App.csproj": "<Project Sdk=\"Microsoft.NET.Sdk.Web\"></Project>\n"},
+	                "CSHARP003")["Startup.cs"]
+    assert "        if (env.IsDevelopment())\n        {\n            app.UseDeveloperExceptionPage();\n        }\n" in out
