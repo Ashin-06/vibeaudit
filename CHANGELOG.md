@@ -4,23 +4,6 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
-
-### Fixed
-
-False positives found by scanning 37 FastAPI and vanilla-JS projects:
-
-- AUTH001 recognises RBAC dependency factories (`Depends(ops.require("score"))`) and FastAPI / Starlette
-  `@app.middleware("http")` hooks that authenticate; when that hook checks roles, AUTH003 treats routes as
-  role-checked.
-- FE001 accepts the common `esc()` helper, and judges a multi-line template literal as a whole.
-- SEC011 skips status verdicts (`ok ? "PASS" : "FAIL"`) and all-caps enum labels.
-- SEC010 skips a secret passed through a one-way function before printing (`print(sign(..., key))`).
-- SEC004 skips settings about secrets (`SECRETS_PROVIDER`) and method calls named `session(...)`.
-- SEC003 treats honeytoken bait values as placeholders.
-- BE006 accepts `if p.is_absolute() or ".." in p.parts: raise` as a traversal guard.
-- Tuple assignments (`sql, args["r"] = sql + " WHERE r = :r", risk`) keep each element's taint separate.
-
 ## [0.11.4] - 2026-11-23
 
 ### Fixed
