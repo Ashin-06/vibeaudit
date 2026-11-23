@@ -185,7 +185,8 @@ class RustScanner:
         def helper_rejects(body: str, depth: int = 0) -> bool:
             """kellnr's `Ok(Self(identify(parts, state, Accepts::Token).await?))`: a function of the project that
             rejects, two calls deep (identify -> from_session -> StatusCode::UNAUTHORIZED)"""
-            for name in set(re.findall(r"(?<![.:\w])([a-z_]\w{0,60})\s*\(", body)):
+            # calls only: not the `fn from_request_parts(` declaration itself, nor another extractor's method
+            for name in set(re.findall(r"(?<![.:\w])(?<!fn )([a-z_]\w{0,60})\s*\(", body)) - {"from_request_parts", "from_request"}:
                 for f, _a, _po, pc, b in self.funcs.get(name, [])[:3]:
                     inner = f.cache["rust_views"].code[pc:b]  # type: ignore[attr-defined]
                     if REJECTS.search(inner) or (depth < 1 and helper_rejects(inner, depth + 1)):

@@ -1,0 +1,54 @@
+{
+ "repo": "platforms",
+ "commit": "ec12e65709c8263dd3462c4d33261851b8a3157d",
+ "findings": [
+  {
+   "rule": "BE008",
+   "file": "app/actions.ts",
+   "line": 58,
+   "fingerprint": "ea3703bce47bd69118bc64c0b34639d1",
+   "verdict": "fp",
+   "reason": "The subdomain is sanitized and the host is the app's own root domain."
+  },
+  {
+   "rule": "QA004",
+   "file": "app/admin/dashboard.tsx",
+   "line": 23,
+   "fingerprint": "00ac970c2cb9cd42c4cbe9c3b9ada42e",
+   "verdict": "tp",
+   "reason": "A TODO to add authentication is left in the admin page."
+  },
+  {
+   "rule": "QA004",
+   "file": "app/admin/page.tsx",
+   "line": 12,
+   "fingerprint": "a3736d32e033cbd31fb724aa84d9a09d",
+   "verdict": "tp",
+   "reason": "A TODO to add authentication is left in the admin page."
+  },
+  {
+   "rule": "UI011",
+   "file": "app/layout.tsx",
+   "line": 1,
+   "fingerprint": "f49927a53f425b02976b10153c316ea5",
+   "verdict": "tp",
+   "reason": "No error.tsx in the app."
+  },
+  {
+   "rule": "QA001",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "6ebc345ae714486cf41d50d631704e0c",
+   "verdict": "tp",
+   "reason": "No test files in the project."
+  },
+  {
+   "rule": "QA002",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
+   "verdict": "tp",
+   "reason": "No CI configuration is committed."
+  }
+ ]
+}

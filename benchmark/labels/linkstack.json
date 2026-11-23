@@ -1,0 +1,390 @@
+{
+ "repo": "linkstack",
+ "commit": "35d8205f017014f457f517d3a3285bdc82f151d5",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yml",
+   "line": 25,
+   "fingerprint": "16deab82d451c74435e7ab174dd581b7",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "BE006",
+   "file": "app/Http/Controllers/AdminController.php",
+   "line": 380,
+   "fingerprint": "8cd74a9515b08ff9db1fda482bb8e4a4",
+   "verdict": "fp",
+   "reason": "The file name is the user's id matched against files already in the folder, not request text."
+  },
+  {
+   "rule": "BE006",
+   "file": "app/Http/Controllers/LinkTypeViewController.php",
+   "line": 77,
+   "fingerprint": "3734900c2ff8c96d8a9840e0bb575755",
+   "verdict": "fp",
+   "reason": "The resolved path is checked to stay under the base path."
+  },
+  {
+   "rule": "BE006",
+   "file": "app/Http/Controllers/UserController.php",
+   "line": 232,
+   "fingerprint": "2f27af97c05ee24a1bae8b862a70465a",
+   "verdict": "fp",
+   "reason": "The handler path comes from the stored link type name, not the request."
+  },
+  {
+   "rule": "BE006",
+   "file": "app/Http/Controllers/UserController.php",
+   "line": 233,
+   "fingerprint": "fa37dc85af18e0ef409e03901d73c357",
+   "verdict": "fp",
+   "reason": "The handler path comes from the stored link type name, not the request."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/UserController.php",
+   "line": 340,
+   "fingerprint": "b4d1752d25d988be19f59e493473763b",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "BE008",
+   "file": "app/Http/Controllers/UserController.php",
+   "line": 379,
+   "fingerprint": "ee492d9845f1071c841bd5b9a86bbda5",
+   "verdict": "tp",
+   "reason": "Redirects to a stored link URL with redirect()->away(); links are user content, so it is an open redirect by design of the click counter."
+  },
+  {
+   "rule": "BE006",
+   "file": "app/Http/Controllers/UserController.php",
+   "line": 1007,
+   "fingerprint": "432d05e5137a049e8cb736d3b652488d",
+   "verdict": "fp",
+   "reason": "The file name is the user id plus a checked image extension."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/UserController.php",
+   "line": 1059,
+   "fingerprint": "2a8c7fb93f597293e82194d143543235",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "BE008",
+   "file": "app/Http/Middleware/Headers.php",
+   "line": 21,
+   "fingerprint": "758aa5714acb828dd9d204f5df0a8f28",
+   "verdict": "fp",
+   "reason": "The HTTPS upgrade redirect keeps the request's own host and path."
+  },
+  {
+   "rule": "FE001",
+   "file": "assets/button-editor/js/rainbow.js",
+   "line": 609,
+   "fingerprint": "4645f66b38078c53ceae03a392e41568",
+   "verdict": "fp",
+   "reason": "Vendored syntax highlighter."
+  },
+  {
+   "rule": "UI016",
+   "file": "assets/css/dark.css",
+   "line": 9,
+   "fingerprint": "5c6fa4fa8b81d81a51f1173d9dc3489a",
+   "verdict": "fp",
+   "reason": "Vendored Hope UI theme CSS."
+  },
+  {
+   "rule": "UI016",
+   "file": "assets/css/rtl.css",
+   "line": 9,
+   "fingerprint": "5d6ba2906231ecf58711b7fed67ff4c5",
+   "verdict": "fp",
+   "reason": "Vendored Hope UI theme CSS."
+  },
+  {
+   "rule": "UI016",
+   "file": "assets/css/style-dashboard-dark.css",
+   "line": 63,
+   "fingerprint": "d13a47519f18880046dc3a5f49911cf8",
+   "verdict": "fp",
+   "reason": "Vendored Hope UI theme CSS."
+  },
+  {
+   "rule": "UI016",
+   "file": "assets/css/style-dashboard-dark.css",
+   "line": 150,
+   "fingerprint": "a7b0f93ce05f34d60b7eb0f401d6c084",
+   "verdict": "fp",
+   "reason": "Vendored Hope UI theme CSS."
+  },
+  {
+   "rule": "UI016",
+   "file": "assets/css/style-dashboard-dark.css",
+   "line": 3236,
+   "fingerprint": "424ce13f5ca86eefd7cdda653da7b4a5",
+   "verdict": "fp",
+   "reason": "Vendored Hope UI theme CSS."
+  },
+  {
+   "rule": "UI016",
+   "file": "assets/css/style-dashboard.css",
+   "line": 63,
+   "fingerprint": "96c87bc9a3b751e5f6fd7af22aecf4e2",
+   "verdict": "fp",
+   "reason": "Vendored Hope UI theme CSS."
+  },
+  {
+   "rule": "UI016",
+   "file": "assets/css/style-dashboard.css",
+   "line": 150,
+   "fingerprint": "9f86e3ac1aee46ae2a68de6ee1d5f8e1",
+   "verdict": "fp",
+   "reason": "Vendored Hope UI theme CSS."
+  },
+  {
+   "rule": "UI016",
+   "file": "assets/css/style-dashboard.css",
+   "line": 3236,
+   "fingerprint": "9647c7a3a2c253380625f0e4b6c9e836",
+   "verdict": "fp",
+   "reason": "Vendored Hope UI theme CSS."
+  },
+  {
+   "rule": "QA006",
+   "file": "assets/external-dependencies/theme-tomorrow_night.js",
+   "line": 106,
+   "fingerprint": "9f97e888e161bb03fb950a307ed15127",
+   "verdict": "fp",
+   "reason": "Vendored third-party library code."
+  },
+  {
+   "rule": "FE001",
+   "file": "assets/js/plugins/countdown.js",
+   "line": 30,
+   "fingerprint": "5114fdd9b955f4ee455e4172db85a5e3",
+   "verdict": "fp",
+   "reason": "Numbers computed by the countdown, not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "assets/js/plugins/countdown.js",
+   "line": 31,
+   "fingerprint": "90815a721d9cd834c70d5a8adf7c7884",
+   "verdict": "fp",
+   "reason": "Numbers computed by the countdown, not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "assets/js/plugins/countdown.js",
+   "line": 32,
+   "fingerprint": "eef7e75e7d0403cfa846655bd55abcc4",
+   "verdict": "fp",
+   "reason": "Numbers computed by the countdown, not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "assets/js/plugins/countdown.js",
+   "line": 33,
+   "fingerprint": "9462d851623f9c958076c0b764ca3e48",
+   "verdict": "fp",
+   "reason": "Numbers computed by the countdown, not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "assets/js/sleek.js",
+   "line": 173,
+   "fingerprint": "539deabb6cb5ffec708982911f8e180c",
+   "verdict": "fp",
+   "reason": "Theme demo markup with constant text."
+  },
+  {
+   "rule": "QA003",
+   "file": "assets/linkstack/js/js.cookie.min.js",
+   "line": 2,
+   "fingerprint": "33b2bdbdb933f192c428cd61a9407fa5",
+   "verdict": "fp",
+   "reason": "Vendored third-party library code."
+  },
+  {
+   "rule": "FE001",
+   "file": "blocks/text/display.blade.php",
+   "line": 1,
+   "fingerprint": "b9c43219c19b797cbbfec75e11d5e443",
+   "verdict": "tp",
+   "reason": "With ALLOW_USER_HTML on, a user's link title is output as raw HTML."
+  },
+  {
+   "rule": "QA001",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "6ebc345ae714486cf41d50d631704e0c",
+   "verdict": "tp",
+   "reason": "No test files in the project."
+  },
+  {
+   "rule": "UI016",
+   "file": "resources/ckeditor/skins/moono-lisa/dialog.css",
+   "line": 5,
+   "fingerprint": "fbfd2b37f1eb7115609c22fed92ecf5c",
+   "verdict": "fp",
+   "reason": "Vendored Hope UI theme CSS."
+  },
+  {
+   "rule": "UI016",
+   "file": "resources/ckeditor/skins/moono-lisa/dialog_ie.css",
+   "line": 5,
+   "fingerprint": "b6a256e71de3b28e9a7c42b8a1d2e47a",
+   "verdict": "fp",
+   "reason": "Vendored Hope UI theme CSS."
+  },
+  {
+   "rule": "UI016",
+   "file": "resources/ckeditor/skins/moono-lisa/dialog_ie8.css",
+   "line": 5,
+   "fingerprint": "852c1ef9858e33726309400880e01e26",
+   "verdict": "fp",
+   "reason": "Vendored Hope UI theme CSS."
+  },
+  {
+   "rule": "UI016",
+   "file": "resources/ckeditor/skins/moono-lisa/dialog_iequirks.css",
+   "line": 5,
+   "fingerprint": "629279abcdd5348ef7d4d0f64db2040d",
+   "verdict": "fp",
+   "reason": "Vendored Hope UI theme CSS."
+  },
+  {
+   "rule": "UI016",
+   "file": "resources/ckeditor/skins/moono-lisa/editor.css",
+   "line": 5,
+   "fingerprint": "bad1513508ac07febd12374299c7fc49",
+   "verdict": "fp",
+   "reason": "Vendored Hope UI theme CSS."
+  },
+  {
+   "rule": "UI016",
+   "file": "resources/ckeditor/skins/moono-lisa/editor_gecko.css",
+   "line": 5,
+   "fingerprint": "1c0591289e7a40e38ed74095f164829d",
+   "verdict": "fp",
+   "reason": "Vendored Hope UI theme CSS."
+  },
+  {
+   "rule": "UI016",
+   "file": "resources/ckeditor/skins/moono-lisa/editor_ie.css",
+   "line": 5,
+   "fingerprint": "a33443aff27a4a411feb89178a4f5a38",
+   "verdict": "fp",
+   "reason": "Vendored Hope UI theme CSS."
+  },
+  {
+   "rule": "UI016",
+   "file": "resources/ckeditor/skins/moono-lisa/editor_ie8.css",
+   "line": 5,
+   "fingerprint": "27ac5accd1fbe0842fc8d220ba6c1136",
+   "verdict": "fp",
+   "reason": "Vendored Hope UI theme CSS."
+  },
+  {
+   "rule": "UI016",
+   "file": "resources/ckeditor/skins/moono-lisa/editor_iequirks.css",
+   "line": 5,
+   "fingerprint": "368fa1495df84af978ebbfb02c53daab",
+   "verdict": "fp",
+   "reason": "Vendored Hope UI theme CSS."
+  },
+  {
+   "rule": "DATA001",
+   "file": "resources/views/components/finishing.blade.php",
+   "line": 263,
+   "fingerprint": "d7f0faef6f614dc202b8c4a824f7d03f",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "resources/views/components/finishing.blade.php",
+   "line": 443,
+   "fingerprint": "37296368798f83eec47ee48f71708b49",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "DATA001",
+   "file": "resources/views/components/pre-update.blade.php",
+   "line": 80,
+   "fingerprint": "e969df027576568abbeac2a8344c3a40",
+   "verdict": "tp",
+   "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/home.blade.php",
+   "line": 23,
+   "fingerprint": "4c9d14d4ee0feb78eb7bda24484f35a7",
+   "verdict": "fp",
+   "reason": "The home message is an admin setting, raw by design."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/home.blade.php",
+   "line": 35,
+   "fingerprint": "8b834007f4c6a005e49d3179a025c492",
+   "verdict": "fp",
+   "reason": "The home message is an admin setting, raw by design."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/home.blade.php",
+   "line": 185,
+   "fingerprint": "159e8b029ffeb3c653e5fae0b3d141c7",
+   "verdict": "fp",
+   "reason": "The home message is an admin setting, raw by design."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/linkinfo.blade.php",
+   "line": 108,
+   "fingerprint": "78b6fb772a2562be9fec02b8ff703d01",
+   "verdict": "tp",
+   "reason": "User-provided link data output unescaped."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/linkstack/elements/bio.blade.php",
+   "line": 3,
+   "fingerprint": "3192333139ea6de28bf13c547b9efbb1",
+   "verdict": "tp",
+   "reason": "With ALLOW_USER_HTML on, the user's bio is output as raw HTML."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "routes/web.php",
+   "line": 38,
+   "fingerprint": "880c9a03c1bd45d4d579d1406373098f",
+   "verdict": "fp",
+   "reason": "Installer routes are registered only while the INSTALLING lock file exists, before setup completes."
+  },
+  {
+   "rule": "AUTH002",
+   "file": "routes/web.php",
+   "line": 129,
+   "fingerprint": "36b0529637d5325e14b3c4e267d32243",
+   "verdict": "fp",
+   "reason": "The /admin group uses the `admin` middleware, which checks the role."
+  },
+  {
+   "rule": "BE006",
+   "file": "server.php",
+   "line": 17,
+   "fingerprint": "0f12c79e9f6484e2ac1690c8b0e8fe04",
+   "verdict": "fp",
+   "reason": "Laravel's built-in development-server router."
+  }
+ ]
+}

@@ -1,0 +1,30 @@
+{
+ "repo": "ai-pdf-chatbot-langchain",
+ "commit": "4b2647c41992a50b72ff6befb9a0bd71461e3dbe",
+ "findings": [
+  {
+   "rule": "QA007",
+   "file": "backend/src/shared/utils.ts",
+   "line": 2,
+   "fingerprint": "47e09c640f40be2a5a9ea6d4785cc295",
+   "verdict": "tp",
+   "reason": "langchain is imported but not declared in package.json."
+  },
+  {
+   "rule": "QA011",
+   "file": "frontend/hooks/use-mobile.tsx",
+   "line": 5,
+   "fingerprint": "f8765a634fd6d202dcd69e719f7b3c20",
+   "verdict": "tp",
+   "reason": "The same function body is defined twice."
+  },
+  {
+   "rule": "QA006",
+   "file": "frontend/next.config.mjs",
+   "line": 3,
+   "fingerprint": "e043bab646dfaf609c73ee596aa5eab4",
+   "verdict": "fp",
+   "reason": "An optional config import inside try/catch."
+  }
+ ]
+}

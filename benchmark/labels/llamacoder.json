@@ -1,0 +1,382 @@
+{
+ "repo": "llamacoder",
+ "commit": "5d57b706208d1de6718853e3b18c66e97cda420c",
+ "findings": [
+  {
+   "rule": "AUTH001",
+   "file": "app/(main)/actions.ts",
+   "line": 25,
+   "fingerprint": "1b134e899a52911268e91338517fa292",
+   "verdict": "tp",
+   "reason": "A server action or route that writes data or calls the model with no user check (only an IP rate limit)."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/(main)/actions.ts",
+   "line": 53,
+   "fingerprint": "ed530a3b357ec7ec7e2482488e1703cf",
+   "verdict": "tp",
+   "reason": "A server action or route that writes data or calls the model with no user check (only an IP rate limit)."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/(main)/actions.ts",
+   "line": 101,
+   "fingerprint": "6c2e902a2dcc46c3d58cf6665c34a0bd",
+   "verdict": "tp",
+   "reason": "A server action or route that writes data or calls the model with no user check (only an IP rate limit)."
+  },
+  {
+   "rule": "UI003",
+   "file": "app/(main)/chats/[id]/chat-box.tsx",
+   "line": 103,
+   "fingerprint": "87880fe603724573750ca8fe10111176",
+   "verdict": "tp",
+   "reason": "The textarea has no label or aria-label."
+  },
+  {
+   "rule": "FE004",
+   "file": "app/(main)/eval-harness/eval-harness-client.tsx",
+   "line": 216,
+   "fingerprint": "6e9434dd0977f53b01c5a41cdb914809",
+   "verdict": "tp",
+   "reason": "The message handler does not check event.origin."
+  },
+  {
+   "rule": "UI003",
+   "file": "app/(main)/prompt-form.tsx",
+   "line": 210,
+   "fingerprint": "681b35a59bb36f4b4143ea4bad871ea5",
+   "verdict": "tp",
+   "reason": "The textarea has no label or aria-label."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/api/generate-chat-title/route.ts",
+   "line": 23,
+   "fingerprint": "d081cee97f6f2f7233733bf43c60ea04",
+   "verdict": "tp",
+   "reason": "A server action or route that writes data or calls the model with no user check (only an IP rate limit)."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/api/get-next-completion-stream-promise/route.ts",
+   "line": 48,
+   "fingerprint": "762e74739db91daf94070ff8037fd224",
+   "verdict": "tp",
+   "reason": "A server action or route that writes data or calls the model with no user check (only an IP rate limit)."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/api/s3-upload/complete/route.ts",
+   "line": 9,
+   "fingerprint": "52a6bb34c0df163e36d8aa8284d86d69",
+   "verdict": "tp",
+   "reason": "A server action or route that writes data or calls the model with no user check (only an IP rate limit)."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/api/s3-upload/route.ts",
+   "line": 7,
+   "fingerprint": "f81895b41ed0e1cb1271c3762ee5dd43",
+   "verdict": "tp",
+   "reason": "A server action or route that writes data or calls the model with no user check (only an IP rate limit)."
+  },
+  {
+   "rule": "FE004",
+   "file": "components/code-runner-react.tsx",
+   "line": 502,
+   "fingerprint": "af97497fb9f94c0152935747dae1824a",
+   "verdict": "tp",
+   "reason": "The message handler does not check event.origin."
+  },
+  {
+   "rule": "UI001",
+   "file": "components/icons/logo-small.tsx",
+   "line": 4,
+   "fingerprint": "559063061d36bf0fab0093fa80c42aab",
+   "verdict": "tp",
+   "reason": "The img has no alt text."
+  },
+  {
+   "rule": "UI002",
+   "file": "components/syntax-highlighter.tsx",
+   "line": 247,
+   "fingerprint": "51b2efb10564f895f1181db0ed579376",
+   "verdict": "tp",
+   "reason": "A clickable div with no keyboard handler or role."
+  },
+  {
+   "rule": "UI016",
+   "file": "components/ui/drawer.tsx",
+   "line": 124,
+   "fingerprint": "ad014d6c3a5d36712da002c7446e1217",
+   "verdict": "fp",
+   "reason": "A drawer popup container, not a focus target."
+  },
+  {
+   "rule": "QA006",
+   "file": "lib/preview/files.ts",
+   "line": 54,
+   "fingerprint": "caaf7c07d15974672205f65568002ddf",
+   "verdict": "fp",
+   "reason": "An import inside a code example held in a template string, not an import of this project."
+  },
+  {
+   "rule": "QA006",
+   "file": "lib/preview/files.ts",
+   "line": 63,
+   "fingerprint": "2d42907fb2d80f533c48edfa1ccc366d",
+   "verdict": "fp",
+   "reason": "An import inside a code example held in a template string, not an import of this project."
+  },
+  {
+   "rule": "QA003",
+   "file": "lib/preview/html.ts",
+   "line": 21,
+   "fingerprint": "4c10e545df9714cd0fd09869029284b0",
+   "verdict": "fp",
+   "reason": "Deliberate: best-effort steps in the sandboxed preview page."
+  },
+  {
+   "rule": "QA003",
+   "file": "lib/preview/html.ts",
+   "line": 26,
+   "fingerprint": "efa7a94e809a28003f9c02912f2d58f3",
+   "verdict": "fp",
+   "reason": "Deliberate: best-effort steps in the sandboxed preview page."
+  },
+  {
+   "rule": "QA003",
+   "file": "lib/preview/html.ts",
+   "line": 46,
+   "fingerprint": "9eeaa58572cd322a0181b0a536b17e9d",
+   "verdict": "fp",
+   "reason": "Deliberate: best-effort steps in the sandboxed preview page."
+  },
+  {
+   "rule": "QA003",
+   "file": "lib/preview/html.ts",
+   "line": 120,
+   "fingerprint": "fbba43a7363937db4bc5aae2caa252be",
+   "verdict": "fp",
+   "reason": "Deliberate: best-effort steps in the sandboxed preview page."
+  },
+  {
+   "rule": "DATA008",
+   "file": "lib/prisma.ts",
+   "line": 9,
+   "fingerprint": "0a3df2b8328cde1d3578bc788bcaf50e",
+   "verdict": "tp",
+   "reason": "React's cache() memoizes per request, so a new PrismaClient (and pool) is created on every request."
+  },
+  {
+   "rule": "AUTH014",
+   "file": "lib/server-rate-limit.ts",
+   "line": 199,
+   "fingerprint": "277a5ba11265ef5957235f0381cb7ae0",
+   "verdict": "tp",
+   "reason": "Off Vercel the rate-limit key falls back to X-Forwarded-For, which the client sets."
+  },
+  {
+   "rule": "QA006",
+   "file": "lib/shadcn-docs/avatar.tsx",
+   "line": 4,
+   "fingerprint": "17020072658890e5c18ecd90a664c208",
+   "verdict": "fp",
+   "reason": "An import inside a code example held in a template string, not an import of this project."
+  },
+  {
+   "rule": "QA006",
+   "file": "lib/shadcn-docs/button.tsx",
+   "line": 4,
+   "fingerprint": "2b1b216f7443151bcda7fbf278cdb05d",
+   "verdict": "fp",
+   "reason": "An import inside a code example held in a template string, not an import of this project."
+  },
+  {
+   "rule": "QA006",
+   "file": "lib/shadcn-docs/card.tsx",
+   "line": 4,
+   "fingerprint": "9ff648fd7bb7c58266c13f14175550f2",
+   "verdict": "fp",
+   "reason": "An import inside a code example held in a template string, not an import of this project."
+  },
+  {
+   "rule": "QA006",
+   "file": "lib/shadcn-docs/checkbox.tsx",
+   "line": 4,
+   "fingerprint": "a507a6d0c769067039b387e817485328",
+   "verdict": "fp",
+   "reason": "An import inside a code example held in a template string, not an import of this project."
+  },
+  {
+   "rule": "QA006",
+   "file": "lib/shadcn-docs/input.tsx",
+   "line": 4,
+   "fingerprint": "69cc374ceb46ffb6dc5272f12b6f5cff",
+   "verdict": "fp",
+   "reason": "An import inside a code example held in a template string, not an import of this project."
+  },
+  {
+   "rule": "QA006",
+   "file": "lib/shadcn-docs/label.tsx",
+   "line": 4,
+   "fingerprint": "8611626a77d663f3394e28689421d94b",
+   "verdict": "fp",
+   "reason": "An import inside a code example held in a template string, not an import of this project."
+  },
+  {
+   "rule": "QA006",
+   "file": "lib/shadcn-docs/radio-group.tsx",
+   "line": 4,
+   "fingerprint": "673e345e1a17847eaf711d6c2ac2abcc",
+   "verdict": "fp",
+   "reason": "An import inside a code example held in a template string, not an import of this project."
+  },
+  {
+   "rule": "QA006",
+   "file": "lib/shadcn-docs/radio-group.tsx",
+   "line": 5,
+   "fingerprint": "58d2f7529bfe0e66277ebc68e954d772",
+   "verdict": "fp",
+   "reason": "An import inside a code example held in a template string, not an import of this project."
+  },
+  {
+   "rule": "QA006",
+   "file": "lib/shadcn-docs/textarea.tsx",
+   "line": 4,
+   "fingerprint": "22d03d305527a08b003af9a966d505c6",
+   "verdict": "fp",
+   "reason": "An import inside a code example held in a template string, not an import of this project."
+  },
+  {
+   "rule": "QA006",
+   "file": "lib/shadcn-examples.ts",
+   "line": 57,
+   "fingerprint": "6598cd0c51c120eefe30b5332b4a1109",
+   "verdict": "fp",
+   "reason": "An import inside a code example held in a template string, not an import of this project."
+  },
+  {
+   "rule": "QA006",
+   "file": "lib/shadcn-examples.ts",
+   "line": 58,
+   "fingerprint": "07360c07c3f1bab153360b68f3e48aaa",
+   "verdict": "fp",
+   "reason": "An import inside a code example held in a template string, not an import of this project."
+  },
+  {
+   "rule": "QA006",
+   "file": "lib/shadcn-examples.ts",
+   "line": 94,
+   "fingerprint": "89486cbe0cd9be02cb1ed8ba4790da96",
+   "verdict": "fp",
+   "reason": "An import inside a code example held in a template string, not an import of this project."
+  },
+  {
+   "rule": "QA006",
+   "file": "lib/shadcn-examples.ts",
+   "line": 145,
+   "fingerprint": "8825f6cb7011f44dc3e6f0cfacef0d8e",
+   "verdict": "fp",
+   "reason": "An import inside a code example held in a template string, not an import of this project."
+  },
+  {
+   "rule": "QA006",
+   "file": "lib/shadcn-examples.ts",
+   "line": 146,
+   "fingerprint": "7de0ac3a44da4a6672889c196362b858",
+   "verdict": "fp",
+   "reason": "An import inside a code example held in a template string, not an import of this project."
+  },
+  {
+   "rule": "QA006",
+   "file": "lib/shadcn-examples.ts",
+   "line": 147,
+   "fingerprint": "ce20a233c0337f1c5e2323403fb4a8f4",
+   "verdict": "fp",
+   "reason": "An import inside a code example held in a template string, not an import of this project."
+  },
+  {
+   "rule": "QA006",
+   "file": "lib/shadcn-examples.ts",
+   "line": 175,
+   "fingerprint": "8b92089a3c1051339aac06b592f38f33",
+   "verdict": "fp",
+   "reason": "An import inside a code example held in a template string, not an import of this project."
+  },
+  {
+   "rule": "QA006",
+   "file": "lib/shadcn-examples.ts",
+   "line": 176,
+   "fingerprint": "1d27018ea5b0b720a481446a2941fdbb",
+   "verdict": "fp",
+   "reason": "An import inside a code example held in a template string, not an import of this project."
+  },
+  {
+   "rule": "QA002",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
+   "verdict": "tp",
+   "reason": "No CI configuration is committed."
+  },
+  {
+   "rule": "UI016",
+   "file": "preview-kits/baseui/components/ui/attachment.tsx",
+   "line": 173,
+   "fingerprint": "072f037adf9444f038154d1818471a3e",
+   "verdict": "fp",
+   "reason": "Component kit shipped to the generated-app preview; the popup positioners and panels are not focus targets."
+  },
+  {
+   "rule": "UI016",
+   "file": "preview-kits/baseui/components/ui/combobox.tsx",
+   "line": 270,
+   "fingerprint": "a893dcc4031965b029c9672a12a2a37e",
+   "verdict": "fp",
+   "reason": "Component kit shipped to the generated-app preview; the popup positioners and panels are not focus targets."
+  },
+  {
+   "rule": "UI016",
+   "file": "preview-kits/baseui/components/ui/context-menu.tsx",
+   "line": 47,
+   "fingerprint": "1ccd08b5fa0e1f39aeb995e2de829c6f",
+   "verdict": "fp",
+   "reason": "Component kit shipped to the generated-app preview; the popup positioners and panels are not focus targets."
+  },
+  {
+   "rule": "UI016",
+   "file": "preview-kits/baseui/components/ui/dropdown-menu.tsx",
+   "line": 34,
+   "fingerprint": "aa4a11f710cb00f0ef188c96f6245ca0",
+   "verdict": "fp",
+   "reason": "Component kit shipped to the generated-app preview; the popup positioners and panels are not focus targets."
+  },
+  {
+   "rule": "UI016",
+   "file": "preview-kits/baseui/components/ui/tabs.tsx",
+   "line": 74,
+   "fingerprint": "b55ccc21cc286e5e158bfdfd78147463",
+   "verdict": "fp",
+   "reason": "Component kit shipped to the generated-app preview; the popup positioners and panels are not focus targets."
+  },
+  {
+   "rule": "DATA003",
+   "file": "prisma/migrations/20241230203627_chat_and_message/migration.sql",
+   "line": 1,
+   "fingerprint": "1fffa0cc3ddbafceb175b95d027d49d2",
+   "verdict": "tp",
+   "reason": "The migration drops a table, destroying its data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "prisma/migrations/20241230203627_chat_and_message/migration.sql",
+   "line": 3,
+   "fingerprint": "e79414c2a544c3fbaadfa34bdb183d1b",
+   "verdict": "tp",
+   "reason": "The migration drops a table, destroying its data."
+  }
+ ]
+}

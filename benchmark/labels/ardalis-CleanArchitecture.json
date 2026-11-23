@@ -1,0 +1,46 @@
+{
+ "repo": "ardalis-CleanArchitecture",
+ "commit": "c2781d2fb5703de98dc1019d65ab7246fb95e3e6",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docs-build.yml",
+   "line": 41,
+   "fingerprint": "063e15a9f25a3df57e6d7cbaed85e21d",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/publish-templates.yml",
+   "line": 83,
+   "fingerprint": "cf241b076910a7ad36b72ec9d13c272c",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/publish-templates.yml",
+   "line": 132,
+   "fingerprint": "1b4dbd50a90d9ad327c818ff895658d2",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/publish.yml",
+   "line": 52,
+   "fingerprint": "c65b55709351ee259bc16edfb091b3cf",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/publish.yml",
+   "line": 66,
+   "fingerprint": "bf0a27c63ead69c45e580d67525a2cc9",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  }
+ ]
+}

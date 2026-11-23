@@ -1,0 +1,158 @@
+{
+ "repo": "fastapi-react",
+ "commit": "af17f2d422d0ebc5f173e83f2c6931045ab055b0",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/config.yml",
+   "line": 24,
+   "fingerprint": "30796e2ad6363bde6fff2dfaa0138a09",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/config.yml",
+   "line": 28,
+   "fingerprint": "09701c0883e5946c2e16ac55a21d1e6e",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "REL006",
+   "file": "{{cookiecutter.project_slug}}/backend/Dockerfile",
+   "line": 1,
+   "fingerprint": "04f30606ffa88599d710d648d2377998",
+   "verdict": "tp",
+   "reason": "The service has no health-check endpoint."
+  },
+  {
+   "rule": "CFG001",
+   "file": "{{cookiecutter.project_slug}}/backend/Dockerfile",
+   "line": 2,
+   "fingerprint": "9c2be89abed0a7235ca8ab65bbb8ed68",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "SEC004",
+   "file": "{{cookiecutter.project_slug}}/backend/app/core/security.py",
+   "line": 10,
+   "fingerprint": "1ddadd423354e5bd3eed06793a82aaf4",
+   "verdict": "fp",
+   "reason": "A cookiecutter placeholder ({{cookiecutter.secret_key}}), filled when the project is generated."
+  },
+  {
+   "rule": "DATA006",
+   "file": "{{cookiecutter.project_slug}}/backend/app/core/security.py",
+   "line": 26,
+   "fingerprint": "f159e6567e8f59d13dd29e3d21a94f98",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() returns a naive datetime."
+  },
+  {
+   "rule": "DATA006",
+   "file": "{{cookiecutter.project_slug}}/backend/app/core/security.py",
+   "line": 28,
+   "fingerprint": "bca24ffed3ab4a3f8bfc7dcbd77efbe2",
+   "verdict": "tp",
+   "reason": "datetime.utcnow() returns a naive datetime."
+  },
+  {
+   "rule": "BE009",
+   "file": "{{cookiecutter.project_slug}}/backend/app/db/crud.py",
+   "line": 64,
+   "fingerprint": "4b5783a0c5c76fcc9cccd1ec892ef174",
+   "verdict": "fp",
+   "reason": "update_data comes from a Pydantic model's dict(exclude_unset=True), so only declared fields are set."
+  },
+  {
+   "rule": "CFG001",
+   "file": "{{cookiecutter.project_slug}}/frontend/Dockerfile",
+   "line": 1,
+   "fingerprint": "134109a9227aa041e606d8566d448b76",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "DEP005",
+   "file": "{{cookiecutter.project_slug}}/frontend/package.json",
+   "line": 1,
+   "fingerprint": "6b0a1ab7685b0008521cf2fef9d9d418",
+   "verdict": "tp",
+   "reason": "package.json has dependencies but no lockfile."
+  },
+  {
+   "rule": "QA007",
+   "file": "{{cookiecutter.project_slug}}/frontend/src/Routes.tsx",
+   "line": 3,
+   "fingerprint": "5ed3a3b16f854e9d77ab7ade84411db0",
+   "verdict": "tp",
+   "reason": "react-router is imported but not declared."
+  },
+  {
+   "rule": "FE005",
+   "file": "{{cookiecutter.project_slug}}/frontend/src/admin/authProvider.ts",
+   "line": 29,
+   "fingerprint": "b6e45ffaba6c36bd986cf9b47fbea910",
+   "verdict": "tp",
+   "reason": "The auth token is stored in localStorage."
+  },
+  {
+   "rule": "FE003",
+   "file": "{{cookiecutter.project_slug}}/frontend/src/admin/authProvider.ts",
+   "line": 30,
+   "fingerprint": "49d936b18a91e1aceec1a7b42eb3056c",
+   "verdict": "tp",
+   "reason": "Roles and permissions are read from browser storage to decide what the UI allows."
+  },
+  {
+   "rule": "FE003",
+   "file": "{{cookiecutter.project_slug}}/frontend/src/admin/authProvider.ts",
+   "line": 49,
+   "fingerprint": "dca9d10bf090da49c9c97aa540f90656",
+   "verdict": "tp",
+   "reason": "Roles and permissions are read from browser storage to decide what the UI allows."
+  },
+  {
+   "rule": "FE003",
+   "file": "{{cookiecutter.project_slug}}/frontend/src/utils/auth.ts",
+   "line": 4,
+   "fingerprint": "8bea99de69b73e71b6454d037004bd27",
+   "verdict": "tp",
+   "reason": "Roles and permissions are read from browser storage to decide what the UI allows."
+  },
+  {
+   "rule": "FE005",
+   "file": "{{cookiecutter.project_slug}}/frontend/src/utils/auth.ts",
+   "line": 51,
+   "fingerprint": "76af927f41c00e0048098f8d64250c76",
+   "verdict": "tp",
+   "reason": "The auth token is stored in localStorage."
+  },
+  {
+   "rule": "FE003",
+   "file": "{{cookiecutter.project_slug}}/frontend/src/utils/auth.ts",
+   "line": 52,
+   "fingerprint": "c4d78cad1514ab4598f1ffacf1fb622c",
+   "verdict": "tp",
+   "reason": "Roles and permissions are read from browser storage to decide what the UI allows."
+  },
+  {
+   "rule": "FE005",
+   "file": "{{cookiecutter.project_slug}}/frontend/src/utils/auth.ts",
+   "line": 108,
+   "fingerprint": "0a783986bcd09f22a4a06a3a3077cb9e",
+   "verdict": "tp",
+   "reason": "The auth token is stored in localStorage."
+  },
+  {
+   "rule": "FE003",
+   "file": "{{cookiecutter.project_slug}}/frontend/src/utils/auth.ts",
+   "line": 109,
+   "fingerprint": "0f34aaf2c57d506d4b54717d7df2f7f1",
+   "verdict": "tp",
+   "reason": "Roles and permissions are read from browser storage to decide what the UI allows."
+  }
+ ]
+}

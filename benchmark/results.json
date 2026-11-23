@@ -1,27 +1,35 @@
 {
  "tool": "vibeaudit benchmark",
- "corpus": 105,
- "scanned": 105,
+ "corpus": 125,
+ "scanned": 125,
  "skipped": {},
  "heldout": [
   "DVWA",
   "Schematic",
   "Timinute",
+  "ardalis-CleanArchitecture",
+  "atuin",
   "careconnect",
   "damn-vulnerable-llm-agent",
   "dvpwa",
+  "fastapi-react",
   "flasky",
   "go-base",
+  "go-gin-example",
   "govwa",
   "langchain-nextjs-template",
   "laravel-realworld-example-app",
+  "laravel.io",
+  "llamacoder",
   "mCaptcha",
   "next-saas-stripe-starter",
   "nodejs-whisper",
   "openai-assistants-quickstart",
   "piggymetrics",
+  "platforms",
   "podinfo",
   "realworld-axum-sqlx",
+  "realworld-springboot-java",
   "svix-webhooks",
   "symfony-demo",
   "terragoat",
@@ -89,8 +97,8 @@
    "fixed_fp": 0
   },
   "chat-langchain": {
-   "findings": 4,
-   "labelled": 4,
+   "findings": 5,
+   "labelled": 5,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 4
@@ -355,11 +363,11 @@
    "fixed_fp": 8
   },
   "nodegoat": {
-   "findings": 14,
-   "labelled": 14,
+   "findings": 12,
+   "labelled": 12,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 3
+   "fixed_fp": 5
   },
   "nodejs-whisper": {
    "findings": 1,
@@ -369,8 +377,8 @@
    "fixed_fp": 0
   },
   "pygoat": {
-   "findings": 176,
-   "labelled": 176,
+   "findings": 184,
+   "labelled": 184,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
@@ -766,6 +774,146 @@
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
+  },
+  "roomGPT": {
+   "findings": 6,
+   "labelled": 6,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "llamacoder": {
+   "findings": 47,
+   "labelled": 47,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "nextjs-openai-doc-search": {
+   "findings": 6,
+   "labelled": 6,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "platforms": {
+   "findings": 6,
+   "labelled": 6,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "ai-pdf-chatbot-langchain": {
+   "findings": 3,
+   "labelled": 3,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "fastapi-realworld-example-app": {
+   "findings": 11,
+   "labelled": 11,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "fastapi-react": {
+   "findings": 19,
+   "labelled": 19,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "hackathon-starter": {
+   "findings": 23,
+   "labelled": 23,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "node-express-mongoose-demo": {
+   "findings": 5,
+   "labelled": 5,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "chathn": {
+   "findings": 10,
+   "labelled": 10,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "go-gin-example": {
+   "findings": 8,
+   "labelled": 8,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "ardanlabs-service": {
+   "findings": 18,
+   "labelled": 18,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "spring-petclinic-rest": {
+   "findings": 3,
+   "labelled": 3,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "realworld-springboot-java": {
+   "findings": 10,
+   "labelled": 10,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "jasontaylordev-CleanArchitecture": {
+   "findings": 15,
+   "labelled": 15,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "ardalis-CleanArchitecture": {
+   "findings": 5,
+   "labelled": 5,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "kellnr": {
+   "findings": 46,
+   "labelled": 46,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "atuin": {
+   "findings": 155,
+   "labelled": 155,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "linkstack": {
+   "findings": 48,
+   "labelled": 48,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "laravel.io": {
+   "findings": 12,
+   "labelled": 12,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
   }
  },
  "rules": {
@@ -823,12 +971,12 @@
   "AUTH001": {
    "title": "State-changing endpoint without authentication",
    "preview": false,
-   "tp": 61,
-   "fp": 10,
+   "tp": 71,
+   "fp": 18,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8592,
-   "precision_pessimistic": 0.8592,
+   "precision": 0.7978,
+   "precision_pessimistic": 0.7978,
    "seeded_expected": 8,
    "seeded_found": 8,
    "seeded_recall": 1.0,
@@ -843,12 +991,22 @@
      0,
      0
     ],
+    "atuin": [
+     0,
+     3,
+     0
+    ],
     "careconnect": [
      1,
      0,
      0
     ],
     "chatbot-ui": [
+     1,
+     0,
+     0
+    ],
+    "chathn": [
      1,
      0,
      0
@@ -908,8 +1066,23 @@
      0,
      0
     ],
+    "linkstack": [
+     0,
+     1,
+     0
+    ],
+    "llamacoder": [
+     7,
+     0,
+     0
+    ],
     "next-learn": [
      3,
+     0,
+     0
+    ],
+    "nextjs-openai-doc-search": [
+     1,
      0,
      0
     ],
@@ -924,6 +1097,16 @@
      0
     ],
     "pygoat": [
+     1,
+     0,
+     0
+    ],
+    "realworld-springboot-java": [
+     0,
+     4,
+     0
+    ],
+    "roomGPT": [
      1,
      0,
      0
@@ -960,6 +1143,11 @@
      0,
      0
     ],
+    "atuin": [
+     0,
+     3,
+     0
+    ],
     "conveyor": [
      4,
      0,
@@ -990,9 +1178,19 @@
      1,
      0
     ],
+    "linkstack": [
+     0,
+     1,
+     0
+    ],
     "piggymetrics": [
      0,
      1,
+     0
+    ],
+    "realworld-springboot-java": [
+     0,
+     4,
      0
     ],
     "snipe-it": [
@@ -1011,11 +1209,11 @@
    "title": "Admin endpoint without a role check",
    "preview": false,
    "tp": 19,
-   "fp": 7,
+   "fp": 8,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.7308,
-   "precision_pessimistic": 0.7308,
+   "precision": 0.7037,
+   "precision_pessimistic": 0.7037,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
@@ -1035,6 +1233,11 @@
      6,
      0
     ],
+    "linkstack": [
+     0,
+     1,
+     0
+    ],
     "uniedit-server": [
      17,
      0,
@@ -1052,6 +1255,11 @@
      6,
      0
     ],
+    "linkstack": [
+     0,
+     1,
+     0
+    ],
     "uniedit-server": [
      17,
      0,
@@ -1062,12 +1270,12 @@
   "AUTH003": {
    "title": "Possible insecure direct object reference (IDOR)",
    "preview": false,
-   "tp": 25,
-   "fp": 20,
+   "tp": 29,
+   "fp": 21,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5556,
-   "precision_pessimistic": 0.5556,
+   "precision": 0.58,
+   "precision_pessimistic": 0.58,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -1094,6 +1302,16 @@
     ],
     "dvcsharp-api": [
      1,
+     0,
+     0
+    ],
+    "fastapi-realworld-example-app": [
+     0,
+     1,
+     0
+    ],
+    "go-gin-example": [
+     4,
      0,
      0
     ],
@@ -1171,6 +1389,11 @@
     ],
     "dvcsharp-api": [
      1,
+     0,
+     0
+    ],
+    "go-gin-example": [
+     4,
      0,
      0
     ],
@@ -1257,15 +1480,20 @@
    "title": "Supabase table without Row Level Security",
    "preview": false,
    "tp": 2,
-   "fp": 0,
+   "fp": 29,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.0645,
+   "precision_pessimistic": 0.0645,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "atuin": [
+     0,
+     29,
+     0
+    ],
     "prompt-sculptor-49": [
      2,
      0,
@@ -1375,12 +1603,12 @@
   "AUTH010": {
    "title": "Login endpoint without rate limiting",
    "preview": false,
-   "tp": 23,
+   "tp": 25,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9583,
-   "precision_pessimistic": 0.9583,
+   "precision": 0.9615,
+   "precision_pessimistic": 0.9615,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -1406,6 +1634,11 @@
      0
     ],
     "dvna": [
+     1,
+     0,
+     0
+    ],
+    "fastapi-realworld-example-app": [
      1,
      0,
      0
@@ -1451,6 +1684,11 @@
      0
     ],
     "realworld-rust-axum-sqlx": [
+     1,
+     0,
+     0
+    ],
+    "realworld-springboot-java": [
      1,
      0,
      0
@@ -1503,6 +1741,11 @@
      0
     ],
     "realworld-rust-axum-sqlx": [
+     1,
+     0,
+     0
+    ],
+    "realworld-springboot-java": [
      1,
      0,
      0
@@ -1572,22 +1815,44 @@
   "AUTH014": {
    "title": "Rate limit keyed on a client-controlled header",
    "preview": true,
-   "tp": 0,
+   "tp": 2,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {},
-   "preview_by_repo": {}
+   "by_repo": {
+    "chathn": [
+     1,
+     0,
+     0
+    ],
+    "llamacoder": [
+     1,
+     0,
+     0
+    ]
+   },
+   "preview_by_repo": {
+    "chathn": [
+     1,
+     0,
+     0
+    ],
+    "llamacoder": [
+     1,
+     0,
+     0
+    ]
+   }
   },
   "AUTH015": {
    "title": "Password change keeps old sessions valid",
    "preview": true,
-   "tp": 7,
+   "tp": 8,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -1612,6 +1877,11 @@
      0,
      0
     ],
+    "laravel.io": [
+     1,
+     0,
+     0
+    ],
     "toWers": [
      1,
      0,
@@ -1631,6 +1901,11 @@
     ],
     "full-stack-fastapi-template": [
      2,
+     0,
+     0
+    ],
+    "laravel.io": [
+     1,
      0,
      0
     ],
@@ -2013,11 +2288,11 @@
    "title": "Unsafe deserialization",
    "preview": true,
    "tp": 4,
-   "fp": 7,
+   "fp": 8,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.3636,
-   "precision_pessimistic": 0.3636,
+   "precision": 0.3333,
+   "precision_pessimistic": 0.3333,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -2025,6 +2300,11 @@
     "Vulnerable-Flask-App": [
      1,
      0,
+     0
+    ],
+    "atuin": [
+     0,
+     1,
      0
     ],
     "opengpts": [
@@ -2049,6 +2329,11 @@
      0,
      0
     ],
+    "atuin": [
+     0,
+     1,
+     0
+    ],
     "opengpts": [
      0,
      1,
@@ -2070,11 +2355,11 @@
    "title": "Server-side request forgery (SSRF)",
    "preview": false,
    "tp": 5,
-   "fp": 6,
+   "fp": 7,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.4545,
-   "precision_pessimistic": 0.4545,
+   "precision": 0.4167,
+   "precision_pessimistic": 0.4167,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -2107,6 +2392,11 @@
     "pygoat": [
      1,
      0,
+     0
+    ],
+    "roomGPT": [
+     0,
+     1,
      0
     ],
     "toWers": [
@@ -2147,11 +2437,11 @@
    "title": "Path traversal",
    "preview": false,
    "tp": 19,
-   "fp": 32,
+   "fp": 38,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.3725,
-   "precision_pessimistic": 0.3725,
+   "precision": 0.3333,
+   "precision_pessimistic": 0.3333,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -2194,6 +2484,11 @@
     "laravel-realworld-example-app": [
      0,
      1,
+     0
+    ],
+    "linkstack": [
+     0,
+     6,
      0
     ],
     "podinfo": [
@@ -2273,6 +2568,11 @@
      1,
      0
     ],
+    "linkstack": [
+     0,
+     6,
+     0
+    ],
     "podinfo": [
      0,
      1,
@@ -2329,12 +2629,12 @@
   "BE008": {
    "title": "Open redirect",
    "preview": true,
-   "tp": 12,
-   "fp": 10,
+   "tp": 13,
+   "fp": 12,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5455,
-   "precision_pessimistic": 0.5455,
+   "precision": 0.52,
+   "precision_pessimistic": 0.52,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -2374,6 +2674,11 @@
      1,
      0
     ],
+    "linkstack": [
+     1,
+     1,
+     0
+    ],
     "nextjs-subscription-payments": [
      0,
      1,
@@ -2382,6 +2687,11 @@
     "nodegoat": [
      1,
      0,
+     0
+    ],
+    "platforms": [
+     0,
+     1,
      0
     ],
     "pygoat": [
@@ -2436,6 +2746,11 @@
      1,
      0
     ],
+    "linkstack": [
+     1,
+     1,
+     0
+    ],
     "nextjs-subscription-payments": [
      0,
      1,
@@ -2444,6 +2759,11 @@
     "nodegoat": [
      1,
      0,
+     0
+    ],
+    "platforms": [
+     0,
+     1,
      0
     ],
     "pygoat": [
@@ -2466,17 +2786,27 @@
   "BE009": {
    "title": "Mass assignment",
    "preview": false,
-   "tp": 2,
-   "fp": 0,
+   "tp": 4,
+   "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.8,
+   "precision_pessimistic": 0.8,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
    "by_repo": {
     "alerta": [
+     2,
+     0,
+     0
+    ],
+    "fastapi-react": [
+     0,
+     1,
+     0
+    ],
+    "node-express-mongoose-demo": [
      2,
      0,
      0
@@ -2488,15 +2818,21 @@
    "title": "NoSQL injection",
    "preview": false,
    "tp": 0,
-   "fp": 0,
+   "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 0.0,
+   "precision_pessimistic": 0.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {},
+   "by_repo": {
+    "hackathon-starter": [
+     0,
+     1,
+     0
+    ]
+   },
    "preview_by_repo": {}
   },
   "BE011": {
@@ -2704,12 +3040,12 @@
   "BE018": {
    "title": "No server-side input validation",
    "preview": true,
-   "tp": 9,
+   "tp": 12,
    "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6923,
-   "precision_pessimistic": 0.6923,
+   "precision": 0.75,
+   "precision_pessimistic": 0.75,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
@@ -2739,6 +3075,11 @@
      0,
      0
     ],
+    "chathn": [
+     1,
+     0,
+     0
+    ],
     "dvna": [
      1,
      0,
@@ -2750,6 +3091,11 @@
      0
     ],
     "learnathon-leaderboard": [
+     1,
+     0,
+     0
+    ],
+    "nextjs-openai-doc-search": [
      1,
      0,
      0
@@ -2770,6 +3116,11 @@
      0
     ],
     "prompt-sculptor-49": [
+     1,
+     0,
+     0
+    ],
+    "roomGPT": [
      1,
      0,
      0
@@ -2806,6 +3157,11 @@
      0,
      0
     ],
+    "chathn": [
+     1,
+     0,
+     0
+    ],
     "dvna": [
      1,
      0,
@@ -2817,6 +3173,11 @@
      0
     ],
     "learnathon-leaderboard": [
+     1,
+     0,
+     0
+    ],
+    "nextjs-openai-doc-search": [
      1,
      0,
      0
@@ -2837,6 +3198,11 @@
      0
     ],
     "prompt-sculptor-49": [
+     1,
+     0,
+     0
+    ],
+    "roomGPT": [
      1,
      0,
      0
@@ -2881,7 +3247,7 @@
   "CFG001": {
    "title": "Container runs as root",
    "preview": false,
-   "tp": 115,
+   "tp": 123,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2981,6 +3347,16 @@
      0,
      0
     ],
+    "fastapi-react": [
+     2,
+     0,
+     0
+    ],
+    "fastapi-realworld-example-app": [
+     1,
+     0,
+     0
+    ],
     "flexible-graphrag": [
      6,
      0,
@@ -3006,6 +3382,11 @@
      0,
      0
     ],
+    "go-gin-example": [
+     1,
+     0,
+     0
+    ],
     "go-test-bench": [
      1,
      0,
@@ -3013,6 +3394,11 @@
     ],
     "jhipster-sample-app": [
      1,
+     0,
+     0
+    ],
+    "kellnr": [
+     2,
      0,
      0
     ],
@@ -3038,6 +3424,11 @@
     ],
     "monica": [
      1,
+     0,
+     0
+    ],
+    "node-express-mongoose-demo": [
+     2,
      0,
      0
     ],
@@ -3147,12 +3538,12 @@
   "CFG002": {
    "title": "Unpinned container base image",
    "preview": true,
-   "tp": 15,
+   "tp": 16,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9375,
-   "precision_pessimistic": 0.9375,
+   "precision": 0.9412,
+   "precision_pessimistic": 0.9412,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -3188,6 +3579,11 @@
      0
     ],
     "go-clean-arch": [
+     1,
+     0,
+     0
+    ],
+    "go-gin-example": [
      1,
      0,
      0
@@ -3265,6 +3661,11 @@
      0
     ],
     "go-clean-arch": [
+     1,
+     0,
+     0
+    ],
+    "go-gin-example": [
      1,
      0,
      0
@@ -3553,7 +3954,7 @@
   "CFG010": {
    "title": "Third-party GitHub Action not pinned to a commit",
    "preview": false,
-   "tp": 267,
+   "tp": 328,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -3608,8 +4009,18 @@
      0,
      0
     ],
+    "ardalis-CleanArchitecture": [
+     5,
+     0,
+     0
+    ],
     "aspnetcore-realworld-example-app": [
      1,
+     0,
+     0
+    ],
+    "atuin": [
+     13,
      0,
      0
     ],
@@ -3653,6 +4064,16 @@
      0,
      0
     ],
+    "fastapi-react": [
+     2,
+     0,
+     0
+    ],
+    "fastapi-realworld-example-app": [
+     4,
+     0,
+     0
+    ],
     "flexible-graphrag": [
      6,
      0,
@@ -3678,8 +4099,23 @@
      0,
      0
     ],
+    "jasontaylordev-CleanArchitecture": [
+     2,
+     0,
+     0
+    ],
     "jira-meridian": [
      8,
+     0,
+     0
+    ],
+    "kellnr": [
+     30,
+     0,
+     0
+    ],
+    "linkstack": [
+     1,
      0,
      0
     ],
@@ -3713,6 +4149,16 @@
      0,
      0
     ],
+    "nextjs-openai-doc-search": [
+     1,
+     0,
+     0
+    ],
+    "node-express-mongoose-demo": [
+     1,
+     0,
+     0
+    ],
     "nodejs-whisper": [
      1,
      0,
@@ -3733,6 +4179,11 @@
      0,
      0
     ],
+    "realworld-springboot-java": [
+     1,
+     0,
+     0
+    ],
     "rustypaste": [
      19,
      0,
@@ -3750,6 +4201,11 @@
     ],
     "spring-petclinic": [
      2,
+     0,
+     0
+    ],
+    "spring-petclinic-rest": [
+     1,
      0,
      0
     ],
@@ -3819,31 +4275,48 @@
   "CFG012": {
    "title": "Privileged or host-mounted Kubernetes container",
    "preview": true,
-   "tp": 0,
+   "tp": 6,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
-   "seeded_expected": 1,
-   "seeded_found": 1,
-   "seeded_recall": 1.0,
-   "by_repo": {},
-   "preview_by_repo": {}
-  },
-  "CFG013": {
-   "title": "Kubernetes container without resource limits",
-   "preview": true,
-   "tp": 3,
-   "fp": 1,
-   "needs_review": 0,
-   "lost_tp": 0,
-   "precision": 0.75,
-   "precision_pessimistic": 0.75,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "ardanlabs-service": [
+     6,
+     0,
+     0
+    ]
+   },
+   "preview_by_repo": {
+    "ardanlabs-service": [
+     6,
+     0,
+     0
+    ]
+   }
+  },
+  "CFG013": {
+   "title": "Kubernetes container without resource limits",
+   "preview": true,
+   "tp": 7,
+   "fp": 1,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": 0.875,
+   "precision_pessimistic": 0.875,
+   "seeded_expected": 1,
+   "seeded_found": 1,
+   "seeded_recall": 1.0,
+   "by_repo": {
+    "ardanlabs-service": [
+     4,
+     0,
+     0
+    ],
     "podinfo": [
      1,
      1,
@@ -3856,6 +4329,11 @@
     ]
    },
    "preview_by_repo": {
+    "ardanlabs-service": [
+     4,
+     0,
+     0
+    ],
     "podinfo": [
      1,
      1,
@@ -4031,12 +4509,12 @@
   "DATA001": {
    "title": "Database query inside a loop (N+1)",
    "preview": true,
-   "tp": 201,
-   "fp": 36,
+   "tp": 210,
+   "fp": 37,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8481,
-   "precision_pessimistic": 0.8481,
+   "precision": 0.8502,
+   "precision_pessimistic": 0.8502,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -4059,6 +4537,11 @@
     "aspnetcore-realworld-example-app": [
      1,
      0,
+     0
+    ],
+    "atuin": [
+     0,
+     1,
      0
     ],
     "chat-systems": [
@@ -4101,6 +4584,16 @@
      1,
      0
     ],
+    "laravel.io": [
+     3,
+     0,
+     0
+    ],
+    "linkstack": [
+     5,
+     0,
+     0
+    ],
     "mCaptcha": [
      4,
      0,
@@ -4124,6 +4617,11 @@
     "snipe-it": [
      126,
      12,
+     0
+    ],
+    "spring-petclinic-rest": [
+     1,
+     0,
      0
     ],
     "svix-webhooks": [
@@ -4168,6 +4666,11 @@
      0,
      0
     ],
+    "atuin": [
+     0,
+     1,
+     0
+    ],
     "chat-systems": [
      2,
      0,
@@ -4208,6 +4711,16 @@
      1,
      0
     ],
+    "laravel.io": [
+     3,
+     0,
+     0
+    ],
+    "linkstack": [
+     5,
+     0,
+     0
+    ],
     "mCaptcha": [
      4,
      0,
@@ -4231,6 +4744,11 @@
     "snipe-it": [
      126,
      12,
+     0
+    ],
+    "spring-petclinic-rest": [
+     1,
+     0,
      0
     ],
     "svix-webhooks": [
@@ -4259,30 +4777,41 @@
    "title": "Whole user record returned to the client",
    "preview": false,
    "tp": 0,
-   "fp": 0,
+   "fp": 3,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 0.0,
+   "precision_pessimistic": 0.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {},
+   "by_repo": {
+    "hackathon-starter": [
+     0,
+     3,
+     0
+    ]
+   },
    "preview_by_repo": {}
   },
   "DATA003": {
    "title": "Destructive database migration",
    "preview": false,
-   "tp": 42,
+   "tp": 62,
    "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9545,
-   "precision_pessimistic": 0.9545,
+   "precision": 0.9688,
+   "precision_pessimistic": 0.9688,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "atuin": [
+     18,
+     0,
+     0
+    ],
     "chat-systems": [
      34,
      0,
@@ -4299,6 +4828,11 @@
      0
     ],
     "jira-meridian": [
+     2,
+     0,
+     0
+    ],
+    "llamacoder": [
      2,
      0,
      0
@@ -4370,12 +4904,12 @@
   "DATA006": {
    "title": "Timestamp without time zone",
    "preview": false,
-   "tp": 106,
-   "fp": 1,
+   "tp": 118,
+   "fp": 13,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9907,
-   "precision_pessimistic": 0.9907,
+   "precision": 0.9008,
+   "precision_pessimistic": 0.9008,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -4395,8 +4929,28 @@
      0,
      0
     ],
+    "ardanlabs-service": [
+     1,
+     0,
+     0
+    ],
+    "atuin": [
+     8,
+     8,
+     0
+    ],
     "bella-openapi": [
      2,
+     0,
+     0
+    ],
+    "fastapi-react": [
+     2,
+     0,
+     0
+    ],
+    "fastapi-realworld-example-app": [
+     1,
      0,
      0
     ],
@@ -4418,6 +4972,11 @@
     "pygoat": [
      5,
      0,
+     0
+    ],
+    "realworld-springboot-java": [
+     0,
+     4,
      0
     ],
     "sec-insights": [
@@ -4446,12 +5005,12 @@
   "DATA007": {
    "title": "Environment variable missing from the example env file",
    "preview": true,
-   "tp": 20,
+   "tp": 22,
    "fp": 15,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5714,
-   "precision_pessimistic": 0.5714,
+   "precision": 0.5946,
+   "precision_pessimistic": 0.5946,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -4479,6 +5038,11 @@
     "chat-systems": [
      0,
      3,
+     0
+    ],
+    "chathn": [
+     2,
+     0,
      0
     ],
     "opengpts": [
@@ -4538,6 +5102,11 @@
      3,
      0
     ],
+    "chathn": [
+     2,
+     0,
+     0
+    ],
     "opengpts": [
      2,
      2,
@@ -4573,16 +5142,22 @@
   "DATA008": {
    "title": "Database client created per request",
    "preview": false,
-   "tp": 0,
+   "tp": 1,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {},
+   "by_repo": {
+    "llamacoder": [
+     1,
+     0,
+     0
+    ]
+   },
    "preview_by_repo": {}
   },
   "DATA009": {
@@ -4670,16 +5245,21 @@
   "DATA011": {
    "title": "Index built without CONCURRENTLY on an existing table",
    "preview": true,
-   "tp": 71,
-   "fp": 0,
+   "tp": 74,
+   "fp": 7,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.9136,
+   "precision_pessimistic": 0.9136,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "atuin": [
+     3,
+     7,
+     0
+    ],
     "chat-systems": [
      49,
      0,
@@ -4702,6 +5282,11 @@
     ]
    },
    "preview_by_repo": {
+    "atuin": [
+     3,
+     7,
+     0
+    ],
     "chat-systems": [
      49,
      0,
@@ -4727,12 +5312,12 @@
   "DATA012": {
    "title": "Foreign key without an index",
    "preview": true,
-   "tp": 199,
+   "tp": 203,
    "fp": 13,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9387,
-   "precision_pessimistic": 0.9387,
+   "precision": 0.9398,
+   "precision_pessimistic": 0.9398,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -4749,6 +5334,11 @@
     ],
     "ai-chatbot": [
      6,
+     0,
+     0
+    ],
+    "ardanlabs-service": [
+     2,
      0,
      0
     ],
@@ -4780,6 +5370,11 @@
     "mCaptcha": [
      10,
      9,
+     0
+    ],
+    "nextjs-openai-doc-search": [
+     2,
+     0,
      0
     ],
     "nextjs-subscription-payments": [
@@ -4859,6 +5454,11 @@
      0,
      0
     ],
+    "ardanlabs-service": [
+     2,
+     0,
+     0
+    ],
     "chat-systems": [
      76,
      0,
@@ -4887,6 +5487,11 @@
     "mCaptcha": [
      10,
      9,
+     0
+    ],
+    "nextjs-openai-doc-search": [
+     2,
+     0,
      0
     ],
     "nextjs-subscription-payments": [
@@ -5119,7 +5724,7 @@
   "DEP005": {
    "title": "Dependencies are not locked",
    "preview": false,
-   "tp": 8,
+   "tp": 9,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -5140,6 +5745,11 @@
      0
     ],
     "dvna": [
+     1,
+     0,
+     0
+    ],
+    "fastapi-react": [
      1,
      0,
      0
@@ -5241,12 +5851,12 @@
   "FE001": {
    "title": "Cross-site scripting through a raw HTML sink",
    "preview": true,
-   "tp": 54,
-   "fp": 228,
+   "tp": 64,
+   "fp": 247,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.1915,
-   "precision_pessimistic": 0.1915,
+   "precision": 0.2058,
+   "precision_pessimistic": 0.2058,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -5281,6 +5891,11 @@
      3,
      0
     ],
+    "chat-langchain": [
+     0,
+     1,
+     0
+    ],
     "commerce": [
      1,
      1,
@@ -5301,6 +5916,11 @@
      1,
      0
     ],
+    "kellnr": [
+     0,
+     1,
+     0
+    ],
     "kimai": [
      0,
      11,
@@ -5309,6 +5929,16 @@
     "koel": [
      0,
      10,
+     0
+    ],
+    "laravel.io": [
+     0,
+     7,
+     0
+    ],
+    "linkstack": [
+     3,
+     9,
      0
     ],
     "mCaptcha": [
@@ -5347,8 +5977,8 @@
      0
     ],
     "pygoat": [
-     17,
-     20,
+     24,
+     21,
      0
     ],
     "snipe-it": [
@@ -5413,6 +6043,11 @@
      3,
      0
     ],
+    "chat-langchain": [
+     0,
+     1,
+     0
+    ],
     "commerce": [
      1,
      1,
@@ -5433,6 +6068,11 @@
      1,
      0
     ],
+    "kellnr": [
+     0,
+     1,
+     0
+    ],
     "kimai": [
      0,
      11,
@@ -5441,6 +6081,16 @@
     "koel": [
      0,
      10,
+     0
+    ],
+    "laravel.io": [
+     0,
+     7,
+     0
+    ],
+    "linkstack": [
+     3,
+     9,
      0
     ],
     "mCaptcha": [
@@ -5479,8 +6129,8 @@
      0
     ],
     "pygoat": [
-     17,
-     20,
+     24,
+     21,
      0
     ],
     "snipe-it": [
@@ -5544,27 +6194,33 @@
   "FE003": {
    "title": "Authorization state kept in browser storage",
    "preview": false,
-   "tp": 0,
+   "tp": 5,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {},
+   "by_repo": {
+    "fastapi-react": [
+     5,
+     0,
+     0
+    ]
+   },
    "preview_by_repo": {}
   },
   "FE004": {
    "title": "postMessage handler without origin check",
    "preview": false,
-   "tp": 3,
+   "tp": 5,
    "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6,
-   "precision_pessimistic": 0.6,
+   "precision": 0.7143,
+   "precision_pessimistic": 0.7143,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -5577,6 +6233,11 @@
     "koel": [
      0,
      1,
+     0
+    ],
+    "llamacoder": [
+     2,
+     0,
      0
     ],
     "openui": [
@@ -5595,7 +6256,7 @@
   "FE005": {
    "title": "Auth token stored in localStorage",
    "preview": false,
-   "tp": 8,
+   "tp": 11,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -5612,6 +6273,11 @@
     ],
     "careconnect": [
      1,
+     0,
+     0
+    ],
+    "fastapi-react": [
+     3,
      0,
      0
     ],
@@ -5636,7 +6302,7 @@
   "FE006": {
    "title": "Production source maps enabled",
    "preview": false,
-   "tp": 3,
+   "tp": 4,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -5656,6 +6322,11 @@
      0,
      0
     ],
+    "kellnr": [
+     1,
+     0,
+     0
+    ],
     "torrent-aggregator": [
      1,
      0,
@@ -5668,11 +6339,11 @@
    "title": "Hardcoded localhost URL in frontend code",
    "preview": true,
    "tp": 19,
-   "fp": 5,
+   "fp": 6,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.7917,
-   "precision_pessimistic": 0.7917,
+   "precision": 0.76,
+   "precision_pessimistic": 0.76,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -5690,6 +6361,11 @@
     "flexible-graphrag": [
      15,
      2,
+     0
+    ],
+    "kellnr": [
+     0,
+     1,
      0
     ],
     "langchain-nextjs-template": [
@@ -5727,6 +6403,11 @@
     "flexible-graphrag": [
      15,
      2,
+     0
+    ],
+    "kellnr": [
+     0,
+     1,
      0
     ],
     "langchain-nextjs-template": [
@@ -5815,15 +6496,25 @@
    "title": "SQL built with string formatting (Go)",
    "preview": true,
    "tp": 4,
-   "fp": 1,
+   "fp": 5,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8,
-   "precision_pessimistic": 0.8,
+   "precision": 0.4444,
+   "precision_pessimistic": 0.4444,
    "seeded_expected": 0,
    "seeded_found": 0,
    "seeded_recall": null,
    "by_repo": {
+    "ardanlabs-service": [
+     0,
+     2,
+     0
+    ],
+    "go-gin-example": [
+     0,
+     2,
+     0
+    ],
     "go-test-bench": [
      1,
      0,
@@ -5846,6 +6537,16 @@
     ]
    },
    "preview_by_repo": {
+    "ardanlabs-service": [
+     0,
+     2,
+     0
+    ],
+    "go-gin-example": [
+     0,
+     2,
+     0
+    ],
     "go-test-bench": [
      1,
      0,
@@ -5955,17 +6656,29 @@
   "JAVA003": {
    "title": "Security chain permits every request",
    "preview": true,
-   "tp": 0,
+   "tp": 1,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 0,
    "seeded_found": 0,
    "seeded_recall": null,
-   "by_repo": {},
-   "preview_by_repo": {}
+   "by_repo": {
+    "spring-petclinic-rest": [
+     1,
+     0,
+     0
+    ]
+   },
+   "preview_by_repo": {
+    "spring-petclinic-rest": [
+     1,
+     0,
+     0
+    ]
+   }
   },
   "JAVA004": {
    "title": "Polymorphic deserialization without an allow-list",
@@ -6015,7 +6728,7 @@
   "LLM003": {
    "title": "LLM call without an output token limit",
    "preview": false,
-   "tp": 30,
+   "tp": 31,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -6037,6 +6750,11 @@
     ],
     "chatbot-ui": [
      4,
+     0,
+     0
+    ],
+    "chathn": [
+     1,
      0,
      0
     ],
@@ -6267,12 +6985,12 @@
   "LLM012": {
    "title": "Retired or deprecated model hardcoded",
    "preview": false,
-   "tp": 27,
+   "tp": 28,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9643,
-   "precision_pessimistic": 0.9643,
+   "precision": 0.9655,
+   "precision_pessimistic": 0.9655,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -6284,6 +7002,11 @@
     ],
     "chatbot-ui": [
      11,
+     0,
+     0
+    ],
+    "chathn": [
+     1,
      0,
      0
     ],
@@ -6384,7 +7107,7 @@
   "LLM017": {
    "title": "Streamed completion not cancelled on disconnect",
    "preview": true,
-   "tp": 13,
+   "tp": 14,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -6400,6 +7123,11 @@
      0
     ],
     "chatgpt-your-files": [
+     1,
+     0,
+     0
+    ],
+    "chathn": [
      1,
      0,
      0
@@ -6422,6 +7150,11 @@
      0
     ],
     "chatgpt-your-files": [
+     1,
+     0,
+     0
+    ],
+    "chathn": [
      1,
      0,
      0
@@ -6498,17 +7231,29 @@
   "LLM021": {
    "title": "User text in a prompt without delimiters",
    "preview": true,
-   "tp": 0,
+   "tp": 2,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {},
-   "preview_by_repo": {}
+   "by_repo": {
+    "hackathon-starter": [
+     2,
+     0,
+     0
+    ]
+   },
+   "preview_by_repo": {
+    "hackathon-starter": [
+     2,
+     0,
+     0
+    ]
+   }
   },
   "LLM022": {
    "title": "Retrieved documents stored without cleaning (chunk poisoning)",
@@ -6627,7 +7372,7 @@
   "QA001": {
    "title": "No automated tests",
    "preview": true,
-   "tp": 17,
+   "tp": 22,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -6648,6 +7393,11 @@
      0
     ],
     "chatgpt-your-files": [
+     1,
+     0,
+     0
+    ],
+    "chathn": [
      1,
      0,
      0
@@ -6687,12 +7437,22 @@
      0,
      0
     ],
+    "linkstack": [
+     1,
+     0,
+     0
+    ],
     "next-learn": [
      1,
      0,
      0
     ],
     "next-saas-stripe-starter": [
+     1,
+     0,
+     0
+    ],
+    "nextjs-openai-doc-search": [
      1,
      0,
      0
@@ -6707,7 +7467,17 @@
      0,
      0
     ],
+    "platforms": [
+     1,
+     0,
+     0
+    ],
     "prompt-sculptor-49": [
+     1,
+     0,
+     0
+    ],
+    "roomGPT": [
      1,
      0,
      0
@@ -6739,6 +7509,11 @@
      0,
      0
     ],
+    "chathn": [
+     1,
+     0,
+     0
+    ],
     "commerce": [
      1,
      0,
@@ -6774,12 +7549,22 @@
      0,
      0
     ],
+    "linkstack": [
+     1,
+     0,
+     0
+    ],
     "next-learn": [
      1,
      0,
      0
     ],
     "next-saas-stripe-starter": [
+     1,
+     0,
+     0
+    ],
+    "nextjs-openai-doc-search": [
      1,
      0,
      0
@@ -6794,7 +7579,17 @@
      0,
      0
     ],
+    "platforms": [
+     1,
+     0,
+     0
+    ],
     "prompt-sculptor-49": [
+     1,
+     0,
+     0
+    ],
+    "roomGPT": [
      1,
      0,
      0
@@ -6814,7 +7609,7 @@
   "QA002": {
    "title": "No continuous integration",
    "preview": false,
-   "tp": 25,
+   "tp": 29,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -6840,6 +7635,11 @@
      0
     ],
     "chatgpt-your-files": [
+     1,
+     0,
+     0
+    ],
+    "chathn": [
      1,
      0,
      0
@@ -6884,6 +7684,11 @@
      0,
      0
     ],
+    "llamacoder": [
+     1,
+     0,
+     0
+    ],
     "microblog": [
      1,
      0,
@@ -6909,7 +7714,17 @@
      0,
      0
     ],
+    "platforms": [
+     1,
+     0,
+     0
+    ],
     "prompt-sculptor-49": [
+     1,
+     0,
+     0
+    ],
+    "roomGPT": [
      1,
      0,
      0
@@ -6956,11 +7771,11 @@
    "title": "Exception silently swallowed",
    "preview": true,
    "tp": 163,
-   "fp": 115,
+   "fp": 122,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5863,
-   "precision_pessimistic": 0.5863,
+   "precision": 0.5719,
+   "precision_pessimistic": 0.5719,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -6983,6 +7798,11 @@
     "alerta": [
      0,
      1,
+     0
+    ],
+    "atuin": [
+     0,
+     2,
      0
     ],
     "bella-openapi": [
@@ -7013,6 +7833,16 @@
     "laravel-realworld-example-app": [
      0,
      1,
+     0
+    ],
+    "linkstack": [
+     0,
+     1,
+     0
+    ],
+    "llamacoder": [
+     0,
+     4,
      0
     ],
     "monica": [
@@ -7087,6 +7917,11 @@
      1,
      0
     ],
+    "atuin": [
+     0,
+     2,
+     0
+    ],
     "bella-openapi": [
      4,
      0,
@@ -7115,6 +7950,16 @@
     "laravel-realworld-example-app": [
      0,
      1,
+     0
+    ],
+    "linkstack": [
+     0,
+     1,
+     0
+    ],
+    "llamacoder": [
+     0,
+     4,
      0
     ],
     "monica": [
@@ -7172,12 +8017,12 @@
   "QA004": {
    "title": "Security placeholder or TODO left in code",
    "preview": true,
-   "tp": 12,
+   "tp": 14,
    "fp": 3,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8,
-   "precision_pessimistic": 0.8,
+   "precision": 0.8235,
+   "precision_pessimistic": 0.8235,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -7219,6 +8064,11 @@
     ],
     "openui": [
      1,
+     0,
+     0
+    ],
+    "platforms": [
+     2,
      0,
      0
     ],
@@ -7286,6 +8136,11 @@
     ],
     "openui": [
      1,
+     0,
+     0
+    ],
+    "platforms": [
+     2,
      0,
      0
     ],
@@ -7367,11 +8222,11 @@
    "title": "Import of a file or name that does not exist",
    "preview": true,
    "tp": 14,
-   "fp": 41,
+   "fp": 70,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.2545,
-   "precision_pessimistic": 0.2545,
+   "precision": 0.1667,
+   "precision_pessimistic": 0.1667,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -7379,6 +8234,11 @@
     "BookStack": [
      0,
      5,
+     0
+    ],
+    "ai-pdf-chatbot-langchain": [
+     0,
+     1,
      0
     ],
     "careconnect": [
@@ -7396,9 +8256,24 @@
      12,
      0
     ],
+    "jasontaylordev-CleanArchitecture": [
+     0,
+     8,
+     0
+    ],
     "jhipster-sample-app": [
      0,
      1,
+     0
+    ],
+    "linkstack": [
+     0,
+     1,
+     0
+    ],
+    "llamacoder": [
+     0,
+     19,
      0
     ],
     "next-learn": [
@@ -7428,6 +8303,11 @@
      5,
      0
     ],
+    "ai-pdf-chatbot-langchain": [
+     0,
+     1,
+     0
+    ],
     "careconnect": [
      1,
      0,
@@ -7443,9 +8323,24 @@
      12,
      0
     ],
+    "jasontaylordev-CleanArchitecture": [
+     0,
+     8,
+     0
+    ],
     "jhipster-sample-app": [
      0,
      1,
+     0
+    ],
+    "linkstack": [
+     0,
+     1,
+     0
+    ],
+    "llamacoder": [
+     0,
+     19,
      0
     ],
     "next-learn": [
@@ -7473,12 +8368,12 @@
   "QA007": {
    "title": "Package imported but not declared as a dependency",
    "preview": true,
-   "tp": 50,
-   "fp": 6,
+   "tp": 56,
+   "fp": 7,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8929,
-   "precision_pessimistic": 0.8929,
+   "precision": 0.8889,
+   "precision_pessimistic": 0.8889,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -7493,9 +8388,19 @@
      0,
      0
     ],
+    "ai-pdf-chatbot-langchain": [
+     1,
+     0,
+     0
+    ],
     "alerta": [
      4,
      2,
+     0
+    ],
+    "atuin": [
+     0,
+     1,
      0
     ],
     "bakerydemo": [
@@ -7528,8 +8433,28 @@
      0,
      0
     ],
+    "fastapi-react": [
+     1,
+     0,
+     0
+    ],
+    "fastapi-realworld-example-app": [
+     2,
+     0,
+     0
+    ],
     "flexible-graphrag": [
      7,
+     0,
+     0
+    ],
+    "hackathon-starter": [
+     1,
+     0,
+     0
+    ],
+    "kellnr": [
+     1,
      0,
      0
     ],
@@ -7600,9 +8525,19 @@
      0,
      0
     ],
+    "ai-pdf-chatbot-langchain": [
+     1,
+     0,
+     0
+    ],
     "alerta": [
      4,
      2,
+     0
+    ],
+    "atuin": [
+     0,
+     1,
      0
     ],
     "bakerydemo": [
@@ -7635,8 +8570,28 @@
      0,
      0
     ],
+    "fastapi-react": [
+     1,
+     0,
+     0
+    ],
+    "fastapi-realworld-example-app": [
+     2,
+     0,
+     0
+    ],
     "flexible-graphrag": [
      7,
+     0,
+     0
+    ],
+    "hackathon-starter": [
+     1,
+     0,
+     0
+    ],
+    "kellnr": [
+     1,
      0,
      0
     ],
@@ -7788,12 +8743,12 @@
   "QA011": {
    "title": "Same function copied into several files",
    "preview": false,
-   "tp": 73,
+   "tp": 78,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9865,
-   "precision_pessimistic": 0.9865,
+   "precision": 0.9873,
+   "precision_pessimistic": 0.9873,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -7813,6 +8768,16 @@
      0,
      0
     ],
+    "ai-pdf-chatbot-langchain": [
+     1,
+     0,
+     0
+    ],
+    "atuin": [
+     3,
+     0,
+     0
+    ],
     "bella-openapi": [
      9,
      0,
@@ -7829,6 +8794,11 @@
      0
     ],
     "flask": [
+     1,
+     0,
+     0
+    ],
+    "kellnr": [
      1,
      0,
      0
@@ -7884,7 +8854,7 @@
   "REL001": {
    "title": "Outbound HTTP request without a timeout",
    "preview": false,
-   "tp": 71,
+   "tp": 80,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -7901,6 +8871,11 @@
     ],
     "alerta": [
      15,
+     0,
+     0
+    ],
+    "atuin": [
+     9,
      0,
      0
     ],
@@ -8001,6 +8976,11 @@
     ]
    },
    "preview_by_repo": {
+    "atuin": [
+     9,
+     0,
+     0
+    ],
     "bella-openapi": [
      1,
      0,
@@ -8149,7 +9129,7 @@
   "REL006": {
    "title": "No health-check endpoint",
    "preview": false,
-   "tp": 8,
+   "tp": 10,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -8165,6 +9145,16 @@
      0
     ],
     "dvga": [
+     1,
+     0,
+     0
+    ],
+    "fastapi-react": [
+     1,
+     0,
+     0
+    ],
+    "fastapi-realworld-example-app": [
      1,
      0,
      0
@@ -8206,11 +9196,11 @@
    "title": "Hardcoded API key or access token",
    "preview": false,
    "tp": 28,
-   "fp": 2,
+   "fp": 17,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9333,
-   "precision_pessimistic": 0.9333,
+   "precision": 0.6222,
+   "precision_pessimistic": 0.6222,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
@@ -8223,6 +9213,11 @@
     "JavaVulnerableLab": [
      1,
      0,
+     0
+    ],
+    "atuin": [
+     0,
+     15,
      0
     ],
     "bakerydemo": [
@@ -8251,12 +9246,12 @@
   "SEC002": {
    "title": "Private key committed",
    "preview": false,
-   "tp": 2,
-   "fp": 2,
+   "tp": 3,
+   "fp": 7,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5,
-   "precision_pessimistic": 0.5,
+   "precision": 0.3,
+   "precision_pessimistic": 0.3,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -8264,6 +9259,21 @@
     "BookStack": [
      0,
      1,
+     0
+    ],
+    "ardanlabs-service": [
+     1,
+     2,
+     0
+    ],
+    "atuin": [
+     0,
+     1,
+     0
+    ],
+    "kellnr": [
+     0,
+     2,
      0
     ],
     "nodegoat": [
@@ -8288,11 +9298,11 @@
    "title": "High-entropy secret assigned in code",
    "preview": true,
    "tp": 35,
-   "fp": 76,
+   "fp": 97,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.3153,
-   "precision_pessimistic": 0.3153,
+   "precision": 0.2652,
+   "precision_pessimistic": 0.2652,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -8310,6 +9320,11 @@
     "Timinute": [
      0,
      36,
+     0
+    ],
+    "atuin": [
+     0,
+     3,
      0
     ],
     "bakerydemo": [
@@ -8342,6 +9357,11 @@
      0,
      0
     ],
+    "hackathon-starter": [
+     0,
+     16,
+     0
+    ],
     "jhipster-sample-app": [
      1,
      0,
@@ -8350,6 +9370,11 @@
     "jira-meridian": [
      0,
      1,
+     0
+    ],
+    "kellnr": [
+     0,
+     2,
      0
     ],
     "koel": [
@@ -8439,6 +9464,11 @@
      36,
      0
     ],
+    "atuin": [
+     0,
+     3,
+     0
+    ],
     "bakerydemo": [
      0,
      1,
@@ -8469,6 +9499,11 @@
      0,
      0
     ],
+    "hackathon-starter": [
+     0,
+     16,
+     0
+    ],
     "jhipster-sample-app": [
      1,
      0,
@@ -8477,6 +9512,11 @@
     "jira-meridian": [
      0,
      1,
+     0
+    ],
+    "kellnr": [
+     0,
+     2,
      0
     ],
     "koel": [
@@ -8555,11 +9595,11 @@
    "title": "Hardcoded or default signing secret",
    "preview": false,
    "tp": 30,
-   "fp": 6,
+   "fp": 34,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8333,
-   "precision_pessimistic": 0.8333,
+   "precision": 0.4688,
+   "precision_pessimistic": 0.4688,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
@@ -8572,6 +9612,11 @@
     "alerta": [
      2,
      0,
+     0
+    ],
+    "atuin": [
+     0,
+     29,
      0
     ],
     "dvga": [
@@ -8589,6 +9634,11 @@
      0,
      0
     ],
+    "fastapi-react": [
+     0,
+     1,
+     0
+    ],
     "next-saas-stripe-starter": [
      0,
      1,
@@ -8597,11 +9647,6 @@
     "node-express-realworld-example-app": [
      3,
      0,
-     0
-    ],
-    "nodegoat": [
-     0,
-     2,
      0
     ],
     "pygoat": [
@@ -8621,15 +9666,20 @@
    "title": "Database URL with embedded password",
    "preview": false,
    "tp": 3,
-   "fp": 3,
+   "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5,
-   "precision_pessimistic": 0.5,
+   "precision": 0.4286,
+   "precision_pessimistic": 0.4286,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "atuin": [
+     0,
+     1,
+     0
+    ],
     "go-clean-template": [
      0,
      3,
@@ -8718,7 +9768,7 @@
    "title": "Secret exposed to the browser through a public env var",
    "preview": false,
    "tp": 0,
-   "fp": 3,
+   "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
    "precision": 0.0,
@@ -8730,6 +9780,11 @@
     "chat-copilot": [
      0,
      2,
+     0
+    ],
+    "laravel.io": [
+     0,
+     1,
      0
     ],
     "prompt-sculptor-49": [
@@ -8806,11 +9861,11 @@
    "title": "Hardcoded password",
    "preview": true,
    "tp": 25,
-   "fp": 36,
+   "fp": 37,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.4098,
-   "precision_pessimistic": 0.4098,
+   "precision": 0.4032,
+   "precision_pessimistic": 0.4032,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -8841,6 +9896,11 @@
      0
     ],
     "jhipster-sample-app": [
+     0,
+     1,
+     0
+    ],
+    "kellnr": [
      0,
      1,
      0
@@ -8892,6 +9952,11 @@
      1,
      0
     ],
+    "kellnr": [
+     0,
+     1,
+     0
+    ],
     "koel": [
      0,
      1,
@@ -8912,7 +9977,7 @@
   "UI001": {
    "title": "Image without alt text",
    "preview": false,
-   "tp": 38,
+   "tp": 39,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -8944,6 +10009,11 @@
     ],
     "govwa": [
      2,
+     0,
+     0
+    ],
+    "llamacoder": [
+     1,
      0,
      0
     ],
@@ -8993,12 +10063,12 @@
   "UI002": {
    "title": "Click handler on a non-interactive element",
    "preview": false,
-   "tp": 261,
+   "tp": 269,
    "fp": 11,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9596,
-   "precision_pessimistic": 0.9596,
+   "precision": 0.9607,
+   "precision_pessimistic": 0.9607,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
@@ -9038,13 +10108,28 @@
      1,
      0
     ],
+    "jasontaylordev-CleanArchitecture": [
+     3,
+     0,
+     0
+    ],
     "jira-meridian": [
      0,
      1,
      0
     ],
+    "kellnr": [
+     4,
+     0,
+     0
+    ],
     "koel": [
      7,
+     0,
+     0
+    ],
+    "llamacoder": [
+     1,
      0,
      0
     ],
@@ -9099,12 +10184,12 @@
   "UI003": {
    "title": "Form field without a label",
    "preview": false,
-   "tp": 129,
+   "tp": 133,
    "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9699,
-   "precision_pessimistic": 0.9699,
+   "precision": 0.9708,
+   "precision_pessimistic": 0.9708,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -9144,6 +10229,11 @@
      0,
      0
     ],
+    "jasontaylordev-CleanArchitecture": [
+     2,
+     0,
+     0
+    ],
     "koel": [
      3,
      1,
@@ -9151,6 +10241,11 @@
     ],
     "langchain-nextjs-template": [
      1,
+     0,
+     0
+    ],
+    "llamacoder": [
+     2,
      0,
      0
     ],
@@ -9532,7 +10627,7 @@
   "UI011": {
    "title": "No error page",
    "preview": false,
-   "tp": 9,
+   "tp": 10,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -9568,6 +10663,11 @@
      0
     ],
     "openai-assistants-quickstart": [
+     1,
+     0,
+     0
+    ],
+    "platforms": [
      1,
      0,
      0
@@ -9870,11 +10970,11 @@
    "title": "Focus outline removed",
    "preview": true,
    "tp": 18,
-   "fp": 15,
+   "fp": 39,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5455,
-   "precision_pessimistic": 0.5455,
+   "precision": 0.3158,
+   "precision_pessimistic": 0.3158,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -9924,6 +11024,16 @@
      0,
      0
     ],
+    "linkstack": [
+     0,
+     17,
+     0
+    ],
+    "llamacoder": [
+     0,
+     6,
+     0
+    ],
     "next-saas-stripe-starter": [
      0,
      2,
@@ -9931,6 +11041,11 @@
     ],
     "pomb": [
      1,
+     1,
+     0
+    ],
+    "roomGPT": [
+     0,
      1,
      0
     ],
@@ -9996,6 +11111,16 @@
      0,
      0
     ],
+    "linkstack": [
+     0,
+     17,
+     0
+    ],
+    "llamacoder": [
+     0,
+     6,
+     0
+    ],
     "next-saas-stripe-starter": [
      0,
      2,
@@ -10003,6 +11128,11 @@
     ],
     "pomb": [
      1,
+     1,
+     0
+    ],
+    "roomGPT": [
+     0,
      1,
      0
     ],

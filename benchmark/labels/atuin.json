@@ -1,0 +1,1246 @@
+{
+ "repo": "atuin",
+ "commit": "86573ef2dbeb8be5eea3835b91fbf5d5fc93991f",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/actions/docs-setup/action.yml",
+   "line": 11,
+   "fingerprint": "d84091d5a841de1e38314450ce2be110",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/beta-release.yml",
+   "line": 106,
+   "fingerprint": "29cd82757e4ae4a5ffe3d6140a357b73",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/beta-release.yml",
+   "line": 109,
+   "fingerprint": "6b27229a55584ae3ae629a55386c4315",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/devcontainer.yaml",
+   "line": 33,
+   "fingerprint": "7d51488ab1bfa303674950cfee22fc1f",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/devcontainer.yaml",
+   "line": 36,
+   "fingerprint": "8e31ae00be39ee8f800a3cc107d49feb",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/devcontainer.yaml",
+   "line": 46,
+   "fingerprint": "7a6192f63e8672f4f701404ea980eeab",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yaml",
+   "line": 42,
+   "fingerprint": "73e58bd77c0e8472c9c9c8edc812cead",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yaml",
+   "line": 45,
+   "fingerprint": "9e0dc60da1867bb6c49464d67e0b3c21",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yaml",
+   "line": 53,
+   "fingerprint": "de101f26b3370b945fe6346434307c6b",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker.yaml",
+   "line": 69,
+   "fingerprint": "efd55f097f8b76ff7eb5bbbf799a88ff",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/release.yml",
+   "line": 135,
+   "fingerprint": "b4bbc9c2be19a2fb20ec8eacc559db74",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/update-nix-deps.yml",
+   "line": 15,
+   "fingerprint": "e3809d99548bd1a5eef124e15b92d5b7",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/update-nix-deps.yml",
+   "line": 17,
+   "fingerprint": "697241e44679167de0f4241b473f9adb",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-ai/src/resume_tui/worker.rs",
+   "line": 481,
+   "fingerprint": "eb9457ab8514ed0a8a12b1baa27cc6eb",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-ai/src/resume_tui/worker.rs",
+   "line": 505,
+   "fingerprint": "633d37d6d2b4f1ef385acd2e2ba0bc2c",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-ai/src/resume_tui/worker.rs",
+   "line": 594,
+   "fingerprint": "08704398a9be63ed85f4b4ab42f7ba0b",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-ai/src/resume_tui/worker.rs",
+   "line": 639,
+   "fingerprint": "c05c3213453017822e726dbb11b43974",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-ai/src/tools/session/caller.rs",
+   "line": 157,
+   "fingerprint": "d42792ded21dc79593d03699c2e0bc0a",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-ai/src/tools/session/caller.rs",
+   "line": 158,
+   "fingerprint": "db7baaa6055d761dd6a11479afe7e4dd",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-ai/src/tools/session/caller.rs",
+   "line": 159,
+   "fingerprint": "62c67a3366bba8c374971f9dd1ec9c23",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-ai/src/tools/session/caller.rs",
+   "line": 173,
+   "fingerprint": "7ed4afa078b8d803af4ad628c1762ae2",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-ai/src/tools/session/caller.rs",
+   "line": 174,
+   "fingerprint": "f7f49325a10bf8a30d26f8cdb1b9e211",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-ai/src/tools/session/caller.rs",
+   "line": 187,
+   "fingerprint": "c5dea1af742ded810050f8b5ae8ef9b2",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-ai/src/tools/session/caller.rs",
+   "line": 194,
+   "fingerprint": "b7dc1024e35af7344be06b5d8156e96c",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-ai/src/tools/session/caller.rs",
+   "line": 206,
+   "fingerprint": "87e183240dfac84b8fa6bd4172a6a94d",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-ai/src/tools/session/caller.rs",
+   "line": 210,
+   "fingerprint": "66f743f2ed3ab01659ede9273f5d5c44",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-ai/src/tools/session/caller.rs",
+   "line": 222,
+   "fingerprint": "4d0bdb8f963acb7132f701246ae24cf5",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-ai/src/tools/session/caller.rs",
+   "line": 253,
+   "fingerprint": "abcd44a28bc73af67dbb1f8a832e4907",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-ai/src/tools/session/mod.rs",
+   "line": 321,
+   "fingerprint": "2b5f4b3dc3258375cd6e2e86a8803d79",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-ai/src/tools/session/mod.rs",
+   "line": 345,
+   "fingerprint": "282906ec252e0a5d6ef389b788cbc259",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-ai/src/tools/session/mod.rs",
+   "line": 376,
+   "fingerprint": "d8c36524f7e8714fc8ed64c87552fc14",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-ai/src/tools/session/mod.rs",
+   "line": 384,
+   "fingerprint": "f152d9893233f00058e6b8fafa733187",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-ai/src/tools/session/read.rs",
+   "line": 900,
+   "fingerprint": "16dbf93d9e603f847b405d27b88b7e8d",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-ai/src/tools/session/search.rs",
+   "line": 312,
+   "fingerprint": "8c66779fd24cae8343045d41c5d20fa7",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-client/meta-migrations/20260203030924_create_meta.sql",
+   "line": 1,
+   "fingerprint": "a489174a581c6c563148672c3f099813",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-client/migrations/20210422143411_create_history.sql",
+   "line": 2,
+   "fingerprint": "bb428c29a6367800e5a93b16f9653587",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-client/migrations/20220505083406_create-events.sql",
+   "line": 1,
+   "fingerprint": "a048622456aea90c9e0b040f02848d9a",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "DATA011",
+   "file": "crates/atuin-client/migrations/20220806155627_interactive_search_index.sql",
+   "line": 3,
+   "fingerprint": "9ecc6af8c123541152c80350a5bbd198",
+   "verdict": "fp",
+   "reason": "SQLite migrations: SQLite has no CREATE INDEX CONCURRENTLY and no concurrent writers to block."
+  },
+  {
+   "rule": "DATA003",
+   "file": "crates/atuin-client/migrations/20230315220114_drop-events.sql",
+   "line": 2,
+   "fingerprint": "78ebf00bd15c91aa2312c2b276a6551d",
+   "verdict": "tp",
+   "reason": "The migration drops a table, which destroys its data."
+  },
+  {
+   "rule": "DATA011",
+   "file": "crates/atuin-client/migrations/20260723000000_active_history_index.sql",
+   "line": 5,
+   "fingerprint": "94f2947c57b7a83ed78245d249499cb8",
+   "verdict": "fp",
+   "reason": "SQLite migrations: SQLite has no CREATE INDEX CONCURRENTLY and no concurrent writers to block."
+  },
+  {
+   "rule": "DATA011",
+   "file": "crates/atuin-client/migrations/20260723000001_filtered_history_indexes.sql",
+   "line": 6,
+   "fingerprint": "2588b54743f9eb88286ca6ce2c7a9c10",
+   "verdict": "fp",
+   "reason": "SQLite migrations: SQLite has no CREATE INDEX CONCURRENTLY and no concurrent writers to block."
+  },
+  {
+   "rule": "DATA011",
+   "file": "crates/atuin-client/migrations/20260723000001_filtered_history_indexes.sql",
+   "line": 9,
+   "fingerprint": "a735f09a434e5afc96dee14e87bc2706",
+   "verdict": "fp",
+   "reason": "SQLite migrations: SQLite has no CREATE INDEX CONCURRENTLY and no concurrent writers to block."
+  },
+  {
+   "rule": "DATA011",
+   "file": "crates/atuin-client/migrations/20260723000002_hostname_index.sql",
+   "line": 4,
+   "fingerprint": "797c58ba4bfa43e7ea7e11221a8bb802",
+   "verdict": "fp",
+   "reason": "SQLite migrations: SQLite has no CREATE INDEX CONCURRENTLY and no concurrent writers to block."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-client/record-migrations/20230531212437_create-records.sql",
+   "line": 2,
+   "fingerprint": "6d4e72153567071eb65f084122243f8e",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-client/record-migrations/20231127090831_create-store.sql",
+   "line": 2,
+   "fingerprint": "f01d3b543eb6071100891e9cc9778be0",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-client/src/ai_session/migrations/0001_init.sql",
+   "line": 4,
+   "fingerprint": "f2c486c1882c000915fdfbc979330b01",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-client/src/ai_session/migrations/0001_init.sql",
+   "line": 76,
+   "fingerprint": "4dc0fffb1734ce77fad807aa9aa3dde0",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-client/src/ai_session/migrations/0001_init.sql",
+   "line": 81,
+   "fingerprint": "dea98a91947cc72851cef54a24968417",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-client/src/ai_session/migrations/0001_init.sql",
+   "line": 137,
+   "fingerprint": "dfa78b53b75881bf591fed2c3f51c99c",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-client/src/ai_session/migrations/0001_init.sql",
+   "line": 153,
+   "fingerprint": "53336d4d30091585385a806849762041",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-client/src/ai_session/migrations/0001_init.sql",
+   "line": 161,
+   "fingerprint": "c7878b597730a2ce93352c8d67459885",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-client/src/ai_session/migrations/0001_init.sql",
+   "line": 189,
+   "fingerprint": "9c6d38002156e1f7c7e84e97a7db54ab",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-client/src/ai_session/migrations/0001_init.sql",
+   "line": 207,
+   "fingerprint": "3420f40a4145b1ebbdff7cb43bebe696",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "REL001",
+   "file": "crates/atuin-client/src/api_client.rs",
+   "line": 206,
+   "fingerprint": "7c4da8d5b843c114b737074c06e87dab",
+   "verdict": "tp",
+   "reason": "The HTTP client has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "crates/atuin-client/src/auth.rs",
+   "line": 302,
+   "fingerprint": "de380a1dcc8db65f0f9a1f4592f22133",
+   "verdict": "tp",
+   "reason": "The HTTP client has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "crates/atuin-client/src/auth.rs",
+   "line": 353,
+   "fingerprint": "88fa59023bc9a38b22f7ad3c2f95dc9e",
+   "verdict": "tp",
+   "reason": "The HTTP client has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "crates/atuin-client/src/auth.rs",
+   "line": 404,
+   "fingerprint": "b65ed9bc6f602ef05551244a4ae3c285",
+   "verdict": "tp",
+   "reason": "The HTTP client has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "crates/atuin-client/src/auth.rs",
+   "line": 470,
+   "fingerprint": "41fab6389beff27728e58e063205f52f",
+   "verdict": "tp",
+   "reason": "The HTTP client has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "crates/atuin-client/src/hub.rs",
+   "line": 334,
+   "fingerprint": "bf678c1782a005e123bb79f5d559440b",
+   "verdict": "tp",
+   "reason": "The HTTP client has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "crates/atuin-client/src/hub.rs",
+   "line": 377,
+   "fingerprint": "684f5cce683ee3204d89385082391522",
+   "verdict": "tp",
+   "reason": "The HTTP client has no timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "crates/atuin-client/src/hub.rs",
+   "line": 399,
+   "fingerprint": "3af9f55ab09799a6b860747de6dd2490",
+   "verdict": "tp",
+   "reason": "The HTTP client has no timeout."
+  },
+  {
+   "rule": "QA003",
+   "file": "crates/atuin-common/res/harnesstools/hermes/__init__.py",
+   "line": 87,
+   "fingerprint": "647cbe404da6f2e16e9d5e0a2c1485bc",
+   "verdict": "fp",
+   "reason": "Deliberate in a best-effort shell integration hook."
+  },
+  {
+   "rule": "QA003",
+   "file": "crates/atuin-common/res/harnesstools/hermes/__init__.py",
+   "line": 164,
+   "fingerprint": "549c6105a1dcf6c87b9ae9ee67913de8",
+   "verdict": "fp",
+   "reason": "Deliberate in a best-effort shell integration hook."
+  },
+  {
+   "rule": "QA011",
+   "file": "crates/atuin-common/res/harnesstools/opencode/atuin.v2.ts",
+   "line": 83,
+   "fingerprint": "71cb1ad1047f15b212050b67e78a2b04",
+   "verdict": "tp",
+   "reason": "The same function body is defined twice."
+  },
+  {
+   "rule": "QA011",
+   "file": "crates/atuin-common/res/harnesstools/opencode/atuin.v2.ts",
+   "line": 113,
+   "fingerprint": "1f9ed82d552d2a1de4f6a7f2efaaa607",
+   "verdict": "tp",
+   "reason": "The same function body is defined twice."
+  },
+  {
+   "rule": "QA011",
+   "file": "crates/atuin-common/res/harnesstools/opencode/atuin.v2.ts",
+   "line": 137,
+   "fingerprint": "a29b547827e9e7f31ca1ea93eaadf98f",
+   "verdict": "tp",
+   "reason": "The same function body is defined twice."
+  },
+  {
+   "rule": "DATA001",
+   "file": "crates/atuin-common/src/db/mod.rs",
+   "line": 424,
+   "fingerprint": "601ed01b0039c5726f71616a7cdd688c",
+   "verdict": "fp",
+   "reason": "Adds a fixed list of test columns, not a per-row query."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-common/src/harnesstools/ccode/session.rs",
+   "line": 223,
+   "fingerprint": "dfd6224ec0c3996861b5f04d83ec2e54",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-common/src/harnesstools/ccode/session.rs",
+   "line": 1293,
+   "fingerprint": "90ac02ab23becf19bba7b8274bd85f76",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-common/src/harnesstools/hermes/mod.rs",
+   "line": 228,
+   "fingerprint": "b758ab5c0c90e7aee7d2c16ff18d4870",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-common/src/harnesstools/kiro/session.rs",
+   "line": 1367,
+   "fingerprint": "7a9c35d749f29bd868f48594d41c3435",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-common/src/harnesstools/opencode/session.rs",
+   "line": 1099,
+   "fingerprint": "4cb82190dbc00fbab60fce875935e4bb",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-common/src/harnesstools/sync/ccode.rs",
+   "line": 601,
+   "fingerprint": "4da8af732750279ac15f06b2073b4d13",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin-common/src/harnesstools/sync/hermes.rs",
+   "line": 183,
+   "fingerprint": "9d66e789fee8e83538e78483aab0086b",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "SEC001",
+   "file": "crates/atuin-common/src/secrets.rs",
+   "line": 224,
+   "fingerprint": "694f2dc714ba45f9c8e1e2adb8215eda",
+   "verdict": "fp",
+   "reason": "Test vectors for the secret-redaction feature, not real credentials."
+  },
+  {
+   "rule": "SEC001",
+   "file": "crates/atuin-common/src/secrets.rs",
+   "line": 241,
+   "fingerprint": "fba1a2ddbf773bbcb5e10c06501efc02",
+   "verdict": "fp",
+   "reason": "Test vectors for the secret-redaction feature, not real credentials."
+  },
+  {
+   "rule": "SEC001",
+   "file": "crates/atuin-common/src/secrets.rs",
+   "line": 324,
+   "fingerprint": "102c9a02aa5d5e5cb1790de120001994",
+   "verdict": "fp",
+   "reason": "Test vectors for the secret-redaction feature, not real credentials."
+  },
+  {
+   "rule": "SEC001",
+   "file": "crates/atuin-common/src/secrets.rs",
+   "line": 334,
+   "fingerprint": "ecc6ba4c395f3297c9df93f6fb95b71d",
+   "verdict": "fp",
+   "reason": "Test vectors for the secret-redaction feature, not real credentials."
+  },
+  {
+   "rule": "SEC001",
+   "file": "crates/atuin-common/src/secrets.rs",
+   "line": 393,
+   "fingerprint": "73f237ed8750e6cc95ec391008ad9374",
+   "verdict": "fp",
+   "reason": "Test vectors for the secret-redaction feature, not real credentials."
+  },
+  {
+   "rule": "SEC001",
+   "file": "crates/atuin-common/src/secrets.rs",
+   "line": 1030,
+   "fingerprint": "77316d23a356a03e55e6436b9f0e9140",
+   "verdict": "fp",
+   "reason": "Test vectors for the secret-redaction feature, not real credentials."
+  },
+  {
+   "rule": "SEC001",
+   "file": "crates/atuin-common/src/secrets.rs",
+   "line": 1061,
+   "fingerprint": "1a32d4063e8b5c8633d254c669fc813a",
+   "verdict": "fp",
+   "reason": "Test vectors for the secret-redaction feature, not real credentials."
+  },
+  {
+   "rule": "SEC001",
+   "file": "crates/atuin-common/src/secrets.rs",
+   "line": 1066,
+   "fingerprint": "b3be1bcb524639466191b2a0890f693f",
+   "verdict": "fp",
+   "reason": "Test vectors for the secret-redaction feature, not real credentials."
+  },
+  {
+   "rule": "SEC001",
+   "file": "crates/atuin-common/src/secrets.rs",
+   "line": 1070,
+   "fingerprint": "63ab0d6ce89eca8b2b323a146210dbb1",
+   "verdict": "fp",
+   "reason": "Test vectors for the secret-redaction feature, not real credentials."
+  },
+  {
+   "rule": "SEC001",
+   "file": "crates/atuin-common/src/secrets.rs",
+   "line": 1074,
+   "fingerprint": "19395393d73a4f0954578a1edd7667a8",
+   "verdict": "fp",
+   "reason": "Test vectors for the secret-redaction feature, not real credentials."
+  },
+  {
+   "rule": "SEC001",
+   "file": "crates/atuin-common/src/secrets.rs",
+   "line": 1687,
+   "fingerprint": "4f0de4b46a1ab417b6ea3002b6355678",
+   "verdict": "fp",
+   "reason": "Test vectors for the secret-redaction feature, not real credentials."
+  },
+  {
+   "rule": "SEC005",
+   "file": "crates/atuin-common/src/secrets/structural.rs",
+   "line": 141,
+   "fingerprint": "294e27189faf0c81093cec362e1a5578",
+   "verdict": "fp",
+   "reason": "A test vector for the secret-redaction feature."
+  },
+  {
+   "rule": "SEC003",
+   "file": "crates/atuin-common/src/secrets/structural.rs",
+   "line": 258,
+   "fingerprint": "9503dd9ed5763919ed621a2270e2d447",
+   "verdict": "fp",
+   "reason": "Test vectors for the secret-redaction feature."
+  },
+  {
+   "rule": "SEC003",
+   "file": "crates/atuin-common/src/secrets/structural.rs",
+   "line": 262,
+   "fingerprint": "8b971857a4bf178f695d7127818365e5",
+   "verdict": "fp",
+   "reason": "Test vectors for the secret-redaction feature."
+  },
+  {
+   "rule": "SEC003",
+   "file": "crates/atuin-common/src/secrets/structural.rs",
+   "line": 266,
+   "fingerprint": "6f25c865a61314b427a1fb06e98fa315",
+   "verdict": "fp",
+   "reason": "Test vectors for the secret-redaction feature."
+  },
+  {
+   "rule": "SEC001",
+   "file": "crates/atuin-daemon/src/session_capture/tools.rs",
+   "line": 669,
+   "fingerprint": "0431b78a29b2a1c7916b2fdeb79d1949",
+   "verdict": "fp",
+   "reason": "Test vectors for the secret-redaction feature, not real credentials."
+  },
+  {
+   "rule": "SEC001",
+   "file": "crates/atuin-daemon/src/session_capture/tools.rs",
+   "line": 681,
+   "fingerprint": "58b7f88fd0b4bb337682223f853f18cd",
+   "verdict": "fp",
+   "reason": "Test vectors for the secret-redaction feature, not real credentials."
+  },
+  {
+   "rule": "SEC002",
+   "file": "crates/atuin-daemon/src/session_capture/tools.rs",
+   "line": 752,
+   "fingerprint": "cc643b1df56d82e0ced10e96d3e7aba2",
+   "verdict": "fp",
+   "reason": "A generated test body shaped like a PGP key, not a real key."
+  },
+  {
+   "rule": "SEC001",
+   "file": "crates/atuin-daemon/src/session_capture/tools.rs",
+   "line": 784,
+   "fingerprint": "1b9c05fdaff96f84168ba623d583b5d2",
+   "verdict": "fp",
+   "reason": "Test vectors for the secret-redaction feature, not real credentials."
+  },
+  {
+   "rule": "SEC001",
+   "file": "crates/atuin-daemon/src/session_capture/tools.rs",
+   "line": 1025,
+   "fingerprint": "0e033f8129319e288062574b97c3e6f1",
+   "verdict": "fp",
+   "reason": "Test vectors for the secret-redaction feature, not real credentials."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-kv/migrations/20250501160746_create_kv_db.up.sql",
+   "line": 2,
+   "fingerprint": "38b6130569cf75747558106e8c7e659e",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-octavo/migrations/0001_init.sql",
+   "line": 1,
+   "fingerprint": "637bb4d7a3accac61d65d2d651e53e51",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-octavo/migrations/0002_history_deletions.sql",
+   "line": 1,
+   "fingerprint": "d5894a9bbe5d7bc93a165161e3833171",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "DATA003",
+   "file": "crates/atuin-octavo/migrations/0003_queue_owners.sql",
+   "line": 1,
+   "fingerprint": "a2ff67e69c61563034d30d626ce957cd",
+   "verdict": "tp",
+   "reason": "The migration drops a table, which destroys its data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "crates/atuin-octavo/migrations/0003_queue_owners.sql",
+   "line": 9,
+   "fingerprint": "037ff1945de9d34b565acdfb7687c81d",
+   "verdict": "tp",
+   "reason": "The migration drops a table, which destroys its data."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-octavo/migrations/0004_output_uploads.sql",
+   "line": 1,
+   "fingerprint": "97436c41804fe9e595c912285aed4e96",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-octavo/migrations/0005_thread_uploads.sql",
+   "line": 1,
+   "fingerprint": "92fe5e09e9847191567c83e94354bd90",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-octavo/migrations/0005_thread_uploads.sql",
+   "line": 15,
+   "fingerprint": "260f5e4d2b85affc10e4d250a3ffb288",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-octavo/migrations/0006_octavo_off.sql",
+   "line": 3,
+   "fingerprint": "f110d84df41c349ba8c4e30df41b7bb5",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-octavo/migrations/0007_thread_org_shares.sql",
+   "line": 4,
+   "fingerprint": "bc8e4012db6809884e642c57a79a8d35",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-octavo/migrations/0007_thread_org_shares.sql",
+   "line": 18,
+   "fingerprint": "3c72866e71d7f8184962a7558d5ddab2",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "DATA003",
+   "file": "crates/atuin-octavo/migrations/0008_thread_org_closes.sql",
+   "line": 9,
+   "fingerprint": "af2f2933963a5730f2d6c09084bb7b7f",
+   "verdict": "tp",
+   "reason": "The migration drops a table, which destroys its data."
+  },
+  {
+   "rule": "DATA011",
+   "file": "crates/atuin-octavo/migrations/0008_thread_org_closes.sql",
+   "line": 10,
+   "fingerprint": "93964b6b1d60940fd88f825f839cb2b2",
+   "verdict": "fp",
+   "reason": "SQLite migrations: SQLite has no CREATE INDEX CONCURRENTLY and no concurrent writers to block."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-octavo/migrations/0008_thread_org_closes.sql",
+   "line": 16,
+   "fingerprint": "d8ffa7a9b11dc517932d6b2a778c1ba4",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "DATA003",
+   "file": "crates/atuin-octavo/migrations/0009_drop_history_uploads.sql",
+   "line": 1,
+   "fingerprint": "7da084930619f996bc0fb8b9d1bc4256",
+   "verdict": "tp",
+   "reason": "The migration drops a table, which destroys its data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "crates/atuin-octavo/migrations/0009_drop_history_uploads.sql",
+   "line": 2,
+   "fingerprint": "4b2a3db0373c2baad6771dd1c8c1f794",
+   "verdict": "tp",
+   "reason": "The migration drops a table, which destroys its data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "crates/atuin-octavo/migrations/0009_drop_history_uploads.sql",
+   "line": 3,
+   "fingerprint": "7b94121ed8a07196105e5cd754400878",
+   "verdict": "tp",
+   "reason": "The migration drops a table, which destroys its data."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-scripts/migrations/20250326160051_create_scripts.up.sql",
+   "line": 2,
+   "fingerprint": "17d60777e8473437a9ff7a2032cdfe82",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-scripts/migrations/20250326160051_create_scripts.up.sql",
+   "line": 11,
+   "fingerprint": "309ced81d69d7932075e718df698f576",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "DATA011",
+   "file": "crates/atuin-scripts/migrations/20250402170430_unique_names.up.sql",
+   "line": 2,
+   "fingerprint": "034d204aa9cb04ccb072245970153463",
+   "verdict": "fp",
+   "reason": "SQLite migrations: SQLite has no CREATE INDEX CONCURRENTLY and no concurrent writers to block."
+  },
+  {
+   "rule": "DATA006",
+   "file": "crates/atuin-server/src/db/mysql/migrations/20240108124830_create-history.sql",
+   "line": 6,
+   "fingerprint": "448b6621a60beb9e662f34a75dbc2fac",
+   "verdict": "fp",
+   "reason": "MySQL timestamp columns are stored in UTC and SQLite has no time-zone type; the rule's Postgres advice does not apply."
+  },
+  {
+   "rule": "DATA006",
+   "file": "crates/atuin-server/src/db/mysql/migrations/20240108124830_create-history.sql",
+   "line": 10,
+   "fingerprint": "f98b9650ab21423efd3f546bc2a27584",
+   "verdict": "fp",
+   "reason": "MySQL timestamp columns are stored in UTC and SQLite has no time-zone type; the rule's Postgres advice does not apply."
+  },
+  {
+   "rule": "DATA006",
+   "file": "crates/atuin-server/src/db/mysql/migrations/20240108124830_create-history.sql",
+   "line": 11,
+   "fingerprint": "baab2808d263ee6fc3b0dd27e3a40ef2",
+   "verdict": "fp",
+   "reason": "MySQL timestamp columns are stored in UTC and SQLite has no time-zone type; the rule's Postgres advice does not apply."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-server/src/db/mysql/migrations/20240621110730_create-users.sql",
+   "line": 1,
+   "fingerprint": "d47f10fb2daf098d61913139e6f1714e",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-server/src/db/mysql/migrations/20240702094825_create-store-idx-cache.sql",
+   "line": 1,
+   "fingerprint": "bb270b5e220dab79defa629614ea7010",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "DATA003",
+   "file": "crates/atuin-server/src/db/mysql/migrations/20260827000000_drop-store-idx-cache.sql",
+   "line": 1,
+   "fingerprint": "79bc456ae1b1d92b9c42894567164505",
+   "verdict": "tp",
+   "reason": "The migration drops a table, which destroys its data."
+  },
+  {
+   "rule": "DATA006",
+   "file": "crates/atuin-server/src/db/postgres/migrations/20210425153745_create_history.sql",
+   "line": 6,
+   "fingerprint": "79c2265bb7102b8b069bf3530d76fb22",
+   "verdict": "tp",
+   "reason": "A Postgres timestamp column without time zone."
+  },
+  {
+   "rule": "DATA006",
+   "file": "crates/atuin-server/src/db/postgres/migrations/20210425153745_create_history.sql",
+   "line": 10,
+   "fingerprint": "ad3ae8c429e26f6c42da77dddf823f0d",
+   "verdict": "tp",
+   "reason": "A Postgres timestamp column without time zone."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-server/src/db/postgres/migrations/20220419082412_add_count_trigger.sql",
+   "line": 9,
+   "fingerprint": "e889fd08e2fba88a85a0c017c6dd8728",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "DATA003",
+   "file": "crates/atuin-server/src/db/postgres/migrations/20220421174016_larger-commands.sql",
+   "line": 3,
+   "fingerprint": "ca0ed5cd9a97eedc9a16e08eb174be02",
+   "verdict": "tp",
+   "reason": "The migration drops a table, which destroys its data."
+  },
+  {
+   "rule": "DATA006",
+   "file": "crates/atuin-server/src/db/postgres/migrations/20220426172813_user-created-at.sql",
+   "line": 1,
+   "fingerprint": "633c6759b834d378281f78b163d0566b",
+   "verdict": "tp",
+   "reason": "A Postgres timestamp column without time zone."
+  },
+  {
+   "rule": "DATA006",
+   "file": "crates/atuin-server/src/db/postgres/migrations/20220505082442_create-events.sql",
+   "line": 8,
+   "fingerprint": "b4750ec907652bf2930d657a87777212",
+   "verdict": "tp",
+   "reason": "A Postgres timestamp column without time zone."
+  },
+  {
+   "rule": "DATA006",
+   "file": "crates/atuin-server/src/db/postgres/migrations/20220505082442_create-events.sql",
+   "line": 13,
+   "fingerprint": "438b5d93258a0698300327f13ee7236f",
+   "verdict": "tp",
+   "reason": "A Postgres timestamp column without time zone."
+  },
+  {
+   "rule": "DATA003",
+   "file": "crates/atuin-server/src/db/postgres/migrations/20220610074049_history-length.sql",
+   "line": 2,
+   "fingerprint": "1e390d9ca8567388594fbddca68b1d55",
+   "verdict": "tp",
+   "reason": "The migration drops a table, which destroys its data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "crates/atuin-server/src/db/postgres/migrations/20230315220537_drop-events.sql",
+   "line": 2,
+   "fingerprint": "0b789e73d93b55b8d3e00710cd5f87cd",
+   "verdict": "tp",
+   "reason": "The migration drops a table, which destroys its data."
+  },
+  {
+   "rule": "DATA006",
+   "file": "crates/atuin-server/src/db/postgres/migrations/20230315224203_create-deleted.sql",
+   "line": 2,
+   "fingerprint": "ef84fbf11db700ac5d95a37fa692d6b8",
+   "verdict": "tp",
+   "reason": "A Postgres timestamp column without time zone."
+  },
+  {
+   "rule": "DATA011",
+   "file": "crates/atuin-server/src/db/postgres/migrations/20230315224203_create-deleted.sql",
+   "line": 5,
+   "fingerprint": "e4da0e54899618e753aa55a0bf2952ae",
+   "verdict": "tp",
+   "reason": "CREATE INDEX on the existing history table without CONCURRENTLY locks writes."
+  },
+  {
+   "rule": "DATA006",
+   "file": "crates/atuin-server/src/db/postgres/migrations/20230623070418_records.sql",
+   "line": 14,
+   "fingerprint": "48f3950bfc35ca3b13c887078d9990a3",
+   "verdict": "tp",
+   "reason": "A Postgres timestamp column without time zone."
+  },
+  {
+   "rule": "DATA006",
+   "file": "crates/atuin-server/src/db/postgres/migrations/20231202170508_create-store.sql",
+   "line": 14,
+   "fingerprint": "38f1f50fa9ca3498ea6365dcd5e44146",
+   "verdict": "tp",
+   "reason": "A Postgres timestamp column without time zone."
+  },
+  {
+   "rule": "DATA011",
+   "file": "crates/atuin-server/src/db/postgres/migrations/20231203124112_create-store-idx.sql",
+   "line": 2,
+   "fingerprint": "b9c848ed884118f7179cd2c829998bb8",
+   "verdict": "tp",
+   "reason": "CREATE INDEX on the existing history table without CONCURRENTLY locks writes."
+  },
+  {
+   "rule": "AUTH005",
+   "file": "crates/atuin-server/src/db/postgres/migrations/20240621110731_user-verified.sql",
+   "line": 3,
+   "fingerprint": "2222d2eac088af346e5a2a5a0f1bca15",
+   "verdict": "fp",
+   "reason": "Not a Supabase project: these are server and SQLite migrations behind the app's own auth, where row level security does not apply."
+  },
+  {
+   "rule": "DATA011",
+   "file": "crates/atuin-server/src/db/postgres/migrations/20240702094825_idx_cache_index.sql",
+   "line": 1,
+   "fingerprint": "0b1cfad81698e2344f54c649fb28d939",
+   "verdict": "tp",
+   "reason": "CREATE INDEX on the existing history table without CONCURRENTLY locks writes."
+  },
+  {
+   "rule": "DATA003",
+   "file": "crates/atuin-server/src/db/postgres/migrations/20260127000000_remove-email-verification.sql",
+   "line": 1,
+   "fingerprint": "a80bfac9cd12b9625edb3ae793121ed4",
+   "verdict": "tp",
+   "reason": "The migration drops a table, which destroys its data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "crates/atuin-server/src/db/postgres/migrations/20260127000000_remove-email-verification.sql",
+   "line": 2,
+   "fingerprint": "565169f08d28634941522fa078f3f342",
+   "verdict": "tp",
+   "reason": "The migration drops a table, which destroys its data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "crates/atuin-server/src/db/postgres/migrations/20260827000000_drop-store-idx-cache.sql",
+   "line": 1,
+   "fingerprint": "943d9609bc63c4359e2b3875a43b5ce4",
+   "verdict": "tp",
+   "reason": "The migration drops a table, which destroys its data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "crates/atuin-server/src/db/postgres/migrations/20260828000000_drop-history-count-trigger.sql",
+   "line": 9,
+   "fingerprint": "1c148410858a2fc922d0cb99967d30c7",
+   "verdict": "tp",
+   "reason": "The migration drops a table, which destroys its data."
+  },
+  {
+   "rule": "DATA006",
+   "file": "crates/atuin-server/src/db/sqlite/migrations/20231203124112_create-store.sql",
+   "line": 13,
+   "fingerprint": "ceb23981eff4f93b01283890038a3357",
+   "verdict": "fp",
+   "reason": "MySQL timestamp columns are stored in UTC and SQLite has no time-zone type; the rule's Postgres advice does not apply."
+  },
+  {
+   "rule": "DATA006",
+   "file": "crates/atuin-server/src/db/sqlite/migrations/20240108124830_create-history.sql",
+   "line": 6,
+   "fingerprint": "e5a11e8b38266f3adfdf86f7567f09dd",
+   "verdict": "fp",
+   "reason": "MySQL timestamp columns are stored in UTC and SQLite has no time-zone type; the rule's Postgres advice does not apply."
+  },
+  {
+   "rule": "DATA006",
+   "file": "crates/atuin-server/src/db/sqlite/migrations/20240108124830_create-history.sql",
+   "line": 10,
+   "fingerprint": "c09c02fbcd2fb6f313537f0843727aa9",
+   "verdict": "fp",
+   "reason": "MySQL timestamp columns are stored in UTC and SQLite has no time-zone type; the rule's Postgres advice does not apply."
+  },
+  {
+   "rule": "DATA006",
+   "file": "crates/atuin-server/src/db/sqlite/migrations/20240108124830_create-history.sql",
+   "line": 11,
+   "fingerprint": "3f118a13c80b269fbe6c594c63220f7c",
+   "verdict": "fp",
+   "reason": "MySQL timestamp columns are stored in UTC and SQLite has no time-zone type; the rule's Postgres advice does not apply."
+  },
+  {
+   "rule": "DATA006",
+   "file": "crates/atuin-server/src/db/sqlite/migrations/20240621110730_create-users.sql",
+   "line": 6,
+   "fingerprint": "4a0690dd7f7335979acf9bd66646819d",
+   "verdict": "fp",
+   "reason": "MySQL timestamp columns are stored in UTC and SQLite has no time-zone type; the rule's Postgres advice does not apply."
+  },
+  {
+   "rule": "DATA003",
+   "file": "crates/atuin-server/src/db/sqlite/migrations/20260127000000_remove-email-verification.sql",
+   "line": 1,
+   "fingerprint": "6647953faf76983c2bc4aa621db94573",
+   "verdict": "tp",
+   "reason": "The migration drops a table, which destroys its data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "crates/atuin-server/src/db/sqlite/migrations/20260127000000_remove-email-verification.sql",
+   "line": 2,
+   "fingerprint": "3f8ebf5f69abd307f18b70a7fa0c497f",
+   "verdict": "tp",
+   "reason": "The migration drops a table, which destroys its data."
+  },
+  {
+   "rule": "DATA003",
+   "file": "crates/atuin-server/src/db/sqlite/migrations/20260827000000_drop-store-idx-cache.sql",
+   "line": 1,
+   "fingerprint": "97e06a5684fb938f837707dce412755f",
+   "verdict": "tp",
+   "reason": "The migration drops a table, which destroys its data."
+  },
+  {
+   "rule": "REL001",
+   "file": "crates/atuin-server/src/handlers/user.rs",
+   "line": 31,
+   "fingerprint": "67d8c256500cadcd5156dc9c0916773d",
+   "verdict": "tp",
+   "reason": "The HTTP client has no timeout."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "crates/atuin-server/src/router.rs",
+   "line": 126,
+   "fingerprint": "71d9e61fb776945049d274baddcc3fbb",
+   "verdict": "fp",
+   "reason": "The handler takes the UserAuth extractor (handlers::user::delete); the route resolves to another function named delete."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "crates/atuin-server/src/router.rs",
+   "line": 127,
+   "fingerprint": "54e12152cad062f4c1a096cd8e929de5",
+   "verdict": "fp",
+   "reason": "The handler takes the UserAuth extractor (handlers::user::delete); the route resolves to another function named delete."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "crates/atuin-server/src/router.rs",
+   "line": 134,
+   "fingerprint": "1304141089fe0a78244020b8b4970065",
+   "verdict": "fp",
+   "reason": "The handler takes the UserAuth extractor (handlers::user::delete); the route resolves to another function named delete."
+  },
+  {
+   "rule": "SEC004",
+   "file": "crates/atuin/src/command/client/search/keybindings/defaults.rs",
+   "line": 707,
+   "fingerprint": "cf7bda5b9bc6e14e799a4ad0fa1f980b",
+   "verdict": "fp",
+   "reason": "A test or helper function named session(...) called with a string, not a signing secret."
+  },
+  {
+   "rule": "QA007",
+   "file": "demos/fonts/build.py",
+   "line": 17,
+   "fingerprint": "b40520bd53fde4af8463ddc1abfc389b",
+   "verdict": "fp",
+   "reason": "A demo font build script, not app code."
+  },
+  {
+   "rule": "BE004",
+   "file": "docs/scripts/gen_legacy_stubs.py",
+   "line": 81,
+   "fingerprint": "74a44df93acdbab248b6c97628ec0bbd",
+   "verdict": "fp",
+   "reason": "The loader subclasses yaml.SafeLoader."
+  }
+ ]
+}

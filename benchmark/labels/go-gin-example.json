@@ -1,0 +1,70 @@
+{
+ "repo": "go-gin-example",
+ "commit": "4f5174ca325b37f23edadad7c88d49586816a69c",
+ "findings": [
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile",
+   "line": 1,
+   "fingerprint": "1bb680dfe5bd48c70284b021f0e6c358",
+   "verdict": "tp",
+   "reason": "The final image runs as root (no USER); deliberate or not, the rule's claim holds."
+  },
+  {
+   "rule": "CFG002",
+   "file": "Dockerfile",
+   "line": 1,
+   "fingerprint": "d3f1483f9fe543c01ca5b43abc113fab",
+   "verdict": "tp",
+   "reason": "A base image uses the latest tag or no tag."
+  },
+  {
+   "rule": "GO004",
+   "file": "models/models.go",
+   "line": 89,
+   "fingerprint": "8f7dcc99ac7c7a58dc93d2ce4c5dee32",
+   "verdict": "fp",
+   "reason": "Only table and column names from the ORM scope are formatted in; values are bound."
+  },
+  {
+   "rule": "GO004",
+   "file": "models/models.go",
+   "line": 98,
+   "fingerprint": "8cbd7719d9c416bf4a0b39e0b19b6b33",
+   "verdict": "fp",
+   "reason": "Only table and column names from the ORM scope are formatted in; values are bound."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "routers/router.go",
+   "line": 42,
+   "fingerprint": "368962ae68dee5a954f8385a0f58401c",
+   "verdict": "tp",
+   "reason": "Tags and articles are edited or deleted by id with no owner check (the JWT only proves login)."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "routers/router.go",
+   "line": 44,
+   "fingerprint": "70bf2e9381a3cc7970f5391c2d597387",
+   "verdict": "tp",
+   "reason": "Tags and articles are edited or deleted by id with no owner check (the JWT only proves login)."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "routers/router.go",
+   "line": 57,
+   "fingerprint": "7d654b9cf0d9659e3612bad7b3010273",
+   "verdict": "tp",
+   "reason": "Tags and articles are edited or deleted by id with no owner check (the JWT only proves login)."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "routers/router.go",
+   "line": 59,
+   "fingerprint": "6ac99e240bfc0c9361da9ad17d8f906e",
+   "verdict": "tp",
+   "reason": "Tags and articles are edited or deleted by id with no owner check (the JWT only proves login)."
+  }
+ ]
+}

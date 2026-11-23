@@ -1,0 +1,86 @@
+{
+ "repo": "chathn",
+ "commit": "b5634ae80fe6974e317c7c06eaa9e97a7c02b6b5",
+ "findings": [
+  {
+   "rule": "AUTH001",
+   "file": "app/api/chat/route.ts",
+   "line": 17,
+   "fingerprint": "66d41d3aa331c92ac4a8a2d21050704e",
+   "verdict": "tp",
+   "reason": "The chat endpoint calls the paid model with no user check."
+  },
+  {
+   "rule": "BE018",
+   "file": "app/api/chat/route.ts",
+   "line": 17,
+   "fingerprint": "d154a461efa952d9d4a6426d4ea70c01",
+   "verdict": "tp",
+   "reason": "The request body is read without validation."
+  },
+  {
+   "rule": "LLM017",
+   "file": "app/api/chat/route.ts",
+   "line": 17,
+   "fingerprint": "253960f34e5c4bfa5522b901ac560c89",
+   "verdict": "tp",
+   "reason": "The stream is not cancelled when the client disconnects."
+  },
+  {
+   "rule": "DATA007",
+   "file": "app/api/chat/route.ts",
+   "line": 20,
+   "fingerprint": "15cb585e07162286b7548bf5c90f4aec",
+   "verdict": "tp",
+   "reason": "The variable is read but not documented in .env.example."
+  },
+  {
+   "rule": "DATA007",
+   "file": "app/api/chat/route.ts",
+   "line": 21,
+   "fingerprint": "c1cd605cb94d0bb4198549816e54aca7",
+   "verdict": "tp",
+   "reason": "The variable is read but not documented in .env.example."
+  },
+  {
+   "rule": "AUTH014",
+   "file": "app/api/chat/route.ts",
+   "line": 23,
+   "fingerprint": "b93c3812e072e015313c451bbfa7ec2e",
+   "verdict": "tp",
+   "reason": "The rate-limit key comes from X-Forwarded-For."
+  },
+  {
+   "rule": "LLM003",
+   "file": "app/api/chat/route.ts",
+   "line": 48,
+   "fingerprint": "a492cfb712325fdae57fb26219167021",
+   "verdict": "tp",
+   "reason": "No output token limit."
+  },
+  {
+   "rule": "LLM012",
+   "file": "app/api/chat/route.ts",
+   "line": 49,
+   "fingerprint": "f2ccaab7e5f2c171329b8388e89824c1",
+   "verdict": "tp",
+   "reason": "The model id is retired."
+  },
+  {
+   "rule": "QA001",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "6ebc345ae714486cf41d50d631704e0c",
+   "verdict": "tp",
+   "reason": "No test files in the project."
+  },
+  {
+   "rule": "QA002",
+   "file": "package.json",
+   "line": 1,
+   "fingerprint": "799017c2c88296a8ac05f797ad0f29ee",
+   "verdict": "tp",
+   "reason": "No CI configuration is committed."
+  }
+ ]
+}

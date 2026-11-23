@@ -14,7 +14,7 @@ ACTIX = r'''use actix_web::{delete, get, post, web, App, HttpResponse, HttpServe
 async fn get_item(id: web::Path<i64>) -> HttpResponse { HttpResponse::Ok().body("}") }
 
 #[delete("/items/{name}")]
-#[actix_web_grants::protect("ADMIN")]
+#[actix_web_grants::protect("EDIT_ITEMS")]
 async fn delete_item(name: web::Path<String>) -> HttpResponse { HttpResponse::Ok().finish() }
 
 #[post("/search")]

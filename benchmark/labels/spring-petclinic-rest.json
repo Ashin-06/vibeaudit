@@ -1,0 +1,30 @@
+{
+ "repo": "spring-petclinic-rest",
+ "commit": "220f4ba8e92cec9ad1faa03324723a3e9da63d95",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/dependabot-auto-merge.yml",
+   "line": 16,
+   "fingerprint": "320c46ab1258cc36aad764dc5452cf37",
+   "verdict": "tp",
+   "reason": "A third-party action is used by tag or branch, not a commit SHA."
+  },
+  {
+   "rule": "DATA001",
+   "file": "src/main/java/org/springframework/samples/petclinic/repository/jdbc/JdbcVetRepositoryImpl.java",
+   "line": 89,
+   "fingerprint": "b545ad92b321e5641febd459d20aef89",
+   "verdict": "tp",
+   "reason": "One query per vet inside the loop."
+  },
+  {
+   "rule": "JAVA003",
+   "file": "src/main/java/org/springframework/samples/petclinic/security/DisableSecurityConfig.java",
+   "line": 25,
+   "fingerprint": "9f0daab9a8b884897b78a2936b66baac",
+   "verdict": "tp",
+   "reason": "A security config that permits every request (used when security is disabled)."
+  }
+ ]
+}
