@@ -39,8 +39,8 @@ To stop publishing, delete the `PYPI_PUBLISH` variable (or set it to anything el
 `release.yml` publishes `editors/vscode` on every release once this one-time setup is done. Cursor and
 VSCodium install from Open VSX, VS Code from the Marketplace; each is optional.
 
-1. **Publisher.** Create a publisher at https://marketplace.visualstudio.com/manage and set `"publisher"` in
-   `editors/vscode/package.json` to its ID (the same namespace is used on Open VSX).
+1. **Publisher.** The extension is published as `Ashin06` (`"publisher"` in `editors/vscode/package.json`),
+   created at https://marketplace.visualstudio.com/manage; Open VSX uses the same namespace.
 2. **VS Code Marketplace token.** In Azure DevOps (https://dev.azure.com), create a personal access token with
    organization "All accessible organizations" and scope **Marketplace > Manage**.
 3. **Open VSX token.** Sign in at https://open-vsx.org with GitHub, sign the publisher agreement, create an

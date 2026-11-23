@@ -3,7 +3,7 @@
   "displayName": "vibeaudit",
   "description": "Security and quality findings for AI-built and LLM apps, with one-click fixes, from the vibeaudit language server.",
   "version": "0.11.2",
-  "publisher": "vibeaudit",
+  "publisher": "Ashin06",
   "license": "MIT",
   "icon": "icon.png",
   "repository": {
