@@ -416,7 +416,7 @@ SINKS = [
     (re.compile(r"\bRedirect\s*::\s*(?:to|temporary|permanent|see_other)\s*\(|\.\s*(?:append_header|insert_header)\s*\("),
      "BE008", "a redirect target", "medium"),
 ]
-CONST_IF = re.compile(r'\s*if\b[^{;]{0,200}\{\s*(?:r#*)?"[^"]{0,2000}"#*\s*\}\s*else\s*\{\s*(?:r#*)?"[^"]{0,2000}"#*\s*\}\s*$')
+CONST_IF = re.compile(r'\A\s{0,40}if\b[^{;]{0,200}\{\s*(?:r#*)?"[^"]{0,2000}"#*\s*\}\s*else\s*\{\s*(?:r#*)?"[^"]{0,2000}"#*\s*\}\s*$')
 SQLX_CHAIN = re.compile(r"\b(?:query|query_as|query_scalar|sql_query)\s*(?:::\s*<[^>\n]{0,120}>\s*)?\(")
 SHELL_ARG = re.compile(r"\"(?:sh|bash|/bin/sh|/bin/bash|cmd|powershell)\"\s*\)\s*\.\s*args?\s*\(\s*(?:\[\s*)?\"(?:-c|/C|-Command)\"\s*[,)]\s*(?:\.\s*arg\s*\()?")
 SOURCE = re.compile(r"\b(?:req|request)\s*\.\s*(?:match_info|query_string|uri|headers)\s*\(")
