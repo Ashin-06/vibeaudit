@@ -483,8 +483,9 @@ last edit. The `vibeaudit fix` codemods are offered as quick fixes, plus a "fix 
 server never writes a file: the editor applies the edits you accept. It accepts only `file:` URIs inside
 the workspace folder and caps message sizes.
 
-`editors/vscode` is a thin VS Code / Cursor extension that starts the server. CI builds it as a `.vsix`
-artifact (it is not published); install it with **Extensions: Install from VSIX...**. Its
+`editors/vscode` is a thin VS Code / Cursor extension that starts the server. CI builds it as a bundled `.vsix`
+artifact, and releases publish it to the VS Code Marketplace and Open VSX once the one-time setup in
+[docs/PUBLISHING.md](docs/PUBLISHING.md) is done; until then, install it with **Extensions: Install from VSIX...**. Its
 `vibeaudit.serverCommand` and `vibeaudit.serverArgs` settings are machine-scoped and it does not run in
 untrusted workspaces, so a cloned repository cannot make it start another program. Other editors can run
 `vibeaudit lsp` directly, for example in Neovim:

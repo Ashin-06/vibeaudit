@@ -28,5 +28,5 @@ repository cannot make it start a different program.
 - Quick fixes for the findings `vibeaudit fix` can rewrite, and a "fix all" source action per file.
 - The server reads the workspace and never writes files; the editor applies the edits you accept.
 
-The extension is built in CI as a `.vsix` artifact and is not published to a marketplace. Install it with
-**Extensions: Install from VSIX...**.
+Once published, install it from the VS Code Marketplace or Open VSX (Cursor, VSCodium) by searching for
+"vibeaudit". Until then, or for a specific build, install a `.vsix` file with **Extensions: Install from VSIX...**. Every CI run builds one as an artifact.

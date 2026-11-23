@@ -3,20 +3,39 @@
   "displayName": "vibeaudit",
   "description": "Security and quality findings for AI-built and LLM apps, with one-click fixes, from the vibeaudit language server.",
   "version": "0.11.2",
-  "publisher": "vibeaudit",
+  "publisher": "Ashin06",
   "license": "MIT",
-  "private": true,
+  "icon": "icon.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/Ashin-06/vibeaudit"
+  },
+  "homepage": "https://github.com/Ashin-06/vibeaudit#readme",
+  "bugs": {
+    "url": "https://github.com/Ashin-06/vibeaudit/issues"
   },
   "engines": {
     "vscode": "^1.91.0"
   },
   "categories": [
-    "Linters"
+    "Linters",
+    "Programming Languages"
   ],
-  "main": "./extension.js",
+  "keywords": [
+    "security",
+    "linter",
+    "static analysis",
+    "llm",
+    "ai",
+    "vibe coding",
+    "sast",
+    "code review"
+  ],
+  "galleryBanner": {
+    "color": "#0d1117",
+    "theme": "dark"
+  },
+  "main": "./dist/extension.js",
   "activationEvents": [
     "onLanguage:python",
     "onLanguage:javascript",
@@ -78,14 +97,17 @@
       }
     ]
   },
+  "scripts": {
+    "bundle": "esbuild extension.js --bundle --platform=node --format=cjs --target=node20 --external:vscode --minify --outfile=dist/extension.js",
+    "vscode:prepublish": "npm run bundle",
+    "package": "vsce package --out vibeaudit.vsix"
+  },
   "dependencies": {
     "vscode-languageclient": "11.0.0"
   },
   "devDependencies": {
-    "@vscode/vsce": "4.1.1"
-  },
-  "scripts": {
-    "package": "vsce package --out vibeaudit.vsix"
+    "@vscode/vsce": "4.1.1",
+    "esbuild": "0.25.12"
   },
   "overrides": {
     "minimatch": "^11.0.1"

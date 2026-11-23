@@ -190,7 +190,7 @@ jobs:
           if-no-files-found: ignore
 
   vscode-extension:
-    # the VS Code / Cursor client for `vibeaudit lsp`: built as a .vsix artifact on every push, never published
+    # the VS Code / Cursor client for `vibeaudit lsp`: built and bundled as a .vsix artifact on every push (release.yml publishes it)
     runs-on: ubuntu-latest
     defaults:
       run:
