@@ -11,7 +11,7 @@
     "url": "https://github.com/Ashin-06/vibeaudit"
   },
   "engines": {
-    "vscode": "^1.82.0"
+    "vscode": "^1.91.0"
   },
   "categories": [
     "Linters"
@@ -23,9 +23,24 @@
     "onLanguage:javascriptreact",
     "onLanguage:typescript",
     "onLanguage:typescriptreact",
+    "onLanguage:vue",
+    "onLanguage:svelte",
+    "onLanguage:go",
+    "onLanguage:java",
+    "onLanguage:kotlin",
+    "onLanguage:csharp",
+    "onLanguage:rust",
+    "onLanguage:php",
     "workspaceContains:**/package.json",
     "workspaceContains:**/pyproject.toml",
-    "workspaceContains:**/requirements.txt"
+    "workspaceContains:**/requirements.txt",
+    "workspaceContains:**/go.mod",
+    "workspaceContains:**/pom.xml",
+    "workspaceContains:**/build.gradle",
+    "workspaceContains:**/build.gradle.kts",
+    "workspaceContains:**/*.csproj",
+    "workspaceContains:**/Cargo.toml",
+    "workspaceContains:**/composer.json"
   ],
   "capabilities": {
     "untrustedWorkspaces": {
