@@ -262,15 +262,20 @@ def split_args(bare: str, a: int, b: int) -> List[Tuple[int, int]]:
 _CONT_START = re.compile(r"(?<![ \t])[ \t]*(?:\.|\?|:|&&|\|\||\+|-|\*|/|\?\?|=>)")
 
 
-def stmt_end(bare: str, i: int) -> int:
+def stmt_end(bare: str, i: int, templates: bool = True) -> int:
     """End offset of the expression/statement starting at `i` (JS-ish rules)."""
     depth = 0
     n = len(bare)
     pairs = _pairs(bare) if n > 4000 else None
     j = i
+    in_tpl = False  # inside a top-level template literal, whose text keeps its newlines in the bare view
     while j < n:
         ch = bare[j]
-        if ch in OPEN:
+        if templates and ch == "`" and depth == 0:
+            in_tpl = not in_tpl
+        elif in_tpl and depth == 0 and ch != "{":
+            pass  # template text: a newline, `;` or `)` here does not end the statement
+        elif ch in OPEN:
             if pairs is not None and depth == 0:
                 close = pairs.get(j)
                 if close is None:  # an unclosed bracket: broken code, so end at the line instead of the file
@@ -291,6 +296,8 @@ def stmt_end(bare: str, i: int) -> int:
                 if not _CONT_START.match(bare, j + 1):
                     return j
         j += 1
+    if in_tpl:  # a backtick that never closes (in a regex literal, say): fall back to line rules
+        return stmt_end(bare, i, templates=False)
     return n
 
 

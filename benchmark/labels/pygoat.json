@@ -1409,6 +1409,70 @@
    "fingerprint": "a97a28af06bbfb1aeacdf3a31875cbee",
    "verdict": "tp",
    "reason": "Imported but not declared in the requirements."
+  },
+  {
+   "rule": "FE001",
+   "file": "challenge/labs/security_headers_lab/templates/malicious.html",
+   "line": 149,
+   "fingerprint": "09c80ce009aa601698ad7f4c706f5d5e",
+   "verdict": "fp",
+   "reason": "Renders the iframe's own opacity style value, not data from the request or a server response."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/a9_uckv_lab/templates/lab1.html",
+   "line": 52,
+   "fingerprint": "eb40fe8fd2e0d45830bc3642db509437",
+   "verdict": "tp",
+   "reason": "A server response (which echoes request values) is interpolated into innerHTML without escaping."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/a9_uckv_lab/templates/lab2.html",
+   "line": 69,
+   "fingerprint": "2c31a795faca34fd95f5a25f32c7ed93",
+   "verdict": "tp",
+   "reason": "A server response (which echoes request values) is interpolated into innerHTML without escaping."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/dependency_attack_lab/templates/lab.html",
+   "line": 257,
+   "fingerprint": "c807d75eca5aa84adcf77f723e4c3e86",
+   "verdict": "tp",
+   "reason": "A server response (which echoes request values) is interpolated into innerHTML without escaping."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/open_source_library_attack_lab/templates/lab.html",
+   "line": 131,
+   "fingerprint": "475b96d1e151843d586d52b47f317d25",
+   "verdict": "tp",
+   "reason": "A server response (which echoes request values) is interpolated into innerHTML without escaping."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/open_source_library_attack_lab/templates/lab.html",
+   "line": 177,
+   "fingerprint": "11813c8060e093ebeeae1213082011d9",
+   "verdict": "tp",
+   "reason": "A server response (which echoes request values) is interpolated into innerHTML without escaping."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/package_injection_lab/templates/lab.html",
+   "line": 261,
+   "fingerprint": "1ccb151b2a019d6157e5f8a097eb6ae8",
+   "verdict": "tp",
+   "reason": "A server response (which echoes request values) is interpolated into innerHTML without escaping."
+  },
+  {
+   "rule": "FE001",
+   "file": "dockerized_labs/sec_misconfig/templates/lab3.html",
+   "line": 116,
+   "fingerprint": "fc4984cc4222f1f8a74ff4b6f03d8787",
+   "verdict": "tp",
+   "reason": "A server response (which echoes request values) is interpolated into innerHTML without escaping."
   }
  ]
 }

@@ -78,6 +78,8 @@ ENV_LINE = re.compile(
     r"^[ \t]*(?:export[ \t]+)?(?<![A-Za-z0-9_])([A-Za-z0-9_]{0,60}?(?:KEY|SECRET|TOKEN|PASSWORD|PASS|CREDENTIALS?|PRIVATE)[A-Za-z0-9_]{0,60})(?![A-Za-z0-9_])[ \t]*=[ \t]*['\"]?([^\s'\"#]{12,})", re.M
 )
 # Values that are labels, input types or the stock local-development defaults of database images.
+STATUS_WORD = re.compile(r"(?i)(?:fail(?:ed|ure)?|warn(?:ing)?|error|skip(?:ped)?|unresolved|pending|blocked|reject(?:ed)?"
+                         r"|step_up|ok|success|danger|info|muted|green|red|orange|yellow|amber|gr[ae]y)$")
 DEFAULT_PASSWORD_VALUES = {
     "password", "passwd", "pwd", "pass", "required", "text", "string", "hidden", "new-password", "current-password",
     "postgres", "mysql", "root", "test", "user", "dev", "local", "example", "guest",
@@ -89,12 +91,17 @@ SIGNING_LITERAL = [
     re.compile(r"""\b(?:app\s*\.\s*)?(?:secret_key|SECRET_KEY|JWT_SECRET(?:_KEY)?|jwt_secret(?:_key)?|SESSION_SECRET|session_secret|SIGNING_KEY|TOKEN_SECRET|COOKIE_SECRET|AUTH_SECRET|NEXTAUTH_SECRET)\s*=\s*["']([^"']+)["']"""),
     re.compile(r"""\bconfig\s*\[\s*["'](?:SECRET_KEY|JWT_SECRET_KEY|SESSION_SECRET)["']\s*\]\s*=\s*["']([^"']+)["']"""),
     re.compile(r"""\bjwt\s*\.\s*sign\s*\([^;]*?,\s*["'`]([^"'`$]+)["'`]"""),
-    re.compile(r"""\b(?:session|expressSession|cookieSession|cookieParser)\s*\(\s*(?:\{[^}]*?\bsecret\s*:\s*)?["'`]([^"'`$]+)["'`]"""),
+    # not a method (`synth.session("genuine", ...)`): express-session and cookie-parser are called bare
+    re.compile(r"""(?<!\.)\b(?:session|expressSession|cookieSession|cookieParser)\s*\(\s*(?:\{[^}]*?\bsecret\s*:\s*)?["'`]([^"'`$]+)["'`]"""),
     re.compile(r"""\b(?:const|let|var)\s+(?:JWT_SECRET|jwtSecret|SECRET_KEY|secretKey|SESSION_SECRET|sessionSecret)\s*=\s*["'`]([^"'`$]+)["'`]"""),
 ]
+# not a setting about secrets (SECRETS_PROVIDER, SECRET_STORE_PATH, SIGNING_KEY_ID): those defaults are not keys
+_SECRET_SETTING = r"(?<!PROVIDER)(?<!BACKEND)(?<!MANAGER)(?<!STORE)(?<!PATH)(?<!FILE)(?<!DIR)(?<!URL)(?<!NAME)(?<!_ID)(?<!ARN)(?<!REGION)(?<!TYPE)(?<!MODE)"
 SIGNING_FALLBACK = [
-    re.compile(r"""(?:getenv|environ\s*\.\s*get)\s*\(\s*["']\w*(?:SECRET|SIGNING)\w*["']\s*,\s*["']([^"']+)["']"""),
-    re.compile(r"""process\s*\.\s*env\s*\.\s*\w*(?:SECRET|SIGNING)\w*\s*(?:\|\||\?\?)\s*["'`]([^"'`]+)["'`]"""),
+    re.compile(r"""(?:getenv|environ\s*\.\s*get)\s*\(\s*["']\w*(?:SECRET|SIGNING)\w*""" + _SECRET_SETTING
+               + r"""["']\s*,\s*["']([^"']+)["']"""),
+    re.compile(r"""process\s*\.\s*env\s*\.\s*\w*(?:SECRET|SIGNING)\w*""" + _SECRET_SETTING
+               + r"""\s*(?:\|\||\?\?)\s*["'`]([^"'`]+)["'`]"""),
 ]
 FIREBASE_CONTEXT = re.compile(r"authDomain|projectId|messagingSenderId|storageBucket|firebase|appId|measurementId|maps\.googleapis|google\.maps|GOOGLE_MAPS|MAPS_API|places\.googleapis|placesLibrary|libraries=places", re.I)
 DOC_EXTS = (".md", ".mdx", ".rst", ".txt", ".adoc", ".ipynb")
@@ -238,6 +245,10 @@ class SecretScanner:
                     # a message ("Password is required", or the same in Chinese or Japanese, which has no spaces)
                     if (" " in val or not val.isascii() or same or low in DEFAULT_PASSWORD_VALUES
                             or H.PLACEHOLDER.search(val) or re.match(r"^[\w.]+\(|^\$|^%|^\{", val)):
+                        continue
+                    # a status verdict (`ok ? "PASS" : "FAIL"`, `{"PASS": "green"}`) or an enum label
+                    # (`{"password": "SECRET"}`, a type the redactor assigns), not a credential
+                    if (name.lower() == "pass" and STATUS_WORD.match(val)) or re.fullmatch(r"[A-Z]{3,}(?:_[A-Z]+)*", val):
                         continue
                     if once(m.start()):
                         self.add(sf, "SEC011", m.start(), f"`{name}` is a hard-coded password.", val)

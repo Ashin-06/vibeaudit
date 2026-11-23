@@ -41,7 +41,7 @@ LLM_SRC = re.compile(
     r"|\b(?:llm|chain|agent|chatModel|model)\w*\s*\.\s*invoke\s*\("
 )
 SANITIZER = re.compile(
-    r"(?i)\b(?:DOMPurify|purify|sanitize\w*|xss|escape\w*|encodeURIComponent|encodeURI|he\s*\.\s*encode|insane"
+    r"(?i)\b(?:DOMPurify|purify|sanitize\w*|xss|escape\w*|esc|escHtml|htmlEsc\w*|encodeURIComponent|encodeURI|he\s*\.\s*encode|insane"
     r"|parseInt|parseFloat|Number|Boolean|validator\s*\.\s*\w+|\w+Schema\s*\.\s*(?:safe)?[pP]arse|z\s*\.\s*\w+)\s*\("
 )
 WHOLE_BODY = re.compile(
