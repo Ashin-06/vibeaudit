@@ -25,7 +25,7 @@ The initial 53 repositories (0.6.0 to 0.8.x) are described and listed below; the
 PHP repositories added since are in corpus.json, with notes further down. The initial set was chosen to cover what vibeaudit is for and to keep it honest on code written by people who know what they
 are doing:
 
-- **ai-built (8):** apps generated with Lovable (found by the `lovable-tagger` dev dependency) that have
+- **ai-built (7):** apps generated with Lovable (found by the `lovable-tagger` dev dependency) that have
   Supabase edge functions, and other AI-assisted apps.
 - **llm-app (8):** open-source chat, RAG and agent apps.
 - **well-maintained (15):** frameworks, official templates and tutorials in Python and JavaScript/TypeScript.
@@ -38,7 +38,6 @@ are doing:
 | act-solo-ai | ai-built | afllewellyn/act-solo-ai | f4c6a6296c90 | none declared |
 | helpdesk-flow-verse | ai-built | piyushraj04/helpdesk-flow-verse | c08ede8e4213 | none declared |
 | learnathon-leaderboard | ai-built | BrainStation-23/learnathon-leaderboard | 87ee5a2d7c22 | none declared |
-| LinguaLearn | ai-built | josephkamau32/LinguaLearn | f1cc2e2ea82e | none declared |
 | physicalmediavault | ai-built | thamarakandabada/physicalmediavault | c411c1698cf6 | MIT |
 | prompt-sculptor-49 | ai-built | amo-tech-ai/prompt-sculptor-49 | d60d5e9e66c6 | none declared |
 | scriptforge-ai | ai-built | 3h0ll7/scriptforge-ai | 07f5342b53db | none declared |
@@ -68,6 +67,8 @@ are doing:
 | werkzeug | well-maintained | pallets/werkzeug | 0f43c6ebd426 | BSD-3-Clause |
 | Vulnerable-Flask-App | known-vulnerable | we45/Vulnerable-Flask-App | b6a4f97afd46 | none declared |
 
+LinguaLearn (ai-built, tuned split) was removed from the corpus when its repository was deleted upstream; it can no longer be fetched or scanned.
+
 ## Tuned and held-out splits
 
 Fixing a rule while looking at its false positives, and then measuring it on the same findings, flatters
@@ -95,7 +96,7 @@ jira-meridian moved to the tuned split with Rust support: its project-specific A
 
 torrent-aggregator and semantickernel-microservice moved to the tuned split with C# support, before any of their results were reported: their first scan showed two bugs worth fixing (a GetAsync call on any object was taken for an HTTP request, and a versioned route template such as `api/v{version:apiVersion}` cut the class attributes short, losing the route prefix). vibecodementor and Timinute (chosen and pinned before they were scanned) replaced them.
 
-Known held-out false positives (not fixed, by the rule above): PHP input checks in DVWA's impossible level (numeric IP octets before ping, BE002; a random upload name, BE006) and its setup script seeding fixed rows (BE001); Laravel's development-server router server.php (laravel-realworld-example-app, BE006); a public registration route (laravel-realworld-example-app, AUTH001); symfony-demo's demo-only .env.local.demo (SEC006); a Symfony attribute group `#[Route('/profile'), IsGranted(...)]` is read for the route but not for IsGranted, so AUTH001 reports symfony-demo's profile pages; DATA012 on MariaDB/MySQL migrations, where InnoDB indexes every foreign key itself (mCaptcha); an `export const enum` is not seen as an export (mCaptcha, QA006); secrets in `#[cfg(test)]` modules (svix-webhooks, SEC003 and SEC004); chi routers mounted with `r.Mount` inside an `r.Group` that adds JWT and role middleware are not followed, so AUTH001 and AUTH002 report go-base's protected admin and app routes; a `.env_example` file is not recognised as an example (toWers, CFG009); API001 does not recognise `route.tsx` files
+Known held-out false positives (not fixed, by the rule above): with cross-function taint, Go reads the first argument of a prepared statement's QueryRow/Exec as SQL (govwa, BE001) and a fixed host with a value appended as an outbound URL (toWers, BE005); PHP input checks in DVWA's impossible level (numeric IP octets before ping, BE002; a random upload name, BE006) and its setup script seeding fixed rows (BE001); Laravel's development-server router server.php (laravel-realworld-example-app, BE006); a public registration route (laravel-realworld-example-app, AUTH001); symfony-demo's demo-only .env.local.demo (SEC006); a Symfony attribute group `#[Route('/profile'), IsGranted(...)]` is read for the route but not for IsGranted, so AUTH001 reports symfony-demo's profile pages; DATA012 on MariaDB/MySQL migrations, where InnoDB indexes every foreign key itself (mCaptcha); an `export const enum` is not seen as an export (mCaptcha, QA006); secrets in `#[cfg(test)]` modules (svix-webhooks, SEC003 and SEC004); chi routers mounted with `r.Mount` inside an `r.Group` that adds JWT and role middleware are not followed, so AUTH001 and AUTH002 report go-base's protected admin and app routes; a `.env_example` file is not recognised as an example (toWers, CFG009); API001 does not recognise `route.tsx` files
 (openai-assistants-quickstart); CFG013 misses a templated Helm `resources:` block whose template is on the
 next line (podinfo); `_test.go` files are not treated as tests (podinfo, SEC003); DEBUG and CSRF settings
 inside development and testing config classes (flasky, BE011 and AUTH009); `|safe` on HTML already cleaned

@@ -15,6 +15,7 @@ from typing import Callable, Dict, List, Optional, Set, Tuple
 
 from . import heuristics as H
 from .files import Project, SourceFile
+from .calls import Fn, Follower, php_params, via_note
 from .goscan import _split_top
 from .guard import GUARD, finditer
 from .lexer import Views, match_close
@@ -231,10 +232,21 @@ class PhpScanner:
         self.handlers: Dict[Tuple[str, int], Set[str]] = {}  # handler -> route params
         self.access: List[Tuple[str, bool]] = []  # Symfony access_control: (path regex, requires a user)
         self.mw_groups: Dict[str, str] = {}  # Laravel middleware group -> its members (Kernel.php, bootstrap/app.php)
+        self.follower = Follower(php_params)  # cross-function taint
+        self.depth, self.via = 0, None  # while a followed call is checked: how deep, and the call it came through
+        self.reported: Set[Tuple[str, int, str, bool]] = set()
         self.included: Dict[str, Tuple[str, str]] = {}  # route file -> (prefix, middleware) of the group that requires it
 
     def add(self, sf: SourceFile, off: int, rule: str, msg: str, sev: str = "") -> None:
         line = sf.line_at(off)
+        if self.via is not None:
+            if not msg.startswith("Request data"):
+                return  # a followed call only adds what the request data reaches; the rest is reported once already
+            msg += via_note(self.via)
+        key = (sf.rel, line, rule, self.via is not None)  # a followed finding replaces the plain one (scanner.finalize)
+        if key in self.reported:
+            return
+        self.reported.add(key)
         self.emit(Finding(rule, sf.rel, line, msg, sev, sf.line(line).strip()[:200]))
 
     def run(self) -> List[Route]:
@@ -253,6 +265,7 @@ class PhpScanner:
             GUARD.run(sf.rel, "PHP routes", self._routes, sf)
         for sf in self.files:
             GUARD.run(sf.rel, "PHP checks", self._checks, sf)
+        GUARD.run("<project>", "PHP calls", self.follower.follow, self._follow)
         for sf in self.p.files:
             if sf.rel.endswith(".blade.php") and sf.text and not sf.is_test:
                 GUARD.run(sf.rel, "Blade output", self._blade, sf)
@@ -275,6 +288,7 @@ class PhpScanner:
             end = match_close(bare, brace)
             if end > 0:
                 self.funcs.setdefault(m.group(1), []).append((sf, m.start(), po, pc, end + 1))
+                self.follower.define(m.group(1), Fn(sf, m.start(), v.code[po + 1:pc], (pc, end + 1)))
         for m in finditer(CLASS_DECL, bare):
             end = match_close(bare, m.end() - 1)
             if end > 0:
@@ -628,6 +642,14 @@ class PhpScanner:
         if SOURCE.search(tc):
             self._function(sf, tc, tb, 0, len(tc), set())
 
+    def _follow(self, fn: Fn, seed: Set[str], depth: int, via: str) -> None:
+        v = fn.sf.cache["php_views"]
+        self.depth, self.via = depth, via
+        try:
+            self._function(fn.sf, v.code, v.bare, fn.body[0], fn.body[1], set(seed))  # type: ignore[attr-defined]
+        finally:
+            self.depth, self.via = 0, None
+
     def _function(self, sf: SourceFile, code: str, bare: str, pc: int, b: int, tainted: Set[str]) -> None:
         body_c, body_b = code[pc:b], bare[pc:b]
         assigned: Dict[str, List[str]] = {}
@@ -694,6 +716,11 @@ class PhpScanner:
                         and (SHELL_LIKE.search(arg) or re.match(r"\s*\$\w+\s*$", arg)):
                     self.add(sf, pc + m.start(), "BE002", "Shell command built from a variable; use escapeshellarg() or "
                                                          "avoid the shell.", "medium")
+
+        live_names = tainted - cleaned
+        if live_names or SOURCE.search(body_c):
+            self.follower.note(sf, body_c, body_b, pc, lambda x: (_mentions(x, live_names) or bool(SOURCE.search(x)))
+                               and not SANITIZED.match(x), self.depth, self.via)
 
     @staticmethod
     def _interpolated_sql(arg: str, assigned: Dict[str, List[str]], cleaned: Set[str], rel: str = "") -> bool:

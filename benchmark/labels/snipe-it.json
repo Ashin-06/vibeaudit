@@ -1099,6 +1099,22 @@
    "reason": "One query or save per item inside the loop."
   },
   {
+   "rule": "BE008",
+   "file": "app/Http/Controllers/BulkMaintenancesController.php",
+   "line": 75,
+   "fingerprint": "38b002d9358806a25b52001e44a58f11",
+   "verdict": "fp",
+   "reason": "The back URL comes from Helper::sameOriginUrl() in the caller."
+  },
+  {
+   "rule": "BE008",
+   "file": "app/Http/Controllers/BulkMaintenancesController.php",
+   "line": 113,
+   "fingerprint": "e425ed890b72831a1f3d5055cf1d1e02",
+   "verdict": "fp",
+   "reason": "The back URL comes from Helper::sameOriginUrl() in the caller."
+  },
+  {
    "rule": "DATA001",
    "file": "app/Http/Controllers/BulkManufacturersController.php",
    "line": 24,
@@ -1321,6 +1337,54 @@
    "fingerprint": "92be82ad4fdc53c3e74cd035a0d70de6",
    "verdict": "tp",
    "reason": "One query or save per item inside the loop."
+  },
+  {
+   "rule": "BE006",
+   "file": "app/Http/Requests/ImageUploadRequest.php",
+   "line": 168,
+   "fingerprint": "e8265c7169edf998e81255e6ef063e2d",
+   "verdict": "fp",
+   "reason": "An uploaded file's temporary path and a generated storage name, not a path from the request."
+  },
+  {
+   "rule": "BE006",
+   "file": "app/Http/Requests/ImageUploadRequest.php",
+   "line": 177,
+   "fingerprint": "65f6036db6e94b523326ab731016d2b0",
+   "verdict": "fp",
+   "reason": "An uploaded file's temporary path and a generated storage name, not a path from the request."
+  },
+  {
+   "rule": "BE006",
+   "file": "app/Http/Requests/ImageUploadRequest.php",
+   "line": 198,
+   "fingerprint": "7ab02a8d711970a91d8aa9fdad25c08e",
+   "verdict": "fp",
+   "reason": "An uploaded file's temporary path and a generated storage name, not a path from the request."
+  },
+  {
+   "rule": "BE006",
+   "file": "app/Http/Requests/ImageUploadRequest.php",
+   "line": 253,
+   "fingerprint": "06bba23c141171bbe84ee8c4268790cf",
+   "verdict": "fp",
+   "reason": "An uploaded file's temporary path and a generated storage name, not a path from the request."
+  },
+  {
+   "rule": "BE006",
+   "file": "app/Http/Requests/UploadFileRequest.php",
+   "line": 86,
+   "fingerprint": "d4a40e7037b35e1b2e57cf85eba92891",
+   "verdict": "fp",
+   "reason": "An uploaded file's temporary path and a generated storage name, not a path from the request."
+  },
+  {
+   "rule": "BE006",
+   "file": "app/Http/Requests/UploadFileRequest.php",
+   "line": 90,
+   "fingerprint": "d85f2204f9170158ab6370e0af1d4024",
+   "verdict": "fp",
+   "reason": "An uploaded file's temporary path and a generated storage name, not a path from the request."
   },
   {
    "rule": "DATA001",

@@ -164,6 +164,30 @@
   },
   {
    "rule": "BE006",
+   "file": "src/password.rs",
+   "line": 71,
+   "fingerprint": "f0fc6012948d2e128d4ec37b6f6129f4",
+   "verdict": "fp",
+   "reason": "The sidecar path is built by the server from the stored file's path under the upload folder."
+  },
+  {
+   "rule": "BE006",
+   "file": "src/password.rs",
+   "line": 84,
+   "fingerprint": "a5d4b4a55546249864a901f06f1832f3",
+   "verdict": "fp",
+   "reason": "The sidecar path is built by the server from the stored file's path under the upload folder."
+  },
+  {
+   "rule": "BE006",
+   "file": "src/password.rs",
+   "line": 92,
+   "fingerprint": "9f8f8dcc32914b99444209b483edbba6",
+   "verdict": "fp",
+   "reason": "The sidecar path is built by the server from the stored file's path under the upload folder."
+  },
+  {
+   "rule": "BE006",
    "file": "src/server.rs",
    "line": 193,
    "fingerprint": "a5d7e89e0e3c715f7927f4be8bd0b6d3",

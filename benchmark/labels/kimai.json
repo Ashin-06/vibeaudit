@@ -107,6 +107,14 @@
    "reason": "HTML fragments from kimai's own server responses or app-built markup, not user input."
   },
   {
+   "rule": "BE006",
+   "file": "src/Repository/InvoiceDocumentRepository.php",
+   "line": 67,
+   "fingerprint": "6a9566975162ffa6f6cd2d78755aaa8c",
+   "verdict": "fp",
+   "reason": "The document is found by name among the configured invoice folders and its realpath is checked."
+  },
+  {
    "rule": "DATA001",
    "file": "src/Repository/InvoiceDocumentRepository.php",
    "line": 162,

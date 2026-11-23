@@ -9,7 +9,7 @@ A per-method approximation: values passed to other methods are not followed.
 from __future__ import annotations
 
 import re
-from typing import Callable, List, Set, Tuple
+from typing import Callable, List, Optional, Set, Tuple
 
 from .files import SourceFile
 from .guard import finditer
@@ -51,8 +51,45 @@ SINKS: List[Tuple["re.Pattern[str]", str, str, str, str]] = [
 REDIRECT_PREFIX = re.compile(r"\"redirect:\"\s*\+\s*(\w[\w.()]*)|\"redirect:\$\{?(\w+)")
 
 
-def check(sf: SourceFile, v: Views, add: Add) -> None:
+def methods(sf: SourceFile, v: Views):
+    """(name, declaration offset, parameter text, body start, body end) of every method with a body."""
     code, bare = v.code, v.bare
+    for m in finditer(JAVA_METHOD, bare):
+        name = m.group(1) or m.group(2)
+        if name in ("if", "for", "while", "switch", "catch", "return", "new", "synchronized", "else"):
+            continue
+        close = match_close(bare, m.end() - 1)
+        brace = _body_start(bare, close) if close >= 0 else -1
+        end = match_close(bare, brace) if brace >= 0 else -1
+        if end > 0:
+            yield name, m.start(), code[m.end():close], brace, end + 1
+
+
+def index(sf: SourceFile, v: Views, follower) -> None:
+    from .calls import Fn
+
+    for name, start, params, a, b in methods(sf, v):
+        follower.define(name, Fn(sf, start, params, (a, b)))
+
+
+def follow(follower, add: Add) -> None:
+    """Check the methods that receive request data from a call, CALL_DEPTH calls deep."""
+    from .jvm import views_of
+
+    seen: Set[Tuple[str, int, str]] = set()
+
+    def run(fn, seed: Set[str], depth: int, via: str) -> None:
+        v = views_of(fn.sf)
+        a, b = fn.body
+        note = lambda c, bb, base, t: follower.note(fn.sf, c, bb, base, t, depth, via)  # noqa: E731
+        _method(fn.sf, v.code[a:b], v.bare[a:b], a, set(seed), set(), _followed_add(add, via, seen), note)
+
+    follower.follow(run)
+
+
+def check(sf: SourceFile, v: Views, add: Add, follower=None) -> None:
+    code, bare = v.code, v.bare
+    note = (lambda c, bb, base, t: follower.note(sf, c, bb, base, t, 0, None)) if follower else None  # noqa: E731
     for m in finditer(JAVA_METHOD, bare):
         name = m.group(1) or m.group(2)
         if name in ("if", "for", "while", "switch", "catch", "return", "new", "synchronized", "else"):
@@ -72,7 +109,7 @@ def check(sf: SourceFile, v: Views, add: Add) -> None:
         servlet = {g for g in SERVLET_PARAM.findall(params) for g in g if g}
         if not tainted and not servlet:
             continue
-        _method(sf, code[brace:end + 1], bare[brace:end + 1], brace, tainted, servlet, add)
+        _method(sf, code[brace:end + 1], bare[brace:end + 1], brace, tainted, servlet, add, note)
 
 
 def _body_start(bare: str, close: int) -> int:
@@ -116,7 +153,8 @@ def _split(s: str) -> List[str]:
     return out
 
 
-def _method(sf: SourceFile, code: str, bare: str, base: int, tainted: Set[str], servlet: Set[str], add: Add) -> None:
+def _method(sf: SourceFile, code: str, bare: str, base: int, tainted: Set[str], servlet: Set[str], add: Add,
+            note: "Optional[Note]" = None) -> None:
     sources = [re.escape(s) + r"\s*" + SERVLET_SOURCE for s in sorted(servlet)]
     source_rx = re.compile("|".join(sources)) if sources else None
 
@@ -160,6 +198,23 @@ def _method(sf: SourceFile, code: str, bare: str, base: int, tainted: Set[str], 
             if ("BE008", line) not in reported:
                 reported.add(("BE008", line))
                 add(sf, "BE008", line, "Request data flows into a redirect target (\"redirect:\" + value).", "medium")
+    if note is not None:
+        note(code, bare, base, is_tainted)
+
+
+# ------------------------------------------------------------ cross-function taint
+Note = Callable[[str, str, int, Callable[[str], bool]], None]  # (body code, bare, offset, is_tainted)
+
+
+def _followed_add(add: Add, via: str, seen: Set[Tuple[str, int, str]]) -> Add:
+    """`add` for a followed call: only what the request data reaches, once per line, with the call it came through."""
+    from .calls import via_note
+
+    def wrapped(sf: SourceFile, rule: str, line: int, msg: str, sev: str = "") -> None:
+        if msg.startswith("Request data") and (sf.rel, line, rule) not in seen:
+            seen.add((sf.rel, line, rule))
+            add(sf, rule, line, msg + via_note(via), sev)
+    return wrapped
 
 
 def _built_sql(bare: str, code: str, name: str) -> bool:

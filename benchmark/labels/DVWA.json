@@ -91,6 +91,30 @@
    "reason": "Setup script inserting fixed seed rows."
   },
   {
+   "rule": "FE001",
+   "file": "dvwa/includes/dvwaPage.inc.php",
+   "line": 388,
+   "fingerprint": "e9149776144098fcad58e8c2a3d93d21",
+   "verdict": "fp",
+   "reason": "Renders a documentation file chosen from a fixed list, not request text."
+  },
+  {
+   "rule": "FE001",
+   "file": "dvwa/includes/dvwaPage.inc.php",
+   "line": 496,
+   "fingerprint": "b6c3cf26db0361059314e15619f6ff84",
+   "verdict": "tp",
+   "reason": "The page body echoes the submitted user name unescaped (test_credentials)."
+  },
+  {
+   "rule": "BE008",
+   "file": "dvwa/includes/dvwaPage.inc.php",
+   "line": 604,
+   "fingerprint": "30186450d9d8b037fcb7421e10d39860",
+   "verdict": "tp",
+   "reason": "The redirect target comes from the X-Forwarded-Prefix header."
+  },
+  {
    "rule": "BE006",
    "file": "instructions.php",
    "line": 26,

@@ -179,6 +179,30 @@
    "reason": "A single-user, self-hosted app: sources and title links are global settings, not records owned by a user."
   },
   {
+   "rule": "BE006",
+   "file": "backend/src/Library/MediaImport.cs",
+   "line": 29,
+   "fingerprint": "27a4a7b8ede2f128d874cdc1819036f7",
+   "verdict": "fp",
+   "reason": "The folder is looked up by id from the library's configured roots, not taken from the request."
+  },
+  {
+   "rule": "BE006",
+   "file": "backend/src/Library/StorageIdentity.cs",
+   "line": 10,
+   "fingerprint": "476d5dc094e7b19f86ab9185c0e2bbec",
+   "verdict": "fp",
+   "reason": "The folder is looked up by id from the library's configured roots, not taken from the request."
+  },
+  {
+   "rule": "BE006",
+   "file": "backend/src/Library/StorageIdentity.cs",
+   "line": 14,
+   "fingerprint": "57bd0bcbebbe452080f7fd256a6eebcf",
+   "verdict": "fp",
+   "reason": "The folder is looked up by id from the library's configured roots, not taken from the request."
+  },
+  {
    "rule": "DATA001",
    "file": "backend/src/Store/LibraryDownloadRepository.cs",
    "line": 74,
@@ -305,6 +329,14 @@
    "fingerprint": "053bca04277c08fd6fc7740684327d72",
    "verdict": "tp",
    "reason": "A query runs once per item of the loop."
+  },
+  {
+   "rule": "BE005",
+   "file": "server/TorrentFlow.Metadata/Providers/TmdbClient.cs",
+   "line": 49,
+   "fingerprint": "c0ac15b45bfe45b6b636e8f69017511a",
+   "verdict": "fp",
+   "reason": "The base URL comes from the configured metadata source, not the request."
   },
   {
    "rule": "AUTH003",
