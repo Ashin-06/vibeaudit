@@ -5,16 +5,16 @@ Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do n
 
 172 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-73 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+77 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
 | ID | Severity | Status | Rule |
 | --- | --- | --- | --- |
-| [SEC001](#sec001) | critical | stable | Hardcoded API key or access token |
+| [SEC001](#sec001) | critical | preview, gates | Hardcoded API key or access token |
 | [SEC002](#sec002) | critical | stable | Private key committed |
 | [SEC003](#sec003) | high | preview | High-entropy secret assigned in code |
-| [SEC004](#sec004) | high | stable | Hardcoded or default signing secret |
+| [SEC004](#sec004) | high | preview, gates | Hardcoded or default signing secret |
 | [SEC005](#sec005) | high | stable | Database URL with embedded password |
 | [SEC006](#sec006) | high | stable | Environment file committed to git |
 | [SEC007](#sec007) | medium | stable | Environment file not git-ignored |
@@ -25,7 +25,9 @@ Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do n
 
 ### SEC001
 
-**Hardcoded API key or access token** (critical)
+**Hardcoded API key or access token** (critical, preview, gates)
+
+Preview: Held-out 2 of 17 (11.8%) after the corpus grew to 125 repositories: test vectors of a secret-redaction library were reported; it leaves preview on a fresh held-out batch, not on the repositories that showed the cause.
 
 Why it matters: A real credential is committed in source. Anyone with read access to the repo, a fork, a build log or the shipped bundle can use it, and bots scrape public repos for keys within minutes.
 
@@ -57,7 +59,9 @@ References: CWE-798, A07:2021
 
 ### SEC004
 
-**Hardcoded or default signing secret** (high)
+**Hardcoded or default signing secret** (high, preview, gates)
+
+Preview: Held-out 0 of 34 after the corpus grew to 125 repositories: Rust test helpers named session(...) and a cookiecutter placeholder were reported; it leaves preview on a fresh held-out batch, not on the repositories that showed the cause.
 
 Why it matters: Session cookies and JWTs are signed with this secret. If it is in the code, or falls back to a default when the env var is missing, anyone can forge a login as any user, including admins.
 
@@ -630,7 +634,7 @@ References: CWE-200, A02:2021
 | [AUTH002](#auth002) | high | stable | Admin endpoint without a role check |
 | [AUTH003](#auth003) | medium | stable | Possible insecure direct object reference (IDOR) |
 | [AUTH004](#auth004) | high | stable | Webhook without signature verification |
-| [AUTH005](#auth005) | high | stable | Supabase table without Row Level Security |
+| [AUTH005](#auth005) | high | preview | Supabase table without Row Level Security |
 | [AUTH006](#auth006) | high | stable | Permissive Supabase policy |
 | [AUTH007](#auth007) | critical | stable | Open Firebase security rules |
 | [AUTH008](#auth008) | critical | stable | Auth check stub always succeeds |
@@ -689,7 +693,9 @@ References: CWE-345, A08:2021
 
 ### AUTH005
 
-**Supabase table without Row Level Security** (high)
+**Supabase table without Row Level Security** (high, preview)
+
+Preview: Held-out 0 of 29 after the corpus grew to 125 repositories: migrations of a project that does not use Supabase were reported; it leaves preview on a fresh held-out batch, not on the repositories that showed the cause.
 
 Why it matters: With RLS off, the public anon key (which ships in every Supabase frontend) can read and write the entire table.
 
@@ -1569,7 +1575,7 @@ How to fix: Check the issue by hand before acting on it; suppress or disable AI0
 | [DATA003](#data003) | low | stable | Destructive database migration |
 | [DATA004](#data004) | medium | stable | Money stored as a floating-point number |
 | [DATA005](#data005) | high | stable | Private table readable by everyone |
-| [DATA006](#data006) | low | stable | Timestamp without time zone |
+| [DATA006](#data006) | low | preview | Timestamp without time zone |
 | [DATA007](#data007) | low | preview | Environment variable missing from the example env file |
 | [DATA008](#data008) | medium | stable | Database client created per request |
 | [DATA009](#data009) | medium | stable | SQLite file database on a serverless host |
@@ -1633,7 +1639,9 @@ References: CWE-284, A01:2021
 
 ### DATA006
 
-**Timestamp without time zone** (low)
+**Timestamp without time zone** (low, preview)
+
+Preview: Held-out 11 of 23 (47.8%) after the corpus grew to 125 repositories: MySQL, SQLite and H2 timestamp columns, which the Postgres advice does not fit, were reported; it leaves preview on a fresh held-out batch, not on the repositories that showed the cause.
 
 Why it matters: Naive datetimes and `timestamp without time zone` columns silently mix local and UTC times, which breaks expiry checks, schedules and reports across regions and daylight saving.
 

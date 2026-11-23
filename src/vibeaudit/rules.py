@@ -64,7 +64,9 @@ _R = [
          "or the shipped bundle can use it, and bots scrape public repos for keys within minutes.",
          "Revoke and rotate the key now (deleting it from the file does not remove it from git history). "
          "Load it from an environment variable or a secret manager on the server only.",
-         "CWE-798", "A07:2021"),
+         "CWE-798", "A07:2021", preview=True, gates_in_preview=True,
+         preview_reason="Held-out 2 of 17 (11.8%) after the corpus grew to 125 repositories: test vectors of a "
+                        "secret-redaction library were reported; it leaves preview on a fresh held-out batch, not on the repositories that showed the cause."),
     Rule("SEC002", "Private key committed", "secrets", "critical",
          "A private key in the repository lets anyone impersonate the service or decrypt its traffic.",
          "Revoke the key, generate a new one, store it outside the repo (secret manager or mounted file) "
@@ -82,7 +84,9 @@ _R = [
          "default when the env var is missing, anyone can forge a login as any user, including admins.",
          "Read the secret from the environment and fail at startup if it is missing. Never provide a "
          "fallback default. Generate it with a CSPRNG (for example `python -c \"import secrets; "
-         "print(secrets.token_urlsafe(48))\"`).", "CWE-321", "A02:2021"),
+         "print(secrets.token_urlsafe(48))\"`).", "CWE-321", "A02:2021", preview=True, gates_in_preview=True,
+         preview_reason="Held-out 0 of 34 after the corpus grew to 125 repositories: Rust test helpers named "
+                        "session(...) and a cookiecutter placeholder were reported; it leaves preview on a fresh held-out batch, not on the repositories that showed the cause."),
     Rule("SEC005", "Database URL with embedded password", "secrets", "high",
          "A connection string for a remote database includes the password, giving direct database access "
          "to anyone who reads the code.",
@@ -351,7 +355,9 @@ _R = [
          "With RLS off, the public anon key (which ships in every Supabase frontend) can read and write the "
          "entire table.",
          "Run `alter table <name> enable row level security;` and add policies that scope rows to "
-         "`auth.uid()`.", "CWE-284", "A01:2021"),
+         "`auth.uid()`.", "CWE-284", "A01:2021", preview=True,
+         preview_reason="Held-out 0 of 29 after the corpus grew to 125 repositories: migrations of a project that "
+                        "does not use Supabase were reported; it leaves preview on a fresh held-out batch, not on the repositories that showed the cause."),
     Rule("AUTH006", "Permissive Supabase policy", "auth", "high",
          "A policy with `using (true)` or `with check (true)` for writes lets every user modify every row.",
          "Scope the policy, for example `using (auth.uid() = user_id)`.", "CWE-284", "A01:2021"),
@@ -707,7 +713,9 @@ _R = [
     Rule("DATA006", "Timestamp without time zone", "data", "low",
          "Naive datetimes and `timestamp without time zone` columns silently mix local and UTC times, which breaks "
          "expiry checks, schedules and reports across regions and daylight saving.",
-         "Use timezone-aware values: `datetime.now(timezone.utc)` and `timestamptz` columns.", "", ""),
+         "Use timezone-aware values: `datetime.now(timezone.utc)` and `timestamptz` columns.", "", "", preview=True,
+         preview_reason="Held-out 11 of 23 (47.8%) after the corpus grew to 125 repositories: MySQL, SQLite and H2 "
+                        "timestamp columns, which the Postgres advice does not fit, were reported; it leaves preview on a fresh held-out batch, not on the repositories that showed the cause."),
     Rule("DATA007", "Environment variable missing from the example env file", "data", "low",
          "The code reads a variable that .env.example does not document, so the next deploy or teammate setup "
          "crashes or silently runs with a missing setting.",

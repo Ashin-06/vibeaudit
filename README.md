@@ -108,7 +108,7 @@ That project is one of the deliberately vulnerable sample apps in `tests/fixture
 | Frontend-backend contracts (API) | frontend calls to API paths no route handles, and calls with a method the route does not accept |
 | Go, Java/Kotlin and C# (GO, JAVA, CSHARP), all in preview | goroutines started by a handler that never stop (GO001), response bodies never closed (GO002), maps written concurrently without a lock (GO003), SQL built with formatting (GO004); Spring controllers with no security configuration (JAVA001), exposed Actuator endpoints (JAVA002), a security chain that permits every request (JAVA003), polymorphic deserialization without an allow-list (JAVA004); ASP.NET Core with no authorization anywhere (CSHARP001), deserialization that lets the payload pick the type (CSHARP002), the developer error page outside Development (CSHARP003) |
 
-73 of 172 rules are preview; `vibeaudit rules` lists them. Preview findings are reported but do not
+77 of 172 rules are preview; `vibeaudit rules` lists them. Preview findings are reported but do not
 fail a build, with one exception: the severe classes (command injection, code execution, unsafe
 deserialization, open redirects and XSS) still gate while in preview, so a high-impact bug is never let through
 because its rule is new. Findings of any rule in Go, Java/Kotlin, C#, Rust and PHP code are preview; there, SQL
@@ -183,7 +183,7 @@ Every command has `--help`.
 | `--min-severity SEVERITY` | Hide findings below this severity (default `low`). |
 | `--monorepo` | Scan every package as a project of its own, against its own manifest, with a score per package (see [Monorepos](#monorepos)). |
 | `--include-preview` | Count findings of preview rules toward `--fail-on` and the score; they are always reported (see [STABILITY.md](STABILITY.md)). |
-| `--no-gate-severe-preview` | Leave out the severe preview rules (command injection, `eval`, unsafe deserialization, open redirect, XSS), which by default count toward `--fail-on` and the score. |
+| `--no-gate-severe-preview` | Leave out the severe preview rules (command injection, `eval`, unsafe deserialization, open redirect, XSS, committed API keys and signing secrets), which by default count toward `--fail-on` and the score. |
 | `--offline` | No network: skip registry and new-package lookups, and check known vulnerabilities against an imported OSV index if there is one (the typosquat check still runs). |
 | `--exclude GLOB` | Skip matching paths (repeatable). A `.vibeauditignore` file with one glob per line works too. |
 | `--disable RULE_OR_CATEGORY` | Switch off a rule (`QA002`) or a category (`quality`); repeatable, comma lists allowed. |
@@ -729,7 +729,7 @@ Every rule is measured on a labelled benchmark: 125 public repositories pinned t
 
 | Precision | Tuned split | Held-out split |
 | --- | --- | --- |
-| Stable findings (what `--fail-on` acts on) | 94.3% (1381/1465) | 76.8% (354/461) |
+| Stable findings (what `--fail-on` acts on) | 93.8% (1216/1297) | 95.3% (341/358) |
 | All rules, preview included | 77.6% (2505/3229) | 62.2% (565/908) |
 
 Preview rules are reported but do not gate, and most false positives are theirs. Recall, F1 and the misses: [docs/BENCHMARK.md](docs/BENCHMARK.md).

@@ -1478,7 +1478,7 @@
   },
   "AUTH005": {
    "title": "Supabase table without Row Level Security",
-   "preview": false,
+   "preview": true,
    "tp": 2,
    "fp": 29,
    "needs_review": 0,
@@ -1500,7 +1500,18 @@
      0
     ]
    },
-   "preview_by_repo": {}
+   "preview_by_repo": {
+    "atuin": [
+     0,
+     29,
+     0
+    ],
+    "prompt-sculptor-49": [
+     2,
+     0,
+     0
+    ]
+   }
   },
   "AUTH006": {
    "title": "Permissive Supabase policy",
@@ -4903,7 +4914,7 @@
   },
   "DATA006": {
    "title": "Timestamp without time zone",
-   "preview": false,
+   "preview": true,
    "tp": 118,
    "fp": 13,
    "needs_review": 0,
@@ -5000,7 +5011,93 @@
      0
     ]
    },
-   "preview_by_repo": {}
+   "preview_by_repo": {
+    "Vulnerable-Flask-App": [
+     2,
+     0,
+     0
+    ],
+    "actix-realworld-example-app": [
+     12,
+     0,
+     0
+    ],
+    "alerta": [
+     38,
+     0,
+     0
+    ],
+    "ardanlabs-service": [
+     1,
+     0,
+     0
+    ],
+    "atuin": [
+     8,
+     8,
+     0
+    ],
+    "bella-openapi": [
+     2,
+     0,
+     0
+    ],
+    "fastapi-react": [
+     2,
+     0,
+     0
+    ],
+    "fastapi-realworld-example-app": [
+     1,
+     0,
+     0
+    ],
+    "flasky": [
+     1,
+     0,
+     0
+    ],
+    "flexible-graphrag": [
+     28,
+     0,
+     0
+    ],
+    "go-clean-template": [
+     4,
+     0,
+     0
+    ],
+    "pygoat": [
+     5,
+     0,
+     0
+    ],
+    "realworld-springboot-java": [
+     0,
+     4,
+     0
+    ],
+    "sec-insights": [
+     4,
+     0,
+     0
+    ],
+    "sili-smart-hr": [
+     0,
+     1,
+     0
+    ],
+    "spring-boot-realworld-example-app": [
+     4,
+     0,
+     0
+    ],
+    "uniedit-server": [
+     6,
+     0,
+     0
+    ]
+   }
   },
   "DATA007": {
    "title": "Environment variable missing from the example env file",
@@ -9194,7 +9291,7 @@
   },
   "SEC001": {
    "title": "Hardcoded API key or access token",
-   "preview": false,
+   "preview": true,
    "tp": 28,
    "fp": 17,
    "needs_review": 0,
@@ -9241,7 +9338,43 @@
      0
     ]
    },
-   "preview_by_repo": {}
+   "preview_by_repo": {
+    "Django-Styleguide-Example": [
+     0,
+     1,
+     0
+    ],
+    "JavaVulnerableLab": [
+     1,
+     0,
+     0
+    ],
+    "atuin": [
+     0,
+     15,
+     0
+    ],
+    "bakerydemo": [
+     1,
+     0,
+     0
+    ],
+    "prompt-sculptor-49": [
+     24,
+     0,
+     0
+    ],
+    "snipe-it": [
+     0,
+     1,
+     0
+    ],
+    "terragoat": [
+     2,
+     0,
+     0
+    ]
+   }
   },
   "SEC002": {
    "title": "Private key committed",
@@ -9593,7 +9726,7 @@
   },
   "SEC004": {
    "title": "Hardcoded or default signing secret",
-   "preview": false,
+   "preview": true,
    "tp": 30,
    "fp": 34,
    "needs_review": 0,
@@ -9660,7 +9793,63 @@
      0
     ]
    },
-   "preview_by_repo": {}
+   "preview_by_repo": {
+    "Vulnerable-Flask-App": [
+     1,
+     0,
+     0
+    ],
+    "alerta": [
+     2,
+     0,
+     0
+    ],
+    "atuin": [
+     0,
+     29,
+     0
+    ],
+    "dvga": [
+     2,
+     0,
+     0
+    ],
+    "dvna": [
+     1,
+     0,
+     0
+    ],
+    "eShopOnWeb": [
+     1,
+     0,
+     0
+    ],
+    "fastapi-react": [
+     0,
+     1,
+     0
+    ],
+    "next-saas-stripe-starter": [
+     0,
+     1,
+     0
+    ],
+    "node-express-realworld-example-app": [
+     3,
+     0,
+     0
+    ],
+    "pygoat": [
+     20,
+     0,
+     0
+    ],
+    "svix-webhooks": [
+     0,
+     3,
+     0
+    ]
+   }
   },
   "SEC005": {
    "title": "Database URL with embedded password",
