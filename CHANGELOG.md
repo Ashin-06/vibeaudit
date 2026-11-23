@@ -4,6 +4,23 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.11.3] - 2026-11-23
+
+### Added
+
+- The VS Code extension is bundled (8 files, 114 KB), has an icon and store metadata, and is published to the
+  VS Code Marketplace and Open VSX (for Cursor and VSCodium) as `Ashin06.vibeaudit` by each release.
+
+### Changed
+
+- The extension requires VS Code 1.91 or later and starts in Go, Java/Kotlin, C#, Rust, PHP, Vue and Svelte
+  projects too, checking their unsaved edits.
+- READMEs show a short demo recording.
+
+### Fixed
+
+- The extension's `minimatch` dependency is pinned to a release without GHSA-g3hv-75wg-m249.
+
 ## [0.11.2] - 2026-11-23
 
 ### Added
