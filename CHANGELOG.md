@@ -4,6 +4,13 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- DATA007 no longer expects variables a platform sets at runtime in `.env.example`: `KUBERNETES_*`, `POD_*`
+  and `OTEL_*`.
+
 ## [0.11.3] - 2026-11-23
 
 ### Added
