@@ -189,12 +189,6 @@ def test_a_session_method_is_not_express_session(tmp_path):
     assert _rules(_scan(tmp_path), "SEC004") == [("b.js", 1, "SEC004")]
 
 
-def test_aws_documented_example_key_variants_are_not_secrets(tmp_path):
-    real = "AKIA" + "Z3KQ7TWPLM4VXR2D"  # split so vibeaudit's self-scan does not see a key here
-    (tmp_path / "a.py").write_text(f'LOG = {{"accessKeyId": "AKIAIOSFODNN7COMPROM"}}\nREAL = "{real}"\n')
-    assert [ln for _, ln, _ in _rules(_scan(tmp_path), "SEC001")] == [2]
-
-
 def test_short_esc_helper_counts_as_html_escaping(tmp_path):
     (tmp_path / "a.js").write_text(
         "const esc = (s) => String(s).replace(/[&<>\"]/g, (c) => ({'&': '&amp;', '<': '&lt;'})[c]);\n"

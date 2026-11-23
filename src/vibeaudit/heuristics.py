@@ -162,7 +162,6 @@ PLACEHOLDER = re.compile(
     r"|<[^<>]{0,100}>|\$\{|\{\{|%\(|^\$|process\.env|import\.meta|os\.environ|getenv|0000000000|1234567890|abcdef"
     r"|lorem|test_?key|mock|not.?real|my_?(?:api|secret)|_here\b|\.\.\.|^sk-\.+$|^none$|^null$|^env\(|^\$\(|^vault:|changethis"
     r"|honeytoken|canarytoken"  # bait planted on purpose to catch exfiltration
-    r"|AKIAIOSFODNN7"  # AWS's documented example key id, reused in synthetic logs and fixtures
 )
 
 

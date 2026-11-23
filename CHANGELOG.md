@@ -17,7 +17,7 @@ False positives found by scanning 37 FastAPI and vanilla-JS projects:
 - SEC011 skips status verdicts (`ok ? "PASS" : "FAIL"`) and all-caps enum labels.
 - SEC010 skips a secret passed through a one-way function before printing (`print(sign(..., key))`).
 - SEC004 skips settings about secrets (`SECRETS_PROVIDER`) and method calls named `session(...)`.
-- SEC001 / SEC003 treat honeytokens and AWS's documented `AKIAIOSFODNN7...` example key as placeholders.
+- SEC003 treats honeytoken bait values as placeholders.
 - BE006 accepts `if p.is_absolute() or ".." in p.parts: raise` as a traversal guard.
 - Tuple assignments (`sql, args["r"] = sql + " WHERE r = :r", risk`) keep each element's taint separate.
 
