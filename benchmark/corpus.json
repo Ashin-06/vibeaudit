@@ -1077,6 +1077,64 @@
    "kind": "well-maintained",
    "language": "php",
    "split": "heldout"
+  },
+  {
+   "name": "railsgoat",
+   "url": "https://github.com/OWASP/railsgoat",
+   "commit": "f5951f13089d85c979de09e7da3c8c0fb982f94a",
+   "licence": "MIT",
+   "kind": "known-vulnerable",
+   "language": "ruby"
+  },
+  {
+   "name": "rails-realworld",
+   "url": "https://github.com/gothinkster/rails-realworld-example-app",
+   "commit": "a2ae4fff78b3337683cea988c023281dcb5551b9",
+   "licence": "none declared",
+   "kind": "well-maintained",
+   "language": "ruby"
+  },
+  {
+   "name": "lobsters",
+   "url": "https://github.com/lobsters/lobsters",
+   "commit": "efaaaf85c2dc4fa9ed316cd1952a66bc5c7238ce",
+   "licence": "custom (see repository)",
+   "kind": "well-maintained",
+   "language": "ruby"
+  },
+  {
+   "name": "theodinproject",
+   "url": "https://github.com/TheOdinProject/theodinproject",
+   "commit": "f6f0740f658bf0d9b982fc444463a8271c2d1193",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "ruby"
+  },
+  {
+   "name": "once-campfire",
+   "url": "https://github.com/basecamp/once-campfire",
+   "commit": "945c22f141795e910e2822d386a94c5686bf7bdc",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "ruby",
+   "split": "heldout"
+  },
+  {
+   "name": "maybe",
+   "url": "https://github.com/maybe-finance/maybe",
+   "commit": "77b5469832758d1cbee1a940f3012a1ae1c74cd3",
+   "licence": "AGPL-3.0",
+   "kind": "well-maintained",
+   "language": "ruby",
+   "split": "heldout"
+  },
+  {
+   "name": "writebook",
+   "url": "https://github.com/basecamp/writebook",
+   "commit": "f105ecb4c243bdf0518cc7f9f3a1dab40e00252c",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "ruby"
   }
  ]
 }

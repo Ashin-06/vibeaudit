@@ -1,0 +1,94 @@
+{
+ "repo": "theodinproject",
+ "commit": "f6f0740f658bf0d9b982fc444463a8271c2d1193",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 20,
+   "fingerprint": "cfcbb64f610d689630a87512da47eb57",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 83,
+   "fingerprint": "3b2e4dad29733afcbfcfa23e9092be5b",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/heroku-review-app-on-label.yml",
+   "line": 12,
+   "fingerprint": "fe86954e7edbd9e400f150149ea95215",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/heroku-review-app-on-label.yml",
+   "line": 20,
+   "fingerprint": "50994b106a4a13356fb7995dbd79b8f4",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/heroku-review-app-on-label.yml",
+   "line": 31,
+   "fingerprint": "8f8dfce6d7b6e82b3627997678c87eae",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/heroku-review-app-on-label.yml",
+   "line": 38,
+   "fingerprint": "c815b327aa5709eddaca2b1825db8cee",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "app/controllers/project_submissions/likes_controller.rb",
+   "line": 5,
+   "fingerprint": "d3207ecedcd5a587d0a0eabe5de25f58",
+   "verdict": "fp",
+   "reason": "Liking a submission changes only the caller's own like."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/javascript/controllers/lesson_toc_controller.js",
+   "line": 44,
+   "fingerprint": "d3e1be2dde429e77ca45b694d61802a3",
+   "verdict": "fp",
+   "reason": "Curriculum content written by the maintainers, not user input."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/views/lessons/show.html.erb",
+   "line": 34,
+   "fingerprint": "f034dee5b9a78827c39123b96eba2d83",
+   "verdict": "fp",
+   "reason": "Curriculum content written by the maintainers, not user input."
+  },
+  {
+   "rule": "SEC003",
+   "file": "app/views/shared/_analytics.html.erb",
+   "line": 3,
+   "fingerprint": "90521c0da0cb41db5a57e37e579b242e",
+   "verdict": "fp",
+   "reason": "The Cloudflare Web Analytics beacon token is public by design."
+  },
+  {
+   "rule": "SEC004",
+   "file": "config/initializers/devise.rb",
+   "line": 38,
+   "fingerprint": "7dc1a4cc038ed864d3889d422d36fae9",
+   "verdict": "tp",
+   "reason": "A Devise secret_key is committed in the initializer."
+  }
+ ]
+}

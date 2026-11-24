@@ -91,6 +91,8 @@ def _lang_of(rel: str) -> Optional[str]:
         return "rs"
     if low.endswith(".php"):
         return "php"
+    if low.endswith((".rb", ".erb")):
+        return "ruby"
     return None
 
 
@@ -223,7 +225,7 @@ class PolyScanner:
     def run(self) -> List[Route]:
         for sf in self.p.files:
             lang = _lang_of(sf.rel)
-            if lang is None or sf.text is None:
+            if lang is None or lang == "ruby" or sf.text is None:  # Ruby: rubyscan
                 continue
             if sf.is_test or sf.is_example or sf.is_one_off or sf.is_vendored or POLY_TEST_RE.search(sf.rel):
                 continue

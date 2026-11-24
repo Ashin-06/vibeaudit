@@ -85,6 +85,17 @@ their causes:
 | Rust | 3/5 (60.0%) | 22/36 (61.1%) | AUTH001 on public sign-up routes and handlers resolved by path to another function; DATA001 |
 | PHP | 3/24 (12.5%) | 66/106 (62.3%) | FE001 on `{!! !!}` output that the model already escapes (LinkAce: 0/19) |
 
+Ruby (Rails) was added after this batch, with four tuned repositories (railsgoat, rails-realworld, lobsters,
+theodinproject) and two held out, chosen and pinned before they were scanned (once-campfire, maybe). All
+findings on the two held-out repositories measure 16 of 104; most false positives (58) are AUTH001 on controllers authenticated by
+the app's `Authentication` concern (`before_action` inside `included do`, the Rails 8 generator's pattern), which
+is not followed yet. Ruby stays preview.
+
+That cause was then fixed from a tuned repository that uses the same pattern (writebook): `include` of a concern
+adds its `included do` filters, and class macros such as `allow_unauthenticated_access only: ...` expand to the
+`skip_before_action` they run. Because the cause was seen on once-campfire and maybe, those two are not re-scored
+to graduate Ruby; Ruby leaves preview only on a fresh held-out batch, chosen and pinned before it is scanned.
+
 No language clears the bar, so all five stay preview. One rule does: **PHP BE001 (SQL injection) measures 31/33
 (93.9%) on held-out repositories and leaves preview** for PHP; it already gated as a severe rule. PHP DATA001
 measures 6/6 but the rule itself is preview everywhere, so it does not change. Go and Java/Kotlin AUTH010 measure

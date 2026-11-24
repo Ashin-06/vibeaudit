@@ -1,0 +1,686 @@
+{
+ "repo": "maybe",
+ "commit": "77b5469832758d1cbee1a940f3012a1ae1c74cd3",
+ "findings": [
+  {
+   "rule": "CFG001",
+   "file": ".devcontainer/Dockerfile",
+   "line": 2,
+   "fingerprint": "4a3efd62230b6e50c1ad7fd7422dc97d",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "CFG007",
+   "file": ".devcontainer/docker-compose.yml",
+   "line": 4,
+   "fingerprint": "6665392f8f4854503c2ac23fbf20b4bc",
+   "verdict": "tp",
+   "reason": "docker-compose sets the default postgres password."
+  },
+  {
+   "rule": "CFG007",
+   "file": ".devcontainer/docker-compose.yml",
+   "line": 10,
+   "fingerprint": "45d2195e7d7a1eccce97fcc731e279e7",
+   "verdict": "tp",
+   "reason": "docker-compose sets the default postgres password."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 15,
+   "fingerprint": "cfcbb64f610d689630a87512da47eb57",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 31,
+   "fingerprint": "3b2e4dad29733afcbfcfa23e9092be5b",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 47,
+   "fingerprint": "f6ee3ad11663153ac82c5009fa2566dd",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 110,
+   "fingerprint": "ca08cb14ee5c87d79a96a3ebc42adcd1",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/publish.yml",
+   "line": 47,
+   "fingerprint": "0dd0d885ff531f80d55cb0617d124960",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/publish.yml",
+   "line": 50,
+   "fingerprint": "3f91d573f290435d62b08444a5e6fd01",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/publish.yml",
+   "line": 53,
+   "fingerprint": "1777a1a7cc6c6f41b783cade8fe5598a",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/publish.yml",
+   "line": 61,
+   "fingerprint": "364607cb2dee6ceb0946ca55b1eb4c82",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/publish.yml",
+   "line": 72,
+   "fingerprint": "a7ec0a40cb5fe82b6e76298fb60fa132",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "QA007",
+   "file": "app/components/DS/dialog_controller.js",
+   "line": 1,
+   "fingerprint": "e93f6211614810763a3a73cb77d028f5",
+   "verdict": "fp",
+   "reason": "Pinned in config/importmap.rb (importmap-rails), not package.json."
+  },
+  {
+   "rule": "QA007",
+   "file": "app/components/DS/menu_controller.js",
+   "line": 1,
+   "fingerprint": "62a3604b5452f48f78af37f52a61e273",
+   "verdict": "fp",
+   "reason": "Pinned in config/importmap.rb (importmap-rails), not package.json."
+  },
+  {
+   "rule": "API002",
+   "file": "app/components/DS/tabs_controller.js",
+   "line": 44,
+   "fingerprint": "fc7ac615a651b5e904de62c826247cea",
+   "verdict": "fp",
+   "reason": "resource :current_session, only: [:update] routes PUT /current_session."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/budget_categories_controller.rb",
+   "line": 24,
+   "fingerprint": "ed14d1d273ac84be99731e69a57f732d",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "app/controllers/budget_categories_controller.rb",
+   "line": 24,
+   "fingerprint": "1d0005e72508ae8407295d6fa844320d",
+   "verdict": "fp",
+   "reason": "The record is found through Current.user or Current.family (CurrentAttributes), which is not read as an owner check."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/budgets_controller.rb",
+   "line": 15,
+   "fingerprint": "f713869a6046747c5cffd48aeb59fe8b",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/categories_controller.rb",
+   "line": 17,
+   "fingerprint": "4ebf68a9547eb081bd7eee780025c97c",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/categories_controller.rb",
+   "line": 39,
+   "fingerprint": "c09b0a7a55b0670df5a4280aaba86346",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/categories_controller.rb",
+   "line": 53,
+   "fingerprint": "13fcf52746a4a6359292b3af4b72c6f2",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/chats_controller.rb",
+   "line": 28,
+   "fingerprint": "757d53b9660608d882731f354562cca6",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/chats_controller.rb",
+   "line": 28,
+   "fingerprint": "97f6e5b18b47d98dcd3edd00e4ea26c2",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/chats_controller.rb",
+   "line": 37,
+   "fingerprint": "b2006707ed4cec1959d60ad430ae5d8b",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/chats_controller.rb",
+   "line": 37,
+   "fingerprint": "8fd3fb70a73d8067506f16e07ac55979",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/family_merchants_controller.rb",
+   "line": 16,
+   "fingerprint": "5f86af42b51110b83790177be4860561",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/family_merchants_controller.rb",
+   "line": 32,
+   "fingerprint": "939b2239751e05739836bda028deabbb",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/family_merchants_controller.rb",
+   "line": 40,
+   "fingerprint": "bcf8d907b9d349ee6106ac5293e55443",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/holdings_controller.rb",
+   "line": 11,
+   "fingerprint": "4fdbc6589f784d1aff1f2bd85d5a5683",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/import/configurations_controller.rb",
+   "line": 9,
+   "fingerprint": "79c9664ad0a10cb3dcc4c7b91633ade3",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/import/mappings_controller.rb",
+   "line": 4,
+   "fingerprint": "21adb27fd6009ac9884e580327bda82c",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "app/controllers/import/mappings_controller.rb",
+   "line": 4,
+   "fingerprint": "4705fc552df4091f25fa44b1714024b0",
+   "verdict": "fp",
+   "reason": "The record is found through Current.user or Current.family (CurrentAttributes), which is not read as an owner check."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/import/rows_controller.rb",
+   "line": 4,
+   "fingerprint": "2634227cc67d1887ebb60a8b45309663",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/import/uploads_controller.rb",
+   "line": 16,
+   "fingerprint": "234be9c3a73642c65d75973262716bf2",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/imports_controller.rb",
+   "line": 22,
+   "fingerprint": "4f51433635d06a92f42294a76032e8e2",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/imports_controller.rb",
+   "line": 55,
+   "fingerprint": "303b7fe9ba3633cf5fcbd2ce3f9c1c45",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/invitations_controller.rb",
+   "line": 7,
+   "fingerprint": "9e329e73f1627dd82a3c163c388f1b9d",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/invitations_controller.rb",
+   "line": 37,
+   "fingerprint": "e88ef07a75d696163f126bf9af4f54b8",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "BE009",
+   "file": "app/controllers/invitations_controller.rb",
+   "line": 58,
+   "fingerprint": "aeee939e3290ff6ab3a2bfdfe85595ac",
+   "verdict": "fp",
+   "reason": "Only administrators reach it (Current.user.admin? check) and the role is chosen for an invitation."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/messages_controller.rb",
+   "line": 6,
+   "fingerprint": "c487f6f331dc56aeb87fcc28647edc51",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/messages_controller.rb",
+   "line": 6,
+   "fingerprint": "ca0701f4ce00420b6440090aa8fd4f60",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/passwords_controller.rb",
+   "line": 5,
+   "fingerprint": "7bfa9d659c551d9604adb06e6812c38a",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/plaid_items_controller.rb",
+   "line": 35,
+   "fingerprint": "ef0e4c9ce029693d95a1a19c9e88e088",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/properties_controller.rb",
+   "line": 10,
+   "fingerprint": "cf817e5121b63f10907a1a891ddd17ad",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/properties_controller.rb",
+   "line": 18,
+   "fingerprint": "881ad8a8f2fcd69362556a9241c942a3",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/registrations_controller.rb",
+   "line": 15,
+   "fingerprint": "afaec4bb73d64d6e2ab00ab385c6f80f",
+   "verdict": "fp",
+   "reason": "Public sign-up (join code or registration), by design."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/rules_controller.rb",
+   "line": 24,
+   "fingerprint": "1ba311b25a31b9c413cd1a0a3f606053",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/rules_controller.rb",
+   "line": 46,
+   "fingerprint": "d0aa3576a67de7a47a805e947702042c",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/rules_controller.rb",
+   "line": 57,
+   "fingerprint": "d021ffaa303a20a53599fe27cf38cd65",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/settings/api_keys_controller.rb",
+   "line": 19,
+   "fingerprint": "0645510f823386d390db6643d746791c",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/settings/api_keys_controller.rb",
+   "line": 38,
+   "fingerprint": "781226e88b6b24e66bfd4582bd710bcd",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/settings/hostings_controller.rb",
+   "line": 13,
+   "fingerprint": "f8573395be794ceef6c7936dc97301b8",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/settings/profiles_controller.rb",
+   "line": 10,
+   "fingerprint": "815f16fe95e205c948463b95841996e5",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/tags_controller.rb",
+   "line": 14,
+   "fingerprint": "ed604fa767cc06fd6ba4b55be1c1f0f6",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/tags_controller.rb",
+   "line": 27,
+   "fingerprint": "e98fc7023c396c9ef0dc071a0df016ea",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/tags_controller.rb",
+   "line": 32,
+   "fingerprint": "0e1756e350fbe0feb50572d16360b4e8",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/trades_controller.rb",
+   "line": 15,
+   "fingerprint": "5a6e83945e2e041de55274fdec129223",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/trades_controller.rb",
+   "line": 31,
+   "fingerprint": "4bc3af0a04dfe283c55b5a396cbeffaa",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "app/controllers/trades_controller.rb",
+   "line": 31,
+   "fingerprint": "e978f6c181c1754fe71214b79b6d8f16",
+   "verdict": "fp",
+   "reason": "The record is found through Current.user or Current.family (CurrentAttributes), which is not read as an owner check."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/transaction_categories_controller.rb",
+   "line": 4,
+   "fingerprint": "e087d7bca13f8ba09448a5d33d8134dc",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "app/controllers/transaction_categories_controller.rb",
+   "line": 4,
+   "fingerprint": "3079c72aaa639a650d2f0e226bc94255",
+   "verdict": "fp",
+   "reason": "The record is found through Current.user or Current.family (CurrentAttributes), which is not read as an owner check."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/transactions_controller.rb",
+   "line": 56,
+   "fingerprint": "3fbcdecb88508f28bc7c4314a470f0f7",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/transactions_controller.rb",
+   "line": 56,
+   "fingerprint": "828b76e80c659a9dd24542a0219cb5e3",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/transactions_controller.rb",
+   "line": 76,
+   "fingerprint": "cf09ca70587e356c26fb3363def4e4d1",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/transactions_controller.rb",
+   "line": 76,
+   "fingerprint": "b807cdfa9bde225330b72f60e77bfcd1",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/transfers_controller.rb",
+   "line": 14,
+   "fingerprint": "1688dd6196a873d52be80b516f602004",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/transfers_controller.rb",
+   "line": 34,
+   "fingerprint": "438806ca977ef247fd93bf3f8002fc63",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/transfers_controller.rb",
+   "line": 46,
+   "fingerprint": "0e52f2096467ed8e326f86c225e67251",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/users_controller.rb",
+   "line": 5,
+   "fingerprint": "8d63def659755b9ed2dda65aa662220b",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/users_controller.rb",
+   "line": 43,
+   "fingerprint": "1b2193ab4c7c04e7dcf063d65850625b",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/valuations_controller.rb",
+   "line": 51,
+   "fingerprint": "45efee223070569749e5d8b219aed8de",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "QA007",
+   "file": "app/javascript/application.js",
+   "line": 2,
+   "fingerprint": "68cc4679d8feea06a9fab236768d0e97",
+   "verdict": "fp",
+   "reason": "Pinned in config/importmap.rb (importmap-rails), not package.json."
+  },
+  {
+   "rule": "QA007",
+   "file": "app/javascript/application.js",
+   "line": 3,
+   "fingerprint": "a93e8045dc9ab721a190cb93866bda13",
+   "verdict": "fp",
+   "reason": "Pinned in config/importmap.rb (importmap-rails), not package.json."
+  },
+  {
+   "rule": "QA007",
+   "file": "app/javascript/controllers/category_controller.js",
+   "line": 2,
+   "fingerprint": "706468137d2beffa1330623536ccea20",
+   "verdict": "fp",
+   "reason": "Pinned in config/importmap.rb (importmap-rails), not package.json."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/javascript/controllers/confirm_dialog_controller.js",
+   "line": 41,
+   "fingerprint": "83efc1aaf9e8fcaf94ce040e0ac4ec75",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own templates or server-rendered partials."
+  },
+  {
+   "rule": "QA007",
+   "file": "app/javascript/controllers/donut_chart_controller.js",
+   "line": 2,
+   "fingerprint": "b56420f2c4ef36f37c031b86a1e662fb",
+   "verdict": "fp",
+   "reason": "Pinned in config/importmap.rb (importmap-rails), not package.json."
+  },
+  {
+   "rule": "QA007",
+   "file": "app/javascript/controllers/hotkey_controller.js",
+   "line": 1,
+   "fingerprint": "dca91ccc2663d92439a5e0066c0cddab",
+   "verdict": "fp",
+   "reason": "Pinned in config/importmap.rb (importmap-rails), not package.json."
+  },
+  {
+   "rule": "QA007",
+   "file": "app/javascript/controllers/index.js",
+   "line": 6,
+   "fingerprint": "7ad66518a1aaf39d6f53540a4b6db4bc",
+   "verdict": "fp",
+   "reason": "Pinned in config/importmap.rb (importmap-rails), not package.json."
+  },
+  {
+   "rule": "QA007",
+   "file": "app/javascript/controllers/money_field_controller.js",
+   "line": 2,
+   "fingerprint": "cd00727f897be7cdd2da72dd44e9d631",
+   "verdict": "fp",
+   "reason": "Pinned in config/importmap.rb (importmap-rails), not package.json."
+  },
+  {
+   "rule": "API001",
+   "file": "app/javascript/controllers/plaid_controller.js",
+   "line": 31,
+   "fingerprint": "46e2a5edcf51fbfeab3db649cd2339e2",
+   "verdict": "fp",
+   "reason": "post :sync is a member route of resources :plaid_items."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/javascript/controllers/rule/conditions_controller.js",
+   "line": 20,
+   "fingerprint": "f60d84050b08aeaf826ff51976695f40",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own templates or server-rendered partials."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/javascript/controllers/rules_controller.js",
+   "line": 49,
+   "fingerprint": "902c7e5031d0c822ef1e6d9d46671b37",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own templates or server-rendered partials."
+  },
+  {
+   "rule": "QA007",
+   "file": "app/javascript/controllers/sankey_chart_controller.js",
+   "line": 3,
+   "fingerprint": "5db0fc605938667018427c849a98fa63",
+   "verdict": "fp",
+   "reason": "Pinned in config/importmap.rb (importmap-rails), not package.json."
+  },
+  {
+   "rule": "QA007",
+   "file": "app/javascript/shims/d3-array-default.js",
+   "line": 1,
+   "fingerprint": "828e62528ce8d1497bece4c84ae7be99",
+   "verdict": "fp",
+   "reason": "Pinned in config/importmap.rb (importmap-rails), not package.json."
+  },
+  {
+   "rule": "QA007",
+   "file": "app/javascript/shims/d3-shape-default.js",
+   "line": 1,
+   "fingerprint": "b3018c3520bb85e26489d9cd6f5bc589",
+   "verdict": "fp",
+   "reason": "Pinned in config/importmap.rb (importmap-rails), not package.json."
+  }
+ ]
+}

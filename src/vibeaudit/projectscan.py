@@ -57,7 +57,7 @@ class ProjectScanner:
         self.code_files = [f for f in project.files if f.kind in ("py", "js", "html")
                            or f.rel.endswith(("package.json", "requirements.txt", "pyproject.toml", "go.mod"))
                            or (f.rel.endswith(".go") and not f.rel.endswith("_test.go"))
-                           or (f.rel.endswith((".rs", ".php")) and not f.is_test)]
+                           or (f.rel.endswith((".rs", ".php", ".rb")) and not f.is_test) or f.rel.endswith("Gemfile")]
 
     def _piece(self, f: SourceFile) -> str:
         views = f.cache.get("views") if f.kind in ("py", "js", "html") else None
@@ -440,7 +440,9 @@ class ProjectScanner:
                 r"(?i)\.\s*(?:updates|exec|persist|merge|deleteById|ExecuteSqlRaw|SaveChangesAsync|execute)\s*\(|::(?:create|destroy)\s*\("
                 # PHP: Doctrine's ->persist() / ->remove() / ->flush(), Eloquent's ->save() / ->delete() / ->update()
                 r"|->\s*(?:persist|remove|flush|save|delete|update|create|insert|forceDelete|sync|attach|detach)\s*\(",
-                r.body))
+                r.body)) or (r.lang == "ruby" and bool(re.search(  # ActiveRecord calls without parentheses: `@post.save`
+                    r"\.\s*(?:save|destroy|delete|update|create|update_columns?|update_all|delete_all|destroy_all|"
+                    r"insert_all|upsert_all|increment|decrement|toggle|touch)!?(?![\w?=])", r.body)))
             writes = semantic or bool(H.MUTATION_EVIDENCE.search(r.body)) or poly_writes
             mutating = r.mutating and (writes or r.calls_llm)
             is_admin = bool(re.search(r"(?i)(?:^|/)admin(?:/|$|[-_])", path) or re.search(r"(?i)(?:^|/)admin(?:/|\.|$)", r.file))
