@@ -944,9 +944,7 @@ _R = [
          "The browser cannot reserve space for an image without dimensions, so the content below jumps when "
          "it loads (cumulative layout shift, a Core Web Vital).",
          "Set `width` and `height` (the intrinsic size is enough; CSS can still scale it), or give the image "
-         "a fixed box with CSS such as `aspect-ratio`.", preview=True,
-         preview_reason="Held-out 6 of 7 (85.7%) after a fresh held-out repository: an <img> sized by CSS classes "
-                        "was reported."),
+         "a fixed box with CSS such as `aspect-ratio`."),
     Rule("UI015", "Form error not announced to screen readers", "ui", "low",
          "An error message that only appears next to the field is invisible to a screen reader user, who "
          "hears nothing when the form is rejected.",

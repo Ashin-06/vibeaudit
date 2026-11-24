@@ -5,7 +5,7 @@ Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do n
 
 172 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-77 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+76 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -1882,7 +1882,7 @@ How to fix: Add GET /health (or /healthz) that returns 200 when the app and its 
 | [UI011](#ui011) | low | stable | No error page |
 | [UI012](#ui012) | low | stable | Missing page metadata or viewport |
 | [UI013](#ui013) | medium | stable | Link to a page that does not exist |
-| [UI014](#ui014) | low | preview | Image without width and height |
+| [UI014](#ui014) | low | stable | Image without width and height |
 | [UI015](#ui015) | low | preview | Form error not announced to screen readers |
 | [UI016](#ui016) | medium | preview | Focus outline removed |
 | [UI017](#ui017) | medium | preview | Link to an asset that does not exist |
@@ -2005,9 +2005,7 @@ How to fix: Fix the path, or create the page.
 
 ### UI014
 
-**Image without width and height** (low, preview)
-
-Preview: Held-out 6 of 7 (85.7%) after a fresh held-out repository: an <img> sized by CSS classes was reported.
+**Image without width and height** (low)
 
 Why it matters: The browser cannot reserve space for an image without dimensions, so the content below jumps when it loads (cumulative layout shift, a Core Web Vital).
 
