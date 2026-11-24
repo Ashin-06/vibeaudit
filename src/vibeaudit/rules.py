@@ -968,6 +968,13 @@ _R = [
          "The route exists but does not accept this HTTP method, so the request fails with 405 (or reaches a "
          "different handler than intended).",
          "Send the method the route handles, or add a handler for this method."),
+    Rule("CFG019", "Security headers missing on responses", "config", "low",
+         "The running app answers without a Content-Security-Policy, X-Content-Type-Options or frame protection "
+         "(and over HTTPS, without Strict-Transport-Security), so a browser applies none of those defences. Reported "
+         "by `vibeaudit probe` once per origin.",
+         "Set the headers once for every response (helmet for Express, django-csp and SecurityMiddleware for Django, "
+         "a middleware or the reverse proxy elsewhere).", "CWE-693", "A05:2021", preview=True,
+         preview_reason="New with `vibeaudit probe`: a dynamic check, not yet measured on enough running apps."),
     Rule("AI001", "Issue reported by the LLM review (unverified)", "llm-review", "medium",
          "With --llm-review a model reads the riskiest files and reports issues the rules did not cover. These are "
          "suggestions from a model and can be wrong.",
