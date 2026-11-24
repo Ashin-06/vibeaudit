@@ -49,9 +49,8 @@ ERROR_STATE = re.compile(r"\bcatch\b|\.catch\s*\(|\berror\b|isError|onError|setE
 LOREM = re.compile(r"(?i)\blorem ipsum\b|\bdolor sit amet\b")
 HREF = re.compile(r"""(?:\bhref\s*=\s*\{?\s*|\brouter\s*\.\s*(?:push|replace)\s*\(\s*|\bredirect\s*\(\s*|\bnavigate\s*\(\s*)(["'`])(/[^"'`\s?#]*)(?:[?#][^"'`\s]*)?\1""")
 # an image whose box is fixed some other way: Tailwind size or aspect classes, inline style, fill layout
-CSS_RULE = re.compile(r"([^{}]{1,2000})\{([^{}]{0,4000})\}")
 CSS_SIZE = re.compile(r"(?i)(?:^|[;\s])(?:width|height|aspect-ratio)\s*:")
-IMG_IN_CLASS = re.compile(r"\.([\w-]{1,80})\s*>?\s*img\s*\Z")
+IMG_IN_CLASS = re.compile(r"\.([\w-]{1,80})[ \t]{0,20}>?[ \t]{0,20}img\s{0,20}\Z")  # bounded: used on selector tails
 OPEN_TAG = re.compile(r"<[A-Za-z][\w.-]{0,40}\b[^<>]{0,2000}(?<!/)>")
 SIZED = re.compile(r"\b(?:width|height)\s*=|\bfill\b|\bstyle\s*=|\b(?:w|h|size|aspect)-[\w\[/]|\bsizes\s*="
                    # a CSS-module class (className={styles.avatar}): the stylesheet sets the size
@@ -103,10 +102,12 @@ class UiScanner:
             self._img_parents = set()
             for f in self.p.files:
                 if f.rel.endswith((".css", ".scss", ".sass", ".less")) and f.text:
-                    for rule in finditer(CSS_RULE, f.text):
-                        if CSS_SIZE.search(rule.group(2)):
-                            for sel in rule.group(1).split(","):
-                                m = IMG_IN_CLASS.search(sel)
+                    # split on braces instead of a regex: each `}`-separated chunk is `selectors { declarations`
+                    for chunk in f.text.split("}"):
+                        selectors, brace, decls = chunk.rpartition("{")
+                        if brace and CSS_SIZE.search(decls):
+                            for sel in selectors[-2000:].split(","):
+                                m = IMG_IN_CLASS.search(sel.strip()[-200:])
                                 if m:
                                     self._img_parents.add(m.group(1))
         if not self._img_parents:
