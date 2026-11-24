@@ -340,6 +340,10 @@ class RubyScanner:
             raw = not first.lstrip().startswith(('"', "'", ":", "[", "{", "%")) and re.search(r"\.\s*(?:order|reorder|group|pluck|select|from)\s*\($", body[m.start():m.end()])
             if any(dirty(x) for x in interp) or (concat and dirty(concat.group(0))) or (raw and dirty(first)):
                 self.add(sf, a + m.start(), "BE001", "Request data is built into SQL (SQL injection).")
+        # a whole request value as the conditions (`User.find_by(params[:user])`): a string there is raw SQL and a hash
+        # picks any column (curupira)
+        for m in finditer(r"\.[ \t]{0,5}(?:find_by|where|find_or_create_by|exists\?)[ \t]{0,5}\([ \t]{0,5}params[ \t]{0,5}\[[ \t]{0,5}:\w{1,40}[ \t]{0,5}\][ \t]{0,5}\)", body):
+            self.add(sf, a + m.start(), "BE001", "A request parameter is passed whole as query conditions (SQL injection).")
         for rx, rule, what, sev in SINKS:
             for m in finditer(rx, body):
                 seg = body[m.start():m.start() + 400].split("\n", 1)[0]

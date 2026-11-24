@@ -1,0 +1,5171 @@
+{
+ "about": "harvest takes reviewed advisories whose references include a fix commit, pins the fix's parent (the vulnerable\ncommit) and records the lines the fix removed or changed in each source file. Before anything is scanned it fixes\ntwo things per advisory and writes them down:\n- split: \"tune\" or \"heldout\", from a hash of the GHSA id (about 60/40). Detection is improved from tune misses only.\n- scope: \"in\" when the class has a vibeaudit rule for the file's language, the vulnerable file is application source\n  (not a test, example or vendored file), and the fix touches at most 3 source files; otherwise \"out\", with why.\nA location counts as detected when a finding of one of the class's rules lands in that file within 3 lines.\nNeeds the `gh` CLI (authenticated) and git.",
+ "frozen": "2026-11-24T12:23Z",
+ "note": "Frozen before any scan. The class-by-ecosystem harvest completed; the follow-up pass over named web and AI application packages (APPS in tools/advisories.py) was stopped early, with 179 cases already in scope, and none of its cases are in this set.",
+ "cases": [
+  {
+   "advisory": "GHSA-vqrg-773h-4wxc",
+   "class": "sqli",
+   "ecosystem": "pip",
+   "repo": "stevereiner/flexible-graphrag",
+   "commit": "59e9edb7c03d8ffa8fcacefb1adc65e87a3d7b7f",
+   "fix": "9ace8d47e198ce3f15dbf22853e396ab4e9884fa",
+   "file": "flexible-graphrag/backend.py",
+   "lines": [
+    133,
+    1140
+   ],
+   "rules": [
+    "BE001",
+    "GO004",
+    "BE010"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "the fix spans more than 5 source files"
+  },
+  {
+   "advisory": "GHSA-x783-xp3g-mqhp",
+   "class": "sqli",
+   "ecosystem": "pip",
+   "repo": "MervinPraison/PraisonAI",
+   "commit": "757559f67f1c37388288605f8d893ff9e10fb6ed",
+   "fix": "0accebb2e3c3ec2fca66bbea0444fb7a35f0b4ef",
+   "file": "src/praisonai/praisonai/gateway/server.py",
+   "lines": [
+    205,
+    205
+   ],
+   "rules": [
+    "BE001",
+    "GO004",
+    "BE010"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-f2mf-q878-gh58",
+   "class": "sqli",
+   "ecosystem": "pip",
+   "repo": "Parsl/parsl",
+   "commit": "2c37ae3e75137095302dac5f9cd3ca956cb51a47",
+   "fix": "013a928461e70f38a33258bd525a351ed828e974",
+   "file": "parsl/monitoring/visualization/views.py",
+   "lines": [
+    1,
+    172
+   ],
+   "rules": [
+    "BE001",
+    "GO004",
+    "BE010"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-2m9m-6cr5-9x25",
+   "class": "sqli",
+   "ecosystem": "npm",
+   "repo": "ConnorBritain/mssql-mcp-core",
+   "commit": "40b30377b40802ad295bece9728911c45f9d5c63",
+   "fix": "227e2efc4e3311c477b7ae509c3ae15437a4f815",
+   "file": "src/index.ts",
+   "lines": [
+    68,
+    68
+   ],
+   "rules": [
+    "BE001",
+    "GO004",
+    "BE010"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "the fix spans more than 5 source files"
+  },
+  {
+   "advisory": "GHSA-6wcc-39rp-hh9p",
+   "class": "sqli",
+   "ecosystem": "npm",
+   "repo": "hypequery/hypequery",
+   "commit": "7a9ef6bf4867ef231067ee70b94cad1b2cbc8add",
+   "fix": "4dfa9d77d70a08b970e722268b75ca7d13db0bdf",
+   "file": "packages/clickhouse/src/core/utils.ts",
+   "lines": [
+    8,
+    8
+   ],
+   "rules": [
+    "BE001",
+    "GO004",
+    "BE010"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-wjjv-3mj2-39hf",
+   "class": "sqli",
+   "ecosystem": "npm",
+   "repo": "agenticmail/agenticmail",
+   "commit": "41dd8153809cabbc9b79aba1b726266af923a1b7",
+   "fix": "1408de543fa3577d8c2d4fdb289c75fe6faafac7",
+   "file": "packages/api/src/routes/storage.ts",
+   "lines": [
+    211,
+    903
+   ],
+   "rules": [
+    "BE001",
+    "GO004",
+    "BE010"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-wmrf-hv6w-mr66",
+   "class": "sqli",
+   "ecosystem": "npm",
+   "repo": "kysely-org/kysely",
+   "commit": "4f43c7d2280eabb586d1db4b4ae1361aa99eca3f",
+   "fix": "0a602bff2f442f6c26d5e047ca8f8715179f6d24",
+   "file": "src/query-compiler/default-query-compiler.ts",
+   "lines": [
+    1628,
+    1628
+   ],
+   "rules": [
+    "BE001",
+    "GO004",
+    "BE010"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-v9v2-98xq-627c",
+   "class": "sqli",
+   "ecosystem": "go",
+   "repo": "prest/prest",
+   "commit": "e0cd7bdc8cd4edbee9090257cb618378ad0c1593",
+   "fix": "084348fa82701b098492fc520557ff290b7691e2",
+   "file": "adapters/postgres/postgres.go",
+   "lines": [
+    2061,
+    2100
+   ],
+   "rules": [
+    "BE001",
+    "GO004",
+    "BE010"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "the fix spans more than 5 source files"
+  },
+  {
+   "advisory": "GHSA-f46q-3v67-fmm4",
+   "class": "sqli",
+   "ecosystem": "go",
+   "repo": "sipcapture/homer",
+   "commit": "385ba27af7d78ac6ef5d8d096ec7fcfdb59acfa6",
+   "fix": "a7d027dc684b210b62285c49f555ac88d64f35f0",
+   "file": "src/coordinator/handlers/statistics_v4.go",
+   "lines": [
+    16,
+    95
+   ],
+   "rules": [
+    "BE001",
+    "GO004",
+    "BE010"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-p46v-f2x8-qp98",
+   "class": "sqli",
+   "ecosystem": "go",
+   "repo": "prest/prest",
+   "commit": "66acb0f009e94c091b97a428154db706e25a1463",
+   "fix": "47d02b87842900f77d76fc694d9aa7e983b0711c",
+   "file": "adapters/postgres/postgres.go",
+   "lines": [
+    313,
+    1558
+   ],
+   "rules": [
+    "BE001",
+    "GO004",
+    "BE010"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-wm25-j4gw-6vr3",
+   "class": "sqli",
+   "ecosystem": "go",
+   "repo": "prest/prest",
+   "commit": "19de05e5fc91b51c7a7e4ef00c1b407de2bda7b4",
+   "fix": "96ff96cfdc7ad6dd86e2289fcd5a37ee70c8926e",
+   "file": "config/config.go",
+   "lines": [
+    185,
+    185
+   ],
+   "rules": [
+    "BE001",
+    "GO004",
+    "BE010"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-g622-r636-qfqh",
+   "class": "sqli",
+   "ecosystem": "go",
+   "repo": "couchbase/sync_gateway",
+   "commit": "fdc44dadee46a0e75f214e79ee945e31233f62b1",
+   "fix": "97adb5b496aa96aa70398018ea96da913ffd8d8c",
+   "file": "db/query.go",
+   "lines": [
+    43,
+    492
+   ],
+   "rules": [
+    "BE001",
+    "GO004",
+    "BE010"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-7ph3-grqh-pv9v",
+   "class": "sqli",
+   "ecosystem": "maven",
+   "repo": "apache/gravitino",
+   "commit": "d4a90561f027c32ef5ea1f0bb25d027f266e5cc5",
+   "fix": "5355bd075d54cad1323606723e72cc32ca564f24",
+   "file": "core/src/main/java/org/apache/gravitino/storage/relational/session/SqlSessionFactoryHelper.java",
+   "lines": [
+    69,
+    69
+   ],
+   "rules": [
+    "BE001",
+    "GO004",
+    "BE010"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-wp6c-29r3-jqw9",
+   "class": "sqli",
+   "ecosystem": "maven",
+   "repo": "jeecgboot/jeecg-boot",
+   "commit": "e6e6902e853bc7b036078415b30014983880c15e",
+   "fix": "648e66d5ef1547a01ff77bf9875f960ca39bbe8e",
+   "file": "jeecg-module-system/jeecg-system-biz/src/main/java/org/jeecg/modules/system/controller/SysDictController.java",
+   "lines": [
+    349,
+    349
+   ],
+   "rules": [
+    "BE001",
+    "GO004",
+    "BE010"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-r7h9-qx4h-77j5",
+   "class": "sqli",
+   "ecosystem": "composer",
+   "repo": "bolt/core",
+   "commit": "577b2232209c9285143a2f505ca306416b38f3f9",
+   "fix": "2818347a7ebd399a036f35ada750f0b151464489",
+   "file": "src/Utils/ListFormatHelper.php",
+   "lines": [
+    6,
+    180
+   ],
+   "rules": [
+    "BE001",
+    "GO004",
+    "BE010"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-8fxw-fmj8-xp7j",
+   "class": "sqli",
+   "ecosystem": "composer",
+   "repo": "mongodb/mongo-php-library",
+   "commit": "c1a419de96d1eb3903712e9a771f1fbb4b8da28e",
+   "fix": "8c0b165069ab29d52a80a379a947ac9a55734601",
+   "file": "src/GridFS/CollectionWrapper.php",
+   "lines": [
+    71,
+    280
+   ],
+   "rules": [
+    "BE001",
+    "GO004",
+    "BE010"
+   ],
+   "split": "heldout",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-vjqc-q4mp-2rvf",
+   "class": "sqli",
+   "ecosystem": "composer",
+   "repo": "cakephp/cakephp",
+   "commit": "e56a5199048a8fc1ceb3249eb3ffe2fec8f87445",
+   "fix": "3349584ca3a891afaff2dbc324d6b1c09fb880f0",
+   "file": "src/Database/FunctionsBuilder.php",
+   "lines": [
+    25,
+    390
+   ],
+   "rules": [
+    "BE001",
+    "GO004",
+    "BE010"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-m7jc-g4rc-jmvh",
+   "class": "sqli",
+   "ecosystem": "composer",
+   "repo": "wintercms/winter",
+   "commit": "555e67c84b503b60aa0a5775382087c5da97b7ca",
+   "fix": "50713de95adf5298536d93f4d999652525d36d43",
+   "file": "modules/backend/widgets/Filter.php",
+   "lines": [
+    782,
+    1115
+   ],
+   "rules": [
+    "BE001",
+    "GO004",
+    "BE010"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-4pf7-cc4r-g63h",
+   "class": "sqli",
+   "ecosystem": "composer",
+   "repo": "YesWiki/yeswiki",
+   "commit": "dd2bd8fb099de0d21504bda8a810693b3fcb8e52",
+   "fix": "90ca54fb518e1c43a1ead6e4f5bf9f0389789841",
+   "file": "includes/services/ReactionManager.php",
+   "lines": [
+    356,
+    356
+   ],
+   "rules": [
+    "BE001",
+    "GO004",
+    "BE010"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-8f2v-2qhj-gfwg",
+   "class": "sqli",
+   "ecosystem": "composer",
+   "repo": "YesWiki/yeswiki",
+   "commit": "ed5b548a705c8091ba0282aaaba73ddda976abef",
+   "fix": "23d3cc124613b9428ab963b31807c08879a9c631",
+   "file": "handlers/page/deletepage.php",
+   "lines": [
+    6,
+    94
+   ],
+   "rules": [
+    "BE001",
+    "GO004",
+    "BE010"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-qg78-vmvc-fhjw",
+   "class": "sqli",
+   "ecosystem": "composer",
+   "repo": "YesWiki/yeswiki",
+   "commit": "8f70a8d6b8befa0e644d03c785701dbbc55b8fd0",
+   "fix": "f3b0dd093a7ace47dc29a515faeb02635baceae2",
+   "file": "tools/bazar/services/SearchManager.php",
+   "lines": [
+    438,
+    438
+   ],
+   "rules": [
+    "BE001",
+    "GO004",
+    "BE010"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-275g-g844-73jh",
+   "class": "sqli",
+   "ecosystem": "rust",
+   "repo": "matrix-org/matrix-rust-sdk",
+   "commit": "dc98bf7633534f9b6a668959156b1249ec3c181e",
+   "fix": "d0c01006e4808db5eb96ad5c496416f284d8bd3c",
+   "file": "crates/matrix-sdk-sqlite/src/event_cache_store.rs",
+   "lines": [
+    1159,
+    1204
+   ],
+   "rules": [
+    "BE001",
+    "GO004",
+    "BE010"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-rfx3-98h7-v3xp",
+   "class": "sqli",
+   "ecosystem": "nuget",
+   "repo": "JasperFx/marten",
+   "commit": "4b4dbd18cd2a42ef7cdaf548f9796523ce598508",
+   "fix": "61882d0424854cb48703f08bdb246894ac576bed",
+   "file": "src/CoreTests/delete_all_for_tenant_sql_injection.cs",
+   "lines": [
+    1,
+    1
+   ],
+   "rules": [
+    "BE001",
+    "GO004",
+    "BE010"
+   ],
+   "split": "heldout",
+   "scope": "out",
+   "why_out": "the fix spans more than 5 source files"
+  },
+  {
+   "advisory": "GHSA-cxwf-qc32-375f",
+   "class": "sqli",
+   "ecosystem": "rubygems",
+   "repo": "decidim-ice/decidim-module-decidim_awesome",
+   "commit": "a0464aab671fc7cdbad0506912219a58643426d9",
+   "fix": "84374037d34a3ac80dc18406834169c65869f11b",
+   "file": "app/controllers/concerns/decidim/decidim_awesome/admin_accountability/admin/filterable_helper.rb",
+   "lines": [
+    16,
+    19
+   ],
+   "rules": [
+    "BE001",
+    "GO004",
+    "BE010"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "the fix spans more than 5 source files"
+  },
+  {
+   "advisory": "GHSA-85gf-wr67-f83w",
+   "class": "sqli",
+   "ecosystem": "rubygems",
+   "repo": "prodigasistemas/curupira",
+   "commit": "9afbf9e35692b975242f829f4d1b719c5a18e219",
+   "fix": "93a9a77896bb66c949acb8e64bceafc74bc8c271",
+   "file": "app/controllers/curupira/passwords_controller.rb",
+   "lines": [
+    9,
+    9
+   ],
+   "rules": [
+    "BE001",
+    "GO004",
+    "BE010"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-9ggp-5rf4-x7q9",
+   "class": "sqli",
+   "ecosystem": "rubygems",
+   "repo": "fatfreecrm/fat_free_crm",
+   "commit": "cf26a04b356ad2161c4c6160260eb870a3de5328",
+   "fix": "078035f1ef73ed85285ac9d128c3c5f670cef066",
+   "file": "app/controllers/home_controller.rb",
+   "lines": [
+    60,
+    67
+   ],
+   "rules": [
+    "BE001",
+    "GO004",
+    "BE010"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-9vhv-g5hf-m7m7",
+   "class": "command",
+   "ecosystem": "pip",
+   "repo": "evalstate/fast-agent",
+   "commit": "b8d81d6ada74e56e64598c6d2912f1e8826c2e72",
+   "fix": "ba99f89c3ec7f1ef1c8b1ebce381c12b60dfea29",
+   "file": "plugins/images/images.py",
+   "lines": [
+    1,
+    1
+   ],
+   "rules": [
+    "BE002",
+    "BE003"
+   ],
+   "split": "heldout",
+   "scope": "out",
+   "why_out": "the fix spans more than 5 source files"
+  },
+  {
+   "advisory": "GHSA-h9f9-h6gm-wc85",
+   "class": "command",
+   "ecosystem": "pip",
+   "repo": "flytohub/flyto-core",
+   "commit": "e8c6fd9902ff93389cd2e3ecaa472b7d91aec67e",
+   "fix": "db7f116b1d3c5dcf94aded00d14118f81f3e225e",
+   "file": "src/core/api/routes/mcp.py",
+   "lines": [
+    11,
+    137
+   ],
+   "rules": [
+    "BE002",
+    "BE003"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-69qj-pvh9-c5wg",
+   "class": "command",
+   "ecosystem": "pip",
+   "repo": "yt-dlp/yt-dlp",
+   "commit": "7aac95eae663be82cffeaf2a8c1193a5e349e401",
+   "fix": "5faffa999fd33b373d47773e8ee639d072accec2",
+   "file": "yt_dlp/YoutubeDL.py",
+   "lines": [
+    114,
+    1431
+   ],
+   "rules": [
+    "BE002",
+    "BE003"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-xv5p-fjw5-vrj6",
+   "class": "command",
+   "ecosystem": "pip",
+   "repo": "fugue-project/fugue",
+   "commit": "16416af693d03749fc875a42dc9e97fcfb0362c2",
+   "fix": "6f25326779fd1f528198098d6287c5a863176fc0",
+   "file": "fugue/rpc/flask.py",
+   "lines": [
+    62,
+    79
+   ],
+   "rules": [
+    "BE002",
+    "BE003"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-xvcc-vqjv-phqh",
+   "class": "command",
+   "ecosystem": "npm",
+   "repo": "electrovir/augment-vir",
+   "commit": "c0a17704c98c56c381336a70f99d1c59c968e7d3",
+   "fix": "9e1a3592903a56e500959be72276ede1708c3437",
+   "file": "packages/node/src/augments/fs/grep.ts",
+   "lines": [
+    3,
+    397
+   ],
+   "rules": [
+    "BE002",
+    "BE003"
+   ],
+   "split": "heldout",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-8h25-q488-4hxw",
+   "class": "command",
+   "ecosystem": "npm",
+   "repo": "th30d4y/OpenLearnX",
+   "commit": "d19c4e4d153f5c2b46f08b74053c48a5851e1db6",
+   "fix": "14765d7d1856d564747c55c5412e2f38feab079e",
+   "file": "frontend/app/admin/logs/page.tsx",
+   "lines": [
+    25,
+    464
+   ],
+   "rules": [
+    "BE002",
+    "BE003"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-w3f2-pr6x-wwjc",
+   "class": "command",
+   "ecosystem": "go",
+   "repo": "git-lfs/git-lfs",
+   "commit": "58725719eb4ed1d2bff5b48b90812a1fc89f64b9",
+   "fix": "091a95a796739bd0b8f59d8deeea79a452959508",
+   "file": "ssh/ssh.go",
+   "lines": [
+    43,
+    43
+   ],
+   "rules": [
+    "BE002",
+    "BE003"
+   ],
+   "split": "heldout",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-jpf4-98qj-qr67",
+   "class": "command",
+   "ecosystem": "go",
+   "repo": "projectdiscovery/nuclei",
+   "commit": "c041bf292262baa68232351001001ab2bb1d9538",
+   "fix": "1c440e755a97471c56fb0276ee8a8c4132974645",
+   "file": "pkg/catalog/loader/loader.go",
+   "lines": [
+    899,
+    934
+   ],
+   "rules": [
+    "BE002",
+    "BE003"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-mjqf-28ph-426h",
+   "class": "command",
+   "ecosystem": "go",
+   "repo": "kube-logging/logging-operator",
+   "commit": "8c34e9a61e6587f15acbf147fc1be895898c6b67",
+   "fix": "cf437d7f1e056c78740bf5716ac8bdebcf002425",
+   "file": "pkg/sdk/logging/model/render/fluent.go",
+   "lines": [
+    46,
+    94
+   ],
+   "rules": [
+    "BE002",
+    "BE003"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-w7qc-6grj-w7r8",
+   "class": "command",
+   "ecosystem": "go",
+   "repo": "filebrowser/filebrowser",
+   "commit": "f84a6db680b6df1c7c8f06f1816f7e4c9e963668",
+   "fix": "4d830f707fc4314741fd431e70c2ce50cd5a3108",
+   "file": "http/commands.go",
+   "lines": [
+    8,
+    71
+   ],
+   "rules": [
+    "BE002",
+    "BE003"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-3q2w-42mv-cph4",
+   "class": "command",
+   "ecosystem": "go",
+   "repo": "filebrowser/filebrowser",
+   "commit": "f84a6db680b6df1c7c8f06f1816f7e4c9e963668",
+   "fix": "4d830f707fc4314741fd431e70c2ce50cd5a3108",
+   "file": "http/commands.go",
+   "lines": [
+    8,
+    71
+   ],
+   "rules": [
+    "BE002",
+    "BE003"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-rwj2-w85g-5cmm",
+   "class": "command",
+   "ecosystem": "go",
+   "repo": "patrickhener/goshs",
+   "commit": "cd1cbfd36c26025d1609438c45ed062d66c39d7f",
+   "fix": "160220974576afe5111485b8d12fd36058984cfa",
+   "file": "httpserver/server.go",
+   "lines": [
+    223,
+    223
+   ],
+   "rules": [
+    "BE002",
+    "BE003"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-7hpf-g48v-hw3j",
+   "class": "command",
+   "ecosystem": "go",
+   "repo": "tobychui/zoraxy",
+   "commit": "e79a70b7acfa45c2445aff9d60e4e7525c89fec8",
+   "fix": "2e9bc77a5d832bff1093058d42ce7a61382e4bc6",
+   "file": "src/mod/sshprox/sshprox.go",
+   "lines": [
+    53,
+    170
+   ],
+   "rules": [
+    "BE002",
+    "BE003"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-jqvf-j3ww-r8c7",
+   "class": "command",
+   "ecosystem": "maven",
+   "repo": "powsybl/powsybl-core",
+   "commit": "0ae58bdafdcd02d5111f33b6ed6c08f649f5ccf4",
+   "fix": "17461264d1d18f9bba43bb7855f251e9fa55a4db",
+   "file": "computation-local/src/main/java/com/powsybl/computation/local/UnixLocalCommandExecutor.java",
+   "lines": [
+    45,
+    67
+   ],
+   "rules": [
+    "BE002",
+    "BE003"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-97jj-33gv-5xf9",
+   "class": "command",
+   "ecosystem": "composer",
+   "repo": "thephpleague/commonmark",
+   "commit": "b99b2b6ea6bea75c975ad136a14b7d1cadf58da2",
+   "fix": "411afcc2a7402756d96c89af8882c724d12d47ca",
+   "file": "src/Extension/DisallowedRawHtml/DisallowedRawHtmlRenderer.php",
+   "lines": [
+    48,
+    50
+   ],
+   "rules": [
+    "BE002",
+    "BE003"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-g3hq-hphg-8fhh",
+   "class": "command",
+   "ecosystem": "composer",
+   "repo": "pheditor/pheditor",
+   "commit": "a64eb935ce699e43f1ea60e46d47f33e2f87ffd6",
+   "fix": "f40f5070d5a171b65359bc87568734d31de498e1",
+   "file": "pheditor.php",
+   "lines": [
+    577,
+    1743
+   ],
+   "rules": [
+    "BE002",
+    "BE003"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-jvc5-6g7q-c843",
+   "class": "command",
+   "ecosystem": "composer",
+   "repo": "pheditor/pheditor",
+   "commit": "40489e045cf795b80c556ae88d7c04f71308231a",
+   "fix": "62b43df7cb8956a9b0deb9bec278ca8676c890c5",
+   "file": "pheditor.php",
+   "lines": [
+    586,
+    586
+   ],
+   "rules": [
+    "BE002",
+    "BE003"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-4wwf-f7w3-94f5",
+   "class": "command",
+   "ecosystem": "composer",
+   "repo": "RaspAP/raspap-webgui",
+   "commit": "3dca072b4cedc874e1e5c9e7ab5dac0301731d18",
+   "fix": "f514f5a12ef0c34853b5370ef55d630b499f977d",
+   "file": "includes/locale.php",
+   "lines": [
+    3,
+    130
+   ],
+   "rules": [
+    "BE002",
+    "BE003"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-q745-cfqh-hcrw",
+   "class": "command",
+   "ecosystem": "composer",
+   "repo": "JamesHeinrich/phpThumb",
+   "commit": "2ecbc4146eb30d911d3add3a8be7092ef965abc4",
+   "fix": "cdcbc206ae601b15fd17e7aadf59df51149a0e82",
+   "file": "phpthumb.class.php",
+   "lines": [
+    268,
+    268
+   ],
+   "rules": [
+    "BE002",
+    "BE003"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-7r88-wjhj-jr8m",
+   "class": "command",
+   "ecosystem": "composer",
+   "repo": "RaspAP/raspap-webgui",
+   "commit": "3575d1d185664b0c7b4d9c8d3f6f0d4dbe985870",
+   "fix": "e87e7d1d3a61617430851f2a040379de1ff3dd9d",
+   "file": "ajax/networking/get_wgkey.php",
+   "lines": [
+    6,
+    6
+   ],
+   "rules": [
+    "BE002",
+    "BE003"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-7c28-wg7r-pg6f",
+   "class": "command",
+   "ecosystem": "composer",
+   "repo": "RaspAP/raspap-webgui",
+   "commit": "d19249757e0a5c9a3ac627c3370ca66b0c05e764",
+   "fix": "1fabc481690e008279113e18d0642c5279e3b56e",
+   "file": "ajax/logging/clearlog.php",
+   "lines": [
+    8,
+    8
+   ],
+   "rules": [
+    "BE002",
+    "BE003"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-5wp8-q9mx-8jx8",
+   "class": "command",
+   "ecosystem": "rust",
+   "repo": "qhkm/zeptoclaw",
+   "commit": "fda2f10c3ee4df20ec58bb6b112baa6cbda318bf",
+   "fix": "68916c3e4f3af107f11940b27854fc7ef517058b",
+   "file": "src/security/shell.rs",
+   "lines": [
+    132,
+    782
+   ],
+   "rules": [
+    "BE002",
+    "BE003"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-wrvw-254r-wpmv",
+   "class": "command",
+   "ecosystem": "nuget",
+   "repo": "alastairlundy/CliInvoke",
+   "commit": "12156ec32864959268e16233f924136e9bd2f028",
+   "fix": "1e98582f02eb43e345e5b97b8dd6ff9443806685",
+   "file": "src/CliInvoke.Core/Internal/ArgumentTokenizer.cs",
+   "lines": [
+    1,
+    1
+   ],
+   "rules": [
+    "BE002",
+    "BE003"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "the vulnerable file could not be read at the pinned commit"
+  },
+  {
+   "advisory": "GHSA-hm49-wcqc-g2xg",
+   "class": "command",
+   "ecosystem": "rubygems",
+   "repo": "ruby/net-imap",
+   "commit": "a4f7649c3da77dec7631f03a037a478eb4330048",
+   "fix": "0ec4fd351263e8b9a4f683713427827b7b1ad974",
+   "file": "lib/net/imap.rb",
+   "lines": [
+    1929,
+    1949
+   ],
+   "rules": [
+    "BE002",
+    "BE003"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-q66h-m87m-j2q6",
+   "class": "command",
+   "ecosystem": "rubygems",
+   "repo": "chaintope/bitcoinrb",
+   "commit": "7d7d2e75b69a75bdb02e35e9cf19ff491c5ed78e",
+   "fix": "070327133a2a3e5a6d265b2d82f06f9414c01e74",
+   "file": "lib/bitcoin/rpc/http_server.rb",
+   "lines": [
+    11,
+    33
+   ],
+   "rules": [
+    "BE002",
+    "BE003"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-6xxq-j39w-g3f6",
+   "class": "command",
+   "ecosystem": "rubygems",
+   "repo": "puppetlabs/puppet",
+   "commit": "19bd30a35c0dcf01d58934413d7dabb7edfabd3f",
+   "fix": "0d6d29933e613fe177e9235415919a5428db67bc",
+   "file": "lib/puppet/network/http/api/v1.rb",
+   "lines": [
+    33,
+    33
+   ],
+   "rules": [
+    "BE002",
+    "BE003"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-p2mm-64f6-gmpp",
+   "class": "code",
+   "ecosystem": "pip",
+   "repo": "koxudaxi/fastapi-code-generator",
+   "commit": "ec5b615dc1d8a9ce490340d6efd68d2ffd273d1a",
+   "fix": "49301dbdb82170d7f50877419d994b05cb1fa2bc",
+   "file": "fastapi_code_generator/parser.py",
+   "lines": [
+    112,
+    303
+   ],
+   "rules": [
+    "BE003",
+    "BE007"
+   ],
+   "split": "heldout",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-q27q-98j4-9pfv",
+   "class": "code",
+   "ecosystem": "pip",
+   "repo": "QWED-AI/qwed-verification",
+   "commit": "06801f68cbf9c9b5e54cc17f2a61cb2792da7a26",
+   "fix": "6066b68c0c4f4cc2c3771824822aaa864d082ef8",
+   "file": "src/qwed_new/api/main.py",
+   "lines": [
+    460,
+    504
+   ],
+   "rules": [
+    "BE003",
+    "BE007"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-r3hx-x5rh-p9vv",
+   "class": "code",
+   "ecosystem": "pip",
+   "repo": "django-haystack/django-haystack",
+   "commit": "294bb04af1b6d1f0bff49c3e4ea624f22d99e918",
+   "fix": "eb05f193c9771a68dcc8cfac6674a0d48a52ee9d",
+   "file": "haystack/backends/elasticsearch_backend.py",
+   "lines": [
+    1,
+    865
+   ],
+   "rules": [
+    "BE003",
+    "BE007"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-4rj4-rcrq-gr92",
+   "class": "code",
+   "ecosystem": "npm",
+   "repo": "achiya-automation/safari-mcp",
+   "commit": "7427c85f8c2ab7b58cec4133d43cdf8566c7ce8d",
+   "fix": "23f1319defefd2c5cbd06b23189ab01876a8c5d3",
+   "file": "safari.js",
+   "lines": [
+    1001,
+    6480
+   ],
+   "rules": [
+    "BE003",
+    "BE007"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-qxg6-89mg-rqv8",
+   "class": "code",
+   "ecosystem": "npm",
+   "repo": "vitest-dev/vitest",
+   "commit": "5dbebe9e3b8758fe97d233eb9718a3664cd0b9c3",
+   "fix": "15cc006aa9f8683dc5f7e895d011fa7dc751ce35",
+   "file": "packages/browser/src/node/rpc.ts",
+   "lines": [
+    34,
+    483
+   ],
+   "rules": [
+    "BE003",
+    "BE007"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-5w5g-j6hw-6p8f",
+   "class": "code",
+   "ecosystem": "go",
+   "repo": "osac-project/osac-operator",
+   "commit": "8220502c18589b1b8f04f1103ee8c49288f77ce2",
+   "fix": "7e4222b6ab465fc00606c8cfed980b226820cb1b",
+   "file": "internal/consoleproxy/config_resolver.go",
+   "lines": [
+    86,
+    86
+   ],
+   "rules": [
+    "BE003",
+    "BE007"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-j8px-rmrx-76h9",
+   "class": "code",
+   "ecosystem": "go",
+   "repo": "caddyserver/caddy",
+   "commit": "4c04143261363c8e81ef33d150a6268ccdfcb077",
+   "fix": "176b043b0104cee3f894023cd5a598ac29e404bb",
+   "file": "modules/caddyhttp/rewrite/rewrite.go",
+   "lines": [
+    225,
+    225
+   ],
+   "rules": [
+    "BE003",
+    "BE007"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-557j-xg8c-q2mm",
+   "class": "code",
+   "ecosystem": "go",
+   "repo": "helm/helm",
+   "commit": "d21a8a04cb34dce84aac06c7660a8a1c1bbef50a",
+   "fix": "4b8e61093d8f579f1165cdc6bd4b43fa5455f571",
+   "file": "pkg/downloader/manager.go",
+   "lines": [
+    853,
+    853
+   ],
+   "rules": [
+    "BE003",
+    "BE007"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-323w-6p85-26fr",
+   "class": "code",
+   "ecosystem": "go",
+   "repo": "plentico/plenti",
+   "commit": "fff52f8ebb54f3ad99b695ffb9716d86bf118a72",
+   "fix": "c3e72a9ebbc2a03f4b0f3104becbfc25e390cb8e",
+   "file": "cmd/serve.go",
+   "lines": [
+    8,
+    270
+   ],
+   "rules": [
+    "BE003",
+    "BE007"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-mj4v-hp69-27x5",
+   "class": "code",
+   "ecosystem": "go",
+   "repo": "plentico/plenti",
+   "commit": "fff52f8ebb54f3ad99b695ffb9716d86bf118a72",
+   "fix": "c3e72a9ebbc2a03f4b0f3104becbfc25e390cb8e",
+   "file": "cmd/serve.go",
+   "lines": [
+    8,
+    270
+   ],
+   "rules": [
+    "BE003",
+    "BE007"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-cj55-gc7m-wvcq",
+   "class": "code",
+   "ecosystem": "go",
+   "repo": "imroc/req",
+   "commit": "22b0784117270fbda5357430e210a1ada8e02ffd",
+   "fix": "04e3ece5b380ecad9da3551c449f1b8a9aa76d3d",
+   "file": "http.go",
+   "lines": [
+    6,
+    199
+   ],
+   "rules": [
+    "BE003",
+    "BE007"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-4r5x-x283-wm96",
+   "class": "code",
+   "ecosystem": "go",
+   "repo": "jumpserver/koko",
+   "commit": "c72d3d65411f269c2cb1a91011e113807f939f1a",
+   "fix": "7d80db95d17c8f42bdf50260dfc21dc2bd0452c2",
+   "file": "pkg/srvconn/conn_mongodb.go",
+   "lines": [
+    10,
+    95
+   ],
+   "rules": [
+    "BE003",
+    "BE007"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-26vp-8gxg-v4pg",
+   "class": "code",
+   "ecosystem": "maven",
+   "repo": "xwiki/xwiki-rendering",
+   "commit": "ecdbd872897eabff8a8a41a428c02fd1bab76035",
+   "fix": "92bc8095ed3acce15ab200c8525e1623b4898be5",
+   "file": "xwiki-rendering-xml/src/main/java/org/xwiki/rendering/renderer/printer/XHTMLWikiPrinter.java",
+   "lines": [
+    23,
+    221
+   ],
+   "rules": [
+    "BE003",
+    "BE007"
+   ],
+   "split": "heldout",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-q8v2-3j4h-xg2p",
+   "class": "code",
+   "ecosystem": "composer",
+   "repo": "janephp/janephp",
+   "commit": "768a5e4ef3a327bf00157400c567ef8cf9a7cd06",
+   "fix": "0ea379deab5689475d62653b408de62ad3611c7a",
+   "file": "src/Component/JsonSchema/Generator/Model/GetterSetterGenerator.php",
+   "lines": [
+    107,
+    130
+   ],
+   "rules": [
+    "BE003",
+    "BE007"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "the fix spans more than 5 source files"
+  },
+  {
+   "advisory": "GHSA-7pgq-cr25-xvc8",
+   "class": "code",
+   "ecosystem": "composer",
+   "repo": "getgrav/grav",
+   "commit": "db8c1fcd63aaaf6d6b244bc6b4cfa5f7b96bbc7f",
+   "fix": "446d7f8f255918c8234634fe1dc2c9c77a0c673e",
+   "file": "system/src/Grav/Common/Data/Blueprint.php",
+   "lines": [
+    495,
+    501
+   ],
+   "rules": [
+    "BE003",
+    "BE007"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-fj2p-qj2f-74v5",
+   "class": "code",
+   "ecosystem": "composer",
+   "repo": "getgrav/grav",
+   "commit": "a7ddd740b2fa50d8f38cc52502c3a026a7b8492f",
+   "fix": "acffa34cbb0787fee87c609e0d6289e904fee33c",
+   "file": "system/src/Grav/Common/Data/Blueprint.php",
+   "lines": [
+    14,
+    461
+   ],
+   "rules": [
+    "BE003",
+    "BE007"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-662m-56v4-3r8f",
+   "class": "code",
+   "ecosystem": "composer",
+   "repo": "getgrav/grav",
+   "commit": "3462d94d575064601689b236508c316242e15741",
+   "fix": "e37259527d9c1deb6200f8967197a9fa587c6458",
+   "file": "system/src/Grav/Common/Security.php",
+   "lines": [
+    266,
+    289
+   ],
+   "rules": [
+    "BE003",
+    "BE007"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-gjc5-8cfh-653x",
+   "class": "code",
+   "ecosystem": "composer",
+   "repo": "getgrav/grav",
+   "commit": "3462d94d575064601689b236508c316242e15741",
+   "fix": "e37259527d9c1deb6200f8967197a9fa587c6458",
+   "file": "system/src/Grav/Common/Security.php",
+   "lines": [
+    266,
+    289
+   ],
+   "rules": [
+    "BE003",
+    "BE007"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-24wv-6c99-f843",
+   "class": "code",
+   "ecosystem": "composer",
+   "repo": "pterodactyl/panel",
+   "commit": "07eb320b4fac47a1c6d13c6173f89cd202e0e533",
+   "fix": "24c82b0e335fb5d7a844226b08abf9f176e592f0",
+   "file": "app/Http/Controllers/Base/LocaleController.php",
+   "lines": [
+    5,
+    36
+   ],
+   "rules": [
+    "BE003",
+    "BE007"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-pqjm-xcp8-wgmm",
+   "class": "code",
+   "ecosystem": "composer",
+   "repo": "ezsystems/ezplatform",
+   "commit": "85c2d8e66f11e755642d923fb9c7bfb68944608b",
+   "fix": "9a0c52dc4535e4b3ce379f80222dc53f705a2cfd",
+   "file": "web/app.php",
+   "lines": [
+    5,
+    5
+   ],
+   "rules": [
+    "BE003",
+    "BE007"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-p32v-8v8j-j534",
+   "class": "code",
+   "ecosystem": "nuget",
+   "repo": "christianhelle/refitter",
+   "commit": "63a19b03699a9c267d6fab5f758ec26484db83a1",
+   "fix": "ab4d8e439d6f0ee82ad49ee15323978d70fe5a67",
+   "file": "src/Refitter.Core/Generation/MethodAttributeGenerator.cs",
+   "lines": [
+    44,
+    57
+   ],
+   "rules": [
+    "BE003",
+    "BE007"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-7pwq-q9jf-539h",
+   "class": "code",
+   "ecosystem": "rubygems",
+   "repo": "elct9620/kobako",
+   "commit": "97e3e9cc18b5230327690d2dcf66f25158cc5a7f",
+   "fix": "64f84700c81f44902bed9211318d5362f44987b3",
+   "file": "lib/kobako/transport/dispatcher.rb",
+   "lines": [
+    44,
+    119
+   ],
+   "rules": [
+    "BE003",
+    "BE007"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-mx5j-mp4f-g8jg",
+   "class": "code",
+   "ecosystem": "rubygems",
+   "repo": "savonrb/savon",
+   "commit": "3309d9acad1a670a571c49068a30f1a83ae71a3c",
+   "fix": "8f22eb543e7436f6247172c9be47e22792d375e9",
+   "file": "lib/savon/model.rb",
+   "lines": [
+    31,
+    44
+   ],
+   "rules": [
+    "BE003",
+    "BE007"
+   ],
+   "split": "heldout",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-x487-866m-p8hr",
+   "class": "code",
+   "ecosystem": "rubygems",
+   "repo": "owen2345/camaleon-cms",
+   "commit": "8e5a0d2e595688fa28477acc01cc6bade0532ea0",
+   "fix": "4485788c544eb1aae52ca613bd9626129e3df6ee",
+   "file": "app/controllers/camaleon_cms/admin/media_controller.rb",
+   "lines": [
+    83,
+    109
+   ],
+   "rules": [
+    "BE003",
+    "BE007"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-jrjx-9jjw-747m",
+   "class": "path",
+   "ecosystem": "pip",
+   "repo": "NASA-AMMOS/AIT-GUI",
+   "commit": "fc58ddd2d603fc3258d7963115d8a16b104cebb3",
+   "fix": "beb8fc0813eded89f985d3eb9a73535dd327726d",
+   "file": "ait/gui/__init__.py",
+   "lines": [
+    15,
+    1136
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-p34x-fmph-9fjx",
+   "class": "path",
+   "ecosystem": "pip",
+   "repo": "flytohub/flyto-core",
+   "commit": "ae2b38eb0df215fa9239662d4a696810c0027354",
+   "fix": "bbb6f1cfec22fee1ea0e6ecf1129d7103c85e09f",
+   "file": "src/cli/recipe.py",
+   "lines": [
+    67,
+    68
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "heldout",
+   "scope": "out",
+   "why_out": "the fix spans more than 5 source files"
+  },
+  {
+   "advisory": "GHSA-r57g-mc79-8hj2",
+   "class": "path",
+   "ecosystem": "pip",
+   "repo": "djust-org/djust",
+   "commit": "ce5b5151eb10658bf304468a31e6c6d338153258",
+   "fix": "45a5045793ebe7c9c2df86b0ad34275af6822619",
+   "file": "python/djust/mcp/server.py",
+   "lines": [
+    18,
+    410
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-47c3-hpmg-7j6p",
+   "class": "path",
+   "ecosystem": "pip",
+   "repo": "posit-dev/py-shiny",
+   "commit": "48b4faa0d651476afa84d6423d57503b60716902",
+   "fix": "1d8ecb46cbc9621b7dc8812111d26692e086b376",
+   "file": "shiny/_app.py",
+   "lines": [
+    403,
+    408
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-62mm-xwmv-crhg",
+   "class": "path",
+   "ecosystem": "pip",
+   "repo": "khoj-ai/khoj",
+   "commit": "9cbf620e45e4f2d589fa0d51121a902334edf1fa",
+   "fix": "21c51b9ace4eb59ce79ac0a93b917289824195cf",
+   "file": "src/khoj/routers/web_client.py",
+   "lines": [
+    4,
+    49
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-vcx7-pfrh-mcfg",
+   "class": "path",
+   "ecosystem": "npm",
+   "repo": "webflorist/storyblok-backup",
+   "commit": "3ad6ecca6dd7c240ac9119c3805c50913d9a4e4d",
+   "fix": "f4e4bb1979832abd7e4eb1666e2b3cfc767f587a",
+   "file": "bin/storyblok-backup.mjs",
+   "lines": [
+    240,
+    240
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-mc8w-wjhw-45x5",
+   "class": "path",
+   "ecosystem": "npm",
+   "repo": "ether/etherpad",
+   "commit": "f8686dda1043b4003efe0d06afce2aea68d814aa",
+   "fix": "9c8d16d50e2fdfd9693ab35c43280410cb4db2fc",
+   "file": "src/node/utils/Minify.ts",
+   "lines": [
+    180,
+    186
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-xp26-3454-mjgp",
+   "class": "path",
+   "ecosystem": "npm",
+   "repo": "vitest-dev/vitest",
+   "commit": "5dbebe9e3b8758fe97d233eb9718a3664cd0b9c3",
+   "fix": "15cc006aa9f8683dc5f7e895d011fa7dc751ce35",
+   "file": "packages/browser/src/node/rpc.ts",
+   "lines": [
+    34,
+    483
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-vfpm-58rq-9qcg",
+   "class": "path",
+   "ecosystem": "npm",
+   "repo": "vitejs/vite",
+   "commit": "61b2171d9ba99a64478888eaa523084d87aedfe6",
+   "fix": "b6c6d2fb3f853aab4092dc25f0d6816a96c23dff",
+   "file": "packages/vite/src/node/server/middlewares/transform.ts",
+   "lines": [
+    58,
+    64
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-cv3r-c5h8-f4g5",
+   "class": "path",
+   "ecosystem": "npm",
+   "repo": "zereight/gitlab-mcp",
+   "commit": "404a993ef5f86e99db693e8075fdb3a63625f1bd",
+   "fix": "e436ee4ad067b64584ec9312c9e9c9a2641c1976",
+   "file": "index.ts",
+   "lines": [
+    946,
+    12263
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-8wqc-v2q8-vff2",
+   "class": "path",
+   "ecosystem": "npm",
+   "repo": "mockoon/mockoon",
+   "commit": "cf1c8f414996bc0f14467da884fd2c82b8d09024",
+   "fix": "b42bdfb7f82e83f0e81bea8e6fe41adf5ec82585",
+   "file": "packages/commons-server/src/libs/server/server.ts",
+   "lines": [
+    53,
+    2366
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-rxjr-6c9q-h67x",
+   "class": "path",
+   "ecosystem": "npm",
+   "repo": "logto-io/logto",
+   "commit": "021381237511bc0d42f81d65df8b036b01f40547",
+   "fix": "5686815955534f803d3d50738259efd0f741e62c",
+   "file": "packages/tunnel/src/commands/tunnel/utils.ts",
+   "lines": [
+    45,
+    102
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-w42c-h7hr-f67p",
+   "class": "path",
+   "ecosystem": "go",
+   "repo": "zzet/gortex",
+   "commit": "54a28eb9960c030e053f7cf0adcbb975e758a910",
+   "fix": "5ba2f066dd6dcd726c4e61b74851862dc596d994",
+   "file": "internal/mcp/tools_fileops.go",
+   "lines": [
+    35,
+    274
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-xhv5-8fpq-g7hf",
+   "class": "path",
+   "ecosystem": "go",
+   "repo": "qbee-io/qbee-agent",
+   "commit": "99a0b5a56bb0ae2d7dec29abcf25d29be16f2c36",
+   "fix": "0fdf8e411de5d0c142ae2590cf1c54bdfc2e529a",
+   "file": "app/configuration/file_manager.go",
+   "lines": [
+    493,
+    639
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-g3c2-rjq2-c763",
+   "class": "path",
+   "ecosystem": "go",
+   "repo": "esm-dev/esm.sh",
+   "commit": "5ac4990f49a1c647c2ef1b30fe115afcb634c9b5",
+   "fix": "468b6b2a4b4dfec334cf6b33b01fcd4e5cd93bed",
+   "file": "web/handler.go",
+   "lines": [
+    63,
+    74
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-mmg6-4qmv-6pc8",
+   "class": "path",
+   "ecosystem": "go",
+   "repo": "infracost/infracost",
+   "commit": "c9c4eb7bc6af9347307aab555ee02eade0219fcf",
+   "fix": "4d39331afc0e27752d16d9d91c34583e5e8487fb",
+   "file": "internal/config/template/parser.go",
+   "lines": [
+    17,
+    409
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-vfp3-v2gw-7wfq",
+   "class": "path",
+   "ecosystem": "go",
+   "repo": "labstack/echo",
+   "commit": "c9477eb5b5126ae933f2729af852d1be3f5845ae",
+   "fix": "8d1ae9d3360a71672418856d58753af25f2c3986",
+   "file": "echo.go",
+   "lines": [
+    55,
+    600
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-vvp7-h4fj-m28w",
+   "class": "path",
+   "ecosystem": "go",
+   "repo": "gtsteffaniak/filebrowser",
+   "commit": "863f8f64a3d055ac8fb712c0e7bfcf3ac7f173f0",
+   "fix": "f3f4bbe80cb569d664174aea874d7bfa008c3b5a",
+   "file": "backend/http/media.go",
+   "lines": [
+    8,
+    241
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-964w-f6gj-5236",
+   "class": "path",
+   "ecosystem": "go",
+   "repo": "goshs-labs/goshs",
+   "commit": "ddd2eb9470237e68f0d6c828dd75173708e60277",
+   "fix": "f3ef599e409151d1380866e47de8b1afb0bb54fa",
+   "file": "httpserver/handler.go",
+   "lines": [
+    786,
+    807
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-rr8v-fxxf-c986",
+   "class": "path",
+   "ecosystem": "maven",
+   "repo": "GradleUp/shadow",
+   "commit": "e822f993dba4f10fb69bfec26ca8959bdaa50ffd",
+   "fix": "0c2744fcc050e34a084f5131d5e167b13c342bfd",
+   "file": "src/main/kotlin/com/github/jengelman/gradle/plugins/shadow/internal/Utils.kt",
+   "lines": [
+    9,
+    45
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-9jg3-g3wh-w9pj",
+   "class": "path",
+   "ecosystem": "maven",
+   "repo": "yamcs/yamcs",
+   "commit": "bb557fcba77513630257a42eed5b894abad341dd",
+   "fix": "c7dfd24e469ae1086c23e0fe04401cb1ce4260d4",
+   "file": "yamcs-core/src/main/java/org/yamcs/http/StaticFileHandler.java",
+   "lines": [
+    106,
+    110
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-3qwq-q9vm-5j42",
+   "class": "path",
+   "ecosystem": "maven",
+   "repo": "spring-cloud/spring-cloud-config",
+   "commit": "6f17bc3d45df3cea55bfba4676d53afd26d53836",
+   "fix": "1870f07befd5f62edcfdaea5ad82441d0fd49912",
+   "file": "spring-cloud-config-server/src/main/java/org/springframework/cloud/config/server/environment/EnvironmentController.java",
+   "lines": [
+    39,
+    148
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-2pj4-v76f-wjvx",
+   "class": "path",
+   "ecosystem": "composer",
+   "repo": "baserproject/basercms",
+   "commit": "2c2bacc7b654cdb8d23a20facbcf756a92cfbbb2",
+   "fix": "464227b8770704076ee6eddd4bd464c184786eca",
+   "file": "plugins/baser-core/config/permission.php",
+   "lines": [
+    286,
+    300
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "heldout",
+   "scope": "out",
+   "why_out": "the fix spans more than 5 source files"
+  },
+  {
+   "advisory": "GHSA-6vfx-w7q3-42gq",
+   "class": "path",
+   "ecosystem": "composer",
+   "repo": "adminneo-org/adminneo",
+   "commit": "aa6f2544a8a65cf5e8317f1a902f74181e136d64",
+   "fix": "26fcef2f32922629751cbea6c0bb593fbf1e957d",
+   "file": "admin/drivers/sqlite.inc.php",
+   "lines": [
+    498,
+    498
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-f6wf-28g6-769x",
+   "class": "path",
+   "ecosystem": "composer",
+   "repo": "smarty-php/smarty",
+   "commit": "1c9b2ce1d369f1e95c4dcb0f190d65ea11e5b9eb",
+   "fix": "99c048ce7a590c519b79fbd38ad0143a08183a1f",
+   "file": "src/Security.php",
+   "lines": [
+    477,
+    482
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-qv4m-m73m-8hj7",
+   "class": "path",
+   "ecosystem": "composer",
+   "repo": "notrinos/NotrinosERP",
+   "commit": "c5677d1ae26d7f2a995bd3ead86a212e1016e11d",
+   "fix": "71cac7cd199e40cff7f2b18551620133e29f8967",
+   "file": "admin/attachments.php",
+   "lines": [
+    23,
+    268
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-w4rc-p66m-x6qq",
+   "class": "path",
+   "ecosystem": "composer",
+   "repo": "getgrav/grav-plugin-form",
+   "commit": "2032e77857e4fd1662357a9411b490c6c725da43",
+   "fix": "48bacc4187e1cff815000e526d5ca2878484867f",
+   "file": "classes/Form.php",
+   "lines": [
+    583,
+    607
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-gv7f-w92j-383q",
+   "class": "path",
+   "ecosystem": "composer",
+   "repo": "dreamfactorysoftware/df-core",
+   "commit": "64ff000d125e55678a2cf909b157c2f5fd4b109c",
+   "fix": "54354605b2ec9afe6ee96756a5a22f6f56828950",
+   "file": "src/Http/Controllers/RestController.php",
+   "lines": [
+    150,
+    150
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-m4q3-832v-44j6",
+   "class": "path",
+   "ecosystem": "composer",
+   "repo": "wpmetabox/meta-box",
+   "commit": "97427bfb523f62be007712130f1e57016ea95634",
+   "fix": "08c6511607b9cc9fe8d0de7a7e91c9d5d415f831",
+   "file": "inc/fields/file.php",
+   "lines": [
+    54,
+    55
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-qh76-45cr-8xrc",
+   "class": "path",
+   "ecosystem": "rust",
+   "repo": "hasenbanck/sevenz-rust2",
+   "commit": "3ce5d2aa35318a97fb32ed7be302a8921492322f",
+   "fix": "ef760b61f3535ac8b93006212aef41bfebc237eb",
+   "file": "src/util/decompress.rs",
+   "lines": [
+    140,
+    159
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "heldout",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-f842-phm9-p4v4",
+   "class": "path",
+   "ecosystem": "rust",
+   "repo": "salvo-rs/salvo",
+   "commit": "c31890d8fbe2e70a5028d44f1a817e6e11978465",
+   "fix": "7bac30e6960355c58e358e402072d4a3e5c4e1bb",
+   "file": "crates/proxy/src/lib.rs",
+   "lines": [
+    9,
+    289
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-f632-vm87-2m2f",
+   "class": "path",
+   "ecosystem": "rust",
+   "repo": "qdrant/qdrant",
+   "commit": "9d2ab514ebff5531bb3fc0bb6c735bd1e5884bf4",
+   "fix": "32b7fdfb7f542624ecd1f7c8d3e2b13c4e36a2c1",
+   "file": "src/actix/api/service_api.rs",
+   "lines": [
+    143,
+    162
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-6gw6-rv2g-25mg",
+   "class": "path",
+   "ecosystem": "nuget",
+   "repo": "microsoft/kiota",
+   "commit": "da26dc6e7bbe014ae6a1b0218d2c2407909c748d",
+   "fix": "fc0f219b8a665c4c69be8befcff035ba0eb8e4ce",
+   "file": "src/Kiota.Builder/Plugins/PluginsGenerationService.cs",
+   "lines": [
+    615,
+    1249
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-8gmh-2hhj-2hv9",
+   "class": "path",
+   "ecosystem": "rubygems",
+   "repo": "sporkmonger/addressable",
+   "commit": "4583e8a0199cac31cc2fe3585899f93825241cd9",
+   "fix": "25c7c412a2f7e06c3cac92872e831f6d053703c5",
+   "file": "lib/addressable/uri.rb",
+   "lines": [
+    2438,
+    2481
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "heldout",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-mxw3-3hh2-x2mh",
+   "class": "path",
+   "ecosystem": "rubygems",
+   "repo": "rack/rack",
+   "commit": "f2f225f297b99fbee3d9f51255d41f601fc40aff",
+   "fix": "75c5745c286637a8f049a33790c71237762069e7",
+   "file": "lib/rack/directory.rb",
+   "lines": [
+    89,
+    126
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-7wqh-767x-r66v",
+   "class": "path",
+   "ecosystem": "rubygems",
+   "repo": "rack/rack",
+   "commit": "2db5cfb37479af9d503ee85500e5bfb1f3f3ddd4",
+   "fix": "50caab74fa01ee8f5dbdee7bb2782126d20c6583",
+   "file": "lib/rack/static.rb",
+   "lines": [
+    126,
+    128
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-cp65-5m9r-vc2c",
+   "class": "path",
+   "ecosystem": "rubygems",
+   "repo": "owen2345/camaleon-cms",
+   "commit": "428e1d5e3b5ed032269e187323bd87998dc0f9e6",
+   "fix": "071b1b09d6d61ab02a5960b1ccafd9d9c2155a3e",
+   "file": "app/controllers/camaleon_cms/admin/media_controller.rb",
+   "lines": [
+    32,
+    32
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-wmjg-vqhv-q5p5",
+   "class": "path",
+   "ecosystem": "rubygems",
+   "repo": "owen2345/camaleon-cms",
+   "commit": "a916faedbe5b2db37de225355043b6237e5a9945",
+   "fix": "b3b12b1e4a9e3fccaf5bb4330820fa7f8744e6bd",
+   "file": "app/helpers/camaleon_cms/uploader_helper.rb",
+   "lines": [
+    60,
+    60
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-xmgj-5fh3-xjmm",
+   "class": "path",
+   "ecosystem": "rubygems",
+   "repo": "discourse/message_bus",
+   "commit": "0b21d19364e8291d81b6e38402f48135fea67d4a",
+   "fix": "9b6deee01ed474c7e9b5ff65a06bb0447b4db2ba",
+   "file": "lib/message_bus/rack/diagnostics.rb",
+   "lines": [
+    15,
+    90
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-5f9h-9pjv-v6j7",
+   "class": "path",
+   "ecosystem": "rubygems",
+   "repo": "rack/rack",
+   "commit": "16a51d8e0b64964323c3719b8154106af5cc0feb",
+   "fix": "dddb7ad18ed79ca6ab06ccc417a169fde451246e",
+   "file": "lib/rack/directory.rb",
+   "lines": [
+    109,
+    115
+   ],
+   "rules": [
+    "BE006"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-6pm8-6f34-9v3g",
+   "class": "ssrf",
+   "ecosystem": "pip",
+   "repo": "flytohub/flyto-core",
+   "commit": "bbb6f1cfec22fee1ea0e6ecf1129d7103c85e09f",
+   "fix": "bf748df864d348004cf45d830bc59f62c5c4a58a",
+   "file": "src/core/modules/atomic/ai/vision_analyze.py",
+   "lines": [
+    19,
+    251
+   ],
+   "rules": [
+    "BE005"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "the fix spans more than 5 source files"
+  },
+  {
+   "advisory": "GHSA-x4rv-c3wx-4cr8",
+   "class": "ssrf",
+   "ecosystem": "pip",
+   "repo": "authlib/authlib",
+   "commit": "275b6f9f07219e875f8a893dbc80db0097f6e02b",
+   "fix": "6563f6f7a8c2f71d2f85ee7511d72a4fbae3acc0",
+   "file": "authlib/integrations/base_client/async_openid.py",
+   "lines": [
+    86,
+    88
+   ],
+   "rules": [
+    "BE005"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-h8rc-w822-q8vq",
+   "class": "ssrf",
+   "ecosystem": "pip",
+   "repo": "openstack/swift",
+   "commit": "486233a5a58c0294a2e6cee271cc48101ae8220b",
+   "fix": "75b050fdb1d1a6096f3765faa3b2059e28065d13",
+   "file": "swift/common/middleware/gatekeeper.py",
+   "lines": [
+    51,
+    55
+   ],
+   "rules": [
+    "BE005"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-7jvc-9xq8-frff",
+   "class": "ssrf",
+   "ecosystem": "npm",
+   "repo": "avitorio/outstatic",
+   "commit": "65df36bc0464784d45f776d1de6b9fc9d9d9c15d",
+   "fix": "03b9147a04336986174ef0be1c300b3abbbec3e1",
+   "file": "packages/outstatic/src/utils/constants.ts",
+   "lines": [
+    4,
+    4
+   ],
+   "rules": [
+    "BE005"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-xvq9-wjp8-hwqf",
+   "class": "ssrf",
+   "ecosystem": "npm",
+   "repo": "i18next/i18next-http-backend",
+   "commit": "08cb05d3ef8396cb74ab9d6885f4c3ddb43bfbf3",
+   "fix": "07e028862b25d0b9251bf3cafb92be2d35285f85",
+   "file": "i18nextHttpBackend.js",
+   "lines": [
+    17,
+    27
+   ],
+   "rules": [
+    "BE005"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-6mwv-4mrm-5p3m",
+   "class": "ssrf",
+   "ecosystem": "npm",
+   "repo": "decolua/9router",
+   "commit": "f2a7ae20309b4af55023eb11d1c02f63be1b80d1",
+   "fix": "126aa244c5b51b74ab8c7594e3418fcf4437bf6f",
+   "file": "src/app/api/oauth/kiro/api-key/route.js",
+   "lines": [
+    61,
+    61
+   ],
+   "rules": [
+    "BE005"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-2h44-8472-frjj",
+   "class": "ssrf",
+   "ecosystem": "npm",
+   "repo": "zereight/gitlab-mcp",
+   "commit": "e614f9983ee25ed2753d5bf0bf64ca69061bab40",
+   "fix": "6ffb4cc70706fd05b1ab80901676bc2998b6db6d",
+   "file": "downloads/proxy.ts",
+   "lines": [
+    126,
+    127
+   ],
+   "rules": [
+    "BE005"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-34pj-2622-jvxq",
+   "class": "ssrf",
+   "ecosystem": "npm",
+   "repo": "apostrophecms/apostrophe",
+   "commit": "b57cbda5dd5987289c8bd6068bea3b759c88859e",
+   "fix": "5a88e9630cbbdde33154ef8abe7557ddf7be418b",
+   "file": "packages/apostrophe/modules/@apostrophecms/file/index.js",
+   "lines": [
+    251,
+    258
+   ],
+   "rules": [
+    "BE005"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-637c-6jxx-4rwm",
+   "class": "ssrf",
+   "ecosystem": "go",
+   "repo": "kedacore/keda",
+   "commit": "2963aa3d3ba073a01f56865a557563ba40a2174c",
+   "fix": "1e21cc798dedd079e696cdb45388eddc5e18365d",
+   "file": "cmd/operator/main.go",
+   "lines": [
+    101,
+    461
+   ],
+   "rules": [
+    "BE005"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "the fix spans more than 5 source files"
+  },
+  {
+   "advisory": "GHSA-7rx3-5wx3-5v76",
+   "class": "ssrf",
+   "ecosystem": "go",
+   "repo": "forgekeep/nebula-mesh",
+   "commit": "2c3457cad2b04f3c73a3f2ad0e5ade3a8868500c",
+   "fix": "f3c54530e388dd21763e548923426e60a8e93ff0",
+   "file": "internal/api/webhooks.go",
+   "lines": [
+    72,
+    122
+   ],
+   "rules": [
+    "BE005"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-6qcr-qxgr-m7fv",
+   "class": "ssrf",
+   "ecosystem": "go",
+   "repo": "QuantumNous/new-api",
+   "commit": "5238f279db8b096d2b50854633cc2b59d1ba4225",
+   "fix": "20399d3c8fcb4e3649d53163eb11940fd6763743",
+   "file": "controller/video_proxy.go",
+   "lines": [
+    12,
+    129
+   ],
+   "rules": [
+    "BE005"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-xf85-363p-868w",
+   "class": "ssrf",
+   "ecosystem": "go",
+   "repo": "oras-project/oras-go",
+   "commit": "d593d504779be8b69f0ba034ac9fd407d1fc8cfc",
+   "fix": "7a9f4b0b9558821b0422152ebe21ae56930fe764",
+   "file": "registry/remote/auth/client.go",
+   "lines": [
+    25,
+    259
+   ],
+   "rules": [
+    "BE005"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-c6q7-wqw2-h65w",
+   "class": "ssrf",
+   "ecosystem": "maven",
+   "repo": "NationalSecurityAgency/emissary",
+   "commit": "0d4dc56c90d7b23b4db4628a363b6d7e4a5aa7e5",
+   "fix": "e2078417464b9004620dde28dcbca2f73ea06c13",
+   "file": "src/main/java/emissary/server/mvc/NavAction.java",
+   "lines": [
+    10,
+    80
+   ],
+   "rules": [
+    "BE005"
+   ],
+   "split": "heldout",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-83w4-x5w9-hf4h",
+   "class": "ssrf",
+   "ecosystem": "maven",
+   "repo": "xuxueli/xxl-job",
+   "commit": "730c1066b80e8ab44503ed34ced19ef8e0471fec",
+   "fix": "9293c61ca0a8d54afdfb27cc568885ae639a14dc",
+   "file": "xxl-job-admin/src/main/java/com/xxl/job/admin/controller/JobLogController.java",
+   "lines": [
+    3,
+    147
+   ],
+   "rules": [
+    "BE005"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-3xjf-9q55-vxw4",
+   "class": "ssrf",
+   "ecosystem": "composer",
+   "repo": "bolt/core",
+   "commit": "f595fd343d6fea7bd0ede2b510487ecd4d696ad3",
+   "fix": "41d7aaf73f7b75c70819208cde513da70f0d2055",
+   "file": "src/Controller/Backend/Async/EmbedController.php",
+   "lines": [
+    10,
+    66
+   ],
+   "rules": [
+    "BE005"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-2535-j2pq-qq4r",
+   "class": "ssrf",
+   "ecosystem": "composer",
+   "repo": "bolt/core",
+   "commit": "c5686bfacc4461cb141b38cc5ff00d7bd224f5f2",
+   "fix": "4be8861fb5dd3706db363598631026d683bbf4b7",
+   "file": "src/Controller/Backend/Async/UploadController.php",
+   "lines": [
+    11,
+    72
+   ],
+   "rules": [
+    "BE005"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-c3cj-3p6p-j822",
+   "class": "ssrf",
+   "ecosystem": "composer",
+   "repo": "janephp/janephp",
+   "commit": "0ea379deab5689475d62653b408de62ad3611c7a",
+   "fix": "75f2bbf79ca2f2eeb13080a2cebded1263396b49",
+   "file": "src/Component/JsonSchema/Console/Loader/ConfigLoader.php",
+   "lines": [
+    79,
+    79
+   ],
+   "rules": [
+    "BE005"
+   ],
+   "split": "heldout",
+   "scope": "out",
+   "why_out": "the fix spans more than 5 source files"
+  },
+  {
+   "advisory": "GHSA-g6f8-c3x9-jv7f",
+   "class": "ssrf",
+   "ecosystem": "composer",
+   "repo": "code16/sharp",
+   "commit": "c78601329097101aa3db7faa9189b6dd058218c0",
+   "fix": "339f89110f36d06eaad3f2b4bd048fa5424e5558",
+   "file": "src/Http/Controllers/Api/ApiFormAutocompleteController.php",
+   "lines": [
+    11,
+    111
+   ],
+   "rules": [
+    "BE005"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-cq55-c7wv-pxmq",
+   "class": "ssrf",
+   "ecosystem": "composer",
+   "repo": "smarty-php/smarty",
+   "commit": "99c048ce7a590c519b79fbd38ad0143a08183a1f",
+   "fix": "31e06fc087a8b5a9b236c1e5dacc1c2850a2c115",
+   "file": "src/FunctionHandler/Fetch.php",
+   "lines": [
+    192,
+    192
+   ],
+   "rules": [
+    "BE005"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-8x3q-jpjh-qh5c",
+   "class": "ssrf",
+   "ecosystem": "composer",
+   "repo": "Studio-42/elFinder",
+   "commit": "36d40fff12222ad4c229d8889d8ed3fd3dbf0415",
+   "fix": "191372c1bbebbd36fb55af79a84b9984861390ff",
+   "file": "php/elFinder.class.php",
+   "lines": [
+    204,
+    3569
+   ],
+   "rules": [
+    "BE005"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-vw42-752g-5mrp",
+   "class": "ssrf",
+   "ecosystem": "composer",
+   "repo": "YesWiki/yeswiki",
+   "commit": "23d3cc124613b9428ab963b31807c08879a9c631",
+   "fix": "87e627f33e79879827a3669fee2aa1244612c487",
+   "file": "tools/bazar/services/HttpSignatureService.php",
+   "lines": [
+    82,
+    95
+   ],
+   "rules": [
+    "BE005"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-c9xm-49cp-xcr9",
+   "class": "ssrf",
+   "ecosystem": "rust",
+   "repo": "modelcontextprotocol/rust-sdk",
+   "commit": "dfa7fd6f9309deab60bea230b041be9a3fcda846",
+   "fix": "eb435c6f51864df74926ef115befce55c16b01ba",
+   "file": "crates/rmcp/src/transport/auth.rs",
+   "lines": [
+    3,
+    3412
+   ],
+   "rules": [
+    "BE005"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-97vg-427p-8hx5",
+   "class": "ssrf",
+   "ecosystem": "rust",
+   "repo": "surrealdb/surrealdb",
+   "commit": "8856ab3c9161f5fdd882f19e1c4a3e8ebff8cf96",
+   "fix": "ceb1ca3a10ea7789c990a5d797f3ebd725ae407f",
+   "file": "surrealdb/core/src/http/mod.rs",
+   "lines": [
+    44,
+    79
+   ],
+   "rules": [
+    "BE005"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-jvxv-2jjp-jxc3",
+   "class": "ssrf",
+   "ecosystem": "rust",
+   "repo": "LemmyNet/lemmy",
+   "commit": "ce79adeee1ec9c07375c682e913c8dbd262697a9",
+   "fix": "f47a03f56d1797bceab5f34b6f624c91cecd5871",
+   "file": "crates/routes/src/images.rs",
+   "lines": [
+    27,
+    347
+   ],
+   "rules": [
+    "BE005"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-x6w4-f264-3vvr",
+   "class": "ssrf",
+   "ecosystem": "nuget",
+   "repo": "christianhelle/refitter",
+   "commit": "fe18be8b667de06e13183e81b4913740344c63fe",
+   "fix": "6ad20a3803561225100b0a4bb6b12f947d23db7b",
+   "file": "src/Refitter.Core/Document/OpenApiDocumentFactory.cs",
+   "lines": [
+    18,
+    56
+   ],
+   "rules": [
+    "BE005"
+   ],
+   "split": "heldout",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-v995-44v6-5fqm",
+   "class": "ssrf",
+   "ecosystem": "rubygems",
+   "repo": "sparklemotion/nokogiri",
+   "commit": "c6c0bffbdcd194694995acafeeed27326b0805f8",
+   "fix": "97f41b65f4ee0cac859b87f0b26d2648c4806cb8",
+   "file": "test/helper.rb",
+   "lines": [
+    108,
+    126
+   ],
+   "rules": [
+    "BE005"
+   ],
+   "split": "heldout",
+   "scope": "out",
+   "why_out": "the vulnerable file is a test, example or vendored file"
+  },
+  {
+   "advisory": "GHSA-86mf-q4h5-69gp",
+   "class": "xss",
+   "ecosystem": "pip",
+   "repo": "tony/django-docutils",
+   "commit": "0443658966c6d711824b130b1ab393a3b96cd913",
+   "fix": "274caaf14c2368fafeb45f178094a34ba538f067",
+   "file": "src/django_docutils/lib/directives/code.py",
+   "lines": [
+    110,
+    110
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "the fix spans more than 5 source files"
+  },
+  {
+   "advisory": "GHSA-hvq6-2r72-p2x7",
+   "class": "xss",
+   "ecosystem": "pip",
+   "repo": "django-cms/django-cms",
+   "commit": "27b1f6313232ea7806b25dc8a207dabf3a8f6d29",
+   "fix": "b56a568844ff3702495945f73a31d0868285bf88",
+   "file": "cms/admin/placeholderadmin.py",
+   "lines": [
+    15,
+    1180
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-pr2v-jx2c-wg9f",
+   "class": "xss",
+   "ecosystem": "pip",
+   "repo": "tornadoweb/tornado",
+   "commit": "771472cfdaeebc0d89a9cc46e249f8891a6b29cd",
+   "fix": "9c163aebeaad9e6e7d28bac1f33580eb00b0e421",
+   "file": "tornado/web.py",
+   "lines": [
+    362,
+    2525
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-rqp5-r3wg-vg35",
+   "class": "xss",
+   "ecosystem": "npm",
+   "repo": "sveltejs/kit",
+   "commit": "dc535ca7dc05c587265db27f482e8d99da445b80",
+   "fix": "0a2e58cbccdd46cac20aa5af4e2edf17e0da11dd",
+   "file": "packages/adapter-cloudflare/index.js",
+   "lines": [
+    11,
+    264
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "heldout",
+   "scope": "out",
+   "why_out": "the fix spans more than 5 source files"
+  },
+  {
+   "advisory": "GHSA-p74g-f95m-7fx7",
+   "class": "xss",
+   "ecosystem": "go",
+   "repo": "traPtitech/traQ",
+   "commit": "b0d8aab2f6527699efbe6c607212c7e9e8cd6297",
+   "fix": "3db29e7771661f6418d88d186d8ff7817f5d6b6e",
+   "file": "router/utils/common.go",
+   "lines": [
+    25,
+    136
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-4c8j-mgm4-qqvp",
+   "class": "xss",
+   "ecosystem": "go",
+   "repo": "umputun/remark42",
+   "commit": "638fa63e8104cb7e3b5f7b6338fff2d0b684aa18",
+   "fix": "78d6de6bce1e961f023969da3ec8a00dd80c9ae8",
+   "file": "backend/app/rest/api/rest.go",
+   "lines": [
+    621,
+    634
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-q23m-vm9r-5745",
+   "class": "xss",
+   "ecosystem": "go",
+   "repo": "stefanprodan/podinfo",
+   "commit": "9f4969c2c84338b026300dafb55698e05b1d6fbc",
+   "fix": "cbebb20fd48588d36fc7ff3e874c128eb89692f4",
+   "file": "pkg/api/http/echo.go",
+   "lines": [
+    104,
+    104
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-mmpx-jh39-wrv6",
+   "class": "xss",
+   "ecosystem": "go",
+   "repo": "gtsteffaniak/filebrowser",
+   "commit": "112740bdd41de7d5eb01e13ba49d406bfc463f69",
+   "fix": "6bfc3974192e954f71cc5d1cd04baaaec3b76383",
+   "file": "backend/http/download.go",
+   "lines": [
+    101,
+    101
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-mw8w-q3f7-2v85",
+   "class": "xss",
+   "ecosystem": "go",
+   "repo": "stefanprodan/podinfo",
+   "commit": "07a524ba0144ef870258c91c7070a11a2e3aa592",
+   "fix": "83deb7fcb7421f2d01eeb7475b18d72f16084aed",
+   "file": "pkg/api/http/store.go",
+   "lines": [
+    62,
+    62
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-cf57-c578-7jvv",
+   "class": "xss",
+   "ecosystem": "go",
+   "repo": "TecharoHQ/anubis",
+   "commit": "3dab060bfaf5a0f505d4e80d2e1110e97d3d2844",
+   "fix": "7ed1753fcced351c81961bf520a7bfb2caac6e88",
+   "file": "lib/http.go",
+   "lines": [
+    298,
+    381
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-9cwv-pxcr-hfjc",
+   "class": "xss",
+   "ecosystem": "go",
+   "repo": "lf-edge/ekuiper",
+   "commit": "8609b69af230985a12c9d6dda519ec88b12e6838",
+   "fix": "943c02e10f0f8349e609474810eab5fa460d1a51",
+   "file": "internal/server/meta_init.go",
+   "lines": [
+    30,
+    292
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-rxpg-wjf8-qv9c",
+   "class": "xss",
+   "ecosystem": "maven",
+   "repo": "yamcs/yamcs",
+   "commit": "651eba6ee0c97898a602bbf2d00449e0c04880d2",
+   "fix": "4d47d5cdcf5d92c2c5bbbc19feada422923332e3",
+   "file": "yamcs-core/src/main/java/org/yamcs/templating/EscapeFilter.java",
+   "lines": [
+    1,
+    1
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "heldout",
+   "scope": "out",
+   "why_out": "the fix spans more than 5 source files"
+  },
+  {
+   "advisory": "GHSA-mqwx-84vv-mp26",
+   "class": "xss",
+   "ecosystem": "composer",
+   "repo": "octobercms/october",
+   "commit": "18b8c737fedd098934571f8b960fecf19c3c0cd0",
+   "fix": "118c3d08559e811c1bf69db7c5ed82a22bcf0bbc",
+   "file": "modules/backend/behaviors/importexportcontroller/partials/_import_file_columns.php",
+   "lines": [
+    25,
+    25
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "the fix spans more than 5 source files"
+  },
+  {
+   "advisory": "GHSA-rx7m-wxwq-vxr9",
+   "class": "xss",
+   "ecosystem": "composer",
+   "repo": "adminneo-org/adminneo",
+   "commit": "cf45efb3ac34e5e7b699cdc996f6eec2814ccda1",
+   "fix": "2c86406808bc2517efb35f5595b3a05761c2eacd",
+   "file": "admin/core/Admin.php",
+   "lines": [
+    1286,
+    1286
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-pgwp-vc7q-cvj3",
+   "class": "xss",
+   "ecosystem": "composer",
+   "repo": "thorsten/phpMyFAQ",
+   "commit": "ed914d7085c034f58f6df33971eecd63700b4b72",
+   "fix": "24b68068747ad632398e3b3bab2989e76e43ef82",
+   "file": "phpmyfaq/src/phpMyFAQ/Controller/Frontend/Api/FaqController.php",
+   "lines": [
+    111,
+    111
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-ffmg-hfvg-jhg9",
+   "class": "xss",
+   "ecosystem": "composer",
+   "repo": "getgrav/grav",
+   "commit": "2a51f95446aaa152ccb371d86c3d6c83881a26e4",
+   "fix": "6582166173bb8eb5869d96aea384e0e73777c94c",
+   "file": "system/src/Grav/Common/Twig/Twig.php",
+   "lines": [
+    394,
+    394
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-43gm-9rr3-cx7g",
+   "class": "xss",
+   "ecosystem": "composer",
+   "repo": "froxlor/froxlor",
+   "commit": "a1eaca5a1601c8a30e00814a4fc73ad0c185f89e",
+   "fix": "a1d8f425b11ef7597949018814afa056a842cba0",
+   "file": "lib/Froxlor/UI/Callbacks/Text.php",
+   "lines": [
+    95,
+    95
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-w3cp-g2pf-65wh",
+   "class": "xss",
+   "ecosystem": "composer",
+   "repo": "silverstripe/silverstripe-cms",
+   "commit": "306502393e02f5b5cd1b54a3a654d7e417f912b2",
+   "fix": "62f9912baa18c80304f3fa8b6eca71bb5dc2d21e",
+   "file": "code/Controllers/CMSMain.php",
+   "lines": [
+    1649,
+    1687
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-3x7p-v8hj-xh5m",
+   "class": "xss",
+   "ecosystem": "composer",
+   "repo": "NeoRazorX/facturascripts",
+   "commit": "30d860da3d35ed0c8f405aa67064b3f84cdac18a",
+   "fix": "65779fc73f1b7f1fd7294fab083fe592d8a9b783",
+   "file": "Core/Lib/Widget/BaseWidget.php",
+   "lines": [
+    26,
+    320
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-m6mh-2hw2-555x",
+   "class": "xss",
+   "ecosystem": "rust",
+   "repo": "rust-ammonia/ammonia",
+   "commit": "676076ec601ac1226867a8593672f048b8f0af9b",
+   "fix": "9394bd81179e756cb911314deabd943f1a9c8989",
+   "file": "src/lib.rs",
+   "lines": [
+    1794,
+    3597
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "heldout",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-j92c-7v7g-gj3f",
+   "class": "xss",
+   "ecosystem": "nuget",
+   "repo": "mganss/HtmlSanitizer",
+   "commit": "ca3931ae6ef305ece676846b99cdc4dd1cae377c",
+   "fix": "0ac53dca30ddad963f2b243669a5066933d82b81",
+   "file": "src/HtmlSanitizer/HtmlSanitizer.cs",
+   "lines": [
+    501,
+    583
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-h7wh-q2qr-458c",
+   "class": "xss",
+   "ecosystem": "rubygems",
+   "repo": "rails/rails-html-sanitizer",
+   "commit": "c5252d798b283f29bf0a590ee1a63e9cb16bafa2",
+   "fix": "15f764c3563d5dd9b97ad32eaa7454577ccec4b9",
+   "file": "lib/rails/html/sanitizer.rb",
+   "lines": [
+    157,
+    167
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-762r-27w2-q22j",
+   "class": "xss",
+   "ecosystem": "rubygems",
+   "repo": "avo-hq/avo",
+   "commit": "daa2fdb4ca9bc748cff3891299532004e78ff567",
+   "fix": "4453d39ddc6309f3bc8ada73ef21e1971112de7d",
+   "file": "app/components/avo/referrer_params_component.html.erb",
+   "lines": [
+    7,
+    7
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-whrj-4476-wvmp",
+   "class": "xss",
+   "ecosystem": "rubygems",
+   "repo": "rack/rack",
+   "commit": "ce6885a4b7b21d6a97f273ff4a0e155807ee2769",
+   "fix": "f2f225f297b99fbee3d9f51255d41f601fc40aff",
+   "file": "lib/rack/directory.rb",
+   "lines": [
+    25,
+    25
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-r9cr-qmfw-pmrc",
+   "class": "xss",
+   "ecosystem": "rubygems",
+   "repo": "owen2345/camaleon-cms",
+   "commit": "071b1b09d6d61ab02a5960b1ccafd9d9c2155a3e",
+   "fix": "b18fbc74f3ecd98a1f781d015f5466ef16b1425b",
+   "file": "app/helpers/camaleon_cms/uploader_helper.rb",
+   "lines": [
+    1,
+    367
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-8qgm-g2vv-vwvc",
+   "class": "xss",
+   "ecosystem": "rubygems",
+   "repo": "railsadminteam/rails_admin",
+   "commit": "6fc208b3f9d2c6b1b79e8003984dbf2bc4e1e9c5",
+   "fix": "b5a287d82e2cbd1737a1a01e11ede2911cce7fef",
+   "file": "app/views/rails_admin/main/index.html.erb",
+   "lines": [
+    136,
+    136
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-r8xx-8vm8-x6wj",
+   "class": "xss",
+   "ecosystem": "rubygems",
+   "repo": "resque/resque",
+   "commit": "8b0bf00b07d9954417d5b5d805561c3cfa5081e4",
+   "fix": "e8e2367fff6990d13109ec2483a456a05fbf9811",
+   "file": "lib/resque/server/views/queues.erb",
+   "lines": [
+    5,
+    5
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-r9mq-m72x-257g",
+   "class": "xss",
+   "ecosystem": "rubygems",
+   "repo": "resque/resque",
+   "commit": "811ef35f8c088eeb65d29dd3cdab1b7e1d23539c",
+   "fix": "7623b8dfbdd0a07eb04b19fb25b16a8d6f087f9a",
+   "file": "lib/resque/server/views/queues.erb",
+   "lines": [
+    6,
+    6
+   ],
+   "rules": [
+    "FE001"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-5cjw-f85j-cv6r",
+   "class": "redirect",
+   "ecosystem": "pip",
+   "repo": "tornadoweb/tornado",
+   "commit": "62a1eb8dc3dbf25de7ebd5cafb9967443a907577",
+   "fix": "c503241622c0efe7c40110d89834ce8b7fead1e4",
+   "file": "tornado/web.py",
+   "lines": [
+    74,
+    4254
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-gcwf-c25f-p9rv",
+   "class": "redirect",
+   "ecosystem": "pip",
+   "repo": "kiwitcms/Kiwi",
+   "commit": "494385fc5c1c5e295fca4ae4515eeceff4122382",
+   "fix": "65d8f7c2743d7f06a4fca77c060b9d561f02f948",
+   "file": "tcms/kiwi_auth/views.py",
+   "lines": [
+    113,
+    115
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-pw9p-v7r6-gx4p",
+   "class": "redirect",
+   "ecosystem": "pip",
+   "repo": "tornadoweb/tornado",
+   "commit": "09591f65286a600c2196df9c33b792b889a6bccb",
+   "fix": "940ea725bdd9bc68231d68a105eef17ea6e11233",
+   "file": "tornado/web.py",
+   "lines": [
+    2824,
+    2824
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-jj7h-c3hg-m23x",
+   "class": "redirect",
+   "ecosystem": "pip",
+   "repo": "authlib/authlib",
+   "commit": "2bbd66b27fe83e149572207db4469f54ddce0dc4",
+   "fix": "95ad1f90acf0c7b9cf2a8f25e6eb3f1135b8dc70",
+   "file": "authlib/common/security.py",
+   "lines": [
+    1,
+    21
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "heldout",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-r5vv-ff45-prp2",
+   "class": "redirect",
+   "ecosystem": "pip",
+   "repo": "koxudaxi/datamodel-code-generator",
+   "commit": "25c8b7e497419eb20b230fa3318c04f9bebc5a6f",
+   "fix": "a585c037c8307b7aae815de193b7fe1c4c44994b",
+   "file": "src/datamodel_code_generator/http.py",
+   "lines": [
+    13,
+    613
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-w8p2-r796-3vmq",
+   "class": "redirect",
+   "ecosystem": "pip",
+   "repo": "authlib/authlib",
+   "commit": "9266eaa2227ad7e21dc731b2a4a01909aabd934b",
+   "fix": "3be08468201a7766a93012ce149ea12822cab096",
+   "file": "authlib/oauth2/rfc6749/authorization_server.py",
+   "lines": [
+    243,
+    247
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-pfjf-5gxr-995x",
+   "class": "redirect",
+   "ecosystem": "pip",
+   "repo": "gradio-app/gradio",
+   "commit": "b01c95a58be8e18bb4ddef7f2ee238a7774e5be9",
+   "fix": "dfee0da06d0aa94b3c2684131e7898d5d5c1911e",
+   "file": "gradio/oauth.py",
+   "lines": [
+    223,
+    326
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-pfhg-q3qv-9q6r",
+   "class": "redirect",
+   "ecosystem": "npm",
+   "repo": "sveltejs/kit",
+   "commit": "1c1d19c028aca0424d70551d6aacfa1fc189d426",
+   "fix": "91aae3547c6cd2935d79c09a53e27c740100000a",
+   "file": "packages/kit/src/runtime/app/forms/client.js",
+   "lines": [
+    13,
+    104
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "heldout",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-jjmj-jmhj-qwj2",
+   "class": "redirect",
+   "ecosystem": "npm",
+   "repo": "remix-run/react-router",
+   "commit": "f29c6c95631368afa1b475f824854a781e690c02",
+   "fix": "3a5b5ad0e5cf9918c646509563f5c41a89226ff3",
+   "file": "packages/react-router/lib/router/utils.ts",
+   "lines": [
+    1606,
+    1622
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-2j2x-hqr9-3h42",
+   "class": "redirect",
+   "ecosystem": "npm",
+   "repo": "remix-run/react-router",
+   "commit": "6da565656162f818b9427eabb20c7a12e27a8418",
+   "fix": "d77f6b1db8202e2160098432df349dbed118c948",
+   "file": "packages/router/router.ts",
+   "lines": [
+    52,
+    5189
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-fp4x-ggrf-wmc6",
+   "class": "redirect",
+   "ecosystem": "npm",
+   "repo": "h3js/h3",
+   "commit": "388b8f06e060a219d11bbc6be7f70f38d8bbea01",
+   "fix": "459a1c6593365b0810e9c502df7c3e82837321d7",
+   "file": "src/utils/response.ts",
+   "lines": [
+    95,
+    95
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-92j7-wgmg-f32m",
+   "class": "redirect",
+   "ecosystem": "npm",
+   "repo": "QwikDev/qwik",
+   "commit": "eebf610e04cc3a690f11e10191d09ff0fca1c7ed",
+   "fix": "9959eab30a3ad9cc03689eaa080fcfbc33df71ed",
+   "file": "packages/qwik-city/src/middleware/request-handler/request-event.ts",
+   "lines": [
+    239,
+    240
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-rv95-896h-c2vc",
+   "class": "redirect",
+   "ecosystem": "npm",
+   "repo": "expressjs/express",
+   "commit": "567c9c665d0de4c344b8e160146050770233783c",
+   "fix": "0867302ddbde0e9463d0564fea5861feb708c2dd",
+   "file": "lib/response.js",
+   "lines": [
+    36,
+    915
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-59fq-727j-hm3f",
+   "class": "redirect",
+   "ecosystem": "npm",
+   "repo": "keycloak/keycloak-nodejs-connect",
+   "commit": "e4bd6b7bc8116432bf8fde87c5f06417005f88ea",
+   "fix": "190a9470e234bbd9ac5d5de43f5a19aead9a2c21",
+   "file": "middleware/check-sso.js",
+   "lines": [
+    64,
+    64
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-v753-g4cw-jm48",
+   "class": "redirect",
+   "ecosystem": "go",
+   "repo": "labstack/echo",
+   "commit": "4f2f975ddadd4c96a368cd5c13eac968d41fc32c",
+   "fix": "b838391e2eade87ae7e5a09d7bb5087bec271ec1",
+   "file": "context.go",
+   "lines": [
+    136,
+    543
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "the fix spans more than 5 source files"
+  },
+  {
+   "advisory": "GHSA-2wvm-8mvp-22qv",
+   "class": "redirect",
+   "ecosystem": "go",
+   "repo": "pocket-id/pocket-id",
+   "commit": "73bda4580a0b28fbf64a3d61b9b16e3f4b88ee51",
+   "fix": "8a7577497131229badb35cb4b3a4227b1300afff",
+   "file": "backend/internal/controller/oidc_controller.go",
+   "lines": [
+    34,
+    129
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-mqqf-5wvp-8fh8",
+   "class": "redirect",
+   "ecosystem": "go",
+   "repo": "go-chi/chi",
+   "commit": "de0d16e6d23092aeef0b6e78f146799369160651",
+   "fix": "6eb35881c0e438ffb663ddbad3a61babaa5e5d8a",
+   "file": "middleware/strip.go",
+   "lines": [
+    49,
+    58
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-wqv2-4wpg-8hc9",
+   "class": "redirect",
+   "ecosystem": "go",
+   "repo": "miniflux/v2",
+   "commit": "57e3eaecd9bd2d9e70c7bda8fe20b2cc90badd9d",
+   "fix": "76df99f3a3db234cf6b312be5e771485213d03c7",
+   "file": "internal/ui/login_check.go",
+   "lines": [
+    9,
+    103
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-vrw8-fxc6-2r93",
+   "class": "redirect",
+   "ecosystem": "go",
+   "repo": "go-chi/chi",
+   "commit": "d7034fdfdaefd10f1bc1a7b813bc979f2eda3a36",
+   "fix": "1be7ad938cc9c5b39a9dea01a5c518848928ab65",
+   "file": "middleware/strip.go",
+   "lines": [
+    5,
+    56
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-hvw3-p9px-gpc9",
+   "class": "redirect",
+   "ecosystem": "go",
+   "repo": "gophish/gophish",
+   "commit": "db63ee978dcd678caee0db71e5e1b91f9f293880",
+   "fix": "2a452bda89ffdb85f929fa78290bce1f456881dc",
+   "file": "controllers/route.go",
+   "lines": [
+    9,
+    301
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-fxr3-gvm4-m8vc",
+   "class": "redirect",
+   "ecosystem": "maven",
+   "repo": "hs-web/hsweb-framework",
+   "commit": "3843e1bbb4799f34c372e07fc35117199f6c6376",
+   "fix": "c2882679a9125cea52678151af5ae213cbd52579",
+   "file": "hsweb-authorization/hsweb-authorization-oauth2/src/main/java/org/hswebframework/web/oauth2/server/OAuth2Client.java",
+   "lines": [
+    7,
+    40
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "the fix spans more than 5 source files"
+  },
+  {
+   "advisory": "GHSA-xr6g-7g83-j865",
+   "class": "redirect",
+   "ecosystem": "composer",
+   "repo": "bolt/core",
+   "commit": "d5d8d13dfcd7312a938168ee4328b2cb153e4440",
+   "fix": "db37ed5d7563f19e57597671598e284c9b34456c",
+   "file": "phpstan-baseline.php",
+   "lines": [
+    3412,
+    3417
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-hhpq-7wg4-36jm",
+   "class": "redirect",
+   "ecosystem": "composer",
+   "repo": "cakephp/authentication",
+   "commit": "3f7cb4a7a0313139d5d3ce2bdd7854c19bae2491",
+   "fix": "1c1e29c7e8129cfbcae74558316ecd3ea50a8273",
+   "file": "src/AuthenticationService.php",
+   "lines": [
+    415,
+    424
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-cvrm-5hp6-h523",
+   "class": "redirect",
+   "ecosystem": "composer",
+   "repo": "simplesamlphp/simplesamlphp-module-casserver",
+   "commit": "81b6b533a7ba9f54added50e8dbb2a857841e508",
+   "fix": "0462f50f00b3bb300d83067d11b74146a57bb8e0",
+   "file": "public/loggedOut.php",
+   "lines": [
+    24,
+    36
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-72jf-5fg5-3cw3",
+   "class": "redirect",
+   "ecosystem": "composer",
+   "repo": "TYPO3-CMS/core",
+   "commit": "18df4d25d5b5d3754e69ee618c85b8e3a8c601ee",
+   "fix": "862b9da870815132c31119cd85bc454a5010793c",
+   "file": "Classes/Utility/GeneralUtility.php",
+   "lines": [
+    2554,
+    2566
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-xffp-6w68-4775",
+   "class": "redirect",
+   "ecosystem": "composer",
+   "repo": "zendframework/zendframework",
+   "commit": "213cbcafc009e3810a136b16771ec3604ffc5a2a",
+   "fix": "bb6784461d3b23ef1db4be8cf47957ccc3b681ed",
+   "file": "library/Zend/Http/PhpEnvironment/RemoteAddress.php",
+   "lines": [
+    104,
+    143
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-m5q3-mvcr-gc5m",
+   "class": "redirect",
+   "ecosystem": "composer",
+   "repo": "silverstripe/silverstripe-framework",
+   "commit": "e967ab09a246877ae416049097ec2bb6fd9df7e2",
+   "fix": "9053014a7e2eba28d000881e0bb3cc1d6e6b2eea",
+   "file": "src/Control/Director.php",
+   "lines": [
+    731,
+    737
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-vp8p-c6xj-xpj7",
+   "class": "redirect",
+   "ecosystem": "composer",
+   "repo": "silverstripe/silverstripe-framework",
+   "commit": "79cfa2bb640c2a01eb9af542aa7b507018e47404",
+   "fix": "22a35e48a9f513d4caa3b4e9b8dd21c49ffc8f2c",
+   "file": "control/Controller.php",
+   "lines": [
+    511,
+    511
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-vhj5-x93p-67jw",
+   "class": "redirect",
+   "ecosystem": "rust",
+   "repo": "robjtede/actix-web-lab",
+   "commit": "534da3552aff9e84035ad48d23968754b0958385",
+   "fix": "142c28b82eb59b67445a859a2a9b75e01a9964ee",
+   "file": "actix-web-lab/src/bytes.rs",
+   "lines": [
+    167,
+    173
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "no redirect rule for .rs"
+  },
+  {
+   "advisory": "GHSA-ff4q-64jc-gx98",
+   "class": "redirect",
+   "ecosystem": "nuget",
+   "repo": "DuendeSoftware/IdentityServer",
+   "commit": "99c1f089c9b04896f6ee5e9415b7d8bf7df89745",
+   "fix": "269ca2171fe1e901c87f2f0797bbc7c230db87c6",
+   "file": "src/EntityFramework.Storage/Extensions/StringsExtensions.cs",
+   "lines": [
+    138,
+    180
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-pp92-crg2-gfv9",
+   "class": "redirect",
+   "ecosystem": "rubygems",
+   "repo": "ruby-oauth/oauth2",
+   "commit": "1118527f311a23d06feede403b88b8f6bd2a4eed",
+   "fix": "0f0a474f1b38453e119e660c2daca742d4378ce9",
+   "file": "lib/oauth2/client.rb",
+   "lines": [
+    162,
+    467
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-jp94-3292-c3xv",
+   "class": "redirect",
+   "ecosystem": "rubygems",
+   "repo": "heartcombo/devise",
+   "commit": "7ca7ed9c174525a4d36167441b35af4a0991b6af",
+   "fix": "025fe2124f9928766fc46520e999633b598d0360",
+   "file": "lib/devise/controllers/store_location.rb",
+   "lines": [
+    59,
+    59
+   ],
+   "rules": [
+    "BE008"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-gh9r-c94j-cmp5",
+   "class": "deserialization",
+   "ecosystem": "pip",
+   "repo": "stanfordnlp/stanza",
+   "commit": "670dfb524f8516ea7ff3f6e6e530d8b6c27a9170",
+   "fix": "b21e1c9b47b4fccff21d3b0a6c0687a19410c2f0",
+   "file": "setup.py",
+   "lines": [
+    82,
+    87
+   ],
+   "rules": [
+    "BE004",
+    "JAVA004",
+    "CSHARP002"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-7rv5-mrxv-xcr9",
+   "class": "deserialization",
+   "ecosystem": "npm",
+   "repo": "lxsmnsyc/seroval",
+   "commit": "6e8ee4f4b09d066e35417416133ba8de8fad0097",
+   "fix": "3edc78b495ea0d6bd498143e5b3e56996607c5f2",
+   "file": "packages/seroval/src/core/sequence.ts",
+   "lines": [
+    4,
+    27
+   ],
+   "rules": [
+    "BE004",
+    "JAVA004",
+    "CSHARP002"
+   ],
+   "split": "heldout",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-hp87-p4gw-j4gq",
+   "class": "deserialization",
+   "ecosystem": "go",
+   "repo": "go-yaml/yaml",
+   "commit": "539c8e751b99281a79dc659ba8dc44d91e444723",
+   "fix": "8f96da9f5d5eff988554c1aae1784627c4bf6754",
+   "file": "decode.go",
+   "lines": [
+    103,
+    103
+   ],
+   "rules": [
+    "BE004",
+    "JAVA004",
+    "CSHARP002"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-gx83-3vf8-gh7j",
+   "class": "deserialization",
+   "ecosystem": "maven",
+   "repo": "FasterXML/jackson-databind",
+   "commit": "65947556b62ee935a85aa5edaebf409813fd2456",
+   "fix": "eb3b7fc0f9c0d27f471550ac3316b17d1987388f",
+   "file": "src/main/java/com/fasterxml/jackson/databind/jsontype/DefaultBaseTypeLimitingValidator.java",
+   "lines": [
+    64,
+    105
+   ],
+   "rules": [
+    "BE004",
+    "JAVA004",
+    "CSHARP002"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-r7pg-v2c8-mfg3",
+   "class": "deserialization",
+   "ecosystem": "maven",
+   "repo": "apache/avro",
+   "commit": "9c4e4da75cd7ed85bc348c99cd6ba28b6c7b13aa",
+   "fix": "8f89868d29272e3afea2ff8de8c85cb81a57d900",
+   "file": "lang/java/avro/src/main/java/org/apache/avro/reflect/ReflectData.java",
+   "lines": [
+    430,
+    439
+   ],
+   "rules": [
+    "BE004",
+    "JAVA004",
+    "CSHARP002"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-63hm-g96r-2m2q",
+   "class": "deserialization",
+   "ecosystem": "composer",
+   "repo": "laravel/framework",
+   "commit": "18bf64aee02dda4efe172c0e3e940be94847b7db",
+   "fix": "0f904940d176d51db1105cc925136f01bb69e92c",
+   "file": "src/Illuminate/Concurrency/Console/InvokeSerializedClosureCommand.php",
+   "lines": [
+    42,
+    80
+   ],
+   "rules": [
+    "BE004",
+    "JAVA004",
+    "CSHARP002"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-9369-69wj-7m2f",
+   "class": "deserialization",
+   "ecosystem": "composer",
+   "repo": "YesWiki/yeswiki",
+   "commit": "a7389627207f0c2b134e43f5d64e810cd4813e3e",
+   "fix": "8f70a8d6b8befa0e644d03c785701dbbc55b8fd0",
+   "file": "tools/bazar/actions/BazarImportAction.php",
+   "lines": [
+    7,
+    104
+   ],
+   "rules": [
+    "BE004",
+    "JAVA004",
+    "CSHARP002"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-2fmj-p74r-3wjm",
+   "class": "deserialization",
+   "ecosystem": "composer",
+   "repo": "pontedilana/php-weasyprint",
+   "commit": "6d328ffd3bcb800c7c2e8a594b1bff0c099c9391",
+   "fix": "d1aa487722b5a3cab9b222b85fdb5608a5a550c3",
+   "file": "src/AbstractGenerator.php",
+   "lines": [
+    23,
+    260
+   ],
+   "rules": [
+    "BE004",
+    "JAVA004",
+    "CSHARP002"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-rxj3-rrwm-pj4r",
+   "class": "deserialization",
+   "ecosystem": "composer",
+   "repo": "roundcube/roundcubemail",
+   "commit": "c15f5dbf093a497e19a749b20e7f8fb5a9c24cde",
+   "fix": "618c5428edc69fb088e7ac6c89e506dd39df3fc2",
+   "file": "program/include/iniset.php",
+   "lines": [
+    3,
+    78
+   ],
+   "rules": [
+    "BE004",
+    "JAVA004",
+    "CSHARP002"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-v9m8-9xxp-q492",
+   "class": "deserialization",
+   "ecosystem": "composer",
+   "repo": "auth0/auth0-PHP",
+   "commit": "1e34266f6598465ca06e10fb26d61b7877de6255",
+   "fix": "04b1f5daa8bdfebc5e740ec5ca0fb2df1648a715",
+   "file": "src/Store/CookieStore.php",
+   "lines": [
+    17,
+    482
+   ],
+   "rules": [
+    "BE004",
+    "JAVA004",
+    "CSHARP002"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-8j8w-wwqc-x596",
+   "class": "deserialization",
+   "ecosystem": "composer",
+   "repo": "roundcube/roundcubemail",
+   "commit": "ff8c9ef59c7e73c832e146c7b2694df842671250",
+   "fix": "0376f69e958a8fef7f6f09e352c541b4e7729c4d",
+   "file": "program/actions/settings/upload.php",
+   "lines": [
+    34,
+    34
+   ],
+   "rules": [
+    "BE004",
+    "JAVA004",
+    "CSHARP002"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-7c4c-749j-pfp2",
+   "class": "deserialization",
+   "ecosystem": "composer",
+   "repo": "Admidio/admidio",
+   "commit": "50755c7f1cf6b7e24b625ae9bb61f9662674f36a",
+   "fix": "176f60de6a38dde2b8e848b97647194c12cf5a6c",
+   "file": "adm_program/modules/messages/messages_send.php",
+   "lines": [
+    29,
+    29
+   ],
+   "rules": [
+    "BE004",
+    "JAVA004",
+    "CSHARP002"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-2jx3-ff3v-j7jj",
+   "class": "deserialization",
+   "ecosystem": "rust",
+   "repo": "VirusTotal/yara-x",
+   "commit": "4fbaf55606e06af6e109d02b764a9190edf8c4ed",
+   "fix": "25efa375572efcfbe880a263ee3b0932d4b61a24",
+   "file": "lib/src/compiler/mod.rs",
+   "lines": [
+    2935,
+    2935
+   ],
+   "rules": [
+    "BE004",
+    "JAVA004",
+    "CSHARP002"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-h26j-4vp7-x9w2",
+   "class": "deserialization",
+   "ecosystem": "nuget",
+   "repo": "metalama/Metalama",
+   "commit": "09911349a916e82194b1cfaa6d0a38acad928fc9",
+   "fix": "5b4ced29f2b25631cc2e44d05b0fd5fe838b6cbe",
+   "file": "Metalama.Framework/src/Metalama.Framework.DesignTime.Rpc/JsonSerializationAllowList.cs",
+   "lines": [
+    1,
+    1
+   ],
+   "rules": [
+    "BE004",
+    "JAVA004",
+    "CSHARP002"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "the vulnerable file could not be read at the pinned commit"
+  },
+  {
+   "advisory": "GHSA-q339-8rmv-2mhv",
+   "class": "deserialization",
+   "ecosystem": "rubygems",
+   "repo": "ruby/erb",
+   "commit": "c594f2fb8653518955e4b1ff77bab379098f0773",
+   "fix": "ef61b591b270f8ba58d47f12472a1c53a77b4d61",
+   "file": "lib/erb.rb",
+   "lines": [
+    465,
+    465
+   ],
+   "rules": [
+    "BE004",
+    "JAVA004",
+    "CSHARP002"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "library code: the input arrives as a function argument, not request data"
+  },
+  {
+   "advisory": "GHSA-h2wm-p2vg-6pw4",
+   "class": "deserialization",
+   "ecosystem": "rubygems",
+   "repo": "rails/kredis",
+   "commit": "1c2e3a637bcbb60e3fe5965972193c3abc4eef3f",
+   "fix": "d576b7ae5c8d3d74eeb4bd84cad0aa64ffc299fa",
+   "file": "lib/kredis/type/json.rb",
+   "lines": [
+    11,
+    11
+   ],
+   "rules": [
+    "BE004",
+    "JAVA004",
+    "CSHARP002"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-24pw-rf5p-mgp7",
+   "class": "missing-auth",
+   "ecosystem": "pip",
+   "repo": "datalayer/jupyter-mcp-server",
+   "commit": "27b91e551d8bbca2da32c334f9f13267290ff815",
+   "fix": "c2e98fca2df1bbd608451ec416aaa38a4d246fc5",
+   "file": "jupyter_mcp_server/CLI.py",
+   "lines": [
+    182,
+    491
+   ],
+   "rules": [
+    "AUTH001",
+    "AUTH002",
+    "AUTH003",
+    "AUTH017",
+    "JAVA001",
+    "CSHARP001"
+   ],
+   "split": "heldout",
+   "scope": "out",
+   "why_out": "the file defines no route vibeaudit discovers (library or middleware code)"
+  },
+  {
+   "advisory": "GHSA-j92p-c242-7hfx",
+   "class": "missing-auth",
+   "ecosystem": "pip",
+   "repo": "pyload/pyload",
+   "commit": "87b39714e7f86f5f43e803d991228e0fe20d5459",
+   "fix": "e80c940cd604e60d93e3164429d4fc4aac54468d",
+   "file": "src/pyload/webui/app/blueprints/app_blueprint.py",
+   "lines": [
+    33,
+    33
+   ],
+   "rules": [
+    "AUTH001",
+    "AUTH002",
+    "AUTH003",
+    "AUTH017",
+    "JAVA001",
+    "CSHARP001"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-rjpf-7pf5-q54x",
+   "class": "missing-auth",
+   "ecosystem": "pip",
+   "repo": "wger-project/wger",
+   "commit": "67fbf067a60d341cc5c6227257e3013ec31220e0",
+   "fix": "b29cf178651bbcc243d21673932e32bd42017893",
+   "file": "wger/manager/api/views.py",
+   "lines": [
+    283,
+    316
+   ],
+   "rules": [
+    "AUTH001",
+    "AUTH002",
+    "AUTH003",
+    "AUTH017",
+    "JAVA001",
+    "CSHARP001"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-cfh6-pv5c-38jv",
+   "class": "missing-auth",
+   "ecosystem": "pip",
+   "repo": "Netflix/lemur",
+   "commit": "e9ade7dad5c9bc1369a831554ed6df3277c9cbae",
+   "fix": "286874535160952143b0afe2d356642669f9d4c6",
+   "file": "lemur/certificates/service.py",
+   "lines": [
+    22,
+    1384
+   ],
+   "rules": [
+    "AUTH001",
+    "AUTH002",
+    "AUTH003",
+    "AUTH017",
+    "JAVA001",
+    "CSHARP001"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-7m8x-x364-m26j",
+   "class": "missing-auth",
+   "ecosystem": "npm",
+   "repo": "SignalK/signalk-server",
+   "commit": "925a73a6198c93cec3d54069542ba5224102b9b1",
+   "fix": "1bee85114a4cb7403aba71632d9902792d6b4f0c",
+   "file": "src/interfaces/ws.ts",
+   "lines": [
+    199,
+    1135
+   ],
+   "rules": [
+    "AUTH001",
+    "AUTH002",
+    "AUTH003",
+    "AUTH017",
+    "JAVA001",
+    "CSHARP001"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "the file defines no route vibeaudit discovers (library or middleware code)"
+  },
+  {
+   "advisory": "GHSA-wr5r-wqp2-x4fh",
+   "class": "missing-auth",
+   "ecosystem": "npm",
+   "repo": "apostrophecms/apostrophe",
+   "commit": "252635917446ec9b30c895181490220cab1fed26",
+   "fix": "d50c6ad61b9c1788958752358f1fca714cc8368c",
+   "file": "packages/apostrophe/modules/@apostrophecms/page/index.js",
+   "lines": [
+    1653,
+    1658
+   ],
+   "rules": [
+    "AUTH001",
+    "AUTH002",
+    "AUTH003",
+    "AUTH017",
+    "JAVA001",
+    "CSHARP001"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-6f5r-5672-72j7",
+   "class": "missing-auth",
+   "ecosystem": "npm",
+   "repo": "andrea9293/mcp-documentation-server",
+   "commit": "06d28086dd3fe120978bfa4a49a0a93c7bba8449",
+   "fix": "37159d4e06b8ee50c3645b2496e3d3f6d32c47f9",
+   "file": "src/web-server.ts",
+   "lines": [
+    25,
+    295
+   ],
+   "rules": [
+    "AUTH001",
+    "AUTH002",
+    "AUTH003",
+    "AUTH017",
+    "JAVA001",
+    "CSHARP001"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-wj7x-58c2-5793",
+   "class": "missing-auth",
+   "ecosystem": "go",
+   "repo": "daptin/daptin",
+   "commit": "b83c992632da0a3cff251c457140d5150efadfb0",
+   "fix": "a1a3c48f88ce30632a57d3fe6a971033b23bd394",
+   "file": "server/apiblueprint/apiblueprint.go",
+   "lines": [
+    332,
+    467
+   ],
+   "rules": [
+    "AUTH001",
+    "AUTH002",
+    "AUTH003",
+    "AUTH017",
+    "JAVA001",
+    "CSHARP001"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "the file defines no route vibeaudit discovers (library or middleware code)"
+  },
+  {
+   "advisory": "GHSA-rqcc-94gv-wjm9",
+   "class": "missing-auth",
+   "ecosystem": "go",
+   "repo": "sipcapture/homer",
+   "commit": "b2e942031ff8cd7435a244ebef306ee97d16b809",
+   "fix": "5e90809657c9df321db191a69c6050f873f5646b",
+   "file": "src/coordinator/coordinator.go",
+   "lines": [
+    100,
+    380
+   ],
+   "rules": [
+    "AUTH001",
+    "AUTH002",
+    "AUTH003",
+    "AUTH017",
+    "JAVA001",
+    "CSHARP001"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-9v8p-frvj-2pcm",
+   "class": "missing-auth",
+   "ecosystem": "go",
+   "repo": "klever-io/klever-go",
+   "commit": "9a0ac27bcfccb9cfc5852a68de6684ee64c0705c",
+   "fix": "a2740c985a788fb69e17742ea4f0c37c440733b2",
+   "file": "cmd/seednode/api/api.go",
+   "lines": [
+    13,
+    93
+   ],
+   "rules": [
+    "AUTH001",
+    "AUTH002",
+    "AUTH003",
+    "AUTH017",
+    "JAVA001",
+    "CSHARP001"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-w89x-c962-c44g",
+   "class": "missing-auth",
+   "ecosystem": "go",
+   "repo": "cloudreve/cloudreve",
+   "commit": "c278c6af39de0ffde7e125481c674931826a3ab9",
+   "fix": "bce08f88e9d8f881e78fd18e7a6598b31922c492",
+   "file": "routers/router.go",
+   "lines": [
+    930,
+    938
+   ],
+   "rules": [
+    "AUTH001",
+    "AUTH002",
+    "AUTH003",
+    "AUTH017",
+    "JAVA001",
+    "CSHARP001"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-w3w6-9m25-g88p",
+   "class": "missing-auth",
+   "ecosystem": "maven",
+   "repo": "omnifaces/omnifaces",
+   "commit": "6bb8f19021450c491e52031f918965c66b1e6a29",
+   "fix": "78fe2b6989387f93718bdb932fb4497e338dd638",
+   "file": "src/main/java/org/omnifaces/cdi/push/PushChannelManager.java",
+   "lines": [
+    25,
+    111
+   ],
+   "rules": [
+    "AUTH001",
+    "AUTH002",
+    "AUTH003",
+    "AUTH017",
+    "JAVA001",
+    "CSHARP001"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "the fix spans more than 5 source files"
+  },
+  {
+   "advisory": "GHSA-jxpj-9j24-w337",
+   "class": "missing-auth",
+   "ecosystem": "maven",
+   "repo": "apolloconfig/apollo",
+   "commit": "33318b0f951870afb534f75d39e2a9328a1c2024",
+   "fix": "362735ded4f13b62f6ab9df135d7096066e8e291",
+   "file": "apollo-portal/src/main/java/com/ctrip/framework/apollo/portal/controller/ReleaseController.java",
+   "lines": [
+    138,
+    138
+   ],
+   "rules": [
+    "AUTH001",
+    "AUTH002",
+    "AUTH003",
+    "AUTH017",
+    "JAVA001",
+    "CSHARP001"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-4qv2-g5vp-wjjw",
+   "class": "missing-auth",
+   "ecosystem": "composer",
+   "repo": "silverstripe/silverstripe-framework",
+   "commit": "3ac8440a3accc04e5dbca1a41513d628920e58c2",
+   "fix": "8b6e9c4514cbe37feeaf9ddddf796a3109448187",
+   "file": "src/Forms/GridField/GridFieldDetailForm_ItemRequest.php",
+   "lines": [
+    828,
+    834
+   ],
+   "rules": [
+    "AUTH001",
+    "AUTH002",
+    "AUTH003",
+    "AUTH017",
+    "JAVA001",
+    "CSHARP001"
+   ],
+   "split": "heldout",
+   "scope": "out",
+   "why_out": "the file defines no route vibeaudit discovers (library or middleware code)"
+  },
+  {
+   "advisory": "GHSA-vp5q-ff62-jwqv",
+   "class": "missing-auth",
+   "ecosystem": "rust",
+   "repo": "Eugeny/russh",
+   "commit": "71099170756875f405d04dfc385c367c8a976cb4",
+   "fix": "3e04597dc54e36bfc85c21996f7d8d9d224e9826",
+   "file": "russh/src/auth.rs",
+   "lines": [
+    15,
+    184
+   ],
+   "rules": [
+    "AUTH001",
+    "AUTH002",
+    "AUTH003",
+    "AUTH017",
+    "JAVA001",
+    "CSHARP001"
+   ],
+   "split": "heldout",
+   "scope": "out",
+   "why_out": "the file defines no route vibeaudit discovers (library or middleware code)"
+  },
+  {
+   "advisory": "GHSA-227r-jm2g-7cp4",
+   "class": "missing-auth",
+   "ecosystem": "nuget",
+   "repo": "SteeltoeOSS/Steeltoe",
+   "commit": "e50cd31a429b191841120f0d38fa9dda8f751b0a",
+   "fix": "b39defa4db5f44f8696c456866b3a5b900d8d96b",
+   "file": "src/Management/src/Abstractions/Configuration/EndpointOptions.cs",
+   "lines": [
+    31,
+    31
+   ],
+   "rules": [
+    "AUTH001",
+    "AUTH002",
+    "AUTH003",
+    "AUTH017",
+    "JAVA001",
+    "CSHARP001"
+   ],
+   "split": "heldout",
+   "scope": "out",
+   "why_out": "the file defines no route vibeaudit discovers (library or middleware code)"
+  },
+  {
+   "advisory": "GHSA-h5m9-42h9-vcq6",
+   "class": "missing-auth",
+   "ecosystem": "rubygems",
+   "repo": "doorkeeper-gem/doorkeeper",
+   "commit": "c3c54a2a7f3c42580e67cc063e9baa52e95c86ac",
+   "fix": "ecc1599ed762a9002c3e04729113eff0d562f4b4",
+   "file": "app/controllers/doorkeeper/tokens_controller.rb",
+   "lines": [
+    90,
+    105
+   ],
+   "rules": [
+    "AUTH001",
+    "AUTH002",
+    "AUTH003",
+    "AUTH017",
+    "JAVA001",
+    "CSHARP001"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-8fq9-273g-6mrg",
+   "class": "missing-auth",
+   "ecosystem": "rubygems",
+   "repo": "avo-hq/avo",
+   "commit": "336ffc967fcbd965ffbdc37f4bb833f625ea3d8e",
+   "fix": "995928e586fd1788dd496bd51c4dbe4a79cb2b9c",
+   "file": "app/controllers/avo/associations_controller.rb",
+   "lines": [
+    17,
+    17
+   ],
+   "rules": [
+    "AUTH001",
+    "AUTH002",
+    "AUTH003",
+    "AUTH017",
+    "JAVA001",
+    "CSHARP001"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-vvff-6wrr-4g7q",
+   "class": "missing-auth",
+   "ecosystem": "rubygems",
+   "repo": "theforeman/foreman_ansible",
+   "commit": "c92d821d6b4a873c2331671b13536ed03f07f08f",
+   "fix": "a5e0827bc3ec6c8ab82f968907857a15646305d5",
+   "file": "app/lib/actions/foreman_ansible/helpers/host_common.rb",
+   "lines": [
+    23,
+    26
+   ],
+   "rules": [
+    "AUTH001",
+    "AUTH002",
+    "AUTH003",
+    "AUTH017",
+    "JAVA001",
+    "CSHARP001"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "the fix spans more than 5 source files"
+  },
+  {
+   "advisory": "GHSA-j7vx-8mqj-cqp9",
+   "class": "missing-auth",
+   "ecosystem": "rubygems",
+   "repo": "doorkeeper-gem/doorkeeper",
+   "commit": "ca3b6441f039a8e4cdb5de5c2b3dd85822bc25bf",
+   "fix": "25d038022c2fcad45af5b73f9d003cf38ff491f6",
+   "file": "app/controllers/doorkeeper/applications_controller.rb",
+   "lines": [
+    22,
+    61
+   ],
+   "rules": [
+    "AUTH001",
+    "AUTH002",
+    "AUTH003",
+    "AUTH017",
+    "JAVA001",
+    "CSHARP001"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-f4vv-55c2-5789",
+   "class": "secrets",
+   "ecosystem": "pip",
+   "repo": "HKUDS/LightRAG",
+   "commit": "4e1f95269b32cd803cb96e0acc24d922aa6b6932",
+   "fix": "f7819aa3a49a9d8d92eed8251d82d6ebcafa8cba",
+   "file": "lightrag/api/utils_api.py",
+   "lines": [
+    214,
+    225
+   ],
+   "rules": [
+    "SEC001",
+    "SEC002",
+    "SEC003",
+    "SEC004",
+    "SEC005",
+    "SEC011"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "no committed literal on the fixed lines"
+  },
+  {
+   "advisory": "GHSA-h3h8-3v2v-rg7m",
+   "class": "secrets",
+   "ecosystem": "pip",
+   "repo": "gradio-app/gradio",
+   "commit": "b01c95a58be8e18bb4ddef7f2ee238a7774e5be9",
+   "fix": "dfee0da06d0aa94b3c2684131e7898d5d5c1911e",
+   "file": "gradio/oauth.py",
+   "lines": [
+    223,
+    326
+   ],
+   "rules": [
+    "SEC001",
+    "SEC002",
+    "SEC003",
+    "SEC004",
+    "SEC005",
+    "SEC011"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-g2jx-37x6-6438",
+   "class": "secrets",
+   "ecosystem": "pip",
+   "repo": "ArcadeAI/arcade-mcp",
+   "commit": "a921b76ce963cb11eba5cf6415566b09692d9c95",
+   "fix": "44660d18ceb220600401303df860a31ca766c817",
+   "file": "libs/arcade-cli/arcade_cli/deploy.py",
+   "lines": [
+    385,
+    385
+   ],
+   "rules": [
+    "SEC001",
+    "SEC002",
+    "SEC003",
+    "SEC004",
+    "SEC005",
+    "SEC011"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-4m32-cjv7-f425",
+   "class": "secrets",
+   "ecosystem": "pip",
+   "repo": "AstrBotDevs/AstrBot",
+   "commit": "289214e85c78408aa36bad8e071766b6b56175bb",
+   "fix": "d03e9fb90a0921a1bd10cf480bdacc9aaa246472",
+   "file": "astrbot/core/__init__.py",
+   "lines": [
+    16,
+    34
+   ],
+   "rules": [
+    "SEC001",
+    "SEC002",
+    "SEC003",
+    "SEC004",
+    "SEC005",
+    "SEC011"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-v9q6-fm48-rx74",
+   "class": "secrets",
+   "ecosystem": "pip",
+   "repo": "man-group/dtale",
+   "commit": "81578f4a256eef0bc9bde8bf1ca703d1e8d325de",
+   "fix": "32bd6fb4a63de779ff1e51823a456865ea3cbd13",
+   "file": "dtale/app.py",
+   "lines": [
+    6,
+    323
+   ],
+   "rules": [
+    "SEC001",
+    "SEC002",
+    "SEC003",
+    "SEC004",
+    "SEC005",
+    "SEC011"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-32r3-57hp-cgfw",
+   "class": "secrets",
+   "ecosystem": "npm",
+   "repo": "evershopcommerce/evershop",
+   "commit": "b09f2f4d1a0eb3017344cddc997078444a53af46",
+   "fix": "96d9ca3e024e0b63c538911e4a914df3d287cc9f",
+   "file": "extensions/productComment/api/productComment/[context]bodyParser[auth].js",
+   "lines": [
+    1,
+    5
+   ],
+   "rules": [
+    "SEC001",
+    "SEC002",
+    "SEC003",
+    "SEC004",
+    "SEC005",
+    "SEC011"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "the fix spans more than 5 source files"
+  },
+  {
+   "advisory": "GHSA-953h-535j-jg2v",
+   "class": "secrets",
+   "ecosystem": "go",
+   "repo": "theagentrouter/agent-router",
+   "commit": "780fcf46b2a39a42b2c4cf67c987b318a86b77b6",
+   "fix": "0d1e73037076d72251342d0ea578a36ffb7002c7",
+   "file": "cmd/extproc/mainlib/main.go",
+   "lines": [
+    39,
+    357
+   ],
+   "rules": [
+    "SEC001",
+    "SEC002",
+    "SEC003",
+    "SEC004",
+    "SEC005",
+    "SEC011"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-6xp5-7rcx-xfgx",
+   "class": "secrets",
+   "ecosystem": "go",
+   "repo": "sipcapture/homer",
+   "commit": "a7d027dc684b210b62285c49f555ac88d64f35f0",
+   "fix": "b2e942031ff8cd7435a244ebef306ee97d16b809",
+   "file": "src/cli/wizard_cmd.go",
+   "lines": [
+    206,
+    734
+   ],
+   "rules": [
+    "SEC001",
+    "SEC002",
+    "SEC003",
+    "SEC004",
+    "SEC005",
+    "SEC011"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-w72w-9qmj-c9qm",
+   "class": "secrets",
+   "ecosystem": "go",
+   "repo": "anycable/anycable",
+   "commit": "d73d4c8eecbaad344a7826b8b58617d33a412cb6",
+   "fix": "201c67e99e463ed63bd6b345562f4c458385fcee",
+   "file": "cli/cli.go",
+   "lines": [
+    321,
+    324
+   ],
+   "rules": [
+    "SEC001",
+    "SEC002",
+    "SEC003",
+    "SEC004",
+    "SEC005",
+    "SEC011"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "no committed literal on the fixed lines"
+  },
+  {
+   "advisory": "GHSA-33f4-mjch-7fpr",
+   "class": "secrets",
+   "ecosystem": "go",
+   "repo": "ossf/allstar",
+   "commit": "268a2493b09f131c2f892af3f9eccccde2db6d2d",
+   "fix": "e004ecb540d63ca6f5b1689b41af6c0040a82c73",
+   "file": "cmd/reviewbot/main.go",
+   "lines": [
+    1,
+    140
+   ],
+   "rules": [
+    "SEC001",
+    "SEC002",
+    "SEC003",
+    "SEC004",
+    "SEC005",
+    "SEC011"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-hpc8-7wpm-889w",
+   "class": "secrets",
+   "ecosystem": "go",
+   "repo": "dragonflyoss/Dragonfly2",
+   "commit": "d1d8eb4a3976ff891a2059e2fa9208256d465086",
+   "fix": "e9da69dc4048bf2a18a671be94616d85e3429433",
+   "file": "manager/config/config.go",
+   "lines": [
+    39,
+    393
+   ],
+   "rules": [
+    "SEC001",
+    "SEC002",
+    "SEC003",
+    "SEC004",
+    "SEC005",
+    "SEC011"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-vjhf-8vqx-vqpq",
+   "class": "secrets",
+   "ecosystem": "go",
+   "repo": "KubeOperator/KubePi",
+   "commit": "2fb4f6961217204561abb34952e9f05d9ca02476",
+   "fix": "3be58b8df5bc05d2343c30371dd5fcf6a9fbbf8b",
+   "file": "internal/api/v1/session/session.go",
+   "lines": [
+    35,
+    54
+   ],
+   "rules": [
+    "SEC001",
+    "SEC002",
+    "SEC003",
+    "SEC004",
+    "SEC005",
+    "SEC011"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-prv5-c2px-j9q3",
+   "class": "secrets",
+   "ecosystem": "maven",
+   "repo": "apache/streampark",
+   "commit": "81b8161be29dde828febe10ff4b050dde5448c0b",
+   "fix": "39034db0c806168afa82e58e4f376e1e3c3b73e4",
+   "file": "streampark-console/streampark-console-service/src/main/java/org/apache/streampark/console/base/util/EncryptUtils.java",
+   "lines": [
+    1,
+    73
+   ],
+   "rules": [
+    "SEC001",
+    "SEC002",
+    "SEC003",
+    "SEC004",
+    "SEC005",
+    "SEC011"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-jqg8-m35q-jh7j",
+   "class": "secrets",
+   "ecosystem": "maven",
+   "repo": "apache/syncope",
+   "commit": "04f14d2d7335f9597ad1249ac0135ac75975e40b",
+   "fix": "297498ebfc86e4996f5e3e4ef7b7f8b1cd82004b",
+   "file": "core/idrepo/logic/src/main/java/org/apache/syncope/core/logic/AccessTokenLogic.java",
+   "lines": [
+    66,
+    68
+   ],
+   "rules": [
+    "SEC001",
+    "SEC002",
+    "SEC003",
+    "SEC004",
+    "SEC005",
+    "SEC011"
+   ],
+   "split": "tune",
+   "scope": "out",
+   "why_out": "the fix spans more than 5 source files"
+  },
+  {
+   "advisory": "GHSA-jwcg-wv5x-vg3g",
+   "class": "secrets",
+   "ecosystem": "maven",
+   "repo": "apache/submarine",
+   "commit": "4e68894a1c54d763ac2697ea1ac993793da4107c",
+   "fix": "7a1d551798c6785fc68fe028fc46f74c3ee6976d",
+   "file": "submarine-commons/commons-utils/src/main/java/org/apache/submarine/commons/utils/SubmarineConfVars.java",
+   "lines": [
+    25,
+    96
+   ],
+   "rules": [
+    "SEC001",
+    "SEC002",
+    "SEC003",
+    "SEC004",
+    "SEC005",
+    "SEC011"
+   ],
+   "split": "heldout",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-3j2f-58rq-g6p7",
+   "class": "secrets",
+   "ecosystem": "maven",
+   "repo": "dromara/sureness",
+   "commit": "4e54fb20a927accca23f70aa5b547c00bc7843bf",
+   "fix": "12987a72cbf1eabbca1e308ed1fe9445958aeca7",
+   "file": "core/src/main/java/com/usthe/sureness/util/JsonWebTokenUtil.java",
+   "lines": [
+    2,
+    297
+   ],
+   "rules": [
+    "SEC001",
+    "SEC002",
+    "SEC003",
+    "SEC004",
+    "SEC005",
+    "SEC011"
+   ],
+   "split": "tune",
+   "scope": "in",
+   "why_out": ""
+  },
+  {
+   "advisory": "GHSA-347f-rxg8-qgrv",
+   "class": "secrets",
+   "ecosystem": "composer",
+   "repo": "alextselegidis/easyappointments",
+   "commit": "963413eb8849568f5b75589740878cac3d0d03cf",
+   "fix": "2731d2f17c5140c562426b857e9f5d63da5c4593",
+   "file": "application/controllers/Console.php",
+   "lines": [
+    58,
+    60
+   ],
+   "rules": [
+    "SEC001",
+    "SEC002",
+    "SEC003",
+    "SEC004",
+    "SEC005",
+    "SEC011"
+   ],
+   "split": "heldout",
+   "scope": "out",
+   "why_out": "no committed literal on the fixed lines"
+  }
+ ]
+}

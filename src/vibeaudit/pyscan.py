@@ -1076,6 +1076,9 @@ class PyScanner:
                 and name not in self._own_functions():  # not the module's own eval()
             if not self.sink(call, t0, "BE003", f"{name}()", "critical", True):
                 self.add("BE003", call, f"{name}() on a dynamic string.", "medium")
+        # SymPy parses with eval: sympify() / parse_expr() on request data runs code
+        elif name in ("sympify", "parse_expr") and arg0 is not None and t0:
+            self.sink(call, t0, "BE003", f"{name}() (it evaluates the string)", "critical", True)
         # files
         elif (isinstance(call.func, ast.Name) and name == "open") or d in ("os.remove", "os.unlink", "shutil.rmtree", "os.rmdir") or name in ("send_file", "FileResponse"):
             if arg0 is not None:
