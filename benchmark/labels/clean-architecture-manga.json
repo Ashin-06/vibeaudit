@@ -1,0 +1,150 @@
+{
+ "repo": "clean-architecture-manga",
+ "commit": "68b1d5869dd9a7730c58eb0daf5051309eaf09a4",
+ "findings": [
+  {
+   "rule": "CFG001",
+   "file": "accounts-api-seed/Dockerfile",
+   "line": 1,
+   "fingerprint": "25f10f4a4de1ebba1fd68ed9504e7475",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "CFG001",
+   "file": "accounts-api/src/WebApi/Dockerfile",
+   "line": 22,
+   "fingerprint": "99e2f418eb1b50314d729a2aa4ad97f7",
+   "verdict": "tp",
+   "reason": "The final image has no USER instruction and runs as root."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "accounts-api/src/WebApi/UseCases/V1/Accounts/CloseAccount/AccountsController.cs",
+   "line": 61,
+   "fingerprint": "49f5bfcd09cbc4f371a4b01ede4d877e",
+   "verdict": "fp",
+   "reason": "The use case loads the account with Find(accountId, externalUserId): ownership is checked."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "accounts-api/src/WebApi/UseCases/V1/Transactions/Deposit/TransactionsController.cs",
+   "line": 60,
+   "fingerprint": "3bb6e151f6b3ced6b636b627760f5f2b",
+   "verdict": "tp",
+   "reason": "Deposit loads the account by id alone; any signed-in user can change any account."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "accounts-api/src/WebApi/UseCases/V1/Transactions/Transfer/TransactionsController.cs",
+   "line": 64,
+   "fingerprint": "5c099d83d63ec8effa517d7a918e4db0",
+   "verdict": "tp",
+   "reason": "Transfer loads the origin account by id alone; money moves out of any account."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "accounts-api/src/WebApi/UseCases/V1/Transactions/Withdraw/TransactionsController.cs",
+   "line": 69,
+   "fingerprint": "248ce7a0a71cde2411ccc5a7f94c78f5",
+   "verdict": "fp",
+   "reason": "The use case loads the account with Find(accountId, externalUserId): ownership is checked."
+  },
+  {
+   "rule": "CFG001",
+   "file": "identity-server/Dockerfile",
+   "line": 19,
+   "fingerprint": "e91c39d01da4fb84326210ca298e8675",
+   "verdict": "tp",
+   "reason": "The final image has no USER instruction and runs as root."
+  },
+  {
+   "rule": "BE008",
+   "file": "identity-server/Quickstart/Consent/ConsentController.cs",
+   "line": 86,
+   "fingerprint": "426fd815f4cdee8d5508fc019fe4674a",
+   "verdict": "fp",
+   "reason": "IdentityServer validates the redirect URI against the client configuration before consent."
+  },
+  {
+   "rule": "SEC003",
+   "file": "identity-server/Startup.cs",
+   "line": 65,
+   "fingerprint": "ef838b092608df1ea96b0aee88fb9ce5",
+   "verdict": "tp",
+   "reason": "A Google OAuth client secret is committed in source."
+  },
+  {
+   "rule": "UI016",
+   "file": "identity-server/wwwroot/lib/bootstrap/scss/_reboot.scss",
+   "line": 66,
+   "fingerprint": "6c8433fc21069d71d0728a34b4b9f763",
+   "verdict": "fp",
+   "reason": "Vendored Bootstrap source; the outline is removed only for :focus:not(:focus-visible)."
+  },
+  {
+   "rule": "CFG001",
+   "file": "nginx/Dockerfile",
+   "line": 1,
+   "fingerprint": "04e8ec58292742e4ed9580294f96bae2",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "CFG002",
+   "file": "nginx/Dockerfile",
+   "line": 1,
+   "fingerprint": "9a1f95f2072cf359c623bdf3646355b9",
+   "verdict": "tp",
+   "reason": "Base image uses the latest tag."
+  },
+  {
+   "rule": "CFG001",
+   "file": "wallet-spa/Dockerfile",
+   "line": 1,
+   "fingerprint": "43f2833a9462f7819ecdd23622d0a6d6",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "CFG009",
+   "file": "wallet-spa/Dockerfile",
+   "line": 5,
+   "fingerprint": "5e195e23fd7a4536ff3bbcf17699801a",
+   "verdict": "fp",
+   "reason": "The copied .env.development holds only public REACT_APP_ URLs that are built into the bundle anyway."
+  },
+  {
+   "rule": "DEP005",
+   "file": "wallet-spa/package.json",
+   "line": 1,
+   "fingerprint": "ef3a2c4ec687ce2867de4d441f914c83",
+   "verdict": "tp",
+   "reason": "package.json has dependencies and no lockfile."
+  },
+  {
+   "rule": "QA007",
+   "file": "wallet-spa/src/components/Header.jsx",
+   "line": 2,
+   "fingerprint": "1a9e973655fc98267244968f95478c9f",
+   "verdict": "tp",
+   "reason": "classnames is imported but not declared; it works only through transitive installs."
+  },
+  {
+   "rule": "QA007",
+   "file": "wallet-spa/src/components/Header.jsx",
+   "line": 7,
+   "fingerprint": "206b230795bfed25bd99fd2339deb894",
+   "verdict": "tp",
+   "reason": "prop-types is imported but not declared; it works only through transitive installs."
+  },
+  {
+   "rule": "QA007",
+   "file": "wallet-spa/src/pages/Account.jsx",
+   "line": 3,
+   "fingerprint": "9c5bce2069782f98792cc67cecaf788b",
+   "verdict": "tp",
+   "reason": "react-router is imported but only react-router-dom is declared."
+  }
+ ]
+}

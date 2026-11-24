@@ -68,6 +68,28 @@ from 94.1% to 76.8%. Their causes are fixed separately, but because the causes w
 those repositories are not re-scored to graduate them: each rule leaves preview only when a fresh held-out batch,
 chosen and pinned before it is scanned, measures it at 90% or more on at least 5 findings.
 
+### Go, Java/Kotlin, C#, Rust and PHP
+
+Findings in these languages (other than SEC and DEP rules) are preview until a language, or a rule within it,
+measures at 90% or more on at least 5 held-out findings. A fresh batch of 10 repositories, two per language, was
+chosen and pinned before it was scanned (go-rest-api, gin-boilerplate, kotlin-spring-realworld,
+spring-security-polls, VerticalSliceArchitecture, clean-architecture-manga, Pentaract, rustapi, filament-demo,
+LinkAce). Held-out precision, excluding SEC and DEP rules and the four rules above on the repositories that showed
+their causes:
+
+| Language | Fresh batch | All held-out | Main causes |
+| --- | --- | --- | --- |
+| Go | 2/2 | 12/32 (37.5%) | AUTH002 on chi routes mounted inside an authenticated group; BE001 on prepared-statement arguments |
+| Java/Kotlin | 2/6 (33.3%) | 7/16 (43.8%) | JAVA001 and AUTH001 miss a project's own auth annotation (`@ApiKeySecured`) and statically imported HTTP methods |
+| C# | 3/6 (50.0%) | 3/8 (37.5%) | AUTH003 when the owner check is in the use case (`Find(accountId, userId)`), not the controller |
+| Rust | 3/5 (60.0%) | 22/36 (61.1%) | AUTH001 on public sign-up routes and handlers resolved by path to another function; DATA001 |
+| PHP | 3/24 (12.5%) | 66/106 (62.3%) | FE001 on `{!! !!}` output that the model already escapes (LinkAce: 0/19) |
+
+No language clears the bar, so all five stay preview. One rule does: **PHP BE001 (SQL injection) measures 31/33
+(93.9%) on held-out repositories and leaves preview** for PHP; it already gated as a severe rule. PHP DATA001
+measures 6/6 but the rule itself is preview everywhere, so it does not change. Go and Java/Kotlin AUTH010 measure
+4/4 and 3/3, below 5 findings each.
+
 ## What the benchmark guards
 
 CI runs `python tools/benchmark.py check` on every push. It fails when, compared with

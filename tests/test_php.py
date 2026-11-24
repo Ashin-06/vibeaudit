@@ -195,3 +195,11 @@ def test_pathological_input_is_fast():
         v = php_views(src)
         assert len(v.bare) == len(src)
         assert time.perf_counter() - t < 2
+
+
+def test_php_sql_injection_left_preview_and_the_rest_stays(tmp_path):
+    # PHP BE001 cleared 90% on held-out repositories (31/33); other PHP findings stay preview (STABILITY.md)
+    root = write(tmp_path, {"vulnerabilities/sqli/low.php": PLAIN})
+    res = scan(str(root), Options(offline=True, external="none", min_severity="low", include_preview=True))
+    preview = {f.rule_id: f.preview for f in res.findings if f.file.endswith("low.php")}
+    assert preview["BE001"] is False and preview["BE006"] is True and preview["FE001"] is True

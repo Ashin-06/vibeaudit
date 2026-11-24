@@ -1,0 +1,30 @@
+{
+ "repo": "rustapi",
+ "commit": "bf69ab4e3e11d51ecce6c35ca5be7ce3ea462cc3",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/test.yml",
+   "line": 31,
+   "fingerprint": "9323eea2dff6df4d9993313acf8d91b2",
+   "verdict": "tp",
+   "reason": "Third-party action used by branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/test.yml",
+   "line": 35,
+   "fingerprint": "1af04f1273405264c3281ada7dc1376e",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "src/routes/user.rs",
+   "line": 20,
+   "fingerprint": "b9de87b9f3b3ef05f1acd34c86a50bb7",
+   "verdict": "fp",
+   "reason": "Public sign-up route (create_user registers an account)."
+  }
+ ]
+}

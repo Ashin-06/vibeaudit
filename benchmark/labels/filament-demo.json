@@ -1,0 +1,22 @@
+{
+ "repo": "filament-demo",
+ "commit": "b2bd9ab3b0def3313799398f7fe7f94b9f210885",
+ "findings": [
+  {
+   "rule": "SEC003",
+   "file": "app/Filament/Pages/Auth/Login.php",
+   "line": 13,
+   "fingerprint": "65d7a24674eb5ae182f6d6ec79551425",
+   "verdict": "fp",
+   "reason": "The published demo login, prefilled on the public demo site."
+  },
+  {
+   "rule": "BE006",
+   "file": "server.php",
+   "line": 15,
+   "fingerprint": "c11d7f4fc9c0152922940aa7966ffc27",
+   "verdict": "fp",
+   "reason": "Laravel's development-server router server.php."
+  }
+ ]
+}

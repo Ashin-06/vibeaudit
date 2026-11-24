@@ -73,6 +73,8 @@ GO_METHOD_ROUTE = re.compile(
 
 
 POLY_SEVERE = frozenset({"BE001", "BE002", "FE001"})  # injection and XSS: gate even in preview
+# (language, rule) pairs that cleared 90% on at least 5 held-out findings (STABILITY.md): no longer preview
+POLY_STABLE = frozenset({("php", "BE001")})
 
 
 def _lang_of(rel: str) -> Optional[str]:

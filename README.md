@@ -707,7 +707,7 @@ How it reads code:
   Rust (Actix, Axum) and PHP (Laravel, Symfony) get route/auth discovery, SQL and command injection (BE001, BE002),
   template XSS (FE001), loop N+1 queries (DATA001) and HTTP client timeout checks (REL001). Go, Java/Kotlin,
   C#, Rust and PHP also follow request data into file paths, outbound URLs and redirects and have a labelled corpus;
-  findings in these languages stay preview until measured on held-out repositories (injection and XSS still gate).
+  findings in these languages stay preview until measured on held-out repositories (injection and XSS still gate; PHP SQL injection, BE001, has left preview, see STABILITY.md).
 - `vibeaudit test-exploit FINDING --url http://127.0.0.1:8000 [--send]` builds (and with `--send`, runs) a single
   non-destructive localhost proof-of-concept request without following redirects; `vibeaudit.runtime` offers
   double-gated staging-only observability middleware for FastAPI and Express (`VIBEAUDIT_RUNTIME=1`).

@@ -1,0 +1,30 @@
+{
+ "repo": "gin-boilerplate",
+ "commit": "d2c2a413df2a6ba9c9f97029278b8cc52231d7fa",
+ "findings": [
+  {
+   "rule": "DATA012",
+   "file": "db/database.sql",
+   "line": 224,
+   "fingerprint": "600485e69296539392274af3495e9aed",
+   "verdict": "tp",
+   "reason": "No index on article.user_id in the Postgres schema."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "main.go",
+   "line": 76,
+   "fingerprint": "92d1d7b9248c71e4de6d624b792d0eab",
+   "verdict": "tp",
+   "reason": "Login endpoint with no rate limiting anywhere in the project."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "main.go",
+   "line": 83,
+   "fingerprint": "9a99a5cfb6f75f4523c784f95d61c9ce",
+   "verdict": "tp",
+   "reason": "Token refresh endpoint with no rate limiting anywhere in the project."
+  }
+ ]
+}
