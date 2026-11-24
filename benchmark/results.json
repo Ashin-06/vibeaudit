@@ -335,8 +335,8 @@
    "fixed_fp": 0
   },
   "dvga": {
-   "findings": 9,
-   "labelled": 9,
+   "findings": 11,
+   "labelled": 11,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 17
@@ -971,12 +971,12 @@
   "AUTH001": {
    "title": "State-changing endpoint without authentication",
    "preview": false,
-   "tp": 71,
+   "tp": 73,
    "fp": 18,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.7978,
-   "precision_pessimistic": 0.7978,
+   "precision": 0.8022,
+   "precision_pessimistic": 0.8022,
    "seeded_expected": 8,
    "seeded_found": 8,
    "seeded_recall": 1.0,
@@ -1018,6 +1018,11 @@
     ],
     "dvcsharp-api": [
      1,
+     0,
+     0
+    ],
+    "dvga": [
+     2,
      0,
      0
     ],
