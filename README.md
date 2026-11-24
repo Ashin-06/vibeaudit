@@ -23,7 +23,7 @@ nothing, inaccessible forms and frontend calls to API routes that do not exist.
 - Works offline with no API key. The network is used only for package-registry and vulnerability
   lookups (`--offline` turns that off); an LLM is used only if you ask for it.
 - Pure Python, no dependencies on 3.11+ (`tomli` on 3.9 and 3.10). Linux, macOS and Windows.
-- 172 rules: 171 rules in 12 categories plus the optional LLM review, mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
+- 173 rules: 172 rules in 12 categories plus the optional LLM review, mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
 - Terminal output plus JSON, SARIF 2.1.0 (GitHub code scanning), Markdown, HTML, an SVG badge and a fix
   brief you can paste into an AI assistant.
 - Fits into CI (GitHub Action, `--diff`), pre-commit (`--staged`) and coding agents (an MCP server).
@@ -42,7 +42,7 @@ flowchart LR
     Discovery --> JSLex["Offset-Preserving JS/TS Lexer"]
     Discovery --> CfgScan["Config, RLS, Supply-Chain & OSV Scanner"]
     Discovery --> ExtTools["Optional Tool Merger (gitleaks, bandit, semgrep, osv-scanner)"]
-    PyAST & JSLex & CfgScan & ExtTools --> Rules["172 Rules Across 12 Domains (CWE & OWASP LLM Mapped)"]
+    PyAST & JSLex & CfgScan & ExtTools --> Rules["173 Rules Across 12 Domains (CWE & OWASP LLM Mapped)"]
     Rules --> Dedup["Deduplication, Domain Scoring & Fix Generator"]
     Dedup --> Out["Outputs: Terminal, SARIF 2.1.0, HTML, Studio UI, LSP & MCP Server"]
 ```
@@ -108,7 +108,7 @@ That project is one of the deliberately vulnerable sample apps in `tests/fixture
 | Frontend-backend contracts (API) | frontend calls to API paths no route handles, and calls with a method the route does not accept |
 | Go, Java/Kotlin and C# (GO, JAVA, CSHARP), all in preview | goroutines started by a handler that never stop (GO001), response bodies never closed (GO002), maps written concurrently without a lock (GO003), SQL built with formatting (GO004); Spring controllers with no security configuration (JAVA001), exposed Actuator endpoints (JAVA002), a security chain that permits every request (JAVA003), polymorphic deserialization without an allow-list (JAVA004); ASP.NET Core with no authorization anywhere (CSHARP001), deserialization that lets the payload pick the type (CSHARP002), the developer error page outside Development (CSHARP003) |
 
-76 of 172 rules are preview; `vibeaudit rules` lists them. Preview findings are reported but do not
+77 of 173 rules are preview; `vibeaudit rules` lists them. Preview findings are reported but do not
 fail a build, with one exception: the severe classes (command injection, code execution, unsafe
 deserialization, open redirects and XSS) still gate while in preview, so a high-impact bug is never let through
 because its rule is new. Findings of any rule in Go, Java/Kotlin, C#, Rust and PHP code are preview; there, SQL
@@ -163,6 +163,7 @@ your `PATH`, their findings are merged into the report and de-duplicated.
 | `vibeaudit review [PATH] --diff REV` | Pull request review comments, with suggested fixes, for the findings on changed lines; `--post` sends them to GitHub, `--max-comments N` caps them (see [Pull request review](#pull-request-review)). |
 | `vibeaudit fix [PATH]` | Print a diff that fixes the findings with one obvious repair; `--apply` writes it (see [Automatic fixes](#automatic-fixes-vibeaudit-fix)). |
 | `vibeaudit studio [PATH]` | A local web UI: routes with auth and write badges, data flows, and the score by domain, category and rule (see [Studio](#studio)). |
+| `vibeaudit probe --url http://127.0.0.1:3000` | Probe the running app on every route the source declares: auth bypass (with `--auth 'Cookie: ...'`), SQL injection (error and time-based), path traversal, reflected XSS, SSRF to a local canary, open redirect, CORS, login rate limits and stack traces. Static findings it proves are marked confirmed. Localhost only unless `--i-own-this-target`; GET/POST only, rate-limited, no redirects followed, no destructive payloads. |
 | `vibeaudit test-exploit FINDING` | Build a non-destructive proof-of-concept request for one finding; a dry run by default, and `--send` sends it once to localhost only, never following redirects. |
 | `vibeaudit explain FINDING` | Explain one finding (`FILE:LINE`, `FILE:LINE:RULE` or a fingerprint prefix): the rule, the code and the data flow that led to it (`--format json`, `--path DIR` for another project). |
 | `vibeaudit routes [PATH]` | List every HTTP entry point with method, path, location and whether it has a visible auth check, writes data or calls a paid AI API (`--format text\|json\|md`). |

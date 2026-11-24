@@ -164,7 +164,8 @@ def render_sarif(res: Result) -> str:
                 "region": {"startLine": max(1, f.line)}}}],
             "partialFingerprints": {"vibeaudit/v1": f.fingerprint},
             "properties": {"severity": f.severity, "security-severity": SECURITY_SEVERITY[f.severity],
-                           "category": f.category, "source": f.source},
+                           "category": f.category, "source": f.source,
+                           **({"confirmed": f.confirmed} if f.confirmed else {})},
         })
     doc = {
         "$schema": "https://json.schemastore.org/sarif-2.1.0.json", "version": "2.1.0",

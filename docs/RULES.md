@@ -3,9 +3,9 @@
 Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do not edit by hand.
 `vibeaudit rules` prints the same list, and `vibeaudit rules --format json` includes every field.
 
-172 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
+173 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-76 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+77 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -895,6 +895,7 @@ References: CWE-862, A01:2021
 | [CFG016](#cfg016) | medium | stable | Unencrypted database or disk storage |
 | [CFG017](#cfg017) | high | preview | Secret file or build argument in the final image |
 | [CFG018](#cfg018) | critical | preview | Pull request code run with secrets (pull_request_target) |
+| [CFG019](#cfg019) | low | preview | Security headers missing on responses |
 | [CSHARP003](#csharp003) | medium | preview | Developer error page outside Development |
 | [JAVA002](#java002) | high | preview | Spring Boot Actuator endpoints exposed |
 
@@ -1093,6 +1094,18 @@ Why it matters: A pull_request_target workflow runs with this repository's secre
 How to fix: Use the pull_request trigger for code from forks, or keep pull_request_target jobs to the base branch's code and pass untrusted data only as inputs or artifacts.
 
 References: CWE-829, A08:2021
+
+### CFG019
+
+**Security headers missing on responses** (low, preview)
+
+Preview: New with `vibeaudit probe`: a dynamic check, not yet measured on enough running apps.
+
+Why it matters: The running app answers without a Content-Security-Policy, X-Content-Type-Options or frame protection (and over HTTPS, without Strict-Transport-Security), so a browser applies none of those defences. Reported by `vibeaudit probe` once per origin.
+
+How to fix: Set the headers once for every response (helmet for Express, django-csp and SecurityMiddleware for Django, a middleware or the reverse proxy elsewhere).
+
+References: CWE-693, A05:2021
 
 ### CSHARP003
 

@@ -155,6 +155,24 @@ def build_parser() -> argparse.ArgumentParser:
     tx.add_argument("--format", choices=["text", "json"], default="text")
     tx.add_argument("--config", metavar="FILE", help="read settings from this TOML file, as for scan")
 
+    pr = sub.add_parser("probe", help="run non-destructive dynamic checks against your running app (localhost by default)",
+                        description="Enumerate the app's routes from the source, then send rate-limited GET/POST probes to "
+                                    "the running app: auth bypass, SQL injection (error and time-based), path traversal, "
+                                    "reflected XSS, SSRF (local canary), open redirect, CORS, login rate limits and stack "
+                                    "traces. Targets localhost / 127.0.0.1 / ::1 only unless --i-own-this-target is given; "
+                                    "never follows redirects and sends no destructive payloads.")
+    pr.add_argument("--url", required=True, help="base URL of the running app, e.g. http://127.0.0.1:3000")
+    pr.add_argument("--path", default=".", help="project directory whose routes to probe (default: current directory)")
+    pr.add_argument("--auth", action="append", default=[], metavar="'HEADER: VALUE'",
+                    help="credentials of a signed-in user (e.g. 'Cookie: session=...'); repeat for several headers")
+    pr.add_argument("--rate", type=float, default=10.0, help="requests per second (default 10)")
+    pr.add_argument("--max-requests", type=int, default=2000, help="stop after this many requests (default 2000)")
+    pr.add_argument("--i-own-this-target", action="store_true", dest="own",
+                    help="allow a host other than localhost; only for systems you own or may test")
+    pr.add_argument("--format", choices=["text", "json", "sarif", "html"], default="text")
+    pr.add_argument("-o", "--output", default="-", help="write the report here (default: stdout)")
+    pr.add_argument("--config", metavar="FILE", help="read settings from this TOML file, as for scan")
+
     r = sub.add_parser("rules", help="list every rule")
     r.add_argument("--format", choices=["text", "json", "md"], default="text")
 
@@ -328,6 +346,54 @@ def cmd_rules(fmt: str) -> int:
         for r in rules:
             print(f"{r.id:8} {r.severity:9} {r.category:13} {r.title}{' (preview)' if r.preview else ''}")
     return 0
+
+
+def cmd_probe(a: argparse.Namespace) -> int:
+    from . import probe, report
+    from .config import project_options
+    from .exploit import ExploitError
+    from .report import Result
+    from .rules import RULES
+    from .scanner import scan
+
+    if not os.path.isdir(a.path):
+        print(f"vibeaudit: not a directory: {a.path}", file=sys.stderr)
+        return 2
+    try:
+        opts = project_options(a.path, a.config, offline=True, external="none", min_severity="info", include_preview=True)
+        target = probe.Target(a.url, a.own, a.rate, a.max_requests)
+        auth = probe.parse_auth(a.auth)
+    except (ConfigError, ExploitError) as e:
+        print(f"vibeaudit: {e}", file=sys.stderr)
+        return 2
+    res = scan(a.path, opts)
+    try:
+        found = probe.Prober(target, res.routes, auth).run()
+    except ExploitError as e:
+        print(f"vibeaudit: {e}", file=sys.stderr)
+        return 2
+    for f in found:
+        rule = RULES.get(f.rule_id)
+        if rule is not None:
+            f.title, f.category, f.severity = rule.title, rule.category, f.severity or rule.severity
+            f.why, f.fix, f.cwe, f.owasp, f.preview = rule.why, rule.fix, rule.cwe, rule.owasp, rule.preview
+        f.compute_fingerprint()
+    confirmed = probe.merge(res.findings, found)
+    shown = [f for f in confirmed if f.confirmed]
+    meta = dict(res.meta, probe={"url": a.url, "requests": target.sent, "routes": len(res.routes), "confirmed": len(shown)})
+    out = Result(res.root, shown, meta, res.routes)
+    if a.format == "text":
+        lines = [f"vibeaudit probe: {target.sent} requests to {a.url}, {len(res.routes)} routes, {len(shown)} confirmed"]
+        lines += [f"  {f.rule_id} {f.file}:{f.line}  {f.confirmed}" for f in shown]
+        text = "\n".join(lines) + "\n"
+        if a.output == "-":
+            sys.stdout.write(text)
+        else:
+            with open(a.output, "w", encoding="utf-8", newline="\n") as fh:
+                fh.write(text)
+    else:
+        report.write_report(out, a.format, a.output)
+    return 1 if shown else 0
 
 
 def cmd_routes(a: argparse.Namespace) -> int:
@@ -577,6 +643,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         return cmd_rules(a.format)
     if a.command == "explain":
         return cmd_explain(a)
+    if a.command == "probe":
+        return cmd_probe(a)
     if a.command == "test-exploit":
         return cmd_test_exploit(a)
     if a.command == "studio":

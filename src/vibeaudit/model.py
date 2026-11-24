@@ -42,6 +42,7 @@ class Finding:
     gates_in_preview: bool = False  # ...except severe preview rules, which count unless --no-gate-severe-preview
     llm_verdict: Optional[str] = None
     llm_reason: Optional[str] = None
+    confirmed: Optional[str] = None  # what `vibeaudit probe` observed when a running app proved the finding
 
     def compute_fingerprint(self) -> str:
         # Line numbers move when code is edited, so the fingerprint uses the
@@ -68,6 +69,8 @@ class Finding:
             "source": self.source,
             "fingerprint": self.fingerprint,
         }
+        if self.confirmed:
+            d["confirmed"] = self.confirmed
         if self.preview:
             d["preview"] = True
             if self.gates_in_preview:
