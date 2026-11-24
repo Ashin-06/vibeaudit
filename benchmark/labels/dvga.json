@@ -51,6 +51,22 @@
    "reason": "The password is compared in plaintext."
   },
   {
+   "rule": "AUTH001",
+   "file": "core/views.py",
+   "line": 132,
+   "fingerprint": "677a9b19bd77b59070a354372c083a8b",
+   "verdict": "tp",
+   "reason": "graphene EditPaste mutation updates any paste by id with no authentication check."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "core/views.py",
+   "line": 157,
+   "fingerprint": "b079f98eabe610432ec592d5358e95c0",
+   "verdict": "tp",
+   "reason": "graphene DeletePaste mutation deletes any paste by id with no authentication check."
+  },
+  {
    "rule": "SEC011",
    "file": "setup.py",
    "line": 64,

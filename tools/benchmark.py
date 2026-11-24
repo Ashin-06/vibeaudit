@@ -383,8 +383,11 @@ def results_markdown(results: dict) -> str:
         f"({tuned[0] / max(1, sum(tuned)):.1%}). Rules were fixed while looking at these findings, so this number "
         "flatters them.",
         f"- Held-out split: {sum(held)} labelled findings, {held[0]} true and {held[1]} false "
-        f"({held[0] / max(1, sum(held)):.1%}). No rule is changed because of these findings; this is the number "
-        "that decides whether a rule may leave preview.",
+        f"({held[0] / max(1, sum(held)):.1%}). Rules are not tuned on these findings, with one exception: the "
+        "causes of the AUTH005, DATA006, SEC001 and SEC004 false positives on the 8 repositories held out when the "
+        "corpus grew to 125 were fixed in general form, so this number is optimistic for those four rules, which stay "
+        "in preview until a fresh held-out batch measures them. This is the number that decides whether a rule may "
+        "leave preview.",
         _stable_only(results),
         _without_training(results),
         f"- Unlabelled findings: {sum(r['needs_review'] for r in rules)}.",

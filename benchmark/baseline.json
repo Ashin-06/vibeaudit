@@ -21,7 +21,7 @@
    "by_repo": {}
   },
   "AUTH001": {
-   "precision": 0.7978,
+   "precision": 0.8022,
    "seeded_recall": 1.0,
    "by_repo": {
     "ClaudeCodeProxy": [
@@ -54,6 +54,10 @@
     ],
     "dvcsharp-api": [
      1,
+     0
+    ],
+    "dvga": [
+     2,
      0
     ],
     "dvna": [
