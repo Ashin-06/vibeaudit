@@ -230,9 +230,11 @@ def run(split: str = "") -> None:
             t = tally.setdefault(key, [0, 0])
             t[0] += hit
             t[1] += 1
-        if not hit:
-            misses.append(c)
-        print(("HIT " if hit else "miss"), c["advisory"], c["split"], c["scope"], c["class"], c["repo"], c["file"], flush=True)
+        if not hit and c["split"] == "tune":  # held-out misses stay unread until the final scoring
+            in_file = sorted({(f.rule_id, f.line) for f in res.findings if f.file == c["file"]})
+            misses.append(dict(c, found_in_file=in_file, scanned_files=res.meta.get("files_scanned")))
+        if c["split"] == "tune":
+            print(("HIT " if hit else "miss"), c["advisory"], c["scope"], c["class"], c["repo"], c["file"], flush=True)
     for (sp, sc), (h, n) in sorted(tally.items()):
         print(f"{sp:8} {sc:4} {h}/{n} ({h / max(1, n):.0%})")
     (CACHE / "misses.json").write_text(json.dumps(misses, indent=1), encoding="utf-8")

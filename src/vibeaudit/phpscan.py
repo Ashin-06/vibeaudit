@@ -154,6 +154,11 @@ SINKS = [
     (re.compile(r"(?<![>:$\\])\bunserialize\s*\("), "BE004", "unserialize()", "high", 0),
     (re.compile(r"\bHttp\s*::\s*(?:\w+\([^()]*\)\s*->\s*)*(?:get|post|put|patch|delete|head)\s*\(|\bcurl_init\s*\("),
      "BE005", "an outbound HTTP request URL", "high", 0),
+    # Symfony HttpClient / Guzzle `->request('GET', $url)`; Symfony Filesystem `->copy($url, $tmp)` fetches URLs (bolt)
+    # a short method string first; the view blanks string text, so its length is all that is left
+    (re.compile(r"->\s*request\s*\((?=\s*['\"][^'\"\n]{3,7}['\"]\s*,)"),
+     "BE005", "an outbound HTTP request URL", "high", 1),
+    (re.compile(r"(?i)\bfilesystem\s*->\s*copy\s*\("), "BE005", "a URL the server downloads", "high", 0),
     (re.compile(r"(?<![>:$\\])\b(?:include|include_once|require|require_once)\b\s*\(?|(?<![>:$\\])\b(?:file_get_contents|fopen|file|readfile|unlink|"
                 r"file_put_contents|is_file|file_exists|opendir|scandir|copy|rename|move_uploaded_file)\s*\("
                 r"|\bStorage\s*::\s*(?:disk\([^()]*\)\s*->\s*)?(?:get|delete|download|put|readStream|path)\s*\("
