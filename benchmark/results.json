@@ -1,7 +1,7 @@
 {
  "tool": "vibeaudit benchmark",
- "corpus": 135,
- "scanned": 135,
+ "corpus": 141,
+ "scanned": 141,
  "skipped": {},
  "heldout": [
   "DVWA",
@@ -30,8 +30,10 @@
   "laravel.io",
   "llamacoder",
   "mCaptcha",
+  "maybe",
   "next-saas-stripe-starter",
   "nodejs-whisper",
+  "once-campfire",
   "openai-assistants-quickstart",
   "piggymetrics",
   "platforms",
@@ -994,6 +996,48 @@
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
+  },
+  "railsgoat": {
+   "findings": 22,
+   "labelled": 22,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "rails-realworld": {
+   "findings": 0,
+   "labelled": 0,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "lobsters": {
+   "findings": 17,
+   "labelled": 17,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "theodinproject": {
+   "findings": 11,
+   "labelled": 11,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "once-campfire": {
+   "findings": 23,
+   "labelled": 23,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "maybe": {
+   "findings": 81,
+   "labelled": 81,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
   }
  },
  "rules": {
@@ -1016,7 +1060,7 @@
    "title": "Frontend calls an API path that no route handles",
    "preview": false,
    "tp": 0,
-   "fp": 3,
+   "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
    "precision": 0.0,
@@ -1025,6 +1069,11 @@
    "seeded_found": 2,
    "seeded_recall": 1.0,
    "by_repo": {
+    "maybe": [
+     0,
+     1,
+     0
+    ],
     "openai-assistants-quickstart": [
      0,
      3,
@@ -1037,26 +1086,32 @@
    "title": "Frontend calls an API route with the wrong method",
    "preview": false,
    "tp": 0,
-   "fp": 0,
+   "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 0.0,
+   "precision_pessimistic": 0.0,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
-   "by_repo": {},
+   "by_repo": {
+    "maybe": [
+     0,
+     1,
+     0
+    ]
+   },
    "preview_by_repo": {}
   },
   "AUTH001": {
    "title": "State-changing endpoint without authentication",
    "preview": false,
    "tp": 73,
-   "fp": 21,
+   "fp": 86,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.7766,
-   "precision_pessimistic": 0.7766,
+   "precision": 0.4591,
+   "precision_pessimistic": 0.4591,
    "seeded_expected": 8,
    "seeded_found": 8,
    "seeded_recall": 1.0,
@@ -1171,6 +1226,16 @@
      0,
      0
     ],
+    "lobsters": [
+     0,
+     1,
+     0
+    ],
+    "maybe": [
+     0,
+     51,
+     0
+    ],
     "next-learn": [
      3,
      0,
@@ -1179,6 +1244,11 @@
     "nextjs-openai-doc-search": [
      1,
      0,
+     0
+    ],
+    "once-campfire": [
+     0,
+     11,
      0
     ],
     "openai-assistants-quickstart": [
@@ -1194,6 +1264,11 @@
     "pygoat": [
      1,
      0,
+     0
+    ],
+    "railsgoat": [
+     0,
+     2,
      0
     ],
     "realworld-springboot-java": [
@@ -1293,9 +1368,29 @@
      1,
      0
     ],
+    "lobsters": [
+     0,
+     1,
+     0
+    ],
+    "maybe": [
+     0,
+     51,
+     0
+    ],
+    "once-campfire": [
+     0,
+     11,
+     0
+    ],
     "piggymetrics": [
      0,
      1,
+     0
+    ],
+    "railsgoat": [
+     0,
+     2,
      0
     ],
     "realworld-springboot-java": [
@@ -1385,12 +1480,12 @@
   "AUTH003": {
    "title": "Possible insecure direct object reference (IDOR)",
    "preview": false,
-   "tp": 31,
-   "fp": 23,
+   "tp": 33,
+   "fp": 25,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5741,
-   "precision_pessimistic": 0.5741,
+   "precision": 0.569,
+   "precision_pessimistic": 0.569,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -1460,9 +1555,24 @@
      1,
      0
     ],
+    "once-campfire": [
+     0,
+     1,
+     0
+    ],
+    "railsgoat": [
+     2,
+     0,
+     0
+    ],
     "semantickernel-microservice": [
      5,
      0,
+     0
+    ],
+    "theodinproject": [
+     0,
+     1,
      0
     ],
     "toWers": [
@@ -1537,9 +1647,24 @@
      1,
      0
     ],
+    "once-campfire": [
+     0,
+     1,
+     0
+    ],
+    "railsgoat": [
+     2,
+     0,
+     0
+    ],
     "semantickernel-microservice": [
      5,
      0,
+     0
+    ],
+    "theodinproject": [
+     0,
+     1,
      0
     ],
     "toWers": [
@@ -1729,12 +1854,12 @@
   "AUTH010": {
    "title": "Login endpoint without rate limiting",
    "preview": false,
-   "tp": 29,
+   "tp": 31,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9667,
-   "precision_pessimistic": 0.9667,
+   "precision": 0.9688,
+   "precision_pessimistic": 0.9688,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -1814,6 +1939,11 @@
      0,
      0
     ],
+    "railsgoat": [
+     2,
+     0,
+     0
+    ],
     "realworld-axum-sqlx": [
      1,
      0,
@@ -1883,6 +2013,11 @@
     ],
     "kotlin-spring-realworld": [
      1,
+     0,
+     0
+    ],
+    "railsgoat": [
+     2,
      0,
      0
     ],
@@ -2117,12 +2252,12 @@
   "BE001": {
    "title": "SQL injection",
    "preview": false,
-   "tp": 62,
+   "tp": 63,
    "fp": 18,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.775,
-   "precision_pessimistic": 0.775,
+   "precision": 0.7778,
+   "precision_pessimistic": 0.7778,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -2182,6 +2317,11 @@
      0,
      0
     ],
+    "railsgoat": [
+     1,
+     0,
+     0
+    ],
     "sili-smart-hr": [
      0,
      6,
@@ -2222,6 +2362,11 @@
     "govwa": [
      0,
      3,
+     0
+    ],
+    "railsgoat": [
+     1,
+     0,
      0
     ]
    }
@@ -2356,12 +2501,12 @@
   "BE003": {
    "title": "Dynamic code execution",
    "preview": true,
-   "tp": 6,
+   "tp": 9,
    "fp": 7,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.4615,
-   "precision_pessimistic": 0.4615,
+   "precision": 0.5625,
+   "precision_pessimistic": 0.5625,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -2383,6 +2528,11 @@
     ],
     "pygoat": [
      1,
+     0,
+     0
+    ],
+    "railsgoat": [
+     3,
      0,
      0
     ],
@@ -2413,6 +2563,11 @@
      0,
      0
     ],
+    "railsgoat": [
+     3,
+     0,
+     0
+    ],
     "werkzeug": [
      0,
      2,
@@ -2423,12 +2578,12 @@
   "BE004": {
    "title": "Unsafe deserialization",
    "preview": true,
-   "tp": 4,
+   "tp": 5,
    "fp": 8,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.3333,
-   "precision_pessimistic": 0.3333,
+   "precision": 0.3846,
+   "precision_pessimistic": 0.3846,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -2450,6 +2605,11 @@
     ],
     "pygoat": [
      3,
+     0,
+     0
+    ],
+    "railsgoat": [
+     1,
      0,
      0
     ],
@@ -2477,6 +2637,11 @@
     ],
     "pygoat": [
      3,
+     0,
+     0
+    ],
+    "railsgoat": [
+     1,
      0,
      0
     ],
@@ -2572,12 +2737,12 @@
   "BE006": {
    "title": "Path traversal",
    "preview": false,
-   "tp": 19,
+   "tp": 20,
    "fp": 39,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.3276,
-   "precision_pessimistic": 0.3276,
+   "precision": 0.339,
+   "precision_pessimistic": 0.339,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -2638,6 +2803,11 @@
      0
     ],
     "pygoat": [
+     1,
+     0,
+     0
+    ],
+    "railsgoat": [
      1,
      0,
      0
@@ -2724,6 +2894,11 @@
      1,
      0
     ],
+    "railsgoat": [
+     1,
+     0,
+     0
+    ],
     "rustypaste": [
      0,
      3,
@@ -2775,12 +2950,12 @@
   "BE008": {
    "title": "Open redirect",
    "preview": true,
-   "tp": 13,
+   "tp": 14,
    "fp": 13,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5,
-   "precision_pessimistic": 0.5,
+   "precision": 0.5185,
+   "precision_pessimistic": 0.5185,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -2847,6 +3022,11 @@
     ],
     "pygoat": [
      2,
+     0,
+     0
+    ],
+    "railsgoat": [
+     1,
      0,
      0
     ],
@@ -2927,6 +3107,11 @@
      0,
      0
     ],
+    "railsgoat": [
+     1,
+     0,
+     0
+    ],
     "snipe-it": [
      0,
      4,
@@ -2942,12 +3127,12 @@
   "BE009": {
    "title": "Mass assignment",
    "preview": false,
-   "tp": 4,
-   "fp": 1,
+   "tp": 6,
+   "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8,
-   "precision_pessimistic": 0.8,
+   "precision": 0.75,
+   "precision_pessimistic": 0.75,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -2962,13 +3147,34 @@
      1,
      0
     ],
+    "maybe": [
+     0,
+     1,
+     0
+    ],
     "node-express-mongoose-demo": [
+     2,
+     0,
+     0
+    ],
+    "railsgoat": [
      2,
      0,
      0
     ]
    },
-   "preview_by_repo": {}
+   "preview_by_repo": {
+    "maybe": [
+     0,
+     1,
+     0
+    ],
+    "railsgoat": [
+     2,
+     0,
+     0
+    ]
+   }
   },
   "BE010": {
    "title": "NoSQL injection",
@@ -3403,7 +3609,7 @@
   "CFG001": {
    "title": "Container runs as root",
    "preview": false,
-   "tp": 134,
+   "tp": 138,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -3593,6 +3799,16 @@
      0,
      0
     ],
+    "lobsters": [
+     1,
+     0,
+     0
+    ],
+    "maybe": [
+     1,
+     0,
+     0
+    ],
     "microblog": [
      1,
      0,
@@ -3630,6 +3846,11 @@
     ],
     "pygoat": [
      25,
+     0,
+     0
+    ],
+    "railsgoat": [
+     2,
      0,
      0
     ],
@@ -3987,7 +4208,7 @@
   "CFG007": {
    "title": "Default database credentials",
    "preview": false,
-   "tp": 24,
+   "tp": 26,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -4053,6 +4274,11 @@
      0
     ],
     "laravel-realworld-example-app": [
+     2,
+     0,
+     0
+    ],
+    "maybe": [
      2,
      0,
      0
@@ -4170,7 +4396,7 @@
   "CFG010": {
    "title": "Third-party GitHub Action not pinned to a commit",
    "preview": false,
-   "tp": 346,
+   "tp": 366,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -4360,8 +4586,18 @@
      0,
      0
     ],
+    "lobsters": [
+     4,
+     0,
+     0
+    ],
     "mCaptcha": [
      8,
+     0,
+     0
+    ],
+    "maybe": [
+     9,
      0,
      0
     ],
@@ -4401,6 +4637,11 @@
      0
     ],
     "pygoat": [
+     1,
+     0,
+     0
+    ],
+    "railsgoat": [
      1,
      0,
      0
@@ -4457,6 +4698,11 @@
     ],
     "terragoat": [
      3,
+     0,
+     0
+    ],
+    "theodinproject": [
+     6,
      0,
      0
     ],
@@ -6250,12 +6496,12 @@
   "FE001": {
    "title": "Cross-site scripting through a raw HTML sink",
    "preview": true,
-   "tp": 64,
-   "fp": 268,
+   "tp": 65,
+   "fp": 288,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.1928,
-   "precision_pessimistic": 0.1928,
+   "precision": 0.1841,
+   "precision_pessimistic": 0.1841,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -6345,9 +6591,19 @@
      9,
      0
     ],
+    "lobsters": [
+     0,
+     9,
+     0
+    ],
     "mCaptcha": [
      0,
      1,
+     0
+    ],
+    "maybe": [
+     0,
+     3,
      0
     ],
     "microblog": [
@@ -6363,6 +6619,11 @@
     "next-learn": [
      0,
      4,
+     0
+    ],
+    "once-campfire": [
+     0,
+     5,
      0
     ],
     "opengpts": [
@@ -6385,6 +6646,11 @@
      21,
      0
     ],
+    "railsgoat": [
+     1,
+     1,
+     0
+    ],
     "snipe-it": [
      2,
      41,
@@ -6393,6 +6659,11 @@
     "symfony-demo": [
      0,
      4,
+     0
+    ],
+    "theodinproject": [
+     0,
+     2,
      0
     ],
     "thynk": [
@@ -6502,9 +6773,19 @@
      9,
      0
     ],
+    "lobsters": [
+     0,
+     9,
+     0
+    ],
     "mCaptcha": [
      0,
      1,
+     0
+    ],
+    "maybe": [
+     0,
+     3,
      0
     ],
     "microblog": [
@@ -6520,6 +6801,11 @@
     "next-learn": [
      0,
      4,
+     0
+    ],
+    "once-campfire": [
+     0,
+     5,
      0
     ],
     "opengpts": [
@@ -6542,6 +6828,11 @@
      21,
      0
     ],
+    "railsgoat": [
+     1,
+     1,
+     0
+    ],
     "snipe-it": [
      2,
      41,
@@ -6550,6 +6841,11 @@
     "symfony-demo": [
      0,
      4,
+     0
+    ],
+    "theodinproject": [
+     0,
+     2,
      0
     ],
     "thynk": [
@@ -8204,12 +8500,12 @@
   "QA003": {
    "title": "Exception silently swallowed",
    "preview": true,
-   "tp": 165,
+   "tp": 166,
    "fp": 122,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5749,
-   "precision_pessimistic": 0.5749,
+   "precision": 0.5764,
+   "precision_pessimistic": 0.5764,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -8292,6 +8588,11 @@
     "next-saas-stripe-starter": [
      1,
      1,
+     0
+    ],
+    "once-campfire": [
+     1,
+     0,
      0
     ],
     "openui": [
@@ -8414,6 +8715,11 @@
     "next-saas-stripe-starter": [
      1,
      1,
+     0
+    ],
+    "once-campfire": [
+     1,
+     0,
      0
     ],
     "openui": [
@@ -8813,11 +9119,11 @@
    "title": "Package imported but not declared as a dependency",
    "preview": true,
    "tp": 59,
-   "fp": 6,
+   "fp": 18,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9077,
-   "precision_pessimistic": 0.9077,
+   "precision": 0.7662,
+   "precision_pessimistic": 0.7662,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -8905,6 +9211,11 @@
     "kellnr": [
      1,
      0,
+     0
+    ],
+    "maybe": [
+     0,
+     12,
      0
     ],
     "monica": [
@@ -9047,6 +9358,11 @@
     "kellnr": [
      1,
      0,
+     0
+    ],
+    "maybe": [
+     0,
+     12,
      0
     ],
     "monica": [
@@ -9797,12 +10113,12 @@
   "SEC003": {
    "title": "High-entropy secret assigned in code",
    "preview": true,
-   "tp": 36,
-   "fp": 103,
+   "tp": 38,
+   "fp": 105,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.259,
-   "precision_pessimistic": 0.259,
+   "precision": 0.2657,
+   "precision_pessimistic": 0.2657,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -9907,6 +10223,11 @@
      0,
      0
     ],
+    "once-campfire": [
+     0,
+     1,
+     0
+    ],
     "openui": [
      0,
      1,
@@ -9920,6 +10241,11 @@
     "pygoat": [
      4,
      1,
+     0
+    ],
+    "railsgoat": [
+     2,
+     0,
      0
     ],
     "realworld-rust-axum-sqlx": [
@@ -9945,6 +10271,11 @@
     "terragoat": [
      7,
      0,
+     0
+    ],
+    "theodinproject": [
+     0,
+     1,
      0
     ],
     "waline": [
@@ -10064,6 +10395,11 @@
      0,
      0
     ],
+    "once-campfire": [
+     0,
+     1,
+     0
+    ],
     "openui": [
      0,
      1,
@@ -10077,6 +10413,11 @@
     "pygoat": [
      4,
      1,
+     0
+    ],
+    "railsgoat": [
+     2,
+     0,
      0
     ],
     "realworld-rust-axum-sqlx": [
@@ -10104,6 +10445,11 @@
      0,
      0
     ],
+    "theodinproject": [
+     0,
+     1,
+     0
+    ],
     "waline": [
      0,
      2,
@@ -10124,12 +10470,12 @@
   "SEC004": {
    "title": "Hardcoded or default signing secret",
    "preview": true,
-   "tp": 30,
+   "tp": 31,
    "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8824,
-   "precision_pessimistic": 0.8824,
+   "precision": 0.8857,
+   "precision_pessimistic": 0.8857,
    "seeded_expected": 3,
    "seeded_found": 3,
    "seeded_recall": 1.0,
@@ -10178,6 +10524,11 @@
      0,
      3,
      0
+    ],
+    "theodinproject": [
+     1,
+     0,
+     0
     ]
    },
    "preview_by_repo": {
@@ -10225,6 +10576,11 @@
      0,
      3,
      0
+    ],
+    "theodinproject": [
+     1,
+     0,
+     0
     ]
    }
   },
@@ -10268,11 +10624,11 @@
    "title": "Environment file committed to git",
    "preview": false,
    "tp": 6,
-   "fp": 12,
+   "fp": 13,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.3333,
-   "precision_pessimistic": 0.3333,
+   "precision": 0.3158,
+   "precision_pessimistic": 0.3158,
    "seeded_expected": 0,
    "seeded_found": 0,
    "seeded_recall": null,
@@ -10285,6 +10641,11 @@
     "LinkAce": [
      0,
      5,
+     0
+    ],
+    "once-campfire": [
+     0,
+     1,
      0
     ],
     "physicalmediavault": [
@@ -11479,12 +11840,12 @@
   "UI016": {
    "title": "Focus outline removed",
    "preview": true,
-   "tp": 18,
-   "fp": 40,
+   "tp": 21,
+   "fp": 42,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.3103,
-   "precision_pessimistic": 0.3103,
+   "precision": 0.3333,
+   "precision_pessimistic": 0.3333,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -11549,9 +11910,19 @@
      6,
      0
     ],
+    "lobsters": [
+     0,
+     2,
+     0
+    ],
     "next-saas-stripe-starter": [
      0,
      2,
+     0
+    ],
+    "once-campfire": [
+     3,
+     0,
      0
     ],
     "pomb": [
@@ -11641,9 +12012,19 @@
      6,
      0
     ],
+    "lobsters": [
+     0,
+     2,
+     0
+    ],
     "next-saas-stripe-starter": [
      0,
      2,
+     0
+    ],
+    "once-campfire": [
+     3,
+     0,
      0
     ],
     "pomb": [

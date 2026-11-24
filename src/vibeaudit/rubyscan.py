@@ -331,8 +331,10 @@ class RubyScanner:
                          "high")
 
 
-LAUNDERS = re.compile(r"\s*(?:[A-Z][\w:]*(?:\s*\.\s*\w+[?!]?)*\s*\.\s*(?:find\w*|where|first!?|last!?|take!?|new|"
-                      r"exists\?|includes|joins)\b|[a-z_]\w*[?!]?\s*\((?!\s*\))|[a-z_]\w*[?!]?\s+(?![-+*/%<>=!&|?:]))")
+# \A and bounded, non-overlapping repeats: only ever .match()ed against one assignment's right-hand side
+LAUNDERS = re.compile(r"\A[ \t]{0,10}(?:[A-Z][\w:]{0,80}(?:\.\w{1,60}[?!]?){0,6}\.(?:find\w{0,40}|where|first!?|last!?|"
+                      r"take!?|new|exists\?|includes|joins)\b|[a-z_]\w{0,60}[?!]?[ \t]{0,5}\((?![ \t]{0,5}\))"
+                      r"|[a-z_]\w{0,60}[?!]?[ \t]{1,5}(?![-+*/%<>=!&|?: \t]))")
 
 
 def _unstring(expr: str) -> str:

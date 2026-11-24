@@ -9,6 +9,10 @@
    "precision": 0.0,
    "seeded_recall": 1.0,
    "by_repo": {
+    "maybe": [
+     0,
+     1
+    ],
     "openai-assistants-quickstart": [
      0,
      3
@@ -16,12 +20,17 @@
    }
   },
   "API002": {
-   "precision": null,
+   "precision": 0.0,
    "seeded_recall": 1.0,
-   "by_repo": {}
+   "by_repo": {
+    "maybe": [
+     0,
+     1
+    ]
+   }
   },
   "AUTH001": {
-   "precision": 0.7766,
+   "precision": 0.4591,
    "seeded_recall": 1.0,
    "by_repo": {
     "ClaudeCodeProxy": [
@@ -112,6 +121,14 @@
      7,
      0
     ],
+    "lobsters": [
+     0,
+     1
+    ],
+    "maybe": [
+     0,
+     51
+    ],
     "next-learn": [
      3,
      0
@@ -119,6 +136,10 @@
     "nextjs-openai-doc-search": [
      1,
      0
+    ],
+    "once-campfire": [
+     0,
+     11
     ],
     "openai-assistants-quickstart": [
      3,
@@ -131,6 +152,10 @@
     "pygoat": [
      1,
      0
+    ],
+    "railsgoat": [
+     0,
+     2
     ],
     "realworld-springboot-java": [
      0,
@@ -193,7 +218,7 @@
    }
   },
   "AUTH003": {
-   "precision": 0.5741,
+   "precision": 0.569,
    "seeded_recall": 1.0,
    "by_repo": {
     "ClaudeCodeProxy": [
@@ -248,9 +273,21 @@
      0,
      1
     ],
+    "once-campfire": [
+     0,
+     1
+    ],
+    "railsgoat": [
+     2,
+     0
+    ],
     "semantickernel-microservice": [
      5,
      0
+    ],
+    "theodinproject": [
+     0,
+     1
     ],
     "toWers": [
      0,
@@ -350,7 +387,7 @@
    }
   },
   "AUTH010": {
-   "precision": 0.9667,
+   "precision": 0.9688,
    "seeded_recall": 1.0,
    "by_repo": {
     "TodoApp": [
@@ -411,6 +448,10 @@
     ],
     "node-express-realworld-example-app": [
      1,
+     0
+    ],
+    "railsgoat": [
+     2,
      0
     ],
     "realworld-axum-sqlx": [
@@ -514,7 +555,7 @@
    }
   },
   "BE001": {
-   "precision": 0.775,
+   "precision": 0.7778,
    "seeded_recall": 1.0,
    "by_repo": {
     "BookStack": [
@@ -558,6 +599,10 @@
      3
     ],
     "pygoat": [
+     1,
+     0
+    ],
+    "railsgoat": [
      1,
      0
     ],
@@ -634,7 +679,7 @@
    }
   },
   "BE003": {
-   "precision": 0.4615,
+   "precision": 0.5625,
    "seeded_recall": 1.0,
    "by_repo": {
     "DVWA": [
@@ -653,6 +698,10 @@
      1,
      0
     ],
+    "railsgoat": [
+     3,
+     0
+    ],
     "werkzeug": [
      0,
      2
@@ -660,7 +709,7 @@
    }
   },
   "BE004": {
-   "precision": 0.3333,
+   "precision": 0.3846,
    "seeded_recall": 1.0,
    "by_repo": {
     "Vulnerable-Flask-App": [
@@ -677,6 +726,10 @@
     ],
     "pygoat": [
      3,
+     0
+    ],
+    "railsgoat": [
+     1,
      0
     ],
     "wsgidav": [
@@ -728,7 +781,7 @@
    }
   },
   "BE006": {
-   "precision": 0.3276,
+   "precision": 0.339,
    "seeded_recall": 1.0,
    "by_repo": {
     "BookStack": [
@@ -779,6 +832,10 @@
      1,
      0
     ],
+    "railsgoat": [
+     1,
+     0
+    ],
     "rustypaste": [
      0,
      3
@@ -816,7 +873,7 @@
    }
   },
   "BE008": {
-   "precision": 0.5,
+   "precision": 0.5185,
    "seeded_recall": 1.0,
    "by_repo": {
     "BookStack": [
@@ -871,6 +928,10 @@
      2,
      0
     ],
+    "railsgoat": [
+     1,
+     0
+    ],
     "snipe-it": [
      0,
      4
@@ -882,7 +943,7 @@
    }
   },
   "BE009": {
-   "precision": 0.8,
+   "precision": 0.75,
    "seeded_recall": 1.0,
    "by_repo": {
     "alerta": [
@@ -893,7 +954,15 @@
      0,
      1
     ],
+    "maybe": [
+     0,
+     1
+    ],
     "node-express-mongoose-demo": [
+     2,
+     0
+    ],
+    "railsgoat": [
      2,
      0
     ]
@@ -1251,6 +1320,14 @@
      6,
      0
     ],
+    "lobsters": [
+     1,
+     0
+    ],
+    "maybe": [
+     1,
+     0
+    ],
     "microblog": [
      1,
      0
@@ -1281,6 +1358,10 @@
     ],
     "pygoat": [
      25,
+     0
+    ],
+    "railsgoat": [
+     2,
      0
     ],
     "realworld-rust-axum-sqlx": [
@@ -1508,6 +1589,10 @@
      2,
      0
     ],
+    "maybe": [
+     2,
+     0
+    ],
     "opengpts": [
      1,
      0
@@ -1730,8 +1815,16 @@
      2,
      0
     ],
+    "lobsters": [
+     4,
+     0
+    ],
     "mCaptcha": [
      8,
+     0
+    ],
+    "maybe": [
+     9,
      0
     ],
     "monica": [
@@ -1763,6 +1856,10 @@
      0
     ],
     "pygoat": [
+     1,
+     0
+    ],
+    "railsgoat": [
      1,
      0
     ],
@@ -1808,6 +1905,10 @@
     ],
     "terragoat": [
      3,
+     0
+    ],
+    "theodinproject": [
+     6,
      0
     ],
     "thynk": [
@@ -2566,7 +2667,7 @@
    "by_repo": {}
   },
   "FE001": {
-   "precision": 0.1928,
+   "precision": 0.1841,
    "seeded_recall": 1.0,
    "by_repo": {
     "BookStack": [
@@ -2637,9 +2738,17 @@
      3,
      9
     ],
+    "lobsters": [
+     0,
+     9
+    ],
     "mCaptcha": [
      0,
      1
+    ],
+    "maybe": [
+     0,
+     3
     ],
     "microblog": [
      0,
@@ -2652,6 +2761,10 @@
     "next-learn": [
      0,
      4
+    ],
+    "once-campfire": [
+     0,
+     5
     ],
     "opengpts": [
      0,
@@ -2669,6 +2782,10 @@
      24,
      21
     ],
+    "railsgoat": [
+     1,
+     1
+    ],
     "snipe-it": [
      2,
      41
@@ -2676,6 +2793,10 @@
     "symfony-demo": [
      0,
      4
+    ],
+    "theodinproject": [
+     0,
+     2
     ],
     "thynk": [
      1,
@@ -3476,7 +3597,7 @@
    }
   },
   "QA003": {
-   "precision": 0.5749,
+   "precision": 0.5764,
    "seeded_recall": 1.0,
    "by_repo": {
     "BookStack": [
@@ -3542,6 +3663,10 @@
     "next-saas-stripe-starter": [
      1,
      1
+    ],
+    "once-campfire": [
+     1,
+     0
     ],
     "openui": [
      1,
@@ -3716,7 +3841,7 @@
    }
   },
   "QA007": {
-   "precision": 0.9077,
+   "precision": 0.7662,
    "seeded_recall": 1.0,
    "by_repo": {
     "BookStack": [
@@ -3786,6 +3911,10 @@
     "kellnr": [
      1,
      0
+    ],
+    "maybe": [
+     0,
+     12
     ],
     "monica": [
      2,
@@ -4207,7 +4336,7 @@
    }
   },
   "SEC003": {
-   "precision": 0.259,
+   "precision": 0.2657,
    "seeded_recall": 1.0,
    "by_repo": {
     "ClaudeCodeProxy": [
@@ -4290,6 +4419,10 @@
      2,
      0
     ],
+    "once-campfire": [
+     0,
+     1
+    ],
     "openui": [
      0,
      1
@@ -4301,6 +4434,10 @@
     "pygoat": [
      4,
      1
+    ],
+    "railsgoat": [
+     2,
+     0
     ],
     "realworld-rust-axum-sqlx": [
      1,
@@ -4322,6 +4459,10 @@
      7,
      0
     ],
+    "theodinproject": [
+     0,
+     1
+    ],
     "waline": [
      0,
      2
@@ -4337,7 +4478,7 @@
    }
   },
   "SEC004": {
-   "precision": 0.8824,
+   "precision": 0.8857,
    "seeded_recall": 1.0,
    "by_repo": {
     "Vulnerable-Flask-App": [
@@ -4375,6 +4516,10 @@
     "svix-webhooks": [
      0,
      3
+    ],
+    "theodinproject": [
+     1,
+     0
     ]
    }
   },
@@ -4401,7 +4546,7 @@
    }
   },
   "SEC006": {
-   "precision": 0.3333,
+   "precision": 0.3158,
    "seeded_recall": null,
    "by_repo": {
     "BookStack": [
@@ -4411,6 +4556,10 @@
     "LinkAce": [
      0,
      5
+    ],
+    "once-campfire": [
+     0,
+     1
     ],
     "physicalmediavault": [
      0,
@@ -5088,7 +5237,7 @@
    }
   },
   "UI016": {
-   "precision": 0.3103,
+   "precision": 0.3333,
    "seeded_recall": 1.0,
    "by_repo": {
     "BookStack": [
@@ -5139,9 +5288,17 @@
      0,
      6
     ],
+    "lobsters": [
+     0,
+     2
+    ],
     "next-saas-stripe-starter": [
      0,
      2
+    ],
+    "once-campfire": [
+     3,
+     0
     ],
     "pomb": [
      1,
