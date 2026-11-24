@@ -49,7 +49,7 @@ IMPORT_TO_DIST: Dict[str, Tuple[str, ...]] = {
     "typing_extensions": ("typing-extensions", "pydantic", "fastapi", "sqlalchemy", "anyio"), "google_auth_oauthlib": ("google-auth-oauthlib",),
     "django_filters": ("django-filter",), "rest_framework_jwt": ("drf-jwt", "djangorestframework-jwt"),
     "rest_framework_simplejwt": ("djangorestframework-simplejwt",), "knox": ("django-rest-knox",),
-    "djmoney": ("django-money",),
+    "djmoney": ("django-money",), "bson": ("pymongo", "bson"), "gridfs": ("pymongo",),  # bson and gridfs ship with pymongo
 }
 JS_EXTS = (".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".mts", ".cts", ".vue", ".svelte", ".astro", ".json", ".d.ts")
 ASSET_EXT = re.compile(r"\.(css|scss|sass|less|styl|svg|png|jpe?g|gif|webp|avif|ico|bmp|woff2?|ttf|otf|eot|mp3|mp4|webm|wav|txt|md|mdx|html|wasm|graphql|gql|yaml|yml|toml|csv)$", re.I)

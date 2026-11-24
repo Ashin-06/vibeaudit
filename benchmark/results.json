@@ -331,11 +331,11 @@
    "fixed_fp": 0
   },
   "alerta": {
-   "findings": 80,
-   "labelled": 80,
+   "findings": 79,
+   "labelled": 79,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 35
+   "fixed_fp": 36
   },
   "damn-vulnerable-llm-agent": {
    "findings": 8,
@@ -618,11 +618,11 @@
    "fixed_fp": 69
   },
   "pomb": {
-   "findings": 94,
-   "labelled": 94,
+   "findings": 84,
+   "labelled": 84,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 10
   },
   "chat-systems": {
    "findings": 208,
@@ -8813,11 +8813,11 @@
    "title": "Package imported but not declared as a dependency",
    "preview": true,
    "tp": 59,
-   "fp": 7,
+   "fp": 6,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8939,
-   "precision_pessimistic": 0.8939,
+   "precision": 0.9077,
+   "precision_pessimistic": 0.9077,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -8839,7 +8839,7 @@
     ],
     "alerta": [
      4,
-     2,
+     1,
      0
     ],
     "atuin": [
@@ -8981,7 +8981,7 @@
     ],
     "alerta": [
      4,
-     2,
+     1,
      0
     ],
     "atuin": [
@@ -11305,13 +11305,13 @@
   },
   "UI014": {
    "title": "Image without width and height",
-   "preview": true,
+   "preview": false,
    "tp": 28,
-   "fp": 16,
+   "fp": 6,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6364,
-   "precision_pessimistic": 0.6364,
+   "precision": 0.8235,
+   "precision_pessimistic": 0.8235,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -11368,7 +11368,7 @@
     ],
     "pomb": [
      0,
-     11,
+     1,
      0
     ],
     "spring-petclinic": [
@@ -11387,78 +11387,7 @@
      0
     ]
    },
-   "preview_by_repo": {
-    "chat-systems": [
-     1,
-     2,
-     0
-    ],
-    "djangoproject.com": [
-     5,
-     1,
-     0
-    ],
-    "flasky": [
-     1,
-     0,
-     0
-    ],
-    "govwa": [
-     2,
-     0,
-     0
-    ],
-    "koel": [
-     1,
-     1,
-     0
-    ],
-    "microblog": [
-     3,
-     0,
-     0
-    ],
-    "monica": [
-     6,
-     0,
-     0
-    ],
-    "next-learn": [
-     2,
-     0,
-     0
-    ],
-    "next-saas-stripe-starter": [
-     0,
-     1,
-     0
-    ],
-    "openai-assistants-quickstart": [
-     1,
-     0,
-     0
-    ],
-    "pomb": [
-     0,
-     11,
-     0
-    ],
-    "spring-petclinic": [
-     1,
-     0,
-     0
-    ],
-    "spring-security-polls": [
-     1,
-     0,
-     0
-    ],
-    "waline": [
-     4,
-     0,
-     0
-    ]
-   }
+   "preview_by_repo": {}
   },
   "UI015": {
    "title": "Form error not announced to screen readers",

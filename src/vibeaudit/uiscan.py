@@ -49,6 +49,9 @@ ERROR_STATE = re.compile(r"\bcatch\b|\.catch\s*\(|\berror\b|isError|onError|setE
 LOREM = re.compile(r"(?i)\blorem ipsum\b|\bdolor sit amet\b")
 HREF = re.compile(r"""(?:\bhref\s*=\s*\{?\s*|\brouter\s*\.\s*(?:push|replace)\s*\(\s*|\bredirect\s*\(\s*|\bnavigate\s*\(\s*)(["'`])(/[^"'`\s?#]*)(?:[?#][^"'`\s]*)?\1""")
 # an image whose box is fixed some other way: Tailwind size or aspect classes, inline style, fill layout
+CSS_SIZE = re.compile(r"(?i)(?:^|[;\s])(?:width|height|aspect-ratio)\s*:")
+IMG_IN_CLASS = re.compile(r"\.([\w-]{1,80})[ \t]{0,20}>?[ \t]{0,20}img\s{0,20}\Z")  # bounded: used on selector tails
+OPEN_TAG = re.compile(r"<[A-Za-z][\w.-]{0,40}\b[^<>]{0,2000}(?<!/)>")
 SIZED = re.compile(r"\b(?:width|height)\s*=|\bfill\b|\bstyle\s*=|\b(?:w|h|size|aspect)-[\w\[/]|\bsizes\s*="
                    # a CSS-module class (className={styles.avatar}): the stylesheet sets the size
                    r"|\bclassName\s*=\s*\{\s*(?:styles|classes|css|s|style)\s*(?:\.|\[)")
@@ -92,6 +95,29 @@ class UiScanner:
     def add(self, sf: SourceFile, rule: str, line: int, msg: str, sev: str = "") -> None:
         self.emit(Finding(rule, sf.rel, line, msg, sev, sf.line(line).strip()[:200]))
 
+    def parent_sized(self, text: str, start: int) -> bool:
+        """The <img> sits directly in an element whose class the project's CSS uses to size its images
+        (`.user-avatar img { width: 100%; height: 100% }`): the box is reserved, nothing shifts."""
+        if not hasattr(self, "_img_parents"):
+            self._img_parents = set()
+            for f in self.p.files:
+                if f.rel.endswith((".css", ".scss", ".sass", ".less")) and f.text:
+                    # split on braces instead of a regex: each `}`-separated chunk is `selectors { declarations`
+                    for chunk in f.text.split("}"):
+                        selectors, brace, decls = chunk.rpartition("{")
+                        if brace and CSS_SIZE.search(decls):
+                            for sel in selectors[-2000:].split(","):
+                                m = IMG_IN_CLASS.search(sel.strip()[-200:])
+                                if m:
+                                    self._img_parents.add(m.group(1))
+        if not self._img_parents:
+            return False
+        tags = list(OPEN_TAG.finditer(text, max(0, start - 1500), start))
+        if not tags:
+            return False
+        cls = re.search(r"""\bclass(?:Name)?\s*=\s*["'{]([^"'}]{0,500})""", tags[-1].group(0))
+        return bool(cls and self._img_parents.intersection(cls.group(1).split()))
+
     def run(self) -> None:
         for sf in self.p.files:
             if sf.text is None or sf.is_test or SKIP_PATH.search(sf.rel):
@@ -124,7 +150,7 @@ class UiScanner:
             line = sf.line_at(m.start())
             if (name == "img" or (name == "Image" and next_image)) and not re.search(r"\balt\s*=", battrs):
                 self.add(sf, "UI001", line, f"<{name}> has no alt text; screen readers announce the file name or nothing.")
-            if name == "img" and not SIZED.search(attrs):
+            if name == "img" and not SIZED.search(attrs) and not self.parent_sized(code, m.start()):
                 self.add(sf, "UI014", line, "<img> has no width and height, so the page jumps when the image loads.")
             if (name in NON_INTERACTIVE and re.search(r"\bonClick\s*=", battrs) and not SWALLOW_ONLY.search(attrs)
                     and not (BACKDROP.search(attrs) and CLOSE_HANDLER.search(attrs))
@@ -300,7 +326,8 @@ class UiScanner:
         for m in finditer(r"<img\b[^<>]{0,2000}>", text):
             if not re.search(r"\balt\s*=|:alt\s*=|\{\.\.\.|v-bind", m.group(0)):
                 self.add(sf, "UI001", sf.line_at(m.start()), "<img> has no alt text; screen readers announce the file name or nothing.")
-            if not SIZED.search(m.group(0)) and not re.search(r"\bclass\s*=|\{\.\.\.|v-bind|:(?:width|style|class)\s*=", m.group(0)):
+            if not SIZED.search(m.group(0)) and not re.search(r"\bclass\s*=|\{\.\.\.|v-bind|:(?:width|style|class)\s*=", m.group(0)) \
+                    and not self.parent_sized(text, m.start()):
                 self.add(sf, "UI014", sf.line_at(m.start()), "<img> has no width and height, so the page jumps when the image loads.")
         self._lorem(sf, text)
         html = re.search(r"(?i)<html\b", text)

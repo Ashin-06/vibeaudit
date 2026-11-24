@@ -51,7 +51,7 @@ cause is fixed on tuned-split cases only, and the rule leaves preview again once
 
 | Rule | Release | Held-out | Cause | Gates in preview |
 | --- | --- | --- | --- | --- |
-| UI014 Image without width and height | 0.9.2 | 6/7 (85.7%) | an `<img>` sized by CSS classes | no |
+| UI014 Image without width and height | 0.9.2 | 6/7 (85.7%) | an `<img>` sized by CSS classes | no; stable again at 9/10 (90.0%) held-out once two later held-out batches added 3 true positives (the cause was never tuned on, so the earlier 6/7 still counts) |
 | AUTH001 State-changing endpoint without authentication | 0.9.2 | 14/16 (87.5%) | server actions guarded by `assertDevelopment()` | yes, while in preview (a decision recorded in the 0.9.2 CHANGELOG); stable again after the fix (14/14) |
 | CFG002 Unpinned container base image | 0.11.0 | 5/6 (83.3%) | a Gitpod development workspace image | no |
 | QA001 No automated tests | 0.11.0 | 6/8 (75.0%) | Java tests under src/test are not counted | no; fixed (tests in every language count); re-graduate on fresh held-out data, since 6/6 on the repositories that showed the cause is not independent evidence |

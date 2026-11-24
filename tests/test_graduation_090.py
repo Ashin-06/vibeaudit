@@ -1,7 +1,7 @@
 """Rules that left preview in 0.9.0: each had at least 5 held-out findings at 90% or more after a release in preview."""
 from vibeaudit.rules import RULES
 
-GRADUATED = ("CFG010", "CFG016", "QA011")  # UI014 went back to preview in 0.9.2, DATA012 after 0.10.0
+GRADUATED = ("CFG010", "CFG016", "QA011", "UI014")  # UI014: back to preview in 0.9.2, stable again at 9/10 held-out
 
 
 def test_graduated_rules_are_stable():
@@ -13,7 +13,7 @@ def test_data013_stays_in_preview_with_its_measured_reason():
 
 
 def test_demotions_in_092_and_the_regraduation():
-    assert RULES["UI014"].preview and "6 of 7" in RULES["UI014"].preview_reason
+    assert not RULES["UI014"].preview  # demoted in 0.9.2 at 6 of 7; stable again at 9 of 10 held-out (STABILITY.md)
     assert not RULES["AUTH001"].preview  # back to stable: dev-only server actions are no longer reported
 
 
