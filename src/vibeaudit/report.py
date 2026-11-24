@@ -216,7 +216,7 @@ def render_markdown(res: Result) -> str:
 
 # ------------------------------------------------------------------- html
 CSS = """
-:root{--bg:#ffffff;--fg:#1d2330;--muted:#5b6475;--card:#f5f7fa;--line:#dde2ea;--crit:#b3001b;--high:#d9480f;
+:root{color-scheme:light dark;--bg:#ffffff;--fg:#1d2330;--muted:#5b6475;--card:#f5f7fa;--line:#dde2ea;--crit:#b3001b;--high:#d9480f;
 --med:#b07d00;--low:#1971c2;--info:#868e96;--code:#eef1f5}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#11151c;--fg:#e6e9ef;--muted:#9aa3b2;
 --card:#1a2029;--line:#2c3440;--crit:#ff6b6b;--high:#ff922b;--med:#fcc419;--low:#74c0fc;--info:#adb5bd;--code:#0c1016}}
@@ -231,7 +231,7 @@ border-left:5px solid var(--info);border-radius:8px;padding:12px 14px;margin:10p
 .f.high{border-left-color:var(--high)}.f.medium{border-left-color:var(--med)}.f.low{border-left-color:var(--low)}
 .sev{font-weight:700;text-transform:uppercase;font-size:12px}.critical .sev{color:var(--crit)}.high .sev{color:var(--high)}
 .medium .sev{color:var(--med)}.low .sev{color:var(--low)}.loc{font-family:ui-monospace,Consolas,monospace;font-size:13px;
-word-break:break-all}pre{background:var(--code);padding:8px 10px;border-radius:6px;overflow-x:auto;font-size:13px;margin:8px 0}
+word-break:break-all}pre{background:var(--code);padding:8px 10px;border-radius:6px;overflow-x:auto;font-size:13px;margin:8px 0;scrollbar-color:var(--line) var(--code)}
 dt{font-weight:600;margin-top:6px}dd{margin:0 0 0 0}
 """
 JS = """

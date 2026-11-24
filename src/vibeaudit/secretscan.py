@@ -288,7 +288,7 @@ class SecretScanner:
             # translation files hold UI strings, in any script (Laravel resources/lang/ja/..., Symfony translations/)
             translations = bool(re.search(r"(?:^|/)(?:lang|locales?|translations|i18n)/", sf.rel))
             php = sf.rel.endswith(".php") and not sf.rel.endswith(".blade.php")
-            assigns = [] if translations else list(finditer(GENERIC_ASSIGN, code if sf.kind in ("py", "js") or php else text))
+            assigns = [] if translations else list(finditer(GENERIC_ASSIGN, code if sf.kind in ("py", "js") or php or sf.rel.endswith(".rb") else text))
             # in a JSON file, a key with a random-looking value five or more times is a list of records (recorded API
             # responses, an OpenAPI example repeated per schema), not a credential
             counts: Dict[str, int] = {}
@@ -305,7 +305,7 @@ class SecretScanner:
                     continue
                 # not secrets: a column or key name (`google2fa_secret`), Laravel validation rules
                 # (`required|min:8|confirmed`), a Crowdin translation placeholder (`crwdns6798:0crwdne6798:0`)
-                if val.startswith("%env(") or (re.search(r"(?i)_(?:column|col|field|attribute|attr|table|header|param)s?$", name) and re.fullmatch(r"[a-z][a-z0-9]*(?:[_.-][a-z0-9]+)*", val)) or re.fullmatch(r"[\w:,.]+(?:\|[\w:,.]+)+", val) \
+                if "#{" in val or val.startswith("%env(") or (re.search(r"(?i)_(?:column|col|field|attribute|attr|table|header|param)s?$", name) and re.fullmatch(r"[a-z][a-z0-9]*(?:[_.-][a-z0-9]+)*", val)) or re.fullmatch(r"[\w:,.]+(?:\|[\w:,.]+)+", val) \
                         or re.fullmatch(r"crwdns\d+:\d+crwdne\d+:\d+", val):
                     continue
                 if H.looks_random(val) and once(m.start()):
@@ -331,6 +331,10 @@ class SecretScanner:
                 pv = sf.cache.get("php_views") or php_views(text)
                 sf.cache["php_views"] = pv
                 return pv.code  # type: ignore[attr-defined]
+            elif sf.rel.endswith(".rb"):
+                from .rubyscan import ruby_code  # Ruby: `# config.secret_key = '...'` in a generated initializer
+
+                return sf.cache.get("ruby_code") or ruby_code(text)
             else:
                 return text
             sf.cache["views"] = v

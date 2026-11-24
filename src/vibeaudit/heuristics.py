@@ -48,6 +48,7 @@ AUTH_MIDDLEWARE = re.compile(
 ADMIN_ROLE_EVIDENCE = re.compile(
     r"(?i)(?:get_current_active_superuser|require_superuser)|\b(?:is_?admin|is_staff|is_superuser|superuser|roles?\b|permissions?|has_?role|require_?role|require_?admin"
     r"|admin_required|check_?role|authorize\s*\(|ability|can\s*\(|isStaff|staff_member_required|scopes?\b"
+    r"|\.\s*admin\?|authorize_admin|ensure_admin|authenticate_admin"  # Rails: current_user.admin?, :authenticate_admin_user!
     # Spring and Jakarta: @PreAuthorize("hasAuthority(...)"), @Secured, @RolesAllowed
     r"|has_?(?:any_?)?authority|has_?any_?role|secured|roles_?allowed"
     # Symfony: #[IsGranted('ROLE_ADMIN')], #[IsGranted('edit', 'activity')], $this->denyAccessUnlessGranted(...)
@@ -72,7 +73,14 @@ OWNERSHIP_EVIDENCE = re.compile(
     # PHP: BookStack's findVisibleByIdOrFail() / deleteForCurrentUser() scope the record to what the caller may see
     r"|\bfind_?visible\w*\s*\(|for_?current_?user\w*\s*\("
     # a dependency that checks the caller may change this record: `Depends(check_article_modification_permissions)`
-    r"|\bcheck_\w{0,60}?(?:permissions?|owner(?:ship)?)\b)"
+    r"|\bcheck_\w{0,60}?(?:permissions?|owner(?:ship)?)\b"
+    # Rails: a record found through the caller's association, a Pundit `authorize @post`, CanCan's resource loading
+    r"|\bcurrent_user\s*\.\s*\w{1,60}\s*\.\s*(?:find|find_by|find_by!|where)\b|\bauthorize\s+@?\w"
+    r"|\bload_and_authorize_resource\b|\bpolicy_scope\s*\("
+    # `@message.author_user_id == @user.id`, `@story.is_editable_by_user?(@user)`
+    r"|\b\w{1,40}_user_id\s*[!=]=|\b\w{0,40}(?:editable|deletable|owned|accessible|viewable|modifiable)_by\w{0,20}\?"
+    # Rails filters that stop a caller who may not change the record: `before_action :ensure_editable`
+    r"|\bensure_(?:editable|current_user|owner\w{0,20}|can_\w{1,40}|access\w{0,20})\b|\.\s*editable\?)"
 )
 # a reset that needs a signed, emailed token, or a route that takes no credential: nothing to guess or rate-limit
 TOKEN_RESET = re.compile(r"(?i)verify\w*token\w*\s*\(|[<{:]token\b")
@@ -100,7 +108,7 @@ WEBHOOK_VERIFY = re.compile(
 
 RATE_LIMIT_EVIDENCE = re.compile(
     r"(?i)rate.?limit|ratelimit|throttl|slowapi|flask_limiter|flask-limiter|\blimiter\b|express-slow-down"
-    r"|rate-limiter-flexible|@upstash/ratelimit|django_ratelimit|@nestjs/throttler|arcjet|bottleneck|\bLimiter\b"
+    r"|rate-limiter-flexible|@upstash/ratelimit|django_ratelimit|@nestjs/throttler|arcjet|bottleneck|\bLimiter\b|rack.attack"
 )
 
 SERVER_VALIDATION_EVIDENCE = re.compile(
