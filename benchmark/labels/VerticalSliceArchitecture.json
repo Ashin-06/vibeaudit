@@ -1,0 +1,22 @@
+{
+ "repo": "VerticalSliceArchitecture",
+ "commit": "feb3a15e7ba03dc12404127e0a1f8f33b214783d",
+ "findings": [
+  {
+   "rule": "CFG001",
+   "file": ".devcontainer/Dockerfile",
+   "line": 1,
+   "fingerprint": "dac3007da7a4e5a8107e1eb6603bca7d",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "CSHARP001",
+   "file": "src/Application/Scheduling/AppointmentEndpoints.cs",
+   "line": 22,
+   "fingerprint": "74e1f777bd62f553d1e68b0a3f4d2c5c",
+   "verdict": "tp",
+   "reason": "Appointment endpoints change data and the project has no authorization at all."
+  }
+ ]
+}

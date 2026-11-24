@@ -21,12 +21,20 @@
    "by_repo": {}
   },
   "AUTH001": {
-   "precision": 0.8022,
+   "precision": 0.7766,
    "seeded_recall": 1.0,
    "by_repo": {
     "ClaudeCodeProxy": [
      16,
      0
+    ],
+    "LinkAce": [
+     0,
+     1
+    ],
+    "Pentaract": [
+     0,
+     1
     ],
     "Vulnerable-Flask-App": [
      2,
@@ -132,6 +140,10 @@
      1,
      0
     ],
+    "rustapi": [
+     0,
+     1
+    ],
     "scriptforge-ai": [
      3,
      0
@@ -181,7 +193,7 @@
    }
   },
   "AUTH003": {
-   "precision": 0.58,
+   "precision": 0.5741,
    "seeded_recall": 1.0,
    "by_repo": {
     "ClaudeCodeProxy": [
@@ -194,6 +206,10 @@
     ],
     "chat-systems": [
      0,
+     2
+    ],
+    "clean-architecture-manga": [
+     2,
      2
     ],
     "conveyor": [
@@ -334,7 +350,7 @@
    }
   },
   "AUTH010": {
-   "precision": 0.9615,
+   "precision": 0.9667,
    "seeded_recall": 1.0,
    "by_repo": {
     "TodoApp": [
@@ -369,6 +385,10 @@
      3,
      0
     ],
+    "gin-boilerplate": [
+     2,
+     0
+    ],
     "go-base": [
      1,
      0
@@ -378,6 +398,10 @@
      0
     ],
     "govwa": [
+     1,
+     0
+    ],
+    "kotlin-spring-realworld": [
      1,
      0
     ],
@@ -402,6 +426,10 @@
      0
     ],
     "spring-boot-realworld-example-app": [
+     1,
+     0
+    ],
+    "spring-security-polls": [
      1,
      0
     ],
@@ -700,7 +728,7 @@
    }
   },
   "BE006": {
-   "precision": 0.3333,
+   "precision": 0.3276,
    "seeded_recall": 1.0,
    "by_repo": {
     "BookStack": [
@@ -718,6 +746,10 @@
     "bella-openapi": [
      2,
      0
+    ],
+    "filament-demo": [
+     0,
+     1
     ],
     "flexible-graphrag": [
      0,
@@ -784,7 +816,7 @@
    }
   },
   "BE008": {
-   "precision": 0.52,
+   "precision": 0.5,
    "seeded_recall": 1.0,
    "by_repo": {
     "BookStack": [
@@ -802,6 +834,10 @@
     "chatbot-ui": [
      1,
      0
+    ],
+    "clean-architecture-manga": [
+     0,
+     1
     ],
     "dvna": [
      1,
@@ -1091,6 +1127,14 @@
      1,
      0
     ],
+    "LinkAce": [
+     2,
+     0
+    ],
+    "VerticalSliceArchitecture": [
+     1,
+     0
+    ],
     "Vulnerable-Flask-App": [
      1,
      0
@@ -1109,6 +1153,10 @@
     ],
     "chat-systems": [
      3,
+     0
+    ],
+    "clean-architecture-manga": [
+     5,
      0
     ],
     "codbex-oceanus": [
@@ -1172,6 +1220,10 @@
      0
     ],
     "go-gin-example": [
+     1,
+     0
+    ],
+    "go-rest-api": [
      1,
      0
     ],
@@ -1251,6 +1303,10 @@
      1,
      0
     ],
+    "spring-security-polls": [
+     2,
+     0
+    ],
     "terragoat": [
      1,
      0
@@ -1294,7 +1350,7 @@
    }
   },
   "CFG002": {
-   "precision": 0.9412,
+   "precision": 0.9474,
    "seeded_recall": 1.0,
    "by_repo": {
     "Schematic": [
@@ -1302,6 +1358,10 @@
      1
     ],
     "actix-realworld-example-app": [
+     1,
+     0
+    ],
+    "clean-architecture-manga": [
      1,
      0
     ],
@@ -1326,6 +1386,10 @@
      0
     ],
     "go-gin-example": [
+     1,
+     0
+    ],
+    "go-rest-api": [
      1,
      0
     ],
@@ -1432,6 +1496,10 @@
      2,
      0
     ],
+    "go-rest-api": [
+     1,
+     0
+    ],
     "jira-meridian": [
      1,
      0
@@ -1445,6 +1513,10 @@
      0
     ],
     "sec-insights": [
+     1,
+     0
+    ],
+    "spring-security-polls": [
      1,
      0
     ],
@@ -1477,9 +1549,13 @@
    }
   },
   "CFG009": {
-   "precision": 0.7778,
+   "precision": 0.7,
    "seeded_recall": 1.0,
    "by_repo": {
+    "clean-architecture-manga": [
+     0,
+     1
+    ],
     "conveyor": [
      2,
      0
@@ -1520,6 +1596,14 @@
     ],
     "DVWA": [
      4,
+     0
+    ],
+    "LinkAce": [
+     12,
+     0
+    ],
+    "Pentaract": [
+     3,
      0
     ],
     "Schematic": [
@@ -1610,6 +1694,10 @@
      5,
      0
     ],
+    "go-rest-api": [
+     1,
+     0
+    ],
     "go-test-bench": [
      1,
      0
@@ -1686,6 +1774,10 @@
      1,
      0
     ],
+    "rustapi": [
+     2,
+     0
+    ],
     "rustypaste": [
      19,
      0
@@ -1760,9 +1852,13 @@
    }
   },
   "CFG013": {
-   "precision": 0.875,
+   "precision": 0.8333,
    "seeded_recall": 1.0,
    "by_repo": {
+    "LinkAce": [
+     2,
+     1
+    ],
     "ardanlabs-service": [
      4,
      0
@@ -1773,6 +1869,10 @@
     ],
     "spring-petclinic": [
      2,
+     0
+    ],
+    "spring-security-polls": [
+     1,
      0
     ]
    }
@@ -1803,9 +1903,13 @@
    }
   },
   "CFG017": {
-   "precision": 0.5,
+   "precision": 0.3333,
    "seeded_recall": 1.0,
    "by_repo": {
+    "LinkAce": [
+     0,
+     1
+    ],
     "monica": [
      0,
      1
@@ -1822,9 +1926,14 @@
    "by_repo": {}
   },
   "CSHARP001": {
-   "precision": null,
+   "precision": 1.0,
    "seeded_recall": null,
-   "by_repo": {}
+   "by_repo": {
+    "VerticalSliceArchitecture": [
+     1,
+     0
+    ]
+   }
   },
   "CSHARP002": {
    "precision": null,
@@ -1837,7 +1946,7 @@
    "by_repo": {}
   },
   "DATA001": {
-   "precision": 0.8502,
+   "precision": 0.852,
    "seeded_recall": 1.0,
    "by_repo": {
     "BookStack": [
@@ -1847,6 +1956,10 @@
     "Django-Styleguide-Example": [
      0,
      1
+    ],
+    "LinkAce": [
+     3,
+     0
     ],
     "alerta": [
      2,
@@ -2018,9 +2131,13 @@
    }
   },
   "DATA006": {
-   "precision": 0.9573,
+   "precision": 0.9645,
    "seeded_recall": 1.0,
    "by_repo": {
+    "LinkAce": [
+     22,
+     0
+    ],
     "Vulnerable-Flask-App": [
      2,
      0
@@ -2059,6 +2176,10 @@
     ],
     "go-clean-template": [
      4,
+     0
+    ],
+    "go-rest-api": [
+     2,
      0
     ],
     "pygoat": [
@@ -2205,12 +2326,16 @@
    }
   },
   "DATA012": {
-   "precision": 0.9398,
+   "precision": 0.9276,
    "seeded_recall": 1.0,
    "by_repo": {
     "DVWA": [
      0,
      4
+    ],
+    "LinkAce": [
+     1,
+     3
     ],
     "act-solo-ai": [
      1,
@@ -2238,6 +2363,10 @@
     ],
     "dvpwa": [
      3,
+     0
+    ],
+    "gin-boilerplate": [
+     1,
      0
     ],
     "jira-meridian": [
@@ -2373,6 +2502,10 @@
      2,
      0
     ],
+    "clean-architecture-manga": [
+     1,
+     0
+    ],
     "damn-vulnerable-llm-agent": [
      1,
      0
@@ -2433,7 +2566,7 @@
    "by_repo": {}
   },
   "FE001": {
-   "precision": 0.2058,
+   "precision": 0.1928,
    "seeded_recall": 1.0,
    "by_repo": {
     "BookStack": [
@@ -2443,6 +2576,10 @@
     "DVWA": [
      7,
      1
+    ],
+    "LinkAce": [
+     0,
+     21
     ],
     "act-solo-ai": [
      13,
@@ -2749,12 +2886,16 @@
    }
   },
   "JAVA001": {
-   "precision": 1.0,
+   "precision": 0.6923,
    "seeded_recall": 1.0,
    "by_repo": {
     "Schematic": [
      2,
      0
+    ],
+    "kotlin-spring-realworld": [
+     0,
+     4
     ],
     "spring-petclinic": [
      6,
@@ -3118,6 +3259,10 @@
      1,
      0
     ],
+    "Pentaract": [
+     1,
+     0
+    ],
     "careconnect": [
      1,
      0
@@ -3312,6 +3457,10 @@
      1,
      0
     ],
+    "spring-security-polls": [
+     1,
+     0
+    ],
     "sync-plan-flow": [
      1,
      0
@@ -3327,12 +3476,16 @@
    }
   },
   "QA003": {
-   "precision": 0.5719,
+   "precision": 0.5749,
    "seeded_recall": 1.0,
    "by_repo": {
     "BookStack": [
      0,
      1
+    ],
+    "Pentaract": [
+     2,
+     0
     ],
     "Schematic": [
      1,
@@ -3563,7 +3716,7 @@
    }
   },
   "QA007": {
-   "precision": 0.8889,
+   "precision": 0.8939,
    "seeded_recall": 1.0,
    "by_repo": {
     "BookStack": [
@@ -3596,6 +3749,10 @@
     ],
     "chat-copilot": [
      1,
+     0
+    ],
+    "clean-architecture-manga": [
+     3,
      0
     ],
     "conveyor": [
@@ -3800,6 +3957,10 @@
    "seeded_recall": 1.0,
    "by_repo": {
     "Django-Styleguide-Example": [
+     3,
+     0
+    ],
+    "Pentaract": [
      3,
      0
     ],
@@ -4046,7 +4207,7 @@
    }
   },
   "SEC003": {
-   "precision": 0.2652,
+   "precision": 0.259,
    "seeded_recall": 1.0,
    "by_repo": {
     "ClaudeCodeProxy": [
@@ -4056,6 +4217,10 @@
     "JavaVulnerableLab": [
      1,
      0
+    ],
+    "LinkAce": [
+     0,
+     5
     ],
     "Timinute": [
      0,
@@ -4073,6 +4238,10 @@
      0,
      4
     ],
+    "clean-architecture-manga": [
+     1,
+     0
+    ],
     "dvcsharp-api": [
      1,
      0
@@ -4080,6 +4249,10 @@
     "eShopOnWeb": [
      1,
      0
+    ],
+    "filament-demo": [
+     0,
+     1
     ],
     "flexible-graphrag": [
      0,
@@ -4228,12 +4401,16 @@
    }
   },
   "SEC006": {
-   "precision": 0.4615,
+   "precision": 0.3333,
    "seeded_recall": null,
    "by_repo": {
     "BookStack": [
      0,
      1
+    ],
+    "LinkAce": [
+     0,
+     5
     ],
     "physicalmediavault": [
      0,
@@ -4815,7 +4992,7 @@
    }
   },
   "UI014": {
-   "precision": 0.6279,
+   "precision": 0.6364,
    "seeded_recall": 1.0,
    "by_repo": {
     "chat-systems": [
@@ -4866,6 +5043,10 @@
      1,
      0
     ],
+    "spring-security-polls": [
+     1,
+     0
+    ],
     "waline": [
      4,
      0
@@ -4907,7 +5088,7 @@
    }
   },
   "UI016": {
-   "precision": 0.3158,
+   "precision": 0.3103,
    "seeded_recall": 1.0,
    "by_repo": {
     "BookStack": [
@@ -4929,6 +5110,10 @@
     "chatbot-ui": [
      2,
      0
+    ],
+    "clean-architecture-manga": [
+     0,
+     1
     ],
     "full-stack-fastapi-template": [
      1,

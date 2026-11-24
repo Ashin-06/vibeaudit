@@ -1,0 +1,62 @@
+{
+ "repo": "spring-security-polls",
+ "commit": "362fad90cab17e76453b3b9e273c594de6ee3d7f",
+ "findings": [
+  {
+   "rule": "CFG013",
+   "file": "deployments/mysql-deployment.yaml",
+   "line": 64,
+   "fingerprint": "4bee0d02b8b9d4abfd3f0967d861fc92",
+   "verdict": "tp",
+   "reason": "The workload sets no resource limits."
+  },
+  {
+   "rule": "CFG007",
+   "file": "docker-compose.yml",
+   "line": 51,
+   "fingerprint": "15fc8101fb5755e2c4a9b008cbf5b551",
+   "verdict": "tp",
+   "reason": "A default database root password is committed in the compose file."
+  },
+  {
+   "rule": "CFG001",
+   "file": "polling-app-client/Dockerfile",
+   "line": 27,
+   "fingerprint": "a35b9e080154a519bc43c57a8b90ab03",
+   "verdict": "tp",
+   "reason": "The final image has no USER instruction and runs as root."
+  },
+  {
+   "rule": "QA002",
+   "file": "polling-app-client/config-overrides.js",
+   "line": 1,
+   "fingerprint": "c522ba785a5ce6e5bacf86cfe8414fe4",
+   "verdict": "tp",
+   "reason": "The repository has no CI configuration."
+  },
+  {
+   "rule": "UI014",
+   "file": "polling-app-client/src/common/AppHeader.js",
+   "line": 34,
+   "fingerprint": "964f428d5ef59b5be00686b5842db6ac",
+   "verdict": "tp",
+   "reason": "The img has no width or height; .poll-icon only sets a margin."
+  },
+  {
+   "rule": "CFG001",
+   "file": "polling-app-server/Dockerfile",
+   "line": 27,
+   "fingerprint": "859f9975c9727be6494dfba01e9ce999",
+   "verdict": "tp",
+   "reason": "The final image has no USER instruction and runs as root."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "polling-app-server/src/main/java/com/example/polls/controller/AuthController.java",
+   "line": 51,
+   "fingerprint": "9f4462e7bbdfe02cad7ba1e27103b0bc",
+   "verdict": "tp",
+   "reason": "Sign-in endpoint with no rate limiting anywhere in the project."
+  }
+ ]
+}

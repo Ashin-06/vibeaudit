@@ -1,0 +1,638 @@
+{
+ "repo": "LinkAce",
+ "commit": "74ddeda22cdd6189851779e8c8a4664d1746f887",
+ "findings": [
+  {
+   "rule": "SEC006",
+   "file": ".env.dev",
+   "line": 0,
+   "fingerprint": "8250fe29a9d4caeb853b1db4d817b96e",
+   "verdict": "fp",
+   "reason": "Template env file with placeholder values (someRandomStringWith32Characters, ChangeThisToASecurePassword!)."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.dev",
+   "line": 5,
+   "fingerprint": "66f9a02f5cf249a53d4b1ea660d852f1",
+   "verdict": "fp",
+   "reason": "Template env file with placeholder values (someRandomStringWith32Characters, ChangeThisToASecurePassword!)."
+  },
+  {
+   "rule": "SEC006",
+   "file": ".env.docker.production",
+   "line": 0,
+   "fingerprint": "36ce91433405d25e2dcf27f86efc9e51",
+   "verdict": "fp",
+   "reason": "Template env file with placeholder values (someRandomStringWith32Characters, ChangeThisToASecurePassword!)."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.docker.production",
+   "line": 5,
+   "fingerprint": "e5dceff92cf8759595e52cf2cda76879",
+   "verdict": "fp",
+   "reason": "Template env file with placeholder values (someRandomStringWith32Characters, ChangeThisToASecurePassword!)."
+  },
+  {
+   "rule": "SEC006",
+   "file": ".env.local.production",
+   "line": 0,
+   "fingerprint": "79964107078cf81332e9afb46c714ae1",
+   "verdict": "fp",
+   "reason": "Template env file with placeholder values (someRandomStringWith32Characters, ChangeThisToASecurePassword!)."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.local.production",
+   "line": 6,
+   "fingerprint": "41884c1b3899a3a9e36102f3bc9c3725",
+   "verdict": "fp",
+   "reason": "Template env file with placeholder values (someRandomStringWith32Characters, ChangeThisToASecurePassword!)."
+  },
+  {
+   "rule": "SEC006",
+   "file": ".env.sqlite.production",
+   "line": 0,
+   "fingerprint": "58883a2019809f40c651eb9bb8ca0b7a",
+   "verdict": "fp",
+   "reason": "Template env file with placeholder values (someRandomStringWith32Characters, ChangeThisToASecurePassword!)."
+  },
+  {
+   "rule": "SEC003",
+   "file": ".env.sqlite.production",
+   "line": 6,
+   "fingerprint": "e54d4e1f2a3785a864019dbc4b10a137",
+   "verdict": "fp",
+   "reason": "Template env file with placeholder values (someRandomStringWith32Characters, ChangeThisToASecurePassword!)."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/build-base-image.yml",
+   "line": 14,
+   "fingerprint": "3b670e08bb6cf695b4cf8e14dc05db65",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/build-base-image.yml",
+   "line": 16,
+   "fingerprint": "9ab84a8c58265f57169e5466a0b80536",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/build-base-image.yml",
+   "line": 19,
+   "fingerprint": "8d052fe54731c8b364467007b7389d26",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/build-docker.yml",
+   "line": 20,
+   "fingerprint": "fa97b24b4ce2a3cba3441a8ff1840d8d",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/build-docker.yml",
+   "line": 22,
+   "fingerprint": "ab1f33abec39ddd9de9c318357db67d7",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/build-docker.yml",
+   "line": 25,
+   "fingerprint": "5fa1503c5f77db6cb591cc7c9dd3aa4a",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/build-docker.yml",
+   "line": 31,
+   "fingerprint": "1280d4b7dd85f709735958e9f3da8871",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/build-docker.yml",
+   "line": 48,
+   "fingerprint": "c8e21869a3197e487d53f85e75ebd8bd",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/build-package.yml",
+   "line": 27,
+   "fingerprint": "94428592aba7669ae35f2c0b463e8122",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/build-package.yml",
+   "line": 58,
+   "fingerprint": "84dc06d7243f3aaf204278703c84de7c",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/test.yml",
+   "line": 61,
+   "fingerprint": "60d096ec699e7b55c355069e7a15abb2",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/test.yml",
+   "line": 95,
+   "fingerprint": "136136436a697b671627f75cf342d73c",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/API/BulkStoreController.php",
+   "line": 29,
+   "fingerprint": "4eecd19f4fc3ae535cd8c7935e6fdab1",
+   "verdict": "tp",
+   "reason": "A create runs once per item of the bulk request."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/API/BulkStoreController.php",
+   "line": 43,
+   "fingerprint": "58e9804a4c7e5ec5ff20ecfa535bf2e7",
+   "verdict": "tp",
+   "reason": "A create runs once per item of the bulk request."
+  },
+  {
+   "rule": "DATA001",
+   "file": "app/Http/Controllers/API/BulkStoreController.php",
+   "line": 57,
+   "fingerprint": "3b6bffbc59064cc9d2ecfa774e58bfc2",
+   "verdict": "tp",
+   "reason": "A create runs once per item of the bulk request."
+  },
+  {
+   "rule": "DATA006",
+   "file": "database/schema/pgsql-schema.sql",
+   "line": 34,
+   "fingerprint": "b0a86bc103afe8e0da70cd40448bcbdd",
+   "verdict": "tp",
+   "reason": "Postgres timestamp(0) without time zone column."
+  },
+  {
+   "rule": "DATA006",
+   "file": "database/schema/pgsql-schema.sql",
+   "line": 35,
+   "fingerprint": "42f263fa345f18e98596c9c370eb4b40",
+   "verdict": "tp",
+   "reason": "Postgres timestamp(0) without time zone column."
+  },
+  {
+   "rule": "DATA006",
+   "file": "database/schema/pgsql-schema.sql",
+   "line": 36,
+   "fingerprint": "414ec89491bb2c826a7628ba5784977f",
+   "verdict": "tp",
+   "reason": "Postgres timestamp(0) without time zone column."
+  },
+  {
+   "rule": "DATA006",
+   "file": "database/schema/pgsql-schema.sql",
+   "line": 70,
+   "fingerprint": "a30a473a2c35aaff9654d96bf449a649",
+   "verdict": "tp",
+   "reason": "Postgres timestamp(0) without time zone column."
+  },
+  {
+   "rule": "DATA006",
+   "file": "database/schema/pgsql-schema.sql",
+   "line": 158,
+   "fingerprint": "4b63252024e07017835b2619f72a456d",
+   "verdict": "tp",
+   "reason": "Postgres timestamp(0) without time zone column."
+  },
+  {
+   "rule": "DATA006",
+   "file": "database/schema/pgsql-schema.sql",
+   "line": 159,
+   "fingerprint": "9a39987d8232ab7b637b3f32c993461e",
+   "verdict": "tp",
+   "reason": "Postgres timestamp(0) without time zone column."
+  },
+  {
+   "rule": "DATA006",
+   "file": "database/schema/pgsql-schema.sql",
+   "line": 160,
+   "fingerprint": "7cc3ca72b93188e18adda831404c8796",
+   "verdict": "tp",
+   "reason": "Postgres timestamp(0) without time zone column."
+  },
+  {
+   "rule": "DATA006",
+   "file": "database/schema/pgsql-schema.sql",
+   "line": 251,
+   "fingerprint": "79b130bf8dac45f0644a900bba38e944",
+   "verdict": "tp",
+   "reason": "Postgres timestamp(0) without time zone column."
+  },
+  {
+   "rule": "DATA006",
+   "file": "database/schema/pgsql-schema.sql",
+   "line": 252,
+   "fingerprint": "aeb914c0c1b23df0174e3bf847cee18e",
+   "verdict": "tp",
+   "reason": "Postgres timestamp(0) without time zone column."
+  },
+  {
+   "rule": "DATA006",
+   "file": "database/schema/pgsql-schema.sql",
+   "line": 253,
+   "fingerprint": "dc81a687476510fa40de220f64fa3fd2",
+   "verdict": "tp",
+   "reason": "Postgres timestamp(0) without time zone column."
+  },
+  {
+   "rule": "DATA006",
+   "file": "database/schema/pgsql-schema.sql",
+   "line": 284,
+   "fingerprint": "8aac45ab58fd226e306a649e2035e051",
+   "verdict": "tp",
+   "reason": "Postgres timestamp(0) without time zone column."
+  },
+  {
+   "rule": "DATA006",
+   "file": "database/schema/pgsql-schema.sql",
+   "line": 296,
+   "fingerprint": "045c45623c856fb3bbd198c632e841d4",
+   "verdict": "tp",
+   "reason": "Postgres timestamp(0) without time zone column."
+  },
+  {
+   "rule": "DATA006",
+   "file": "database/schema/pgsql-schema.sql",
+   "line": 297,
+   "fingerprint": "8d775813cbeea60f594304f685e440b7",
+   "verdict": "tp",
+   "reason": "Postgres timestamp(0) without time zone column."
+  },
+  {
+   "rule": "DATA006",
+   "file": "database/schema/pgsql-schema.sql",
+   "line": 333,
+   "fingerprint": "bca7ea7116c78fb2343543fd5209dd73",
+   "verdict": "tp",
+   "reason": "Postgres timestamp(0) without time zone column."
+  },
+  {
+   "rule": "DATA006",
+   "file": "database/schema/pgsql-schema.sql",
+   "line": 334,
+   "fingerprint": "8e321be482d18ed82483664ca7904876",
+   "verdict": "tp",
+   "reason": "Postgres timestamp(0) without time zone column."
+  },
+  {
+   "rule": "DATA006",
+   "file": "database/schema/pgsql-schema.sql",
+   "line": 376,
+   "fingerprint": "7085117366552912fe140c7b52e109a1",
+   "verdict": "tp",
+   "reason": "Postgres timestamp(0) without time zone column."
+  },
+  {
+   "rule": "DATA006",
+   "file": "database/schema/pgsql-schema.sql",
+   "line": 377,
+   "fingerprint": "9b78643fe4b4eb4db9007407e35c64d8",
+   "verdict": "tp",
+   "reason": "Postgres timestamp(0) without time zone column."
+  },
+  {
+   "rule": "DATA006",
+   "file": "database/schema/pgsql-schema.sql",
+   "line": 442,
+   "fingerprint": "1eb1681479549e9788dc883e1e6aec59",
+   "verdict": "tp",
+   "reason": "Postgres timestamp(0) without time zone column."
+  },
+  {
+   "rule": "DATA006",
+   "file": "database/schema/pgsql-schema.sql",
+   "line": 443,
+   "fingerprint": "b673925d7623b8abfc2f44f84a53d9da",
+   "verdict": "tp",
+   "reason": "Postgres timestamp(0) without time zone column."
+  },
+  {
+   "rule": "DATA006",
+   "file": "database/schema/pgsql-schema.sql",
+   "line": 444,
+   "fingerprint": "85b4c5ad5f5834ac4ec29268c9df04e9",
+   "verdict": "tp",
+   "reason": "Postgres timestamp(0) without time zone column."
+  },
+  {
+   "rule": "DATA006",
+   "file": "database/schema/pgsql-schema.sql",
+   "line": 478,
+   "fingerprint": "e433ee705272371d592a6194c133d4b9",
+   "verdict": "tp",
+   "reason": "Postgres timestamp(0) without time zone column."
+  },
+  {
+   "rule": "DATA006",
+   "file": "database/schema/pgsql-schema.sql",
+   "line": 479,
+   "fingerprint": "1fd946a897a07486b50d8381f9d55693",
+   "verdict": "tp",
+   "reason": "Postgres timestamp(0) without time zone column."
+  },
+  {
+   "rule": "DATA012",
+   "file": "database/schema/pgsql-schema.sql",
+   "line": 1026,
+   "fingerprint": "38ebd619d6a1b16fdfdf0703928b1879",
+   "verdict": "fp",
+   "reason": "permission_id leads the table's primary key, which indexes it."
+  },
+  {
+   "rule": "DATA012",
+   "file": "database/schema/pgsql-schema.sql",
+   "line": 1034,
+   "fingerprint": "af3314512bffb614686f833ea26c8996",
+   "verdict": "fp",
+   "reason": "role_id leads the table's primary key, which indexes it."
+  },
+  {
+   "rule": "DATA012",
+   "file": "database/schema/pgsql-schema.sql",
+   "line": 1042,
+   "fingerprint": "0c4696a1511f092808d3f0af957aa518",
+   "verdict": "fp",
+   "reason": "permission_id leads the table's primary key, which indexes it."
+  },
+  {
+   "rule": "DATA012",
+   "file": "database/schema/pgsql-schema.sql",
+   "line": 1050,
+   "fingerprint": "fad4277ec98c182717dcf6108d18513a",
+   "verdict": "tp",
+   "reason": "role_id is the second primary key column and has no index of its own."
+  },
+  {
+   "rule": "SEC006",
+   "file": "deploy/linkace/.env.k8s",
+   "line": 0,
+   "fingerprint": "dbd8f8f2c635a9e807036376fca1edbd",
+   "verdict": "fp",
+   "reason": "Template env file with a placeholder APP_KEY."
+  },
+  {
+   "rule": "SEC003",
+   "file": "deploy/linkace/.env.k8s",
+   "line": 1,
+   "fingerprint": "96e3c023ea46fdd67e913f20b2df615c",
+   "verdict": "fp",
+   "reason": "Placeholder APP_KEY (someRandomStringWith32Characters)."
+  },
+  {
+   "rule": "CFG013",
+   "file": "deploy/linkace/templates/cronjob.yaml",
+   "line": 19,
+   "fingerprint": "211195df10f865acfa0c79039e34555f",
+   "verdict": "tp",
+   "reason": "The cron workload sets no resource limits."
+  },
+  {
+   "rule": "CFG013",
+   "file": "deploy/linkace/templates/deployment.yaml",
+   "line": 44,
+   "fingerprint": "f08f792aee942b5f0829959827dd3a4d",
+   "verdict": "fp",
+   "reason": "resources come from .Values.resources through a with block."
+  },
+  {
+   "rule": "CFG013",
+   "file": "deploy/linkace/templates/deployment.yaml",
+   "line": 125,
+   "fingerprint": "f4e1f6dd08ab34389294ce4f966d3e04",
+   "verdict": "tp",
+   "reason": "The database container sets no resource limits."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/assets/js/components/Import.js",
+   "line": 47,
+   "fingerprint": "3cc318cb1afe63719127140c7ac33c65",
+   "verdict": "fp",
+   "reason": "The message is a server translation with a link to the generated import tag."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/assets/js/components/Import.js",
+   "line": 50,
+   "fingerprint": "014243ec0550a33e0b32f3275c81daa2",
+   "verdict": "fp",
+   "reason": "The message is a server translation with a link to the generated import tag."
+  },
+  {
+   "rule": "CFG001",
+   "file": "resources/docker/dockerfiles/development.Dockerfile",
+   "line": 4,
+   "fingerprint": "1f2bf035a2cd596ebbc053b43ba2ad8e",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "CFG001",
+   "file": "resources/docker/dockerfiles/release-base.Dockerfile",
+   "line": 1,
+   "fingerprint": "dff692e7be0e691defff5dcc68f433ab",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "CFG017",
+   "file": "resources/docker/dockerfiles/release-multiplatform.Dockerfile",
+   "line": 91,
+   "fingerprint": "bdcfc7d3603f5743ac7d46f28604e579",
+   "verdict": "fp",
+   "reason": "The copied env file is a template with a placeholder key that setup replaces."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/app/search/partials/table.blade.php",
+   "line": 43,
+   "fingerprint": "739a37260eb896b77768065b1933dc94",
+   "verdict": "fp",
+   "reason": "addedAt() builds a time element from the timestamp; the title is escaped with e()."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/components/history-entry.blade.php",
+   "line": 2,
+   "fingerprint": "fcead5d2d2d66ceace3a328f1e004f33",
+   "verdict": "fp",
+   "reason": "History values are escaped with htmlspecialchars before they reach the view."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/dashboard.blade.php",
+   "line": 65,
+   "fingerprint": "fbe78adf0bfed54e50126c631f6d1317",
+   "verdict": "fp",
+   "reason": "getIcon() returns a rendered Blade view of a fixed icon."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/guest/links/partials/single-card.blade.php",
+   "line": 38,
+   "fingerprint": "c9919067c9e3e964e1690928d394671d",
+   "verdict": "fp",
+   "reason": "addedAt() builds a time element from the timestamp; the title is escaped with e()."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/guest/links/partials/single-detailed.blade.php",
+   "line": 15,
+   "fingerprint": "b4f5c2833701bfde83b5b6155a0350d8",
+   "verdict": "fp",
+   "reason": "Markdown rendered with html_input escape and unsafe links disabled, or htmlentities."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/guest/links/partials/single-detailed.blade.php",
+   "line": 37,
+   "fingerprint": "17ec90bcb6563a7acabc6260e0581e18",
+   "verdict": "fp",
+   "reason": "addedAt() builds a time element from the timestamp; the title is escaped with e()."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/guest/search/partials/table.blade.php",
+   "line": 33,
+   "fingerprint": "06aaff4e7495b261fd0331727da24316",
+   "verdict": "fp",
+   "reason": "addedAt() builds a time element from the timestamp; the title is escaped with e()."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/guest/users/show.blade.php",
+   "line": 26,
+   "fingerprint": "3ca67f1a4c92169432e735e26a41a511",
+   "verdict": "fp",
+   "reason": "getIcon() returns a rendered Blade view of a fixed icon."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/models/links/partials/share-link.blade.php",
+   "line": 1,
+   "fingerprint": "5d6b7557f4898fb2ebcb0f4fc08c9b65",
+   "verdict": "fp",
+   "reason": "The share URL is built from encoded or htmlentities values and a URL that passed the url validation rule."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/models/links/partials/show/link-details.blade.php",
+   "line": 14,
+   "fingerprint": "cb9fb93c27db09a9d179faedbe862174",
+   "verdict": "fp",
+   "reason": "getIcon() returns a rendered Blade view of a fixed icon."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/models/links/partials/show/link-details.blade.php",
+   "line": 29,
+   "fingerprint": "9f94c0b72c5d8ce3851c6427bcd5d274",
+   "verdict": "fp",
+   "reason": "Markdown rendered with html_input escape and unsafe links disabled, or htmlentities."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/models/links/partials/single-card.blade.php",
+   "line": 40,
+   "fingerprint": "9e457778a2ba1169b4794425694afc8c",
+   "verdict": "fp",
+   "reason": "addedAt() builds a time element from the timestamp; the title is escaped with e()."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/models/links/partials/single-detailed.blade.php",
+   "line": 16,
+   "fingerprint": "8afabadd5c927fb0d6ccfbe5c011da2a",
+   "verdict": "fp",
+   "reason": "Markdown rendered with html_input escape and unsafe links disabled, or htmlentities."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/models/links/partials/single-detailed.blade.php",
+   "line": 36,
+   "fingerprint": "3d844f3318ba70cf9e6b509807ae8990",
+   "verdict": "fp",
+   "reason": "addedAt() builds a time element from the timestamp; the title is escaped with e()."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/models/links/partials/single-simple.blade.php",
+   "line": 7,
+   "fingerprint": "d83962024485c717f08cbffb26215e52",
+   "verdict": "fp",
+   "reason": "getIcon() returns a rendered Blade view of a fixed icon."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/models/lists/partials/show/details.blade.php",
+   "line": 33,
+   "fingerprint": "9ad4c070336ad1f5269ecba69f1f3a43",
+   "verdict": "fp",
+   "reason": "Markdown rendered with html_input escape and unsafe links disabled, or htmlentities."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/models/notes/partials/single.blade.php",
+   "line": 4,
+   "fingerprint": "c16809252d3b1bc9792b51aefc6432f8",
+   "verdict": "fp",
+   "reason": "Markdown rendered with html_input escape and unsafe links disabled, or htmlentities."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/models/notes/partials/single.blade.php",
+   "line": 11,
+   "fingerprint": "e7cd1e20e6f159756cbb32d8249aa4f8",
+   "verdict": "fp",
+   "reason": "addedAt() builds a time element from the timestamp; the title is escaped with e()."
+  },
+  {
+   "rule": "FE001",
+   "file": "resources/views/models/users/show.blade.php",
+   "line": 27,
+   "fingerprint": "464eafb22036d0cc0ed07176ef49acc3",
+   "verdict": "fp",
+   "reason": "getIcon() returns a rendered Blade view of a fixed icon."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "routes/web.php",
+   "line": 58,
+   "fingerprint": "bbc30f3d7fa4a6b1e56b299a9055278f",
+   "verdict": "fp",
+   "reason": "Setup routes; SetupCheckMiddleware redirects them away once setup is complete."
+  }
+ ]
+}

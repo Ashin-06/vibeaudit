@@ -1,22 +1,30 @@
 {
  "tool": "vibeaudit benchmark",
- "corpus": 125,
- "scanned": 125,
+ "corpus": 135,
+ "scanned": 135,
  "skipped": {},
  "heldout": [
   "DVWA",
+  "LinkAce",
+  "Pentaract",
   "Schematic",
   "Timinute",
+  "VerticalSliceArchitecture",
   "ardalis-CleanArchitecture",
   "atuin",
   "careconnect",
+  "clean-architecture-manga",
   "damn-vulnerable-llm-agent",
   "dvpwa",
   "fastapi-react",
+  "filament-demo",
   "flasky",
+  "gin-boilerplate",
   "go-base",
   "go-gin-example",
+  "go-rest-api",
   "govwa",
+  "kotlin-spring-realworld",
   "langchain-nextjs-template",
   "laravel-realworld-example-app",
   "laravel.io",
@@ -30,6 +38,8 @@
   "podinfo",
   "realworld-axum-sqlx",
   "realworld-springboot-java",
+  "rustapi",
+  "spring-security-polls",
   "svix-webhooks",
   "symfony-demo",
   "terragoat",
@@ -914,6 +924,76 @@
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
+  },
+  "go-rest-api": {
+   "findings": 6,
+   "labelled": 6,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "gin-boilerplate": {
+   "findings": 3,
+   "labelled": 3,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "kotlin-spring-realworld": {
+   "findings": 5,
+   "labelled": 5,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "spring-security-polls": {
+   "findings": 7,
+   "labelled": 7,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "VerticalSliceArchitecture": {
+   "findings": 2,
+   "labelled": 2,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "clean-architecture-manga": {
+   "findings": 18,
+   "labelled": 18,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "Pentaract": {
+   "findings": 10,
+   "labelled": 10,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "rustapi": {
+   "findings": 3,
+   "labelled": 3,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "filament-demo": {
+   "findings": 2,
+   "labelled": 2,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
+  },
+  "LinkAce": {
+   "findings": 79,
+   "labelled": 79,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 0
   }
  },
  "rules": {
@@ -972,11 +1052,11 @@
    "title": "State-changing endpoint without authentication",
    "preview": false,
    "tp": 73,
-   "fp": 18,
+   "fp": 21,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8022,
-   "precision_pessimistic": 0.8022,
+   "precision": 0.7766,
+   "precision_pessimistic": 0.7766,
    "seeded_expected": 8,
    "seeded_found": 8,
    "seeded_recall": 1.0,
@@ -984,6 +1064,16 @@
     "ClaudeCodeProxy": [
      16,
      0,
+     0
+    ],
+    "LinkAce": [
+     0,
+     1,
+     0
+    ],
+    "Pentaract": [
+     0,
+     1,
      0
     ],
     "Vulnerable-Flask-App": [
@@ -1116,6 +1206,11 @@
      0,
      0
     ],
+    "rustapi": [
+     0,
+     1,
+     0
+    ],
     "scriptforge-ai": [
      3,
      0,
@@ -1146,6 +1241,16 @@
     "ClaudeCodeProxy": [
      16,
      0,
+     0
+    ],
+    "LinkAce": [
+     0,
+     1,
+     0
+    ],
+    "Pentaract": [
+     0,
+     1,
      0
     ],
     "atuin": [
@@ -1196,6 +1301,11 @@
     "realworld-springboot-java": [
      0,
      4,
+     0
+    ],
+    "rustapi": [
+     0,
+     1,
      0
     ],
     "snipe-it": [
@@ -1275,12 +1385,12 @@
   "AUTH003": {
    "title": "Possible insecure direct object reference (IDOR)",
    "preview": false,
-   "tp": 29,
-   "fp": 21,
+   "tp": 31,
+   "fp": 23,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.58,
-   "precision_pessimistic": 0.58,
+   "precision": 0.5741,
+   "precision_pessimistic": 0.5741,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -1297,6 +1407,11 @@
     ],
     "chat-systems": [
      0,
+     2,
+     0
+    ],
+    "clean-architecture-manga": [
+     2,
      2,
      0
     ],
@@ -1384,6 +1499,11 @@
     ],
     "chat-systems": [
      0,
+     2,
+     0
+    ],
+    "clean-architecture-manga": [
+     2,
      2,
      0
     ],
@@ -1609,12 +1729,12 @@
   "AUTH010": {
    "title": "Login endpoint without rate limiting",
    "preview": false,
-   "tp": 25,
+   "tp": 29,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9615,
-   "precision_pessimistic": 0.9615,
+   "precision": 0.9667,
+   "precision_pessimistic": 0.9667,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -1659,6 +1779,11 @@
      0,
      0
     ],
+    "gin-boilerplate": [
+     2,
+     0,
+     0
+    ],
     "go-base": [
      1,
      0,
@@ -1670,6 +1795,11 @@
      0
     ],
     "govwa": [
+     1,
+     0,
+     0
+    ],
+    "kotlin-spring-realworld": [
      1,
      0,
      0
@@ -1704,6 +1834,11 @@
      0,
      0
     ],
+    "spring-security-polls": [
+     1,
+     0,
+     0
+    ],
     "symfony-demo": [
      1,
      0,
@@ -1726,6 +1861,11 @@
      0,
      0
     ],
+    "gin-boilerplate": [
+     2,
+     0,
+     0
+    ],
     "go-base": [
      1,
      0,
@@ -1737,6 +1877,11 @@
      0
     ],
     "govwa": [
+     1,
+     0,
+     0
+    ],
+    "kotlin-spring-realworld": [
      1,
      0,
      0
@@ -1757,6 +1902,11 @@
      0
     ],
     "spring-boot-realworld-example-app": [
+     1,
+     0,
+     0
+    ],
+    "spring-security-polls": [
      1,
      0,
      0
@@ -2059,16 +2209,6 @@
     ]
    },
    "preview_by_repo": {
-    "BookStack": [
-     0,
-     3,
-     0
-    ],
-    "DVWA": [
-     31,
-     2,
-     0
-    ],
     "JavaVulnerableLab": [
      5,
      0,
@@ -2082,16 +2222,6 @@
     "govwa": [
      0,
      3,
-     0
-    ],
-    "snipe-it": [
-     0,
-     1,
-     0
-    ],
-    "wallabag": [
-     0,
-     1,
      0
     ]
    }
@@ -2443,11 +2573,11 @@
    "title": "Path traversal",
    "preview": false,
    "tp": 19,
-   "fp": 38,
+   "fp": 39,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.3333,
-   "precision_pessimistic": 0.3333,
+   "precision": 0.3276,
+   "precision_pessimistic": 0.3276,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -2470,6 +2600,11 @@
     "bella-openapi": [
      2,
      0,
+     0
+    ],
+    "filament-demo": [
+     0,
+     1,
      0
     ],
     "flexible-graphrag": [
@@ -2559,6 +2694,11 @@
      0,
      0
     ],
+    "filament-demo": [
+     0,
+     1,
+     0
+    ],
     "kimai": [
      0,
      1,
@@ -2636,11 +2776,11 @@
    "title": "Open redirect",
    "preview": true,
    "tp": 13,
-   "fp": 12,
+   "fp": 13,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.52,
-   "precision_pessimistic": 0.52,
+   "precision": 0.5,
+   "precision_pessimistic": 0.5,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -2663,6 +2803,11 @@
     "chatbot-ui": [
      1,
      0,
+     0
+    ],
+    "clean-architecture-manga": [
+     0,
+     1,
      0
     ],
     "dvna": [
@@ -2735,6 +2880,11 @@
     "chatbot-ui": [
      1,
      0,
+     0
+    ],
+    "clean-architecture-manga": [
+     0,
+     1,
      0
     ],
     "dvna": [
@@ -3253,7 +3403,7 @@
   "CFG001": {
    "title": "Container runs as root",
    "preview": false,
-   "tp": 123,
+   "tp": 134,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -3288,6 +3438,16 @@
      0,
      0
     ],
+    "LinkAce": [
+     2,
+     0,
+     0
+    ],
+    "VerticalSliceArchitecture": [
+     1,
+     0,
+     0
+    ],
     "Vulnerable-Flask-App": [
      1,
      0,
@@ -3310,6 +3470,11 @@
     ],
     "chat-systems": [
      3,
+     0,
+     0
+    ],
+    "clean-architecture-manga": [
+     5,
      0,
      0
     ],
@@ -3389,6 +3554,11 @@
      0
     ],
     "go-gin-example": [
+     1,
+     0,
+     0
+    ],
+    "go-rest-api": [
      1,
      0,
      0
@@ -3488,6 +3658,11 @@
      0,
      0
     ],
+    "spring-security-polls": [
+     2,
+     0,
+     0
+    ],
     "terragoat": [
      1,
      0,
@@ -3544,12 +3719,12 @@
   "CFG002": {
    "title": "Unpinned container base image",
    "preview": true,
-   "tp": 16,
+   "tp": 18,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9412,
-   "precision_pessimistic": 0.9412,
+   "precision": 0.9474,
+   "precision_pessimistic": 0.9474,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -3560,6 +3735,11 @@
      0
     ],
     "actix-realworld-example-app": [
+     1,
+     0,
+     0
+    ],
+    "clean-architecture-manga": [
      1,
      0,
      0
@@ -3590,6 +3770,11 @@
      0
     ],
     "go-gin-example": [
+     1,
+     0,
+     0
+    ],
+    "go-rest-api": [
      1,
      0,
      0
@@ -3646,6 +3831,11 @@
      0,
      0
     ],
+    "clean-architecture-manga": [
+     1,
+     0,
+     0
+    ],
     "conveyor": [
      1,
      0,
@@ -3672,6 +3862,11 @@
      0
     ],
     "go-gin-example": [
+     1,
+     0,
+     0
+    ],
+    "go-rest-api": [
      1,
      0,
      0
@@ -3792,7 +3987,7 @@
   "CFG007": {
    "title": "Default database credentials",
    "preview": false,
-   "tp": 22,
+   "tp": 24,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -3847,6 +4042,11 @@
      0,
      0
     ],
+    "go-rest-api": [
+     1,
+     0,
+     0
+    ],
     "jira-meridian": [
      1,
      0,
@@ -3863,6 +4063,11 @@
      0
     ],
     "sec-insights": [
+     1,
+     0,
+     0
+    ],
+    "spring-security-polls": [
      1,
      0,
      0
@@ -3915,15 +4120,20 @@
    "title": ".env file copied into the container image",
    "preview": false,
    "tp": 7,
-   "fp": 2,
+   "fp": 3,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.7778,
-   "precision_pessimistic": 0.7778,
+   "precision": 0.7,
+   "precision_pessimistic": 0.7,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "clean-architecture-manga": [
+     0,
+     1,
+     0
+    ],
     "conveyor": [
      2,
      0,
@@ -3960,7 +4170,7 @@
   "CFG010": {
    "title": "Third-party GitHub Action not pinned to a commit",
    "preview": false,
-   "tp": 328,
+   "tp": 346,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -3982,6 +4192,16 @@
     ],
     "DVWA": [
      4,
+     0,
+     0
+    ],
+    "LinkAce": [
+     12,
+     0,
+     0
+    ],
+    "Pentaract": [
+     3,
      0,
      0
     ],
@@ -4095,6 +4315,11 @@
      0,
      0
     ],
+    "go-rest-api": [
+     1,
+     0,
+     0
+    ],
     "go-test-bench": [
      1,
      0,
@@ -4187,6 +4412,11 @@
     ],
     "realworld-springboot-java": [
      1,
+     0,
+     0
+    ],
+    "rustapi": [
+     2,
      0,
      0
     ],
@@ -4308,16 +4538,21 @@
   "CFG013": {
    "title": "Kubernetes container without resource limits",
    "preview": true,
-   "tp": 7,
-   "fp": 1,
+   "tp": 10,
+   "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.875,
-   "precision_pessimistic": 0.875,
+   "precision": 0.8333,
+   "precision_pessimistic": 0.8333,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "LinkAce": [
+     2,
+     1,
+     0
+    ],
     "ardanlabs-service": [
      4,
      0,
@@ -4330,11 +4565,21 @@
     ],
     "spring-petclinic": [
      2,
+     0,
+     0
+    ],
+    "spring-security-polls": [
+     1,
      0,
      0
     ]
    },
    "preview_by_repo": {
+    "LinkAce": [
+     2,
+     1,
+     0
+    ],
     "ardanlabs-service": [
      4,
      0,
@@ -4347,6 +4592,11 @@
     ],
     "spring-petclinic": [
      2,
+     0,
+     0
+    ],
+    "spring-security-polls": [
+     1,
      0,
      0
     ]
@@ -4419,15 +4669,20 @@
    "title": "Secret file or build argument in the final image",
    "preview": true,
    "tp": 1,
-   "fp": 1,
+   "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5,
-   "precision_pessimistic": 0.5,
+   "precision": 0.3333,
+   "precision_pessimistic": 0.3333,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
    "by_repo": {
+    "LinkAce": [
+     0,
+     1,
+     0
+    ],
     "monica": [
      0,
      1,
@@ -4440,6 +4695,11 @@
     ]
    },
    "preview_by_repo": {
+    "LinkAce": [
+     0,
+     1,
+     0
+    ],
     "monica": [
      0,
      1,
@@ -4470,17 +4730,29 @@
   "CSHARP001": {
    "title": "ASP.NET Core endpoints with no authorization",
    "preview": true,
-   "tp": 0,
+   "tp": 1,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": null,
-   "precision_pessimistic": null,
+   "precision": 1.0,
+   "precision_pessimistic": 1.0,
    "seeded_expected": 0,
    "seeded_found": 0,
    "seeded_recall": null,
-   "by_repo": {},
-   "preview_by_repo": {}
+   "by_repo": {
+    "VerticalSliceArchitecture": [
+     1,
+     0,
+     0
+    ]
+   },
+   "preview_by_repo": {
+    "VerticalSliceArchitecture": [
+     1,
+     0,
+     0
+    ]
+   }
   },
   "CSHARP002": {
    "title": "Deserialization that lets the payload pick the type",
@@ -4515,12 +4787,12 @@
   "DATA001": {
    "title": "Database query inside a loop (N+1)",
    "preview": true,
-   "tp": 210,
+   "tp": 213,
    "fp": 37,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8502,
-   "precision_pessimistic": 0.8502,
+   "precision": 0.852,
+   "precision_pessimistic": 0.852,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -4533,6 +4805,11 @@
     "Django-Styleguide-Example": [
      0,
      1,
+     0
+    ],
+    "LinkAce": [
+     3,
+     0,
      0
     ],
     "alerta": [
@@ -4660,6 +4937,11 @@
     "Django-Styleguide-Example": [
      0,
      1,
+     0
+    ],
+    "LinkAce": [
+     3,
+     0,
      0
     ],
     "alerta": [
@@ -4910,16 +5192,21 @@
   "DATA006": {
    "title": "Timestamp without time zone",
    "preview": true,
-   "tp": 112,
+   "tp": 136,
    "fp": 5,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9573,
-   "precision_pessimistic": 0.9573,
+   "precision": 0.9645,
+   "precision_pessimistic": 0.9645,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
    "by_repo": {
+    "LinkAce": [
+     22,
+     0,
+     0
+    ],
     "Vulnerable-Flask-App": [
      2,
      0,
@@ -4967,6 +5254,11 @@
     ],
     "go-clean-template": [
      4,
+     0,
+     0
+    ],
+    "go-rest-api": [
+     2,
      0,
      0
     ],
@@ -4997,6 +5289,11 @@
     ]
    },
    "preview_by_repo": {
+    "LinkAce": [
+     22,
+     0,
+     0
+    ],
     "Vulnerable-Flask-App": [
      2,
      0,
@@ -5044,6 +5341,11 @@
     ],
     "go-clean-template": [
      4,
+     0,
+     0
+    ],
+    "go-rest-api": [
+     2,
      0,
      0
     ],
@@ -5384,12 +5686,12 @@
   "DATA012": {
    "title": "Foreign key without an index",
    "preview": true,
-   "tp": 203,
-   "fp": 13,
+   "tp": 205,
+   "fp": 16,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9398,
-   "precision_pessimistic": 0.9398,
+   "precision": 0.9276,
+   "precision_pessimistic": 0.9276,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -5397,6 +5699,11 @@
     "DVWA": [
      0,
      4,
+     0
+    ],
+    "LinkAce": [
+     1,
+     3,
      0
     ],
     "act-solo-ai": [
@@ -5431,6 +5738,11 @@
     ],
     "dvpwa": [
      3,
+     0,
+     0
+    ],
+    "gin-boilerplate": [
+     1,
      0,
      0
     ],
@@ -5516,6 +5828,11 @@
      4,
      0
     ],
+    "LinkAce": [
+     1,
+     3,
+     0
+    ],
     "act-solo-ai": [
      1,
      0,
@@ -5548,6 +5865,11 @@
     ],
     "dvpwa": [
      3,
+     0,
+     0
+    ],
+    "gin-boilerplate": [
+     1,
      0,
      0
     ],
@@ -5796,7 +6118,7 @@
   "DEP005": {
    "title": "Dependencies are not locked",
    "preview": false,
-   "tp": 9,
+   "tp": 10,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -5808,6 +6130,11 @@
    "by_repo": {
     "alerta": [
      2,
+     0,
+     0
+    ],
+    "clean-architecture-manga": [
+     1,
      0,
      0
     ],
@@ -5924,11 +6251,11 @@
    "title": "Cross-site scripting through a raw HTML sink",
    "preview": true,
    "tp": 64,
-   "fp": 247,
+   "fp": 268,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.2058,
-   "precision_pessimistic": 0.2058,
+   "precision": 0.1928,
+   "precision_pessimistic": 0.1928,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -5941,6 +6268,11 @@
     "DVWA": [
      7,
      1,
+     0
+    ],
+    "LinkAce": [
+     0,
+     21,
      0
     ],
     "act-solo-ai": [
@@ -6093,6 +6425,11 @@
     "DVWA": [
      7,
      1,
+     0
+    ],
+    "LinkAce": [
+     0,
+     21,
      0
     ],
     "act-solo-ai": [
@@ -6645,11 +6982,11 @@
    "title": "Spring controllers with no security configuration",
    "preview": true,
    "tp": 9,
-   "fp": 0,
+   "fp": 4,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 1.0,
-   "precision_pessimistic": 1.0,
+   "precision": 0.6923,
+   "precision_pessimistic": 0.6923,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -6657,6 +6994,11 @@
     "Schematic": [
      2,
      0,
+     0
+    ],
+    "kotlin-spring-realworld": [
+     0,
+     4,
      0
     ],
     "spring-petclinic": [
@@ -6674,6 +7016,11 @@
     "Schematic": [
      2,
      0,
+     0
+    ],
+    "kotlin-spring-realworld": [
+     0,
+     4,
      0
     ],
     "spring-petclinic": [
@@ -7444,7 +7791,7 @@
   "QA001": {
    "title": "No automated tests",
    "preview": true,
-   "tp": 22,
+   "tp": 23,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -7455,6 +7802,11 @@
    "seeded_recall": 1.0,
    "by_repo": {
     "ClaudeCodeProxy": [
+     1,
+     0,
+     0
+    ],
+    "Pentaract": [
      1,
      0,
      0
@@ -7571,6 +7923,11 @@
      0,
      0
     ],
+    "Pentaract": [
+     1,
+     0,
+     0
+    ],
     "careconnect": [
      1,
      0,
@@ -7681,7 +8038,7 @@
   "QA002": {
    "title": "No continuous integration",
    "preview": false,
-   "tp": 29,
+   "tp": 30,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -7821,6 +8178,11 @@
      0,
      0
     ],
+    "spring-security-polls": [
+     1,
+     0,
+     0
+    ],
     "sync-plan-flow": [
      1,
      0,
@@ -7842,12 +8204,12 @@
   "QA003": {
    "title": "Exception silently swallowed",
    "preview": true,
-   "tp": 163,
+   "tp": 165,
    "fp": 122,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5719,
-   "precision_pessimistic": 0.5719,
+   "precision": 0.5749,
+   "precision_pessimistic": 0.5749,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -7855,6 +8217,11 @@
     "BookStack": [
      0,
      1,
+     0
+    ],
+    "Pentaract": [
+     2,
+     0,
      0
     ],
     "Schematic": [
@@ -7972,6 +8339,11 @@
     "BookStack": [
      0,
      1,
+     0
+    ],
+    "Pentaract": [
+     2,
+     0,
      0
     ],
     "Schematic": [
@@ -8440,12 +8812,12 @@
   "QA007": {
    "title": "Package imported but not declared as a dependency",
    "preview": true,
-   "tp": 56,
+   "tp": 59,
    "fp": 7,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.8889,
-   "precision_pessimistic": 0.8889,
+   "precision": 0.8939,
+   "precision_pessimistic": 0.8939,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -8487,6 +8859,11 @@
     ],
     "chat-copilot": [
      1,
+     0,
+     0
+    ],
+    "clean-architecture-manga": [
+     3,
      0,
      0
     ],
@@ -8624,6 +9001,11 @@
     ],
     "chat-copilot": [
      1,
+     0,
+     0
+    ],
+    "clean-architecture-manga": [
+     3,
      0,
      0
     ],
@@ -8926,7 +9308,7 @@
   "REL001": {
    "title": "Outbound HTTP request without a timeout",
    "preview": false,
-   "tp": 80,
+   "tp": 83,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -8937,6 +9319,11 @@
    "seeded_recall": 1.0,
    "by_repo": {
     "Django-Styleguide-Example": [
+     3,
+     0,
+     0
+    ],
+    "Pentaract": [
      3,
      0,
      0
@@ -9048,6 +9435,11 @@
     ]
    },
    "preview_by_repo": {
+    "Pentaract": [
+     3,
+     0,
+     0
+    ],
     "atuin": [
      9,
      0,
@@ -9405,12 +9797,12 @@
   "SEC003": {
    "title": "High-entropy secret assigned in code",
    "preview": true,
-   "tp": 35,
-   "fp": 97,
+   "tp": 36,
+   "fp": 103,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.2652,
-   "precision_pessimistic": 0.2652,
+   "precision": 0.259,
+   "precision_pessimistic": 0.259,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -9423,6 +9815,11 @@
     "JavaVulnerableLab": [
      1,
      0,
+     0
+    ],
+    "LinkAce": [
+     0,
+     5,
      0
     ],
     "Timinute": [
@@ -9445,6 +9842,11 @@
      4,
      0
     ],
+    "clean-architecture-manga": [
+     1,
+     0,
+     0
+    ],
     "dvcsharp-api": [
      1,
      0,
@@ -9453,6 +9855,11 @@
     "eShopOnWeb": [
      1,
      0,
+     0
+    ],
+    "filament-demo": [
+     0,
+     1,
      0
     ],
     "flexible-graphrag": [
@@ -9567,6 +9974,11 @@
      0,
      0
     ],
+    "LinkAce": [
+     0,
+     5,
+     0
+    ],
     "Timinute": [
      0,
      36,
@@ -9587,6 +9999,11 @@
      4,
      0
     ],
+    "clean-architecture-manga": [
+     1,
+     0,
+     0
+    ],
     "dvcsharp-api": [
      1,
      0,
@@ -9595,6 +10012,11 @@
     "eShopOnWeb": [
      1,
      0,
+     0
+    ],
+    "filament-demo": [
+     0,
+     1,
      0
     ],
     "flexible-graphrag": [
@@ -9846,11 +10268,11 @@
    "title": "Environment file committed to git",
    "preview": false,
    "tp": 6,
-   "fp": 7,
+   "fp": 12,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.4615,
-   "precision_pessimistic": 0.4615,
+   "precision": 0.3333,
+   "precision_pessimistic": 0.3333,
    "seeded_expected": 0,
    "seeded_found": 0,
    "seeded_recall": null,
@@ -9858,6 +10280,11 @@
     "BookStack": [
      0,
      1,
+     0
+    ],
+    "LinkAce": [
+     0,
+     5,
      0
     ],
     "physicalmediavault": [
@@ -10879,12 +11306,12 @@
   "UI014": {
    "title": "Image without width and height",
    "preview": true,
-   "tp": 27,
+   "tp": 28,
    "fp": 16,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6279,
-   "precision_pessimistic": 0.6279,
+   "precision": 0.6364,
+   "precision_pessimistic": 0.6364,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -10945,6 +11372,11 @@
      0
     ],
     "spring-petclinic": [
+     1,
+     0,
+     0
+    ],
+    "spring-security-polls": [
      1,
      0,
      0
@@ -11012,6 +11444,11 @@
      0
     ],
     "spring-petclinic": [
+     1,
+     0,
+     0
+    ],
+    "spring-security-polls": [
      1,
      0,
      0
@@ -11114,11 +11551,11 @@
    "title": "Focus outline removed",
    "preview": true,
    "tp": 18,
-   "fp": 39,
+   "fp": 40,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.3158,
-   "precision_pessimistic": 0.3158,
+   "precision": 0.3103,
+   "precision_pessimistic": 0.3103,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -11146,6 +11583,11 @@
     "chatbot-ui": [
      2,
      0,
+     0
+    ],
+    "clean-architecture-manga": [
+     0,
+     1,
      0
     ],
     "full-stack-fastapi-template": [
@@ -11233,6 +11675,11 @@
     "chatbot-ui": [
      2,
      0,
+     0
+    ],
+    "clean-architecture-manga": [
+     0,
+     1,
      0
     ],
     "full-stack-fastapi-template": [

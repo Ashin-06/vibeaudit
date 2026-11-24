@@ -1,0 +1,46 @@
+{
+ "repo": "kotlin-spring-realworld",
+ "commit": "848c29e3abfe1bd72001cc7d7a3227aebec96e9b",
+ "findings": [
+  {
+   "rule": "JAVA001",
+   "file": "src/main/kotlin/io/realworld/web/ArticleHandler.kt",
+   "line": 40,
+   "fingerprint": "b493a05e1e8fe30c4b030002cea1b458",
+   "verdict": "fp",
+   "reason": "Endpoints carry the project's own @ApiKeySecured annotation, enforced by an interceptor."
+  },
+  {
+   "rule": "JAVA001",
+   "file": "src/main/kotlin/io/realworld/web/ProfileHandler.kt",
+   "line": 15,
+   "fingerprint": "91f82cded66d6d9bcb007c322283bfdb",
+   "verdict": "fp",
+   "reason": "Endpoints carry the project's own @ApiKeySecured annotation, enforced by an interceptor."
+  },
+  {
+   "rule": "JAVA001",
+   "file": "src/main/kotlin/io/realworld/web/TagHandler.kt",
+   "line": 10,
+   "fingerprint": "27fbe75eff89c8ea49ec83fb91d8864e",
+   "verdict": "fp",
+   "reason": "The only endpoint is the public tag list."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "src/main/kotlin/io/realworld/web/UserHandler.kt",
+   "line": 25,
+   "fingerprint": "c03c07c1efb5b47cd5febf61206682ad",
+   "verdict": "tp",
+   "reason": "Login endpoint with no rate limiting anywhere in the project."
+  },
+  {
+   "rule": "JAVA001",
+   "file": "src/main/kotlin/io/realworld/web/UserHandler.kt",
+   "line": 41,
+   "fingerprint": "a79bd9e83656c1d3ca6cf5aa7e1b450e",
+   "verdict": "fp",
+   "reason": "Register and login are public by design; the user update endpoint carries @ApiKeySecured."
+  }
+ ]
+}

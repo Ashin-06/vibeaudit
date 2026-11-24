@@ -1,0 +1,54 @@
+{
+ "repo": "go-rest-api",
+ "commit": "c3101332148b4aa45f637605e394cb0d033dae97",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/build.yml",
+   "line": 59,
+   "fingerprint": "67dfb05a927b0e46bd74e67027c4ad56",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag."
+  },
+  {
+   "rule": "CFG001",
+   "file": "cmd/server/Dockerfile",
+   "line": 27,
+   "fingerprint": "0bcfa8ec224abfdeebca9cc76f3c6c5e",
+   "verdict": "tp",
+   "reason": "The final image has no USER instruction and runs as root."
+  },
+  {
+   "rule": "CFG002",
+   "file": "cmd/server/Dockerfile",
+   "line": 27,
+   "fingerprint": "3b3675890b04424b1e8672d8da0dec45",
+   "verdict": "tp",
+   "reason": "Base image uses the latest tag."
+  },
+  {
+   "rule": "CFG007",
+   "file": "docker-compose.yml",
+   "line": 23,
+   "fingerprint": "4f2760c6a22dc59df3370508ee898bad",
+   "verdict": "tp",
+   "reason": "docker-compose sets the default postgres password."
+  },
+  {
+   "rule": "DATA006",
+   "file": "migrations/20191217202658_init.up.sql",
+   "line": 5,
+   "fingerprint": "6ea4b08b980db2a7770b9eb02549e397",
+   "verdict": "tp",
+   "reason": "Postgres TIMESTAMP column without time zone."
+  },
+  {
+   "rule": "DATA006",
+   "file": "migrations/20191217202658_init.up.sql",
+   "line": 6,
+   "fingerprint": "c205fa83aa9660aee0ef80efe37573c1",
+   "verdict": "tp",
+   "reason": "Postgres TIMESTAMP column without time zone."
+  }
+ ]
+}

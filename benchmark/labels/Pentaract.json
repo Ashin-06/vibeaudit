@@ -1,0 +1,86 @@
+{
+ "repo": "Pentaract",
+ "commit": "ddf74eeb874e4bf4aaee2324f1ba8d234086014c",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-image.yml",
+   "line": 16,
+   "fingerprint": "02e91a3828c379fe5c10d51e8f27328c",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-image.yml",
+   "line": 23,
+   "fingerprint": "51933b6cd8af7861792618c767e73a14",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/docker-image.yml",
+   "line": 31,
+   "fingerprint": "e89274bcfbe6d3b812e5c1573b226a43",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag."
+  },
+  {
+   "rule": "QA001",
+   "file": "README.md",
+   "line": 1,
+   "fingerprint": "e7af180c3047884704a05140f1414428",
+   "verdict": "tp",
+   "reason": "No test files in the repository."
+  },
+  {
+   "rule": "REL001",
+   "file": "pentaract/src/common/telegram_api/bot_api.rs",
+   "line": 48,
+   "fingerprint": "f0ef22f95d1eb3ddca6a88af75137fbd",
+   "verdict": "tp",
+   "reason": "reqwest client without a timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "pentaract/src/common/telegram_api/bot_api.rs",
+   "line": 70,
+   "fingerprint": "2093813d6c444f1b59e772a22d2cfd25",
+   "verdict": "tp",
+   "reason": "reqwest client without a timeout."
+  },
+  {
+   "rule": "REL001",
+   "file": "pentaract/src/common/telegram_api/bot_api.rs",
+   "line": 81,
+   "fingerprint": "c035e0c5f874d00a477f46c4d4c3e3b5",
+   "verdict": "tp",
+   "reason": "reqwest::get without a timeout."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "pentaract/src/routers/users.rs",
+   "line": 15,
+   "fingerprint": "b066336a66dc6d46b3a9336e844a2905",
+   "verdict": "fp",
+   "reason": "Public registration route."
+  },
+  {
+   "rule": "QA003",
+   "file": "ui/src/api/request.js",
+   "line": 52,
+   "fingerprint": "b223edabce8a355386c714bfe22ca1ff",
+   "verdict": "tp",
+   "reason": "The error is caught and ignored with no comment."
+  },
+  {
+   "rule": "QA003",
+   "file": "ui/src/api/request.js",
+   "line": 91,
+   "fingerprint": "a36dbf589288b65e202631b0f9127775",
+   "verdict": "tp",
+   "reason": "The error is caught and ignored with no comment."
+  }
+ ]
+}

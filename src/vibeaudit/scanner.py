@@ -23,7 +23,7 @@ from .projectscan import ProjectScanner
 from .goscan import GoScanner
 from .phpscan import PhpScanner
 from .rustscan import RustScanner
-from .polyscan import POLY_SEVERE, PolyScanner, _lang_of as poly_lang
+from .polyscan import POLY_SEVERE, POLY_STABLE, PolyScanner, _lang_of as poly_lang
 from .pyscan import PyScanner
 from .qualityscan import QualityScanner
 from .datascan import DataScanner
@@ -325,7 +325,8 @@ def finalize(project: Project, raw: List[Finding], opts: Options, already: bool 
         if meta is not None:
             f.preview = meta.preview
             f.gates_in_preview = meta.preview and meta.gates_in_preview
-        if f.source == "vibeaudit" and poly_lang(f.file) and not f.rule_id.startswith(("SEC", "DEP")):
+        if f.source == "vibeaudit" and poly_lang(f.file) and not f.rule_id.startswith(("SEC", "DEP")) \
+                and (poly_lang(f.file), f.rule_id) not in POLY_STABLE:
             # Go, Java/Kotlin, C#, Rust and PHP stay preview until their held-out precision clears the bar
             # (STABILITY.md); injection and XSS still gate, as for other severe preview rules
             f.preview = True

@@ -987,6 +987,96 @@
    "kind": "well-maintained",
    "language": "php",
    "split": "heldout"
+  },
+  {
+   "name": "go-rest-api",
+   "url": "https://github.com/qiangxue/go-rest-api",
+   "commit": "c3101332148b4aa45f637605e394cb0d033dae97",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "go",
+   "split": "heldout"
+  },
+  {
+   "name": "gin-boilerplate",
+   "url": "https://github.com/Massad/gin-boilerplate",
+   "commit": "d2c2a413df2a6ba9c9f97029278b8cc52231d7fa",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "go",
+   "split": "heldout"
+  },
+  {
+   "name": "kotlin-spring-realworld",
+   "url": "https://github.com/gothinkster/kotlin-spring-realworld-example-app",
+   "commit": "848c29e3abfe1bd72001cc7d7a3227aebec96e9b",
+   "licence": "none declared",
+   "kind": "well-maintained",
+   "language": "kotlin",
+   "split": "heldout"
+  },
+  {
+   "name": "spring-security-polls",
+   "url": "https://github.com/callicoder/spring-security-react-ant-design-polls-app",
+   "commit": "362fad90cab17e76453b3b9e273c594de6ee3d7f",
+   "licence": "none declared",
+   "kind": "well-maintained",
+   "language": "java",
+   "split": "heldout"
+  },
+  {
+   "name": "VerticalSliceArchitecture",
+   "url": "https://github.com/nadirbad/VerticalSliceArchitecture",
+   "commit": "feb3a15e7ba03dc12404127e0a1f8f33b214783d",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "csharp",
+   "split": "heldout"
+  },
+  {
+   "name": "clean-architecture-manga",
+   "url": "https://github.com/ivanpaulovich/clean-architecture-manga",
+   "commit": "68b1d5869dd9a7730c58eb0daf5051309eaf09a4",
+   "licence": "Apache-2.0",
+   "kind": "well-maintained",
+   "language": "csharp",
+   "split": "heldout"
+  },
+  {
+   "name": "Pentaract",
+   "url": "https://github.com/Dominux/Pentaract",
+   "commit": "ddf74eeb874e4bf4aaee2324f1ba8d234086014c",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "rust",
+   "split": "heldout"
+  },
+  {
+   "name": "rustapi",
+   "url": "https://github.com/ndelvalle/rustapi",
+   "commit": "bf69ab4e3e11d51ecce6c35ca5be7ce3ea462cc3",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "rust",
+   "split": "heldout"
+  },
+  {
+   "name": "filament-demo",
+   "url": "https://github.com/filamentphp/demo",
+   "commit": "b2bd9ab3b0def3313799398f7fe7f94b9f210885",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "php",
+   "split": "heldout"
+  },
+  {
+   "name": "LinkAce",
+   "url": "https://github.com/Kovah/LinkAce",
+   "commit": "74ddeda22cdd6189851779e8c8a4664d1746f887",
+   "licence": "GPL-3.0",
+   "kind": "well-maintained",
+   "language": "php",
+   "split": "heldout"
   }
  ]
 }
