@@ -1,0 +1,190 @@
+{
+ "repo": "once-campfire",
+ "commit": "945c22f141795e910e2822d386a94c5686bf7bdc",
+ "findings": [
+  {
+   "rule": "SEC006",
+   "file": ".env.erb",
+   "line": 0,
+   "fingerprint": "0f7ceda3e8a4d4a384873b680b5b17ca",
+   "verdict": "fp",
+   "reason": "A template that reads secrets from 1Password at deploy time; no secret value is committed."
+  },
+  {
+   "rule": "UI016",
+   "file": "app/assets/stylesheets/boosts.css",
+   "line": 74,
+   "fingerprint": "8ce41867b89647c2e3bc0ce2b3573e24",
+   "verdict": "tp",
+   "reason": "The outline is removed with no replacement focus style in the rule."
+  },
+  {
+   "rule": "UI016",
+   "file": "app/assets/stylesheets/inputs.css",
+   "line": 52,
+   "fingerprint": "7af24c5318138a4bc81df3ed77c0a197",
+   "verdict": "tp",
+   "reason": "The outline is removed with no replacement focus style in the rule."
+  },
+  {
+   "rule": "UI016",
+   "file": "app/assets/stylesheets/sidebar.css",
+   "line": 156,
+   "fingerprint": "7c0e94e78761591fc6c0b7d77b6cf12c",
+   "verdict": "tp",
+   "reason": "The outline is removed with no replacement focus style in the rule."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "app/controllers/accounts/bots/keys_controller.rb",
+   "line": 4,
+   "fingerprint": "fbe2116dc4f07180505b3ea3112a3e4a",
+   "verdict": "fp",
+   "reason": "The controller requires an administrator (ensure_can_administer)."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/first_runs_controller.rb",
+   "line": 10,
+   "fingerprint": "a7cb2ac77dedd94876ba6ff57fd1368f",
+   "verdict": "fp",
+   "reason": "First-run setup, public by design and closed once an account exists."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/messages/boosts_controller.rb",
+   "line": 11,
+   "fingerprint": "021d2ec5a8a6b96aaa4203bf0acbd888",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/messages/boosts_controller.rb",
+   "line": 11,
+   "fingerprint": "6b29d46ca3206145c8f07151120d76ce",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/messages/boosts_controller.rb",
+   "line": 18,
+   "fingerprint": "69bc74e563fd1ea0f0bda609595e997e",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/messages/boosts_controller.rb",
+   "line": 18,
+   "fingerprint": "b4c0f9f4d0b6e76f16715e7ef2d4b9c0",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/rooms/involvements_controller.rb",
+   "line": 8,
+   "fingerprint": "fd3aefbd0eb399925e7fc59c918b97ee",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/users/avatars_controller.rb",
+   "line": 22,
+   "fingerprint": "a19df224ed104866ae9871823d333ff4",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/users/profiles_controller.rb",
+   "line": 13,
+   "fingerprint": "c76fbdb9a7053069436bc6312a861b3d",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/users/push_subscriptions_controller.rb",
+   "line": 19,
+   "fingerprint": "772a7001765c7968d8f8551924b2a377",
+   "verdict": "fp",
+   "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/users_controller.rb",
+   "line": 11,
+   "fingerprint": "502d5667bda37a7a6a0930573dac67e2",
+   "verdict": "fp",
+   "reason": "Public sign-up (join code or registration), by design."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/users_controller.rb",
+   "line": 11,
+   "fingerprint": "dfd467781feef23c57ca7dba41acf426",
+   "verdict": "fp",
+   "reason": "Public sign-up (join code or registration), by design."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/javascript/controllers/composer_controller.js",
+   "line": 200,
+   "fingerprint": "86bc08aafac99f95508e409883bb8ccd",
+   "verdict": "fp",
+   "reason": "The user's own selected file name, shown only to them."
+  },
+  {
+   "rule": "QA003",
+   "file": "app/javascript/controllers/copy_to_clipboard_controller.js",
+   "line": 14,
+   "fingerprint": "024ade9b2285c33fe606960d2926bc26",
+   "verdict": "tp",
+   "reason": "The error is caught and ignored with no comment."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/javascript/controllers/messages_controller.js",
+   "line": 108,
+   "fingerprint": "dd298e41ecc9318ba72d102baa6d9972",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own templates or server-rendered partials."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/javascript/helpers/dom_helpers.js",
+   "line": 9,
+   "fingerprint": "f920aa6ab82e830add65b2c9014b65d0",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own templates or server-rendered partials."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/javascript/lib/autocomplete/suggestion_results_controller.js",
+   "line": 152,
+   "fingerprint": "92eb95f37674ecee3f61b7a20361a24d",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own templates or server-rendered partials."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/javascript/models/client_message.js",
+   "line": 29,
+   "fingerprint": "d5bab637116afaab8efd5ca41b610f1b",
+   "verdict": "fp",
+   "reason": "HTML built from the app's own templates or server-rendered partials."
+  },
+  {
+   "rule": "SEC003",
+   "file": "script/dev/populate",
+   "line": 63,
+   "fingerprint": "61e30addb9fe99474b70c2d834a8dd44",
+   "verdict": "fp",
+   "reason": "A development seed script with a documented local password."
+  }
+ ]
+}

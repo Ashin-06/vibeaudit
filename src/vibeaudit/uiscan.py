@@ -349,6 +349,8 @@ class UiScanner:
             return
         # files next to the app router (app/favicon.ico, app/icon.png) are served from the root too
         served = {"/" + rel.rsplit("/", 1)[-1] for rel in every if re.search(r"(?:^|/)app/[^/]+$", rel)}
+        # Rails: Propshaft and Sprockets serve app/assets/<dir>/x and resolve `url('/x')` in CSS to it
+        served |= {"/" + m.group(1) for rel in every for m in [re.search(r"(?:^|/)app/assets/(?:images|fonts|builds)/(.+)$", rel)] if m}
         for f in self.p.files:
             if f.text is None or f.is_test or SKIP_PATH.search(f.rel) or re.search(r"(?:^|/)public/", f.rel) or not (
                     f.kind in ("js", "html") or f.rel.endswith((".css", ".scss"))):

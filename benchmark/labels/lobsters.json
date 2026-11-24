@@ -1,0 +1,142 @@
+{
+ "repo": "lobsters",
+ "commit": "efaaaf85c2dc4fa9ed316cd1952a66bc5c7238ce",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/check.yml",
+   "line": 30,
+   "fingerprint": "aaaf5c76e050c4296c2cc29f8f6a4235",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/check.yml",
+   "line": 59,
+   "fingerprint": "5c2167dfa16fa2164b2054956181e073",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/check.yml",
+   "line": 75,
+   "fingerprint": "b10bdad25d83941fc5de19b1bc5f0e4e",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/check.yml",
+   "line": 95,
+   "fingerprint": "3d94eec7f513c139f2a6006fc1aec77d",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile.dev",
+   "line": 2,
+   "fingerprint": "723908b7992b026a916a9d6df1dc83af",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "UI016",
+   "file": "app/assets/stylesheets/application.css",
+   "line": 578,
+   "fingerprint": "ebcb39e6eec8bb0046a916b6943f5ce9",
+   "verdict": "fp",
+   "reason": "A :focus-visible outline replaces it on the next line."
+  },
+  {
+   "rule": "UI016",
+   "file": "app/assets/stylesheets/application.css",
+   "line": 2045,
+   "fingerprint": "cd950357df3aac3fe48f61c9fa7aaafd",
+   "verdict": "fp",
+   "reason": "The outline is removed on an inner span, not on the focused link."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/invitations_controller.rb",
+   "line": 71,
+   "fingerprint": "b9d35ce38cf1436830efd6a7225ee403",
+   "verdict": "fp",
+   "reason": "Requesting an invitation is public by design."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/javascript/user.js",
+   "line": 43,
+   "fingerprint": "145c3b3229906e691619fb22459dd076",
+   "verdict": "fp",
+   "reason": "HTML rendered by the app's own server (escaped in ERB), a number, or a fixed string."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/javascript/user.js",
+   "line": 203,
+   "fingerprint": "32f4595fc1d017e68e98986d4f4d71e6",
+   "verdict": "fp",
+   "reason": "HTML rendered by the app's own server (escaped in ERB), a number, or a fixed string."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/javascript/user.js",
+   "line": 326,
+   "fingerprint": "343f32a2e664821ee9a1e971c1a6eb6e",
+   "verdict": "fp",
+   "reason": "HTML rendered by the app's own server (escaped in ERB), a number, or a fixed string."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/javascript/user.js",
+   "line": 328,
+   "fingerprint": "60222398da97005afe2abc0c3c45626d",
+   "verdict": "fp",
+   "reason": "HTML rendered by the app's own server (escaped in ERB), a number, or a fixed string."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/javascript/user.js",
+   "line": 364,
+   "fingerprint": "97e0daf073740faee8e7d5c6931e0f08",
+   "verdict": "fp",
+   "reason": "HTML rendered by the app's own server (escaped in ERB), a number, or a fixed string."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/javascript/user.js",
+   "line": 559,
+   "fingerprint": "3cac6c30b0f25423daa642a8a1d468a6",
+   "verdict": "fp",
+   "reason": "HTML rendered by the app's own server (escaped in ERB), a number, or a fixed string."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/javascript/user.js",
+   "line": 625,
+   "fingerprint": "71f2ca6272f4ca9c3091de59ac8b1e9e",
+   "verdict": "fp",
+   "reason": "HTML rendered by the app's own server (escaped in ERB), a number, or a fixed string."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/javascript/user.js",
+   "line": 638,
+   "fingerprint": "c9c8b86e43a204bf63e0eb8a42b34344",
+   "verdict": "fp",
+   "reason": "HTML rendered by the app's own server (escaped in ERB), a number, or a fixed string."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/javascript/user.js",
+   "line": 879,
+   "fingerprint": "cb772cad61a9c085731d5183aee187e2",
+   "verdict": "fp",
+   "reason": "HTML rendered by the app's own server (escaped in ERB), a number, or a fixed string."
+  }
+ ]
+}

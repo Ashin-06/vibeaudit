@@ -701,6 +701,11 @@ How it reads code:
   routers, when each prefix is a string literal and each router is mounted once. The frontend-backend contract
   rules run when every route's full path is known (or the project has no prefixes). Django URLconfs, NestJS and
   Remix routes are only partly covered.
+- Ruby on Rails gets routes from config/routes.rb (resources, namespaces, verb routes) with `before_action`
+  authentication (inherited, `only:`/`except:`, `skip_before_action`), and SQL injection, command injection,
+  `constantize`/`send`, `Marshal`/`YAML.load`, `send_file`, open redirects (off on Rails 7 defaults), mass
+  assignment (`permit!`, permitted admin/role attributes) and raw ERB output. Ruby findings are preview;
+  injection and XSS still gate.
 - RPC entry points are routes too, so AUTH001-003 apply: tRPC procedures (`publicProcedure` vs
   `protectedProcedure` and custom procedures built with `.use(...)`), GraphQL resolvers (Apollo-style resolver
   maps, Strawberry, graphene; a shield, auth directive or a context that throws makes them authenticated) and

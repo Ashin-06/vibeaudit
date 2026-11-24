@@ -1,0 +1,182 @@
+{
+ "repo": "railsgoat",
+ "commit": "f5951f13089d85c979de09e7da3c8c0fb982f94a",
+ "findings": [
+  {
+   "rule": "CFG010",
+   "file": ".github/workflows/ci.yml",
+   "line": 21,
+   "fingerprint": "cfcbb64f610d689630a87512da47eb57",
+   "verdict": "tp",
+   "reason": "Third-party action used by tag or branch."
+  },
+  {
+   "rule": "CFG001",
+   "file": "Dockerfile",
+   "line": 1,
+   "fingerprint": "969a9d4bef68c2842be60570c11dc232",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/assets/images/fonts/lte-ie7.js",
+   "line": 6,
+   "fingerprint": "6f5a4b32ef1adcf000b10a0879b90608",
+   "verdict": "fp",
+   "reason": "Vendored icon-font polyfill script (lte-ie7.js)."
+  },
+  {
+   "rule": "BE009",
+   "file": "app/controllers/admin_controller.rb",
+   "line": 39,
+   "fingerprint": "0fa8d1ea94821c1d87227752688930cd",
+   "verdict": "tp",
+   "reason": "Mass assignment of request parameters (to_unsafe_h / permit(:admin))."
+  },
+  {
+   "rule": "BE003",
+   "file": "app/controllers/api/v1/mobile_controller.rb",
+   "line": 10,
+   "fingerprint": "84a95f4503d2522035dda50ffcff7956",
+   "verdict": "tp",
+   "reason": "Request data is constantized into a class."
+  },
+  {
+   "rule": "BE003",
+   "file": "app/controllers/api/v1/mobile_controller.rb",
+   "line": 17,
+   "fingerprint": "839883540880745fe808a24c16279d61",
+   "verdict": "tp",
+   "reason": "Request data is constantized into a class."
+  },
+  {
+   "rule": "BE003",
+   "file": "app/controllers/benefit_forms_controller.rb",
+   "line": 12,
+   "fingerprint": "97ab50094fa655a6cad64dad10cfcbdf",
+   "verdict": "tp",
+   "reason": "Request data is constantized into a class."
+  },
+  {
+   "rule": "BE006",
+   "file": "app/controllers/benefit_forms_controller.rb",
+   "line": 13,
+   "fingerprint": "76f69db80fcfc13eabadd32783c7d075",
+   "verdict": "tp",
+   "reason": "send_file with a request-chosen object."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "app/controllers/messages_controller.rb",
+   "line": 14,
+   "fingerprint": "325ffab7ad337ba449489d69bba46977",
+   "verdict": "tp",
+   "reason": "Deletes a record by id with no owner check (intentional IDOR)."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "app/controllers/password_resets_controller.rb",
+   "line": 5,
+   "fingerprint": "d1d362c294f234e9de40ae863cc99031",
+   "verdict": "tp",
+   "reason": "Password reset endpoint with no rate limiting."
+  },
+  {
+   "rule": "BE004",
+   "file": "app/controllers/password_resets_controller.rb",
+   "line": 6,
+   "fingerprint": "b1c84bc2c59510af85d0431db47e2a96",
+   "verdict": "tp",
+   "reason": "Marshal.load of request data."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "app/controllers/password_resets_controller.rb",
+   "line": 29,
+   "fingerprint": "227ef9ffb006527e9860264a59929e60",
+   "verdict": "tp",
+   "reason": "Password reset endpoint with no rate limiting."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "app/controllers/pay_controller.rb",
+   "line": 28,
+   "fingerprint": "437b80d34852b0648c6214f3491e7d43",
+   "verdict": "tp",
+   "reason": "Deletes a record by id with no owner check (intentional IDOR)."
+  },
+  {
+   "rule": "BE008",
+   "file": "app/controllers/sessions_controller.rb",
+   "line": 26,
+   "fingerprint": "2e0a566984c324fadbd4b48ad5043495",
+   "verdict": "tp",
+   "reason": "redirect_to the url parameter."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/users_controller.rb",
+   "line": 10,
+   "fingerprint": "502d5667bda37a7a6a0930573dac67e2",
+   "verdict": "fp",
+   "reason": "Public registration route."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/users_controller.rb",
+   "line": 10,
+   "fingerprint": "dfd467781feef23c57ca7dba41acf426",
+   "verdict": "fp",
+   "reason": "Public registration route."
+  },
+  {
+   "rule": "BE001",
+   "file": "app/controllers/users_controller.rb",
+   "line": 29,
+   "fingerprint": "cedfffcec9992dbeadf5c8974c4dfab5",
+   "verdict": "tp",
+   "reason": "Request data interpolated into where()."
+  },
+  {
+   "rule": "BE009",
+   "file": "app/controllers/users_controller.rb",
+   "line": 55,
+   "fingerprint": "f7941302d55c13fcfaa08e718e99bdb7",
+   "verdict": "tp",
+   "reason": "Mass assignment of request parameters (to_unsafe_h / permit(:admin))."
+  },
+  {
+   "rule": "FE001",
+   "file": "app/views/layouts/application.html.erb",
+   "line": 427,
+   "fingerprint": "0dd8c813ae8de737f6af24c1eb309f5b",
+   "verdict": "tp",
+   "reason": "raw cookies[:font] rendered into the page."
+  },
+  {
+   "rule": "SEC003",
+   "file": "config/initializers/constants.rb",
+   "line": 2,
+   "fingerprint": "1daf012bbe3a6c6769cf0fd8b52dd2e7",
+   "verdict": "tp",
+   "reason": "A real secret committed in an initializer."
+  },
+  {
+   "rule": "SEC003",
+   "file": "config/initializers/secret_token.rb",
+   "line": 8,
+   "fingerprint": "a005fe652917b9c204a2236ebea0c68e",
+   "verdict": "tp",
+   "reason": "A real secret committed in an initializer."
+  },
+  {
+   "rule": "CFG001",
+   "file": "openshift-configs/Dockerfile",
+   "line": 1,
+   "fingerprint": "a238a2196647f3d2f4ea1e8769e7eef6",
+   "verdict": "tp",
+   "reason": "The container runs as root (no USER)."
+  }
+ ]
+}
