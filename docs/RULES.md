@@ -3,9 +3,9 @@
 Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do not edit by hand.
 `vibeaudit rules` prints the same list, and `vibeaudit rules --format json` includes every field.
 
-173 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
+174 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-77 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+78 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -1160,6 +1160,7 @@ References: CWE-215, A05:2021
 | [LLM023](#llm023) | low | preview | No per-user usage or cost limit for model calls |
 | [LLM024](#llm024) | low | preview | LLM code without tests or evals |
 | [LLM025](#llm025) | high | preview | Prompt-injection text in an agent instruction file |
+| [LLM026](#llm026) | high | preview | System prompt disclosed through prompt injection |
 
 ### LLM001
 
@@ -1428,6 +1429,18 @@ Why it matters: Coding agents follow CLAUDE.md, AGENTS.md, .cursorrules and simi
 How to fix: Read the file in a viewer that shows hidden characters, remove the injected text, and review who changed the file.
 
 References: CWE-77, LLM01:2025
+
+### LLM026
+
+**System prompt disclosed through prompt injection** (high, preview)
+
+Preview: New with `vibeaudit probe`: a dynamic check, not yet measured on enough running apps.
+
+Why it matters: A request that tells the model to print its instructions gets the system prompt back. Anything in it (business rules, internal URLs, keys pasted into the prompt) is readable by every user, and knowing it makes further injection easier. Reported by `vibeaudit probe`, which proves it by matching the answer against the system prompt in the source.
+
+How to fix: Keep secrets and internal details out of the system prompt, filter answers that repeat it, and treat the prompt as public.
+
+References: CWE-200
 
 ## Code quality and tests
 

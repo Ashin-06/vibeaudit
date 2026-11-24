@@ -244,6 +244,7 @@
   "LLM023": {"owasp": [], "owasp-llm": ["LLM10:2025"], "eu-ai-act": [], "soc2": ["A1.1"], "hipaa": [], "gdpr": []},
   "LLM024": {"owasp": [], "owasp-llm": ["LLM09:2025"], "eu-ai-act": ["Art. 9", "Art. 15"], "soc2": ["CC8.1"], "hipaa": [], "gdpr": []},
   "LLM025": {"owasp": [], "owasp-llm": ["LLM01:2025"], "eu-ai-act": ["Art. 15"], "soc2": ["CC6.6", "CC8.1"], "hipaa": [], "gdpr": ["Art. 32"]},
+  "LLM026": {"owasp": ["A01:2021"], "owasp-llm": ["LLM07:2025", "LLM01:2025"], "eu-ai-act": ["Art. 15"], "soc2": ["CC6.1"], "hipaa": [], "gdpr": ["Art. 32"]},
   "UI001": {"owasp": [], "owasp-llm": [], "eu-ai-act": [], "soc2": [], "hipaa": [], "gdpr": [], "note": "Accessibility check: outside these frameworks (accessibility is covered by WCAG 2.2 and EN 301 549)."},
   "UI002": {"owasp": [], "owasp-llm": [], "eu-ai-act": [], "soc2": [], "hipaa": [], "gdpr": [], "note": "Accessibility check: outside these frameworks (accessibility is covered by WCAG 2.2 and EN 301 549)."},
   "UI003": {"owasp": [], "owasp-llm": [], "eu-ai-act": [], "soc2": [], "hipaa": [], "gdpr": [], "note": "Accessibility check: outside these frameworks (accessibility is covered by WCAG 2.2 and EN 301 549)."},
