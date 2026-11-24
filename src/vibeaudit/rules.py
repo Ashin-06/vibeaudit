@@ -975,6 +975,14 @@ _R = [
          "Set the headers once for every response (helmet for Express, django-csp and SecurityMiddleware for Django, "
          "a middleware or the reverse proxy elsewhere).", "CWE-693", "A05:2021", preview=True,
          preview_reason="New with `vibeaudit probe`: a dynamic check, not yet measured on enough running apps."),
+    Rule("LLM026", "System prompt disclosed through prompt injection", "llm", "high",
+         "A request that tells the model to print its instructions gets the system prompt back. Anything in it "
+         "(business rules, internal URLs, keys pasted into the prompt) is readable by every user, and knowing it makes "
+         "further injection easier. Reported by `vibeaudit probe`, which proves it by matching the answer against the "
+         "system prompt in the source.",
+         "Keep secrets and internal details out of the system prompt, filter answers that repeat it, and treat the "
+         "prompt as public.", "CWE-200", "", preview=True,
+         preview_reason="New with `vibeaudit probe`: a dynamic check, not yet measured on enough running apps."),
     Rule("AI001", "Issue reported by the LLM review (unverified)", "llm-review", "medium",
          "With --llm-review a model reads the riskiest files and reports issues the rules did not cover. These are "
          "suggestions from a model and can be wrong.",

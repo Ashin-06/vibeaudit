@@ -165,6 +165,8 @@ def build_parser() -> argparse.ArgumentParser:
     pr.add_argument("--path", default=".", help="project directory whose routes to probe (default: current directory)")
     pr.add_argument("--auth", action="append", default=[], metavar="'HEADER: VALUE'",
                     help="credentials of a signed-in user (e.g. 'Cookie: session=...'); repeat for several headers")
+    pr.add_argument("--auth2", action="append", default=[], metavar="'HEADER: VALUE'",
+                    help="credentials of a second user, to check that one user cannot read another's records (IDOR)")
     pr.add_argument("--rate", type=float, default=10.0, help="requests per second (default 10)")
     pr.add_argument("--max-requests", type=int, default=2000, help="stop after this many requests (default 2000)")
     pr.add_argument("--i-own-this-target", action="store_true", dest="own",
@@ -368,7 +370,9 @@ def cmd_probe(a: argparse.Namespace) -> int:
         return 2
     res = scan(a.path, opts)
     try:
-        found = probe.Prober(target, res.routes, auth).run()
+        from .files import Project
+
+        found = probe.Prober(target, res.routes, auth, probe.parse_auth(a.auth2), probe.system_prompts(Project(Path(a.path)))).run()
     except ExploitError as e:
         print(f"vibeaudit: {e}", file=sys.stderr)
         return 2

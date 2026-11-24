@@ -134,10 +134,13 @@ def param_names(route: Route) -> List[str]:
 
 
 class Prober:
-    def __init__(self, target: Target, routes: List[Route], auth: Optional[Dict[str, str]] = None):
+    def __init__(self, target: Target, routes: List[Route], auth: Optional[Dict[str, str]] = None,
+                 auth2: Optional[Dict[str, str]] = None, system_prompts: Optional[List[str]] = None):
         self.t = target
         self.routes = [r for r in routes if any(m in ("GET", "POST", "ALL") for m in r.methods)]
         self.auth = auth or {}
+        self.auth2 = auth2 or {}
+        self.system_prompts = [p for p in (system_prompts or []) if len(p) >= 40]
         self.findings: List[Finding] = []
         self.seen = set()
 
@@ -193,6 +196,10 @@ class Prober:
         path = concrete(r.path)
         if self.auth:
             self.auth_bypass(r, method, path)
+        if self.auth and self.auth2 and method == "GET" and idor_candidate(r):
+            self.idor(r)
+        if r.calls_llm and self.system_prompts:
+            self.prompt_leak(r, path)
         names = param_names(r)
         path_params = [p for p in r.params]
         base = self.send(method, path, {n: "1" for n in names})
@@ -256,6 +263,44 @@ class Prober:
             if got and 300 <= got[0] < 400 and urllib.parse.urlsplit(got[1].get("location", "")).hostname == "vibeaudit-canary.invalid":
                 self.add("BE008", r, f"{name} redirects to another site.", got[1].get("location", ""))
 
+    def idor(self, r: Route) -> None:
+        """Two signed-in users: the second reads the first one's record (same answer) where an anonymous request is
+        refused. Only signed-in routes with an id parameter and no owner check in the handler are tried, the static
+        AUTH003 evidence, so a record every user may see is less likely to be taken for someone else's."""
+        for value in ("1", "2", "3"):
+            path = PARAM_SEG.sub(value, r.path)
+            first = self.t.request("GET", path, dict(self.auth))
+            if not (200 <= first[0] < 300) or len(first[2]) < 20:
+                continue
+            anon = self.t.request("GET", path, {})
+            second = self.t.request("GET", path, dict(self.auth2))
+            if anon[0] in (401, 403) or (300 <= anon[0] < 400):
+                if 200 <= second[0] < 300 and SequenceMatcher(None, first[2][:4000], second[2][:4000]).quick_ratio() > 0.95:
+                    self.add("AUTH003", r, f"a second user reads the first user's record at {path}.",
+                             f"user 1: HTTP {first[0]}, user 2: HTTP {second[0]}, anonymous: HTTP {anon[0]}")
+                    return
+
+    def prompt_leak(self, r: Route, path: str) -> None:
+        """Ask the model to print its instructions; a leak is proven when the answer quotes the system prompt the
+        source defines (40 characters or more of it)."""
+        import json as _json
+
+        body = _json.dumps(dict({k: INJECTION for k in PROMPT_FIELDS},
+                                messages=[{"role": "user", "content": INJECTION}]))
+        st, _h, text, _s = self.t.request("POST", path, dict(self.auth), body=body)
+        if not st:
+            return
+        low = " ".join(text.lower().split())
+        for sp in self.system_prompts:
+            norm = " ".join(sp.lower().split())
+            for i in range(0, max(1, len(norm) - 40), 20):
+                chunk = norm[i:i + 40]
+                if chunk in low:
+                    shown = chunk[:24] + "..."  # quote only a short piece of the leaked prompt
+                    self.add("LLM026", r, "a prompt-injection request makes the model reveal its system prompt.",
+                             f'answer contains "{shown}"')
+                    return
+
     def auth_bypass(self, r: Route, method: str, path: str) -> None:
         if not r.has_auth:
             return
@@ -303,3 +348,21 @@ def merge(static: List[Finding], probed: List[Finding]) -> List[Finding]:
             out.append(p)
     return out
 
+
+
+def idor_candidate(r: Route) -> bool:
+    ids = [p for p in r.params if re.search(r"(?i)id$|^pk$|^slug$", p)]
+    return bool(r.has_auth and ids and not H.OWNERSHIP_EVIDENCE.search(r.body) and not H.ADMIN_ROLE_EVIDENCE.search(r.body))
+
+
+SYSTEM_PROMPT_LITERAL = re.compile(
+    r"""(?is)(?:system_?prompt|system_?message|instructions|role\s*[:=]\s*["']system["'][^}]{0,80}?content)\s*[:=]\s*(?:f|r)?["'`]{1,3}([^"'`]{40,2000})""")
+
+
+def system_prompts(project) -> List[str]:
+    """System prompt strings the source defines (the evidence a leak is compared with)."""
+    out = []
+    for f in project.files:
+        if f.text and f.kind in ("py", "js") and not f.is_test:
+            out += [m.group(1) for m in SYSTEM_PROMPT_LITERAL.finditer(f.text)]
+    return out
