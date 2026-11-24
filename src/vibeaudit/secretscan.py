@@ -90,6 +90,8 @@ PASSWORD_ASSIGN = re.compile(
 SESSION_CALL = re.compile(
     r"""(?<!\.)\b(?:session|expressSession|cookieSession|cookieParser)\s*\(\s*(?:\{[^}]*?\bsecret\s*:\s*)?["'`]([^"'`$]+)["'`]""")
 SIGNING_LITERAL = [
+    # Go: `var JwtSigKey = []byte("...")`, `jwtSecret := []byte("...")` (KubePi)
+    re.compile(r"""(?i)\b\w{0,30}(?:jwt|sig|signing|hmac|token|session)\w{0,20}(?:key|secret)\w{0,10}\s*:?=\s*\[\]byte\(\s*"([^"$]{4,})"\s*\)"""),
     re.compile(r"""\b(?:app\s*\.\s*)?(?:secret_key|SECRET_KEY|JWT_SECRET(?:_KEY)?|jwt_secret(?:_key)?|SESSION_SECRET|session_secret|SIGNING_KEY|TOKEN_SECRET|COOKIE_SECRET|AUTH_SECRET|NEXTAUTH_SECRET)\s*=\s*["']([^"']+)["']"""),
     re.compile(r"""\bconfig\s*\[\s*["'](?:SECRET_KEY|JWT_SECRET_KEY|SESSION_SECRET)["']\s*\]\s*=\s*["']([^"']+)["']"""),
     re.compile(r"""\bjwt\s*\.\s*sign\s*\([^;]*?,\s*["'`]([^"'`$]+)["'`]"""),
