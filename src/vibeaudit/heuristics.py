@@ -78,7 +78,9 @@ OWNERSHIP_EVIDENCE = re.compile(
     r"|\bcurrent_user\s*\.\s*\w{1,60}\s*\.\s*(?:find|find_by|find_by!|where)\b|\bauthorize\s+@?\w"
     r"|\bload_and_authorize_resource\b|\bpolicy_scope\s*\("
     # `@message.author_user_id == @user.id`, `@story.is_editable_by_user?(@user)`
-    r"|\b\w{1,40}_user_id\s*[!=]=|\b\w{0,40}(?:editable|deletable|owned|accessible|viewable|modifiable)_by\w{0,20}\?)"
+    r"|\b\w{1,40}_user_id\s*[!=]=|\b\w{0,40}(?:editable|deletable|owned|accessible|viewable|modifiable)_by\w{0,20}\?"
+    # Rails filters that stop a caller who may not change the record: `before_action :ensure_editable`
+    r"|\bensure_(?:editable|current_user|owner\w{0,20}|can_\w{1,40}|access\w{0,20})\b|\.\s*editable\?)"
 )
 # a reset that needs a signed, emailed token, or a route that takes no credential: nothing to guess or rate-limit
 TOKEN_RESET = re.compile(r"(?i)verify\w*token\w*\s*\(|[<{:]token\b")

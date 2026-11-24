@@ -172,3 +172,55 @@ def test_rails_tuned_causes(tmp_path):
     assert [f for f in found(tmp_path) if not f[0].startswith("AUTH001")] == []
     res = scan(str(tmp_path), Options(offline=True, external="none", include_preview=True))
     assert not [f for f in res.findings if f.rule_id in ("AUTH010", "SEC004", "SEC003")]
+
+
+CONCERN = """module Authentication
+  extend ActiveSupport::Concern
+
+  included do
+    before_action :require_authentication
+  end
+
+  class_methods do
+    def require_unauthenticated_access(**options)
+      allow_unauthenticated_access **options
+      before_action :redirect_signed_in_user_to_root, **options
+    end
+
+    def allow_unauthenticated_access(**options)
+      skip_before_action :require_authentication, **options
+      before_action :resume_authentication, **options
+    end
+  end
+end
+"""
+
+
+def test_authentication_concern_and_its_macros(tmp_path):
+    # writebook (the Rails 8 generator's pattern): filters added in `included do`, skipped through class macros
+    write(tmp_path, {
+        "config/routes.rb": "Rails.application.routes.draw do\n  resources :books, only: [:create, :destroy]\n"
+                            "  resource :session, only: [:create]\n  resources :users, only: [:create]\nend\n",
+        "app/controllers/concerns/authentication.rb": CONCERN,
+        "app/controllers/application_controller.rb": "class ApplicationController < ActionController::Base\n"
+                                                     "  include Authentication\nend\n",
+        "app/controllers/books_controller.rb": "class BooksController < ApplicationController\n"
+                                               "  allow_unauthenticated_access only: :destroy\n"
+                                               "  def create\n    Book.create!(book_params)\n  end\n"
+                                               "  def destroy\n    Book.find(params[:id]).destroy\n  end\nend\n",
+        "app/controllers/sessions_controller.rb": "class SessionsController < ApplicationController\n"
+                                                  "  require_unauthenticated_access\n"
+                                                  "  def create\n    Session.create!(user: User.first)\n  end\nend\n",
+        "app/controllers/users_controller.rb": "class UsersController < ApplicationController\n"
+                                               "  def create\n    User.create!(user_params)\n  end\nend\n"})
+    routes = {(r.methods[0], r.path): r.has_auth for r in RubyScanner(Project(tmp_path), lambda f: None).run()}
+    assert routes == {("POST", "/books"): True, ("DELETE", "/books/:id"): False, ("POST", "/session"): False,
+                      ("POST", "/users"): True}
+
+
+def test_include_list_continued_on_the_next_line(tmp_path):
+    test_authentication_concern_and_its_macros(tmp_path)
+    write(tmp_path, {"app/controllers/application_controller.rb": "class ApplicationController < ActionController::Base\n"
+                     "  include Localize, Authentication,\n          Notifiable\nend\n"})
+    routes = {(r.methods[0], r.path): r.has_auth for r in RubyScanner(Project(tmp_path), lambda f: None).run()}
+    assert routes[("POST", "/books")] and not routes[("DELETE", "/books/:id")]

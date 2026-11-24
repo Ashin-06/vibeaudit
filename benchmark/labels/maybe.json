@@ -131,6 +131,14 @@
    "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
   },
   {
+   "rule": "AUTH003",
+   "file": "app/controllers/budget_categories_controller.rb",
+   "line": 24,
+   "fingerprint": "1d0005e72508ae8407295d6fa844320d",
+   "verdict": "fp",
+   "reason": "The record is found through Current.user or Current.family (CurrentAttributes), which is not read as an owner check."
+  },
+  {
    "rule": "AUTH001",
    "file": "app/controllers/budgets_controller.rb",
    "line": 15,
@@ -241,6 +249,14 @@
    "fingerprint": "21adb27fd6009ac9884e580327bda82c",
    "verdict": "fp",
    "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "app/controllers/import/mappings_controller.rb",
+   "line": 4,
+   "fingerprint": "4705fc552df4091f25fa44b1714024b0",
+   "verdict": "fp",
+   "reason": "The record is found through Current.user or Current.family (CurrentAttributes), which is not read as an owner check."
   },
   {
    "rule": "AUTH001",
@@ -451,12 +467,28 @@
    "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
   },
   {
+   "rule": "AUTH003",
+   "file": "app/controllers/trades_controller.rb",
+   "line": 31,
+   "fingerprint": "e978f6c181c1754fe71214b79b6d8f16",
+   "verdict": "fp",
+   "reason": "The record is found through Current.user or Current.family (CurrentAttributes), which is not read as an owner check."
+  },
+  {
    "rule": "AUTH001",
    "file": "app/controllers/transaction_categories_controller.rb",
    "line": 4,
    "fingerprint": "e087d7bca13f8ba09448a5d33d8134dc",
    "verdict": "fp",
    "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "app/controllers/transaction_categories_controller.rb",
+   "line": 4,
+   "fingerprint": "3079c72aaa639a650d2f0e226bc94255",
+   "verdict": "fp",
+   "reason": "The record is found through Current.user or Current.family (CurrentAttributes), which is not read as an owner check."
   },
   {
    "rule": "AUTH001",

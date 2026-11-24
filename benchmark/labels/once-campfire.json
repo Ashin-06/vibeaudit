@@ -115,6 +115,14 @@
    "reason": "Authenticated by the app's Authentication concern (before_action inside `included do`), which is not followed."
   },
   {
+   "rule": "AUTH003",
+   "file": "app/controllers/users/push_subscriptions_controller.rb",
+   "line": 19,
+   "fingerprint": "2903bd6cfb79fe2417e735d64cd3b270",
+   "verdict": "fp",
+   "reason": "The record is found through Current.user or Current.family (CurrentAttributes), which is not read as an owner check."
+  },
+  {
    "rule": "AUTH001",
    "file": "app/controllers/users_controller.rb",
    "line": 11,

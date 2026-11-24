@@ -1,7 +1,7 @@
 {
  "tool": "vibeaudit benchmark",
- "corpus": 141,
- "scanned": 141,
+ "corpus": 142,
+ "scanned": 142,
  "skipped": {},
  "heldout": [
   "DVWA",
@@ -1012,11 +1012,11 @@
    "fixed_fp": 0
   },
   "lobsters": {
-   "findings": 17,
-   "labelled": 17,
+   "findings": 16,
+   "labelled": 16,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 1
   },
   "theodinproject": {
    "findings": 11,
@@ -1026,15 +1026,22 @@
    "fixed_fp": 0
   },
   "once-campfire": {
-   "findings": 23,
-   "labelled": 23,
+   "findings": 13,
+   "labelled": 13,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 11
   },
   "maybe": {
-   "findings": 81,
-   "labelled": 81,
+   "findings": 35,
+   "labelled": 35,
+   "needs_review": 0,
+   "lost_tp": [],
+   "fixed_fp": 50
+  },
+  "writebook": {
+   "findings": 6,
+   "labelled": 6,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
@@ -1107,11 +1114,11 @@
    "title": "State-changing endpoint without authentication",
    "preview": false,
    "tp": 73,
-   "fp": 86,
+   "fp": 28,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.4591,
-   "precision_pessimistic": 0.4591,
+   "precision": 0.7228,
+   "precision_pessimistic": 0.7228,
    "seeded_expected": 8,
    "seeded_found": 8,
    "seeded_recall": 1.0,
@@ -1226,14 +1233,9 @@
      0,
      0
     ],
-    "lobsters": [
-     0,
-     1,
-     0
-    ],
     "maybe": [
      0,
-     51,
+     1,
      0
     ],
     "next-learn": [
@@ -1248,7 +1250,7 @@
     ],
     "once-campfire": [
      0,
-     11,
+     1,
      0
     ],
     "openai-assistants-quickstart": [
@@ -1310,6 +1312,11 @@
      3,
      0,
      0
+    ],
+    "writebook": [
+     0,
+     3,
+     0
     ]
    },
    "preview_by_repo": {
@@ -1368,19 +1375,14 @@
      1,
      0
     ],
-    "lobsters": [
+    "maybe": [
      0,
      1,
      0
     ],
-    "maybe": [
-     0,
-     51,
-     0
-    ],
     "once-campfire": [
      0,
-     11,
+     1,
      0
     ],
     "piggymetrics": [
@@ -1411,6 +1413,11 @@
     "symfony-demo": [
      0,
      2,
+     0
+    ],
+    "writebook": [
+     0,
+     3,
      0
     ]
    }
@@ -1481,11 +1488,11 @@
    "title": "Possible insecure direct object reference (IDOR)",
    "preview": false,
    "tp": 33,
-   "fp": 25,
+   "fp": 29,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.569,
-   "precision_pessimistic": 0.569,
+   "precision": 0.5323,
+   "precision_pessimistic": 0.5323,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -1543,6 +1550,11 @@
     "koel": [
      0,
      1,
+     0
+    ],
+    "maybe": [
+     0,
+     4,
      0
     ],
     "microblog": [
@@ -1645,6 +1657,11 @@
     "koel": [
      0,
      1,
+     0
+    ],
+    "maybe": [
+     0,
+     4,
      0
     ],
     "once-campfire": [
@@ -8500,12 +8517,12 @@
   "QA003": {
    "title": "Exception silently swallowed",
    "preview": true,
-   "tp": 166,
+   "tp": 167,
    "fp": 122,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5764,
-   "precision_pessimistic": 0.5764,
+   "precision": 0.5779,
+   "precision_pessimistic": 0.5779,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -8628,6 +8645,11 @@
     "werkzeug": [
      0,
      4,
+     0
+    ],
+    "writebook": [
+     1,
+     0,
      0
     ],
     "wsgidav": [
@@ -8755,6 +8777,11 @@
     "werkzeug": [
      0,
      4,
+     0
+    ],
+    "writebook": [
+     1,
+     0,
      0
     ],
     "wsgidav": [
@@ -11841,11 +11868,11 @@
    "title": "Focus outline removed",
    "preview": true,
    "tp": 21,
-   "fp": 42,
+   "fp": 44,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.3333,
-   "precision_pessimistic": 0.3333,
+   "precision": 0.3231,
+   "precision_pessimistic": 0.3231,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -11949,6 +11976,11 @@
      1,
      0,
      0
+    ],
+    "writebook": [
+     0,
+     2,
+     0
     ]
    },
    "preview_by_repo": {
@@ -12050,6 +12082,11 @@
     "vibecodementor": [
      1,
      0,
+     0
+    ],
+    "writebook": [
+     0,
+     2,
      0
     ]
    }

@@ -56,7 +56,9 @@ ERB_SAFE = re.compile(r"""\A\s*(?:["'][^"'#]*["']|t\s*\(|I18n\b|render\b|yield\b
 RAILS_AUTH = re.compile(r"(?i)authenticat|authori[sz]|require_(?:login|user|admin|signed_in|sign_in|session|current_user)"
                         r"|logged_in|signed_in|login_required|ensure_\w*(?:user|login|auth|admin)|check_\w*(?:user|admin|"
                         r"login|auth)|verify_\w*(?:user|token|session)|doorkeeper|current_user|protect")
-ADMIN_FILTER = re.compile(r"(?i)admin|role|staff|superuser|permission")
+# filters that look up a session when there is one but let anonymous requests through
+OPTIONAL_AUTH = re.compile(r"(?i)(?:resume|optional|try|maybe|set|load|find|restore)_")
+ADMIN_FILTER =re.compile(r"(?i)admin|role|staff|superuser|permission")
 VERBS = ("get", "post", "put", "patch", "delete", "match")
 RESOURCE_ACTIONS = [("index", "GET", ""), ("create", "POST", ""), ("new", "GET", "/new"), ("show", "GET", "/:id"),
                     ("edit", "GET", "/:id/edit"), ("update", "PATCH", "/:id"), ("destroy", "DELETE", "/:id")]
@@ -105,8 +107,12 @@ class RubyScanner:
         if not rb:
             return []
         self.redirects_checked = self._raises_on_open_redirects(rb)
+        self.included: Dict[str, str] = {}
+        self.macros: Dict[str, Tuple[List[str], str, List[str]]] = {}
         for f in rb:
             code = f.cache["ruby_code"] = ruby_code(f.text)
+            if "ActiveSupport::Concern" in code:
+                self._concern(code)
             if "/controllers/" in "/" + f.rel:
                 for m in finditer(CLASS, code):
                     self.controllers[m.group(1).split("::")[-1]] = (f, code, m.group(2) and m.group(2).split("::")[-1])
@@ -236,6 +242,7 @@ class RubyScanner:
             return "", False
         seen.add(cls)
         _sf, code, parent = info
+        code = self._expand(code)
         text, auth = self._filters(parent, action, seen) if parent else ("", False)
         for m in finditer(r"(?m)^[ \t]*(skip_before_action|before_action|before_filter|prepend_before_action|"
                           r"load_and_authorize_resource|authorize_resource|http_basic_authenticate_with|"
@@ -252,9 +259,52 @@ class RubyScanner:
                 continue
             text += "\n" + m.group(0).strip()
             if kind in ("load_and_authorize_resource", "authorize_resource", "http_basic_authenticate_with") \
-                    or any(RAILS_AUTH.search(n) for n in names):
+                    or any(RAILS_AUTH.search(n) and not OPTIONAL_AUTH.match(n) for n in names):
                 auth = True
         return text, auth
+
+    def _concern(self, code: str) -> None:
+        """A concern's `included do ... end` filters, and its class macros that add or skip filters
+        (`allow_unauthenticated_access only: :show` runs `skip_before_action :require_authentication, **options`)."""
+        mod = re.search(r"(?m)^[ \t]*module\s+([\w:]+)", code)
+        if not mod or "ActiveSupport::Concern" not in code:
+            return
+        name = mod.group(1).split("::")[-1]
+        for m in finditer(r"(?m)^([ \t]*)included\s+do\b", code):
+            end = re.compile(r"(?m)^" + re.escape(m.group(1)) + r"end\b").search(code, m.end())
+            self.included[name] = code[m.end():end.start() if end else len(code)]
+        for m in finditer(r"(?m)^([ \t]*)def\s+(\w+[?!]?)\s*\(\s*\*\*(\w+)\s*\)", code):
+            end = re.compile(r"(?m)^" + re.escape(m.group(1)) + r"end\b").search(code, m.end())
+            body = code[m.end():end.start() if end else len(code)]
+            lines = re.findall(r"(?m)^[ \t]*((?:skip_)?before_action\b[^\n]*\*\*" + m.group(3) + r")\b", body)
+            calls = re.findall(r"(?m)^[ \t]*(\w+[?!]?)\s+\*\*" + m.group(3) + r"\b", body)  # one macro calling another
+            if lines or calls:
+                self.macros[m.group(2)] = (lines, m.group(3), calls)
+
+    def _expand(self, code: str, depth: int = 0) -> str:
+        """Controller code with `include Concern` replaced by the concern's included filters and macro calls replaced
+        by the filter lines they run, with the call's options."""
+        if not self.included and not self.macros:
+            return code
+
+        def include(m: "re.Match[str]") -> str:
+            return "\n".join(self.included.get(n.strip().split("::")[-1], "") for n in m.group(1).split(","))
+
+        def macro(m: "re.Match[str]", depth: int = 0) -> str:
+            lines, var, calls = self.macros[m.group(1)]
+            out = [ln.replace("**" + var, m.group(2).strip()) for ln in lines]
+            for c in calls if depth < 3 else []:
+                if c in self.macros:
+                    out.append(macro(re.match(r"(\w+[?!]?)(.*)", c + " " + m.group(2)), depth + 1))
+            return "\n".join(out)
+
+        # a list may continue on the next lines after a trailing comma: `include A, B,\n  C`
+        code = re.sub(r"(?m)^[ \t]{0,20}include[ \t]+([\w:]{1,80}(?:[ \t]{0,5},[ \t]{0,5}\n?[ \t]{0,40}[\w:]{1,80}){0,30})[ \t]*$",
+                      include, code)
+        if self.macros:
+            names = "|".join(re.escape(n) for n in self.macros)
+            code = re.sub(r"(?m)^[ \t]*(" + names + r")\b([^\n]*)$", macro, code)
+        return code
 
     # ----------------------------------------------------------------- sinks
     def _sinks(self, sf: SourceFile) -> None:

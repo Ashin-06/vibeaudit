@@ -91,6 +91,11 @@ findings on the two held-out repositories measure 16 of 104; most false positive
 the app's `Authentication` concern (`before_action` inside `included do`, the Rails 8 generator's pattern), which
 is not followed yet. Ruby stays preview.
 
+That cause was then fixed from a tuned repository that uses the same pattern (writebook): `include` of a concern
+adds its `included do` filters, and class macros such as `allow_unauthenticated_access only: ...` expand to the
+`skip_before_action` they run. Because the cause was seen on once-campfire and maybe, those two are not re-scored
+to graduate Ruby; Ruby leaves preview only on a fresh held-out batch, chosen and pinned before it is scanned.
+
 No language clears the bar, so all five stay preview. One rule does: **PHP BE001 (SQL injection) measures 31/33
 (93.9%) on held-out repositories and leaves preview** for PHP; it already gated as a severe rule. PHP DATA001
 measures 6/6 but the rule itself is preview everywhere, so it does not change. Go and Java/Kotlin AUTH010 measure

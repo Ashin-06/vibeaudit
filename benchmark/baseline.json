@@ -30,7 +30,7 @@
    }
   },
   "AUTH001": {
-   "precision": 0.4591,
+   "precision": 0.7228,
    "seeded_recall": 1.0,
    "by_repo": {
     "ClaudeCodeProxy": [
@@ -121,13 +121,9 @@
      7,
      0
     ],
-    "lobsters": [
-     0,
-     1
-    ],
     "maybe": [
      0,
-     51
+     1
     ],
     "next-learn": [
      3,
@@ -139,7 +135,7 @@
     ],
     "once-campfire": [
      0,
-     11
+     1
     ],
     "openai-assistants-quickstart": [
      3,
@@ -188,6 +184,10 @@
     "thynk": [
      3,
      0
+    ],
+    "writebook": [
+     0,
+     3
     ]
    }
   },
@@ -218,7 +218,7 @@
    }
   },
   "AUTH003": {
-   "precision": 0.569,
+   "precision": 0.5323,
    "seeded_recall": 1.0,
    "by_repo": {
     "ClaudeCodeProxy": [
@@ -264,6 +264,10 @@
     "koel": [
      0,
      1
+    ],
+    "maybe": [
+     0,
+     4
     ],
     "microblog": [
      0,
@@ -3597,7 +3601,7 @@
    }
   },
   "QA003": {
-   "precision": 0.5764,
+   "precision": 0.5779,
    "seeded_recall": 1.0,
    "by_repo": {
     "BookStack": [
@@ -3695,6 +3699,10 @@
     "werkzeug": [
      0,
      4
+    ],
+    "writebook": [
+     1,
+     0
     ],
     "wsgidav": [
      1,
@@ -5237,7 +5245,7 @@
    }
   },
   "UI016": {
-   "precision": 0.3333,
+   "precision": 0.3231,
    "seeded_recall": 1.0,
    "by_repo": {
     "BookStack": [
@@ -5319,6 +5327,10 @@
     "vibecodementor": [
      1,
      0
+    ],
+    "writebook": [
+     0,
+     2
     ]
    }
   },

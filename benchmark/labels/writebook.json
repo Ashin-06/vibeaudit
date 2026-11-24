@@ -1,0 +1,54 @@
+{
+ "repo": "writebook",
+ "commit": "f105ecb4c243bdf0518cc7f9f3a1dab40e00252c",
+ "findings": [
+  {
+   "rule": "UI016",
+   "file": "app/assets/stylesheets/base.css",
+   "line": 52,
+   "fingerprint": "c8e4db54483a08078bfa133d4f1895cd",
+   "verdict": "fp",
+   "reason": "The outline is removed only for :active or :focus:not(:focus-visible); keyboard focus keeps it."
+  },
+  {
+   "rule": "UI016",
+   "file": "app/assets/stylesheets/toc.css",
+   "line": 19,
+   "fingerprint": "0cf70f6404ceff9d67f9a2586013d5e6",
+   "verdict": "fp",
+   "reason": "The outline is removed only for :active or :focus:not(:focus-visible); keyboard focus keeps it."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/first_runs_controller.rb",
+   "line": 10,
+   "fingerprint": "a7cb2ac77dedd94876ba6ff57fd1368f",
+   "verdict": "fp",
+   "reason": "First-run setup, public by design and closed once an account exists."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/users_controller.rb",
+   "line": 17,
+   "fingerprint": "502d5667bda37a7a6a0930573dac67e2",
+   "verdict": "fp",
+   "reason": "Public sign-up with a join code, by design."
+  },
+  {
+   "rule": "AUTH001",
+   "file": "app/controllers/users_controller.rb",
+   "line": 17,
+   "fingerprint": "dfd467781feef23c57ca7dba41acf426",
+   "verdict": "fp",
+   "reason": "Public sign-up with a join code, by design."
+  },
+  {
+   "rule": "QA003",
+   "file": "app/javascript/controllers/copy_to_clipboard_controller.js",
+   "line": 14,
+   "fingerprint": "024ade9b2285c33fe606960d2926bc26",
+   "verdict": "tp",
+   "reason": "The error is caught and ignored with no comment."
+  }
+ ]
+}

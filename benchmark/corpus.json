@@ -1127,6 +1127,14 @@
    "kind": "well-maintained",
    "language": "ruby",
    "split": "heldout"
+  },
+  {
+   "name": "writebook",
+   "url": "https://github.com/basecamp/writebook",
+   "commit": "f105ecb4c243bdf0518cc7f9f3a1dab40e00252c",
+   "licence": "MIT",
+   "kind": "well-maintained",
+   "language": "ruby"
   }
  ]
 }
