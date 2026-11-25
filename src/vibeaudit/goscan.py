@@ -101,6 +101,8 @@ def _enclosing_func(spans: Dict[str, List[Tuple[int, int]]], off: int) -> Tuple[
 ROUTE_CALL = re.compile(
     r"\b(\w+)\s*\.\s*(GET|POST|PUT|PATCH|DELETE|Any|Get|Post|Put|Patch|Delete|All|HandleFunc|Handle|Match|Add)\s*\(")
 GROUP_ASSIGN = re.compile(r"\b(\w+)\s*:?=\s*(\w+)\s*\.\s*(?:Group|Route|Party)\s*\(")
+MOUNT_CALL = re.compile(r"\b(\w+)\s*\.\s*Mount\s*\(")
+PREPARE_ASSIGN = re.compile(r"(?m)^[ \t]*(\w+)(?:[ \t]*,[ \t]*\w+)?[ \t]*:?=[ \t]*[^\n]{0,140}\.\s*(?:Prepare|PrepareContext|Preparex|PrepareNamed)\s*\(")
 METHOD_PATTERN = re.compile(r"^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)\s+")
 AUTH_NAME = re.compile(
     # a name containing one of these words; no unbounded \w* runs (they are quadratic on long identifiers)
@@ -119,6 +121,7 @@ class GoScanner:
         self.emit = emit
         self.files: List[SourceFile] = []
         self.funcs: Dict[str, List[Tuple[SourceFile, int, int]]] = {}
+        self.mounted: Dict[str, List[Tuple[str, bool, str]]] = {}  # sub-router fn -> [(prefix, auth, mw_text)]
         self.routes: List[Route] = []
         self.injection_lines: Set[Tuple[str, int]] = set()  # lines with BE001
         self.formatted: List[Finding] = []  # GO004, held back until every BE001 is known
@@ -151,6 +154,9 @@ class GoScanner:
             GUARD.run(sf.rel, "Go lexing", self._load, sf)
         for sf in self.files:
             if not sf.is_test:
+                GUARD.run(sf.rel, "Go mounts", self._mounts, sf)
+        for sf in self.files:
+            if not sf.is_test:
                 GUARD.run(sf.rel, "Go routes", self._routes, sf)
         for sf in self.files:
             if not sf.is_test and not sf.is_example:
@@ -179,6 +185,28 @@ class GoScanner:
                     self.follower.define(name, Fn(sf, a, v.code[m.end():close], (a, b)))
 
     # -------------------------------------------------------------- routes
+    def _mounts(self, sf: SourceFile) -> None:
+        """Record `r.Mount("/prefix", subRouter())` calls so routes inside `subRouter` inherit prefix, auth and role middleware."""
+        v: Views = sf.cache["views"]  # type: ignore[assignment]
+        code, bare = v.code, v.bare
+        parents = self._parents(sf)
+        for m in finditer(MOUNT_CALL, bare):
+            close = match_close(bare, m.end() - 1)
+            if close < 0:
+                continue
+            argv = _split_top(code[m.end():close])
+            if len(argv) < 2:
+                continue
+            p = STRING_ARG.match(argv[0])
+            if not p:
+                continue
+            sub = re.search(r"(\w+)\s*\([^()]*\)\s*$", argv[1].strip())
+            if not sub:
+                continue
+            prefix, auth, mw_text = self._prefix_and_auth_mw(m.group(1), parents, code, bare, m.start())
+            full = "/" + "/".join(x.strip("/") for x in (prefix, p.group(1)) if x.strip("/"))
+            self.mounted.setdefault(sub.group(1), []).append((full, auth, mw_text))
+
     def _parents(self, sf: SourceFile) -> Dict[str, Tuple[str, str, bool]]:
         """Group var -> (parent var, prefix, the group call names auth middleware), per file."""
         cached = sf.cache.get("go_parents")
@@ -282,10 +310,19 @@ class GoScanner:
                     continue
             rest = args[p.end():]
             handler_args = [a.strip() for a in _split_top(rest) if a.strip()]
-            prefix, auth = self._prefix_and_auth(recv, parents, code, bare, m.start())
+            prefix, auth, mw_text = self._prefix_and_auth_mw(recv, parents, code, bare, m.start())
             root = recv
             while root in parents and parents[root][0] != root:
                 root = parents[root][0]
+            # if this function builds a sub-router mounted via `r.Mount("/prefix", fn())`, inherit mount context
+            enc_name = self._enclosing_func_name(sf, m.start())
+            if enc_name and enc_name in self.mounted:
+                mounts = self.mounted[enc_name]
+                if any(a for _, a, _ in mounts):
+                    auth = True
+                outer = mounts[0][0]
+                prefix = outer.rstrip("/") + "/" + prefix.lstrip("/") if prefix else outer
+                mw_text = "\n".join(x for x in (mw_text, *(mw for _, _, mw in mounts if mw)) if x)
             up = self._param_router(sf, root, m.start()) if not auth else None
             if up is not None:  # the router comes from the caller: take its auth and prefix from there
                 callers = self._callers(up[0], up[1])
@@ -302,14 +339,29 @@ class GoScanner:
                 auth = True
             full = ("/" + "/".join(s.strip("/") for s in (prefix, path) if s.strip("/"))) or "/"
             params = re.findall(r"[:{*](\w+)", full)
+            route_body = "\n".join(x for x in (mw_text, code[m.start():close + 1], body) if x)
             self.routes.append(Route(
-                sf.rel, sf.line_at(m.start()), full, methods, code[m.start():close + 1] + "\n" + body, framework, "go",
+                sf.rel, sf.line_at(m.start()), full, methods, route_body, framework, "go",
                 has_auth=auth, calls_llm=bool(re.search(r"(?i)openai|anthropic|genai|langchaingo|ollama|\bllm\b", body)),
                 reads_body=bool(re.search(r"\b(?:ShouldBind\w*|Bind\w*|BodyParser|Decode)\s*\(", body)), params=params))
 
+    def _enclosing_func_name(self, sf: SourceFile, off: int) -> Optional[str]:
+        spans: Dict[str, List[Tuple[int, int]]] = sf.cache["go_funcs"]  # type: ignore[assignment]
+        best: Optional[Tuple[str, int]] = None
+        for name, lst in spans.items():
+            for a, b in lst:
+                if a <= off < b and (best is None or a > best[1]):
+                    best = (name, a)
+        return best[0] if best else None
+
     def _prefix_and_auth(self, recv: str, parents: Dict[str, Tuple[str, str, bool]], code: str, bare: str, off: int) -> Tuple[str, bool]:
+        prefix, auth, _mw = self._prefix_and_auth_mw(recv, parents, code, bare, off)
+        return prefix, auth
+
+    def _prefix_and_auth_mw(self, recv: str, parents: Dict[str, Tuple[str, str, bool]], code: str, bare: str, off: int) -> Tuple[str, bool, str]:
         prefix, auth, seen, cur = "", False, set(), recv
         chain = [recv]
+        mw_parts: List[str] = []
         while cur in parents and cur not in seen:
             seen.add(cur)
             parent, p, a = parents[cur]
@@ -325,9 +377,11 @@ class GoScanner:
             if any(s < u.start() < e for s, e in others):
                 continue
             close = match_close(bare, u.end() - 1)
-            if close > 0 and AUTH_NAME.search(bare[u.end():close]):
-                auth = True
-                break
+            if close > 0:
+                seg = code[u.end():close]
+                mw_parts.append(seg)
+                if AUTH_NAME.search(bare[u.end():close]):
+                    auth = True
         # chi: routes inside `r.Group(func(r chi.Router) { r.Use(Auth) ... })` or `r.Route("/p", func(r chi.Router) {`
         for start, end, pre in _closure_blocks(code, bare, off):
             if pre:
@@ -335,9 +389,12 @@ class GoScanner:
             block = bare[start:off]
             for u in finditer(re.compile(r"\.\s*(?:Use|With)\s*\("), block):
                 close = match_close(bare, start + u.end() - 1)
-                if close > 0 and AUTH_NAME.search(bare[start + u.end():close]):
-                    auth = True
-        return prefix, auth
+                if close > 0:
+                    seg = code[start + u.end():close]
+                    mw_parts.append(seg)
+                    if AUTH_NAME.search(bare[start + u.end():close]):
+                        auth = True
+        return prefix, auth, "\n".join(mw_parts)
 
     def _handler_body(self, sf: SourceFile, code: str, handler: str, off: int) -> Tuple[str, int]:
         if handler.startswith("func"):
@@ -372,6 +429,8 @@ class GoScanner:
     def _function(self, sf: SourceFile, v: Views, a: int, b: int, seed: Set[str] = frozenset()) -> None:  # type: ignore[assignment]
         code, bare = v.code[a:b], v.bare[a:b]
         tainted = _taint(code, bare, seed)
+        # prepared statements: `stmt, err := db.Prepare("...")`; `stmt.QueryRow(userId)` passes bound values, not SQL
+        prepared = {m.group(1) for m in finditer(PREPARE_ASSIGN, bare)}
         # variables holding SQL text built with Sprintf or +: `q := fmt.Sprintf("... %d", n); db.Exec(q)`
         # name -> [(offset, built?)]: a variable counts as built SQL only if its latest assignment before the sink
         # formats SQL text (`query := "SELECT ... ?"` in a safe branch after a Sprintf branch is not)
@@ -394,6 +453,10 @@ class GoScanner:
                 args = code[m.end():close]
                 argv = _split_top(args)
                 pick = _sink_args(rule, m.group(0), argv)
+                if rule == "BE001" and what == "a SQL query":
+                    recv_m = re.search(r"(\w+)\s*$", bare[max(0, m.start() - 60):m.start()])
+                    if recv_m and (recv_m.group(1) in prepared or re.search(r"(?i)(?:^|_)stmt$|Stmt$", recv_m.group(1))):
+                        continue  # prepared statement: arguments are bound parameters, not SQL text
                 if what == "a SQL clause" and pick and re.match(r'\s*"/', pick[0]):
                     continue  # a router's Group("/prefix" + ...), not a GORM clause
                 hit = next((x for x in pick if _is_tainted(x, tainted)), None)

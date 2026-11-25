@@ -50,6 +50,8 @@
     "onLanguage:csharp",
     "onLanguage:rust",
     "onLanguage:php",
+    "onLanguage:ruby",
+    "onLanguage:dart",
     "workspaceContains:**/package.json",
     "workspaceContains:**/pyproject.toml",
     "workspaceContains:**/requirements.txt",
@@ -59,7 +61,9 @@
     "workspaceContains:**/build.gradle.kts",
     "workspaceContains:**/*.csproj",
     "workspaceContains:**/Cargo.toml",
-    "workspaceContains:**/composer.json"
+    "workspaceContains:**/composer.json",
+    "workspaceContains:**/Gemfile",
+    "workspaceContains:**/pubspec.yaml"
   ],
   "capabilities": {
     "untrustedWorkspaces": {

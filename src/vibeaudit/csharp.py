@@ -12,7 +12,7 @@ from typing import Callable, Dict, List, Tuple
 
 from .files import Project, SourceFile
 from .guard import GUARD, finditer
-from .heuristics import PUBLIC_PATH
+from .heuristics import OWNERSHIP_EVIDENCE, PUBLIC_PATH
 from .lexer import Views, _blank, match_close
 from .model import Finding, Route
 from .polyscan import BODY_READ, POLY_TEST_RE, _calls_llm, _has_auth
@@ -121,15 +121,46 @@ class CsScanner:
     def __init__(self, project: Project, emit: Emit):
         self.p = project
         self.emit = emit
+        self.owner_methods: set = set()  # project method names whose bodies enforce caller ownership
 
     def add(self, sf: SourceFile, rule: str, line: int, msg: str, sev: str = "") -> None:
         self.emit(Finding(rule, sf.rel, line, msg, sev, sf.line(line).strip()[:200]))
+
+    def _index_ownership(self, files: List[SourceFile]) -> None:
+        """Record unique service/use-case method names whose bodies enforce caller ownership (e.g. Find(accountId, userId))."""
+        mdecl = re.compile(r"\b(?:public|private|protected|internal)\s+(?:(?:static|virtual|override|async|sealed|new)\s+)*[\w<>\[\],.? ]{1,80}\s+(\w+)\s*(?:<[^<>()]{0,80}>)?\s*\(")
+        skip = {"if", "for", "foreach", "while", "switch", "catch", "using", "lock", "Get", "Post", "Put", "Delete", "Patch"}
+        counts: Dict[str, int] = {}
+        has_owner: set = set()
+        # Require caller-identity evidence (current user / ClaimsPrincipal / owner comparison), not a bare `userId` param
+        caller_owner = re.compile(
+            r"(?i)\b(?:_?current_?user|currentUser|HttpContext|User\.FindFirst|GetUserId|ClaimTypes\.NameIdentifier)\b"
+            r"|\b(?:owner_?id|created_?by)\b"
+            r"|\bFind\w*\s*\([^()]{1,80},\s*[^()]{1,60}(?:user_?id|current_?user|owner_?id)")
+        for sf in files:
+            v = views_of(sf)
+            code, bare = v.code, v.bare
+            for m in finditer(mdecl, bare):
+                name = m.group(1)
+                if name in skip or len(name) < 3:
+                    continue
+                close = match_close(bare, m.end() - 1)
+                if close < 0:
+                    continue
+                end = _body_end(bare, close)
+                if end > close:
+                    counts[name] = counts.get(name, 0) + 1
+                    if caller_owner.search(code[close:end + 1]):
+                        has_owner.add(name)
+        # Only trust a method name across files when every definition with that name checks ownership (unique in project)
+        self.owner_methods = {n for n in has_owner if counts.get(n) == 1}
 
     def run(self) -> List[Route]:
         files = [f for f in self.p.files if f.rel.endswith(".cs") and f.text is not None
                  and not f.is_test and not POLY_TEST_RE.search(f.rel)]
         if not files:
             return []
+        self._index_ownership(files)
         code = "\n".join(views_of(f).code for f in files)
         custom = bool(CUSTOM_AUTH.search(code))
         any_auth = custom or bool(ANY_AUTH.search(code))
@@ -223,9 +254,13 @@ class CsScanner:
                                    handler + chain, auth))
         return out
 
-    @staticmethod
-    def _route(sf: SourceFile, offset: int, path: str, verb: str, body: str, auth: bool) -> Route:
-        return Route(sf.rel, sf.line_at(offset), path, [verb.upper()], body, "aspnet", "cs", has_auth=auth,
+    def _route(self, sf: SourceFile, offset: int, path: str, verb: str, body: str, auth: bool) -> Route:
+        full_body = body
+        if self.owner_methods and not OWNERSHIP_EVIDENCE.search(body):
+            called = set(re.findall(r"\.\s*(\w+)\s*(?:<[^<>()]{0,60}>)?\s*\(", body))
+            if called & self.owner_methods:
+                full_body = body + "\n// delegated ownership check: user_id"
+        return Route(sf.rel, sf.line_at(offset), path, [verb.upper()], full_body, "aspnet", "cs", has_auth=auth,
                      calls_llm=_calls_llm(body), reads_body=bool(BODY_READ.search(body)),
                      params=re.findall(r"\{(\w+)", path))
 

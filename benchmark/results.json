@@ -536,11 +536,11 @@
    "fixed_fp": 0
   },
   "go-base": {
-   "findings": 15,
-   "labelled": 15,
+   "findings": 14,
+   "labelled": 14,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 3
   },
   "go-clean-template": {
    "findings": 15,
@@ -550,11 +550,11 @@
    "fixed_fp": 0
   },
   "govwa": {
-   "findings": 23,
-   "labelled": 23,
+   "findings": 20,
+   "labelled": 20,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 3
   },
   "go-test-bench": {
    "findings": 6,
@@ -767,11 +767,11 @@
    "fixed_fp": 0
   },
   "snipe-it": {
-   "findings": 248,
-   "labelled": 248,
+   "findings": 245,
+   "labelled": 245,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 3
   },
   "symfony-demo": {
    "findings": 15,
@@ -879,11 +879,11 @@
    "fixed_fp": 0
   },
   "realworld-springboot-java": {
-   "findings": 10,
-   "labelled": 10,
+   "findings": 6,
+   "labelled": 6,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 4
   },
   "jasontaylordev-CleanArchitecture": {
    "findings": 15,
@@ -907,11 +907,11 @@
    "fixed_fp": 0
   },
   "atuin": {
-   "findings": 75,
-   "labelled": 75,
+   "findings": 74,
+   "labelled": 74,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 80
+   "fixed_fp": 83
   },
   "linkstack": {
    "findings": 48,
@@ -921,11 +921,11 @@
    "fixed_fp": 0
   },
   "laravel.io": {
-   "findings": 12,
-   "labelled": 12,
+   "findings": 7,
+   "labelled": 7,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 5
   },
   "go-rest-api": {
    "findings": 6,
@@ -942,11 +942,11 @@
    "fixed_fp": 0
   },
   "kotlin-spring-realworld": {
-   "findings": 5,
-   "labelled": 5,
+   "findings": 3,
+   "labelled": 3,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 2
   },
   "spring-security-polls": {
    "findings": 7,
@@ -970,11 +970,11 @@
    "fixed_fp": 0
   },
   "Pentaract": {
-   "findings": 10,
-   "labelled": 10,
+   "findings": 9,
+   "labelled": 9,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 1
   },
   "rustapi": {
    "findings": 3,
@@ -991,11 +991,11 @@
    "fixed_fp": 0
   },
   "LinkAce": {
-   "findings": 79,
-   "labelled": 79,
+   "findings": 67,
+   "labelled": 67,
    "needs_review": 0,
    "lost_tp": [],
-   "fixed_fp": 0
+   "fixed_fp": 12
   },
   "railsgoat": {
    "findings": 22,
@@ -1114,11 +1114,11 @@
    "title": "State-changing endpoint without authentication",
    "preview": false,
    "tp": 73,
-   "fp": 28,
+   "fp": 17,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.7228,
-   "precision_pessimistic": 0.7228,
+   "precision": 0.8111,
+   "precision_pessimistic": 0.8111,
    "seeded_expected": 8,
    "seeded_found": 8,
    "seeded_recall": 1.0,
@@ -1133,19 +1133,9 @@
      1,
      0
     ],
-    "Pentaract": [
-     0,
-     1,
-     0
-    ],
     "Vulnerable-Flask-App": [
      2,
      0,
-     0
-    ],
-    "atuin": [
-     0,
-     3,
      0
     ],
     "careconnect": [
@@ -1186,11 +1176,6 @@
     "flexible-graphrag": [
      8,
      0,
-     0
-    ],
-    "go-base": [
-     0,
-     3,
      0
     ],
     "go-clean-arch": [
@@ -1273,11 +1258,6 @@
      2,
      0
     ],
-    "realworld-springboot-java": [
-     0,
-     4,
-     0
-    ],
     "roomGPT": [
      1,
      0,
@@ -1330,16 +1310,6 @@
      1,
      0
     ],
-    "Pentaract": [
-     0,
-     1,
-     0
-    ],
-    "atuin": [
-     0,
-     3,
-     0
-    ],
     "conveyor": [
      4,
      0,
@@ -1348,11 +1318,6 @@
     "dvcsharp-api": [
      1,
      0,
-     0
-    ],
-    "go-base": [
-     0,
-     3,
      0
     ],
     "go-clean-arch": [
@@ -1393,11 +1358,6 @@
     "railsgoat": [
      0,
      2,
-     0
-    ],
-    "realworld-springboot-java": [
-     0,
-     4,
      0
     ],
     "rustapi": [
@@ -1488,11 +1448,11 @@
    "title": "Possible insecure direct object reference (IDOR)",
    "preview": false,
    "tp": 33,
-   "fp": 29,
+   "fp": 31,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.5323,
-   "precision_pessimistic": 0.5323,
+   "precision": 0.5156,
+   "precision_pessimistic": 0.5156,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -1530,6 +1490,11 @@
     "fastapi-realworld-example-app": [
      0,
      1,
+     0
+    ],
+    "go-base": [
+     0,
+     2,
      0
     ],
     "go-gin-example": [
@@ -1637,6 +1602,11 @@
     "dvcsharp-api": [
      1,
      0,
+     0
+    ],
+    "go-base": [
+     0,
+     2,
      0
     ],
     "go-gin-example": [
@@ -2165,7 +2135,7 @@
   "AUTH015": {
    "title": "Password change keeps old sessions valid",
    "preview": true,
-   "tp": 8,
+   "tp": 9,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -2177,6 +2147,11 @@
    "by_repo": {
     "BookStack": [
      3,
+     0,
+     0
+    ],
+    "atuin": [
+     1,
      0,
      0
     ],
@@ -2204,6 +2179,11 @@
    "preview_by_repo": {
     "BookStack": [
      3,
+     0,
+     0
+    ],
+    "atuin": [
+     1,
      0,
      0
     ],
@@ -2275,11 +2255,11 @@
    "title": "SQL injection",
    "preview": false,
    "tp": 63,
-   "fp": 18,
+   "fp": 15,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.7778,
-   "precision_pessimistic": 0.7778,
+   "precision": 0.8077,
+   "precision_pessimistic": 0.8077,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -2329,11 +2309,6 @@
      1,
      0
     ],
-    "govwa": [
-     0,
-     3,
-     0
-    ],
     "pygoat": [
      1,
      0,
@@ -2379,11 +2354,6 @@
     "dvcsharp-api": [
      1,
      0,
-     0
-    ],
-    "govwa": [
-     0,
-     3,
      0
     ],
     "railsgoat": [
@@ -2678,15 +2648,20 @@
    "title": "Server-side request forgery (SSRF)",
    "preview": false,
    "tp": 5,
-   "fp": 7,
+   "fp": 8,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.4167,
-   "precision_pessimistic": 0.4167,
+   "precision": 0.3846,
+   "precision_pessimistic": 0.3846,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
    "by_repo": {
+    "atuin": [
+     0,
+     1,
+     0
+    ],
     "bella-openapi": [
      2,
      0,
@@ -2734,6 +2709,11 @@
     ]
    },
    "preview_by_repo": {
+    "atuin": [
+     0,
+     1,
+     0
+    ],
     "chat-copilot": [
      1,
      0,
@@ -6534,11 +6514,11 @@
    "title": "Cross-site scripting through a raw HTML sink",
    "preview": true,
    "tp": 65,
-   "fp": 288,
+   "fp": 268,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.1841,
-   "precision_pessimistic": 0.1841,
+   "precision": 0.1952,
+   "precision_pessimistic": 0.1952,
    "seeded_expected": 4,
    "seeded_found": 4,
    "seeded_recall": 1.0,
@@ -6555,7 +6535,7 @@
     ],
     "LinkAce": [
      0,
-     21,
+     9,
      0
     ],
     "act-solo-ai": [
@@ -6620,7 +6600,7 @@
     ],
     "laravel.io": [
      0,
-     7,
+     2,
      0
     ],
     "linkstack": [
@@ -6690,7 +6670,7 @@
     ],
     "snipe-it": [
      2,
-     41,
+     38,
      0
     ],
     "symfony-demo": [
@@ -6737,7 +6717,7 @@
     ],
     "LinkAce": [
      0,
-     21,
+     9,
      0
     ],
     "act-solo-ai": [
@@ -6802,7 +6782,7 @@
     ],
     "laravel.io": [
      0,
-     7,
+     2,
      0
     ],
     "linkstack": [
@@ -6872,7 +6852,7 @@
     ],
     "snipe-it": [
      2,
-     41,
+     38,
      0
     ],
     "symfony-demo": [
@@ -7315,11 +7295,11 @@
    "title": "Spring controllers with no security configuration",
    "preview": true,
    "tp": 9,
-   "fp": 4,
+   "fp": 2,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.6923,
-   "precision_pessimistic": 0.6923,
+   "precision": 0.8182,
+   "precision_pessimistic": 0.8182,
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
@@ -7331,7 +7311,7 @@
     ],
     "kotlin-spring-realworld": [
      0,
-     4,
+     2,
      0
     ],
     "spring-petclinic": [
@@ -7353,7 +7333,7 @@
     ],
     "kotlin-spring-realworld": [
      0,
-     4,
+     2,
      0
     ],
     "spring-petclinic": [

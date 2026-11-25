@@ -67,8 +67,8 @@ OWNERSHIP_EVIDENCE = re.compile(
     r"(?i)(?:\buser_?id\b|\bowner(?:_?id)?\b|\bauthor(?:_?id)?\b|\bcreated_?by\b|current_user\s*(?:\(\s*\))?\s*\.\s*id"
     r"|\.user\s*[?!]?\s*\.\s*(?:id|_id|sub)\b|session\s*\.\s*user|auth\s*\.\s*uid|\buid\b|\btenant|\borg_?id\b"
     r"|\baccount_?id\b|\bsub\b"
-    # Java and Kotlin: user.getId(), principal.getName(), canWriteArticle(user, a), isOwner(...)
-    r"|\b(?:user|principal|currentUser|authentication)\s*\.\s*get(?:Id|Name|Username)\s*\(|\bcan(?:Write|Edit|Delete|Modify|Update|Access)\w{0,30}\s*\("
+    # Java and Kotlin: user.getId(), principal.getName(), jwtPayload.getUserId(), userService.currentUser(), canWriteArticle(user, a)
+    r"|\b(?:user|principal|currentUser|authentication)\s*\.\s*get(?:Id|Name|Username)\s*\(|\.\s*(?:getUserId|currentUser)\s*\(|\bcan(?:Write|Edit|Delete|Modify|Update|Access)\w{0,30}\s*\("
     r"|\bis_?owner\w{0,20}\s*\("
     # PHP: BookStack's findVisibleByIdOrFail() / deleteForCurrentUser() scope the record to what the caller may see
     r"|\bfind_?visible\w*\s*\(|for_?current_?user\w*\s*\("

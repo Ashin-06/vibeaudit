@@ -21,6 +21,7 @@ from .jvm import JvmScanner
 from .model import SEVERITY_RANK, SUPPRESS, TEST_FILE_RULES, Finding, at_least
 from .projectscan import ProjectScanner
 from .goscan import GoScanner
+from .dartscan import DartScanner
 from .phpscan import PhpScanner
 from .rubyscan import RubyScanner
 from .rustscan import RustScanner
@@ -104,6 +105,12 @@ def _stack(project: Project) -> List[str]:
                     found.append(lbl)
         elif f.rel.rsplit("/", 1)[-1] == "composer.json" and f.text:
             for mod, lbl in (("laravel/framework", "Laravel"), ("symfony/", "Symfony")):
+                if mod in f.text and lbl not in found:
+                    found.append(lbl)
+        elif f.rel.rsplit("/", 1)[-1] == "pubspec.yaml" and f.text:
+            if "Dart" not in found:
+                found.append("Dart")
+            for mod, lbl in (("flutter:", "Flutter"), ("firebase_core", "Firebase"), ("cloud_firestore", "Firebase")):
                 if mod in f.text and lbl not in found:
                     found.append(lbl)
     for key, label in STACK_MARKERS.items():
@@ -193,6 +200,7 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
     go_routes += CsScanner(project, emit).run()  # C#: ASP.NET Core controllers and minimal APIs
     go_routes += PhpScanner(project, emit).run()  # PHP: Laravel and Symfony
     go_routes += RubyScanner(project, emit).run()  # Ruby on Rails
+    DartScanner(project, emit).run()  # Flutter and Dart (preview)
     poly_routes = PolyScanner(project, emit).run()  # for Go, Java, Rust, C# and PHP only the checks they lack
     all_routes = js_routes + py_routes + go_routes + poly_routes + rpcscan.routes(project)  # tRPC, GraphQL, gRPC
     SecretScanner(project, emit).run()

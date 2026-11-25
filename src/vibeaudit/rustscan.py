@@ -213,9 +213,23 @@ class RustScanner:
         return ""
 
     def _fn(self, name: str, sf: SourceFile) -> Optional[Tuple[SourceFile, int, int, int, int]]:
-        found = self.funcs.get(name.rsplit("::", 1)[-1], [])
+        parts = [p for p in name.split("::") if p]
+        short = parts[-1] if parts else name
+        found = self.funcs.get(short, [])
+        if not found:
+            return None
+        mods = [p for p in parts[:-1] if p not in ("crate", "self", "super")]
+        if mods:
+            tail = "/".join(mods)
+            exact = [f for f in found if f[0].rel.endswith((f"/{tail}.rs", f"{tail}.rs", f"/{tail}/mod.rs", f"{tail}/mod.rs"))]
+            if exact:
+                return exact[0]
+            last = mods[-1]
+            by_mod = [f for f in found if f[0].rel.endswith((f"/{last}.rs", f"{last}.rs", f"/{last}/mod.rs", f"{last}/mod.rs"))]
+            if by_mod:
+                return by_mod[0]
         same = [f for f in found if f[0] is sf]
-        return (same or found or [None])[0]  # type: ignore[return-value]
+        return (same or found)[0]
 
     # ------------------------------------------------------------------ prefixes
     def _prefixes(self, sf: SourceFile) -> None:
@@ -347,6 +361,12 @@ class RustScanner:
         custom = bool(self.auth_extractors & set(re.findall(r"\b[A-Z]\w*", types))) or bool(helper)
         has_auth = (layered or custom or bool(AUTH_TYPE.search(types)) or bool(AUTH_MW.search(guards))
                     or bool(H.AUTH_EVIDENCE.search(code[pc:b])) or H.CUSTOM.is_auth(body))
+        # public-by-design registration / auth handlers (e.g. POST /api/users -> handlers::auth::register)
+        fn_m = FN_DECL.match(code, a)
+        if not has_auth and fn_m and verbs == ["POST"] and re.fullmatch(
+                r"(?i)(?:register|signup|sign_up|create_account|login|sign_in|signin|forgot_password|reset_password|refresh_token|verify_email|confirm_email)",
+                fn_m.group(1)):
+            has_auth = True
         self.handlers.add((fsf.rel, a))
         self.routes.append(Route(sf.rel, sf.line_at(off), path, verbs, body, framework, "rust", has_auth=has_auth,
                                  calls_llm=bool(LLM_CALL.search(body) or H.LLM_HOSTS.search(body)),
@@ -385,6 +405,9 @@ class RustScanner:
                 close = match_close(body_b, m.end() - 1)
                 if close < 0:
                     continue
+                if rule == "BE001" and re.match(r"\s*query\s*\(", m.group(0)) and not re.search(
+                        r"\.\s*(?:bind|fetch|fetch_one|fetch_all|fetch_optional|execute)\s*\(", body_b[close:close + 250]):
+                    continue  # local helper named `query(...)`, not `sqlx::query(...).fetch/execute`
                 if rule == "BE001" and m.group(0).lstrip().startswith(".") and SQLX_CHAIN.search(
                         body_b, max(body_b.rfind(";", 0, m.start()), body_b.rfind("{", 0, m.start()), 0), m.start()):
                     continue  # sqlx `query(...).bind(x).execute(&pool)`: the argument is the executor, not SQL

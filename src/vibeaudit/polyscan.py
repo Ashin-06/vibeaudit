@@ -93,6 +93,8 @@ def _lang_of(rel: str) -> Optional[str]:
         return "php"
     if low.endswith((".rb", ".erb")):
         return "ruby"
+    if low.endswith(".dart"):
+        return "dart"
     return None
 
 

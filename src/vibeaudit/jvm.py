@@ -17,7 +17,7 @@ from typing import Callable, Dict, List, Optional, Tuple
 
 from .files import Project, SourceFile
 from .guard import GUARD
-from .heuristics import LLM_HOSTS, PUBLIC_PATH
+from .heuristics import CUSTOM, LLM_HOSTS, PUBLIC_PATH
 from .lexer import Views, match_close
 from .model import Finding, Route
 
@@ -85,6 +85,10 @@ MAPPINGS = {"GetMapping": ["GET"], "PostMapping": ["POST"], "PutMapping": ["PUT"
 JAXRS = {"GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"}
 AUTH_ANNOTATIONS = {"PreAuthorize", "PostAuthorize", "Secured", "RolesAllowed", "Authenticated", "DenyAll", "PermitAll",
                     "PreFilter", "PostFilter"}
+CUSTOM_AUTH_ANN_DEF = re.compile(r"(?:@interface|annotation\s+class)\s+(\w+)")
+CUSTOM_AUTH_ANN_NAME = re.compile(r"(?i)(?:auth|secured|apikey|api_?key|require_?role|require_?perm|admin_?only|authenticated|jwt|token_?required)")
+STATIC_HTTP_METHOD = re.compile(r"\bimport\s+static\s+org\.springframework\.http\.HttpMethod\s*\.\s*(\*|[A-Z]+)\s*;")
+HTTP_METHODS_RE = re.compile(r"\b(GET|POST|PUT|DELETE|PATCH|HEAD|OPTIONS)\b")
 LLM_CALL = re.compile(
     r"\.\s*chat\s*\(\s*\)\s*\.\s*completions\s*\(\s*\)|\.\s*createChatCompletion\s*\(|\bChatClient\b|\bchatClient\s*\.\s*prompt\s*\("
     r"|\b(?:chatModel|chatLanguageModel|languageModel|streamingChatModel|model)\s*\.\s*(?:call|generate|chat|stream)\s*\("
@@ -268,7 +272,7 @@ def file_routes(sf: SourceFile, security: "Security") -> List[Route]:
         for a in cls:
             if a.name in ("RequestMapping", "Path"):
                 base = _paths(a)[0]
-        class_auth = bool(names & AUTH_ANNOTATIONS)
+        class_auth = bool(names & security.auth_annotations) or any(CUSTOM.is_auth("@" + n) for n in names)
         for a0, b0 in _depth1_spans(bare, open_brace + 1, close):
             for ann_group in _member_groups(code, bare, a0, b0):
                 routes.extend(_routes_for(sf, code, bare, ann_group, b0, close, base, spring, class_auth, security))
@@ -307,7 +311,7 @@ def _routes_for(sf: SourceFile, code: str, bare: str, group: List[Annotation], s
         sub = next((a for a in group if a.name == "Path"), None)
         subpaths, verbs, framework = ([_paths(sub)[0]] if sub else [""]), [verb.name], "jax-rs"  # type: ignore[union-attr]
     names = {a.name for a in group}
-    explicit = class_auth or bool(names & AUTH_ANNOTATIONS)
+    explicit = class_auth or bool(names & security.auth_annotations) or any(CUSTOM.is_auth("@" + n) for n in names)
     out = []
     for sub in subpaths:
         path = _join(base, sub)
@@ -358,6 +362,7 @@ class Security:
         self.rules: List[Tuple["re.Pattern[str]", bool]] = []  # (path pattern, needs login), in declaration order
         self.default: Optional[bool] = None  # anyRequest(): True = login, False = open
         self.custom = False  # a hand-written auth HandlerInterceptor or servlet filter (no Spring Security chain)
+        self.auth_annotations: set = set(AUTH_ANNOTATIONS)  # includes custom meta-annotated or project auth annotations
 
     def protects(self, path: str, verbs: List[str]) -> bool:
         if self.custom and not self.rules and self.default is None:
@@ -386,17 +391,35 @@ class Security:
                 sec._quarkus(sf.text)
             if is_jvm(sf.rel) and not sf.is_test and CUSTOM_AUTH.search(sf.text):
                 sec.present = sec.custom = True
+            if is_jvm(sf.rel) and not sf.is_test:
+                v = views_of(sf)
+                for dm in CUSTOM_AUTH_ANN_DEF.finditer(v.bare):
+                    ann_name = dm.group(1)
+                    head_start = _boundary_before(v.bare, 0, dm.start())
+                    meta = {a.name for a in annotations(v.code, v.bare, head_start, dm.start())}
+                    if (meta & AUTH_ANNOTATIONS) or CUSTOM_AUTH_ANN_NAME.search(ann_name):
+                        sec.auth_annotations.add(ann_name)
         return sec
 
     def _spring(self, v: Views) -> None:
         code, bare = v.code, v.bare
+        static_methods: set = set()
+        for sm in STATIC_HTTP_METHOD.finditer(code):
+            if sm.group(1) == "*":
+                static_methods.update(("GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"))
+            else:
+                static_methods.add(sm.group(1))
         for m in MATCHERS.finditer(bare):
             close = match_close(bare, m.end() - 1)
             if close < 0:
                 continue
-            patterns = [s for s in STRING.findall(code[m.end():close]) if s.startswith("/")]
-            # `antMatchers(HttpMethod.GET, "/articles/**")` applies to GET only
-            scoped = set(re.findall(r"\bHttpMethod\s*\.\s*([A-Z]+)", code[m.end():close]))
+            arg_text = code[m.end():close]
+            patterns = [s for s in STRING.findall(arg_text) if s.startswith("/")]
+            # `antMatchers(HttpMethod.GET, "/articles/**")` or statically imported `requestMatchers(GET, "/articles/**")`
+            scoped = set(re.findall(r"\bHttpMethod\s*\.\s*([A-Z]+)", arg_text))
+            if static_methods:
+                bare_args = bare[m.end():close]
+                scoped.update(hm for hm in HTTP_METHODS_RE.findall(bare_args) if hm in static_methods)
             rest = bare[close + 1:close + 200]
             act = re.match(r"\s*\.\s*(\w+)", rest)
             if not patterns or not act:

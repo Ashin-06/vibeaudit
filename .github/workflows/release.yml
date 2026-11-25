@@ -108,7 +108,7 @@ jobs:
         env:
           TAG: ${{ github.ref_name }}
         run: test "$TAG" = "v$(node -p "require('./package.json').version")"
-      - run: npm ci --no-audit --no-fund
+      - run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Build the bundled .vsix
         run: npx --no-install vsce package --out vibeaudit.vsix
       - name: Publish to the VS Code Marketplace

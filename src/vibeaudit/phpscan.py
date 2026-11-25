@@ -241,6 +241,7 @@ class PhpScanner:
         self.depth, self.via = 0, None  # while a followed call is checked: how deep, and the call it came through
         self.reported: Set[Tuple[str, int, str, bool]] = set()
         self.included: Dict[str, Tuple[str, str]] = {}  # route file -> (prefix, middleware) of the group that requires it
+        self.safe_methods: Set[str] = set()  # PHP methods/functions that escape or render fixed views before returning HTML
 
     def add(self, sf: SourceFile, off: int, rule: str, msg: str, sev: str = "") -> None:
         line = sf.line_at(off)
@@ -739,10 +740,28 @@ class PhpScanner:
         return any(n not in cleaned for n in names)
 
     # ------------------------------------------------------------------ Blade
+    _ESCAPED_PHP = re.compile(
+        r"\b(?:e|htmlspecialchars|htmlentities|strip_tags|clean|purify|view)\s*\("
+        r"|\bPurifier\s*::\s*clean\s*\(|\bBlade\s*::\s*render\s*\(|\bHtmlString\b|->\s*render\s*\(")
+
+    def _index_safe_methods(self) -> None:
+        """Record PHP methods/functions whose bodies escape output or render views, so Blade `{!! $m->fn() !!}` is not flagged."""
+        for name, lst in self.funcs.items():
+            for sf, _a, _po, pc, b in lst:
+                body = sf.cache["php_views"].code[pc:b]  # type: ignore[attr-defined]
+                if self._ESCAPED_PHP.search(body):
+                    self.safe_methods.add(name.lower())
+                    break
+
     def _blade(self, sf: SourceFile) -> None:
+        if not self.safe_methods and self.funcs:
+            self._index_safe_methods()
         text = sf.text or ""
         for m in finditer(BLADE_RAW, text):
             value = m.group(1).strip()
             if not value.startswith("$") or BLADE_SAFE.search(value):
+                continue
+            call = re.search(r"(?:->|::)\s*(\w+)\s*\([^()]*\)\s*$", value)
+            if call and call.group(1).lower() in self.safe_methods:
                 continue
             self.add(sf, m.start(), "FE001", "Unescaped `{!! ... !!}` output in a Blade template can execute script (XSS).", "high")
