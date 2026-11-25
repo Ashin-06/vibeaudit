@@ -30,7 +30,7 @@
    }
   },
   "AUTH001": {
-   "precision": 0.7228,
+   "precision": 0.8111,
    "seeded_recall": 1.0,
    "by_repo": {
     "ClaudeCodeProxy": [
@@ -41,17 +41,9 @@
      0,
      1
     ],
-    "Pentaract": [
-     0,
-     1
-    ],
     "Vulnerable-Flask-App": [
      2,
      0
-    ],
-    "atuin": [
-     0,
-     3
     ],
     "careconnect": [
      1,
@@ -84,10 +76,6 @@
     "flexible-graphrag": [
      8,
      0
-    ],
-    "go-base": [
-     0,
-     3
     ],
     "go-clean-arch": [
      1,
@@ -153,10 +141,6 @@
      0,
      2
     ],
-    "realworld-springboot-java": [
-     0,
-     4
-    ],
     "roomGPT": [
      1,
      0
@@ -218,7 +202,7 @@
    }
   },
   "AUTH003": {
-   "precision": 0.5323,
+   "precision": 0.5156,
    "seeded_recall": 1.0,
    "by_repo": {
     "ClaudeCodeProxy": [
@@ -248,6 +232,10 @@
     "fastapi-realworld-example-app": [
      0,
      1
+    ],
+    "go-base": [
+     0,
+     2
     ],
     "go-gin-example": [
      4,
@@ -529,6 +517,10 @@
      3,
      0
     ],
+    "atuin": [
+     1,
+     0
+    ],
     "dvcsharp-api": [
      1,
      0
@@ -563,7 +555,7 @@
    }
   },
   "BE001": {
-   "precision": 0.7778,
+   "precision": 0.8077,
    "seeded_recall": 1.0,
    "by_repo": {
     "BookStack": [
@@ -601,10 +593,6 @@
     "flexible-graphrag": [
      11,
      1
-    ],
-    "govwa": [
-     0,
-     3
     ],
     "pygoat": [
      1,
@@ -747,9 +735,13 @@
    }
   },
   "BE005": {
-   "precision": 0.4167,
+   "precision": 0.3846,
    "seeded_recall": 1.0,
    "by_repo": {
+    "atuin": [
+     0,
+     1
+    ],
     "bella-openapi": [
      2,
      0
@@ -2680,7 +2672,7 @@
    "by_repo": {}
   },
   "FE001": {
-   "precision": 0.1841,
+   "precision": 0.1952,
    "seeded_recall": 1.0,
    "by_repo": {
     "BookStack": [
@@ -2693,7 +2685,7 @@
     ],
     "LinkAce": [
      0,
-     21
+     9
     ],
     "act-solo-ai": [
      13,
@@ -2745,7 +2737,7 @@
     ],
     "laravel.io": [
      0,
-     7
+     2
     ],
     "linkstack": [
      3,
@@ -2801,7 +2793,7 @@
     ],
     "snipe-it": [
      2,
-     41
+     38
     ],
     "symfony-demo": [
      0,
@@ -3020,7 +3012,7 @@
    }
   },
   "JAVA001": {
-   "precision": 0.6923,
+   "precision": 0.8182,
    "seeded_recall": 1.0,
    "by_repo": {
     "Schematic": [
@@ -3029,7 +3021,7 @@
     ],
     "kotlin-spring-realworld": [
      0,
-     4
+     2
     ],
     "spring-petclinic": [
      6,
