@@ -211,6 +211,8 @@ class Prober:
 
     # --------------------------------------------------------------- route
     def route(self, r: Route, canary: Canary) -> None:
+        if LOGOUT_PATH.search(r.path):
+            return  # never probe logout endpoints while holding an active session
         method = "GET" if "GET" in r.methods or "ALL" in r.methods else "POST"
         path = concrete(r.path)
         if self.auth:
@@ -227,10 +229,20 @@ class Prober:
             return
         b_status, b_hdrs, b_text, b_time = base
         self.errors(r, b_text)
-        if "html" in b_hdrs.get("content-type", ""):  # the page's own form fields are parameters too
+        defaults: Dict[str, str] = {}
+        probe_post = False
+        if "html" in b_hdrs.get("content-type", ""):  # the page's own form fields and submit button are parameters too
             names = sorted(set(names) | {n for n in FORM_FIELD.findall(b_text)[:12] if n.lower() not in SKIP_FIELDS})[:12]
+            for rx in (SUBMIT_FIELD_A, SUBMIT_FIELD_B):
+                for m in rx.finditer(b_text):
+                    defaults.setdefault(m.group(1), m.group(2) or "Submit")
+            probe_post = method == "GET" and bool(POST_FORM.search(b_text))
         for name in names:
-            self.inject(r, method, path, names, name, b_text, b_time, canary)
+            self.inject(r, method, path, names, name, b_text, b_time, canary, defaults)
+        if probe_post and names and not any(f.file == r.file and f.rule_id in ("BE001", "FE001", "BE006") for f in self.findings):
+            self.json = False
+            for name in names[:6]:
+                self.inject(r, "POST", path, names, name, b_text, b_time, canary, defaults)
         for p in path_params[:2]:  # path segments: SQL error and traversal only
             for payload in ("1'",) + TRAVERSAL[:1]:
                 got = self.send(method, PARAM_SEG.sub(lambda m: urllib.parse.quote(payload, safe=""), r.path, count=1), {})
@@ -272,9 +284,14 @@ class Prober:
         return out
 
     def inject(self, r: Route, method: str, path: str, names: List[str], name: str, b_text: str, b_time: float,
-               canary: Canary) -> None:
+               canary: Canary, defaults: Optional[Dict[str, str]] = None) -> None:
+        base_vals = dict(defaults or {})
+
         def with_(v: str):
-            return self.send(method, path, {n: (v if n == name else "1") for n in names})
+            vals = dict(base_vals)
+            for n in names:
+                vals[n] = v if n == name else "1"
+            return self.send(method, path, vals)
 
         got = with_("1'")
         if got and SQL_ERRORS.search(got[2]) and not SQL_ERRORS.search(b_text):
@@ -513,6 +530,12 @@ FORM_FIELD = re.compile(r"""<(?:input|textarea|select)\b[^>]{0,300}?\bname\s*=\s
 SKIP_FIELDS = {"submit", "login", "btnsubmit", "button", "user_token", "csrf_token", "csrfmiddlewaretoken", "_token",
                "authenticity_token", "_csrf"}
 LOGIN_PAGE = re.compile(r"""(?i)<input[^>]{0,200}type\s*=\s*["']?password""")
+SUBMIT_FIELD_A = re.compile(
+    r"""(?i)<input[^>]{0,200}?type\s*=\s*["']?submit["']?[^>]{0,200}?name\s*=\s*["']([\w\[\].-]{1,60})["'][^>]{0,200}?(?:value\s*=\s*["']([^"']{0,100})["'])?""")
+SUBMIT_FIELD_B = re.compile(
+    r"""(?i)<input[^>]{0,200}?name\s*=\s*["']([\w\[\].-]{1,60})["'][^>]{0,200}?type\s*=\s*["']?submit["']?[^>]{0,200}?(?:value\s*=\s*["']([^"']{0,100})["'])?""")
+POST_FORM = re.compile(r"""(?i)<form\b[^>]{0,200}\bmethod\s*=\s*["']?post\b""")
+LOGOUT_PATH = re.compile(r"(?i)(?:^|[/_.-])(?:logout|signout|sign[-_]?out|log[-_]?out)(?:$|[/_.-])")
 
 
 def _token(data):
@@ -584,8 +607,146 @@ def login_form(target: Target, page: str, fields: Dict[str, str]) -> Dict[str, s
     return {"Cookie": "; ".join(f"{k}={v}" for k, v in jar.items())}
 
 
-PHP_SKIP = re.compile(r"(?i)(?:^|/)(?:vendor|tests?|node_modules|\.git|cache|tmp)/")
+PHP_SKIP = re.compile(
+    r"(?i)(?:^|/)(?:vendor|tests?|node_modules|\.git|cache|tmp|includes?|source|help|lib|libs|config|inc|"
+    r"partials?|components?|templates?|views?)/")
 PHP_INCLUDE = re.compile(r"""\b(?:include|require)(?:_once)?\s*\(?\s*[^;'"]{0,80}['"]([^'"]{1,200}\.php)['"]""")
+OPENAPI_FILE = re.compile(r"(?i)(?:^|/)(?:openapi|swagger)[\w.-]*\.(?:ya?ml|json)$")
+OPENAPI_VERBS = ("get", "post", "put", "patch", "delete")
+
+
+def _openapi_yaml_ops(text: str) -> List[Tuple[str, str, int, List[str], bool, bool]]:
+    """Extract (path, verb, line, params, has_body, has_sec) from a YAML OpenAPI/Swagger spec using indentation."""
+    ops: List[Tuple[str, str, int, List[str], bool, bool]] = []
+    in_paths, paths_indent = False, -1
+    cur_path, path_indent = "", -1
+    cur_verb, verb_indent, verb_line = "", -1, 1
+    in_params, params_indent = False, -1
+    in_body, body_indent = False, -1
+    in_props, props_indent = False, -1
+    cur_params: List[str] = []
+    has_sec = False
+
+    def flush() -> None:
+        if cur_path and cur_verb:
+            ops.append((cur_path, cur_verb, verb_line, list(dict.fromkeys(cur_params)), in_body, has_sec))
+
+    for lineno, raw in enumerate(text.splitlines(), 1):
+        stripped = raw.split("#", 1)[0].rstrip()
+        if not stripped.strip():
+            continue
+        indent = len(raw) - len(raw.lstrip(" "))
+        s = stripped.strip()
+        if not in_paths:
+            if s.startswith("paths:"):
+                in_paths, paths_indent = True, indent
+            continue
+        if indent <= paths_indent and not s.startswith("-"):
+            flush()
+            break
+        if s.startswith("/") and s.endswith(":") and (path_indent < 0 or indent <= path_indent):
+            flush()
+            cur_path, path_indent = s[:-1].strip("'\""), indent
+            cur_verb, verb_indent = "", -1
+            in_params = in_body = in_props = has_sec = False
+            cur_params = []
+            continue
+        if cur_path and indent > path_indent:
+            key = s.rstrip(":").lower()
+            if key in OPENAPI_VERBS and s.endswith(":") and (verb_indent < 0 or indent <= verb_indent):
+                flush()
+                cur_verb, verb_indent, verb_line = key.upper(), indent, lineno
+                in_params = in_body = in_props = has_sec = False
+                cur_params = []
+                continue
+            if cur_verb and indent > verb_indent:
+                if s.startswith("security:"):
+                    has_sec = True
+                    in_params = in_body = in_props = False
+                elif s.startswith("parameters:"):
+                    in_params, params_indent = True, indent
+                    in_body = in_props = False
+                elif s.startswith("requestBody:"):
+                    in_body, body_indent = True, indent
+                    in_params = in_props = False
+                elif s.startswith("responses:") and indent <= verb_indent + 4:
+                    in_params = in_body = in_props = False
+                elif in_params and indent > params_indent:
+                    pm = re.match(r"^(?:-\s+)?name\s*:\s*['\"]?([A-Za-z_]\w{0,39})['\"]?$", s)
+                    if pm:
+                        cur_params.append(pm.group(1))
+                elif in_body and indent > body_indent:
+                    if s == "properties:":
+                        in_props, props_indent = True, indent
+                    elif in_props:
+                        if indent == props_indent + 2 and s.endswith(":"):
+                            pname = s[:-1].strip("'\"")
+                            if re.fullmatch(r"[A-Za-z_]\w{0,39}", pname):
+                                cur_params.append(pname)
+                        elif indent <= props_indent:
+                            in_props = False
+    else:
+        flush()
+    return ops
+
+
+def _openapi_json_ops(text: str) -> List[Tuple[str, str, int, List[str], bool, bool]]:
+    import json as _json
+
+    try:
+        doc = _json.loads(text)
+    except ValueError:
+        return []
+    paths = doc.get("paths") if isinstance(doc, dict) else None
+    if not isinstance(paths, dict):
+        return []
+    ops: List[Tuple[str, str, int, List[str], bool, bool]] = []
+    for p, item in paths.items():
+        if not isinstance(p, str) or not p.startswith("/") or not isinstance(item, dict):
+            continue
+        for verb in OPENAPI_VERBS:
+            spec = item.get(verb)
+            if not isinstance(spec, dict):
+                continue
+            names: List[str] = []
+            for prm in spec.get("parameters") or []:
+                if isinstance(prm, dict) and isinstance(prm.get("name"), str):
+                    names.append(prm["name"])
+            rb = spec.get("requestBody")
+            has_body = isinstance(rb, dict)
+            if has_body:
+                content = rb.get("content") or {}
+                if isinstance(content, dict):
+                    for media in content.values():
+                        if isinstance(media, dict):
+                            props = (media.get("schema") or {}).get("properties") or {}
+                            if isinstance(props, dict):
+                                names.extend(k for k in props if isinstance(k, str))
+            ops.append((p, verb.upper(), 1, list(dict.fromkeys(names)), has_body, bool(spec.get("security"))))
+    return ops
+
+
+def openapi_routes(project, routes: List[Route]) -> List[Route]:
+    """Routes from OpenAPI / Swagger specs (Connexion, FastAPI/Swagger-first apps where Python decorators omit paths)."""
+    seen = {(r.path, m) for r in routes for m in r.methods}
+    out: List[Route] = []
+    for f in project.files:
+        if not f.text or f.is_test or PHP_SKIP.search(f.rel) or not OPENAPI_FILE.search(f.rel):
+            continue
+        ops = _openapi_json_ops(f.text) if f.rel.lower().endswith(".json") else _openapi_yaml_ops(f.text)
+        for path, verb, line, pnames, has_body, has_sec in ops:
+            if (path, verb) in seen or ("ALL" in [m for p, m in seen if p == path]):
+                continue
+            seen.add((path, verb))
+            path_params = re.findall(r"\{(\w+)\}", path)
+            hints = [f"request.args.get('{n}')" for n in pnames if n not in path_params]
+            if has_body:
+                hints.append("request.json")
+            out.append(Route(f.rel, line, path, [verb], "\n".join(hints), "openapi", "openapi",
+                             has_auth=has_sec, reads_body=has_body, params=path_params))
+            if len(out) >= 400:
+                return out
+    return out
 
 
 def plain_php_routes(project, routes: List[Route]) -> List[Route]:
@@ -606,7 +767,11 @@ def plain_php_routes(project, routes: List[Route]) -> List[Route]:
                 body += "\n" + hit.text
         if not re.search(r"\$_(?:GET|POST|REQUEST|COOKIE)\b|<form\b", body):
             continue
-        method = "POST" if re.search(r"\$_POST\b", body) and not re.search(r"\$_(?:GET|REQUEST)\b", body) else "GET"
+        has_get_form = bool(re.search(r"""(?i)<form\b[^>]{0,200}\bmethod\s*=\s*['"]?get\b""", body)) or (
+            "<form" in f.text.lower() and not POST_FORM.search(f.text)
+        )
+        post_only = bool(re.search(r"\$_POST\b", f.text)) and not re.search(r"\$_(?:GET|REQUEST)\b", body) and not has_get_form
+        method = "POST" if post_only else "GET"
         out.append(Route(rel, 1, "/" + rel, [method], body, "php-plain", "php"))
     return out
 

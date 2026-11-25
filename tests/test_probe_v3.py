@@ -8,12 +8,13 @@ import urllib.parse
 
 import pytest
 
+from vibeaudit.cli import _merge_auth
 from vibeaudit.exploit import ExploitError
 from vibeaudit.files import Project
-from vibeaudit.probe import Prober, Target, _token, login, login_form, plain_php_routes
+from vibeaudit.probe import Prober, Target, _token, login, login_form, openapi_routes, plain_php_routes
 from vibeaudit.scanner import Options, scan
 
-INDEX = "<?php\nrequire_once 'source/low.php';\n?>\n<form><input name='id'><input type='submit' name='Submit'></form>\n"
+INDEX = "<?php\nrequire_once 'source/low.php';\n?>\n<form><input name='id'><input type='submit' name='Submit' value='Submit'></form>\n"
 LOW = "<?php\n$id = $_GET['id'];\n$q = \"SELECT first_name FROM users WHERE user_id = '$id'\";\n"
 
 
@@ -43,9 +44,11 @@ class Dvwa(http.server.BaseHTTPRequestHandler):
             return self.reply(302, "", [("Location", "/login.php")])
         if u.path == "/vulnerabilities/sqli/index.php":
             q = dict(urllib.parse.parse_qsl(u.query))
+            if "Submit" not in q:
+                return self.reply(200, "<form><input name='id'><input type='submit' name='Submit' value='Submit'></form>")
             try:
                 rows = sqlite3.connect(":memory:").execute("SELECT '" + q.get("id", "") + "'").fetchall()
-                return self.reply(200, f"<pre>{rows}</pre><form><input name='id'></form>")
+                return self.reply(200, f"<pre>{rows}</pre><form><input name='id'><input type='submit' name='Submit' value='Submit'></form>")
             except sqlite3.Error as e:
                 return self.reply(200, f"sqlite3.OperationalError: {e}")
         return self.reply(200, "<p>home</p>")
@@ -137,3 +140,49 @@ def test_login_reads_auth_token():
             {"Authorization": "Bearer eyJ0eXAiOiJKV1Qi.payload.sig"}
     finally:
         server.shutdown()
+
+
+def test_openapi_routes_yaml_and_json_and_merge_auth(tmp_path):
+    (tmp_path / "openapi.yaml").write_text(
+        "openapi: 3.0.1\npaths:\n  /users/v1/{username}:\n    get:\n      parameters:\n        - name: username\n"
+        "          in: path\n    delete:\n      security:\n        - bearerAuth: []\n  /users/v1/login:\n    post:\n"
+        "      requestBody:\n        content:\n          application/json:\n            schema:\n"
+        "              properties:\n                username:\n                  type: string\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "swagger.json").write_text(json.dumps({
+        "openapi": "3.0.0",
+        "paths": {"/items": {"post": {"parameters": [{"name": "q"}], "requestBody": {"content": {"application/json": {"schema": {"properties": {"name": {"type": "string"}}}}}}}}},
+    }), encoding="utf-8")
+    routes = openapi_routes(Project(tmp_path), [])
+    by_pm = {(r.path, m): r for r in routes for m in r.methods}
+    assert ("/users/v1/{username}", "GET") in by_pm and not by_pm[("/users/v1/{username}", "GET")].has_auth
+    assert ("/users/v1/{username}", "DELETE") in by_pm and by_pm[("/users/v1/{username}", "DELETE")].has_auth
+    assert ("/users/v1/login", "POST") in by_pm and by_pm[("/users/v1/login", "POST")].reads_body
+    assert ("/items", "POST") in by_pm and "name" in by_pm[("/items", "POST")].body
+    hdrs = {"Cookie": "security=low"}
+    _merge_auth(hdrs, {"Cookie": "PHPSESSID=good"})
+    assert hdrs["Cookie"] == "security=low; PHPSESSID=good"
+
+
+def test_plain_php_skips_source_and_includes(dvwa):
+    root, _url = dvwa
+    (root / "includes").mkdir()
+    (root / "includes" / "helper.php").write_text("<?php $x = $_GET['x'];")
+    (root / "logout.php").write_text("<?php if (isset($_POST['x'])) {}")
+    paths = {r.path for r in plain_php_routes(Project(root), [])}
+    assert "/vulnerabilities/sqli/index.php" in paths
+    assert "/vulnerabilities/sqli/source/low.php" not in paths
+    assert "/includes/helper.php" not in paths
+
+
+def test_prober_skips_logout_so_session_survives(dvwa):
+    root, url = dvwa
+    t = Target(url, False, 200, 300)
+    routes = plain_php_routes(Project(root), [])
+    # Prepend /logout.php before the SQLi route; verify Prober never logs out or skips /logout.php
+    from vibeaudit.model import Route
+    logout_r = Route("logout.php", 1, "/logout.php", ["GET"], "$_GET['x']", "php-plain", "php")
+    prober = Prober(t, [logout_r] + routes, {"Cookie": "PHPSESSID=good; security=low"})
+    hits = [f.rule_id for f in prober.run()]
+    assert "BE001" in hits and not prober.auth_failed
