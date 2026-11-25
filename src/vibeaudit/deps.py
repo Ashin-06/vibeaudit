@@ -24,12 +24,13 @@ Emit = Callable[[Finding], None]
 USER_AGENT = "vibeaudit (+https://github.com/Ashin-06/vibeaudit)"
 TIMEOUT = 10
 NEW_PACKAGE_DAYS = 30
+REGISTRY_ECOSYSTEMS = ("PyPI", "npm", "Pub", "RubyGems")
 
 
 @dataclass
 class Dep:
     name: str
-    ecosystem: str  # "PyPI" or "npm"
+    ecosystem: str  # "PyPI", "npm", "Pub", "RubyGems", "Go", "Maven", "crates.io", "NuGet", "Packagist"
     file: str
     line: int
     version: Optional[str] = None  # exact pinned version, when known
@@ -77,6 +78,8 @@ def edit_distance_one(a: str, b: str) -> bool:
 
 
 def typosquat_target(name: str, ecosystem: str) -> Optional[str]:
+    if ecosystem not in ("PyPI", "npm"):
+        return None
     known, targets = popular(ecosystem)
     key = pep503(name) if ecosystem == "PyPI" else name.lower()
     if key in known or len(key) < 5:
@@ -164,6 +167,16 @@ def _collect(project: Project) -> List[Dep]:
             continue
         if (name.endswith(".csproj") or name == "Directory.Packages.props") and f.text is not None and not f.is_test:
             deps.extend(Dep(pkg, "NuGet", f.rel, line, version) for pkg, version, line in nuget_dependencies(f.text))
+            continue
+        if name == "pubspec.yaml" and f.text is not None and not f.is_test:
+            locked = pubspec_locked(project, f.rel)
+            for pkg, version, line in pubspec_dependencies(f.text):
+                deps.append(Dep(pkg, "Pub", f.rel, line, version or locked.get(pkg)))
+            continue
+        if name == "Gemfile" and f.text is not None and not f.is_test:
+            locked = gemfile_locked(project, f.rel)
+            for gem, version, line in gemfile_dependencies(f.text):
+                deps.append(Dep(gem, "RubyGems", f.rel, line, version or locked.get(gem.lower())))
             continue
         requirements = bool(re.fullmatch(r"requirements[\w.-]*\.(?:txt|in)", name) or re.search(r"(?:^|/)requirements/[^/]+\.txt$", f.rel))
         # the name first: only manifests are read, so a long-lived Project keeps the result while code changes
@@ -445,6 +458,25 @@ def _registry_lookup(dep: Dep) -> Tuple[str, Optional[dt.datetime], str]:
                 if isinstance(f, dict) and isinstance(f.get("upload_time_iso_8601"), str):
                     times.append(f["upload_time_iso_8601"])
         return "ok", _parse_time(min(times) if times else None), ""
+    if dep.ecosystem == "Pub":
+        code, data = _get_json(f"https://pub.dev/api/packages/{urllib.parse.quote(dep.name)}")
+        if code in (404, 410):
+            return "missing", None, ""
+        if not data:
+            return "error", None, ""
+        times = [v["published"] for v in (data.get("versions") or [])
+                 if isinstance(v, dict) and isinstance(v.get("published"), str)]
+        latest = _dict(data.get("latest")).get("published")
+        first = min(times) if times else (latest if isinstance(latest, str) else None)
+        return "ok", _parse_time(first), ""
+    if dep.ecosystem == "RubyGems":
+        code, data = _get_json(f"https://rubygems.org/api/v1/gems/{urllib.parse.quote(dep.name)}.json")
+        if code in (404, 410):
+            return "missing", None, ""
+        if not data:
+            return "error", None, ""
+        created = data.get("created_at") or data.get("version_created_at")
+        return "ok", _parse_time(created if isinstance(created, str) else None), ""
     code, data = _get_json("https://registry.npmjs.org/" + urllib.parse.quote(dep.name, safe="@"))
     if code in (404, 410):
         return "missing", None, ""
@@ -575,7 +607,7 @@ class DepScanner:
             return
         known_pypi, _ = popular("PyPI")
         known_npm, _ = popular("npm")
-        to_check = sorted({(d.ecosystem, d.name) for d in deps if d.checkable and d.ecosystem in ("PyPI", "npm")
+        to_check = sorted({(d.ecosystem, d.name) for d in deps if d.checkable and d.ecosystem in REGISTRY_ECOSYSTEMS
                            and (d.ecosystem, d.name) not in slopped and not (
             (d.ecosystem == "PyPI" and pep503(d.name) in known_pypi) or (d.ecosystem == "npm" and d.name.lower() in known_npm))})
         by_key = {(d.ecosystem, d.name): d for d in deps}
@@ -592,7 +624,7 @@ class DepScanner:
                 continue
             status, first, note = infos.get(key, ("ok", None, ""))
             if status == "missing":
-                self.add(d, "DEP001", f"`{d.name}` does not exist on {'PyPI' if d.ecosystem == 'PyPI' else 'npm'}.")
+                self.add(d, "DEP001", f"`{d.name}` does not exist on {d.ecosystem}.")
                 continue
             if status == "malware":
                 self.add(d, "DEP001", f"`{d.name}` was {note}.")
@@ -743,12 +775,14 @@ def cargo_locked(project: Project, manifest: str) -> Dict[str, str]:
 
 # ------------------------------------------------------------------ transitive dependencies (DEP009)
 LOCK_MANIFESTS = {"package.json": "npm", "pyproject.toml": "PyPI", "Pipfile": "PyPI", "go.mod": "Go", "Cargo.toml": "crates.io",
-                  "composer.json": "Packagist"}
+                  "composer.json": "Packagist", "pubspec.yaml": "Pub", "Gemfile": "RubyGems"}
 LOCKS = {"npm": ("package-lock.json", "pnpm-lock.yaml", "yarn.lock", "bun.lock"),
          "PyPI": ("poetry.lock", "uv.lock", "pdm.lock", "Pipfile.lock"),
          "Go": ("go.mod",),  # its `// indirect` requirements
          "crates.io": ("Cargo.lock",),
-         "Packagist": ("composer.lock",)}
+         "Packagist": ("composer.lock",),
+         "Pub": ("pubspec.lock",),
+         "RubyGems": ("Gemfile.lock",)}
 MAX_LOCK_BYTES = 30_000_000
 
 
@@ -842,6 +876,10 @@ def _lock_entries(lock: str, text: str) -> List[Tuple[str, str, int]]:
     elif lock == "bun.lock":
         for m in re.finditer(r'(?m)^\s*"[^"\n]+":\s*\[\s*"((?:@[^@/"]+/)?[^@"]+)@(\d[^"]*)"', text):
             out.append((m.group(1), m.group(2), line(m.start())))
+    elif lock == "pubspec.lock":
+        return [(n, v, _line_at(newlines, off)) for n, v, off, is_dev in _pubspec_lock(text) if not is_dev]
+    elif lock == "Gemfile.lock":
+        return [(n, v, _line_at(newlines, off)) for n, v, off in _gemfile_lock(text)]
     return out
 
 
@@ -919,3 +957,174 @@ def nuget_dependencies(text: str) -> List[Tuple[str, str, int]]:
         if pkg and version and re.fullmatch(r"\[?\d[\w.\-+]{0,50}\]?", version.group(1)):
             out.append((pkg.group(1), version.group(1).strip("[]"), text.count("\n", 0, m.start()) + 1))
     return out
+
+
+# ------------------------------------------------------------------ Pub (Flutter / Dart)
+_PUB_EXACT_VER = re.compile(r"^['\"]?(\d+\.\d+\.\d+(?:[+-][\w.]+)?)['\"]?$")
+_GEM_LINE = re.compile(r"""^[ \t]*gem\s+['"]([A-Za-z0-9_.-]{1,120})['"](.*)$""")
+
+
+def pubspec_dependencies(text: str) -> List[Tuple[str, Optional[str], int]]:
+    """(package, exact_version, line) of non-SDK, hosted runtime dependencies in a pubspec.yaml."""
+    lines = text.splitlines()
+    in_deps = False
+    base_indent: Optional[int] = None
+    entries: List[Tuple[str, Optional[str], int, bool]] = []
+    for n, raw in enumerate(lines, 1):
+        stripped = raw.split("#", 1)[0].rstrip()
+        if not stripped.strip():
+            continue
+        indent = len(raw) - len(raw.lstrip(" "))
+        if indent == 0:
+            in_deps = bool(re.match(r"dependencies\s*:", stripped))
+            base_indent = None
+            continue
+        if not in_deps:
+            continue
+        if base_indent is None or indent <= base_indent:
+            base_indent = indent
+            m = re.match(r"([A-Za-z_][A-Za-z0-9_.-]{0,120})\s*:(.*)$", stripped.strip())
+            if not m:
+                continue
+            name, rest = m.group(1), m.group(2).strip()
+            vm = _PUB_EXACT_VER.match(rest) if rest else None
+            entries.append((name, vm.group(1) if vm else None, n, False))
+        elif entries:
+            child = stripped.strip()
+            name, ver, line, skip = entries[-1]
+            if re.match(r"(?:sdk|path|git)\s*:", child):
+                entries[-1] = (name, ver, line, True)
+            elif child.startswith("version:"):
+                vm = _PUB_EXACT_VER.match(child.split(":", 1)[1].strip())
+                if vm:
+                    entries[-1] = (name, vm.group(1), line, skip)
+    return [(name, ver, line) for name, ver, line, skip in entries if not skip]
+
+
+def _pubspec_lock(text: str) -> List[Tuple[str, str, int, bool]]:
+    """(name, version, offset, is_dev) of every hosted package in a pubspec.lock."""
+    lines = text.splitlines(keepends=True)
+    in_pkgs = False
+    current: Optional[str] = None
+    cur_off = 0
+    source = ""
+    version = ""
+    is_dev = False
+    out: List[Tuple[str, str, int, bool]] = []
+    offset = 0
+
+    def flush() -> None:
+        if current and source == "hosted" and version:
+            out.append((current, version, cur_off, is_dev))
+
+    for raw in lines:
+        line_str = raw.rstrip("\r\n")
+        stripped = line_str.strip()
+        if not line_str or stripped.startswith("#"):
+            offset += len(raw)
+            continue
+        indent = len(line_str) - len(line_str.lstrip(" "))
+        if indent == 0:
+            flush()
+            current = None
+            in_pkgs = line_str.rstrip() == "packages:"
+        elif in_pkgs and indent == 2 and stripped.endswith(":"):
+            flush()
+            current = stripped[:-1].strip().strip("'\"")
+            cur_off, source, version, is_dev = offset, "", "", False
+        elif in_pkgs and current and indent == 4:
+            if stripped.startswith("source:"):
+                source = stripped.split(":", 1)[1].strip().strip("'\"")
+            elif stripped.startswith("version:"):
+                version = stripped.split(":", 1)[1].strip().strip("'\"")
+            elif stripped.startswith("dependency:"):
+                is_dev = "direct dev" in stripped
+        offset += len(raw)
+    flush()
+    return out
+
+
+def pubspec_locked(project: Project, manifest: str) -> Dict[str, str]:
+    """Package -> locked version from the pubspec.lock beside pubspec.yaml."""
+    from .files import file_signature
+
+    folder = manifest.rsplit("/", 1)[0] if "/" in manifest else ""
+    path = project.root / folder / "pubspec.lock" if folder else project.root / "pubspec.lock"
+    try:
+        if not file_signature(path):
+            return {}
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return {}
+    return {name: ver for name, ver, _off, _dev in _pubspec_lock(text)}
+
+
+# ------------------------------------------------------------------ RubyGems (Ruby / Rails)
+def gemfile_dependencies(text: str) -> List[Tuple[str, Optional[str], int]]:
+    """(gem, exact_version, line) of runtime gems declared in a Gemfile (skipping dev/test groups and path/git gems)."""
+    out: List[Tuple[str, Optional[str], int]] = []
+    block_stack: List[bool] = []  # True if dev/test-only group block
+    for n, raw in enumerate(text.splitlines(), 1):
+        code = raw.split("#", 1)[0].strip()
+        if not code:
+            continue
+        gm = re.match(r"group\b(.+)\bdo\s*$", code)
+        if gm:
+            groups = set(re.findall(r":([A-Za-z_]\w*)", gm.group(1)))
+            block_stack.append(bool(groups) and groups <= {"development", "test"})
+            continue
+        if code == "end" and block_stack:
+            block_stack.pop()
+            continue
+        if any(block_stack):
+            continue
+        m = _GEM_LINE.match(code)
+        if not m:
+            continue
+        name, rest = m.group(1), m.group(2)
+        if re.search(r"\b(?:path|git|github|gist|bitbucket)\s*:", rest):
+            continue
+        inline_grp = re.search(r"\bgroup\s*:\s*(\[[^\]]{1,80}\]|:[A-Za-z_]\w*)", rest)
+        if inline_grp:
+            groups = set(re.findall(r":([A-Za-z_]\w*)", inline_grp.group(1)))
+            if groups and groups <= {"development", "test"}:
+                continue
+        vm = re.search(r"""^\s*,\s*['"](?:=\s*)?(\d+\.\d+(?:\.\d+){0,2}(?:[.-][A-Za-z0-9.]+)?)['"]""", rest)
+        out.append((name, vm.group(1) if vm else None, n))
+    return out
+
+
+def _gemfile_lock(text: str) -> List[Tuple[str, str, int]]:
+    """(name, version, offset) of every gem in the GEM/specs section of Gemfile.lock."""
+    out: List[Tuple[str, str, int]] = []
+    in_gem = False
+    in_specs = False
+    offset = 0
+    for raw in text.splitlines(keepends=True):
+        line_str = raw.rstrip("\r\n")
+        if line_str and not line_str[0].isspace():
+            in_gem = line_str.strip() == "GEM"
+            in_specs = False
+        elif in_gem and line_str == "  specs:":
+            in_specs = True
+        elif in_gem and in_specs and line_str.startswith("    ") and not line_str.startswith("      "):
+            m = re.match(r"^    ([A-Za-z0-9_.-]{1,120})\s+\((\d[^)\s-]{0,40})(?:-[^)\s]+)?\)\s*$", line_str)
+            if m:
+                out.append((m.group(1), m.group(2), offset))
+        offset += len(raw)
+    return out
+
+
+def gemfile_locked(project: Project, manifest: str) -> Dict[str, str]:
+    """Gem (lower case) -> locked version from the Gemfile.lock beside Gemfile."""
+    from .files import file_signature
+
+    folder = manifest.rsplit("/", 1)[0] if "/" in manifest else ""
+    path = project.root / folder / "Gemfile.lock" if folder else project.root / "Gemfile.lock"
+    try:
+        if not file_signature(path):
+            return {}
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return {}
+    return {name.lower(): ver for name, ver, _off in _gemfile_lock(text)}

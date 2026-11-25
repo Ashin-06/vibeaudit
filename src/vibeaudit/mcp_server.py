@@ -17,7 +17,7 @@ from typing import IO, Any, Callable, Dict, List, Optional
 from . import __version__
 from .store import loads_json
 
-ECOSYSTEMS = ("PyPI", "npm", "Go", "Maven", "crates.io", "NuGet", "Packagist")
+ECOSYSTEMS = ("PyPI", "npm", "Pub", "RubyGems", "Go", "Maven", "crates.io", "NuGet", "Packagist")
 
 SUPPORTED_PROTOCOLS = ("2025-06-18", "2025-03-26", "2024-11-05")
 MAX_FINDINGS = 200
@@ -58,8 +58,8 @@ TOOLS = [
     },
     {
         "name": "check_package",
-        "description": ("Before adding a dependency: check that it exists on PyPI or npm, is not brand new, is not one "
-                        "keystroke away from a popular package, and (with a version) has no known vulnerabilities."),
+        "description": ("Before adding a dependency: check that it exists on PyPI, npm, Pub, or RubyGems, is not brand new, "
+                        "is not one keystroke away from a popular package (PyPI/npm), and (with a version) has no known vulnerabilities."),
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -134,6 +134,11 @@ TOOLS = [
                 "sql": {"type": "string", "description": "The SQL itself, instead of a path."},
             },
         },
+    },
+    {
+        "name": "doctor",
+        "description": "Report vibeaudit version, rule counts, supported ecosystems, signed threat-feed status, offline OSV indexes and installed external scanners.",
+        "inputSchema": {"type": "object", "properties": {}},
     },
 ]
 
@@ -241,9 +246,9 @@ def _package_report(args: Dict[str, Any]) -> Dict[str, Any]:
         raise ToolError("version must be a string such as \"2.31.0\"")
     dep = deps.Dep(name, eco, "", 0, version or None)
     deps.BREAKER.reset()  # the server lives long: one network blip must not disable lookups for good
-    if eco in ("PyPI", "npm"):
+    if eco in deps.REGISTRY_ECOSYSTEMS:
         status, first, note = deps.registry_info(dep)
-    else:  # existence and age are looked up on PyPI and npm only; OSV covers every ecosystem below
+    else:  # existence and age are looked up on PyPI, npm, Pub and RubyGems; OSV covers every ecosystem below
         status, first, note = "ok", None, f"registry existence is not checked for {eco}; vulnerabilities are"
     out: Dict[str, Any] = {"name": name, "ecosystem": eco, "registry": status,
                            "first_release": first.isoformat() if first else None,
@@ -393,7 +398,7 @@ def tool_verify_package(args: Dict[str, Any]) -> Dict[str, Any]:
     if out.get("registry") == "error":
         verdict = "block" if verdict == "block" else "caution"
         reasons.append("The registry could not be reached; the package was not verified.")
-    if eco not in ("PyPI", "npm"):
+    if eco not in deps.REGISTRY_ECOSYSTEMS:
         verdict = "block" if verdict == "block" else "caution"
         reasons.append(f"Existence and age are not checked for {eco}; only known vulnerabilities are.")
     if args.get("project"):
@@ -431,11 +436,17 @@ def tool_simulate_migration(args: Dict[str, Any]) -> Dict[str, Any]:
     return out
 
 
+def tool_doctor(args: Dict[str, Any]) -> Dict[str, Any]:
+    from . import doctor
+
+    return doctor.report()
+
+
 HANDLERS: Dict[str, Callable[[Dict[str, Any]], Dict[str, Any]]] = {
     "scan_project": tool_scan_project, "scan_file": tool_scan_file, "list_routes": tool_list_routes,
     "check_package": tool_check_package, "explain_rule": tool_explain_rule, "auto_repair": tool_auto_repair,
     "audit_current_file": tool_audit_current_file, "verify_package": tool_verify_package,
-    "simulate_migration": tool_simulate_migration,
+    "simulate_migration": tool_simulate_migration, "doctor": tool_doctor,
 }
 
 

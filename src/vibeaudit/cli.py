@@ -186,6 +186,9 @@ def build_parser() -> argparse.ArgumentParser:
     r = sub.add_parser("rules", help="list every rule")
     r.add_argument("--format", choices=["text", "json", "md"], default="text")
 
+    dr = sub.add_parser("doctor", help="show vibeaudit health: version, rules, signed threat feed, offline OSV indexes and external scanners")
+    dr.add_argument("--format", choices=["text", "json"], default="text")
+
     u = sub.add_parser("update", help="refresh package lists, retired model ids and the signed threat feed, or upgrade vibeaudit itself")
     u.add_argument("--self", dest="upgrade_self", action="store_true", help="upgrade the installed package with pip")
     u.add_argument("--export", metavar="FILE",
@@ -340,6 +343,17 @@ def cmd_test_exploit(a: argparse.Namespace) -> int:
         print(json.dumps(results, indent=2))
     else:
         print("\n\n".join(exploit.render_text(p) for p in results))
+    return 0
+
+
+def cmd_doctor(a: argparse.Namespace) -> int:
+    from . import doctor
+
+    info = doctor.report()
+    if a.format == "json":
+        print(json.dumps(info, indent=2))
+    else:
+        sys.stdout.write(doctor.render_text(info))
     return 0
 
 
@@ -751,6 +765,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         return watch.run(a.path, opts, sys.stdout, max(0.1, a.interval))
     if a.command == "update":
         return cmd_update(a)
+    if a.command == "doctor":
+        return cmd_doctor(a)
     if a.command == "feedback":
         return cmd_feedback(a)
     parser.print_help()

@@ -28,7 +28,7 @@ def test_stdio_session_with_a_real_client_sequence(tmp_path):
         assert rpc(proc, {"jsonrpc": "2.0", "method": "notifications/initialized"}) is None
         tools = rpc(proc, {"jsonrpc": "2.0", "id": 2, "method": "tools/list"})["result"]["tools"]
         assert {t["name"] for t in tools} == {"scan_project", "scan_file", "list_routes", "check_package", "explain_rule", "auto_repair",
-                                               "audit_current_file", "verify_package", "simulate_migration"}
+                                               "audit_current_file", "verify_package", "simulate_migration", "doctor"}
         assert all(t["inputSchema"]["type"] == "object" for t in tools)
 
         res = rpc(proc, {"jsonrpc": "2.0", "id": 3, "method": "tools/call",

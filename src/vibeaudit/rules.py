@@ -983,6 +983,21 @@ _R = [
          "Keep secrets and internal details out of the system prompt, filter answers that repeat it, and treat the "
          "prompt as public.", "CWE-200", "", preview=True,
          preview_reason="New with `vibeaudit probe`: a dynamic check, not yet measured on enough running apps."),
+    Rule("LLM027", "MCP or agent tool description contains covert prompt-injection instructions", "llm", "high",
+         "Coding agents and LLM hosts feed tool docstrings and JSON descriptions straight into the model's system "
+         "context. Hidden directives such as <IMPORTANT>, secrecy instructions, or commands to read ~/.ssh or .env "
+         "files poison the model before or after the tool runs (MCP tool poisoning).",
+         "Keep tool descriptions strictly factual (inputs, outputs, side effects). Remove imperative instructions "
+         "aimed at the model, secrecy clauses, or references to unrelated files and tools, and audit third-party MCP "
+         "tool schemas before enabling them.", "CWE-74", "LLM01:2025", preview=True,
+         preview_reason="New in 0.13.0: static check for MCP tool poisoning, not yet measured on held-out repos."),
+    Rule("LLM028", "Dynamic tool dispatch invokes an arbitrary function from model output", "llm", "medium",
+         "Passing a model-chosen tool name straight into getattr(), globals()[name], locals()[name], or "
+         "globalThis[name] lets a prompt-injected model call unintended helpers or builtins instead of the declared "
+         "tool set.",
+         "Map declared tool names in an explicit allow-list dictionary (TOOLS = {'search': search_fn}) and look up "
+         "handlers with TOOLS.get(name), rejecting unknown names.", "CWE-470", "LLM06:2025", preview=True,
+         preview_reason="New in 0.13.0: static check for unconstrained agent tool dispatch, not yet measured on held-out repos."),
     Rule("AI001", "Issue reported by the LLM review (unverified)", "llm-review", "medium",
          "With --llm-review a model reads the riskiest files and reports issues the rules did not cover. These are "
          "suggestions from a model and can be wrong.",

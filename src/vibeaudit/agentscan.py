@@ -1,4 +1,4 @@
-"""AI agent and LLM checks: LLM016-LLM018 (added in 0.8.1) and LLM025 (all preview)."""
+"""AI agent and LLM checks: LLM016-LLM018, LLM025, LLM027, LLM028 (all preview)."""
 from __future__ import annotations
 
 import re
@@ -42,6 +42,31 @@ LLM_TEXT_NAME = re.compile(
     r"(?<![\w.'\"])(?:prompt|prompts|user_prompt|system_prompt|full_prompt|messages|chat_history|completion|completions"
     r"|llm_response|model_output|response\.choices|\w+\.choices\[\d+\]\.message(?:\.content)?)(?![\w'\"])")
 
+# MCP / agent tool definitions & poisoning markers (LLM027, all quantifiers strictly bounded)
+PY_TOOL_START = re.compile(r"(?m)^[ \t]*(?:@(?:[\w.]{1,40}\.)?tool(?:\s*\([^\n]{0,200}\))?|\bTool\s*\()")
+JS_TOOL_START = re.compile(r"\.(?:tool|registerTool)\s*\(|\btool\s*\(\s*\{")
+JSON_TOOL_SCHEMA = re.compile(r'"inputSchema"\s*:\s*\{')
+TOOL_POISON_MARKERS = re.compile(
+    r"(?is)(?:<IMPORTANT>"
+    r"|\b(?:do not|don't|never)\s+(?:mention|tell|inform|show|reveal)\s+(?:this|it|the user|to the user)\b"
+    r"|\b(?:before|prior to)\s+(?:calling|invoking|using)\s+this\s+tool\b[^\n]{0,120}\b(?:read|cat|pass|include|send|exfiltrate)\b"
+    r"|\b(?:read|cat|exfiltrate|include|send)\b[^\n]{0,60}(?:~/\.ssh|/etc/passwd|\.aws/credentials|id_rsa|\.env\b)"
+    r"|\b(?:ignore|disregard|override)\s+(?:all\s+)?(?:previous|prior)\s+(?:instructions|prompts)\b)")
+DOCSTRING_RE = re.compile(r'"""[\s\S]{1,4000}?"""|\'\'\'[\s\S]{1,4000}?\'\'\'')
+DESC_ATTR_RE = re.compile(r"""(?:description\s*[:=]\s*|["']description["']\s*:\s*)(?:"[^"\n]{1,2000}"|'[^'\n]{1,2000}')""")
+
+# Unconstrained dynamic tool dispatch (LLM028, all quantifiers strictly bounded)
+TOOL_CALL_EVIDENCE = re.compile(
+    r"\b(?:tool_calls?|function_call|tool_use|tool_name|toolName|fn_name|fnName|func_name|funcName"
+    r"|(?:block|call|tc|tool_call|toolCall)\.(?:name|function\.name))\b")
+LLM_AGENT_CONTEXT = re.compile(r"(?i)\b(?:openai|anthropic|genai|mcp|langchain|litellm|tool_calls|function_call|tool_use|tools)\b")
+DYN_DISPATCH_PY = re.compile(
+    r"\b(?:globals|locals)\s*\(\s*\)\s*\[\s*[A-Za-z_]\w{0,40}(?:\.[A-Za-z_]\w{0,40}){0,2}\s*\]\s*\("
+    r"|\bgetattr\s*\(\s*[A-Za-z_]\w{0,40}\s*,\s*(?:tool_name|fn_name|func_name|(?:call|tc|tool_call)\.(?:name|function\.name)|block\.name)\b")
+DYN_DISPATCH_JS = re.compile(
+    r"\b(?:globalThis|window|global)\s*\[\s*(?:toolName|fnName|funcName|tool_name|(?:call|tc|toolCall)\.(?:name|function\.name)|block\.name)\s*\]\s*\(")
+ALLOWLIST_GUARD = re.compile(r"\b(?:ALLOWED_TOOLS|TOOL_ALLOWLIST|VALID_TOOLS|SAFE_TOOLS|ALLOWLIST|hasOwnProperty)\b|\bin\s+[A-Z][A-Z0-9_]{2,30}\b")
+
 
 def run(project: Project, routes: List[Route], add: Add) -> None:
     for sf in project.files:
@@ -62,9 +87,50 @@ def _file(sf: SourceFile, add: Add) -> None:
             or sf.rel.rsplit("/", 1)[-1] in ("package.json", "Makefile", "justfile", "Procfile"):
         for m in finditer(SKIP_PERMISSION_FLAGS, sf.text or ""):
             add(sf, sf.line_at(m.start()), "LLM016", f"A coding agent is started with `{m.group(0)}`, so it runs every tool without asking.")
+    if sf.kind in ("py", "js", "json") and not sf.is_example:
+        _mcp_tool_poisoning(sf, add)
     v = sf.cache.get("views")
     if v is not None and sf.kind in ("py", "js"):
         _logged_llm_text(sf, v.code, v.bare, add)  # type: ignore[attr-defined]
+        _dynamic_tool_dispatch(sf, v.code, add)  # type: ignore[attr-defined]
+
+
+def _mcp_tool_poisoning(sf: SourceFile, add: Add) -> None:
+    text = sf.text or ""
+    if sf.kind == "py":
+        starts = [m.start() for m in finditer(PY_TOOL_START, text)]
+    elif sf.kind == "js":
+        starts = [m.start() for m in finditer(JS_TOOL_START, text)]
+    else:
+        starts = [max(0, m.start() - 1200) for m in finditer(JSON_TOOL_SCHEMA, text)]
+    if not starts:
+        return
+    seen_lines = set()
+    for pos in starts:
+        block = text[pos:pos + 2400]
+        # inspect only docstrings / description strings inside the tool definition block
+        for str_rx in ((DOCSTRING_RE, DESC_ATTR_RE) if sf.kind == "py" else (DESC_ATTR_RE,)):
+            for sm in finditer(str_rx, block):
+                pm = TOOL_POISON_MARKERS.search(sm.group(0))
+                if pm is None:
+                    continue
+                line = sf.line_at(pos + sm.start() + pm.start())
+                if line not in seen_lines:
+                    seen_lines.add(line)
+                    add(sf, line, "LLM027",
+                        "MCP/agent tool description contains covert instructions or credential-read directives (tool poisoning).")
+
+
+def _dynamic_tool_dispatch(sf: SourceFile, code: str, add: Add) -> None:
+    if not (TOOL_CALL_EVIDENCE.search(code) and LLM_AGENT_CONTEXT.search(code)):
+        return
+    rx = DYN_DISPATCH_PY if sf.kind == "py" else DYN_DISPATCH_JS
+    for m in finditer(rx, code):
+        ctx_start = max(0, m.start() - 320)
+        if ALLOWLIST_GUARD.search(code[ctx_start:m.end() + 80]):
+            continue
+        add(sf, sf.line_at(m.start()), "LLM028",
+            "Dynamic tool dispatch calls a function directly from a model-supplied name without an allow-list mapping.")
 
 
 def _injection(sf: SourceFile, add: Add) -> None:

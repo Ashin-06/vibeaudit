@@ -32,7 +32,7 @@ BINARY_EXTS = {
 LOCKFILES = {
     "package-lock.json", "npm-shrinkwrap.json", "yarn.lock", "pnpm-lock.yaml", "bun.lock",
     "poetry.lock", "uv.lock", "Pipfile.lock", "Cargo.lock", "composer.lock", "Gemfile.lock",
-    "go.sum", "pdm.lock",
+    "pubspec.lock", "go.sum", "pdm.lock",
 }
 JS_EXTS = {".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs", ".mts", ".cts", ".vue", ".svelte", ".astro"}
 HTML_EXTS = {".html", ".htm", ".jinja", ".jinja2", ".j2", ".hbs", ".ejs"}

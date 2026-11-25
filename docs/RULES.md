@@ -3,9 +3,9 @@
 Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do not edit by hand.
 `vibeaudit rules` prints the same list, and `vibeaudit rules --format json` includes every field.
 
-174 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
+176 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-78 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+80 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -1161,6 +1161,8 @@ References: CWE-215, A05:2021
 | [LLM024](#llm024) | low | preview | LLM code without tests or evals |
 | [LLM025](#llm025) | high | preview | Prompt-injection text in an agent instruction file |
 | [LLM026](#llm026) | high | preview | System prompt disclosed through prompt injection |
+| [LLM027](#llm027) | high | preview | MCP or agent tool description contains covert prompt-injection instructions |
+| [LLM028](#llm028) | medium | preview | Dynamic tool dispatch invokes an arbitrary function from model output |
 
 ### LLM001
 
@@ -1441,6 +1443,30 @@ Why it matters: A request that tells the model to print its instructions gets th
 How to fix: Keep secrets and internal details out of the system prompt, filter answers that repeat it, and treat the prompt as public.
 
 References: CWE-200
+
+### LLM027
+
+**MCP or agent tool description contains covert prompt-injection instructions** (high, preview)
+
+Preview: New in 0.13.0: static check for MCP tool poisoning, not yet measured on held-out repos.
+
+Why it matters: Coding agents and LLM hosts feed tool docstrings and JSON descriptions straight into the model's system context. Hidden directives such as <IMPORTANT>, secrecy instructions, or commands to read ~/.ssh or .env files poison the model before or after the tool runs (MCP tool poisoning).
+
+How to fix: Keep tool descriptions strictly factual (inputs, outputs, side effects). Remove imperative instructions aimed at the model, secrecy clauses, or references to unrelated files and tools, and audit third-party MCP tool schemas before enabling them.
+
+References: CWE-74, LLM01:2025
+
+### LLM028
+
+**Dynamic tool dispatch invokes an arbitrary function from model output** (medium, preview)
+
+Preview: New in 0.13.0: static check for unconstrained agent tool dispatch, not yet measured on held-out repos.
+
+Why it matters: Passing a model-chosen tool name straight into getattr(), globals()[name], locals()[name], or globalThis[name] lets a prompt-injected model call unintended helpers or builtins instead of the declared tool set.
+
+How to fix: Map declared tool names in an explicit allow-list dictionary (TOOLS = {'search': search_fn}) and look up handlers with TOOLS.get(name), rejecting unknown names.
+
+References: CWE-470, LLM06:2025
 
 ## Code quality and tests
 
