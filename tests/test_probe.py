@@ -43,7 +43,7 @@ def go():
 
 @app.route("/login", methods=["POST"])
 def login():
-    user = request.form.get("username")
+    user, pw = request.form.get("username"), request.form.get("password")
     return "bad credentials", 401
 
 @app.route("/admin/stats")
@@ -113,7 +113,7 @@ def test_probe_confirms_each_class(app):
     res = scan(str(root), Options(offline=True, external="none", include_preview=True, min_severity="info"))
     found = Prober(Target(url, False, 200, 500), res.routes, {"Cookie": "session=abc"}).run()
     rules = sorted({f.rule_id for f in found})
-    assert rules == ["AUTH002", "BE001", "BE005", "BE006", "BE008", "BE012", "CFG019", "FE001"]
+    assert rules == ["AUTH002", "AUTH010", "BE001", "BE005", "BE006", "BE008", "BE012", "CFG019", "FE001"]
     merged = merge(res.findings, found)
     assert any(f.confirmed and f.source == "vibeaudit" for f in merged)  # a static finding marked confirmed
 

@@ -391,7 +391,7 @@
    }
   },
   "AUTH010": {
-   "precision": 0.9688,
+   "precision": 0.9697,
    "seeded_recall": 1.0,
    "by_repo": {
     "TodoApp": [
@@ -451,6 +451,10 @@
      0
     ],
     "node-express-realworld-example-app": [
+     1,
+     0
+    ],
+    "nodegoat": [
      1,
      0
     ],
@@ -2030,6 +2034,11 @@
    "seeded_recall": 1.0,
    "by_repo": {}
   },
+  "CFG019": {
+   "precision": null,
+   "seeded_recall": null,
+   "by_repo": {}
+  },
   "CSHARP001": {
    "precision": 1.0,
    "seeded_recall": null,
@@ -3376,6 +3385,11 @@
    "seeded_recall": 1.0,
    "by_repo": {}
   },
+  "LLM026": {
+   "precision": null,
+   "seeded_recall": null,
+   "by_repo": {}
+  },
   "QA001": {
    "precision": 1.0,
    "seeded_recall": 1.0,
@@ -4261,7 +4275,15 @@
      1,
      0
     ],
+    "node-express-mongoose-demo": [
+     1,
+     0
+    ],
     "node-express-realworld-example-app": [
+     1,
+     0
+    ],
+    "nodegoat": [
      1,
      0
     ],

@@ -167,6 +167,9 @@ def build_parser() -> argparse.ArgumentParser:
                     help="credentials of a signed-in user (e.g. 'Cookie: session=...'); repeat for several headers")
     pr.add_argument("--auth2", action="append", default=[], metavar="'HEADER: VALUE'",
                     help="credentials of a second user, to check that one user cannot read another's records (IDOR)")
+    pr.add_argument("--login", metavar="PATH", help="sign-in endpoint (e.g. /api/login) that takes JSON credentials")
+    pr.add_argument("--login-json", metavar="JSON", help="credentials of user 1 for --login, e.g. '{\"username\": \"a\", \"password\": \"b\"}'")
+    pr.add_argument("--login2-json", metavar="JSON", help="credentials of user 2 for --login (for the IDOR check)")
     pr.add_argument("--rate", type=float, default=10.0, help="requests per second (default 10)")
     pr.add_argument("--max-requests", type=int, default=2000, help="stop after this many requests (default 2000)")
     pr.add_argument("--i-own-this-target", action="store_true", dest="own",
@@ -365,6 +368,12 @@ def cmd_probe(a: argparse.Namespace) -> int:
         opts = project_options(a.path, a.config, offline=True, external="none", min_severity="info", include_preview=True)
         target = probe.Target(a.url, a.own, a.rate, a.max_requests)
         auth = probe.parse_auth(a.auth)
+        auth2 = probe.parse_auth(a.auth2)
+        if a.login:  # sign in for the session headers: a bearer token or the cookies the answer sets
+            if a.login_json:
+                auth.update(probe.login(target, a.login, a.login_json))
+            if a.login2_json:
+                auth2.update(probe.login(target, a.login, a.login2_json))
     except (ConfigError, ExploitError) as e:
         print(f"vibeaudit: {e}", file=sys.stderr)
         return 2
@@ -372,7 +381,7 @@ def cmd_probe(a: argparse.Namespace) -> int:
     try:
         from .files import Project
 
-        found = probe.Prober(target, res.routes, auth, probe.parse_auth(a.auth2), probe.system_prompts(Project(Path(a.path)))).run()
+        found = probe.Prober(target, res.routes, auth, auth2, probe.system_prompts(Project(Path(a.path)))).run()
     except ExploitError as e:
         print(f"vibeaudit: {e}", file=sys.stderr)
         return 2
