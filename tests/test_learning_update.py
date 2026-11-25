@@ -103,7 +103,10 @@ def _top(n=1500):
 
 
 def test_update_validates_before_replacing(tmp_path, monkeypatch):
+    from vibeaudit import feed
+
     _enable_cache(monkeypatch, tmp_path)
+    monkeypatch.setattr(feed, "public_key", lambda: None)
     good_models = b"# comment\nold-model-1\nold-model-2\nold-model-3\nold-model-4\nlegacy-*\n"
     files = {"pypi_top.txt.gz": _top(), "npm_top.txt.gz": b"not gzip", "retired_models.txt": good_models}
     logs = []
@@ -128,7 +131,7 @@ def test_update_network_failure_and_self_upgrade(tmp_path, monkeypatch):
         raise OSError("no route to host")
 
     logs = []
-    assert updater.update_data(logs.append, fetch=offline) == 3
+    assert updater.update_data(logs.append, fetch=offline) == 4
     assert all("download failed" in m or "no feed key" in m for m in logs)
     ran = []
     assert updater.update_self(logs.append, run=lambda cmd: ran.append(cmd) or 0) == 0
