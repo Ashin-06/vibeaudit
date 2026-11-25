@@ -170,6 +170,11 @@ def build_parser() -> argparse.ArgumentParser:
     pr.add_argument("--login", metavar="PATH", help="sign-in endpoint (e.g. /api/login) that takes JSON credentials")
     pr.add_argument("--login-json", metavar="JSON", help="credentials of user 1 for --login, e.g. '{\"username\": \"a\", \"password\": \"b\"}'")
     pr.add_argument("--login2-json", metavar="JSON", help="credentials of user 2 for --login (for the IDOR check)")
+    pr.add_argument("--login-form", metavar="PATH", help="page with an HTML sign-in form (e.g. /login.php); its hidden "
+                                                          "inputs such as CSRF tokens are sent along")
+    pr.add_argument("--login-field", action="append", default=[], metavar="NAME=VALUE",
+                    help="a field of the --login-form for user 1 (repeat: --login-field username=admin --login-field password=...)")
+    pr.add_argument("--login2-field", action="append", default=[], metavar="NAME=VALUE", help="the same for user 2")
     pr.add_argument("--rate", type=float, default=10.0, help="requests per second (default 10)")
     pr.add_argument("--max-requests", type=int, default=2000, help="stop after this many requests (default 2000)")
     pr.add_argument("--i-own-this-target", action="store_true", dest="own",
@@ -374,6 +379,11 @@ def cmd_probe(a: argparse.Namespace) -> int:
                 auth.update(probe.login(target, a.login, a.login_json))
             if a.login2_json:
                 auth2.update(probe.login(target, a.login, a.login2_json))
+        if a.login_form:  # an HTML sign-in form: hidden inputs (CSRF tokens) are carried, cookies kept
+            if a.login_field:
+                auth.update(probe.login_form(target, a.login_form, probe.parse_fields(a.login_field)))
+            if a.login2_field:
+                auth2.update(probe.login_form(target, a.login_form, probe.parse_fields(a.login2_field)))
     except (ConfigError, ExploitError) as e:
         print(f"vibeaudit: {e}", file=sys.stderr)
         return 2
@@ -381,7 +391,10 @@ def cmd_probe(a: argparse.Namespace) -> int:
     try:
         from .files import Project
 
-        found = probe.Prober(target, res.routes, auth, auth2, probe.system_prompts(Project(Path(a.path)))).run()
+        project = Project(Path(a.path))
+        routes = res.routes + probe.plain_php_routes(project, res.routes)
+        prober = probe.Prober(target, routes, auth, auth2, probe.system_prompts(project))
+        found = prober.run()
     except ExploitError as e:
         print(f"vibeaudit: {e}", file=sys.stderr)
         return 2
@@ -393,10 +406,19 @@ def cmd_probe(a: argparse.Namespace) -> int:
         f.compute_fingerprint()
     confirmed = probe.merge(res.findings, found)
     shown = [f for f in confirmed if f.confirmed]
-    meta = dict(res.meta, probe={"url": a.url, "requests": target.sent, "routes": len(res.routes), "confirmed": len(shown)})
-    out = Result(res.root, shown, meta, res.routes)
+    info = {"url": a.url, "requests": target.sent, "routes": len(routes), "confirmed": len(shown)}
+    if auth:
+        info["auth"] = "did not take effect" if prober.auth_failed else "took effect"
+    if prober.auth_failed:  # a silent failure would read as a clean, signed-in run
+        print(f"vibeaudit: WARNING: authentication did not take effect: {prober.authed[1]} of {prober.authed[0]} "
+              "signed-in requests were sent back to sign in (302 to a login page, 401 or 403). Check --auth / --login.",
+              file=sys.stderr)
+    meta = dict(res.meta, probe=info)
+    out = Result(res.root, shown, meta, routes)
     if a.format == "text":
-        lines = [f"vibeaudit probe: {target.sent} requests to {a.url}, {len(res.routes)} routes, {len(shown)} confirmed"]
+        lines = [f"vibeaudit probe: {target.sent} requests to {a.url}, {len(routes)} routes, {len(shown)} confirmed"]
+        if prober.auth_failed:
+            lines.append("  WARNING: authentication did not take effect; signed-in checks did not run as signed in")
         lines += [f"  {f.rule_id} {f.file}:{f.line}  {f.confirmed}" for f in shown]
         text = "\n".join(lines) + "\n"
         if a.output == "-":
