@@ -1224,6 +1224,9 @@ class JsScanner:
         for m in finditer(r"\bonRequest\s*\(", bare):
             close = match_close(bare, m.end() - 1)
             self._route(fs, m.start(), "firebase function", ["ALL"], code[m.start():close], "firebase-functions")
+        for m in finditer(r"\bonCall\s*\(", bare):
+            close = match_close(bare, m.end() - 1)
+            self._route(fs, m.start(), "firebase callable", ["POST"], code[m.start():close], "firebase-functions")
 
     def _jwt_check_disabled(self, function: str) -> bool:
         for f in self.p.files:

@@ -126,7 +126,7 @@ def test_cli_export_import(tmp_path, monkeypatch, capsys):
     assert main(["update", "--export", str(out), "--osv", "PyPI"]) == 0
     assert main(["update", "--import", str(out)]) == 0
     assert "imported a bundle made by vibeaudit" in capsys.readouterr().out
-    assert main(["update", "--export", str(out), "--osv", "RubyGems"]) == 1
+    assert main(["update", "--export", str(out), "--osv", "CRAN"]) == 1
     assert main(["update", "--osv", "PyPI"]) == 2
 
 

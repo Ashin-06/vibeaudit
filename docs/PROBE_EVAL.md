@@ -69,3 +69,8 @@ Rerun on Docker targets after probe v2/v3 improvements (JSON body retries, Graph
 | DVWA (`vulnerables/web-dvwa:latest`, `--auth "Cookie: security=low"` + `--login-form /login.php` CSRF) | 51 | 976 | 5 | 5 | 0 | `BE001` (SQLi on `vulnerabilities/brute/index.php`), 3x `FE001` (XSS on `csp`, `xss_r`, `xss_s`), `CFG019` (headers) |
 | DVNA (`dvna-9ba473add536` `Dockerfile` on `node:carbon` + `mysql:5.7`) | - | - | - | - | - | Not run: upstream container exits at startup loading native `libxmljs/lib/bindings.js` on Node 8 |
 | **Total (runnable apps)** | | | **8** | **8** | **0** | **100% precision** (up from 43% in the first run; 5 high-severity SQLi/XSS findings confirmed) |
+
+### Third check: authenticated two-user smoke test (OWASP Juice Shop, v0.13.0)
+
+- Target: `bkimminich/juice-shop:latest` in Docker with two freshly created users passed via `--login /rest/user/login --login-json ... --login2-json ...`.
+- Result: 21 requests across 8 OpenAPI-defined routes; both sessions authenticated cleanly (no auth-failure warning), confirming `CFG019` (`1 confirmed`, `0 false positives`).

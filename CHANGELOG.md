@@ -4,6 +4,36 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.13.0] - 2026-11-26
+
+### Added
+
+- Agentic and MCP security rules (preview):
+  - `LLM027` (high): detects covert prompt-injection and credential-exfiltration directives hidden inside MCP
+    or agent tool docstrings and schemas (`@mcp.tool`, `server.tool`, JSON tool definitions).
+  - `LLM028` (medium): detects unconstrained dynamic tool dispatch calling `globals()[name]`,
+    `locals()[name]`, `getattr(..., name)`, or `globalThis[name]` from model tool-call output without an
+    allow-list.
+- Full supply-chain coverage for **Pub** (Flutter/Dart `pubspec.yaml` and `pubspec.lock`) and **RubyGems**
+  (Ruby/Rails `Gemfile` and `Gemfile.lock`), including direct and transitive (`DEP009`) dependency extraction,
+  `pub.dev` and `rubygems.org` registry existence/age checks (`DEP001`, `DEP003`), OSV vulnerability lookups,
+  offline OSV bundle support, and MCP `check_package`/`verify_package` across all 9 ecosystems.
+- Firebase Callable Functions (`onCall`) route discovery in `jsscan` so unauthenticated callable functions are
+  checked by `AUTH001`-`AUTH004` and `LLM004` while `request.auth`/`context.auth` checks count as authenticated.
+- Mobile manifest and WebView hardening checks (preview, Flutter/Dart projects): `AndroidManifest.xml`
+  `android:usesCleartextTraffic="true"` (`BE013`) and `android:debuggable="true"` in non-debug manifests
+  (`BE011`), iOS `Info.plist` `NSAllowsArbitraryLoads` (`BE013`), and Flutter `JavaScriptMode.unrestricted`
+  with dynamic URLs (`FE001`).
+- `vibeaudit doctor` CLI command (`--format text|json`) and `doctor` MCP tool: reports version, rule breakdown,
+  supported ecosystems, signed threat-feed verification and expiry status, offline OSV indexes, and detected
+  external scanners.
+- Authenticated two-user JSON sign-in verification on OWASP Juice Shop (`docs/PROBE_EVAL.md`).
+
+### Fixed
+
+- `deps.typosquat_target()` now returns `None` outside PyPI and npm instead of comparing Pub/RubyGems/Go/Maven
+  package names against the npm popular-package list.
+
 ## [0.12.0] - 2026-11-25
 
 ### Added
