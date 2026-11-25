@@ -9,8 +9,10 @@ All notable changes to this project are documented here. The format follows
 ### Added
 
 - `vibeaudit probe`: non-destructive dynamic checks driven by the static route model (JSON bodies, GraphQL
-  introspection, plain-PHP routes, JSON and HTML form sign-in with CSRF tokens, two-user IDOR checks, and
-  system-prompt leak detection), with evaluation notes in `docs/PROBE_EVAL.md`.
+  introspection, OpenAPI/Swagger route discovery, plain-PHP routes, JSON and HTML form sign-in with CSRF
+  tokens, HTML submit-button defaults with GET/POST form handling, logout-path guard, `Cookie` header
+  merging, two-user IDOR checks, and system-prompt leak detection), with evaluation notes in
+  `docs/PROBE_EVAL.md`.
 - Ruby on Rails support (preview): routes, `before_action` and `Authentication` concern auth, Brakeman-style
   sinks, and six labelled benchmark repositories.
 - Flutter and Dart support (preview): TLS bypass (`BE013`), raw SQLite interpolation (`BE001`), credentials
@@ -31,6 +33,7 @@ All notable changes to this project are documented here. The format follows
   fresh held-out batch (`SEC001` and `SEC004` continue to gate).
 - VS Code extension now activates for Ruby (`Gemfile`) and Dart (`pubspec.yaml`) projects in addition to all
   previously supported languages.
+- CI triggers `push` runs only on `main` and cancels superseded PR runs via `concurrency`.
 
 ### Fixed
 

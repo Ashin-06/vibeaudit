@@ -4,6 +4,10 @@ The extension's version matches the vibeaudit release it is built with. What cha
 language server is in the project changelog:
 https://github.com/Ashin-06/vibeaudit/blob/main/CHANGELOG.md
 
+## 0.12.0
+
+- Built with vibeaudit 0.12.0; adds Ruby (Rails) and Dart (Flutter) language activation.
+
 ## 0.11.4
 
 - Built with vibeaudit 0.11.4.

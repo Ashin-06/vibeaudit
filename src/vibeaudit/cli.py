@@ -358,6 +358,16 @@ def cmd_rules(fmt: str) -> int:
     return 0
 
 
+def _merge_auth(dst: dict, src: dict) -> None:
+    """Merge auth headers into `dst`, joining multiple `Cookie` headers instead of overwriting."""
+    for k, v in src.items():
+        if k.lower() == "cookie":
+            ck = next((ek for ek in dst if ek.lower() == "cookie"), "Cookie")
+            dst[ck] = f"{dst[ck]}; {v}" if dst.get(ck) else v
+        else:
+            dst[k] = v
+
+
 def cmd_probe(a: argparse.Namespace) -> int:
     from . import probe, report
     from .config import project_options
@@ -376,14 +386,14 @@ def cmd_probe(a: argparse.Namespace) -> int:
         auth2 = probe.parse_auth(a.auth2)
         if a.login:  # sign in for the session headers: a bearer token or the cookies the answer sets
             if a.login_json:
-                auth.update(probe.login(target, a.login, a.login_json))
+                _merge_auth(auth, probe.login(target, a.login, a.login_json))
             if a.login2_json:
-                auth2.update(probe.login(target, a.login, a.login2_json))
+                _merge_auth(auth2, probe.login(target, a.login, a.login2_json))
         if a.login_form:  # an HTML sign-in form: hidden inputs (CSRF tokens) are carried, cookies kept
             if a.login_field:
-                auth.update(probe.login_form(target, a.login_form, probe.parse_fields(a.login_field)))
+                _merge_auth(auth, probe.login_form(target, a.login_form, probe.parse_fields(a.login_field)))
             if a.login2_field:
-                auth2.update(probe.login_form(target, a.login_form, probe.parse_fields(a.login2_field)))
+                _merge_auth(auth2, probe.login_form(target, a.login_form, probe.parse_fields(a.login2_field)))
     except (ConfigError, ExploitError) as e:
         print(f"vibeaudit: {e}", file=sys.stderr)
         return 2
@@ -392,7 +402,7 @@ def cmd_probe(a: argparse.Namespace) -> int:
         from .files import Project
 
         project = Project(Path(a.path))
-        routes = res.routes + probe.plain_php_routes(project, res.routes)
+        routes = res.routes + probe.plain_php_routes(project, res.routes) + probe.openapi_routes(project, res.routes)
         prober = probe.Prober(target, routes, auth, auth2, probe.system_prompts(project))
         found = prober.run()
     except ExploitError as e:

@@ -58,3 +58,14 @@ Precision of the confirmations: 15/35 (43%). No high or critical finding was con
 3. GraphQL: build queries and mutations from the schema (introspection, or the resolver map) and probe their arguments.
 4. Route model: follow Express routers registered through functions (NodeGoat's `index.js` pattern).
 5. Run with `--auth` / `--auth2` against apps with seeded users, to measure the auth-bypass and IDOR checks.
+
+## Second run: probe v3 (VAmPI, DVWA, DVNA)
+
+Rerun on Docker targets after probe v2/v3 improvements (JSON body retries, GraphQL introspection, plain-PHP routes, HTML form sign-in with CSRF tokens, OpenAPI route discovery, HTML GET/POST form submit defaults, logout-path guard, and `Cookie` header merging):
+
+| App | Routes in the model | Requests | Confirmed | True | False | Findings confirmed |
+| --- | --- | --- | --- | --- | --- | --- |
+| VAmPI (`erev0s/vampi:latest`, `--login /users/v1/login` two-user JSON) | 14 (via `openapi_specs/openapi3.yml`) | 87 | 3 | 3 | 0 | `BE001` (SQLi on `GET /users/v1/{username}`), `AUTH010` (login rate limit), `CFG019` (headers) |
+| DVWA (`vulnerables/web-dvwa:latest`, `--auth "Cookie: security=low"` + `--login-form /login.php` CSRF) | 51 | 976 | 5 | 5 | 0 | `BE001` (SQLi on `vulnerabilities/brute/index.php`), 3x `FE001` (XSS on `csp`, `xss_r`, `xss_s`), `CFG019` (headers) |
+| DVNA (`dvna-9ba473add536` `Dockerfile` on `node:carbon` + `mysql:5.7`) | - | - | - | - | - | Not run: upstream container exits at startup loading native `libxmljs/lib/bindings.js` on Node 8 |
+| **Total (runnable apps)** | | | **8** | **8** | **0** | **100% precision** (up from 43% in the first run; 5 high-severity SQLi/XSS findings confirmed) |
