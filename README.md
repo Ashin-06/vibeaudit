@@ -169,7 +169,7 @@ your `PATH`, their findings are merged into the report and de-duplicated.
 | `vibeaudit routes [PATH]` | List every HTTP entry point with method, path, location and whether it has a visible auth check, writes data or calls a paid AI API (`--format text\|json\|md`). |
 | `vibeaudit rules` | List every rule (`--format text\|json\|md`; JSON includes the why and fix text). |
 | `vibeaudit feedback` | Record that a finding is a false positive or confirmed, or list recorded feedback (`--path DIR` for another project; see [False positives](#false-positives-and-suppressing-findings)). |
-| `vibeaudit update` | Refresh the popular-package lists and the retired-model list (and the signed threat feed, once it is active; see [Caching and updates](#caching-and-updates)); `--self` upgrades vibeaudit with pip; `--export FILE [--osv PyPI,npm]` and `--import FILE` carry the data to a machine without network (see [Offline and air-gapped use](#offline-and-air-gapped-use)). |
+| `vibeaudit update` | Refresh the popular-package lists, the retired-model list and the signed threat feed (see [Caching and updates](#caching-and-updates)); `--self` upgrades vibeaudit with pip; `--export FILE [--osv PyPI,npm]` and `--import FILE` carry the data to a machine without network (see [Offline and air-gapped use](#offline-and-air-gapped-use)). |
 | `vibeaudit lsp` | Run the language server for editors: diagnostics and fix code actions (see [Editors](#editors-vs-code-cursor-and-other-lsp-clients)). |
 | `vibeaudit mcp` | Run the MCP server for coding agents (see [MCP server](#mcp-server-for-coding-agents)). |
 
@@ -671,11 +671,7 @@ overrides it). `--no-cache` or `VIBEAUDIT_NO_CACHE=1` turns it off.
 list (LLM012) from this repository; a file is used only if it passes validation. Set `GITHUB_TOKEN` if you
 hit GitHub's rate limit.
 
-**The signed feed is not active yet.** No release ships the feed's public key and nothing is published on the
-`threat-feed` branch until the maintainer does the one-time key setup in docs/THREAT_FEED.md, so for now
-`vibeaudit update` installs no feed and scans use only the data packaged with vibeaudit.
-
-Once it is set up, `vibeaudit update` also downloads the signed threat feed: slopsquatted package names (DEP001, also offline), a model sunset
+`vibeaudit update` also downloads the signed threat feed: slopsquatted package names (DEP001, also offline), a model sunset
 calendar with retirement dates and replacements (LLM012) and prompt-injection patterns for agent instruction
 files such as CLAUDE.md and .cursorrules (LLM025). The same data ships with vibeaudit, so every check works
 offline; the feed only adds what was published since the release. A feed is used only when its signature
