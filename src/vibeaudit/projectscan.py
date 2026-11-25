@@ -226,6 +226,15 @@ class ProjectScanner:
             self.add(sf, sf.line_at(m.start()), "AUTH007", f"Rule `allow {ops.strip()}` applies to everyone.", sev)
         for m in finditer(r"request\.time\s*<\s*timestamp\.date\s*\(", clean):
             self.add(sf, sf.line_at(m.start()), "AUTH007", "Test-mode rule: the database is open to everyone until the date passes.", "critical")
+        # User-owned Firestore/Storage match block that only checks `request.auth != null` without comparing uid
+        for m in finditer(r"\bmatch\s+/(?:users|profiles|accounts|orders|messages|private)/\{(\w+)\}[^{]{0,80}\{", clean):
+            uid_var = m.group(1)
+            block = clean[m.end():m.end() + 400]
+            am = re.search(r"\ballow\s+([\w,\s]*?(?:write|create|update|delete)[\w,\s]*?):\s*if\s+request\.auth\s*!=\s*null\s*;", block)
+            if am and f"request.auth.uid == {uid_var}" not in block and f"{uid_var} == request.auth.uid" not in block:
+                self.add(sf, sf.line_at(m.end() + am.start()), "AUTH007",
+                         f"Firebase rule allows any signed-in user to modify /{m.group(0).split('/')[1]}/{{{uid_var}}} without checking request.auth.uid == {uid_var}.",
+                         "high")
 
     # ---------------------------------------------------------- supabase
     def supabase_sql(self) -> None:
