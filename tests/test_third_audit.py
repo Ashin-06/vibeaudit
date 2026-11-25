@@ -86,7 +86,10 @@ def test_2_no_cache_applies_to_one_scan_only(tmp_path, cache_on):
 
 
 # 3 ------------------------------------------------------------------ update
-def test_3_update_takes_effect_in_a_running_process(cache_on):
+def test_3_update_takes_effect_in_a_running_process(cache_on, monkeypatch):
+    from vibeaudit import feed
+
+    monkeypatch.setattr(feed, "public_key", lambda: None)
     aiscan.retired_models()  # compiled from the shipped list, as in a long-lived MCP server
     deps.popular("npm")
     top = gzip.compress("\n".join(["brand-new-popular-pkg"] + [f"p{i}" for i in range(1500)]).encode())
