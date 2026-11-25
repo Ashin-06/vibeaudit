@@ -4,6 +4,49 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.12.0] - 2026-11-25
+
+### Added
+
+- `vibeaudit probe`: non-destructive dynamic checks driven by the static route model (JSON bodies, GraphQL
+  introspection, plain-PHP routes, JSON and HTML form sign-in with CSRF tokens, two-user IDOR checks, and
+  system-prompt leak detection), with evaluation notes in `docs/PROBE_EVAL.md`.
+- Ruby on Rails support (preview): routes, `before_action` and `Authentication` concern auth, Brakeman-style
+  sinks, and six labelled benchmark repositories.
+- Flutter and Dart support (preview): TLS bypass (`BE013`), raw SQLite interpolation (`BE001`), credentials
+  in `SharedPreferences` (`FE004`), dynamic WebView JavaScript (`FE001`), direct client LLM calls (`FE002`),
+  HTTP requests without timeouts (`REL001`), and `pubspec.yaml` stack detection.
+- Enhanced Firebase rules check (`AUTH007`): detects user-owned Firestore/Storage write rules that check
+  `request.auth != null` without comparing `request.auth.uid`.
+- Cross-function taint tracking and `vibeaudit fix` codemods for Go, Java/Kotlin, C#, Rust and PHP.
+- Route discovery for tRPC, GraphQL and gRPC (`src/vibeaudit/rpcscan.py`).
+- Signed threat-intel feed activated: ships `src/vibeaudit/data/feed_key.json` and publishes daily signed
+  feeds to the `threat-feed` branch for `vibeaudit update`.
+- Expanded benchmark corpus to 142 repositories (46 held out) plus a 255-advisory GHSA recall set.
+
+### Changed
+
+- `UI014` (images without width and height) and PHP `BE001` (SQL injection) graduated out of preview.
+- `SEC001`, `SEC004`, `AUTH005` and `DATA006` moved back to preview with general-form fixes while awaiting a
+  fresh held-out batch (`SEC001` and `SEC004` continue to gate).
+- VS Code extension now activates for Ruby (`Gemfile`) and Dart (`pubspec.yaml`) projects in addition to all
+  previously supported languages.
+
+### Fixed
+
+- Go: `chi` `r.Mount()` inherits auth and role middleware from enclosing `Group`/`Route` blocks; prepared
+  statement receivers (`stmt.QueryRow`, `stmt.Exec`) are no longer flagged by `BE001`/`GO004`.
+- Java/Kotlin: recognises custom and meta-annotated auth annotations (e.g. `@ApiKeySecured`) and static
+  `HttpMethod` imports in Spring Security `requestMatchers`/`antMatchers`; `getUserId()` and `currentUser()`
+  count as ownership evidence for `AUTH003`.
+- C#: follows unique service/use-case ownership checks for `AUTH003`.
+- Rust: resolves module-qualified handler paths (`handlers::user::delete`) by file path, recognises
+  public-by-design registration/auth handlers, and avoids flagging local `query()` helpers as SQL.
+- PHP: skips Blade `{!! $model->method() !!}` `FE001` when the called project method escapes or renders views.
+- Hardened `.github/workflows/release.yml` VS Code publish job with `npm ci --ignore-scripts`.
+- Fixed false positives found across 37 portfolio projects and updated `tests/test_learning_update.py` and
+  `tests/test_third_audit.py` for the active threat feed.
+
 ## [0.11.4] - 2026-11-23
 
 ### Fixed
