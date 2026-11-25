@@ -36,7 +36,7 @@ STACK_TRACE = re.compile(r"Traceback \(most recent call last\)|\bat [\w$.<>]+\([
                          r"\bin /[\w/.-]+\.php on line \d+|goroutine \d+ \[running\]|\.rb:\d+:in `")
 PARAM_NAMES = re.compile(
     r"""\b(?:req|request)\s*\.\s*(?:query|body|args|form|params|GET|POST|values|query_params|json|data)\s*(?:\.\s*get\s*\(\s*)?(?:\[\s*)?['"]?(\w{1,40})"""
-    r"""|\b(?:searchParams|query)\s*\.\s*get\s*\(\s*['"](\w{1,40})|\$_(?:GET|POST|REQUEST)\s*\[\s*['"](\w{1,40})"""
+    r"""|\b(?:searchParams|query)\s*\.\s*get\s*\(\s*['"](\w{1,40})|\$_(?:GET|POST|REQUEST|COOKIE)\s*\[\s*['"](\w{1,40})"""
     r"""|\$request\s*->\s*(?:input|query|get|post)\s*\(\s*['"](\w{1,40})|\bparams\s*\[\s*:(\w{1,40})"""
     r"""|\bc\s*\.\s*(?:Query|PostForm|FormValue|DefaultQuery)\s*\(\s*"(\w{1,40})|@RequestParam[^)]{0,80}?(?:value\s*=\s*)?"(\w{1,40})\"""")
 DESTRUCTURE = re.compile(r"\{([\w\s,:]{1,200})\}\s{0,5}=\s{0,5}(?:req|request|ctx\.request)\s{0,5}\.\s{0,5}(?:body|query)\b")
@@ -94,7 +94,11 @@ class Target:
             conn.request(method, target or "/", body=body.encode("utf-8") if body else None, headers=hdrs)
             resp = conn.getresponse()
             raw = resp.read(MAX_BODY)
-            out = (resp.status, {k.lower(): v for k, v in resp.getheaders()}, raw.decode("utf-8", "replace"))
+            hdrs: Dict[str, str] = {}
+            for k, v in resp.getheaders():
+                k = k.lower()
+                hdrs[k] = hdrs[k] + "\n" + v if k == "set-cookie" and k in hdrs else v
+            out = (resp.status, hdrs, raw.decode("utf-8", "replace"))
         except (OSError, http.client.HTTPException):
             out = (0, {}, "")
         finally:
@@ -156,6 +160,7 @@ class Prober:
         self.findings: List[Finding] = []
         self.seen = set()
         self.json = False
+        self.authed = [0, 0]  # signed-in requests sent, and how many were sent back to sign in
 
     def add(self, rule: str, route: Optional[Route], msg: str, evidence: str) -> None:
         key = (rule, route.path if route else "/")
@@ -220,8 +225,10 @@ class Prober:
         base = self.send(method, path, {n: "1" for n in names})
         if base is None:
             return
-        b_status, _h, b_text, b_time = base
+        b_status, b_hdrs, b_text, b_time = base
         self.errors(r, b_text)
+        if "html" in b_hdrs.get("content-type", ""):  # the page's own form fields are parameters too
+            names = sorted(set(names) | {n for n in FORM_FIELD.findall(b_text)[:12] if n.lower() not in SKIP_FIELDS})[:12]
         for name in names:
             self.inject(r, method, path, names, name, b_text, b_time, canary)
         for p in path_params[:2]:  # path segments: SQL error and traversal only
@@ -240,7 +247,16 @@ class Prober:
             out = self.t.request("GET", path, hdrs, params=values)
         else:
             out = self.post(path, values, hdrs)
+        if self.auth and out[0] and headers is None:
+            self.authed[0] += 1
+            self.authed[1] += signed_out(out[0], out[1], out[2])
         return out if out[0] else None
+
+    @property
+    def auth_failed(self) -> bool:
+        """Most signed-in requests were sent back to sign in: the credentials did not take effect."""
+        total, refused = self.authed
+        return bool(self.auth) and total >= 5 and refused / total > 0.6
 
     def post(self, path: str, values: Dict[str, str], hdrs: Dict[str, str]):
         """POST as JSON when the handler reads JSON, else as a form; after a 415, once more in the other format."""
@@ -483,15 +499,123 @@ def login(target: Target, url_path: str, credentials: str) -> Dict[str, str]:
         data = _json.loads(text)
     except ValueError:
         data = {}
-    stack = [data]
-    while stack:  # the token may be nested: {"data": {"token": ...}}
-        d = stack.pop()
+    found = _token(data)
+    if found:
+        return {"Authorization": f"Bearer {found}"}
+    jar = cookies(hdrs)
+    if jar:
+        return {"Cookie": "; ".join(f"{k}={v}" for k, v in jar.items())}
+    raise ExploitError(f"sign-in at {url_path} returned neither a token nor a cookie")
+
+
+TOKEN_KEY = re.compile(r"(?i)(?:^|_)(?:token|jwt)$|access_?token|id_?token")
+FORM_FIELD = re.compile(r"""<(?:input|textarea|select)\b[^>]{0,300}?\bname\s*=\s*["']([\w\[\].-]{1,60})["']""", re.I)
+SKIP_FIELDS = {"submit", "login", "btnsubmit", "button", "user_token", "csrf_token", "csrfmiddlewaretoken", "_token",
+               "authenticity_token", "_csrf"}
+LOGIN_PAGE = re.compile(r"""(?i)<input[^>]{0,200}type\s*=\s*["']?password""")
+
+
+def _token(data):
+    """A string under a token-like key, at the top level or one level down ({"auth_token": ...}, {"data": {"jwt": ...}})."""
+    levels = [data] + ([v for v in data.values() if isinstance(v, dict)] if isinstance(data, dict) else [])
+    for d in levels:
         if isinstance(d, dict):
             for k, v in d.items():
-                if k.lower() in ("access_token", "accesstoken", "token", "auth_token", "authtoken", "jwt", "id_token") and isinstance(v, str):
-                    return {"Authorization": f"Bearer {v}"}
-                stack.append(v)
-    cookie = hdrs.get("set-cookie", "")
-    if cookie:
-        return {"Cookie": "; ".join(c.split(";", 1)[0].strip() for c in re.split(r",(?=\s*[\w.-]+=)", cookie))}
-    raise ExploitError(f"sign-in at {url_path} returned neither a token nor a cookie")
+                if TOKEN_KEY.search(str(k)) and isinstance(v, str) and len(v) >= 8:
+                    return v
+    return ""
+
+
+def cookies(hdrs: Dict[str, str]) -> Dict[str, str]:
+    jar: Dict[str, str] = {}
+    for line in hdrs.get("set-cookie", "").split("\n"):
+        for part in re.split(r",(?=\s*[\w.-]+=)", line):  # several cookies folded into one header
+            name, _, value = part.split(";", 1)[0].strip().partition("=")
+            if name and value != "deleted":
+                jar[name] = value
+    return jar
+
+
+def signed_out(status: int, hdrs: Dict[str, str], text: str) -> bool:
+    if status in (401, 403):
+        return True
+    if 300 <= status < 400:
+        return bool(re.search(r"(?i)log_?in|sign_?in|auth", hdrs.get("location", "")))
+    return bool(LOGIN_PAGE.search(text)) and len(text) < 20000
+
+
+def login_form(target: Target, page: str, fields: Dict[str, str]) -> Dict[str, str]:
+    """Sign in through an HTML form: load the page (keeping its cookies), carry its hidden inputs (a CSRF token such as
+    DVWA's user_token), post the form with FIELDS, and keep every cookie set along the way."""
+    st, hdrs, text, _s = target.request("GET", page, {})
+    if not st:
+        raise ExploitError(f"the sign-in page {page} does not answer")
+    jar = cookies(hdrs)
+    forms = re.findall(r"(?is)<form\b([^>]{0,500})>(.{0,20000}?)</form>", text)
+    form = next((f for f in forms if LOGIN_PAGE.search(f[1])), forms[0] if forms else ("", ""))
+    action = re.search(r"""(?i)\baction\s*=\s*["']([^"']*)["']""", form[0])
+    target_path = urllib.parse.urljoin(page, action.group(1)) if action and action.group(1) else page
+    if urllib.parse.urlsplit(target_path).netloc:
+        raise ExploitError("the sign-in form posts to another host; probe stays on the target")
+    values = {m.group(2): m.group(3) for m in re.finditer(
+        r"""(?i)<input[^>]{0,300}?type\s*=\s*["']?hidden["']?[^>]{0,300}?name\s*=\s*(["'])([^"']{1,60})\1[^>]{0,300}?value\s*=\s*["']([^"']{0,500})["']""",
+        form[1])}
+    values.update({m.group(2): m.group(3) for m in re.finditer(
+        r"""(?i)<input[^>]{0,300}?name\s*=\s*(["'])([^"']{1,60})\1[^>]{0,300}?type\s*=\s*["']?hidden["']?[^>]{0,300}?value\s*=\s*["']([^"']{0,500})["']""",
+        form[1])})
+    for m in re.finditer(r"""(?i)<input[^>]{0,300}?type\s*=\s*["']?submit["']?[^>]{0,300}?name\s*=\s*["']([^"']{1,60})["'][^>]{0,300}?value\s*=\s*["']([^"']{0,100})["']""", form[1]):
+        values.setdefault(m.group(1), m.group(2))  # some apps check the submit button's name (DVWA's Login)
+    values.update(fields)
+    path = urllib.parse.urlsplit(target_path)
+    hdr = {"Content-Type": "application/x-www-form-urlencoded"}
+    if jar:
+        hdr["Cookie"] = "; ".join(f"{k}={v}" for k, v in jar.items())
+    st, hdrs, text, _s = target.request("POST", path.path + (f"?{path.query}" if path.query else ""), hdr,
+                                        body=urllib.parse.urlencode(values))
+    if not (200 <= st < 400):
+        raise ExploitError(f"the sign-in form at {page} answered HTTP {st}")
+    back = urllib.parse.urlsplit(urllib.parse.urljoin(target_path, hdrs.get("location", ""))).path
+    if (300 <= st < 400 and back == urllib.parse.urlsplit(urllib.parse.urljoin("/", page)).path) or \
+            (st == 200 and LOGIN_PAGE.search(text)):
+        raise ExploitError(f"sign-in through {page} failed: the answer is the sign-in form again (check the fields)")
+    jar.update(cookies(hdrs))
+    if not jar:
+        raise ExploitError(f"the sign-in form at {page} set no cookie")
+    return {"Cookie": "; ".join(f"{k}={v}" for k, v in jar.items())}
+
+
+PHP_SKIP = re.compile(r"(?i)(?:^|/)(?:vendor|tests?|node_modules|\.git|cache|tmp)/")
+PHP_INCLUDE = re.compile(r"""\b(?:include|require)(?:_once)?\s*\(?\s*[^;'"]{0,80}['"]([^'"]{1,200}\.php)['"]""")
+
+
+def plain_php_routes(project, routes: List[Route]) -> List[Route]:
+    """Plain PHP sites have no router: each .php file is a page. Its parameters are the $_GET/$_POST/$_REQUEST/$_COOKIE
+    reads in it and in the files it includes (DVWA: vulnerabilities/sqli/index.php includes source/low.php)."""
+    covered = {r.file for r in routes}
+    php = {f.rel: f for f in project.files if f.rel.endswith(".php") and f.text and not f.is_test}
+    out: List[Route] = []
+    for rel, f in sorted(php.items()):
+        if rel in covered or PHP_SKIP.search(rel) or len(out) >= 400:
+            continue
+        body = f.text
+        folder = rel.rsplit("/", 1)[0] + "/" if "/" in rel else ""
+        for inc in PHP_INCLUDE.findall(f.text)[:10]:  # included files by name, relative to this page or anywhere
+            name = inc.rsplit("/", 1)[-1]
+            hit = php.get(folder + inc.lstrip("./")) or next((g for r2, g in php.items() if r2.endswith("/" + name)), None)
+            if hit is not None:
+                body += "\n" + hit.text
+        if not re.search(r"\$_(?:GET|POST|REQUEST|COOKIE)\b|<form\b", body):
+            continue
+        method = "POST" if re.search(r"\$_POST\b", body) and not re.search(r"\$_(?:GET|REQUEST)\b", body) else "GET"
+        out.append(Route(rel, 1, "/" + rel, [method], body, "php-plain", "php"))
+    return out
+
+
+def parse_fields(values: List[str]) -> Dict[str, str]:
+    out: Dict[str, str] = {}
+    for v in values or []:
+        if "=" not in v:
+            raise ExploitError(f"--login-field takes NAME=VALUE, not {v!r}")
+        k, val = v.split("=", 1)
+        out[k.strip()] = val
+    return out
