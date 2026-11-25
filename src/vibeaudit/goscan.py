@@ -102,7 +102,7 @@ ROUTE_CALL = re.compile(
     r"\b(\w+)\s*\.\s*(GET|POST|PUT|PATCH|DELETE|Any|Get|Post|Put|Patch|Delete|All|HandleFunc|Handle|Match|Add)\s*\(")
 GROUP_ASSIGN = re.compile(r"\b(\w+)\s*:?=\s*(\w+)\s*\.\s*(?:Group|Route|Party)\s*\(")
 MOUNT_CALL = re.compile(r"\b(\w+)\s*\.\s*Mount\s*\(")
-PREPARE_ASSIGN = re.compile(r"\b(\w+)(?:\s*,\s*\w+)*\s*:?=\s*[^\n]{0,160}\.\s*(?:Prepare|PrepareContext|Preparex|PrepareNamed)\s*\(")
+PREPARE_ASSIGN = re.compile(r"(?m)^[ \t]*(\w+)(?:[ \t]*,[ \t]*\w+)?[ \t]*:?=[ \t]*[^\n]{0,140}\.\s*(?:Prepare|PrepareContext|Preparex|PrepareNamed)\s*\(")
 METHOD_PATTERN = re.compile(r"^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)\s+")
 AUTH_NAME = re.compile(
     # a name containing one of these words; no unbounded \w* runs (they are quadratic on long identifiers)

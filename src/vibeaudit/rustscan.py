@@ -405,6 +405,9 @@ class RustScanner:
                 close = match_close(body_b, m.end() - 1)
                 if close < 0:
                     continue
+                if rule == "BE001" and re.match(r"\s*query\s*\(", m.group(0)) and not re.search(
+                        r"\.\s*(?:bind|fetch|fetch_one|fetch_all|fetch_optional|execute)\s*\(", body_b[close:close + 250]):
+                    continue  # local helper named `query(...)`, not `sqlx::query(...).fetch/execute`
                 if rule == "BE001" and m.group(0).lstrip().startswith(".") and SQLX_CHAIN.search(
                         body_b, max(body_b.rfind(";", 0, m.start()), body_b.rfind("{", 0, m.start()), 0), m.start()):
                     continue  # sqlx `query(...).bind(x).execute(&pool)`: the argument is the executor, not SQL

@@ -121,6 +121,22 @@
    "fingerprint": "f32938769f4c86b7d6fedde0a117d63b",
    "verdict": "fp",
    "reason": "The admin router uses authorize.RequiresRole(roleAdmin) and is mounted inside a group with JWT verification (Mount inside r.Group is not followed)."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "api/app/account.go",
+   "line": 51,
+   "fingerprint": "ab06377772f82a129f662b2dcfb3ad90",
+   "verdict": "fp",
+   "reason": "Iterates only over the authenticated account tokens loaded from request context (ctxAccount)."
+  },
+  {
+   "rule": "AUTH003",
+   "file": "api/app/account.go",
+   "line": 52,
+   "fingerprint": "55313f33be5054b045b1e432d5476e45",
+   "verdict": "fp",
+   "reason": "Iterates only over the authenticated account tokens loaded from request context (ctxAccount)."
   }
  ]
 }

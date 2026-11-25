@@ -127,9 +127,16 @@ class CsScanner:
         self.emit(Finding(rule, sf.rel, line, msg, sev, sf.line(line).strip()[:200]))
 
     def _index_ownership(self, files: List[SourceFile]) -> None:
-        """Record service/use-case method names whose bodies check caller ownership (e.g. Find(accountId, userId))."""
+        """Record unique service/use-case method names whose bodies enforce caller ownership (e.g. Find(accountId, userId))."""
         mdecl = re.compile(r"\b(?:public|private|protected|internal)\s+(?:(?:static|virtual|override|async|sealed|new)\s+)*[\w<>\[\],.? ]{1,80}\s+(\w+)\s*(?:<[^<>()]{0,80}>)?\s*\(")
         skip = {"if", "for", "foreach", "while", "switch", "catch", "using", "lock", "Get", "Post", "Put", "Delete", "Patch"}
+        counts: Dict[str, int] = {}
+        has_owner: set = set()
+        # Require caller-identity evidence (current user / ClaimsPrincipal / owner comparison), not a bare `userId` param
+        caller_owner = re.compile(
+            r"(?i)\b(?:_?current_?user|currentUser|HttpContext|User\.FindFirst|GetUserId|ClaimTypes\.NameIdentifier)\b"
+            r"|\b(?:owner_?id|created_?by)\b"
+            r"|\bFind\w*\s*\([^()]{1,80},\s*[^()]{1,60}(?:user_?id|current_?user|owner_?id)")
         for sf in files:
             v = views_of(sf)
             code, bare = v.code, v.bare
@@ -141,8 +148,12 @@ class CsScanner:
                 if close < 0:
                     continue
                 end = _body_end(bare, close)
-                if end > close and OWNERSHIP_EVIDENCE.search(code[m.start():end + 1]):
-                    self.owner_methods.add(name)
+                if end > close:
+                    counts[name] = counts.get(name, 0) + 1
+                    if caller_owner.search(code[close:end + 1]):
+                        has_owner.add(name)
+        # Only trust a method name across files when every definition with that name checks ownership (unique in project)
+        self.owner_methods = {n for n in has_owner if counts.get(n) == 1}
 
     def run(self) -> List[Route]:
         files = [f for f in self.p.files if f.rel.endswith(".cs") and f.text is not None

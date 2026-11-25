@@ -1241,6 +1241,22 @@
    "fingerprint": "74a44df93acdbab248b6c97628ec0bbd",
    "verdict": "fp",
    "reason": "The loader subclasses yaml.SafeLoader."
+  },
+  {
+   "rule": "BE005",
+   "file": "crates/atuin-server/src/handlers/user.rs",
+   "line": 33,
+   "fingerprint": "6879903c0ca5346a89d3be679c2c11e5",
+   "verdict": "fp",
+   "reason": "The webhook URL comes from server settings (register_webhook_url), not from request input."
+  },
+  {
+   "rule": "AUTH015",
+   "file": "crates/atuin-server/src/router.rs",
+   "line": 127,
+   "fingerprint": "f3d72113f14c778568aff171c12867fe",
+   "verdict": "tp",
+   "reason": "change_password updates the password without revoking existing sessions or tokens."
   }
  ]
 }
