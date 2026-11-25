@@ -69,6 +69,9 @@ FRAMEWORK_FILE = re.compile(
 )
 ROUTE_CALL = re.compile(r"\b([A-Za-z_$][\w$]*)\s*\.\s*(get|post|put|patch|delete|all)\s*\(\s*(['\"`])([^'\"`\n]*)\3")
 ROUTER_NAME = re.compile(r"^(?:app|router|server|api|fastify|route|routes|hono|r|\w*Router|\w*router|\w*App|\w*Routes|\w*routes|\w*Api|\w*api)$")
+# a function that takes the app or a router and registers routes on it (NodeGoat's `index.js`, Fastify plugins)
+ROUTER_PARAM = re.compile(r"(?:\bfunction\b[\w$\s]{0,60}|\basync\s{1,5}|[=:,(]\s{0,5})\(\s{0,5}(app|router|server|fastify|instance)\s{0,5}[,)]"
+                          r"[^{]{0,200}?\{[\s\S]{0,4000}?\b\1\s{0,5}\.\s{0,5}(?:get|post|put|patch|delete|route|register)\s{0,5}\(")
 ROUTER_DEF = re.compile(r"\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*(?:new\s+)?(?:express\s*\.\s*)?Router\s*\(")
 USE_CALL = re.compile(r"\b([A-Za-z_$][\w$]*)\s*\.\s*use\s*\(")
 IMPORT_DEFAULT = re.compile(r"""\bimport\s+([A-Za-z_$][\w$]*)(?:\s*,\s*\{[^}]*\})?\s+from\s+['"]([^'"]+)['"]""")
@@ -221,6 +224,7 @@ class JsScanner:
         self.routes: List[Route] = []
         deps = project.all_js_deps()
         self.mongo = bool(deps & {"mongoose", "mongodb"})
+        self.server_framework = bool(deps & {"express", "fastify", "koa", "@koa/router", "koa-router", "restify", "polka"})
         self.mongo_sanitized = bool(deps & {"express-mongo-sanitize", "mongo-sanitize"})
 
     # ------------------------------------------------------------------ helpers
@@ -383,6 +387,8 @@ class JsScanner:
         else:
             fs = FileState(sf, v)
             sf.cache["js_state"] = (signature, fs)
+        if not fs.is_framework and self.server_framework and ROUTER_PARAM.search(v.code):
+            fs.is_framework = True  # routes registered on an app passed in: `module.exports = (app, db) => { app.get(...) }`
         self.files.append(fs)
 
     def _check_file(self, fs: FileState) -> None:

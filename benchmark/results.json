@@ -375,8 +375,8 @@
    "fixed_fp": 8
   },
   "nodegoat": {
-   "findings": 12,
-   "labelled": 12,
+   "findings": 14,
+   "labelled": 14,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 5
@@ -844,8 +844,8 @@
    "fixed_fp": 0
   },
   "node-express-mongoose-demo": {
-   "findings": 5,
-   "labelled": 5,
+   "findings": 6,
+   "labelled": 6,
    "needs_review": 0,
    "lost_tp": [],
    "fixed_fp": 0
@@ -1871,12 +1871,12 @@
   "AUTH010": {
    "title": "Login endpoint without rate limiting",
    "preview": false,
-   "tp": 31,
+   "tp": 32,
    "fp": 1,
    "needs_review": 0,
    "lost_tp": 0,
-   "precision": 0.9688,
-   "precision_pessimistic": 0.9688,
+   "precision": 0.9697,
+   "precision_pessimistic": 0.9697,
    "seeded_expected": 2,
    "seeded_found": 2,
    "seeded_recall": 1.0,
@@ -1952,6 +1952,11 @@
      0
     ],
     "node-express-realworld-example-app": [
+     1,
+     0,
+     0
+    ],
+    "nodegoat": [
      1,
      0,
      0
@@ -4987,6 +4992,21 @@
    "seeded_expected": 1,
    "seeded_found": 1,
    "seeded_recall": 1.0,
+   "by_repo": {},
+   "preview_by_repo": {}
+  },
+  "CFG019": {
+   "title": "Security headers missing on responses",
+   "preview": true,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 0,
+   "seeded_found": 0,
+   "seeded_recall": null,
    "by_repo": {},
    "preview_by_repo": {}
   },
@@ -8101,6 +8121,21 @@
    "by_repo": {},
    "preview_by_repo": {}
   },
+  "LLM026": {
+   "title": "System prompt disclosed through prompt injection",
+   "preview": true,
+   "tp": 0,
+   "fp": 0,
+   "needs_review": 0,
+   "lost_tp": 0,
+   "precision": null,
+   "precision_pessimistic": null,
+   "seeded_expected": 0,
+   "seeded_found": 0,
+   "seeded_recall": null,
+   "by_repo": {},
+   "preview_by_repo": {}
+  },
   "QA001": {
    "title": "No automated tests",
    "preview": true,
@@ -9936,7 +9971,7 @@
   "REL006": {
    "title": "No health-check endpoint",
    "preview": false,
-   "tp": 10,
+   "tp": 12,
    "fp": 0,
    "needs_review": 0,
    "lost_tp": 0,
@@ -9981,7 +10016,17 @@
      0,
      0
     ],
+    "node-express-mongoose-demo": [
+     1,
+     0,
+     0
+    ],
     "node-express-realworld-example-app": [
+     1,
+     0,
+     0
+    ],
+    "nodegoat": [
      1,
      0,
      0

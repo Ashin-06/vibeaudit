@@ -11,6 +11,14 @@
    "reason": "A third-party action is used by tag or branch, not a commit SHA."
   },
   {
+   "rule": "REL006",
+   "file": "Dockerfile",
+   "line": 1,
+   "fingerprint": "db2e21742bb3e3ac415feffcab09b512",
+   "verdict": "tp",
+   "reason": "The service has a Dockerfile and no health route."
+  },
+  {
    "rule": "CFG001",
    "file": "Dockerfile",
    "line": 32,

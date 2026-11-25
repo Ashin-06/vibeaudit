@@ -35,10 +35,15 @@ STACK_TRACE = re.compile(r"Traceback \(most recent call last\)|\bat [\w$.<>]+\([
                          r"|\bat [\w$.]+\.[\w$<>]+\([\w]+\.java:\d+\)|/node_modules/[\w@/.-]+:\d+:\d+|Stack trace:|"
                          r"\bin /[\w/.-]+\.php on line \d+|goroutine \d+ \[running\]|\.rb:\d+:in `")
 PARAM_NAMES = re.compile(
-    r"""\b(?:req|request)\s*\.\s*(?:query|body|args|form|params|GET|POST|values|query_params)\s*(?:\.\s*get\s*\(\s*)?(?:\[\s*)?['"]?(\w{1,40})"""
+    r"""\b(?:req|request)\s*\.\s*(?:query|body|args|form|params|GET|POST|values|query_params|json|data)\s*(?:\.\s*get\s*\(\s*)?(?:\[\s*)?['"]?(\w{1,40})"""
     r"""|\b(?:searchParams|query)\s*\.\s*get\s*\(\s*['"](\w{1,40})|\$_(?:GET|POST|REQUEST)\s*\[\s*['"](\w{1,40})"""
     r"""|\$request\s*->\s*(?:input|query|get|post)\s*\(\s*['"](\w{1,40})|\bparams\s*\[\s*:(\w{1,40})"""
     r"""|\bc\s*\.\s*(?:Query|PostForm|FormValue|DefaultQuery)\s*\(\s*"(\w{1,40})|@RequestParam[^)]{0,80}?(?:value\s*=\s*)?"(\w{1,40})\"""")
+DESTRUCTURE = re.compile(r"\{([\w\s,:]{1,200})\}\s{0,5}=\s{0,5}(?:req|request|ctx\.request)\s{0,5}\.\s{0,5}(?:body|query)\b")
+JSON_READ = re.compile(r"\breq\s*\.\s*body\b|\brequest\s*\.\s*(?:json|get_json\s*\(|data\b)|json\.loads\s*\(|@RequestBody|"
+                       r"\bShouldBindJSON\b|\bBindJSON\b|\$request\s*->\s*json|\bctx\s*\.\s*request\s*\.\s*body|"
+                       r"\bawait\s+(?:req|request)\s*\.\s*json\s*\(|\bc\s*\.\s*req\s*\.\s*json\s*\(|\[FromBody\]")
+CREDENTIAL = re.compile(r"(?i)pass(?:word|wd)?|\bpwd\b|\botp\b|\bpin\b|passcode|\bcode\b|totp")
 URLISH = re.compile(r"(?i)url|uri|link|href|src|target|callback|webhook|endpoint|image|avatar|feed|proxy|fetch|host")
 REDIRECTISH = re.compile(r"(?i)^(?:next|redirect\w*|return\w*|url|continue|to|dest\w*|goto|back|ret|r|u)$")
 FILEISH = re.compile(r"(?i)file|path|name|doc|template|page|dir|folder|download|attachment|include|lang")
@@ -130,7 +135,13 @@ def concrete(path: str) -> str:
 
 def param_names(route: Route) -> List[str]:
     names = {next(g for g in m.groups() if g) for m in PARAM_NAMES.finditer(route.body)}
-    return sorted(n for n in names if n not in ("body", "query", "params", "get", "json")) [:8]
+    for m in DESTRUCTURE.finditer(route.body):  # const { username, password } = req.body
+        names.update(n.split(":")[0].strip() for n in m.group(1).split(",") if re.match(r"\s*\w+", n))
+    return sorted(n for n in names if n and n not in ("body", "query", "params", "get", "json"))[:8]
+
+
+def reads_json(route: Route) -> bool:
+    return bool(JSON_READ.search(route.body))
 
 
 class Prober:
@@ -138,11 +149,13 @@ class Prober:
                  auth2: Optional[Dict[str, str]] = None, system_prompts: Optional[List[str]] = None):
         self.t = target
         self.routes = [r for r in routes if any(m in ("GET", "POST", "ALL") for m in r.methods)]
+        self.all_routes = list(routes)  # GraphQL resolvers named delete... still say a GraphQL endpoint exists
         self.auth = auth or {}
         self.auth2 = auth2 or {}
         self.system_prompts = [p for p in (system_prompts or []) if len(p) >= 40]
         self.findings: List[Finding] = []
         self.seen = set()
+        self.json = False
 
     def add(self, rule: str, route: Optional[Route], msg: str, evidence: str) -> None:
         key = (rule, route.path if route else "/")
@@ -158,6 +171,7 @@ class Prober:
         canary = Canary()
         try:
             self.site()
+            self.graphql(canary)
             for r in self.routes:
                 try:
                     self.route(r, canary)
@@ -202,6 +216,7 @@ class Prober:
             self.prompt_leak(r, path)
         names = param_names(r)
         path_params = [p for p in r.params]
+        self.json = method == "POST" and reads_json(r)
         base = self.send(method, path, {n: "1" for n in names})
         if base is None:
             return
@@ -216,16 +231,29 @@ class Prober:
                     self.add("BE001", r, f"a quote in path parameter {p} returns a SQL error.", got[2])
                 if got and TRAVERSAL_PROOF.search(got[2]):
                     self.add("BE006", r, f"path parameter {p} reads files outside the app.", got[2])
-        if method == "POST" and H.LOGIN_PATH.search(r.path) and not self.auth:
-            self.rate_limit(r, path)
+        if method == "POST" and H.LOGIN_PATH.search(r.path) and CREDENTIAL.search(r.body + " ".join(names)):
+            self.rate_limit(r, path, names)
 
     def send(self, method: str, path: str, values: Dict[str, str], headers: Optional[Dict[str, str]] = None):
         hdrs = dict(self.auth, **(headers or {}))
         if method == "GET":
             out = self.t.request("GET", path, hdrs, params=values)
         else:
-            out = self.t.request("POST", path, hdrs, body=urllib.parse.urlencode(values))
+            out = self.post(path, values, hdrs)
         return out if out[0] else None
+
+    def post(self, path: str, values: Dict[str, str], hdrs: Dict[str, str]):
+        """POST as JSON when the handler reads JSON, else as a form; after a 415, once more in the other format."""
+        import json as _json
+
+        for as_json in (self.json, not self.json):
+            body = _json.dumps(values) if as_json else urllib.parse.urlencode(values)
+            out = self.t.request("POST", path, dict(hdrs, **{"Content-Type": "application/json" if as_json else
+                                                           "application/x-www-form-urlencoded"}), body=body or "{}")
+            if out[0] != 415:
+                self.json = as_json
+                return out
+        return out
 
     def inject(self, r: Route, method: str, path: str, names: List[str], name: str, b_text: str, b_time: float,
                canary: Canary) -> None:
@@ -314,16 +342,24 @@ class Prober:
             self.add("AUTH002" if admin else "AUTH001", r, "a protected route answers the same without credentials.",
                      f"HTTP {anon[0]} without credentials")
 
-    def rate_limit(self, r: Route, path: str) -> None:
+    def rate_limit(self, r: Route, path: str, names: List[str]) -> None:
+        """Twelve failed sign-ins in a row. They count only when the app processed them (200, 400, 401, 403 or 422
+        with a body): a 404, 405, 415 or 5xx says nothing about rate limiting."""
+        wrong = "vibeaudit-probe-" + str(int(time.time()))  # a value no account has: every attempt fails
+        values = {n: wrong for n in names} or {name: wrong for name in ("username", "password")}
         statuses = []
         for _ in range(12):
-            st, hdrs, _t, _s = self.t.request("POST", path, {}, body="username=vibeaudit-probe&password=wrong-password")
-            statuses.append(st)
+            got = self.send("POST", path, values, {})
+            if got is None:
+                return
+            st, hdrs, text, _s = got
             if st == 429 or any(k.startswith(("ratelimit", "x-ratelimit", "retry-after")) for k in hdrs):
                 return
-        if statuses and all(s and s != 429 for s in statuses):
-            self.add("AUTH010", r, "12 failed logins in a row were all accepted for processing (no 429, no rate-limit headers).",
-                     f"statuses: {sorted(set(statuses))}")
+            if st not in (200, 400, 401, 403, 422) or not text.strip():
+                return
+            statuses.append(st)
+        self.add("AUTH010", r, "12 failed sign-ins in a row were processed (no 429, no rate-limit headers).",
+                 f"statuses: {sorted(set(statuses))}")
 
 
 def parse_auth(values: List[str]) -> Dict[str, str]:
@@ -366,3 +402,96 @@ def system_prompts(project) -> List[str]:
         if f.text and f.kind in ("py", "js") and not f.is_test:
             out += [m.group(1) for m in SYSTEM_PROMPT_LITERAL.finditer(f.text)]
     return out
+
+
+GRAPHQL_PATHS = ("/graphql", "/api/graphql", "/graphql/v1", "/v1/graphql")
+INTROSPECTION = ("query { __schema { queryType { name } mutationType { name } types { name kind fields { name "
+                 "args { name type { kind name ofType { kind name ofType { kind name } } } } "
+                 "type { kind name ofType { kind name ofType { kind name } } } } } } }")
+DESTRUCTIVE = re.compile(r"(?i)^(?:delete|remove|destroy|drop|purge|reset|clear|wipe|ban|truncate|revoke|kill|shutdown)")
+
+
+def _named(t) -> Tuple[str, str]:
+    while t and t.get("ofType") and t.get("kind") in ("NON_NULL", "LIST"):
+        t = t["ofType"]
+    return (t or {}).get("kind", ""), (t or {}).get("name", "")
+
+
+def _graphql(self, canary: Canary) -> None:
+    """Find a GraphQL endpoint, read its schema by introspection, and send each query (and each mutation whose name
+    is not destructive) once per string argument with the SQL, traversal and SSRF payloads."""
+    import json as _json
+
+    if not any(r.framework in ("graphql", "graphene", "strawberry") or "graphql" in r.path.lower() for r in self.all_routes):
+        return
+    for gpath in GRAPHQL_PATHS:
+        got = self.t.request("POST", gpath, dict(self.auth, **{"Content-Type": "application/json"}),
+                             body=_json.dumps({"query": INTROSPECTION}))
+        try:
+            schema = _json.loads(got[2])["data"]["__schema"]
+        except (ValueError, KeyError, TypeError):
+            continue
+        types = {t["name"]: t for t in schema["types"] if t.get("fields")}
+        roots = [("query", (schema.get("queryType") or {}).get("name")), ("mutation", (schema.get("mutationType") or {}).get("name"))]
+        for op, root in roots:
+            for field in (types.get(root) or {}).get("fields") or []:
+                if op == "mutation" and DESTRUCTIVE.match(field["name"]):
+                    continue  # probe never runs destructive operations
+                args = [(a["name"], _named(a["type"])) for a in field.get("args") or []]
+                strings = [a for a, (k, n) in args if k == "SCALAR" and n in ("String", "ID")]
+                if not strings:
+                    continue
+                kind, _n = _named(field.get("type"))
+                selection = " { __typename }" if kind in ("OBJECT", "INTERFACE", "UNION") else ""
+                route = next((r for r in self.all_routes if r.path.lower().endswith("/" + field["name"].lower())), None)
+                for name in strings[:3]:
+                    payloads = ["1'"] + (list(TRAVERSAL[:1]) if FILEISH.search(name) else []) + \
+                        ([canary.url] if URLISH.search(name) else [])
+                    for payload in payloads:
+                        q = f"{op} {{ {field['name']}({name}: {_json.dumps(payload)}){selection} }}"
+                        before = len(canary.hits)
+                        st, _h, text, _s = self.t.request("POST", gpath, dict(self.auth, **{"Content-Type": "application/json"}),
+                                                          body=_json.dumps({"query": q}))
+                        if payload == "1'" and SQL_ERRORS.search(text):
+                            self.add("BE001", route, f"a quote in GraphQL {op} {field['name']}({name}) returns a SQL error.", text)
+                        elif payload == canary.url:
+                            time.sleep(0.3)
+                            if len(canary.hits) > before:
+                                self.add("BE005", route, f"GraphQL {op} {field['name']}({name}) fetched a local canary URL.", payload)
+                        elif TRAVERSAL_PROOF.search(text):
+                            self.add("BE006", route, f"GraphQL {op} {field['name']}({name}) reads files outside the app.", text)
+                        self.errors(route, text)
+        return
+
+
+Prober.graphql = _graphql
+
+
+def login(target: Target, url_path: str, credentials: str) -> Dict[str, str]:
+    """Sign in with JSON credentials and return the headers that carry the session: a bearer token from the JSON
+    answer (access_token, token, auth_token, jwt), else the cookies it sets."""
+    import json as _json
+
+    try:
+        _json.loads(credentials)
+    except ValueError:
+        raise ExploitError("--login-json must be a JSON object, e.g. '{\"username\": \"a\", \"password\": \"b\"}'") from None
+    st, hdrs, text, _s = target.request("POST", url_path, {"Content-Type": "application/json"}, body=credentials)
+    if not 200 <= st < 300:
+        raise ExploitError(f"sign-in at {url_path} answered HTTP {st}")
+    try:
+        data = _json.loads(text)
+    except ValueError:
+        data = {}
+    stack = [data]
+    while stack:  # the token may be nested: {"data": {"token": ...}}
+        d = stack.pop()
+        if isinstance(d, dict):
+            for k, v in d.items():
+                if k.lower() in ("access_token", "accesstoken", "token", "auth_token", "authtoken", "jwt", "id_token") and isinstance(v, str):
+                    return {"Authorization": f"Bearer {v}"}
+                stack.append(v)
+    cookie = hdrs.get("set-cookie", "")
+    if cookie:
+        return {"Cookie": "; ".join(c.split(";", 1)[0].strip() for c in re.split(r",(?=\s*[\w.-]+=)", cookie))}
+    raise ExploitError(f"sign-in at {url_path} returned neither a token nor a cookie")

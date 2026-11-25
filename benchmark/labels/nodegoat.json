@@ -3,6 +3,14 @@
  "commit": "c5cb68a7084e4ae7dcc60e6a98768720a81841e8",
  "findings": [
   {
+   "rule": "REL006",
+   "file": "Dockerfile",
+   "line": 1,
+   "fingerprint": "a8fcd075da20ef0a1ab32ecc294cd7c6",
+   "verdict": "tp",
+   "reason": "The service has a Dockerfile and no health route."
+  },
+  {
    "rule": "BE002",
    "file": "Gruntfile.js",
    "line": 165,
@@ -33,6 +41,14 @@
    "fingerprint": "a98ae07efa4e952e6d16dadd7c917caf",
    "verdict": "tp",
    "reason": "eval() on request body fields."
+  },
+  {
+   "rule": "AUTH010",
+   "file": "app/routes/index.js",
+   "line": 34,
+   "fingerprint": "7868369276eb395bac4e93dc24594ceb",
+   "verdict": "tp",
+   "reason": "POST /login has no rate limiting; the routes are registered through a function taking app."
   },
   {
    "rule": "BE008",
