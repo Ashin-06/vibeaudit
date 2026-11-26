@@ -187,6 +187,23 @@ def const_str(node: Optional[ast.AST]) -> Optional[str]:
     return None
 
 
+def _leading_query_or_fragment(node: Optional[ast.AST], depth: int = 0) -> bool:
+    """True when a formatted string expression always starts with `?` or `#` (query or fragment)."""
+    if node is None or depth > 6:
+        return False
+    s = const_str(node)
+    if s is not None:
+        return s.startswith(("?", "#"))
+    if isinstance(node, ast.JoinedStr) and node.values:
+        first = const_str(node.values[0])
+        return first is not None and first.startswith(("?", "#"))
+    if isinstance(node, ast.BinOp) and isinstance(node.op, (ast.Add, ast.Mod)):
+        return _leading_query_or_fragment(node.left, depth + 1)
+    if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) and node.func.attr == "format":
+        return _leading_query_or_fragment(node.func.value, depth + 1)
+    return False
+
+
 def is_formatted(node: ast.AST) -> bool:
     """f-string / % / + / .format() with at least one non-constant part."""
     if isinstance(node, ast.JoinedStr):
@@ -1056,7 +1073,8 @@ class PyScanner:
             elif isinstance(st, ast.AugAssign):
                 base = root_name(st.target)
                 if base:
-                    ctx.assigned.pop(base, None)
+                    if base in ctx.assigned:
+                        ctx.assigned[base] = ast.BinOp(left=ctx.assigned[base], op=st.op, right=st.value)
                     rhs_t = self.taint(st.value, ctx)
                     if rhs_t:
                         rhs_sc = self._safe_contexts(st.value, rhs_t, ctx)
@@ -1299,6 +1317,8 @@ class PyScanner:
         elif name in ("redirect", "RedirectResponse", "HttpResponseRedirect") and arg0 is not None:
             # redirecting to the request's own URL (http -> https, trailing slash) goes back to the same site
             target = self.resolve(arg0, ctx)
+            while isinstance(target, ast.BinOp) and isinstance(target.op, ast.Add) and _leading_query_or_fragment(target.right):
+                target = target.left
             same_site = bool(re.fullmatch(r"request\.(?:url|base_url|url_root|host_url|full_path|path)(?:\.\w+\(.*\)|\[[^\]]*\])?",
                                           ast.unparse(target), re.S))
             # url_for() / reverse() build a path of this app; redirect(obj) uses the model's get_absolute_url()

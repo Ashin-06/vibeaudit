@@ -199,3 +199,22 @@ def test_probe_verifies_tls_on_remote_targets_by_default():
 
     local = probe.Target("https://127.0.0.1:8443", own=False, rate=1.0, max_requests=5)
     assert local._ssl_context().verify_mode == ssl.CERT_NONE
+
+
+def test_redirect_augassign_query_string_stays_same_site(tmp_path):
+    (tmp_path / "views.py").write_text(
+        "from django.shortcuts import redirect\nfrom django.urls import reverse\n\n"
+        "def safe_search(request):\n"
+        "    q = request.GET.get('q')\n"
+        "    search_url = reverse('docs')\n"
+        "    if q:\n"
+        "        search_url += '?q=%s' % q\n"
+        "    return redirect(search_url)\n\n"
+        "def bad_append(request):\n"
+        "    q = request.GET.get('q')\n"
+        "    bad_url = reverse('docs')\n"
+        "    if q:\n"
+        "        bad_url += q\n"
+        "    return redirect(bad_url)\n"
+    )
+    assert _lines(_scan(tmp_path), "BE008") == [16]
