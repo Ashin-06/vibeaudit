@@ -4,6 +4,27 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.16.2] - 2026-11-26
+
+### Fixed
+
+- **Conservative canonical path containment (`pyscan.py`)**:
+  - Removed unsafe `str(p).startswith(base)` and lexical `p.is_relative_to(base)` suppression from
+    `_path_guarded()` so sibling-prefix bypasses (`/srv/app-evil/...`) and unresolved symlinks continue
+    to report `BE006`.
+  - `_path_guarded()` now accepts `not p.is_relative_to(base)` only when `_is_resolved_path()` verifies
+    that both `p` and `base` originate from `.resolve()` or `os.path.realpath()` (tracking local and
+    module-level assignments).
+- **Strict NoSQL & Zod schema sanitization (`jsscan.py`)**:
+  - Removed arbitrary `\w+Schema.parse()` / `\w+Schema.safeParse()` from `NOSQL_SANITIZER` so object
+    and record schemas such as `z.record(z.unknown())` preserve `BE010` taint in both object-literal
+    and bare-variable filter flows (`User.find(filter)`), while ignoring `Array.prototype.find()`
+    callbacks and keeping explicit scalar `String(...)`, `z.string()...parse(...)`, and `{ $eq: ... }`
+    filters safe.
+  - Restricted Zod chains in `UNIVERSAL_SANITIZER` and `NOSQL_SANITIZER` (`_ZOD_REFINE`) to purely
+    value-preserving refinements, preventing `.or(...)`, `.union(...)`, or `.transform(...)` chains from
+    suppressing `BE001` or `BE010` taint.
+
 ## [0.16.1] - 2026-11-26
 
 ### Fixed
