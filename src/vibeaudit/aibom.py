@@ -5,6 +5,7 @@ import datetime as dt
 import json
 import re
 import uuid
+from pathlib import Path
 from typing import Any, Dict, List
 
 from . import __version__, feed
@@ -64,7 +65,7 @@ def collect(project: Project, stack: List[str]) -> Dict[str, Any]:
                         cmd = cfg.get("command", "") if isinstance(cfg, dict) else ""
                         url = cfg.get("url", "") if isinstance(cfg, dict) else ""
                         mcp_servers.setdefault(str(sname), {"name": str(sname), "file": sf.rel, "transport": "stdio" if cmd else "http", "target": str(cmd or url)[:120]})
-        if sf.kind in ("py", "js", "yaml", "json", "toml"):
+        if sf.kind in ("py", "js", "yaml", "json", "toml") and "model" in sf.text:
             for m in finditer(MODEL_ASSIGN, sf.text):
                 mid = m.group(1)
                 if "/" in mid and mid.startswith(("http", "./", "../", "/")):
@@ -88,7 +89,7 @@ def render(res) -> str:
     """Render a CycloneDX 1.6 JSON AI Bill of Materials for the audited project."""
     inv = res.meta.get("ai_inventory")
     if inv is None:
-        inv = collect(Project(res.root), res.meta.get("stack") or [])
+        inv = collect(Project(Path(res.root)), res.meta.get("stack") or [])
     components: List[Dict[str, Any]] = []
     for p in inv.get("providers", []):
         components.append({"type": "library", "name": p, "properties": [{"name": "vibeaudit:ai:kind", "value": "sdk"}]})
