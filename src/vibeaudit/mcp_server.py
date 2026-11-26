@@ -21,6 +21,8 @@ ECOSYSTEMS = ("PyPI", "npm", "Pub", "RubyGems", "Go", "Maven", "crates.io", "NuG
 
 SUPPORTED_PROTOCOLS = ("2025-06-18", "2025-03-26", "2024-11-05")
 MAX_FINDINGS = 200
+MAX_LINE_BYTES = 10_000_000
+MAX_BATCH = 50
 
 TOOLS = [
     {
@@ -458,7 +460,10 @@ def handle(msg: Any) -> Optional[Dict[str, Any]]:
     method, mid = msg["method"], msg.get("id")
     if "id" not in msg:
         return None  # notification (notifications/initialized, notifications/cancelled, ...)
-    params = msg.get("params") if isinstance(msg.get("params"), dict) else {}
+    raw_params = msg.get("params")
+    if raw_params is not None and not isinstance(raw_params, dict):
+        return {"jsonrpc": "2.0", "id": mid, "error": {"code": -32602, "message": "Invalid params"}}
+    params = raw_params or {}
 
     def ok(result: Dict[str, Any]) -> Dict[str, Any]:
         return {"jsonrpc": "2.0", "id": mid, "result": result}
@@ -481,7 +486,10 @@ def handle(msg: Any) -> Optional[Dict[str, Any]]:
         handler = HANDLERS.get(name) if isinstance(name, str) else None
         if handler is None:
             return {"jsonrpc": "2.0", "id": mid, "error": {"code": -32602, "message": f"Unknown tool: {name}"}}
-        args = params.get("arguments") if isinstance(params.get("arguments"), dict) else {}
+        raw_args = params.get("arguments")
+        if raw_args is not None and not isinstance(raw_args, dict):
+            return {"jsonrpc": "2.0", "id": mid, "error": {"code": -32602, "message": "Invalid params: arguments must be an object"}}
+        args = raw_args or {}
         try:
             data = handler(args)
             return ok({"content": [{"type": "text", "text": json.dumps(data, indent=2)}], "structuredContent": data, "isError": False})
@@ -498,14 +506,24 @@ def serve(stdin: IO[str], stdout: IO[str]) -> int:
         line = line.strip()
         if not line:
             continue
+        if len(line.encode("utf-8")) > MAX_LINE_BYTES:
+            response: Optional[Dict[str, Any]] = {"jsonrpc": "2.0", "id": None, "error": {"code": -32600, "message": "Request too large"}}
+            stdout.write(json.dumps(response) + "\n")
+            stdout.flush()
+            continue
         try:
             msg = loads_json(line)
         except ValueError:
-            response: Optional[Dict[str, Any]] = {"jsonrpc": "2.0", "id": None, "error": {"code": -32700, "message": "Parse error"}}
+            response = {"jsonrpc": "2.0", "id": None, "error": {"code": -32700, "message": "Parse error"}}
         else:
             if isinstance(msg, list):  # batches (older protocol versions)
-                responses = [r for r in (handle(m) for m in msg) if r is not None]
-                response = responses or None  # type: ignore[assignment]
+                if not msg:
+                    response = {"jsonrpc": "2.0", "id": None, "error": {"code": -32600, "message": "Invalid Request"}}
+                elif len(msg) > MAX_BATCH:
+                    response = {"jsonrpc": "2.0", "id": None, "error": {"code": -32600, "message": "Batch too large"}}
+                else:
+                    responses = [r for r in (handle(m) for m in msg) if r is not None]
+                    response = responses or None  # type: ignore[assignment]
             else:
                 response = handle(msg)
         if response is not None:

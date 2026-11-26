@@ -41,11 +41,11 @@ USER_ATTRS = {
     "url", "base_url", "url_root", "host_url", "host", "full_path", "path", "referrer",
 }
 UNIVERSAL_SANITIZERS = {
-    "int", "float", "bool", "len", "abs", "round", "literal_eval", "UUID", "uuid4",
-    "hexdigest", "digest", "sha256", "md5", "isdigit", "isalnum", "count",
+    "int", "float", "bool", "len", "abs", "round", "UUID", "uuid4",
+    "hexdigest", "isdigit", "isalnum", "count",
     "startswith", "endswith", "type", "isinstance", "hash", "id",
 }
-SANITIZERS = UNIVERSAL_SANITIZERS | {"secure_filename", "escape", "quote", "basename", "clean", "urlencode", "quote_plus"}
+SANITIZERS = UNIVERSAL_SANITIZERS | {"literal_eval", "secure_filename", "escape", "quote", "basename", "clean", "urlencode", "quote_plus"}
 _SINK_CONTEXTS = ("html", "shell", "path", "url", "redirect", "sql", "code", "deser", "nosql", "prompt")
 MONGO_METHODS = {
     "find", "find_one", "find_one_and_update", "find_one_and_delete", "find_one_and_replace",
@@ -59,10 +59,12 @@ KQL_KW = re.compile(r"(?i)\|\s*(?:where|project|summarize|take|limit|extend|join
 def _sanitizer_contexts(call: ast.Call, mod_imports: Dict[str, Tuple[str, Optional[str], int]]) -> Set[str]:
     d = dotted(call.func)
     name = last_name(call.func) or ""
-    if name in UNIVERSAL_SANITIZERS or name in H.CUSTOM.sanitizers or re.match(r"(?i)^validate", name):
+    if name in UNIVERSAL_SANITIZERS or name in H.CUSTOM.sanitizers:
         return {"*"}
     ctxs: Set[str] = set()
     low_full = f"{d}.{name}".lower()
+    if name == "literal_eval":
+        ctxs.add("code")
     if name in ("secure_filename", "basename") or re.match(r"(?i)^(?:sanitize_?(?:file|path)|clean_?path)", name):
         ctxs.add("path")
     q_mod = mod_imports.get("quote", ("",))[0] if d == "quote" else ""
@@ -90,7 +92,10 @@ def _safe_mongo_filter(node: ast.AST) -> bool:
         return False
     if not node.values:
         return True
-    for v in node.values:
+    for k, v in zip(node.keys, node.values):
+        key_name = const_str(k) if k is not None else None
+        if k is None or key_name is None or key_name == "$where":
+            return False
         if isinstance(v, ast.Dict) and len(v.keys) == 1 and const_str(v.keys[0]) == "$eq":
             continue
         if isinstance(v, ast.Call) and last_name(v.func) in ("str", "int", "float", "bool", "ObjectId"):
@@ -303,15 +308,39 @@ def _ident_check(node: ast.AST) -> Optional[str]:
     return None
 
 
+def _disjuncts(expr: ast.AST) -> List[ast.AST]:
+    """Flatten top-level `or` expressions without descending into `and` or `not`."""
+    if isinstance(expr, ast.BoolOp) and isinstance(expr.op, ast.Or):
+        out: List[ast.AST] = []
+        for v in expr.values:
+            out.extend(_disjuncts(v))
+        return out
+    return [expr]
+
+
 def _path_guarded(test: ast.AST) -> Set[str]:
-    """Names a traversal guard rejects: `p.is_absolute() or ".." in p.parts` (both checks on the same name)."""
-    absolute = {n.func.value.id for n in ast.walk(test) if isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)
-                and n.func.attr == "is_absolute" and isinstance(n.func.value, ast.Name)}
-    dotdot = {c.comparators[0].value.id for c in ast.walk(test) if isinstance(c, ast.Compare) and len(c.ops) == 1
-              and isinstance(c.ops[0], ast.In) and const_str(c.left) == ".."
-              and isinstance(c.comparators[0], ast.Attribute) and c.comparators[0].attr == "parts"
-              and isinstance(c.comparators[0].value, ast.Name)}
-    return absolute & dotdot
+    """Names a traversal guard rejects via an `or` disjunction (`p.is_absolute() or ".." in p.parts`)
+    or a negated canonical containment check (`not p.is_relative_to(...)` / `not str(p).startswith(...)`)."""
+    absolute: Set[str] = set()
+    dotdot: Set[str] = set()
+    contained: Set[str] = set()
+    for d in _disjuncts(test):
+        if isinstance(d, ast.Call) and isinstance(d.func, ast.Attribute) and d.func.attr == "is_absolute" \
+                and isinstance(d.func.value, ast.Name) and not d.args and not d.keywords:
+            absolute.add(d.func.value.id)
+        elif isinstance(d, ast.Compare) and len(d.ops) == 1 and isinstance(d.ops[0], ast.In) \
+                and const_str(d.left) == ".." and isinstance(d.comparators[0], ast.Attribute) \
+                and d.comparators[0].attr == "parts" and isinstance(d.comparators[0].value, ast.Name):
+            dotdot.add(d.comparators[0].value.id)
+        elif isinstance(d, ast.UnaryOp) and isinstance(d.op, ast.Not) and isinstance(d.operand, ast.Call):
+            fn = d.operand.func
+            if isinstance(fn, ast.Attribute) and isinstance(fn.value, ast.Name) and fn.attr in ("is_relative_to", "startswith"):
+                contained.add(fn.value.id)
+            elif isinstance(fn, ast.Attribute) and fn.attr == "startswith" and isinstance(fn.value, ast.Call) \
+                    and isinstance(fn.value.func, ast.Name) and fn.value.func.id == "str" \
+                    and len(fn.value.args) == 1 and isinstance(fn.value.args[0], ast.Name):
+                contained.add(fn.value.args[0].id)
+    return (absolute & dotdot) | contained
 
 
 def validated_idents(tree: ast.AST) -> Tuple[Set[str], List[Tuple[int, int, str]]]:
@@ -1027,7 +1056,17 @@ class PyScanner:
             elif isinstance(st, ast.AugAssign):
                 base = root_name(st.target)
                 if base:
-                    ctx.env[base] = merge(ctx.env.get(base, {}), self.taint(st.value, ctx))
+                    ctx.assigned.pop(base, None)
+                    rhs_t = self.taint(st.value, ctx)
+                    if rhs_t:
+                        rhs_sc = self._safe_contexts(st.value, rhs_t, ctx)
+                        prev_t = ctx.env.get(base, {})
+                        combined_sc = (ctx.sanitized.get(base, set()) & rhs_sc) if prev_t else rhs_sc
+                        ctx.env[base] = merge(prev_t, rhs_t)
+                        if combined_sc:
+                            ctx.sanitized[base] = combined_sc
+                        else:
+                            ctx.sanitized.pop(base, None)
             elif isinstance(st, (ast.For, ast.AsyncFor)):
                 self.assign(st.target, self.taint(st.iter, ctx), ctx)
                 self.walk_block(st.body, ctx)
@@ -1049,7 +1088,7 @@ class PyScanner:
                         ctx.env.pop(n, None)  # rejected unless it is in the allow-list
                 if st.body and isinstance(st.body[-1], (ast.Raise, ast.Return)):
                     for n in _path_guarded(st.test):
-                        ctx.env.pop(n, None)  # `if p.is_absolute() or ".." in p.parts: raise`: p is a safe relative path
+                        ctx.sanitized.setdefault(n, set()).add("path")  # path guard prevents traversal only
             elif isinstance(st, (ast.With, ast.AsyncWith)):
                 for item in st.items:
                     if item.optional_vars is not None:
@@ -1160,9 +1199,27 @@ class PyScanner:
         # MongoDB / NoSQL filters (BE010)
         if is_attr and name in MONGO_METHODS and arg0 is not None and any(m in (self.sf.text or "") for m in MONGO_MARKERS):
             msrc = self.resolve(arg0, ctx)
-            t_mongo = self.taint(arg0, ctx, sink="nosql")
-            if "user" in t_mongo and not _safe_mongo_filter(msrc):
-                self.sink(call, {"user": t_mongo["user"]}, "BE010", "a MongoDB query filter without type checks", "high", False)
+            where_hit = False
+            if isinstance(msrc, ast.Dict):
+                for k, v in zip(msrc.keys, msrc.values):
+                    if const_str(k) == "$where":
+                        tv = self.taint(v, ctx, sink="")
+                        if tv or is_formatted(self.resolve(v, ctx)):
+                            t_hit = tv or {"user": call.lineno}
+                            self.sink(call, {"user": t_hit.get("user", call.lineno)} if "user" in t_hit else t_hit,
+                                      "BE010", "a MongoDB $where JavaScript expression", "high", True)
+                            where_hit = True
+                            break
+                    elif k is not None:
+                        tk = self.taint(k, ctx, sink="nosql")
+                        if "user" in tk:
+                            self.sink(call, {"user": tk["user"]}, "BE010", "a MongoDB query filter key from request data", "high", False)
+                            where_hit = True
+                            break
+            if not where_hit:
+                t_mongo = self.taint(arg0, ctx, sink="nosql")
+                if "user" in t_mongo and not _safe_mongo_filter(msrc):
+                    self.sink(call, {"user": t_mongo["user"]}, "BE010", "a MongoDB query filter without type checks", "high", False)
         # SQL
         if is_attr and name in ("execute", "executemany", "executescript", "raw", "read_sql", "read_sql_query") or d in ("text", "sqlalchemy.text", "sa.text"):
             if arg0 is not None:
