@@ -26,3 +26,16 @@ def test_each_language_still_reports_its_planted_bug(tmp_path: Path, lang: str):
     res = _scan(tmp_path, CASES[lang])
     assert res.meta.get("internal_errors", []) == []
     assert EXPECT[lang] <= {f.rule_id for f in res.findings}
+
+
+CROSS_FILE_GO = {"go.mod": "module app\ngo 1.22\n",
+ "main.go": 'package main\nimport "net/http"\nfunc main() { http.HandleFunc("/u", get) }\nfunc get(w http.ResponseWriter, r *http.Request) {\n    id := r.URL.Query().Get("id")\n    store.FindUser(id)\n}\n',
+ "store/store.go": 'package store\nimport "fmt"\nfunc FindUser(id string) {\n    db.Query(fmt.Sprintf("SELECT * FROM users WHERE id = %s", id))\n}\n'}
+CROSS_FILE_RS = {"src/main.rs": 'use axum::{extract::Query, routing::get, Router};\nmod db;\nasync fn h(Query(q): Query<P>) -> String {\n    db::find(&q.id).await\n}\nfn app() -> Router { Router::new().route("/u", get(h)) }\n',
+ "src/db.rs": 'pub async fn find(id: &str) -> String {\n    sqlx::query(&format!("SELECT * FROM users WHERE id = {}", id)).fetch_one(&pool).await;\n    String::new()\n}\n'}
+
+
+@pytest.mark.parametrize("files,sink", [(CROSS_FILE_GO, "store/store.go"), (CROSS_FILE_RS, "src/db.rs")])
+def test_request_data_is_followed_into_another_file(tmp_path: Path, files, sink):
+    hits = [f for f in _scan(tmp_path, files).findings if f.rule_id == "BE001"]
+    assert [f.file for f in hits] == [sink] and "passed in through the call" in hits[0].message

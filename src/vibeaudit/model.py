@@ -107,11 +107,15 @@ class Route:
     params: List[str] = field(default_factory=list)
 
     def to_dict(self) -> dict:
-        from .heuristics import MUTATION_EVIDENCE
+        from .heuristics import AUTH_EVIDENCE, AUTH_MIDDLEWARE, MUTATION_EVIDENCE
 
+        why = None
+        if self.has_auth:  # name the code that made it count as authenticated, so a wrong guess is visible
+            m = AUTH_MIDDLEWARE.search(self.body) or AUTH_EVIDENCE.search(self.body)
+            why = " ".join(m.group(0).split())[:60] if m else "router, class or config level"
         return {
             "methods": self.methods, "path": self.path, "file": self.file, "line": self.line,
-            "framework": self.framework, "authenticated": self.has_auth, "calls_llm": self.calls_llm,
+            "framework": self.framework, "authenticated": self.has_auth, "auth_evidence": why, "calls_llm": self.calls_llm,
             "writes_data": bool(MUTATION_EVIDENCE.search(self.body)), "reads_body": self.reads_body,
         }
 

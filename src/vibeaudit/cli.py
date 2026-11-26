@@ -475,20 +475,20 @@ def cmd_routes(a: argparse.Namespace) -> int:
         print(json.dumps(rows, indent=2))
         return 0
 
-    def yn(v: bool) -> str:
-        return "yes" if v else "no"
+    def yn(v: bool, why: str = "") -> str:
+        return ("yes" if v else "no") + (f" ({why})" if why else "")
 
     if a.format == "md":
         print("| Method | Path | Auth | Writes | AI call | Location | Framework |\n| --- | --- | --- | --- | --- | --- | --- |")
         for r in rows:
-            print(f"| {'/'.join(r['methods'])} | `{r['path']}` | {yn(r['authenticated'])} | {yn(r['writes_data'])} | "
+            print(f"| {'/'.join(r['methods'])} | `{r['path']}` | {yn(r['authenticated'], r['auth_evidence'] or '')} | {yn(r['writes_data'])} | "
                   f"{yn(r['calls_llm'])} | {r['file']}:{r['line']} | {r['framework']} |")
         return 0
     width = max([len(r["path"]) for r in rows] + [4])
     print(f"{'METHOD':10} {'PATH':{width}}  AUTH  WRITES  AI   LOCATION")
     for r in rows:
         print(f"{'/'.join(r['methods']):10} {r['path']:{width}}  {yn(r['authenticated']):4}  {yn(r['writes_data']):6}  "
-              f"{yn(r['calls_llm']):3}  {r['file']}:{r['line']}")
+              f"{yn(r['calls_llm']):3}  {r['file']}:{r['line']}" + (f"  (auth: {r['auth_evidence']})" if r["auth_evidence"] else ""))
     exposed = [r for r in rows if not r["authenticated"] and (r["writes_data"] or r["calls_llm"])]
     print(f"\n{len(rows)} routes; {len(exposed)} write data or call a paid AI API without a visible auth check.")
     return 0

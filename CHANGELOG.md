@@ -4,6 +4,22 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- `vibeaudit routes` names the decorator, middleware or annotation that made each route count as authenticated
+  (`auth_evidence` in JSON), so a wrong guess is easy to spot.
+- `vibeaudit doctor` warns when the package is not installed or the installed version differs from the running one.
+- Per-language recall floor test (C#, PHP, Kotlin, Python, JS, Dart).
+
+### Fixed
+
+- Rust: `client.query(format!(..))` (tokio-postgres) was skipped as a local helper; `user::list` could resolve
+  to `admin_user.rs`.
+- Java/Kotlin: a custom annotation named like `@Author` counted as an auth annotation.
+- Go: a chi sub-router mounted both behind auth and publicly was treated as authenticated.
+
 ## [0.13.0] - 2026-11-26
 
 ### Added
