@@ -1,17 +1,17 @@
-# vibeaudit -- Complete Project & Architecture Reference (`v0.16.1`)
+# vibeaudit -- Complete Project & Architecture Reference (`v0.16.2`)
 
 **vibeaudit** is a zero-runtime-dependency (on Python 3.11+; `tomli` only on 3.9--3.10) security, AI-agent safety, and production-readiness platform written in pure Python. It audits full repositories -- backend APIs, frontend bundles, database migrations and SQL/NoSQL queries, infrastructure manifests, CI workflows, dependency trees, LLM prompts, and MCP tool definitions -- without executing scanned code.
 
-This document summarizes everything implemented across the entire repository as of **`v0.16.1`**.
+This document summarizes everything implemented across the entire repository as of **`v0.16.2`**.
 
 ---
 
 ## 1. Project Snapshot & Metrics
 
-| Dimension | Verified Count / Details (`v0.16.1`) |
+| Dimension | Verified Count / Details (`v0.16.2`) |
 | --- | --- |
-| Package version | `0.16.1` (`src/vibeaudit/__init__.py`) |
-| Core Python codebase | `75` modules in `src/vibeaudit/`, `24,917` lines total |
+| Package version | `0.16.2` (`src/vibeaudit/__init__.py`) |
+| Core Python codebase | `75` modules in `src/vibeaudit/`, `24,984` lines total |
 | Runtime dependencies | None on Python 3.11+ (`tomli` on 3.9--3.10); optional `vibeaudit[parse]` for tree-sitter |
 | Security & quality rules | `179` rules (`96` stable, `83` preview, `7` severe-gating preview) across `12` static categories + `AI001` LLM review |
 | Compliance frameworks | `6`: `owasp`, `owasp-llm`, `eu-ai-act`, `soc2`, `hipaa`, `gdpr` (`data/compliance_map.json`) |
@@ -66,7 +66,7 @@ flowchart TD
 
 | Module | Lines | Purpose |
 | --- | --- | --- |
-| `__init__.py` | 45 | Public package API (`scan`, `Options`, `project_options`, `Result`, `Finding`, `Route`, plugin decorators, `FastAPIMiddleware`) and `__version__` (`0.16.1`). |
+| `__init__.py` | 45 | Public package API (`scan`, `Options`, `project_options`, `Result`, `Finding`, `Route`, plugin decorators, `FastAPIMiddleware`) and `__version__` (`0.16.2`). |
 | `__main__.py` | 5 | Entry point for `python -m vibeaudit`. |
 | `model.py` | 124 | Core dataclasses `Finding`, `Route` (including `auth_evidence` extraction in `to_dict()`), severity ranking, inline suppression regex, and path joining. |
 | `files.py` | 543 | Git-aware workspace enumeration, symlink escape prevention, language/kind classification, test/example/vendored heuristics, `SourceFile` line caches, and `StepMemo` read/value tracking. |
@@ -86,8 +86,8 @@ flowchart TD
 
 | Module | Lines | Purpose |
 | --- | --- | --- |
-| `pyscan.py` | 1,584 | Real Python AST + 3-hop cross-file taint engine (`user`, `llm`, `tool` taint); context-sensitive & AugAssign-safe sanitizers (`html`, `shell`, `path`, `url`, `redirect`, `sql`, `code`, `nosql`), strict boolean/polarity path guards (`_path_guarded`); Flask/FastAPI/Django/DRF route & prefix resolution; SQL (`BE001`), PyMongo/Motor & `$where` (`BE010`), Cypher & KQL (`BE022`), shell, eval/sympy, path, SSRF, SSTI, redirect, deser, JWT, logging, stubs, agent loops & MCP tools. |
-| `jsscan.py` | 1,369 | Offset-preserving JS/TS/JSX/TSX/Vue/Svelte/HTML scanner; scoped fixpoint + 3-round cross-file call taint; span-scoped context-sensitive sanitization (`_strip_sanitizer_calls`, scoping schema `.parse`/`z.string` to `nosql` only); Express/Next.js App & Pages/SvelteKit/Supabase Edge/Firebase (`onRequest`, `onCall`) routes; SQL, Cypher/KQL (`BE022`), NoSQL & `$where` (`BE010`), mass assignment, shell, eval, SSRF, path, redirect, HTML/DOM sinks, CORS, JWT, LLM checks. |
+| `pyscan.py` | 1,628 | Real Python AST + 3-hop cross-file taint engine (`user`, `llm`, `tool` taint); context-sensitive & AugAssign-safe sanitizers (`html`, `shell`, `path`, `url`, `redirect`, `sql`, `code`, `nosql`), strict boolean/resolved path guards (`_path_guarded` requiring `.resolve()`/`realpath()` for `is_relative_to`); Flask/FastAPI/Django/DRF route & prefix resolution; SQL (`BE001`), PyMongo/Motor & `$where` (`BE010`), Cypher & KQL (`BE022`), shell, eval/sympy, path, SSRF, SSTI, redirect, deser, JWT, logging, stubs, agent loops & MCP tools. |
+| `jsscan.py` | 1,392 | Offset-preserving JS/TS/JSX/TSX/Vue/Svelte/HTML scanner; scoped fixpoint + 3-round cross-file call taint; span-scoped context-sensitive sanitization (`_strip_sanitizer_calls`, restricting `nosql` to scalar `String`/`z.string`/refinements and `{ $eq }`); Express/Next.js App & Pages/SvelteKit/Supabase Edge/Firebase (`onRequest`, `onCall`) routes; SQL, Cypher/KQL (`BE022`), NoSQL & `$where` (`BE010`), mass assignment, shell, eval, SSRF, path, redirect, HTML/DOM sinks, CORS, JWT, LLM checks. |
 | `goscan.py` | 788 | Lexer/parser-backed Go scanner (`net/http`, Gin, Echo, Fiber, Chi, GORM); tracks nested `.Group()` / `.Route()` / local variable `.Mount()` middleware propagation; checks Go-specific `GO001`--`GO004` + injection, auth, TLS, timeouts, and concurrent map writes. |
 | `jvm.py` | 517 | Java & Kotlin scanner (Spring Boot, Spring Security filter chains, JAX-RS/Quarkus, Hibernate/JDBC); extracts annotated controllers and tracks data flow into sinks (`JAVA001`--`JAVA004`, auth, SQL/cmd injection). |
 | `jvmconfig.py` | 77 | Spring `application.properties` / `application.yml` configuration checks (`JAVA002` exposed Actuator endpoints, insecure settings). |

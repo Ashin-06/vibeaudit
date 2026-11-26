@@ -58,7 +58,7 @@ def test_path_guard_negated_and_conditional_still_reports_traversal(tmp_path):
 
 def test_valid_path_guard_and_canonical_check_preserve_sql_taint(tmp_path):
     (tmp_path / "app.py").write_text(
-        "from pathlib import Path\nfrom flask import Flask, request\napp = Flask(__name__)\nBASE = Path('/srv/data')\n\n"
+        "from pathlib import Path\nfrom flask import Flask, request\napp = Flask(__name__)\nBASE = Path('/srv/data').resolve()\n\n"
         "@app.get('/ok')\ndef ok():\n"
         "    p = Path(request.args['file'])\n"
         "    if p.is_absolute() or '..' in p.parts:\n"
@@ -77,6 +77,34 @@ def test_valid_path_guard_and_canonical_check_preserve_sql_taint(tmp_path):
     res = _scan(tmp_path)
     assert _lines(res, "BE006") == []
     assert _lines(res, "BE001") == [12, 21]
+
+
+def test_startswith_and_unresolved_is_relative_to_do_not_suppress_path_traversal(tmp_path):
+    (tmp_path / "app.py").write_text(
+        "import os\nfrom pathlib import Path\nfrom flask import Flask, request\napp = Flask(__name__)\n"
+        "BASE_STR = '/srv/app'\nBASE_LEX = Path('/srv/app')\nBASE_RES = Path('/srv/app').resolve()\n\n"
+        "@app.get('/prefix')\ndef prefix():\n"
+        "    p = request.args['file']\n"
+        "    if not str(p).startswith(BASE_STR):\n"
+        "        raise ValueError('bad')\n"
+        "    return open(p).read()\n\n"
+        "@app.get('/unres_p')\ndef unres_p():\n"
+        "    p = BASE_RES / request.args['file']\n"
+        "    if not p.is_relative_to(BASE_RES):\n"
+        "        raise ValueError('bad')\n"
+        "    return open(p).read()\n\n"
+        "@app.get('/unres_base')\ndef unres_base():\n"
+        "    p = (BASE_LEX / request.args['file']).resolve()\n"
+        "    if not p.is_relative_to(BASE_LEX):\n"
+        "        raise ValueError('bad')\n"
+        "    return open(p).read()\n\n"
+        "@app.get('/abspath')\ndef abspath():\n"
+        "    p = Path(os.path.abspath(BASE_RES / request.args['file']))\n"
+        "    if not p.is_relative_to(BASE_RES):\n"
+        "        raise ValueError('bad')\n"
+        "    return open(p).read()\n"
+    )
+    assert _lines(_scan(tmp_path), "BE006") == [14, 21, 28, 35]
 
 
 def test_literal_eval_and_validate_and_binary_digest_do_not_hide_sqli(tmp_path):
@@ -218,3 +246,31 @@ def test_redirect_augassign_query_string_stays_same_site(tmp_path):
         "    return redirect(bad_url)\n"
     )
     assert _lines(_scan(tmp_path), "BE008") == [16]
+
+
+def test_js_arbitrary_schema_parse_and_zod_union_do_not_hide_nosql_or_sqli(tmp_path):
+    (tmp_path / "package.json").write_text('{"dependencies": {"express": "4.18.0", "mongoose": "8.0.0"}}')
+    (tmp_path / "routes.ts").write_text(
+        "import express from 'express';\nimport { z } from 'zod';\n"
+        "const app = express();\n"
+        "const filterSchema = z.record(z.unknown());\n"
+        "app.post('/users/search', async (req, res) => {\n"
+        "  const filter = filterSchema.parse(req.body.filter);\n"
+        "  await User.find(filter);\n"
+        "  await User.find(filterSchema.parse(req.body.filter));\n"
+        "  await User.find({ email: userSchema.parse(req.body.email) });\n"
+        "  const y = z.string().or(z.any()).parse(req.body.y);\n"
+        "  await User.find({ y });\n"
+        "  await User.find({ email: String(req.body.email) });\n"
+        "  const s = z.string().max(100).parse(req.body.name);\n"
+        "  await User.find({ name: s });\n"
+        "  const eq = { email: { $eq: req.body.email } };\n"
+        "  await User.find(eq);\n"
+        "  const found = items.find((u) => u.id === req.query.id);\n"
+        "  const x = z.number().or(z.string()).parse(req.query.x);\n"
+        "  db.query(`SELECT * FROM users WHERE name = '${x}'`);\n"
+        "});\n"
+    )
+    res = _scan(tmp_path)
+    assert _lines(res, "BE010") == [7, 8, 9, 11]
+    assert sorted(f.line for f in res.findings if f.rule_id == "BE001" and f.severity == "high") == [19]

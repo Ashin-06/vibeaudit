@@ -40,16 +40,23 @@ LLM_SRC = re.compile(
     r"|\.\s*(?:chat\s*\.\s*completions|responses|messages)\s*\.\s*create\s*\(|\.\s*generateContent\s*\("
     r"|\b(?:llm|chain|agent|chatModel|model)\w*\s*\.\s*invoke\s*\("
 )
+_ZOD_REFINE = (
+    r"(?:\s*\.\s*(?:int|positive|nonnegative|negative|nonpositive|min|max|gt|gte|lt|lte|finite|safe"
+    r"|multipleOf|step|optional|nullable|nullish|default|describe|readonly|brand|trim|toLowerCase|toUpperCase)"
+    r"\s*\([^()\n]{0,60}\)){0,6}"
+)
 UNIVERSAL_SANITIZER = re.compile(
     r"\b(?:(?:parseInt|parseFloat|Number|Boolean"
     r"|validator\s*\.\s*(?:isInt|isFloat|isNumeric|isBoolean|isUUID|isAlphanumeric|isDecimal|isHexadecimal|toInt|toFloat|toBoolean))\s*\("
-    r"|z\s*\.\s*(?:number|boolean|bigint|uuid|enum|nativeEnum|literal)\s*\([^()\n]{0,60}\)"
-    r"(?:\s*\.\s*\w{1,20}\s*\([^()\n]{0,60}\)){0,6}\s*\.\s*(?:safe)?[pP]arse\s*\()",
+    r"|z(?:\s*\.\s*coerce)?\s*\.\s*(?:number|boolean|bigint|uuid|enum|nativeEnum|literal)\s*\([^()\n]{0,60}\)"
+    + _ZOD_REFINE + r"\s*\.\s*(?:safe)?[pP]arse\s*\("
+    r"|z\s*\.\s*string\s*\([^()\n]{0,60}\)" + _ZOD_REFINE + r"\s*\.\s*uuid\s*\([^()\n]{0,60}\)"
+    + _ZOD_REFINE + r"\s*\.\s*(?:safe)?[pP]arse\s*\()",
     re.I,
 )
 NOSQL_SANITIZER = re.compile(
-    r"\b(?:(?:String|\w+Schema\s*\.\s*(?:safe)?[pP]arse)\s*\("
-    r"|z\s*\.\s*string\s*\([^()\n]{0,60}\)(?:\s*\.\s*\w{1,20}\s*\([^()\n]{0,60}\)){0,6}\s*\.\s*(?:safe)?[pP]arse\s*\()",
+    r"\b(?:String\s*\("
+    r"|z(?:\s*\.\s*coerce)?\s*\.\s*string\s*\([^()\n]{0,60}\)" + _ZOD_REFINE + r"\s*\.\s*(?:safe)?[pP]arse\s*\()",
     re.I,
 )
 SINK_SANITIZERS: Dict[str, re.Pattern] = {
@@ -94,6 +101,10 @@ def _blank_calls(code: str, bare: str, rx: Optional[re.Pattern]) -> Tuple[str, s
     return "".join(c_buf), "".join(b_buf)
 
 
+def _blank_eq(text: str) -> str:
+    return re.sub(r"\{\s*['\"]?\$eq['\"]?\s*:[^{}]{0,300}\}", lambda m: "".join("\n" if ch == "\n" else " " for ch in m.group(0)), text)
+
+
 def _strip_sanitizer_calls(code: str, bare: str, sink: str) -> Tuple[str, str]:
     c, b = _blank_calls(code, bare, UNIVERSAL_SANITIZER)
     if H.CUSTOM.sanitizer_rx:
@@ -102,6 +113,7 @@ def _strip_sanitizer_calls(code: str, bare: str, sink: str) -> Tuple[str, str]:
         c, b = _blank_calls(c, b, SINK_SANITIZERS[sink])
     if sink == "nosql":
         c, b = _blank_calls(c, b, NOSQL_SANITIZER)
+        c, b = _blank_eq(c), _blank_eq(b)
     return c, b
 WHOLE_BODY = re.compile(
     r"^\s*(?:await\s+)?(?:(?:req|request|c\s*\.\s*req|ctx\s*\.\s*request)\s*\.\s*(?:body|json\s*\(\s*\))"
@@ -879,6 +891,8 @@ class JsScanner:
                 if not args:
                     continue
                 raw_code, raw_bare, _ = args[0]
+                if re.match(r"\s*(?:async\b|function\b|\(?\s*[\w$]*\s*\)?\s*=>)", raw_bare) or "=>" in raw_bare[:120]:
+                    continue  # Array.prototype.find(callback)
                 if re.search(r"""['"]?\$where['"]?\s*:""", raw_code):
                     k_where = fs.kinds(raw_code, raw_bare, m.start()) & {"user", "llm"}
                     if k_where:
@@ -887,9 +901,8 @@ class JsScanner:
                 if self.mongo_sanitized:
                     continue
                 # `{ email: { $eq: req.body.email } }` compares the value as a literal: the usual fix for operator injection
-                a_code, a_bare = (re.sub(r"\{\s*\$eq\s*:[^{}]{0,300}\}", "0", x) for x in (raw_code, raw_bare))
-                clean_code, clean_bare = _strip_sanitizer_calls(a_code, a_bare, "nosql")
-                direct = re.fullmatch(r"\s*(?:req|request)\s*\.\s*(?:body|query)\s*", clean_code) or re.search(
+                clean_code, clean_bare = _strip_sanitizer_calls(raw_code, raw_bare, "nosql")
+                direct = re.fullmatch(r"\s*(?:req|request)\s*\.\s*(?:body|query)(?:\s*\.\s*[\w$]+)?\s*", clean_code) or re.search(
                     r":\s*(?:req|request)\s*\.\s*(?:body|query|params)\s*\.\s*[\w$]+\s*(?=[,}])", clean_code)
                 if not direct and clean_code.strip().startswith("{"):
                     for name, kinds in fs.taint_at(m.start()).items():
@@ -897,6 +910,16 @@ class JsScanner:
                                 r"[{,:]\s*" + re.escape(name) + r"\s*(?=[,}])", clean_bare):
                             direct = True
                             break
+                    if not direct and "user" in fs.kinds(clean_code, clean_bare, m.start(), sink="nosql"):
+                        direct = True
+                if not direct and clean_code.strip() and not clean_code.strip().startswith("{") and not re.match(r"^\s*['\"`]", clean_code):
+                    ident = clean_bare.strip()
+                    taint_here = fs.taint_at(m.start())
+                    if re.fullmatch(r"[A-Za-z_$][\w$]*", ident):
+                        if "user" in taint_here.get(ident, ()) and "nosql" not in fs.sanitized_at(ident, m.start()):
+                            direct = True
+                    elif "user" in fs.kinds(clean_code, clean_bare, m.start(), sink="nosql"):
+                        direct = True
                 if direct:
                     report("BE010", m.start(), {"user"}, "a MongoDB query filter without type checks", "high")
         # mass assignment

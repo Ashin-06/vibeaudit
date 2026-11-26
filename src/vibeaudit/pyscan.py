@@ -335,12 +335,34 @@ def _disjuncts(expr: ast.AST) -> List[ast.AST]:
     return [expr]
 
 
-def _path_guarded(test: ast.AST) -> Set[str]:
+def _is_resolved_path(node: Optional[ast.AST], assigned: Dict[str, ast.AST], mod_assigned: Dict[str, ast.AST], depth: int = 0) -> bool:
+    """True only when `node` comes from canonical `.resolve()` / `os.path.realpath()` resolution."""
+    if node is None or depth > 6:
+        return False
+    if isinstance(node, ast.Name):
+        nxt = assigned.get(node.id)
+        if nxt is None:
+            nxt = mod_assigned.get(node.id)
+        return _is_resolved_path(nxt, assigned, mod_assigned, depth + 1) if nxt is not None else False
+    if isinstance(node, ast.Call):
+        if isinstance(node.func, ast.Attribute) and node.func.attr == "resolve":
+            return True
+        if dotted(node.func) in ("os.path.realpath", "posixpath.realpath", "ntpath.realpath", "realpath"):
+            return True
+        if last_name(node.func) == "Path" and len(node.args) == 1 and not node.keywords:
+            return _is_resolved_path(node.args[0], assigned, mod_assigned, depth + 1)
+    return False
+
+
+def _path_guarded(test: ast.AST, assigned: Optional[Dict[str, ast.AST]] = None,
+                  mod_assigned: Optional[Dict[str, ast.AST]] = None) -> Set[str]:
     """Names a traversal guard rejects via an `or` disjunction (`p.is_absolute() or ".." in p.parts`)
-    or a negated canonical containment check (`not p.is_relative_to(...)` / `not str(p).startswith(...)`)."""
+    or a negated resolved containment check (`not p.is_relative_to(base)` with both paths canonically resolved)."""
     absolute: Set[str] = set()
     dotdot: Set[str] = set()
     contained: Set[str] = set()
+    loc = assigned or {}
+    mod = mod_assigned or {}
     for d in _disjuncts(test):
         if isinstance(d, ast.Call) and isinstance(d.func, ast.Attribute) and d.func.attr == "is_absolute" \
                 and isinstance(d.func.value, ast.Name) and not d.args and not d.keywords:
@@ -351,12 +373,10 @@ def _path_guarded(test: ast.AST) -> Set[str]:
             dotdot.add(d.comparators[0].value.id)
         elif isinstance(d, ast.UnaryOp) and isinstance(d.op, ast.Not) and isinstance(d.operand, ast.Call):
             fn = d.operand.func
-            if isinstance(fn, ast.Attribute) and isinstance(fn.value, ast.Name) and fn.attr in ("is_relative_to", "startswith"):
-                contained.add(fn.value.id)
-            elif isinstance(fn, ast.Attribute) and fn.attr == "startswith" and isinstance(fn.value, ast.Call) \
-                    and isinstance(fn.value.func, ast.Name) and fn.value.func.id == "str" \
-                    and len(fn.value.args) == 1 and isinstance(fn.value.args[0], ast.Name):
-                contained.add(fn.value.args[0].id)
+            if isinstance(fn, ast.Attribute) and fn.attr == "is_relative_to" and isinstance(fn.value, ast.Name) \
+                    and len(d.operand.args) == 1 and not d.operand.keywords:
+                if _is_resolved_path(fn.value, loc, mod) and _is_resolved_path(d.operand.args[0], loc, mod):
+                    contained.add(fn.value.id)
     return (absolute & dotdot) | contained
 
 
@@ -491,6 +511,7 @@ class PyScanner:
         self.imports: Dict[str, Dict[str, Tuple[str, Optional[str], int]]] = {}
         self.modules: Dict[str, str] = {}  # dotted module name (and its suffixes) -> file
         self.consts: Dict[str, Dict[str, str]] = {}  # per file: module-level NAME = "string"
+        self.mod_assigned: Dict[str, Dict[str, ast.AST]] = {}  # per file: module-level NAME = expr
         self.calls: List[tuple] = []
         self.via: Optional[str] = None  # set while a callee is walked: how the tainted value got there
 
@@ -593,11 +614,12 @@ class PyScanner:
 
     # -------------------------------------------------- cross-function taint
     def _index_callables(self, sf: SourceFile, tree: ast.Module) -> None:
-        defs, methods, imports, consts = {}, {}, {}, {}
+        defs, methods, imports, consts, mod_assigns = {}, {}, {}, {}, {}
         for node in tree.body:
-            if isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name) \
-                    and isinstance(node.value, ast.Constant) and isinstance(node.value.value, str):
-                consts[node.targets[0].id] = node.value.value
+            if isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):
+                mod_assigns[node.targets[0].id] = node.value
+                if isinstance(node.value, ast.Constant) and isinstance(node.value.value, str):
+                    consts[node.targets[0].id] = node.value.value
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 defs[node.name] = node
             elif isinstance(node, ast.ClassDef):
@@ -611,6 +633,7 @@ class PyScanner:
                 for a in node.names:
                     imports[a.asname or a.name.split(".")[0]] = (a.name if a.asname else a.name.split(".")[0], None, 0)
         self.defs[sf.rel], self.methods[sf.rel], self.imports[sf.rel], self.consts[sf.rel] = defs, methods, imports, consts
+        self.mod_assigned[sf.rel] = mod_assigns
         parts = sf.rel[:-3].split("/")
         if parts[-1] == "__init__":
             parts = parts[:-1]
@@ -1105,7 +1128,8 @@ class PyScanner:
                     for n in checked:
                         ctx.env.pop(n, None)  # rejected unless it is in the allow-list
                 if st.body and isinstance(st.body[-1], (ast.Raise, ast.Return)):
-                    for n in _path_guarded(st.test):
+                    mod_a = self.mod_assigned.get(self.sf.rel, {}) if self.sf else {}
+                    for n in _path_guarded(st.test, ctx.assigned, mod_a):
                         ctx.sanitized.setdefault(n, set()).add("path")  # path guard prevents traversal only
             elif isinstance(st, (ast.With, ast.AsyncWith)):
                 for item in st.items:
