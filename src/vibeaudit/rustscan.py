@@ -161,7 +161,14 @@ class RustScanner:
         v = sf.cache.get("rust_views") or rust_views(sf.text or "")
         sf.cache["rust_views"] = v
         bare = v.bare
-        for m in finditer(FN_DECL, bare):
+        from .parse import functions, spans_by_name
+
+        parsed = functions("rust", sf.text or "")
+        for lst in spans_by_name(parsed or [], bare).values():  # tree-sitter index (vibeaudit[parse])
+            for name, a, po, pc, _bo, b in lst:
+                self.funcs.setdefault(name, []).append((sf, a, po, pc, b))
+                self.follower.define(name, Fn(sf, a, v.code[po + 1:pc], (pc, b)))
+        for m in ([] if parsed is not None else finditer(FN_DECL, bare)):
             po = m.end() - 1
             pc = match_close(bare, po)
             if pc < 0:

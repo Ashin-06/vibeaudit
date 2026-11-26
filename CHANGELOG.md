@@ -10,6 +10,9 @@ All notable changes to this project are documented here. The format follows
 
 - `vibeaudit routes` names the decorator, middleware or annotation that made each route count as authenticated
   (`auth_evidence` in JSON), so a wrong guess is easy to spot.
+- Optional `vibeaudit[parse]` extra: a tree-sitter function index for Go, Rust and Java that finds
+  declarations the regex index misses (Rust generics with nested bounds, Go results spanning lines), so
+  routes and cross-file data flow reach them. Without it the regex index is used; `doctor` shows the mode.
 - `vibeaudit doctor` warns when the package is not installed or the installed version differs from the running one.
 - Per-language recall floor test (C#, PHP, Kotlin, Python, JS, Dart).
 

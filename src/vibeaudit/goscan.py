@@ -172,10 +172,21 @@ class GoScanner:
     def _load(self, sf: SourceFile) -> None:
         v = sf.cache.get("go_views") or go_views(sf.text or "")
         sf.cache["views"] = sf.cache["go_views"] = v
+        from .calls import Fn
+        from .parse import functions, spans_by_name
+
+        parsed = functions("go", sf.text or "")
+        if parsed is not None:  # tree-sitter index (vibeaudit[parse]); the regex index below is the fallback
+            by_name = spans_by_name(parsed, v.bare)
+            sf.cache["go_funcs"] = {n: [(f[1], f[5]) for f in lst] for n, lst in by_name.items()}
+            for name, lst in by_name.items():
+                for _n, a, po, pc, _bo, b in lst:
+                    self.funcs.setdefault(name, []).append((sf, a, b))
+                    if not sf.is_test:
+                        self.follower.define(name, Fn(sf, a, v.code[po + 1:pc], (a, b)))
+            return
         spans = _func_spans(v)
         sf.cache["go_funcs"] = spans
-        from .calls import Fn
-
         for name, lst in spans.items():
             for a, b in lst:
                 self.funcs.setdefault(name, []).append((sf, a, b))

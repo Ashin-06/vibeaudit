@@ -7,7 +7,7 @@ import platform
 import shutil
 from typing import Any, Dict
 
-from . import __version__, bundle, deps, external, feed
+from . import __version__, bundle, deps, external, feed, parse
 from .rules import CATEGORIES, RULES
 from .store import cache_dir
 
@@ -62,6 +62,7 @@ def report() -> Dict[str, Any]:
         "status": status,
         "version": __version__,
         "installed": installed,
+        "parser": parse.mode(),
         "python": platform.python_version(),
         "platform": platform.platform(),
         "rules": {
@@ -109,6 +110,8 @@ def render_text(info: Dict[str, Any]) -> str:
         lines.append(f"    Feed file:  present at {f['path']} but expired or invalid (run `vibeaudit update`)")
     else:
         lines.append("    Feed file:  not installed (using shipped data; run `vibeaudit update` to pull signed feed)")
+    lines.append("  Parser:     " + ", ".join(f"{k}={v}" for k, v in info["parser"].items())
+                 + ("" if set(info["parser"].values()) == {"tree-sitter"} else " (`pip install vibeaudit[parse]` for tree-sitter)"))
     lines.append(f"  Cache dir:  {info['cache_dir']}")
     osv = info["offline_osv"]
     lines.append(f"  Offline OSV: {', '.join(f'{k} ({v})' for k, v in osv.items()) if osv else 'none imported'}")
