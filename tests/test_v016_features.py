@@ -57,6 +57,14 @@ def test_js_context_sensitive_and_span_scoped_sanitizers(tmp_path: Path):
             "  res.redirect(DOMPurify.sanitize(req.query.next));\n"
             "});\n"
         ),
+        "routes/wrong_html_sanitizer.js": (
+            'const express = require("express");\nconst app = express();\n'
+            'app.get("/e", (req, res) => {\n'
+            '  el.innerHTML = encodeURIComponent(req.query.x);\n'
+            "  el2.innerHTML = unknownVal ? DOMPurify.sanitize(unknownVal) : '';\n"
+            '  res.send("ok");\n'
+            "});\n"
+        ),
     })
     by_file = {}
     for f in res.findings:
@@ -67,6 +75,8 @@ def test_js_context_sensitive_and_span_scoped_sanitizers(tmp_path: Path):
     assert "FE001" not in by_file.get("routes/sql_html_escape.js", set())
     assert "BE001" in by_file.get("routes/partial_sanitize.js", set())
     assert {"BE002", "BE008"} <= by_file.get("routes/shell_and_redirect.js", set())
+    wrong_html_fe001 = [f for f in res.findings if f.file == "routes/wrong_html_sanitizer.js" and f.rule_id == "FE001"]
+    assert len(wrong_html_fe001) == 1 and wrong_html_fe001[0].line == 4
 
 
 # ------------------------------------------------ Context-sensitive & span-scoped sanitization (Python)

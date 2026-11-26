@@ -948,10 +948,11 @@ class JsScanner:
         def judge(off: int, expr_code: str, expr_bare: str, where: str) -> None:
             if off in fs.handled or is_static_string(expr_code):
                 return
-            _sc, stripped_b = _strip_sanitizer_calls(expr_code, expr_bare, "html")
             k = fs.kinds(expr_code, expr_bare, off, sink="html")
             if not k:
-                # If every interpolated / dynamic identifier in this HTML sink was sanitized for HTML, it is safe
+                if SANITIZER.search(expr_code) or H.CUSTOM.is_sanitizer(expr_code):
+                    return
+                _sc, stripped_b = _strip_sanitizer_calls(expr_code, expr_bare, "html")
                 rem = stripped_b
                 for n, ctxs in fs.sanitized.items():
                     if fs.visible(ctxs, off) and "html" in fs.sanitized_at(n, off):
