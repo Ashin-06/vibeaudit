@@ -2,7 +2,7 @@
   "name": "vibeaudit",
   "displayName": "vibeaudit",
   "description": "Security and quality findings for AI-built and LLM apps, with one-click fixes, from the vibeaudit language server.",
-  "version": "0.14.0",
+  "version": "0.15.0",
   "publisher": "Ashin06",
   "license": "MIT",
   "icon": "icon.png",
@@ -52,6 +52,8 @@
     "onLanguage:php",
     "onLanguage:ruby",
     "onLanguage:dart",
+    "onLanguage:swift",
+    "onLanguage:elixir",
     "workspaceContains:**/package.json",
     "workspaceContains:**/pyproject.toml",
     "workspaceContains:**/requirements.txt",
@@ -63,7 +65,9 @@
     "workspaceContains:**/Cargo.toml",
     "workspaceContains:**/composer.json",
     "workspaceContains:**/Gemfile",
-    "workspaceContains:**/pubspec.yaml"
+    "workspaceContains:**/pubspec.yaml",
+    "workspaceContains:**/Package.swift",
+    "workspaceContains:**/mix.exs"
   ],
   "capabilities": {
     "untrustedWorkspaces": {

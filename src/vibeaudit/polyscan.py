@@ -95,6 +95,10 @@ def _lang_of(rel: str) -> Optional[str]:
         return "ruby"
     if low.endswith(".dart"):
         return "dart"
+    if low.endswith(".swift"):
+        return "swift"
+    if low.endswith((".ex", ".exs", ".heex")):
+        return "elixir"
     return None
 
 

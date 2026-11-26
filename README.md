@@ -25,7 +25,7 @@ nothing, inaccessible forms and frontend calls to API routes that do not exist.
 - Pure Python, no dependencies on 3.11+ (`tomli` on 3.9 and 3.10). Linux, macOS and Windows.
   Optional `pip install vibeaudit[parse]` adds a tree-sitter function index for Go, Rust and Java
   (`vibeaudit doctor` shows which is active; `VIBEAUDIT_PARSER=regex` turns it off).
-- 176 rules: 175 rules in 12 categories plus the optional LLM review, mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
+- 178 rules: 177 rules in 12 categories plus the optional LLM review, mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
 - Terminal output plus JSON, SARIF 2.1.0 (GitHub code scanning), Markdown, HTML, an SVG badge and a fix
   brief you can paste into an AI assistant.
 - Fits into CI (GitHub Action, `--diff`), pre-commit (`--staged`) and coding agents (an MCP server).
@@ -44,7 +44,7 @@ flowchart LR
     Discovery --> JSLex["Offset-Preserving JS/TS Lexer"]
     Discovery --> CfgScan["Config, RLS, Supply-Chain & OSV Scanner"]
     Discovery --> ExtTools["Optional Tool Merger (gitleaks, bandit, semgrep, osv-scanner)"]
-    PyAST & JSLex & CfgScan & ExtTools --> Rules["176 Rules Across 12 Domains (CWE & OWASP LLM Mapped)"]
+    PyAST & JSLex & CfgScan & ExtTools --> Rules["178 Rules Across 12 Domains (CWE & OWASP LLM Mapped)"]
     Rules --> Dedup["Deduplication, Domain Scoring & Fix Generator"]
     Dedup --> Out["Outputs: Terminal, SARIF 2.1.0, HTML, Studio UI, LSP & MCP Server"]
 ```
@@ -98,10 +98,10 @@ That project is one of the deliberately vulnerable sample apps in `tests/fixture
 | --- | --- |
 | Secrets (SEC) | provider keys and tokens, private keys, hard-coded or default signing secrets, database URLs with passwords, committed or un-ignored `.env` files, secrets in `NEXT_PUBLIC_`/`VITE_` variables, a Supabase `service_role` key outside the server, secrets in logs, keys baked into committed bundles; in preview: other high-entropy secrets, hard-coded passwords |
 | Supply chain (DEP) | packages that do not exist (hallucinated names), typosquats of popular packages, packages first published in the last 30 days, known vulnerabilities (OSV) for pinned versions, missing lockfiles, install scripts that run remote code, unpinned MCP servers; in preview: extra package indexes (dependency confusion), vulnerable transitive dependencies |
-| Backend (BE) | SQL and NoSQL injection, SSRF, path traversal, server-side template injection, mass assignment, debug mode, permissive CORS, disabled TLS verification, weak password hashing, insecure randomness, unverified JWTs, leaked error details; in preview: command injection, `eval`/`exec`, unsafe deserialization and open redirects (these four still gate), no server-side validation, payment amounts taken from the client, email header injection |
+| Backend (BE) | SQL and NoSQL injection, SSRF, path traversal, server-side template injection, mass assignment, debug mode, permissive CORS, disabled TLS verification, weak password hashing, insecure randomness, unverified JWTs, leaked error details; in preview: command injection, `eval`/`exec`, unsafe deserialization and open redirects (these four still gate), no server-side validation, payment amounts taken from the client, email header injection, XML external entities (`BE021`) |
 | Frontend (FE) | LLM APIs called from the browser, authorization decisions in browser storage, `postMessage` without origin checks, tokens in `localStorage`, production source maps; in preview: XSS through raw HTML sinks (still gates), hard-coded localhost URLs, server actions that expose a server secret |
 | Auth (AUTH) | endpoints that change data or spend money without authentication, admin routes without a role check, IDOR-shaped handlers, unverified webhooks, tables without Row Level Security, permissive policies, open Firebase rules, auth functions that always return true, CSRF disabled, login without rate limiting; in preview: JWTs accepted without pinned algorithms, session cookies without SameSite or CSRF protection, webhook signatures without replay protection, rate limits keyed on X-Forwarded-For, password changes that keep old sessions, queries not scoped to the tenant, admin or feature-flag endpoints without a role check |
-| Config (CFG) | containers running as root, secrets in images, GitHub Actions script injection, `pull_request_target` checking out untrusted code, any Host header accepted, default database passwords, missing security headers, `.env` copied into an image, third-party GitHub Actions not pinned to a commit, unencrypted RDS and EBS storage (Terraform and CloudFormation); in preview: unpinned base images, `permissions: write-all`, privileged or host-mounted Kubernetes containers and missing resource limits, public S3 buckets, admin and database ports open to the internet, secret files or build arguments in the final image, pull request code run with secrets |
+| Config (CFG) | containers running as root, secrets in images, GitHub Actions script injection, `pull_request_target` checking out untrusted code, any Host header accepted, default database passwords, missing security headers, `.env` copied into an image, third-party GitHub Actions not pinned to a commit, unencrypted RDS and EBS storage (Terraform and CloudFormation); in preview: unpinned base images, `permissions: write-all`, privileged or host-mounted Kubernetes containers and missing resource limits, public S3 buckets, admin and database ports open to the internet, secret files or build arguments in the final image, pull request code run with secrets, GCP and Azure Terraform misconfigurations (`CFG020`) |
 | LLM and agents (LLM) | untrusted input in the system prompt, model output in a dangerous sink, no token limit, LLM endpoints without rate limiting, agent tools with dangerous capabilities, dangerous agent options, system prompts shipped to the browser, unsafe model loading, unbounded agent loops, vector search without a tenant filter, model output parsed as JSON without error handling, retired model ids, MCP servers with whole-disk access or plain HTTP, secrets in MCP configs, agents that read untrusted content and also have dangerous tools; in preview: coding agents configured to act without asking, streamed completions not cancelled on disconnect, prompts and completions written to logs, model output as a command argument, agent tool loops without a step limit, user text in a prompt without delimiters, retrieved documents stored without cleaning, no per-user cost limit, LLM code without tests or evals, prompt-injection text in an agent instruction file, covert prompt injection in MCP tool descriptions (`LLM027`), dynamic un-allowlisted tool dispatch (`LLM028`) |
 | Code completeness (QA) | no CI, TypeScript checking disabled, the same function copied into several files; in preview: no tests, swallowed exceptions, security TODOs, unfinished stubs, imports of files or names that do not exist, packages imported but not declared, Pages Router code in an App Router file, made-up data used as a fallback |
 | Data (DATA) | whole user records returned to the client, destructive migrations, money as float, private tables readable by everyone, timestamps without time zone, a database client per request, SQLite on a serverless host; in preview: N+1 queries, env vars missing from the example env file, several writes without a transaction, indexes built without CONCURRENTLY, foreign keys without an index, Redis keys without an expiry, personal data in vector store metadata, cache stampedes, background jobs that are not safe to retry |
@@ -110,7 +110,7 @@ That project is one of the deliberately vulnerable sample apps in `tests/fixture
 | Frontend-backend contracts (API) | frontend calls to API paths no route handles, and calls with a method the route does not accept |
 | Go, Java/Kotlin and C# (GO, JAVA, CSHARP), all in preview | goroutines started by a handler that never stop (GO001), response bodies never closed (GO002), maps written concurrently without a lock (GO003), SQL built with formatting (GO004); Spring controllers with no security configuration (JAVA001), exposed Actuator endpoints (JAVA002), a security chain that permits every request (JAVA003), polymorphic deserialization without an allow-list (JAVA004); ASP.NET Core with no authorization anywhere (CSHARP001), deserialization that lets the payload pick the type (CSHARP002), the developer error page outside Development (CSHARP003) |
 
-80 of 176 rules are preview; `vibeaudit rules` lists them. Preview findings are reported but do not
+82 of 178 rules are preview; `vibeaudit rules` lists them. Preview findings are reported but do not
 fail a build, with one exception: the severe classes (command injection, code execution, unsafe
 deserialization, open redirects and XSS) still gate while in preview, so a high-impact bug is never let through
 because its rule is new. Findings of any rule in Go, Java/Kotlin, C#, Rust and PHP code are preview; there, SQL
@@ -150,7 +150,7 @@ or, to keep it in its own environment:
 pipx install vibeaudit
 ```
 
-To install from this repository instead: `pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.14.0"`.
+To install from this repository instead: `pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.15.0"`.
 
 Optional: if [gitleaks](https://github.com/gitleaks/gitleaks), [bandit](https://github.com/PyCQA/bandit),
 [osv-scanner](https://github.com/google/osv-scanner) or [semgrep](https://github.com/semgrep/semgrep) are on
@@ -335,6 +335,8 @@ and rewrites the findings that have one obvious, deterministic repair:
 | BE016, AUTH011 | Removes `'none'` from an algorithms list, turns `ignoreExpiration: true` off, adds `algorithms=[...]` to PyJWT `jwt.decode()` (the algorithm the file signs with, else HS256), and narrows a mixed HMAC and RSA list to the algorithm the file signs with. |
 | DATA004 | Float money columns become `Numeric(12, 2)` (SQLAlchemy), `DecimalField(max_digits=12, decimal_places=2)` (Django), `Decimal` (Prisma) or `numeric(12, 2)` (SQL). Create a migration afterwards; SQL files in migration folders are never edited. |
 | BE012 | Replaces the wildcard or reflected CORS origin with an allow-list read from the `CORS_ORIGINS` environment variable (comma-separated), keeping credentials. |
+| BE013 | Rewrites Python `verify=False` to `verify=True` and JavaScript/TypeScript `rejectUnauthorized: false` to `rejectUnauthorized: true`. |
+| BE011 | Rewrites Python `debug=True` to `False` and `DEBUG = True` to `os.environ.get("DEBUG", "").lower() == "true"` (adding `import os`). |
 | DATA013 | Gives a Redis key an expiry of one hour: `ex=3600` (redis-py), `{ EX: 3600 }` (node-redis), `"EX", 3600` (ioredis) or `{ ex: 3600 }` (Upstash) on `set`, added to an existing options object; for `hset`, `lpush`, `sadd` and the like, an `expire(key, 3600)` on the next line when the key is a plain name or string. Review the expiry in the diff. |
 
 A file's change is kept only when the file still parses (`ast.parse` for Python, balanced brackets for
@@ -399,7 +401,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0                  # needed for --diff
-      - uses: Ashin-06/vibeaudit@v0.14.0
+      - uses: Ashin-06/vibeaudit@v0.15.0
         with:
           fail-on: high
           args: --diff origin/main        # optional: only changed lines
@@ -434,7 +436,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - uses: Ashin-06/vibeaudit@v0.14.0
+      - uses: Ashin-06/vibeaudit@v0.15.0
         with:
           review: "true"
           args: --diff origin/${{ github.base_ref }} --baseline .vibeaudit-baseline.json --fail-on-regression 5
@@ -451,7 +453,7 @@ findings show in the merge request's Code Quality widget and in the pipeline's T
 
 ```yaml
 include:
-  - remote: https://raw.githubusercontent.com/Ashin-06/vibeaudit/v0.14.0/ci/gitlab-ci.yml
+  - remote: https://raw.githubusercontent.com/Ashin-06/vibeaudit/v0.15.0/ci/gitlab-ci.yml
 ```
 
 **CircleCI**: copy [ci/circleci.yml](ci/circleci.yml) into `.circleci/config.yml` (or merge its job into
@@ -467,7 +469,7 @@ for a test report) and keep the exit code.
 # .pre-commit-config.yaml
 repos:
   - repo: https://github.com/Ashin-06/vibeaudit
-    rev: v0.14.0
+    rev: v0.15.0
     hooks:
       - id: vibeaudit
 ```
@@ -727,12 +729,13 @@ How it reads code:
 - The per-file time budget is checked between regex matches and statements; a single regex step cannot be
   interrupted, which is why every pattern is tested for linear time.
 
+- Swift (iOS and Vapor) and Elixir (Phoenix) get route/auth discovery plus injection, deserialization, raw HTML XSS,
+  TLS bypass, and mobile plist/UserDefaults checks in preview.
+- XXE (`BE021`, preview) checks unsafe XML parser configurations across Python, Java/Kotlin, C#, PHP and JS/TS.
+
 Not covered (see [ROADMAP.md](ROADMAP.md); contributions welcome):
 
-- Languages not yet wired beyond the list above: Ruby.
-- Infrastructure as code beyond the checks listed above (AWS only for Terraform and CloudFormation; no Azure or
-  GCP resources, no Terraform modules or variables resolved, Helm templates read as plain YAML).
-- XML external entities (XXE) and other XML parser settings.
+- Infrastructure as code beyond the AWS, GCP and Azure Terraform and AWS CloudFormation checks above (no Terraform modules or variables resolved, Helm templates read as plain YAML).
 - Prompt injection and jailbreaks against a live model (use promptfoo or garak for live model red-teaming).
 
 ## Accuracy
@@ -805,14 +808,14 @@ CycloneDX SBOM (`vibeaudit-VERSION.cdx.json`), built by the release workflow fro
 build provenance is signed with GitHub artifact attestations (Sigstore). With the GitHub CLI:
 
 ```bash
-gh attestation verify vibeaudit-0.14.0-py3-none-any.whl --repo Ashin-06/vibeaudit
+gh attestation verify vibeaudit-0.15.0-py3-none-any.whl --repo Ashin-06/vibeaudit
 ```
 
 Run the same for the `.tar.gz` and the `.cdx.json` file. The check passes only if the file was built by
 this repository's release workflow; `--format json` shows the commit and workflow it came from. The SBOM
 lists what the wheel installs (vibeaudit has no runtime dependencies on Python 3.11 and later, and
 `tomli` before that). PyPI receives these same attested files through trusted publishing; to install a wheel you verified
-yourself, run `pip install vibeaudit-0.14.0-py3-none-any.whl`.
+yourself, run `pip install vibeaudit-0.15.0-py3-none-any.whl`.
 
 ## Contributing, security and license
 

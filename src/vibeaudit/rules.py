@@ -41,6 +41,7 @@ class Rule:
     gates_in_preview: bool = False
 
 
+NEW_IN_0150 = "New in 0.15.0: not yet measured on enough held-out findings in the benchmark."
 NEW_JVM = "New with Java and Kotlin support: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_089 = "New in 0.8.9: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_0100 = "New in 0.10.0 (Go): not yet measured on enough held-out findings in the benchmark."
@@ -285,6 +286,13 @@ _R = [
          "Reject values with CR or LF, and build messages with an API that validates headers "
          "(`email.message.EmailMessage`, a mail SDK) instead of formatting header lines.", "CWE-93", "A03:2021",
          preview=True, preview_reason=NEW_IN_072),
+    Rule("BE021", "XML external entity (XXE) processing enabled", "backend", "high",
+         "An XML parser that resolves external entities or DTDs lets an attacker read local server files "
+         "or trigger server-side requests (SSRF) through a crafted XML upload.",
+         "Disable DTD processing and external entity resolution (defusedxml in Python, "
+         "disallow-doctype-decl in Java/Kotlin, DtdProcessing.Prohibit in C#, avoid LIBXML_NOENT in PHP "
+         "and noent: true in libxmljs).",
+         "CWE-611", "A05:2021", preview=True, preview_reason=NEW_IN_0150),
     # --------------------------------------------------------------- frontend
     Rule("FE001", "Cross-site scripting through a raw HTML sink", "frontend", "high",
          "Inserting unsanitized data as HTML (innerHTML, dangerouslySetInnerHTML, v-html, {@html}, |safe) "
@@ -975,6 +983,12 @@ _R = [
          "Set the headers once for every response (helmet for Express, django-csp and SecurityMiddleware for Django, "
          "a middleware or the reverse proxy elsewhere).", "CWE-693", "A05:2021", preview=True,
          preview_reason="New with `vibeaudit probe`: a dynamic check, not yet measured on enough running apps."),
+    Rule("CFG020", "Cloud infrastructure misconfiguration (GCP / Azure)", "config", "high",
+         "Public cloud storage, internet-exposed database or admin firewall rules, disabled HTTPS/SSL "
+         "enforcement, or legacy Kubernetes ABAC in GCP or Azure Terraform expose infrastructure and data.",
+         "Restrict storage IAM and containers to private access, limit firewall rules to trusted CIDRs, "
+         "enforce HTTPS/SSL on storage and databases, and disable legacy ABAC.",
+         "CWE-732", "A05:2021", preview=True, preview_reason=NEW_IN_0150),
     Rule("LLM026", "System prompt disclosed through prompt injection", "llm", "high",
          "A request that tells the model to print its instructions gets the system prompt back. Anything in it "
          "(business rules, internal URLs, keys pasted into the prompt) is readable by every user, and knowing it makes "
