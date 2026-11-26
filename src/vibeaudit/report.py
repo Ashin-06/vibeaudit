@@ -83,6 +83,12 @@ def render_text(res: Result, color: bool, verbose: bool = True) -> str:
     if stack:
         out.append("Stack: " + ", ".join(stack))
     out.append("")
+    if verbose and len(res.findings) > 5:
+        out.append(paint("Top 5 findings", "1"))
+        for f in res.findings[:5]:
+            loc = f"{f.file}:{f.line}" if f.line else f.file
+            out.append(f"  [{f.severity.upper()}] {f.rule_id} {loc} - {f.title}")
+        out.append("")
     for f in res.findings:
         tag = paint(f"[{f.severity.upper()}]", colors[f.severity])
         loc = f"{f.file}:{f.line}" if f.line else f.file
@@ -106,6 +112,12 @@ def render_text(res: Result, color: bool, verbose: bool = True) -> str:
         out.append(f"  {_cat(cat)}: {n}")
     out.append(f"  Score: {res.score}/100  Grade: {res.grade}")
     out.append("  Domains: " + "  ".join(f"{k} {v}" for k, v in res.domain_scores.items()))
+    if res.findings:
+        from . import fix
+
+        fixable = sum(1 for f in res.findings if f.rule_id in fix.FIXERS)
+        if fixable:
+            out.append(f"  Tip: {fixable} findings can be fixed automatically with `vibeaudit fix`.")
     if res.meta.get("packages"):
         width = max(len(p["path"]) for p in res.meta["packages"])
         out.append("  Packages (monorepo mode, each scanned against its own manifest):")

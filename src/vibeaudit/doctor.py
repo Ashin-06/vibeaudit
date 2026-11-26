@@ -2,13 +2,24 @@
 from __future__ import annotations
 
 import datetime as dt
+import importlib.metadata
 import platform
 import shutil
-from typing import Any, Dict
+from pathlib import Path
+from typing import Any, Dict, Optional
 
-from . import __version__, bundle, deps, external, feed
+from . import __version__, bundle, deps, external, feed, parse
 from .rules import CATEGORIES, RULES
 from .store import cache_dir
+
+
+def _install_fix(installed: Optional[str]) -> Optional[str]:
+    if installed == __version__:
+        return None
+    from_checkout = (Path(__file__).resolve().parents[2] / "pyproject.toml").is_file()
+    if installed is None:
+        return "pip install -e ." if from_checkout else "pip install vibeaudit"
+    return "pip install -e . --no-deps" if from_checkout else f"pip install -U vibeaudit=={__version__}"
 
 
 def report() -> Dict[str, Any]:
@@ -51,11 +62,18 @@ def report() -> Dict[str, Any]:
             offline_osv[eco] = age
 
     scanners = {tool: shutil.which(tool) for tool in external.TOOLS}
-    status = "warn" if (key is None or (feed_installed and doc is None)) else "ok"
+    try:
+        installed = importlib.metadata.version("vibeaudit")
+    except importlib.metadata.PackageNotFoundError:
+        installed = None  # running from a source tree (PYTHONPATH=src): the `vibeaudit` command is missing
+    status = "warn" if (key is None or (feed_installed and doc is None) or installed != __version__) else "ok"
 
     return {
         "status": status,
         "version": __version__,
+        "installed": installed,
+        "install_fix": _install_fix(installed),
+        "parser": parse.mode(),
         "python": platform.python_version(),
         "platform": platform.platform(),
         "rules": {
@@ -93,12 +111,20 @@ def render_text(info: Dict[str, Any]) -> str:
         f"    Active:     {f['source']} (slopsquatted={f['entries']['slopsquatted']}, "
         f"sunsets={f['entries']['model_sunsets']}, injection={f['entries']['prompt_injection']})",
     ]
+    if info["installed"] is None:
+        cmd = info.get("install_fix") or "pip install -e ."
+        lines.insert(1, f"  Install:    not installed, running from source (run `{cmd}` for the `vibeaudit` command)")
+    elif info["installed"] != info["version"]:
+        cmd = info.get("install_fix") or "pip install -e ."
+        lines.insert(1, f"  Install:    installed {info['installed']} but running {info['version']} (run `{cmd}` to match)")
     if "expires" in f:
         lines.append(f"    Signed:     {f['created']} (expires {f['expires'][:10]}, {f['days_remaining']}d remaining)")
     elif f["installed"]:
         lines.append(f"    Feed file:  present at {f['path']} but expired or invalid (run `vibeaudit update`)")
     else:
         lines.append("    Feed file:  not installed (using shipped data; run `vibeaudit update` to pull signed feed)")
+    lines.append("  Parser:     " + ", ".join(f"{k}={v}" for k, v in info["parser"].items())
+                 + ("" if set(info["parser"].values()) == {"tree-sitter"} else " (`pip install vibeaudit[parse]` for tree-sitter)"))
     lines.append(f"  Cache dir:  {info['cache_dir']}")
     osv = info["offline_osv"]
     lines.append(f"  Offline OSV: {', '.join(f'{k} ({v})' for k, v in osv.items()) if osv else 'none imported'}")

@@ -28,6 +28,9 @@ inputs:
   github-token:
     description: Token used to post the review.
     default: ${{ github.token }}
+  parse:
+    description: 'Install optional tree-sitter parsers for Go, Rust and Java function indexing ("true" or "false").'
+    default: "true"
 outputs:
   sarif:
     description: Path of the SARIF report.
@@ -43,7 +46,13 @@ runs:
       shell: bash
       env:
         VIBEAUDIT_SRC: ${{ github.action_path }}
-      run: python -m pip install --quiet --disable-pip-version-check "$VIBEAUDIT_SRC"
+        VIBEAUDIT_PARSE: ${{ inputs.parse }}
+      run: |
+        if [ "$VIBEAUDIT_PARSE" = "true" ]; then
+          python -m pip install --quiet --disable-pip-version-check "${VIBEAUDIT_SRC}[parse]"
+        else
+          python -m pip install --quiet --disable-pip-version-check "$VIBEAUDIT_SRC"
+        fi
     - name: Run vibeaudit
       shell: bash
       env:

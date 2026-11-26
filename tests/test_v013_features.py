@@ -232,3 +232,25 @@ def test_doctor_cli_and_mcp(capsys):
     mcp_res = handle({"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": {"name": "doctor", "arguments": {}}})["result"]
     assert mcp_res["isError"] is False
     assert mcp_res["structuredContent"]["rules"]["total"] == data["rules"]["total"]
+
+
+def test_doctor_warns_when_running_from_source_without_install(monkeypatch):
+    import importlib.metadata
+
+    def missing(name):
+        raise importlib.metadata.PackageNotFoundError(name)
+
+    monkeypatch.setattr(importlib.metadata, "version", missing)
+    data = doctor.report()
+    assert data["installed"] is None and data["status"] == "warn"
+    assert "not installed" in doctor.render_text(data)
+
+
+def test_routes_name_the_auth_evidence(tmp_path):
+    from vibeaudit.scanner import Options, scan
+    (tmp_path / "app.py").write_text('from flask import Flask\nfrom flask_login import login_required\napp = Flask(__name__)\n'
+                                     '@app.route("/a", methods=["POST"])\n@login_required\ndef a():\n    return "x"\n'
+                                     '@app.route("/b", methods=["POST"])\ndef b():\n    return "x"\n', encoding="utf-8")
+    rows = {r.path: r.to_dict() for r in scan(str(tmp_path), Options(offline=True, external="none")).routes}
+    assert rows["/a"]["auth_evidence"] == "@login_required"
+    assert rows["/b"]["auth_evidence"] is None

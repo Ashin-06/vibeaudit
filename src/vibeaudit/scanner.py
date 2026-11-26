@@ -243,8 +243,9 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
 
         findings = [f for f in findings if keep(opts.changes, f.file, f.line)]
     hidden = 0
+    demoted: Dict[str, Dict[str, object]] = {}
     if opts.feedback:
-        from .feedback import false_positives
+        from .feedback import false_positives, noisy_rules
 
         reviewed = false_positives(project.root)
         if reviewed:
@@ -253,6 +254,21 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
             hidden = before - len(findings)
             if hidden:
                 notes.append(f"{hidden} findings marked as false positives in .vibeaudit/feedback.json are hidden.")
+        noisy = noisy_rules(project.root)
+        if noisy:
+            demoted_hits: Set[str] = set()
+            for f in findings:
+                if f.rule_id in noisy and not f.preview:
+                    f.preview = True
+                    f.gates_in_preview = False
+                    demoted_hits.add(f.rule_id)
+            for rule in sorted(demoted_hits):
+                fp, total, rate = noisy[rule]
+                demoted[rule] = {"false_positive": fp, "total": total, "rate": round(rate, 3)}
+                notes.append(
+                    f"{rule} was demoted to preview for this repository ({fp} of {total} reviewed findings, "
+                    f"{rate:.0%}, were marked false positive in .vibeaudit/feedback.json)."
+                )
     if GUARD.skipped:
         notes.append(f"{len(GUARD.skipped)} file checks were skipped (time budget or nesting); see meta.skipped.")
     if GUARD.internal_errors:
@@ -276,7 +292,7 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
         "stack": _stack(project), "external_tools": ran, "offline": opts.offline, "notes": notes,
         "routes_found": len(all_routes), "git": project.is_git,
         "skipped": list(GUARD.skipped), "internal_errors": list(GUARD.internal_errors),
-        "feedback_hidden": hidden, "include_preview": opts.include_preview,
+        "feedback_hidden": hidden, "feedback_demoted": demoted, "include_preview": opts.include_preview,
         "gate_severe_preview": opts.gate_severe_preview, "disabled": sorted(opts.disabled),
     }
     if opts.changes is not None:

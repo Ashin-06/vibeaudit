@@ -115,13 +115,28 @@ AUTH_IN_BODY = re.compile(
 STRING_ARG = re.compile(r"[ \t\n]{0,40}\"([^\"\n]{0,300})\"")
 
 
+_RECV_SUFFIX = re.compile(r"(?:api|resource|handler|router|service|ctrl|controller|routes?)$")
+
+
+def _ident_tokens(text: str) -> Set[str]:
+    out: Set[str] = set()
+    for w in re.findall(r"[A-Za-z][A-Za-z0-9_]{1,40}", text):
+        low = w.lower()
+        out.add(low)
+        stripped = _RECV_SUFFIX.sub("", low)
+        if len(stripped) >= 2:
+            out.add(stripped)
+    return out
+
+
 class GoScanner:
     def __init__(self, project: Project, emit: Emit):
         self.p = project
         self.emit = emit
         self.files: List[SourceFile] = []
         self.funcs: Dict[str, List[Tuple[SourceFile, int, int]]] = {}
-        self.mounted: Dict[str, List[Tuple[str, bool, str]]] = {}  # sub-router fn -> [(prefix, auth, mw_text)]
+        self.mounted: Dict[str, List[tuple]] = {}  # sub-router fn -> [(prefix, auth, mw_text, recv_tokens, enc_ctx)]
+        self.mounted_vars: Dict[Tuple[str, str], List[Tuple[str, bool, str]]] = {}  # (file, var) -> [(prefix, auth, mw_text)]
         self.routes: List[Route] = []
         self.injection_lines: Set[Tuple[str, int]] = set()  # lines with BE001
         self.formatted: List[Finding] = []  # GO004, held back until every BE001 is known
@@ -172,10 +187,21 @@ class GoScanner:
     def _load(self, sf: SourceFile) -> None:
         v = sf.cache.get("go_views") or go_views(sf.text or "")
         sf.cache["views"] = sf.cache["go_views"] = v
+        from .calls import Fn
+        from .parse import functions, spans_by_name
+
+        parsed = functions("go", sf.text or "")
+        if parsed is not None:  # tree-sitter index (vibeaudit[parse]); the regex index below is the fallback
+            by_name = spans_by_name(parsed, v.bare)
+            sf.cache["go_funcs"] = {n: [(f[1], f[5]) for f in lst] for n, lst in by_name.items()}
+            for name, lst in by_name.items():
+                for _n, a, po, pc, _bo, b in lst:
+                    self.funcs.setdefault(name, []).append((sf, a, b))
+                    if not sf.is_test:
+                        self.follower.define(name, Fn(sf, a, v.code[po + 1:pc], (a, b)))
+            return
         spans = _func_spans(v)
         sf.cache["go_funcs"] = spans
-        from .calls import Fn
-
         for name, lst in spans.items():
             for a, b in lst:
                 self.funcs.setdefault(name, []).append((sf, a, b))
@@ -200,12 +226,57 @@ class GoScanner:
             p = STRING_ARG.match(argv[0])
             if not p:
                 continue
-            sub = re.search(r"(\w+)\s*\([^()]*\)\s*$", argv[1].strip())
-            if not sub:
-                continue
+            arg2 = argv[1].strip()
             prefix, auth, mw_text = self._prefix_and_auth_mw(m.group(1), parents, code, bare, m.start())
             full = "/" + "/".join(x.strip("/") for x in (prefix, p.group(1)) if x.strip("/"))
-            self.mounted.setdefault(sub.group(1), []).append((full, auth, mw_text))
+            sub = re.search(r"(\w+)\s*\([^()]*\)\s*$", arg2)
+            if sub:
+                recv_expr = arg2[:sub.start()].rstrip(".")
+                recv_tokens = _ident_tokens(recv_expr) if recv_expr else set()
+                enc_fn = self._enclosing_func_name(sf, m.start())
+                enc_ctx = (sf, enc_fn, self._func_tokens(sf, m.start())) if enc_fn else None
+                self.mounted.setdefault(sub.group(1), []).append((full, auth, mw_text, recv_tokens, enc_ctx))
+                continue
+            sub_var = re.fullmatch(r"(\w+)", arg2)
+            if sub_var and sub_var.group(1) != m.group(1):
+                self.mounted_vars.setdefault((sf.rel, sub_var.group(1)), []).append((full, auth, mw_text))
+
+    def _func_tokens(self, sf: SourceFile, off: int) -> Set[str]:
+        tokens = _ident_tokens(sf.rel.rsplit(".", 1)[0])
+        spans: Dict[str, List[Tuple[int, int]]] = sf.cache.get("go_funcs") or {}
+        best: Optional[int] = None
+        for lst in spans.values():
+            for a, b in lst:
+                if a <= off < b and (best is None or a > best):
+                    best = a
+        if best is not None:
+            hdr = sf.cache["views"].bare[best:best + 160]  # type: ignore[attr-defined]
+            m = re.match(r"func\s*\(([^()]{0,120})\)", hdr)
+            if m:
+                tokens |= _ident_tokens(m.group(1))
+        return tokens
+
+    def _resolve_mounts(self, sf: SourceFile, fn_name: str, fn_tokens: Set[str], depth: int = 0) -> List[Tuple[str, bool, str]]:
+        raw = self.mounted.get(fn_name, [])
+        if not raw:
+            return []
+        matched = [e for e in raw if e[3] and (e[3] & fn_tokens)]
+        chosen = matched + [e for e in raw if not e[3]] if matched else raw
+        out: List[Tuple[str, bool, str]] = []
+        for full, auth, mw_text, _rt, enc_ctx in chosen:
+            if not auth and enc_ctx is not None and depth < 4:
+                enc_sf, enc_fn, enc_tokens = enc_ctx
+                parent_mounts = self._resolve_mounts(enc_sf, enc_fn, enc_tokens, depth + 1)
+                if parent_mounts:
+                    open_parent = [pm for pm in parent_mounts if not pm[1]]
+                    if not open_parent:
+                        auth = True
+                    use_parent = open_parent or parent_mounts
+                    outer = use_parent[0][0]
+                    full = "/" + "/".join(x.strip("/") for x in (outer, full) if x.strip("/"))
+                    mw_text = "\n".join(x for x in (*(pm[2] for pm in use_parent if pm[2]), mw_text) if x)
+            out.append((full, auth, mw_text))
+        return out
 
     def _parents(self, sf: SourceFile) -> Dict[str, Tuple[str, str, bool]]:
         """Group var -> (parent var, prefix, the group call names auth middleware), per file."""
@@ -314,12 +385,16 @@ class GoScanner:
             root = recv
             while root in parents and parents[root][0] != root:
                 root = parents[root][0]
-            # if this function builds a sub-router mounted via `r.Mount("/prefix", fn())`, inherit mount context
+            # if this function or local sub-router variable is mounted via `r.Mount("/prefix", sub)`, inherit mount context
             enc_name = self._enclosing_func_name(sf, m.start())
-            if enc_name and enc_name in self.mounted:
-                mounts = self.mounted[enc_name]
-                if any(a for _, a, _ in mounts):
+            mounts = self._resolve_mounts(sf, enc_name, self._func_tokens(sf, m.start())) if enc_name else []
+            mounts += self.mounted_vars.get((sf.rel, root), [])
+            if mounts:
+                # authed only when every mount point is: one public `r.Mount` exposes the whole sub-router
+                open_mounts = [mt for mt in mounts if not mt[1]]
+                if not open_mounts:
                     auth = True
+                mounts = open_mounts or mounts  # judge by the exposed mounts only (their prefix and middleware)
                 outer = mounts[0][0]
                 prefix = outer.rstrip("/") + "/" + prefix.lstrip("/") if prefix else outer
                 mw_text = "\n".join(x for x in (mw_text, *(mw for _, _, mw in mounts if mw)) if x)

@@ -54,6 +54,14 @@ REDIRECT_PREFIX = re.compile(r"\"redirect:\"\s*\+\s*(\w[\w.()]*)|\"redirect:\$\{
 def methods(sf: SourceFile, v: Views):
     """(name, declaration offset, parameter text, body start, body end) of every method with a body."""
     code, bare = v.code, v.bare
+    from .parse import functions, spans_by_name
+
+    parsed = functions("java", sf.text or "") if sf.rel.endswith(".java") else None
+    if parsed is not None:  # tree-sitter index (vibeaudit[parse]); Kotlin and the fallback use the pattern below
+        for name, start, po, pc, bo, b in sorted((f for lst in spans_by_name(parsed, bare).values() for f in lst),
+                                                 key=lambda f: f[1]):
+            yield name, start, code[po + 1:pc], bo, b
+        return
     for m in finditer(JAVA_METHOD, bare):
         name = m.group(1) or m.group(2)
         if name in ("if", "for", "while", "switch", "catch", "return", "new", "synchronized", "else"):

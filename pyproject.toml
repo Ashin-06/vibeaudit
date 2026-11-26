@@ -33,7 +33,9 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=7", "pyyaml>=6"]  # pyyaml: tools/check_yaml.py only, never imported by vibeaudit
+dev = ["pytest>=7", "pyyaml>=6"]
+# optional real parser for Go, Rust and Java function indexing; without it the regex index is used
+parse = ["tree-sitter>=0.23", "tree-sitter-go>=0.23", "tree-sitter-rust>=0.23", "tree-sitter-java>=0.23"]  # pyyaml: tools/check_yaml.py only, never imported by vibeaudit
 
 [project.scripts]
 vibeaudit = "vibeaudit.cli:main"

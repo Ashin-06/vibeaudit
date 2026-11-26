@@ -161,7 +161,14 @@ class RustScanner:
         v = sf.cache.get("rust_views") or rust_views(sf.text or "")
         sf.cache["rust_views"] = v
         bare = v.bare
-        for m in finditer(FN_DECL, bare):
+        from .parse import functions, spans_by_name
+
+        parsed = functions("rust", sf.text or "")
+        for lst in spans_by_name(parsed or [], bare).values():  # tree-sitter index (vibeaudit[parse])
+            for name, a, po, pc, _bo, b in lst:
+                self.funcs.setdefault(name, []).append((sf, a, po, pc, b))
+                self.follower.define(name, Fn(sf, a, v.code[po + 1:pc], (pc, b)))
+        for m in ([] if parsed is not None else finditer(FN_DECL, bare)):
             po = m.end() - 1
             pc = match_close(bare, po)
             if pc < 0:
@@ -221,11 +228,12 @@ class RustScanner:
         mods = [p for p in parts[:-1] if p not in ("crate", "self", "super")]
         if mods:
             tail = "/".join(mods)
-            exact = [f for f in found if f[0].rel.endswith((f"/{tail}.rs", f"{tail}.rs", f"/{tail}/mod.rs", f"{tail}/mod.rs"))]
+            # match whole path segments: `user::list` is user.rs, never admin_user.rs
+            exact = [f for f in found if ("/" + f[0].rel).endswith((f"/{tail}.rs", f"/{tail}/mod.rs"))]
             if exact:
                 return exact[0]
             last = mods[-1]
-            by_mod = [f for f in found if f[0].rel.endswith((f"/{last}.rs", f"{last}.rs", f"/{last}/mod.rs", f"{last}/mod.rs"))]
+            by_mod = [f for f in found if ("/" + f[0].rel).endswith((f"/{last}.rs", f"/{last}/mod.rs"))]
             if by_mod:
                 return by_mod[0]
         same = [f for f in found if f[0] is sf]
@@ -405,7 +413,8 @@ class RustScanner:
                 close = match_close(body_b, m.end() - 1)
                 if close < 0:
                     continue
-                if rule == "BE001" and re.match(r"\s*query\s*\(", m.group(0)) and not re.search(
+                if rule == "BE001" and re.match(r"\s*query\s*\(", m.group(0)) \
+                        and not body_b[max(0, m.start() - 40):m.start()].rstrip().endswith(".") and not re.search(
                         r"\.\s*(?:bind|fetch|fetch_one|fetch_all|fetch_optional|execute)\s*\(", body_b[close:close + 250]):
                     continue  # local helper named `query(...)`, not `sqlx::query(...).fetch/execute`
                 if rule == "BE001" and m.group(0).lstrip().startswith(".") and SQLX_CHAIN.search(

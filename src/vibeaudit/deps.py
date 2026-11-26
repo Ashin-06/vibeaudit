@@ -1068,6 +1068,12 @@ def gemfile_dependencies(text: str) -> List[Tuple[str, Optional[str], int]]:
         code = raw.split("#", 1)[0].strip()
         if not code:
             continue
+        one_line = re.match(r"group\b(.+?)\bdo\s+(.+?)\s+end\s*$", code)
+        if one_line:
+            groups = set(re.findall(r":([A-Za-z_]\w*)", one_line.group(1)))
+            if groups and groups <= {"development", "test"}:
+                continue
+            code = one_line.group(2).strip()
         gm = re.match(r"group\b(.+)\bdo\s*$", code)
         if gm:
             groups = set(re.findall(r":([A-Za-z_]\w*)", gm.group(1)))
