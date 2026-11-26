@@ -111,6 +111,6 @@ def run(root: Path, ci: str = "github", hook: bool = True, force: bool = False) 
             skipped.append({"file": rel, "reason": reason})
             continue
         dest.parent.mkdir(parents=True, exist_ok=True)
-        dest.write_text(content, encoding="utf-8", newline="\n")
+        dest.write_bytes(content.encode("utf-8"))
         created.append(rel)
     return {"root": str(root), "stack": stack, "created": created, "skipped": skipped}
