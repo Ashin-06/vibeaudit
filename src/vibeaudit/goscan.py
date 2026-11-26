@@ -318,8 +318,11 @@ class GoScanner:
             enc_name = self._enclosing_func_name(sf, m.start())
             if enc_name and enc_name in self.mounted:
                 mounts = self.mounted[enc_name]
-                if any(a for _, a, _ in mounts):
+                # authed only when every mount point is: one public `r.Mount` exposes the whole sub-router
+                open_mounts = [mt for mt in mounts if not mt[1]]
+                if not open_mounts:
                     auth = True
+                mounts = open_mounts or mounts  # judge by the exposed mounts only (their prefix and middleware)
                 outer = mounts[0][0]
                 prefix = outer.rstrip("/") + "/" + prefix.lstrip("/") if prefix else outer
                 mw_text = "\n".join(x for x in (mw_text, *(mw for _, _, mw in mounts if mw)) if x)

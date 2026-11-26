@@ -184,3 +184,60 @@ class Link {
     fe001 = [f for f in res.findings if f.rule_id == "FE001"]
     assert len(fe001) == 1
     assert fe001[0].line == 2
+
+
+def test_go_sub_router_mounted_once_without_auth_is_public(tmp_path: Path):
+    res = _scan(tmp_path, {
+        "go.mod": "module app\ngo 1.22\nrequire github.com/go-chi/chi/v5 v5.0.0\n",
+        "main.go": """package main
+import "github.com/go-chi/chi/v5"
+func setupRouter() chi.Router {
+    r := chi.NewRouter()
+    r.Group(func(r chi.Router) {
+        r.Use(jwtAuth)
+        r.Mount("/admin", adminRoutes())
+    })
+    r.Mount("/legacy", adminRoutes())
+    return r
+}
+func adminRoutes() chi.Router {
+    r := chi.NewRouter()
+    r.Delete("/users/{id}", deleteUser)
+    return r
+}
+func deleteUser(w http.ResponseWriter, r *http.Request) {
+    db.Exec("DELETE FROM users WHERE id = $1", r.PathValue("id"))
+}
+""",
+    })
+    assert "AUTH001" in {f.rule_id for f in res.findings}
+
+
+def test_rust_method_named_query_is_still_a_sql_sink(tmp_path: Path):
+    res = _scan(tmp_path, {"src/main.rs": (
+        'use actix_web::{post, web};\n#[post("/notes")]\n'
+        'async fn add(body: web::Json<Note>) -> &\'static str {\n'
+        '    client.query(&format!("SELECT * FROM notes WHERE t = \'{}\'", body.text), &[]).await;\n'
+        '    "ok"\n}\n')})
+    assert [f.line for f in res.findings if f.rule_id == "BE001"] == [4]  # tokio-postgres Client::query takes SQL
+
+
+def test_rust_module_path_matches_whole_file_name(tmp_path: Path):
+    from vibeaudit.files import Project
+    from vibeaudit.rustscan import RustScanner
+    fn = "pub async fn list() -> String { String::new() }\n"
+    _scan(tmp_path, {"src/admin_user.rs": fn, "src/user.rs": fn, "src/main.rs": "fn main() {}\n"})
+    s = RustScanner(Project(tmp_path), lambda f: None)
+    s.run()
+    main = s.funcs["main"][0][0]
+    assert s._fn("crate::user::list", main)[0].rel == "src/user.rs"
+
+
+def test_java_annotation_named_author_is_not_auth(tmp_path: Path):
+    res = _scan(tmp_path, {
+        "src/main/java/a/Author.java": "package a;\npublic @interface Author { String value(); }\n",
+        "src/main/java/a/C.java": ('package a;\nimport org.springframework.web.bind.annotation.*;\n@Author("x")\n'
+                                   '@RestController\npublic class C {\n  @DeleteMapping("/admin/users/{id}")\n'
+                                   '  public void del(@PathVariable Long id) { repo.deleteById(id); }\n}\n'),
+    })
+    assert "AUTH002" in {f.rule_id for f in res.findings}

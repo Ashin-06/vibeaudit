@@ -86,7 +86,7 @@ JAXRS = {"GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"}
 AUTH_ANNOTATIONS = {"PreAuthorize", "PostAuthorize", "Secured", "RolesAllowed", "Authenticated", "DenyAll", "PermitAll",
                     "PreFilter", "PostFilter"}
 CUSTOM_AUTH_ANN_DEF = re.compile(r"(?:@interface|annotation\s+class)\s+(\w+)")
-CUSTOM_AUTH_ANN_NAME = re.compile(r"(?i)(?:auth|secured|apikey|api_?key|require_?role|require_?perm|admin_?only|authenticated|jwt|token_?required)")
+CUSTOM_AUTH_ANN_NAME = re.compile(r"(?i)(?:auth(?!or(?!i[sz]|ity))|secured|apikey|api_?key|require_?role|require_?perm|admin_?only|authenticated|jwt|token_?required)")
 STATIC_HTTP_METHOD = re.compile(r"\bimport\s+static\s+org\.springframework\.http\.HttpMethod\s*\.\s*(\*|[A-Z]+)\s*;")
 HTTP_METHODS_RE = re.compile(r"\b(GET|POST|PUT|DELETE|PATCH|HEAD|OPTIONS)\b")
 LLM_CALL = re.compile(
