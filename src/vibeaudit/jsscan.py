@@ -41,7 +41,15 @@ LLM_SRC = re.compile(
     r"|\b(?:llm|chain|agent|chatModel|model)\w*\s*\.\s*invoke\s*\("
 )
 UNIVERSAL_SANITIZER = re.compile(
-    r"\b(?:parseInt|parseFloat|Number|Boolean|validator\s*\.\s*is\w+|\w+Schema\s*\.\s*(?:safe)?[pP]arse|z\s*\.\s*\w+)\s*\(",
+    r"\b(?:(?:parseInt|parseFloat|Number|Boolean"
+    r"|validator\s*\.\s*(?:isInt|isFloat|isNumeric|isBoolean|isUUID|isAlphanumeric|isDecimal|isHexadecimal|toInt|toFloat|toBoolean))\s*\("
+    r"|z\s*\.\s*(?:number|boolean|bigint|uuid|enum|nativeEnum|literal)\s*\([^()\n]{0,60}\)"
+    r"(?:\s*\.\s*\w{1,20}\s*\([^()\n]{0,60}\)){0,6}\s*\.\s*(?:safe)?[pP]arse\s*\()",
+    re.I,
+)
+NOSQL_SANITIZER = re.compile(
+    r"\b(?:(?:String|\w+Schema\s*\.\s*(?:safe)?[pP]arse)\s*\("
+    r"|z\s*\.\s*string\s*\([^()\n]{0,60}\)(?:\s*\.\s*\w{1,20}\s*\([^()\n]{0,60}\)){0,6}\s*\.\s*(?:safe)?[pP]arse\s*\()",
     re.I,
 )
 SINK_SANITIZERS: Dict[str, re.Pattern] = {
@@ -92,6 +100,8 @@ def _strip_sanitizer_calls(code: str, bare: str, sink: str) -> Tuple[str, str]:
         c, b = _blank_calls(c, b, H.CUSTOM.sanitizer_rx)
     if sink and sink in SINK_SANITIZERS:
         c, b = _blank_calls(c, b, SINK_SANITIZERS[sink])
+    if sink == "nosql":
+        c, b = _blank_calls(c, b, NOSQL_SANITIZER)
     return c, b
 WHOLE_BODY = re.compile(
     r"^\s*(?:await\s+)?(?:(?:req|request|c\s*\.\s*req|ctx\s*\.\s*request)\s*\.\s*(?:body|json\s*\(\s*\))"
@@ -607,7 +617,7 @@ class JsScanner:
                 k_univ = fs.kinds(rhs_c, rhs_b, a, sink="")
                 if not k_univ:
                     continue
-                for s in SINK_SANITIZERS:
+                for s in ("nosql", *SINK_SANITIZERS):
                     if fs.kinds(rhs_c, rhs_b, a, sink=s):
                         for n in names:
                             dirty.setdefault((n, scope), set()).add(s)
@@ -863,20 +873,28 @@ class JsScanner:
                        "SQL query built with string interpolation; use parameters even for values you think are safe.",
                        "medium")
         # NoSQL
-        if self.mongo and not self.mongo_sanitized:
+        if self.mongo:
             for m in finditer(r"\.\s*(?:find|findOne|findOneAndUpdate|findOneAndDelete|findOneAndReplace|updateOne|updateMany|deleteOne|deleteMany|countDocuments|exists)\s*\(", bare):
                 args = self.call_args(fs, m.end() - 1)
                 if not args:
                     continue
-                a_code, a_bare, _ = args[0]
+                raw_code, raw_bare, _ = args[0]
+                if re.search(r"""['"]?\$where['"]?\s*:""", raw_code):
+                    k_where = fs.kinds(raw_code, raw_bare, m.start()) & {"user", "llm"}
+                    if k_where:
+                        report("BE010", m.start(), k_where, "a MongoDB $where JavaScript expression", "high")
+                        continue
+                if self.mongo_sanitized:
+                    continue
                 # `{ email: { $eq: req.body.email } }` compares the value as a literal: the usual fix for operator injection
-                a_code, a_bare = (re.sub(r"\{\s*\$eq\s*:[^{}]{0,300}\}", "0", x) for x in (a_code, a_bare))
-                direct = re.fullmatch(r"\s*(?:req|request)\s*\.\s*(?:body|query)\s*", a_code) or re.search(
-                    r":\s*(?:req|request)\s*\.\s*(?:body|query|params)\s*\.\s*[\w$]+\s*(?=[,}])", a_code)
-                if not direct and a_code.strip().startswith("{"):
+                a_code, a_bare = (re.sub(r"\{\s*\$eq\s*:[^{}]{0,300}\}", "0", x) for x in (raw_code, raw_bare))
+                clean_code, clean_bare = _strip_sanitizer_calls(a_code, a_bare, "nosql")
+                direct = re.fullmatch(r"\s*(?:req|request)\s*\.\s*(?:body|query)\s*", clean_code) or re.search(
+                    r":\s*(?:req|request)\s*\.\s*(?:body|query|params)\s*\.\s*[\w$]+\s*(?=[,}])", clean_code)
+                if not direct and clean_code.strip().startswith("{"):
                     for name, kinds in fs.taint_at(m.start()).items():
-                        if "user" in kinds and not fs.visible(fs.whole_body.get(name), m.start()) and re.search(
-                                r"[{,:]\s*" + re.escape(name) + r"\s*(?=[,}])", a_bare):
+                        if "user" in kinds and "nosql" not in fs.sanitized_at(name, m.start()) and not fs.visible(fs.whole_body.get(name), m.start()) and re.search(
+                                r"[{,:]\s*" + re.escape(name) + r"\s*(?=[,}])", clean_bare):
                             direct = True
                             break
                 if direct:
@@ -950,7 +968,7 @@ class JsScanner:
                 return
             k = fs.kinds(expr_code, expr_bare, off, sink="html")
             if not k:
-                if SANITIZER.search(expr_code) or H.CUSTOM.is_sanitizer(expr_code):
+                if UNIVERSAL_SANITIZER.search(expr_code) or SINK_SANITIZERS["html"].search(expr_code) or H.CUSTOM.is_sanitizer(expr_code):
                     return
                 _sc, stripped_b = _strip_sanitizer_calls(expr_code, expr_bare, "html")
                 rem = stripped_b

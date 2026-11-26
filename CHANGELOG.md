@@ -4,6 +4,37 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.16.1] - 2026-11-26
+
+### Fixed
+
+- **Strict boolean & polarity analysis for Python path guards (`pyscan.py`)**:
+  - Rewrote `_path_guarded()` so flawed guards like `if p.is_absolute() and '..' in p.parts: raise`,
+    negations (`if not (...): raise`), and unrelated `and` conjunctions no longer suppress `BE006` path
+    traversal findings, while supporting canonical containment checks (`not resolved.is_relative_to(base)` /
+    `not str(resolved).startswith(...)`).
+  - Scoped path-guard taint clearing to `"path"` only (`ctx.sanitized`) so path guards never erase taint
+    for SQL (`BE001`), shell (`BE002`), HTML (`FE001`), or SSRF (`BE005`) sinks.
+- **Scoped sanitizer trust across Python & JS/TS (`pyscan.py`, `jsscan.py`)**:
+  - Removed `literal_eval`, `.digest()`, `sha256`, `md5`, and arbitrary `validate*()` functions from
+    Python's universal sanitizer list (`literal_eval` now suppresses code execution only, while `.hexdigest()`
+    remains safe).
+  - Fixed `ast.AugAssign` (`x += raw`) in Python to invalidate stale call attribution (`ctx.assigned`) and
+    intersect/clear prior sanitization when appending tainted values.
+  - Narrowed `jsscan.py` `UNIVERSAL_SANITIZER` by removing `\w+Schema.parse`, `z.string()`, and overly broad
+    `validator.is*` patterns so schema validation no longer suppresses SQLi (`BE001`) or XSS (`FE001`), while
+    retaining strict numeric/boolean/UUID Zod `.parse(...)` chains and scoping `Schema.parse`/`String`/`z.string`
+    to `nosql` (`BE010`) only.
+- **MongoDB `$where` detection (`pyscan.py`, `jsscan.py`)**:
+  - Flagged dynamic/tainted MongoDB `$where` JavaScript expressions (even inside `str(...)` or alongside
+    `express-mongo-sanitize`) and tainted MongoDB filter keys as `BE010`.
+- **Threat-feed, MCP, and remote probe hardening (`feed.py`, `mcp_server.py`, `probe.py`)**:
+  - Added a `2 MB` size limit (`MAX_FEED_BYTES`) and boolean/negative `version` rejection in `feed.open_feed()`.
+  - Enforced `MAX_LINE_BYTES`, `MAX_BATCH`, empty-batch `-32600`, and strict object-type validation (`-32602`
+    for non-dict `params`/`arguments`) in `mcp_server.py`.
+  - Enabled default TLS certificate verification (`ssl.create_default_context()`) for remote `--i-own-this-target`
+    HTTPS targets in `probe.Target`, keeping unverified TLS limited to loopback hosts or explicit `insecure=True`.
+
 ## [0.16.0] - 2026-11-26
 
 ### Fixed

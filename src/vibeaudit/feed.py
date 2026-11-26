@@ -29,6 +29,7 @@ from .bundle import norm
 from .store import cache_dir, loads_json
 
 FEED = "threat_feed.json"
+MAX_FEED_BYTES = 2_000_000
 FORMAT = 1
 LIFETIME_DAYS = 30
 ECOSYSTEMS = ("PyPI", "npm")
@@ -132,6 +133,8 @@ def build(data: dict, key: dict, now: Optional[dt.datetime] = None) -> bytes:
 def open_feed(raw: bytes, key: Optional[dict] = None) -> dict:
     """The payload of a signed feed. Raises FeedError when the signature or the contents are not valid;
     expiry is checked separately (expired())."""
+    if len(raw) > MAX_FEED_BYTES:
+        raise FeedError("the feed is too large")
     key = key or public_key()
     if key is None:
         raise FeedError("this copy of vibeaudit has no feed key")
@@ -144,7 +147,7 @@ def open_feed(raw: bytes, key: Optional[dict] = None) -> dict:
         raise FeedError("the signature does not match")
     try:
         doc = loads_json(payload)
-        if doc["format"] != FORMAT or not isinstance(doc["version"], int):
+        if doc["format"] != FORMAT or not isinstance(doc["version"], int) or isinstance(doc["version"], bool) or doc["version"] < 0:
             raise FeedError(f"unknown feed format {doc['format']!r}")
         _when(doc["expires"])
         check_data(doc["data"])
