@@ -339,9 +339,9 @@ References: CWE-918, A10:2021
 
 **Path traversal** (high)
 
-Why it matters: A user-controlled path reaches the file system, so `../../etc/passwd` style input can read or overwrite any file.
+Why it matters: A user-controlled path reaches the file system, so `../../etc/passwd` or a symlink inside the base directory can read or overwrite unintended files.
 
-How to fix: Use `secure_filename` / `path.basename`, resolve the final path and check it is inside the allowed directory.
+How to fix: Resolve both the candidate path and allowed base canonically (`Path.resolve()` / `os.path.realpath()`) and verify containment (`resolved.is_relative_to(base)` or `os.path.commonpath`); note canonical checks still have an inherent TOCTOU window if symlinks can be modified concurrently, so restrict writable symlinks or use `O_NOFOLLOW` where required.
 
 References: CWE-22, A01:2021
 

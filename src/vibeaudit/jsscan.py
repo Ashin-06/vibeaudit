@@ -190,15 +190,62 @@ USER_TEMPLATE_VALUE = re.compile(
     r"chat|answer|response|completion|output|llm|prompt|content)\w*")
 
 
-def is_static_string(code: str) -> bool:
+def is_static_string(code: str, depth: int = 0) -> bool:
     s = code.strip()
-    if not s:
-        return True
+    if not s or depth > 6:
+        return not s
+    while s.startswith("(") and s.endswith(")"):
+        inner = s[1:-1].strip()
+        if not inner:
+            return False
+        s = inner
     if re.fullmatch(r"(?:'(?:[^'\\\n]|\\.)*'|\"(?:[^\"\\\n]|\\.)*\")(?:\s*\+\s*(?:'(?:[^'\\\n]|\\.)*'|\"(?:[^\"\\\n]|\\.)*\"))*", s):
         return True  # a literal, or literals joined with +
     if re.fullmatch(r"`[^`]*`", s) and "${" not in s:
         return True
-    return bool(re.fullmatch(r"-?\d+(?:\.\d+)?", s))
+    if re.fullmatch(r"-?\d+(?:\.\d+)?", s):
+        return True
+    # constant-branch ternary: cond ? '<a>' : '<b>' renders no dynamic HTML
+    q_idx = colon_idx = -1
+    paren = brace = bracket = tern_depth = 0
+    quote: Optional[str] = None
+    esc = False
+    for idx, ch in enumerate(s):
+        if quote:
+            if esc:
+                esc = False
+            elif ch == "\\":
+                esc = True
+            elif ch == quote:
+                quote = None
+            continue
+        if ch in ("'", '"', "`"):
+            quote = ch
+        elif ch == "(":
+            paren += 1
+        elif ch == ")":
+            paren = max(0, paren - 1)
+        elif ch == "{":
+            brace += 1
+        elif ch == "}":
+            brace = max(0, brace - 1)
+        elif ch == "[":
+            bracket += 1
+        elif ch == "]":
+            bracket = max(0, bracket - 1)
+        elif paren == 0 and brace == 0 and bracket == 0:
+            if ch == "?" and not (idx + 1 < len(s) and s[idx + 1] in (".", "?")):
+                if tern_depth == 0:
+                    q_idx = idx
+                tern_depth += 1
+            elif ch == ":" and tern_depth > 0:
+                tern_depth -= 1
+                if tern_depth == 0 and q_idx >= 0:
+                    colon_idx = idx
+                    break
+    if q_idx >= 0 and colon_idx > q_idx:
+        return is_static_string(s[q_idx + 1:colon_idx], depth + 1) and is_static_string(s[colon_idx + 1:], depth + 1)
+    return False
 
 
 CALLED = re.compile(r"(?<![\w$])([A-Za-z_$][\w$]*)\s*\(")  # names a function body calls

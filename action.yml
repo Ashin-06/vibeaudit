@@ -17,7 +17,7 @@ inputs:
     description: Extra arguments for `vibeaudit scan`, for example "--offline --diff origin/main".
     default: ""
   setup-python:
-    description: Install Python with actions/setup-python first. Set to "false" if the job already has Python 3.9+.
+    description: Install Python with actions/setup-python first. Set to "false" if the job already has Python 3.11+.
     default: "true"
   python-version:
     description: Python version for actions/setup-python.
@@ -29,7 +29,7 @@ inputs:
     description: Token used to post the review.
     default: ${{ github.token }}
   parse:
-    description: 'Install optional tree-sitter parsers for Go, Rust and Java function indexing ("true" or "false").'
+    description: 'Install optional tree-sitter parsers for Go, Rust, Java, JavaScript and TypeScript function indexing ("true" or "false").'
     default: "true"
 outputs:
   sarif:

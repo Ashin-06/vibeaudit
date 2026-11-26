@@ -75,7 +75,8 @@ def test_valid_path_guard_and_canonical_check_preserve_sql_taint(tmp_path):
         "    return open(resolved).read()\n"
     )
     res = _scan(tmp_path)
-    assert _lines(res, "BE006") == []
+    # lexical-only is_absolute/.. guard does not block symlinks inside BASE -> BE006 on line 11
+    assert _lines(res, "BE006") == [11]
     assert _lines(res, "BE001") == [12, 21]
 
 

@@ -45,12 +45,15 @@ class Result:
     @property
     def gating(self) -> List[Finding]:
         """Findings that count for --fail-on, the score and the grade: preview rules are left out unless
-        the scan was run with --include-preview, except severe preview rules (injection, XSS), which count
-        unless the scan was run with --no-gate-severe-preview."""
+        the scan was run with --include-preview, except high/critical findings of severe preview rules
+        (and committed secrets / other non-FE001 severe preview rules), unless --no-gate-severe-preview."""
         if self.meta.get("include_preview"):
             return list(self.findings)
         severe = self.meta.get("gate_severe_preview", True)
-        return [f for f in self.findings if not f.preview or (severe and f.gates_in_preview)]
+        return [
+            f for f in self.findings
+            if not f.preview or (severe and f.gates_in_preview and (f.rule_id != "FE001" or f.severity in ("high", "critical")))
+        ]
 
     @property
     def counts(self) -> Dict[str, int]:

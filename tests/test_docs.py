@@ -53,8 +53,10 @@ def test_every_scan_flag_is_documented():
 
 def test_rule_counts_and_catalogue_are_current():
     static = [r for r in RULES.values() if r.category != "llm-review"]
+    stable_static = [r for r in static if not r.preview]
     categories = {r.category for r in static}
     assert f"{len(static)} rules in {len(categories)} categories" in README
+    assert f"{len(stable_static)} stable static rules" in README
     out = subprocess.run([sys.executable, str(ROOT / "tools" / "gen_rules_doc.py"), "--check"], capture_output=True, text=True)
     assert out.returncode == 0, out.stderr
     catalogue = (ROOT / "docs" / "RULES.md").read_text(encoding="utf-8")
@@ -94,6 +96,11 @@ def test_action_inputs_hook_and_versions_match():
     assert re.search(r"- id: (\S+)", hooks).group(1) == "vibeaudit" and "- id: vibeaudit" in README  # type: ignore[union-attr]
     versions = set(re.findall(r"(?:@|rev: |/)v(\d+\.\d+\.\d+)", README))  # / for the GitLab include URL
     assert versions == {vibeaudit.__version__}, versions
+    assert "Python 3.11+" in action and "Python 3.9" not in action
+    assert "JavaScript and TypeScript" in action
+    overview = (ROOT / "docs" / "PROJECT_OVERVIEW.md").read_text(encoding="utf-8")
+    assert f"v{vibeaudit.__version__}" in overview
+    assert "tomli" not in overview
 
 
 def test_docs_are_plain_ascii():

@@ -216,10 +216,11 @@ def test_printing_a_signature_made_with_an_env_key_is_not_logging_the_key(tmp_pa
 
 def test_zip_member_guarded_against_traversal_is_not_path_injection(tmp_path):
     (tmp_path / "a.py").write_text(
-        "@app.post('/up')\ndef up(name: str):\n    p = PurePosixPath(name)\n"
-        "    if p.is_absolute() or '..' in p.parts:\n        raise HTTPException(422)\n    open(dest.joinpath(*p.parts), 'wb')\n\n"
+        "@app.post('/up')\ndef up(name: str):\n    p = Path(name)\n"
+        "    target = (dest / p).resolve()\n"
+        "    if not target.is_relative_to(dest.resolve()):\n        raise HTTPException(422)\n    open(target, 'wb')\n\n"
         "@app.post('/raw')\ndef raw(name: str):\n    p = PurePosixPath(name)\n    open(dest.joinpath(*p.parts), 'wb')\n")
-    assert [ln for _, ln, _ in _rules(_scan(tmp_path), "BE006")] == [11]
+    assert [ln for _, ln, _ in _rules(_scan(tmp_path), "BE006")] == [12]
 
 
 def test_tuple_assignment_keeps_each_elements_taint(tmp_path):

@@ -4,6 +4,28 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.19.0] - 2026-11-27
+
+### Fixed
+
+- **Symlink path-traversal false negative (`pyscan.py`, `rules.py`)**: removed acceptance of lexical
+  `is_absolute() or ".." in parts` path guards that could still be bypassed via symlinks inside a permitted
+  directory; path sanitization now requires canonical containment checks (`is_relative_to()` with resolved paths
+  or `os.path.commonpath()` on resolved paths) while documenting TOCTOU boundaries.
+- **Bounded streaming Git history scan (`secretscan.py`, `scanner.py`)**: replaced full-output buffering in
+  `scan_git_history()` with incremental `subprocess.Popen` line streaming under real byte (`20 MB`), commit, and
+  timeout bounds, and surfaced explicit status/truncation notes in `meta.history` and report notes.
+- **`FE001` precision & severe-preview CI gating (`jsscan.py`, `phpscan.py`, `report.py`)**: eliminated
+  false positives on constant-string JS ternary HTML assignments (`cond ? 'a' : 'b'`), lowered untainted
+  heuristic Blade `{!! ... !!}` sinks to `medium`, and restricted severe-preview CI gating on `FE001` to
+  `high`/`critical` tainted XSS findings.
+
+### Documentation
+
+- Reconciled exact rule counts across `README.md`, `doctor.py`, and `docs/PROJECT_OVERVIEW.md` (`95` stable
+  static + `84` preview + `1` LLM review `AI001` = `180` total), updated `action.yml` descriptions for Python
+  `3.11+` and JS/TS `parse` support, and synchronized module descriptions in `docs/PROJECT_OVERVIEW.md`.
+
 ## [0.18.0] - 2026-11-26
 
 ### Added
