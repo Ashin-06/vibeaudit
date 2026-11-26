@@ -20,6 +20,8 @@ CASES = {
  "python": {"app.py": 'from flask import Flask, request\nimport sqlite3\napp = Flask(__name__)\n@app.route("/admin/users/<id>", methods=["DELETE"])\ndef delete(id):\n    sqlite3.connect("x").execute("DELETE FROM users WHERE id = %s" % id)\n    return "ok"\n'},
  "js": {"server.js": 'const express = require("express");\nconst app = express();\napp.delete("/admin/users/:id", (req, res) => { db.query("DELETE FROM users WHERE id = " + req.params.id); res.send("ok"); });\n'},
  "dart": {"pubspec.yaml": "name: a\ndependencies:\n  flutter:\n    sdk: flutter\n", "lib/main.dart": 'import "package:http/http.dart" as http;\nconst apiKey = "sk_' 'live_51HxQ2bL8tYv3kPzR9mN4wE7a";\nvoid f() { http.get(Uri.parse("http://api.example.com/api?key=" + apiKey)); }\n'},
+ "swift": {"Package.swift": "// swift-tools-version:5.9\nimport PackageDescription\nlet p = Package(name: \"App\", dependencies: [.package(url: \"https://github.com/vapor/vapor.git\", from: \"4.0.0\")])\n", "Sources/App/routes.swift": "import Vapor\nfunc routes(_ app: Application) throws {\n    app.delete(\"admin\", \"users\", \":id\") { req async throws -> HTTPStatus in\n        let id = req.parameters.get(\"id\") ?? \"\"\n        _ = try await db.raw(\"DELETE FROM users WHERE id = \\(id)\")\n        return .ok\n    }\n}\n"},
+ "elixir": {"mix.exs": "defmodule App.MixProject do\n  def deps, do: [{:phoenix, \"~> 1.7\"}]\nend\n", "lib/app_web/router.ex": "defmodule AppWeb.Router do\n  use AppWeb, :router\n  scope \"/admin\", AppWeb do\n    delete \"/users/:id\", UserController, :delete\n  end\nend\n", "lib/app_web/controllers/user_controller.ex": "defmodule AppWeb.UserController do\n  def delete(conn, %{\"id\" => id}) do\n    Ecto.Adapters.SQL.query!(Repo, \"DELETE FROM users WHERE id = #{id}\", [])\n  end\nend\n"},
 }
 
 EXPECT = {
@@ -33,6 +35,8 @@ EXPECT = {
     'python': {'AUTH002', 'BE001'},
     'js': {'AUTH002', 'BE001'},
     'dart': {'SEC001'},
+    'swift': {'AUTH002', 'BE001'},
+    'elixir': {'AUTH002', 'BE001'},
 }
 
 

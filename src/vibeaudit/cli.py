@@ -107,8 +107,9 @@ def build_parser() -> argparse.ArgumentParser:
     x = sub.add_parser("fix", help="show (or --apply) deterministic fixes for findings that have one obvious repair",
                        description="Print a unified diff that fixes every finding a codemod covers: request timeouts "
                                    "(REL001), output token limits (LLM003), guarded JSON parsing of model output (LLM011), "
-                                   "pinned JWT algorithms (BE016, AUTH011), Decimal money columns (DATA004) and CORS "
-                                   "origins with credentials (BE012) and Redis key expiries (DATA013). Nothing is written without --apply. With --llm, "
+                                   "pinned JWT algorithms (BE016, AUTH011), Decimal money columns (DATA004), CORS "
+                                   "origins with credentials (BE012), TLS verify flags (BE013), debug mode flags (BE011) "
+                                   "and Redis key expiries (DATA013). Nothing is written without --apply. With --llm, "
                                    "findings without a codemod get a model-written patch in a .patch file, never applied.")
     x.add_argument("path", nargs="?", default=".", help="project directory (default: current directory)")
     x.add_argument("--apply", action="store_true", help="write the fixes to the files instead of printing the diff")

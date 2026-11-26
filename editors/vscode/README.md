@@ -7,7 +7,7 @@ This extension is a thin client: it starts `vibeaudit lsp`, the language server 
 `vibeaudit` Python package. Install that first:
 
 ```bash
-pip install vibeaudit==0.14.0
+pip install vibeaudit==0.15.0
 ```
 
 ## Settings
@@ -23,7 +23,7 @@ repository cannot make it start a different program.
 ## What it does
 
 - Diagnostics for every file in the workspace, also for unsaved changes, matching `vibeaudit scan`.
-- Python, JavaScript/TypeScript (with Vue and Svelte), Go, Java/Kotlin, C#, Rust and PHP; the extension
+- Python, JavaScript/TypeScript (with Vue and Svelte), Go, Java/Kotlin, C#, Rust, PHP, Ruby, Dart, Swift and Elixir; the extension
   starts in any workspace with one of their project files. Needs VS Code 1.91 or later (or Cursor).
 - Quick fixes for the findings `vibeaudit fix` can rewrite, and a "fix all" source action per file.
 - The server reads the workspace and never writes files; the editor applies the edits you accept.

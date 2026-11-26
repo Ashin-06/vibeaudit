@@ -688,6 +688,49 @@ def fix_redis_ttl(ctx: FileCtx, f: Finding) -> Result:
     return [(at, at, f"\n{indent}{awaited.group(1) or ''}{client}.expire({key}, {REDIS_TTL}){semi}")]
 
 
+# ---------------------------------------------------------------------- BE013
+JS_REJECT_UNAUTH = re.compile(r"\brejectUnauthorized\s*:\s*(false)\b")
+
+
+def fix_tls_verify(ctx: FileCtx, f: Finding) -> Result:
+    if ctx.kind == "py":
+        for node in ast.walk(ctx.tree):
+            if isinstance(node, ast.Call):
+                for kw in node.keywords:
+                    if kw.arg == "verify" and isinstance(kw.value, ast.Constant) and kw.value.value is False:
+                        if kw.lineno == f.line or node.lineno == f.line:
+                            a, b = ctx.span(kw.value)
+                            return [(a, b, "True")]
+        return "no verify=False literal on this line"
+    if ctx.kind == "js":
+        a, b = ctx.line_start(f.line), ctx.line_end(f.line)
+        m = JS_REJECT_UNAUTH.search(ctx.views.code, a, b)
+        if m and ctx.views.bare[m.start():m.start() + 1] == "r":
+            return [(m.start(1), m.end(1), "true")]
+        return "no rejectUnauthorized: false literal on this line"
+    return "unsupported file type"
+
+
+# ---------------------------------------------------------------------- BE011
+def fix_debug_mode(ctx: FileCtx, f: Finding) -> Result:
+    if ctx.kind != "py":
+        return "unsupported file type"
+    for node in ast.walk(ctx.tree):
+        if isinstance(node, ast.Call):
+            for kw in node.keywords:
+                if kw.arg == "debug" and isinstance(kw.value, ast.Constant) and kw.value.value is True:
+                    if kw.lineno == f.line or node.lineno == f.line:
+                        a, b = ctx.span(kw.value)
+                        return [(a, b, "False")]
+        elif isinstance(node, (ast.Assign, ast.AnnAssign)) and node.lineno == f.line and node.value is not None:
+            targets = node.targets if isinstance(node, ast.Assign) else [node.target]
+            if any(isinstance(t, ast.Name) and t.id == "DEBUG" for t in targets) \
+                    and isinstance(node.value, ast.Constant) and node.value.value is True:
+                a, b = ctx.span(node.value)
+                return py_ensure_module(ctx, "os") + [(a, b, 'os.environ.get("DEBUG", "").lower() == "true"')]
+    return "no debug=True call or DEBUG = True setting on this line"
+
+
 FIXERS: Dict[str, Callable[[FileCtx, Finding], Result]] = {
     "DATA013": fix_redis_ttl,
     "REL001": fix_timeout,
@@ -697,6 +740,8 @@ FIXERS: Dict[str, Callable[[FileCtx, Finding], Result]] = {
     "AUTH011": fix_jwt,
     "DATA004": fix_money,
     "BE012": fix_cors,
+    "BE013": fix_tls_verify,
+    "BE011": fix_debug_mode,
     "GO002": fix_go_body_close,
     "CSHARP003": fix_dev_page,
 }

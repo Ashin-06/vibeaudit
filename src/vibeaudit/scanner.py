@@ -22,9 +22,12 @@ from .model import SEVERITY_RANK, SUPPRESS, TEST_FILE_RULES, Finding, at_least
 from .projectscan import ProjectScanner
 from .goscan import GoScanner
 from .dartscan import DartScanner
+from .elixirscan import ElixirScanner
 from .phpscan import PhpScanner
 from .rubyscan import RubyScanner
 from .rustscan import RustScanner
+from .swiftscan import SwiftScanner
+from .xxescan import XxeScanner
 from .polyscan import POLY_SEVERE, POLY_STABLE, PolyScanner, _lang_of as poly_lang
 from .pyscan import PyScanner
 from .qualityscan import QualityScanner
@@ -113,6 +116,16 @@ def _stack(project: Project) -> List[str]:
             for mod, lbl in (("flutter:", "Flutter"), ("firebase_core", "Firebase"), ("cloud_firestore", "Firebase")):
                 if mod in f.text and lbl not in found:
                     found.append(lbl)
+        elif f.rel.rsplit("/", 1)[-1] == "Package.swift" and f.text:
+            if "Swift" not in found:
+                found.append("Swift")
+            if "vapor" in f.text.lower() and "Vapor" not in found:
+                found.append("Vapor")
+        elif f.rel.rsplit("/", 1)[-1] == "mix.exs" and f.text:
+            if "Elixir" not in found:
+                found.append("Elixir")
+            if ":phoenix" in f.text.lower() and "Phoenix" not in found:
+                found.append("Phoenix")
     for key, label in STACK_MARKERS.items():
         if key in names and label not in found:
             found.append(label)
@@ -200,7 +213,10 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
     go_routes += CsScanner(project, emit).run()  # C#: ASP.NET Core controllers and minimal APIs
     go_routes += PhpScanner(project, emit).run()  # PHP: Laravel and Symfony
     go_routes += RubyScanner(project, emit).run()  # Ruby on Rails
+    go_routes += SwiftScanner(project, emit).run()  # Swift / iOS / Vapor (preview)
+    go_routes += ElixirScanner(project, emit).run()  # Elixir / Phoenix (preview)
     DartScanner(project, emit).run()  # Flutter and Dart (preview)
+    XxeScanner(project, emit).run()  # XXE across Python, JVM, C#, PHP and JS (preview)
     poly_routes = PolyScanner(project, emit).run()  # for Go, Java, Rust, C# and PHP only the checks they lack
     all_routes = js_routes + py_routes + go_routes + poly_routes + rpcscan.routes(project)  # tRPC, GraphQL, gRPC
     SecretScanner(project, emit).run()

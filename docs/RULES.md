@@ -3,9 +3,9 @@
 Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do not edit by hand.
 `vibeaudit rules` prints the same list, and `vibeaudit rules --format json` includes every field.
 
-176 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
+178 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-80 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+82 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -273,6 +273,7 @@ References: CWE-1395, A06:2021
 | [BE018](#be018) | medium | preview | No server-side input validation |
 | [BE019](#be019) | high | preview | Payment amount taken from the client |
 | [BE020](#be020) | medium | preview | Email header injection |
+| [BE021](#be021) | high | preview | XML external entity (XXE) processing enabled |
 | [CSHARP002](#csharp002) | critical | preview | Deserialization that lets the payload pick the type |
 | [GO004](#go004) | medium | preview | SQL built with string formatting (Go) |
 | [JAVA004](#java004) | critical | preview | Polymorphic deserialization without an allow-list |
@@ -490,6 +491,18 @@ Why it matters: A value placed into a raw email header can contain a line break 
 How to fix: Reject values with CR or LF, and build messages with an API that validates headers (`email.message.EmailMessage`, a mail SDK) instead of formatting header lines.
 
 References: CWE-93, A03:2021
+
+### BE021
+
+**XML external entity (XXE) processing enabled** (high, preview)
+
+Preview: New in 0.15.0: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: An XML parser that resolves external entities or DTDs lets an attacker read local server files or trigger server-side requests (SSRF) through a crafted XML upload.
+
+How to fix: Disable DTD processing and external entity resolution (defusedxml in Python, disallow-doctype-decl in Java/Kotlin, DtdProcessing.Prohibit in C#, avoid LIBXML_NOENT in PHP and noent: true in libxmljs).
+
+References: CWE-611, A05:2021
 
 ### CSHARP002
 
@@ -896,6 +909,7 @@ References: CWE-862, A01:2021
 | [CFG017](#cfg017) | high | preview | Secret file or build argument in the final image |
 | [CFG018](#cfg018) | critical | preview | Pull request code run with secrets (pull_request_target) |
 | [CFG019](#cfg019) | low | preview | Security headers missing on responses |
+| [CFG020](#cfg020) | high | preview | Cloud infrastructure misconfiguration (GCP / Azure) |
 | [CSHARP003](#csharp003) | medium | preview | Developer error page outside Development |
 | [JAVA002](#java002) | high | preview | Spring Boot Actuator endpoints exposed |
 
@@ -1106,6 +1120,18 @@ Why it matters: The running app answers without a Content-Security-Policy, X-Con
 How to fix: Set the headers once for every response (helmet for Express, django-csp and SecurityMiddleware for Django, a middleware or the reverse proxy elsewhere).
 
 References: CWE-693, A05:2021
+
+### CFG020
+
+**Cloud infrastructure misconfiguration (GCP / Azure)** (high, preview)
+
+Preview: New in 0.15.0: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: Public cloud storage, internet-exposed database or admin firewall rules, disabled HTTPS/SSL enforcement, or legacy Kubernetes ABAC in GCP or Azure Terraform expose infrastructure and data.
+
+How to fix: Restrict storage IAM and containers to private access, limit firewall rules to trusted CIDRs, enforce HTTPS/SSL on storage and databases, and disable legacy ABAC.
+
+References: CWE-732, A05:2021
 
 ### CSHARP003
 

@@ -4,6 +4,39 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.15.0] - 2026-11-26
+
+### Added
+
+- Swift, iOS and Vapor preview scanner (`swiftscan.py`):
+  - Discovers Vapor routes (`app.get`/`post`/`put`/`patch`/`delete` and `.grouped(...)` auth middleware)
+    feeding `AUTH001`-`AUTH003` with `auth_evidence`.
+  - Detects SQL string interpolation (`BE001`), shell command interpolation via `Process()` (`BE002`),
+    TLS trust bypass (`BE013`, `URLCredential(trust:)`, `allowsInvalidCertificates = true`,
+    `DisabledTrustEvaluator()`, plus `Info.plist` `NSAllowsArbitraryLoads` when not scanned as a
+    Flutter project), unencrypted tokens in `UserDefaults` (`FE005`), and direct client LLM API calls (`FE002`).
+  - Stack detection for `Swift` (`Package.swift`) and `Vapor`, plus VS Code extension activation.
+- Elixir and Phoenix preview scanner (`elixirscan.py`):
+  - Discovers Phoenix router verb routes and `scope` / `pipe_through` auth pipelines feeding `AUTH001`-`AUTH003`
+    with `auth_evidence`.
+  - Detects Ecto SQL interpolation (`BE001`), `:os.cmd` / `System.cmd` command injection (`BE002`),
+    `:erlang.binary_to_term` without `[:safe]` (`BE004`), unescaped `Phoenix.HTML.raw` / `raw()` (`FE001`),
+    and `verify: :verify_none` TLS bypass (`BE013`).
+  - Stack detection for `Elixir` (`mix.exs`) and `Phoenix`, plus VS Code extension activation.
+- Multi-language XXE detection (`BE021`, preview, CWE-611, `xxescan.py`): covers Python (`lxml`
+  `resolve_entities=True`, `xml.sax` external entities), Java/Kotlin XML factories without DTD hardening,
+  C# (`DtdProcessing.Parse`, `XmlUrlResolver`), PHP (`libxml_disable_entity_loader(false)`, `LIBXML_NOENT`),
+  and JavaScript/TypeScript (`libxmljs` `noent: true`).
+- Multi-cloud IaC checks for GCP and Azure Terraform (`CFG020`, preview, `iacscan.py`): covers public GCS IAM
+  (`allUsers`/`allAuthenticatedUsers`), open GCP firewall admin ports, public/`require_ssl = false` Cloud SQL,
+  GKE legacy ABAC, Azure Storage public blob/HTTP-only settings, open Azure NSG rules, and open Azure SQL
+  firewall rules.
+- New deterministic `vibeaudit fix` codemods:
+  - `BE013`: rewrites `verify=False` to `verify=True` in Python and `rejectUnauthorized: false` to `true` in JS/TS.
+  - `BE011`: rewrites `debug=True` to `False` and `DEBUG = True` to `os.environ.get("DEBUG", "").lower() == "true"`
+    (adding `import os`) in Python.
+- Per-language recall floor test expanded from 10 to 12 languages (`tests/test_recall_by_language.py`).
+
 ## [0.14.0] - 2026-11-26
 
 ### Added

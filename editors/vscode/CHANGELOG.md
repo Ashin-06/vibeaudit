@@ -4,6 +4,10 @@ The extension's version matches the vibeaudit release it is built with. What cha
 language server is in the project changelog:
 https://github.com/Ashin-06/vibeaudit/blob/main/CHANGELOG.md
 
+## 0.15.0
+
+- Built with vibeaudit 0.15.0: adds Swift (iOS & Vapor) and Elixir (Phoenix) activation, XXE detection (`BE021`), multi-cloud GCP/Azure Terraform checks (`CFG020`), and `BE013`/`BE011` quick-fix codemods.
+
 ## 0.14.0
 
 - Built with vibeaudit 0.14.0: adds LSP route hover (`auth_evidence`), feedback-driven rule demotion and helper suggestions, `vibeaudit init`, and optional `vibeaudit[parse]` tree-sitter support.
