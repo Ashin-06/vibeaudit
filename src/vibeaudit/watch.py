@@ -33,11 +33,13 @@ class Watcher:
         self.project = Project(Path(root), opts.excludes, opts.max_file_bytes)
         self.project.step_memo = StepMemo()
         self.findings: Dict[str, Finding] = {}
+        self.routes: List = []
 
     def scan(self) -> "tuple[List[Finding], List[Finding], float]":
         """Scan (again); returns the findings that appeared, those that went away, and the seconds it took."""
         t = time.perf_counter()
         res = scan(self.root, self.opts, self.project)
+        self.routes = list(res.routes)
         now = {f.fingerprint: f for f in res.findings}
         added = [f for k, f in now.items() if k not in self.findings]
         gone = [f for k, f in self.findings.items() if k not in now]

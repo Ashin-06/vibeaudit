@@ -4,24 +4,41 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.14.0] - 2026-11-26
 
 ### Added
 
+- `vibeaudit init`: creates `.vibeaudit.toml`, `.pre-commit-config.yaml` and a GitHub/GitLab/CircleCI workflow
+  in one step and runs an initial offline scan.
+- Feedback self-learning upgrades:
+  - Rules whose false-positive share in `.vibeaudit/feedback.json` exceeds 30% across at least 3 reviewed
+    verdicts are automatically demoted to preview for that repository with an explanatory note.
+  - `vibeaudit feedback export`: turns recorded confirmed and false-positive verdicts into standalone pytest
+    regression tests.
+  - `vibeaudit feedback suggest-helpers`: extracts recurring custom auth helpers from false-positive auth
+    routes and proposes a `.vibeaudit.toml` unified diff.
 - `vibeaudit routes` names the decorator, middleware or annotation that made each route count as authenticated
-  (`auth_evidence` in JSON), so a wrong guess is easy to spot.
+  (`auth_evidence` in JSON); Studio routes table and LSP `textDocument/hover` now show `auth_evidence` inline.
+- Summary-first terminal reports (`Top 5 findings` header when more than 5 findings appear plus a `vibeaudit fix`
+  auto-repair hint in Summary).
 - Optional `vibeaudit[parse]` extra: a tree-sitter function index for Go, Rust and Java that finds
   declarations the regex index misses (Rust generics with nested bounds, Go results spanning lines), so
-  routes and cross-file data flow reach them. Without it the regex index is used; `doctor` shows the mode.
-- `vibeaudit doctor` warns when the package is not installed or the installed version differs from the running one.
-- Per-language recall floor test (C#, PHP, Kotlin, Python, JS, Dart).
+  routes and cross-file data flow reach them. Enabled by default in the GitHub Action (`parse: "true"`).
+- `vibeaudit doctor` warns when the package is not installed or the installed version differs from the running
+  one, and prints the exact `install_fix` command to run.
+- Per-language recall floor test expanded across 10 languages (Python, JS/TS, Go, Java, Kotlin, C#, Rust,
+  PHP, Ruby, Dart) plus aggregate seeded-recall gating in `tools/benchmark.py`.
 
 ### Fixed
 
-- Rust: `client.query(format!(..))` (tokio-postgres) was skipped as a local helper; `user::list` could resolve
-  to `admin_user.rs`.
-- Java/Kotlin: a custom annotation named like `@Author` counted as an auth annotation.
-- Go: a chi sub-router mounted both behind auth and publicly was treated as authenticated.
+- Go: `r.Mount("/prefix", subVar)` now inherits auth middleware and prefix for local sub-router variables as
+  well as factory calls, and a chi sub-router mounted both behind auth and publicly is treated as unauthenticated.
+- Rust: `client.query(format!(..))` (tokio-postgres) is no longer skipped as a local helper, and `user::list`
+  no longer resolves to `admin_user.rs`.
+- Java/Kotlin: custom annotations like `@Author` no longer count as auth annotations.
+- PHP: Blade safe-method indexing is cached once per scan instead of repeating on every raw output tag when no
+  escaping methods exist.
+- Ruby: single-line `group :x do gem ... end` blocks in `Gemfile` are now parsed rather than dropped.
 
 ## [0.13.0] - 2026-11-26
 

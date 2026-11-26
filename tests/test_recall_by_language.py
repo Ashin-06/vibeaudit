@@ -12,13 +12,28 @@ from test_lang_precision_fixes import _scan
 CASES = {
  "csharp": {"Api/C.cs": 'using Microsoft.AspNetCore.Mvc;\n[ApiController]\n[Route("api/admin/users")]\npublic class UsersController : ControllerBase {\n  [HttpDelete("{id}")]\n  public IActionResult Del(int id) { _db.Database.ExecuteSqlRaw("DELETE FROM users WHERE id = " + id); return Ok(); }\n}\n'},
  "php": {"index.php": '<?php\n$id = $_GET["id"];\n$r = mysqli_query($conn, "SELECT * FROM users WHERE id = " . $id);\necho $_GET["name"];\n'},
+ "java": {"src/main/java/a/C.java": 'package a;\nimport org.springframework.web.bind.annotation.*;\n@RestController\npublic class C {\n  @DeleteMapping("/admin/users/{id}")\n  public void del(@PathVariable String id, JdbcTemplate jdbc) { jdbc.execute("DELETE FROM users WHERE id = " + id); }\n}\n'},
  "kotlin": {"src/main/kotlin/a/C.kt": 'package a\nimport org.springframework.web.bind.annotation.*\n@RestController\nclass C(val jdbc: JdbcTemplate) {\n  @DeleteMapping("/admin/users/{id}")\n  fun del(@PathVariable id: String) { jdbc.execute("DELETE FROM users WHERE id = " + id) }\n}\n'},
+ "go": {"go.mod": "module app\ngo 1.22\n", "main.go": 'package main\nimport ("fmt"; "net/http")\nfunc main() { http.HandleFunc("/admin/users", h) }\nfunc h(w http.ResponseWriter, r *http.Request) {\n    db.Query(fmt.Sprintf("DELETE FROM users WHERE id = %s", r.URL.Query().Get("id")))\n}\n'},
+ "rust": {"src/main.rs": 'use actix_web::{delete, web, HttpResponse};\n#[delete("/admin/users/{id}")]\nasync fn del(id: web::Path<String>) -> HttpResponse {\n    sqlx::query(&format!("DELETE FROM users WHERE id = {}", id)).execute(&pool).await;\n    HttpResponse::Ok().finish()\n}\n'},
+ "ruby": {"config/routes.rb": "Rails.application.routes.draw do\n  delete '/admin/users/:id', to: 'users#destroy'\nend\n", "app/controllers/users_controller.rb": "class UsersController < ApplicationController\n  def destroy\n    User.where(\"id = #{params[:id]}\")\n  end\nend\n"},
  "python": {"app.py": 'from flask import Flask, request\nimport sqlite3\napp = Flask(__name__)\n@app.route("/admin/users/<id>", methods=["DELETE"])\ndef delete(id):\n    sqlite3.connect("x").execute("DELETE FROM users WHERE id = %s" % id)\n    return "ok"\n'},
  "js": {"server.js": 'const express = require("express");\nconst app = express();\napp.delete("/admin/users/:id", (req, res) => { db.query("DELETE FROM users WHERE id = " + req.params.id); res.send("ok"); });\n'},
  "dart": {"pubspec.yaml": "name: a\ndependencies:\n  flutter:\n    sdk: flutter\n", "lib/main.dart": 'import "package:http/http.dart" as http;\nconst apiKey = "sk_' 'live_51HxQ2bL8tYv3kPzR9mN4wE7a";\nvoid f() { http.get(Uri.parse("http://api.example.com/api?key=" + apiKey)); }\n'},
 }
 
-EXPECT = {'csharp': {'AUTH002', 'BE001'}, 'php': {'BE001', 'FE001'}, 'kotlin': {'AUTH002', 'BE001'}, 'python': {'AUTH002', 'BE001'}, 'js': {'AUTH002', 'BE001'}, 'dart': {'SEC001'}}
+EXPECT = {
+    'csharp': {'AUTH002', 'BE001'},
+    'php': {'BE001', 'FE001'},
+    'java': {'AUTH002', 'BE001'},
+    'kotlin': {'AUTH002', 'BE001'},
+    'go': {'BE001'},
+    'rust': {'AUTH002', 'BE001'},
+    'ruby': {'BE001'},
+    'python': {'AUTH002', 'BE001'},
+    'js': {'AUTH002', 'BE001'},
+    'dart': {'SEC001'},
+}
 
 
 @pytest.mark.parametrize("lang", sorted(CASES))

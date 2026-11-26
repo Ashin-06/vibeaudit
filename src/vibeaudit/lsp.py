@@ -233,7 +233,33 @@ class Server:
             return self.document(method, params)
         if method == "textDocument/codeAction":
             return self.code_actions(params)
+        if method == "textDocument/hover":
+            return self.hover(params)
         return NotImplemented
+
+    def hover(self, params: dict) -> Optional[dict]:
+        """Show discovered route metadata and auth_evidence on hover over a route line."""
+        rel = self.rel_of((params.get("textDocument") or {}).get("uri"))
+        if rel is None or self.watcher is None:
+            return None
+        try:
+            line = int((params.get("position") or {})["line"]) + 1
+        except (KeyError, TypeError, ValueError):
+            return None
+        routes = [r for r in getattr(self.watcher, "routes", []) if r.file == rel and r.line - 1 <= line <= r.line + 1]
+        if not routes:
+            return None
+        parts = []
+        for r in routes:
+            d = r.to_dict()
+            auth = f"authenticated ({d['auth_evidence']})" if d["authenticated"] else "no auth check detected"
+            flags = [auth]
+            if d["writes_data"]:
+                flags.append("writes data")
+            if d["calls_llm"]:
+                flags.append("calls AI")
+            parts.append(f"**vibeaudit route:** `{'/'.join(d['methods'])} {d['path']}` ({', '.join(flags)})")
+        return {"contents": {"kind": "markdown", "value": "\n\n".join(parts)}}
 
     def initialize(self, params: dict) -> dict:
         from .watch import Watcher, main_options
@@ -255,7 +281,8 @@ class Server:
                 self.watcher = None
             self.dirty = True
         return {"capabilities": {"textDocumentSync": {"openClose": True, "change": 1, "save": {"includeText": False}},
-                                 "codeActionProvider": {"codeActionKinds": ["quickfix", "source.fixAll.vibeaudit"]}},
+                                 "codeActionProvider": {"codeActionKinds": ["quickfix", "source.fixAll.vibeaudit"]},
+                                 "hoverProvider": True},
                 "serverInfo": {"name": "vibeaudit", "version": __version__}}
 
     def document(self, method: str, params: dict) -> None:

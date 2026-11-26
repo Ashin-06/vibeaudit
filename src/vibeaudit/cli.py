@@ -189,6 +189,14 @@ def build_parser() -> argparse.ArgumentParser:
     dr = sub.add_parser("doctor", help="show vibeaudit health: version, rules, signed threat feed, offline OSV indexes and external scanners")
     dr.add_argument("--format", choices=["text", "json"], default="text")
 
+    ini = sub.add_parser("init", help="create starter .vibeaudit.toml, pre-commit hook and CI workflow and run a first scan")
+    ini.add_argument("path", nargs="?", default=".", help="project directory (default: current directory)")
+    ini.add_argument("--ci", choices=["github", "gitlab", "circleci", "none"], default="github",
+                     help="CI workflow template to create (default: github)")
+    ini.add_argument("--no-hook", action="store_true", help="do not create .pre-commit-config.yaml")
+    ini.add_argument("--no-scan", action="store_true", help="only write starter files without running an initial scan")
+    ini.add_argument("--force", action="store_true", help="overwrite existing configuration or workflow files")
+
     u = sub.add_parser("update", help="refresh package lists, retired model ids and the signed threat feed, or upgrade vibeaudit itself")
     u.add_argument("--self", dest="upgrade_self", action="store_true", help="upgrade the installed package with pip")
     u.add_argument("--export", metavar="FILE",
@@ -198,8 +206,8 @@ def build_parser() -> argparse.ArgumentParser:
     u.add_argument("--import", dest="import_bundle", metavar="FILE",
                    help="install a bundle made with --export (no network needed); then scan with --offline")
 
-    f = sub.add_parser("feedback", help="record that a finding is a false positive or confirmed, or list feedback")
-    f.add_argument("verdict", nargs="?", choices=["false-positive", "confirmed", "list"], default="list")
+    f = sub.add_parser("feedback", help="record that a finding is a false positive or confirmed, list feedback, export pytest cases or suggest auth helpers")
+    f.add_argument("verdict", nargs="?", choices=["false-positive", "confirmed", "list", "export", "suggest-helpers"], default="list")
     f.add_argument("rule", nargs="?", help="rule id, for example AUTH001")
     f.add_argument("location", nargs="?", help="FILE:LINE as shown in the report")
     f.add_argument("--note", default="", help="why (kept with the entry)")
@@ -207,6 +215,7 @@ def build_parser() -> argparse.ArgumentParser:
     f.add_argument("--config", metavar="FILE", help="settings file, as for scan")
     f.add_argument("--plugin", action="append", default=[], metavar="FILE_OR_MODULE",
                    help="load custom rules, as for scan, so their findings can be marked")
+    f.add_argument("-o", "--output", default="-", help="for `feedback export`: write generated pytest tests here (default: stdout)")
     return p
 
 
@@ -243,13 +252,37 @@ def cmd_feedback(a: argparse.Namespace) -> int:
     if not root.is_dir():
         print(f"vibeaudit: not a directory: {a.path}", file=sys.stderr)
         return 2
+    if a.verdict == "export":
+        code = feedback.export_tests(root)
+        if not code:
+            print("vibeaudit: no feedback recorded in .vibeaudit/feedback.json", file=sys.stderr)
+            return 1
+        if a.output == "-":
+            write_raw(code)
+        else:
+            Path(a.output).write_bytes(code.encode("utf-8"))
+            print(f"vibeaudit: wrote feedback tests to {a.output}", file=sys.stderr)
+        return 0
+    if a.verdict == "suggest-helpers":
+        out = feedback.suggest_auth_helpers(root, a.config)
+        if not out["candidates"]:
+            print("no recurring auth helper candidates found in false-positive feedback")
+            return 0
+        for c in out["candidates"]:
+            print(f"{c['name']:24} {c['count']} false-positive routes  ({', '.join(c['locations'][:3])})")
+        if out["diff"]:
+            print("\nProposed .vibeaudit.toml update:")
+            write_raw(out["diff"])
+        return 0
     if a.verdict == "list":
         entries = feedback.load(root)
+        noisy = feedback.noisy_rules(root)
         for e in entries:
             note = f"  ({e.get('note')})" if e.get("note") else ""
             print(f"{e['verdict']:15} {e.get('rule', '?'):8} {e.get('file', '?')}:{e.get('line', '?')}{note}")
         for rule, counts in feedback.summary(root).items():
-            print(f"{rule}: {counts['false-positive']} false positive, {counts['confirmed']} confirmed")
+            demoted = f"  [demoted to preview: {noisy[rule][2]:.0%} FP]" if rule in noisy else ""
+            print(f"{rule}: {counts['false-positive']} false positive, {counts['confirmed']} confirmed{demoted}")
         if not entries:
             print("no feedback recorded")
         return 0
@@ -354,6 +387,34 @@ def cmd_doctor(a: argparse.Namespace) -> int:
         print(json.dumps(info, indent=2))
     else:
         sys.stdout.write(doctor.render_text(info))
+    return 0
+
+
+def cmd_init(a: argparse.Namespace) -> int:
+    from . import init
+    from .config import project_options
+    from .scanner import scan
+
+    root = Path(a.path)
+    if not root.is_dir():
+        print(f"vibeaudit: not a directory: {a.path}", file=sys.stderr)
+        return 2
+    out = init.run(root, ci=a.ci, hook=not a.no_hook, force=a.force)
+    if out["stack"]:
+        print(f"vibeaudit init: stack {', '.join(out['stack'])}")
+    for rel in out["created"]:
+        print(f"  created {rel}")
+    for item in out["skipped"]:
+        print(f"  kept    {item['file']} ({item['reason']})")
+    if not a.no_scan:
+        try:
+            opts = project_options(str(root), offline=True, external="none")
+        except ConfigError as e:
+            print(f"vibeaudit: {e}", file=sys.stderr)
+            return 2
+        res = scan(str(root), opts)
+        color = not os.environ.get("NO_COLOR") and sys.stdout.isatty()
+        sys.stdout.write("\n" + render_text(res, color, verbose=True))
     return 0
 
 
@@ -767,6 +828,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         return cmd_update(a)
     if a.command == "doctor":
         return cmd_doctor(a)
+    if a.command == "init":
+        return cmd_init(a)
     if a.command == "feedback":
         return cmd_feedback(a)
     parser.print_help()

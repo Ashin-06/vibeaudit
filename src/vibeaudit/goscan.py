@@ -122,6 +122,7 @@ class GoScanner:
         self.files: List[SourceFile] = []
         self.funcs: Dict[str, List[Tuple[SourceFile, int, int]]] = {}
         self.mounted: Dict[str, List[Tuple[str, bool, str]]] = {}  # sub-router fn -> [(prefix, auth, mw_text)]
+        self.mounted_vars: Dict[Tuple[str, str], List[Tuple[str, bool, str]]] = {}  # (file, var) -> [(prefix, auth, mw_text)]
         self.routes: List[Route] = []
         self.injection_lines: Set[Tuple[str, int]] = set()  # lines with BE001
         self.formatted: List[Finding] = []  # GO004, held back until every BE001 is known
@@ -211,12 +212,16 @@ class GoScanner:
             p = STRING_ARG.match(argv[0])
             if not p:
                 continue
-            sub = re.search(r"(\w+)\s*\([^()]*\)\s*$", argv[1].strip())
-            if not sub:
-                continue
+            arg2 = argv[1].strip()
             prefix, auth, mw_text = self._prefix_and_auth_mw(m.group(1), parents, code, bare, m.start())
             full = "/" + "/".join(x.strip("/") for x in (prefix, p.group(1)) if x.strip("/"))
-            self.mounted.setdefault(sub.group(1), []).append((full, auth, mw_text))
+            sub = re.search(r"(\w+)\s*\([^()]*\)\s*$", arg2)
+            if sub:
+                self.mounted.setdefault(sub.group(1), []).append((full, auth, mw_text))
+                continue
+            sub_var = re.fullmatch(r"(\w+)", arg2)
+            if sub_var and sub_var.group(1) != m.group(1):
+                self.mounted_vars.setdefault((sf.rel, sub_var.group(1)), []).append((full, auth, mw_text))
 
     def _parents(self, sf: SourceFile) -> Dict[str, Tuple[str, str, bool]]:
         """Group var -> (parent var, prefix, the group call names auth middleware), per file."""
@@ -325,10 +330,11 @@ class GoScanner:
             root = recv
             while root in parents and parents[root][0] != root:
                 root = parents[root][0]
-            # if this function builds a sub-router mounted via `r.Mount("/prefix", fn())`, inherit mount context
+            # if this function or local sub-router variable is mounted via `r.Mount("/prefix", sub)`, inherit mount context
             enc_name = self._enclosing_func_name(sf, m.start())
-            if enc_name and enc_name in self.mounted:
-                mounts = self.mounted[enc_name]
+            mounts = list(self.mounted.get(enc_name, [])) if enc_name else []
+            mounts += self.mounted_vars.get((sf.rel, root), [])
+            if mounts:
                 # authed only when every mount point is: one public `r.Mount` exposes the whole sub-router
                 open_mounts = [mt for mt in mounts if not mt[1]]
                 if not open_mounts:

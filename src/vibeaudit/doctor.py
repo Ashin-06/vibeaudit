@@ -5,11 +5,21 @@ import datetime as dt
 import importlib.metadata
 import platform
 import shutil
-from typing import Any, Dict
+from pathlib import Path
+from typing import Any, Dict, Optional
 
 from . import __version__, bundle, deps, external, feed, parse
 from .rules import CATEGORIES, RULES
 from .store import cache_dir
+
+
+def _install_fix(installed: Optional[str]) -> Optional[str]:
+    if installed == __version__:
+        return None
+    from_checkout = (Path(__file__).resolve().parents[2] / "pyproject.toml").is_file()
+    if installed is None:
+        return "pip install -e ." if from_checkout else "pip install vibeaudit"
+    return "pip install -e . --no-deps" if from_checkout else f"pip install -U vibeaudit=={__version__}"
 
 
 def report() -> Dict[str, Any]:
@@ -62,6 +72,7 @@ def report() -> Dict[str, Any]:
         "status": status,
         "version": __version__,
         "installed": installed,
+        "install_fix": _install_fix(installed),
         "parser": parse.mode(),
         "python": platform.python_version(),
         "platform": platform.platform(),
@@ -101,9 +112,11 @@ def render_text(info: Dict[str, Any]) -> str:
         f"sunsets={f['entries']['model_sunsets']}, injection={f['entries']['prompt_injection']})",
     ]
     if info["installed"] is None:
-        lines.insert(1, "  Install:    not installed, running from source (run `pip install -e .` for the `vibeaudit` command)")
+        cmd = info.get("install_fix") or "pip install -e ."
+        lines.insert(1, f"  Install:    not installed, running from source (run `{cmd}` for the `vibeaudit` command)")
     elif info["installed"] != info["version"]:
-        lines.insert(1, f"  Install:    installed {info['installed']} but running {info['version']} (reinstall to match)")
+        cmd = info.get("install_fix") or "pip install -e ."
+        lines.insert(1, f"  Install:    installed {info['installed']} but running {info['version']} (run `{cmd}` to match)")
     if "expires" in f:
         lines.append(f"    Signed:     {f['created']} (expires {f['expires'][:10]}, {f['days_remaining']}d remaining)")
     elif f["installed"]:

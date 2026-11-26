@@ -28,6 +28,19 @@ def test_gate_passes_unchanged_and_fails_on_new_noise_lost_tps_and_recall(tmp_pa
     assert "seeded recall" in _gate(tmp_path, monkeypatch, _results({"a": [3, 1, 0], "b": [0, 3, 0]}, recall=0.0))[0]
 
 
+def test_gate_tracks_total_seeded_found(tmp_path, monkeypatch):
+    base = tmp_path / "baseline.json"
+    base.write_text(json.dumps({"rules": {"BE001": {"precision": 1.0, "seeded_recall": 1.0, "seeded_found": 5,
+                                                    "seeded_expected": 5, "by_repo": {"a": [1, 0]}}}}))
+    monkeypatch.setattr(benchmark, "BASELINE", base)
+    ok = {"repos": {"a": {}}, "rules": {"BE001": {"by_repo": {"a": [1, 0, 0]}, "lost_tp": 0, "needs_review": 0,
+                                                   "seeded_recall": 1.0, "seeded_found": 5, "seeded_expected": 5}}}
+    assert benchmark.check(ok) == []
+    regressed = {"repos": {"a": {}}, "rules": {"BE001": {"by_repo": {"a": [1, 0, 0]}, "lost_tp": 0, "needs_review": 0,
+                                                          "seeded_recall": 1.0, "seeded_found": 4, "seeded_expected": 5}}}
+    assert any("total seeded recall" in p for p in benchmark.check(regressed))
+
+
 def test_a_repository_that_could_not_be_fetched_does_not_fail_the_gate(tmp_path, monkeypatch):
     # only "a" was scanned: its baseline precision (3 of 4) is the bar, not the corpus-wide 3 of 7
     assert _gate(tmp_path, monkeypatch, _results({"a": [3, 1, 0]})) == []

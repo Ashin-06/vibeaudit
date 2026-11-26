@@ -242,6 +242,7 @@ class PhpScanner:
         self.reported: Set[Tuple[str, int, str, bool]] = set()
         self.included: Dict[str, Tuple[str, str]] = {}  # route file -> (prefix, middleware) of the group that requires it
         self.safe_methods: Set[str] = set()  # PHP methods/functions that escape or render fixed views before returning HTML
+        self._safe_methods_indexed: bool = False
 
     def add(self, sf: SourceFile, off: int, rule: str, msg: str, sev: str = "") -> None:
         line = sf.line_at(off)
@@ -754,8 +755,10 @@ class PhpScanner:
                     break
 
     def _blade(self, sf: SourceFile) -> None:
-        if not self.safe_methods and self.funcs:
-            self._index_safe_methods()
+        if not self._safe_methods_indexed:
+            self._safe_methods_indexed = True
+            if self.funcs:
+                self._index_safe_methods()
         text = sf.text or ""
         for m in finditer(BLADE_RAW, text):
             value = m.group(1).strip()

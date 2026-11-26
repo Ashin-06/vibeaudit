@@ -4,6 +4,10 @@ The extension's version matches the vibeaudit release it is built with. What cha
 language server is in the project changelog:
 https://github.com/Ashin-06/vibeaudit/blob/main/CHANGELOG.md
 
+## 0.14.0
+
+- Built with vibeaudit 0.14.0: adds LSP route hover (`auth_evidence`), feedback-driven rule demotion and helper suggestions, `vibeaudit init`, and optional `vibeaudit[parse]` tree-sitter support.
+
 ## 0.13.0
 
 - Built with vibeaudit 0.13.0: adds MCP tool poisoning checks (`LLM027`/`LLM028`), Pub & RubyGems supply-chain checks, Firebase callable routes, mobile manifest TLS/debug checks, and `vibeaudit doctor`.

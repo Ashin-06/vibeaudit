@@ -150,7 +150,7 @@ or, to keep it in its own environment:
 pipx install vibeaudit
 ```
 
-To install from this repository instead: `pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.13.0"`.
+To install from this repository instead: `pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.14.0"`.
 
 Optional: if [gitleaks](https://github.com/gitleaks/gitleaks), [bandit](https://github.com/PyCQA/bandit),
 [osv-scanner](https://github.com/google/osv-scanner) or [semgrep](https://github.com/semgrep/semgrep) are on
@@ -171,7 +171,8 @@ your `PATH`, their findings are merged into the report and de-duplicated.
 | `vibeaudit routes [PATH]` | List every HTTP entry point with method, path, location and whether it has a visible auth check, writes data or calls a paid AI API (`--format text\|json\|md`). |
 | `vibeaudit rules` | List every rule (`--format text\|json\|md`; JSON includes the why and fix text). |
 | `vibeaudit doctor` | Show vibeaudit version, rule counts, ecosystem coverage, signed threat-feed status, offline OSV indexes and installed external scanners (`--format text\|json`). |
-| `vibeaudit feedback` | Record that a finding is a false positive or confirmed, or list recorded feedback (`--path DIR` for another project; see [False positives](#false-positives-and-suppressing-findings)). |
+| `vibeaudit init [PATH]` | Write starter `.vibeaudit.toml`, `.pre-commit-config.yaml` and a CI workflow (`--ci github\|gitlab\|circleci\|none`, `--no-hook`, `--no-scan`, `--force`), then run an initial scan. |
+| `vibeaudit feedback` | Record false-positive/confirmed verdicts, list feedback, `export` pytest regressions or `suggest-helpers` for `.vibeaudit.toml` (see [False positives](#false-positives-and-suppressing-findings)). |
 | `vibeaudit update` | Refresh the popular-package lists, the retired-model list and the signed threat feed (see [Caching and updates](#caching-and-updates)); `--self` upgrades vibeaudit with pip; `--export FILE [--osv PyPI,npm]` and `--import FILE` carry the data to a machine without network (see [Offline and air-gapped use](#offline-and-air-gapped-use)). |
 | `vibeaudit lsp` | Run the language server for editors: diagnostics and fix code actions (see [Editors](#editors-vs-code-cursor-and-other-lsp-clients)). |
 | `vibeaudit mcp` | Run the MCP server for coding agents (see [MCP server](#mcp-server-for-coding-agents)). |
@@ -398,7 +399,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0                  # needed for --diff
-      - uses: Ashin-06/vibeaudit@v0.13.0
+      - uses: Ashin-06/vibeaudit@v0.14.0
         with:
           fail-on: high
           args: --diff origin/main        # optional: only changed lines
@@ -410,7 +411,7 @@ jobs:
 
 Inputs: `path` (default `.`), `fail-on` (default `high`), `sarif` (default `vibeaudit.sarif`), `args` (extra
 flags, split on spaces), `setup-python` (`true`/`false`), `python-version`, `review` (`true` posts review
-comments on pull requests) and `github-token` (default: the workflow token).
+comments on pull requests), `github-token` (default: the workflow token) and `parse` (`true`/`false`, install optional tree-sitter parsers for Go, Rust and Java).
 
 ### Pull request review
 
@@ -433,7 +434,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - uses: Ashin-06/vibeaudit@v0.13.0
+      - uses: Ashin-06/vibeaudit@v0.14.0
         with:
           review: "true"
           args: --diff origin/${{ github.base_ref }} --baseline .vibeaudit-baseline.json --fail-on-regression 5
@@ -450,7 +451,7 @@ findings show in the merge request's Code Quality widget and in the pipeline's T
 
 ```yaml
 include:
-  - remote: https://raw.githubusercontent.com/Ashin-06/vibeaudit/v0.13.0/ci/gitlab-ci.yml
+  - remote: https://raw.githubusercontent.com/Ashin-06/vibeaudit/v0.14.0/ci/gitlab-ci.yml
 ```
 
 **CircleCI**: copy [ci/circleci.yml](ci/circleci.yml) into `.circleci/config.yml` (or merge its job into
@@ -466,7 +467,7 @@ for a test report) and keep the exit code.
 # .pre-commit-config.yaml
 repos:
   - repo: https://github.com/Ashin-06/vibeaudit
-    rev: v0.13.0
+    rev: v0.14.0
     hooks:
       - id: vibeaudit
 ```
@@ -632,8 +633,10 @@ Static analysis guesses, and some findings will be wrong for your project. In or
   ```
 
   Verdicts live in `.vibeaudit/feedback.json`. Later scans hide findings marked as false positives (the
-  report says how many); entries follow the code when lines move. Absolute paths and paths copied from an
-  editor work; `--config` and `--plugin` work as for `scan`.
+  report says how many), demote rules with >30% false positives across at least 3 verdicts to preview for
+  the repo, and track entries across line moves. Use `vibeaudit feedback export` to turn verdicts into
+  pytest regressions or `vibeaudit feedback suggest-helpers` to propose `auth-helpers` updates. Absolute paths
+  and paths copied from an editor work; `--config` and `--plugin` work as for `scan`.
 - **Inline**: `# vibeaudit: ignore[AUTH001]` (or `// vibeaudit: ignore[AUTH001]`, or without the bracket
   for every rule) on the line or the line above.
 - **Paths, rules, existing debt**: `--exclude` or `.vibeauditignore`, `--disable`, and `--baseline` to see
@@ -802,14 +805,14 @@ CycloneDX SBOM (`vibeaudit-VERSION.cdx.json`), built by the release workflow fro
 build provenance is signed with GitHub artifact attestations (Sigstore). With the GitHub CLI:
 
 ```bash
-gh attestation verify vibeaudit-0.13.0-py3-none-any.whl --repo Ashin-06/vibeaudit
+gh attestation verify vibeaudit-0.14.0-py3-none-any.whl --repo Ashin-06/vibeaudit
 ```
 
 Run the same for the `.tar.gz` and the `.cdx.json` file. The check passes only if the file was built by
 this repository's release workflow; `--format json` shows the commit and workflow it came from. The SBOM
 lists what the wheel installs (vibeaudit has no runtime dependencies on Python 3.11 and later, and
 `tomli` before that). PyPI receives these same attested files through trusted publishing; to install a wheel you verified
-yourself, run `pip install vibeaudit-0.13.0-py3-none-any.whl`.
+yourself, run `pip install vibeaudit-0.14.0-py3-none-any.whl`.
 
 ## Contributing, security and license
 

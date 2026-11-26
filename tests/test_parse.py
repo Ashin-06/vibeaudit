@@ -39,6 +39,6 @@ def test_regex_fallback_when_parser_is_off(monkeypatch):
 def test_parser_offsets_are_characters_not_bytes():
     if parse.parser("go") is None:
         pytest.skip("vibeaudit[parse] not installed")
-    text = 'package a\n// café ü\nfunc f(x int) { g(x) }\n'
+    text = 'package a\n// caf\u00e9 \u00fc\nfunc f(x int) { g(x) }\n'
     (name, start, po, pc, bo, end), = parse.functions("go", text)
     assert (name, text[start:start + 4], text[po], text[pc], text[bo], text[end - 1]) == ("f", "func", "(", ")", "{", "}")

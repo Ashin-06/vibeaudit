@@ -314,6 +314,12 @@ def check(results: dict) -> List[str]:
         if b.get("seeded_recall") is not None and (r["seeded_recall"] or 0) + 1e-9 < b["seeded_recall"]:
             problems.append(f"{rid}: seeded recall {r['seeded_found']}/{r['seeded_expected']} is below the baseline "
                             f"{b['seeded_recall']:.0%}")
+    base_found = sum(b.get("seeded_found", 0) for b in base["rules"].values() if "seeded_found" in b)
+    if base_found:
+        cur_found = sum(results["rules"].get(rid, {}).get("seeded_found", 0)
+                        for rid, b in base["rules"].items() if "seeded_found" in b)
+        if cur_found < base_found:
+            problems.append(f"total seeded recall {cur_found} is below baseline {base_found}")
     return problems
 
 
