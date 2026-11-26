@@ -147,10 +147,15 @@ def test_vector(sf: SourceFile, text: str, off: int) -> bool:
     return len(blank) == len(text) and not blank[off].strip()
 
 
+_BARE_PUBLIC_CONFIG = re.compile(r"(?:^|/)(?:svelte|astro)\.config\.[cm]?[jt]s$")
+
+
 class SecretScanner:
     def __init__(self, project: Project, emit: Emit):
         self.p = project
         self.emit = emit
+        # a bare PUBLIC_ prefix reaches the browser only in SvelteKit and Astro; compute once per scan (not O(N^2))
+        self.bare_public = any(_BARE_PUBLIC_CONFIG.search(f.rel) for f in project.files)
 
     def add(self, sf: SourceFile, rule: str, off: int, msg: str, secret: str = "", sev: str = "") -> None:
         line = sf.line_at(off)
@@ -223,12 +228,10 @@ class SecretScanner:
         if sf.is_test or is_doc or bundle:
             return
         public_lines = set()
-        # a bare PUBLIC_ prefix reaches the browser only in SvelteKit and Astro
-        bare_public = any(re.search(r"(?:^|/)(?:svelte|astro)\.config\.[cm]?[jt]s$", f.rel) for f in self.p.files)
         for m in finditer(PUBLIC_ENV, text):
             if re.search(r"PUBLISHABLE|ANON|PUBLIC_KEY|SITE_KEY|MEASUREMENT|_PK_|PK_LIVE|PK_TEST", m.group(0)):
                 continue
-            if m.group(0).startswith("PUBLIC_") and not bare_public:
+            if m.group(0).startswith("PUBLIC_") and not self.bare_public:
                 continue  # Laravel's PUBLIC_AWS_* (the public disk) stays on the server
             if re.match(r"""[ \t]*=[ \t]*(?:null|""|''|)[ \t]*(?:#[^\n]*)?(?:\n|$)""", text[m.end():m.end() + 200]):
                 continue  # declared empty
