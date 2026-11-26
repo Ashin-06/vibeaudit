@@ -24,6 +24,11 @@ All notable changes to this project are documented here. The format follows
   the size-normalized diminishing curve (`100 * exp(-penalty / (100 * sqrt(max(1, files / 25))))`) so large
   repositories retain resolution instead of flooring at `0/100`; `linear_score` remains available in JSON summaries.
 
+### Fixed
+
+- **Large-repository secret scan scaling (`secretscan.py`)**: precomputed SvelteKit/Astro config detection once per
+  `SecretScanner` run instead of rescanning every project file on each file (`O(N^2)` -> `O(N)`).
+
 ## [0.17.0] - 2026-11-26
 
 ### Added
