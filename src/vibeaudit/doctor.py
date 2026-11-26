@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import importlib.metadata
 import platform
 import shutil
 from typing import Any, Dict
@@ -51,11 +52,16 @@ def report() -> Dict[str, Any]:
             offline_osv[eco] = age
 
     scanners = {tool: shutil.which(tool) for tool in external.TOOLS}
-    status = "warn" if (key is None or (feed_installed and doc is None)) else "ok"
+    try:
+        installed = importlib.metadata.version("vibeaudit")
+    except importlib.metadata.PackageNotFoundError:
+        installed = None  # running from a source tree (PYTHONPATH=src): the `vibeaudit` command is missing
+    status = "warn" if (key is None or (feed_installed and doc is None) or installed != __version__) else "ok"
 
     return {
         "status": status,
         "version": __version__,
+        "installed": installed,
         "python": platform.python_version(),
         "platform": platform.platform(),
         "rules": {
@@ -93,6 +99,10 @@ def render_text(info: Dict[str, Any]) -> str:
         f"    Active:     {f['source']} (slopsquatted={f['entries']['slopsquatted']}, "
         f"sunsets={f['entries']['model_sunsets']}, injection={f['entries']['prompt_injection']})",
     ]
+    if info["installed"] is None:
+        lines.insert(1, "  Install:    not installed, running from source (run `pip install -e .` for the `vibeaudit` command)")
+    elif info["installed"] != info["version"]:
+        lines.insert(1, f"  Install:    installed {info['installed']} but running {info['version']} (reinstall to match)")
     if "expires" in f:
         lines.append(f"    Signed:     {f['created']} (expires {f['expires'][:10]}, {f['days_remaining']}d remaining)")
     elif f["installed"]:

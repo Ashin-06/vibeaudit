@@ -232,3 +232,15 @@ def test_doctor_cli_and_mcp(capsys):
     mcp_res = handle({"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": {"name": "doctor", "arguments": {}}})["result"]
     assert mcp_res["isError"] is False
     assert mcp_res["structuredContent"]["rules"]["total"] == data["rules"]["total"]
+
+
+def test_doctor_warns_when_running_from_source_without_install(monkeypatch):
+    import importlib.metadata
+
+    def missing(name):
+        raise importlib.metadata.PackageNotFoundError(name)
+
+    monkeypatch.setattr(importlib.metadata, "version", missing)
+    data = doctor.report()
+    assert data["installed"] is None and data["status"] == "warn"
+    assert "not installed" in doctor.render_text(data)
