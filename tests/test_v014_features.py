@@ -184,3 +184,54 @@ def test_section2_fixes_php_ruby_go_and_csharp_minimal_api(tmp_path):
     cs_res = scan(str(cs_root), Options(offline=True, external="none", include_preview=True))
     auth_routes = {r.path: r.has_auth for r in cs_res.routes}
     assert auth_routes == {"/open": False, "/locked": True}
+
+
+def test_go_nested_receiver_mounts_isolate_public_and_authed(tmp_path):
+    root = _write_tree(tmp_path, {
+        "go.mod": "module app\ngo 1.22\n",
+        "api/api.go": (
+            'package api\nimport "github.com/go-chi/chi/v5"\n'
+            'func New(authResource *AuthResource, appAPI *AppAPI) *chi.Mux {\n'
+            '    r := chi.NewRouter()\n'
+            '    r.Mount("/auth", authResource.Router())\n'
+            '    r.Group(func(r chi.Router) {\n'
+            '        r.Use(jwt.Authenticator)\n'
+            '        r.Mount("/api", appAPI.Router())\n'
+            '    })\n'
+            '    return r\n'
+            '}\n'
+        ),
+        "auth/pwdless/api.go": (
+            'package pwdless\nimport "github.com/go-chi/chi/v5"\n'
+            'type Resource struct{}\n'
+            'func (rs *Resource) Router() *chi.Mux {\n'
+            '    r := chi.NewRouter()\n'
+            '    r.Post("/custom", rs.custom)\n'
+            '    return r\n'
+            '}\n'
+            'func (rs *Resource) custom(w http.ResponseWriter, r *http.Request) {}\n'
+        ),
+        "api/app/api.go": (
+            'package app\nimport "github.com/go-chi/chi/v5"\n'
+            'type API struct{ Account *AccountResource }\n'
+            'func (a *API) Router() *chi.Mux {\n'
+            '    r := chi.NewRouter()\n'
+            '    r.Mount("/account", a.Account.router())\n'
+            '    return r\n'
+            '}\n'
+        ),
+        "api/app/account.go": (
+            'package app\nimport "github.com/go-chi/chi/v5"\n'
+            'type AccountResource struct{}\n'
+            'func (rs *AccountResource) router() *chi.Mux {\n'
+            '    r := chi.NewRouter()\n'
+            '    r.Put("/", rs.update)\n'
+            '    return r\n'
+            '}\n'
+            'func (rs *AccountResource) update(w http.ResponseWriter, r *http.Request) {}\n'
+        ),
+    })
+    res = scan(str(root), Options(offline=True, external="none", include_preview=True))
+    by_file = {r.file: r for r in res.routes}
+    assert by_file["api/app/account.go"].has_auth is True
+    assert by_file["auth/pwdless/api.go"].has_auth is False
