@@ -162,6 +162,17 @@ def expired(doc: dict, now: Optional[dt.datetime] = None) -> bool:
     return _when(doc["expires"]) <= (now or dt.datetime.now(dt.timezone.utc))
 
 
+def validate_install(raw: bytes, key: Optional[dict] = None, allow_expired: bool = False) -> dict:
+    """Validate signature, expiry, and anti-rollback version against the currently installed feed."""
+    doc = open_feed(raw, key=key)
+    if not allow_expired and expired(doc):
+        raise FeedError(f"it expired on {doc['expires'][:10]}")
+    current = cached()
+    if current is not None and doc["version"] < current["version"]:
+        raise FeedError("it is older than the installed feed")
+    return doc
+
+
 def check_data(data: dict) -> None:
     """Raise FeedError (or ValueError) unless every entry is well formed and every pattern compiles."""
     if not isinstance(data, dict):

@@ -4,6 +4,37 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.16.0] - 2026-11-26
+
+### Fixed
+
+- **Context-sensitive and span-scoped taint sanitization (`jsscan.py`, `pyscan.py`)**:
+  - Replaced whole-expression sanitizer short-circuits with sink-aware, span-scoped stripping so URL
+    encoding (`encodeURIComponent`, `encodeURI`, `urllib.parse.quote`) or HTML escaping (`DOMPurify`,
+    `html.escape`) no longer suppresses taint for SQL (`BE001`), shell (`BE002`), path (`BE006`), or
+    redirect (`BE008`) sinks, and mixed expressions (`Number(a) + b`) keep the unsanitized operand tainted.
+- **Unified threat-feed rollback and expiry validation (`feed.py`, `updater.py`, `bundle.py`)**:
+  - Offline bundle import (`bundle.import_bundle`) now enforces the same signature, expiry, and
+    anti-rollback version check (`feed.validate_install`) as `vibeaudit update`.
+- **Benchmark documentation accuracy (`README.md`)**: updated stale repository counts (`106` -> `142`) and
+  clarified the distinction between the 142-repo precision benchmark, 255 GHSA advisories, and 17 pinned
+  advisory-recall locations.
+
+### Added
+
+- **Real-world query-language injection checks (`pyscan.py`, `jsscan.py`)**:
+  - `BE022` (preview, CWE-943): detects string-formatted Cypher (Neo4j / FalkorDB / Memgraph) and KQL
+    (Azure Data Explorer) queries across Python and JavaScript/TypeScript.
+  - `BE010` in Python: detects unsanitized user/JSON filters passed into PyMongo / Motor queries.
+- **`vibeaudit fix --verify`**: re-scans modified files after `--apply`, verifies fixed findings are gone
+  and no new findings appeared, and automatically rolls back edited files on failure (`fix.verify_plan`).
+- **`vibeaudit scan --privacy-report`**: prints the exact redacted file slices, line ranges, and byte
+  counts that `--llm` / `--llm-review` would send without making network calls or needing an API key.
+- **Attack-path correlation & observable AI risk profile (`correlate.py`, `scanner.py`, `report.py`)**:
+  correlates high-risk chains (unauthenticated endpoint + injection/IDOR, untrusted prompt/MCP input +
+  dangerous execution, client secret leak + open backend) into `meta.attack_paths` and summarizes observable
+  vibe-coding failure signals in `meta.ai_risk_profile`.
+
 ## [0.15.0] - 2026-11-26
 
 ### Added

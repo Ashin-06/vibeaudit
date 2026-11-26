@@ -124,12 +124,7 @@ def _update_feed(log: Callable[[str], None], fetch: Callable[[str], bytes]) -> i
         log(f"{feed.FEED}: download failed ({e}); keeping the current copy")
         return 1
     try:
-        doc = feed.open_feed(raw)
-        if feed.expired(doc):
-            raise feed.FeedError(f"it expired on {doc['expires'][:10]}")
-        current = feed.cached()
-        if current is not None and doc["version"] < current["version"]:
-            raise feed.FeedError("it is older than the installed feed")
+        doc = feed.validate_install(raw)
     except feed.FeedError as e:
         log(f"{feed.FEED}: downloaded feed rejected ({e}); keeping the current copy")
         return 1

@@ -133,6 +133,11 @@ def render_text(res: Result, color: bool, verbose: bool = True) -> str:
                    "redirect, XSS) and do count (use --no-gate-severe-preview to leave them out).")
     for note in res.meta.get("notes", []):
         out.append(f"  Note: {note}")
+    paths = res.meta.get("attack_paths") or []
+    if paths:
+        out.append(f"  Attack paths ({len(paths)} correlated):")
+        for ap in paths[:5]:
+            out.append(f"    - [{ap['severity'].upper()}] {ap['title']}: {' -> '.join(ap['steps'])}")
     return "\n".join(out) + "\n"
 
 

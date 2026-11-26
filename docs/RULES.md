@@ -3,9 +3,9 @@
 Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do not edit by hand.
 `vibeaudit rules` prints the same list, and `vibeaudit rules --format json` includes every field.
 
-178 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
+179 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-82 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+83 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -274,6 +274,7 @@ References: CWE-1395, A06:2021
 | [BE019](#be019) | high | preview | Payment amount taken from the client |
 | [BE020](#be020) | medium | preview | Email header injection |
 | [BE021](#be021) | high | preview | XML external entity (XXE) processing enabled |
+| [BE022](#be022) | high | preview | Graph or analytics query injection (Cypher / KQL) |
 | [CSHARP002](#csharp002) | critical | preview | Deserialization that lets the payload pick the type |
 | [GO004](#go004) | medium | preview | SQL built with string formatting (Go) |
 | [JAVA004](#java004) | critical | preview | Polymorphic deserialization without an allow-list |
@@ -503,6 +504,18 @@ Why it matters: An XML parser that resolves external entities or DTDs lets an at
 How to fix: Disable DTD processing and external entity resolution (defusedxml in Python, disallow-doctype-decl in Java/Kotlin, DtdProcessing.Prohibit in C#, avoid LIBXML_NOENT in PHP and noent: true in libxmljs).
 
 References: CWE-611, A05:2021
+
+### BE022
+
+**Graph or analytics query injection (Cypher / KQL)** (high, preview)
+
+Preview: New in 0.16.0: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: Building a Cypher (Neo4j/FalkorDB/Memgraph) or KQL (Azure Data Explorer) query with string formatting or concatenation lets an attacker or prompt-injected agent alter the query and read or modify unauthorized data.
+
+How to fix: Pass dynamic values as query parameters (Cypher `$param` maps or KQL `ClientRequestProperties` parameters) rather than interpolating them into the query string.
+
+References: CWE-943, A03:2021
 
 ### CSHARP002
 

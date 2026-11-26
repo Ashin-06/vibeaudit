@@ -281,7 +281,7 @@ def import_bundle(path: Path, log: Callable[[str], None]) -> None:
                 raise BundleError(f"{info.filename} does not match the SHA-256 in the manifest")
             if info.filename == f"data/{feed.FEED}":
                 try:
-                    feed.open_feed(data)  # an expired feed is still installed; scans warn and use the shipped data
+                    feed.validate_install(data)  # enforce signature, expiry and anti-rollback checks on import
                 except feed.FeedError as e:
                     raise BundleError(f"{info.filename}: {e}") from None
             elif info.filename.startswith("data/"):
