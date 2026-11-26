@@ -9,8 +9,8 @@ description = "Security and quality audit for AI-generated (vibe-coded) and LLM-
 readme = "README.md"
 license = { text = "MIT" }
 authors = [{ name = "Ashin" }]
-requires-python = ">=3.9"
-dependencies = ["tomli>=1.1; python_version < '3.11'"]
+requires-python = ">=3.11"
+dependencies = []
 keywords = ["security", "sast", "static-analysis", "llm", "ai", "vibe-coding", "prompt-injection", "slopsquatting",
             "supply-chain", "secrets", "accessibility", "sarif", "mcp", "code-review"]
 classifiers = [
@@ -22,8 +22,6 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -35,8 +33,15 @@ classifiers = [
 
 [project.optional-dependencies]
 dev = ["pytest>=7", "pyyaml>=6"]
-# optional real parser for Go, Rust and Java function indexing; without it the regex index is used
-parse = ["tree-sitter>=0.23", "tree-sitter-go>=0.23", "tree-sitter-rust>=0.23", "tree-sitter-java>=0.23"]  # pyyaml: tools/check_yaml.py only, never imported by vibeaudit
+# optional real parser for Go, Rust, Java, JavaScript and TypeScript function indexing; without it the regex index is used
+parse = [
+    "tree-sitter>=0.23",
+    "tree-sitter-go>=0.23",
+    "tree-sitter-rust>=0.23",
+    "tree-sitter-java>=0.23",
+    "tree-sitter-javascript>=0.23",
+    "tree-sitter-typescript>=0.23",
+]
 
 [project.scripts]
 vibeaudit = "vibeaudit.cli:main"

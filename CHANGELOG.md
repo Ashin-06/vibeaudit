@@ -4,6 +4,26 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.18.0] - 2026-11-26
+
+### Added
+
+- **Optional tree-sitter JavaScript/TypeScript/TSX parser (`parse.py`, `jsscan.py`)**: extends `vibeaudit[parse]`
+  to include `tree-sitter-javascript` and `tree-sitter-typescript` (TypeScript and TSX grammars) for accurate
+  function and parameter indexing across complex TypeScript generics and arrow signatures, while keeping the
+  offset-preserving lexer fallback when `vibeaudit[parse]` is not installed or `VIBEAUDIT_PARSER=regex` is set.
+- **Live PyPI & GitHub Release badges (`README.md`)**: surfaced live PyPI version, monthly download count, and
+  GitHub Release badges directly in the README header.
+
+### Changed
+
+- **Zero runtime dependencies & Python 3.11+ (`pyproject.toml`, `config.py`, `store.py`, `.github/workflows/ci.yml`)**:
+  raised `requires-python` to `>=3.11`, dropped end-of-life Python 3.9 and 3.10 along with the `tomli` runtime
+  dependency, and updated the CI matrix to Python 3.11-3.14.
+- **Non-flattening diminishing primary score (`report.py`)**: `Result.score` and `Result.domain_scores` now use
+  the size-normalized diminishing curve (`100 * exp(-penalty / (100 * sqrt(max(1, files / 25))))`) so large
+  repositories retain resolution instead of flooring at `0/100`; `linear_score` remains available in JSON summaries.
+
 ## [0.17.0] - 2026-11-26
 
 ### Added

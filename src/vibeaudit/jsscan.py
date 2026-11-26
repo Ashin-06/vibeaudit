@@ -14,7 +14,7 @@ import posixpath
 import re
 from typing import Callable, Dict, List, Optional, Set, Tuple
 
-from . import heuristics as H
+from . import heuristics as H, parse
 from .guard import GUARD, finditer
 from .files import Project, SourceFile
 from .lexer import Views, first_arg, js_views, match_close, split_args, stmt_end
@@ -225,6 +225,7 @@ class FileState:
         # computed once per file content and kept in sf.cache by a long-lived Project (vibeaudit watch, lsp):
         # both depend only on this file (and the configured sanitizers, part of the cache key)
         self.defs: Optional[List[Tuple[str, int, int]]] = None  # functions found by index_functions
+        self.param_spans: Dict[Tuple[int, int], Tuple[int, int]] = {}  # fn (a, b) -> (param_start, param_end)
         self.tainted = False  # compute_taint has run
         self.scoped: List[tuple] = []  # the assignments compute_taint iterates over
         self.base_taint: Dict[str, Dict[Tuple[int, int], Set[str]]] = {}  # this file's own taint (cached)
@@ -492,8 +493,30 @@ class JsScanner:
         for name, a, b in defs:
             self.func_index.setdefault(name, []).append((fs, a, b))
 
+    @staticmethod
+    def _js_lang(rel: str) -> Optional[str]:
+        low = rel.lower()
+        if low.endswith(".tsx"):
+            return "tsx"
+        if low.endswith((".ts", ".mts", ".cts")):
+            return "ts"
+        if low.endswith((".js", ".mjs", ".cjs", ".jsx")):
+            return "js"
+        return None
+
     def _index_functions(self, fs: FileState, defs: List[Tuple[str, int, int]]) -> None:
         bare = fs.v.bare
+        lang = self._js_lang(fs.sf.rel)
+        parsed = parse.js_functions(lang, fs.sf.text or "") if lang else None
+        if parsed is not None:
+            for name, a, po, pc, b in parsed:
+                if name in NOT_FUNC or not bare[a:a + 1].strip():
+                    continue
+                defs.append((name, a, b))
+                fs.scopes.append((a, b))
+                if po >= 0 and pc >= po:
+                    fs.param_spans[(a, b)] = (po, pc)
+            return
         for rx in FUNC_DEFS:
             for m in finditer(rx, bare):
                 name = m.group(1)
@@ -705,8 +728,17 @@ class JsScanner:
     def _params(fs: FileState, a: int, b: int) -> List[List[str]]:
         """Parameter names of the function defined at a..b, one list per position (destructuring gives several)."""
         bare, code = fs.v.bare, fs.v.code
-        open_p = bare.find("(", a, b)
-        close = match_close(bare, open_p) if open_p >= 0 else -1
+        span = fs.param_spans.get((a, b))
+        if span is not None:
+            po, pc = span
+            if po < len(bare) and bare[po] == "(" and pc > po:
+                open_p, close = po, pc
+            else:
+                ident = code[po:pc].strip()
+                return [[ident]] if re.fullmatch(r"[A-Za-z_$][\w$]*", ident) else []
+        else:
+            open_p = bare.find("(", a, b)
+            close = match_close(bare, open_p) if open_p >= 0 else -1
         if close < 0:
             return []
         out: List[List[str]] = []

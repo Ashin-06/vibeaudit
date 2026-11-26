@@ -74,9 +74,9 @@ def test_domain_scores_in_reports():
                 Finding("UI001", "a.tsx", 1, "m", "low", category="ui"),
                 Finding("API001", "a.ts", 1, "m", "medium", category="contracts")]
     res = Result(".", findings, {"files_scanned": 1})
-    assert res.domain_scores == {"Security": 75, "AI": 100, "Quality": 97, "Data": 100, "Reliability": 100, "UI": 99}
-    assert json.loads(render_json(res))["summary"]["domains"]["Security"] == 75
-    assert "Domains: Security 75  AI 100  Quality 97" in render_text(res, color=False)
+    assert res.domain_scores == {"Security": 78, "AI": 100, "Quality": 97, "Data": 100, "Reliability": 100, "UI": 99}
+    assert json.loads(render_json(res))["summary"]["domains"]["Security"] == 78
+    assert "Domains: Security 78  AI 100  Quality 97" in render_text(res, color=False)
     assert "| Quality | 97/100 |" in render_markdown(res)
     assert ">Quality</span><b>97</b>" in render_html(res)
 

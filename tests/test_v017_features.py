@@ -45,17 +45,20 @@ def test_normalized_score_scales_with_repo_size_and_raw_penalty():
     findings = [Finding("BE001", "a.py", i, "sql", "high", category="backend") for i in range(1, 21)]
     small = report.Result("/small", findings, {"files_scanned": 5})
     large = report.Result("/large", findings, {"files_scanned": 500})
-    assert small.score == 0 and large.score == 0
+    assert small.linear_score == 0 and large.linear_score == 0
     assert small.raw_penalty == 200 and large.raw_penalty == 200
-    assert large.normalized_score > small.normalized_score > 0
+    assert large.score > small.score > 0
+    assert large.score == large.normalized_score
     assert large.density_per_100_files < small.density_per_100_files
     doc = json.loads(report.render_json(large))
+    assert doc["summary"]["score"] == large.score
     assert doc["summary"]["normalized_score"] == large.normalized_score
+    assert doc["summary"]["linear_score"] == 0
     assert doc["summary"]["raw_penalty"] == 200
-    assert "size-normalized:" in report.render_text(large, color=False)
+    assert "raw penalty: 200" in report.render_text(large, color=False)
 
     clean = report.Result("/clean", [], {"files_scanned": 100})
-    assert clean.normalized_score == 100 and clean.raw_penalty == 0
+    assert clean.score == 100 and clean.normalized_score == 100 and clean.raw_penalty == 0
 
 
 def test_git_history_secret_scanning_finds_deleted_provider_key_and_masks_snippet(tmp_path):
