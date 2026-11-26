@@ -26,9 +26,10 @@ nothing, inaccessible forms and frontend calls to API routes that do not exist.
 - Works offline with no API key. The network is used only for package-registry and vulnerability
   lookups (`--offline` turns that off); an LLM is used only if you ask for it.
 - Pure Python, zero runtime dependencies (Python 3.11+). Linux, macOS and Windows.
-  Optional `pip install vibeaudit[parse]` adds a tree-sitter function index for Go, Rust, Java, JavaScript and TypeScript
-  (`vibeaudit doctor` shows which is active; `VIBEAUDIT_PARSER=regex` turns it off).
-- 96 stable rules (93.6% held-out precision) plus 84 preview rules (179 rules in 12 categories plus 1 optional LLM review), mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
+  Optional `pip install vibeaudit[parse]` adds a tree-sitter function and parameter index for Go, Rust, Java,
+  JavaScript and TypeScript (`vibeaudit doctor` shows which is active; `VIBEAUDIT_PARSER=regex` turns it off).
+- 95 stable static rules (93.6% held-out precision) and 84 preview rules (179 rules in 12 categories) plus 1
+  optional LLM review rule (`AI001`; 180 rules total), mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
 - Terminal output plus JSON, SARIF 2.1.0 (GitHub code scanning), Markdown, HTML, an SVG badge, CycloneDX 1.6 AI-BOM (`-r aibom`), and a fix
   brief you can paste into an AI assistant.
 - Fits into CI (GitHub Action, `--diff`), pre-commit (`--staged`) and coding agents (an MCP server).
@@ -125,7 +126,9 @@ Every rule, with its severity, why it matters and how to fix it, is in the
 Routes are found for Flask, FastAPI, Django REST framework, Express, Fastify, Hono, Next.js (app and pages
 routers, server actions), SvelteKit, Supabase edge functions and Firebase functions. Python is analysed on
 its syntax tree with taint tracking (request data, model output and agent-tool arguments are followed into
-SQL, shell, `eval`, file paths, URLs, templates, redirects and HTML); JavaScript and TypeScript use a lexer that keeps exact offsets (or tree-sitter function indexing with `vibeaudit[parse]`).
+SQL, shell, `eval`, file paths, URLs, templates, redirects and HTML); JavaScript and TypeScript data-flow
+analysis uses a lexer that keeps exact offsets, with optional tree-sitter function and parameter indexing via
+`vibeaudit[parse]`.
 
 ### Why another scanner
 
@@ -152,7 +155,7 @@ or, to keep it in its own environment:
 pipx install vibeaudit
 ```
 
-To install from this repository instead: `pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.18.0"`.
+To install from this repository instead: `pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.19.0"`.
 
 Optional: if [gitleaks](https://github.com/gitleaks/gitleaks), [bandit](https://github.com/PyCQA/bandit),
 [osv-scanner](https://github.com/google/osv-scanner) or [semgrep](https://github.com/semgrep/semgrep) are on
@@ -406,7 +409,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0                  # needed for --diff
-      - uses: Ashin-06/vibeaudit@v0.18.0
+      - uses: Ashin-06/vibeaudit@v0.19.0
         with:
           fail-on: high
           args: --diff origin/main        # optional: only changed lines
@@ -441,7 +444,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - uses: Ashin-06/vibeaudit@v0.18.0
+      - uses: Ashin-06/vibeaudit@v0.19.0
         with:
           review: "true"
           args: --diff origin/${{ github.base_ref }} --baseline .vibeaudit-baseline.json --fail-on-regression 5
@@ -458,7 +461,7 @@ findings show in the merge request's Code Quality widget and in the pipeline's T
 
 ```yaml
 include:
-  - remote: https://raw.githubusercontent.com/Ashin-06/vibeaudit/v0.18.0/ci/gitlab-ci.yml
+  - remote: https://raw.githubusercontent.com/Ashin-06/vibeaudit/v0.19.0/ci/gitlab-ci.yml
 ```
 
 **CircleCI**: copy [ci/circleci.yml](ci/circleci.yml) into `.circleci/config.yml` (or merge its job into
@@ -474,7 +477,7 @@ for a test report) and keep the exit code.
 # .pre-commit-config.yaml
 repos:
   - repo: https://github.com/Ashin-06/vibeaudit
-    rev: v0.18.0
+    rev: v0.19.0
     hooks:
       - id: vibeaudit
 ```
@@ -616,10 +619,11 @@ tracking progress, not a security guarantee: read the findings.
 
 Findings of **preview** rules (marked `(preview)`, `"preview": true` in JSON) are reported but left out of
 the score, the grade and `--fail-on`, unless you pass `--include-preview`. The exception is the severe
-preview rules (command injection, `eval`, unsafe deserialization, open redirect and XSS, marked
-`"gates_in_preview": true`): a miss there costs more than a false alarm, so they count by default;
-`--no-gate-severe-preview` leaves them out. A rule is in preview while its
-measured precision is below 90% or it is new; see [STABILITY.md](STABILITY.md).
+preview rules (command injection, `eval`, unsafe deserialization, open redirect, committed secrets and
+high-confidence tainted XSS, marked `"gates_in_preview": true`): a miss there costs more than a false alarm,
+so they count by default (`FE001` only when `high`/`critical`, leaving untainted `medium` heuristic HTML sinks
+non-gating unless `--include-preview` is used); `--no-gate-severe-preview` leaves them out. A rule is in
+preview while its measured precision is below 90% or it is new; see [STABILITY.md](STABILITY.md).
 
 ## False positives and suppressing findings
 
@@ -798,7 +802,7 @@ A sample report for a deliberately vulnerable app (HTML and the six compliance r
   where every finding was read and labelled, alongside 255 GHSA security advisories in `benchmark/advisories.json`
   and 17 pinned pre-fix vulnerable locations in `benchmark/recall.json`; confirmed problems included an
   unauthenticated route in a popular chat UI that loads any user's API key by id with the service-role key.
-- **Four external audits.** Each finding was reproduced with a failing test before it was fixed; see the
+- **Five external audits.** Each finding was reproduced with a failing test before it was fixed; see the
   [CHANGELOG](CHANGELOG.md).
 - **Packaging.** The built wheel was installed in fresh environments on Python 3.11, 3.12, 3.13 and 3.14 and
   every command was run; CI runs the tests across Python 3.11 to 3.14 on Linux, macOS and Windows, and also from a plain checkout without installing.
@@ -810,13 +814,13 @@ CycloneDX SBOM (`vibeaudit-VERSION.cdx.json`), built by the release workflow fro
 build provenance is signed with GitHub artifact attestations (Sigstore). With the GitHub CLI:
 
 ```bash
-gh attestation verify vibeaudit-0.18.0-py3-none-any.whl --repo Ashin-06/vibeaudit
+gh attestation verify vibeaudit-0.19.0-py3-none-any.whl --repo Ashin-06/vibeaudit
 ```
 
 Run the same for the `.tar.gz` and the `.cdx.json` file. The check passes only if the file was built by
 this repository's release workflow; `--format json` shows the commit and workflow it came from. The SBOM
 lists what the wheel installs (vibeaudit has zero runtime dependencies). PyPI receives these same attested files through trusted publishing; to install a wheel you verified
-yourself, run `pip install vibeaudit-0.18.0-py3-none-any.whl`.
+yourself, run `pip install vibeaudit-0.19.0-py3-none-any.whl`.
 
 ## Contributing, security and license
 

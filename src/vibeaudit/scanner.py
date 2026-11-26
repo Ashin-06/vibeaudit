@@ -320,7 +320,19 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
         "ai_risk_profile": correlate.ai_risk_profile(findings),
     }
     if history_info is not None:
+        meta["history"] = history_info
         meta["history_commits_scanned"] = history_info.get("commits_scanned", 0)
+        h_status = history_info.get("status", "complete")
+        if h_status == "truncated_commits":
+            notes.append(f"Git history scan stopped after {history_info['commits_scanned']} commits (--history-commits limit); older history was not checked.")
+        elif h_status == "truncated_size":
+            notes.append("Git history scan stopped at the 20 MB patch stream limit; remaining commits were not checked.")
+        elif h_status == "timeout":
+            notes.append("Git history scan timed out before reaching older commits.")
+        elif h_status == "git_error":
+            notes.append("Git history scan failed; commit history was not checked.")
+        elif h_status == "not_git":
+            notes.append("Git history scan skipped: target directory has no .git repository.")
     if opts.changes is not None:
         meta["changed_files"] = len(opts.changes)
     return Result(str(project.root), findings, meta, all_routes)

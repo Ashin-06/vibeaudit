@@ -767,4 +767,5 @@ class PhpScanner:
             call = re.search(r"(?:->|::)\s*(\w+)\s*\([^()]*\)\s*$", value)
             if call and call.group(1).lower() in self.safe_methods:
                 continue
-            self.add(sf, m.start(), "FE001", "Unescaped `{!! ... !!}` output in a Blade template can execute script (XSS).", "high")
+            sev = "high" if re.search(r"\$_(?:GET|POST|REQUEST|COOKIE)\b|\brequest\s*\(", value) else "medium"
+            self.add(sf, m.start(), "FE001", "Unescaped `{!! ... !!}` output in a Blade template can execute script (XSS).", sev)

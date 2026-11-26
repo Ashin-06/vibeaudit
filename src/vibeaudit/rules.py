@@ -210,10 +210,12 @@ _R = [
          "Allow-list hosts, block private and link-local IPs after DNS resolution, and do not follow "
          "redirects to other hosts.", "CWE-918", "A10:2021"),
     Rule("BE006", "Path traversal", "backend", "high",
-         "A user-controlled path reaches the file system, so `../../etc/passwd` style input can read or "
-         "overwrite any file.",
-         "Use `secure_filename` / `path.basename`, resolve the final path and check it is inside the allowed "
-         "directory.", "CWE-22", "A01:2021"),
+         "A user-controlled path reaches the file system, so `../../etc/passwd` or a symlink inside the base "
+         "directory can read or overwrite unintended files.",
+         "Resolve both the candidate path and allowed base canonically (`Path.resolve()` / `os.path.realpath()`) and "
+         "verify containment (`resolved.is_relative_to(base)` or `os.path.commonpath`); note canonical checks still "
+         "have an inherent TOCTOU window if symlinks can be modified concurrently, so restrict writable symlinks or "
+         "use `O_NOFOLLOW` where required.", "CWE-22", "A01:2021"),
     Rule("BE007", "Server-side template injection", "backend", "high",
          "Rendering a user-controlled string as a template executes template code on the server.",
          "Render a fixed template file and pass user data as variables.", "CWE-1336", "A03:2021"),

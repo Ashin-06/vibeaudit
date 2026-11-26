@@ -349,35 +349,66 @@ def _is_resolved_path(node: Optional[ast.AST], assigned: Dict[str, ast.AST], mod
             return True
         if dotted(node.func) in ("os.path.realpath", "posixpath.realpath", "ntpath.realpath", "realpath"):
             return True
-        if last_name(node.func) == "Path" and len(node.args) == 1 and not node.keywords:
+        if last_name(node.func) in ("Path", "str") and len(node.args) == 1 and not node.keywords:
             return _is_resolved_path(node.args[0], assigned, mod_assigned, depth + 1)
     return False
 
 
+def _unwrap_str_name(node: ast.AST) -> Optional[str]:
+    if isinstance(node, ast.Name):
+        return node.id
+    if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == "str" \
+            and len(node.args) == 1 and not node.keywords and isinstance(node.args[0], ast.Name):
+        return node.args[0].id
+    return None
+
+
+def _commonpath_guarded(d: ast.AST, loc: Dict[str, ast.AST], mod: Dict[str, ast.AST]) -> Set[str]:
+    """Recognise canonical `os.path.commonpath([base, candidate]) != base` with both paths resolved."""
+    if not (isinstance(d, ast.Compare) and len(d.ops) == 1 and isinstance(d.ops[0], ast.NotEq) and len(d.comparators) == 1):
+        return set()
+    pairs = [(d.left, d.comparators[0]), (d.comparators[0], d.left)]
+    for call_node, base_cmp in pairs:
+        if not (isinstance(call_node, ast.Call)
+                and dotted(call_node.func) in ("os.path.commonpath", "posixpath.commonpath", "ntpath.commonpath", "commonpath")
+                and len(call_node.args) == 1 and not call_node.keywords):
+            continue
+        seq = call_node.args[0]
+        if not isinstance(seq, (ast.List, ast.Tuple)) or len(seq.elts) != 2:
+            continue
+        a, b = seq.elts
+        if not (_is_resolved_path(a, loc, mod) and _is_resolved_path(b, loc, mod)):
+            continue
+        base_id = _unwrap_str_name(base_cmp)
+        if not base_id:
+            continue
+        a_id, b_id = _unwrap_str_name(a), _unwrap_str_name(b)
+        if a_id == base_id and b_id:
+            return {b_id}
+        if b_id == base_id and a_id:
+            return {a_id}
+    return set()
+
+
 def _path_guarded(test: ast.AST, assigned: Optional[Dict[str, ast.AST]] = None,
                   mod_assigned: Optional[Dict[str, ast.AST]] = None) -> Set[str]:
-    """Names a traversal guard rejects via an `or` disjunction (`p.is_absolute() or ".." in p.parts`)
-    or a negated resolved containment check (`not p.is_relative_to(base)` with both paths canonically resolved)."""
-    absolute: Set[str] = set()
-    dotdot: Set[str] = set()
+    """Names a traversal guard verifies with canonical path containment (`not resolved.is_relative_to(base)`
+    or `os.path.commonpath([base, resolved]) != base`, requiring both paths to be canonically resolved).
+    Lexical checks (`is_absolute()` / `'..' in parts`) are not accepted because symlinks inside `base` can
+    still escape it; note that canonical user-space checks retain an inherent filesystem TOCTOU window."""
     contained: Set[str] = set()
     loc = assigned or {}
     mod = mod_assigned or {}
     for d in _disjuncts(test):
-        if isinstance(d, ast.Call) and isinstance(d.func, ast.Attribute) and d.func.attr == "is_absolute" \
-                and isinstance(d.func.value, ast.Name) and not d.args and not d.keywords:
-            absolute.add(d.func.value.id)
-        elif isinstance(d, ast.Compare) and len(d.ops) == 1 and isinstance(d.ops[0], ast.In) \
-                and const_str(d.left) == ".." and isinstance(d.comparators[0], ast.Attribute) \
-                and d.comparators[0].attr == "parts" and isinstance(d.comparators[0].value, ast.Name):
-            dotdot.add(d.comparators[0].value.id)
-        elif isinstance(d, ast.UnaryOp) and isinstance(d.op, ast.Not) and isinstance(d.operand, ast.Call):
+        if isinstance(d, ast.UnaryOp) and isinstance(d.op, ast.Not) and isinstance(d.operand, ast.Call):
             fn = d.operand.func
             if isinstance(fn, ast.Attribute) and fn.attr == "is_relative_to" and isinstance(fn.value, ast.Name) \
                     and len(d.operand.args) == 1 and not d.operand.keywords:
                 if _is_resolved_path(fn.value, loc, mod) and _is_resolved_path(d.operand.args[0], loc, mod):
                     contained.add(fn.value.id)
-    return (absolute & dotdot) | contained
+        else:
+            contained |= _commonpath_guarded(d, loc, mod)
+    return contained
 
 
 def validated_idents(tree: ast.AST) -> Tuple[Set[str], List[Tuple[int, int, str]]]:

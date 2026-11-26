@@ -79,6 +79,8 @@ def report() -> Dict[str, Any]:
         "rules": {
             "total": len(RULES),
             "static": len(static),
+            "stable_static": sum(not r.preview for r in static),
+            "llm_review": len(RULES) - len(static),
             "categories": len({r.category for r in static}),
             "all_categories": len(CATEGORIES),
             "preview": len(preview),
@@ -103,7 +105,8 @@ def render_text(info: Dict[str, Any]) -> str:
     lines = [
         f"vibeaudit {info['version']} (status: {info['status']})",
         f"  Python:     {info['python']} on {info['platform']}",
-        f"  Rules:      {r['total']} total ({r['stable']} stable, {r['preview']} preview, {r['severe_preview']} severe-gating preview)",
+        f"  Rules:      {r['total']} total ({r['stable_static']} stable static, {r['preview']} preview, "
+        f"{r['llm_review']} LLM review; {r['severe_preview']} severe-gating preview)",
         f"  Ecosystems: {', '.join(info['ecosystems']['all'])}",
         f"    Registry: {', '.join(info['ecosystems']['registry'])}",
         f"  Threat feed:",

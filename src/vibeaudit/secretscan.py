@@ -356,71 +356,154 @@ def _mask_secret(token: str) -> str:
     return token[:6] + "..." + token[-4:]
 
 
-def scan_git_history(root, emit: Emit, max_commits: int = 200) -> Dict[str, int]:
-    """Scan added lines across recent git commits for high-confidence provider keys and private keys."""
+HISTORY_MAX_BYTES = 20_000_000
+HISTORY_TIMEOUT = 30.0
+
+
+def scan_git_history(
+    root,
+    emit: Emit,
+    max_commits: int = 200,
+    max_bytes: Optional[int] = None,
+    timeout: Optional[float] = None,
+) -> Dict[str, Any]:
+    """Stream recent git commits incrementally up to bounded commit, byte, and time limits."""
     import hashlib
     import subprocess
+    import threading
     from pathlib import Path
 
     repo = Path(root)
-    info = {"commits_scanned": 0, "findings": 0}
+    limit = max(1, int(max_commits))
+    byte_cap = max(1, int(HISTORY_MAX_BYTES if max_bytes is None else max_bytes))
+    tlimit = float(HISTORY_TIMEOUT if timeout is None else timeout)
+    info: Dict[str, Any] = {
+        "status": "complete",
+        "commits_scanned": 0,
+        "bytes_scanned": 0,
+        "max_commits": limit,
+        "max_bytes": byte_cap,
+        "findings": 0,
+        "truncated": False,
+    }
     if not (repo / ".git").exists():
+        info["status"] = "not_git"
         return info
     try:
-        log = subprocess.run(
-            ["git", "-C", str(repo), "log", f"-n{max(1, int(max_commits))}", "-p", "--no-color", "--unified=0", "--diff-filter=AM"],
-            capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=30,
+        proc = subprocess.Popen(
+            ["git", "-C", str(repo), "log", f"-n{limit + 1}", "-p", "--no-color", "--unified=0", "--diff-filter=AM"],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
         )
-    except (OSError, subprocess.TimeoutExpired):
+    except OSError:
+        info["status"] = "git_error"
         return info
-    if log.returncode != 0 or not log.stdout:
-        return info
-    text = log.stdout[:20_000_000]
+
+    timed_out = threading.Event()
+
+    def _abort() -> None:
+        timed_out.set()
+        try:
+            proc.kill()
+        except OSError:
+            pass
+
+    timer = threading.Timer(tlimit, _abort)
+    timer.daemon = True
+    timer.start()
+
     sha, rel, cur_line = "", "", 0
     seen = set()
-    for raw in text.splitlines():
-        if raw.startswith("commit "):
-            sha = raw[7:].split()[0][:12]
-            info["commits_scanned"] += 1
-            rel, cur_line = "", 0
-        elif raw.startswith("+++ b/"):
-            rel = raw[6:]
-        elif raw.startswith("@@ "):
-            m_ln = re.search(r"\+(\d+)", raw)
-            cur_line = int(m_ln.group(1)) if m_ln else 1
-        elif raw.startswith("+") and not raw.startswith("+++") and rel:
-            line_txt = raw[1:]
-            line_no = max(1, cur_line)
-            cur_line += 1
-            if re.search(r"(?:^|/)(?:tests?|fixtures?|testdata|__mocks__)/", rel):
-                continue
-            if PRIVATE_KEY.search(line_txt) and not H.PLACEHOLDER.search(line_txt):
-                key_id = (rel, "SEC002", "private_key")
-                if key_id not in seen:
+    status: Optional[str] = None
+    try:
+        assert proc.stdout is not None
+        for raw_bytes in proc.stdout:
+            info["bytes_scanned"] += len(raw_bytes)
+            if info["bytes_scanned"] > byte_cap:
+                status = "truncated_size"
+                break
+            raw = raw_bytes.decode("utf-8", errors="replace").rstrip("\r\n")
+            if raw.startswith("commit "):
+                if info["commits_scanned"] >= limit:
+                    status = "truncated_commits"
+                    break
+                sha = raw[7:].split()[0][:12]
+                info["commits_scanned"] += 1
+                rel, cur_line = "", 0
+            elif raw.startswith("+++ b/"):
+                rel = raw[6:]
+            elif raw.startswith("@@ "):
+                m_ln = re.search(r"\+(\d+)", raw)
+                cur_line = int(m_ln.group(1)) if m_ln else 1
+            elif raw.startswith("+") and not raw.startswith("+++") and rel:
+                line_txt = raw[1:]
+                line_no = max(1, cur_line)
+                cur_line += 1
+                if re.search(r"(?:^|/)(?:tests?|fixtures?|testdata|__mocks__)/", rel):
+                    continue
+                if PRIVATE_KEY.search(line_txt) and not H.PLACEHOLDER.search(line_txt):
+                    key_id = (rel, "SEC002", "private_key")
+                    if key_id not in seen:
+                        seen.add(key_id)
+                        emit(Finding("SEC002", rel, line_no,
+                                     f"Private key found in git history (commit {sha}); rotate the key and rewrite history.",
+                                     "critical", "-----BEGIN ... PRIVATE KEY-----"))
+                        info["findings"] += 1
+                for label, rx in PROVIDER_KEYS:
+                    m = rx.search(line_txt)
+                    if not m:
+                        continue
+                    val = m.group(1) if m.lastindex else m.group(0)
+                    if H.PLACEHOLDER.search(line_txt) or H.PLACEHOLDER.search(val) or re.search(r"(?i)example|xxxx", val):
+                        continue
+                    if "secret_access_key" in label.lower() and not H.looks_random(val):
+                        continue
+                    digest = hashlib.sha256(val.encode("utf-8", "replace")).hexdigest()[:16]
+                    key_id = (rel, "SEC001", digest)
+                    if key_id in seen:
+                        continue
                     seen.add(key_id)
-                    emit(Finding("SEC002", rel, line_no,
-                                 f"Private key found in git history (commit {sha}); rotate the key and rewrite history.",
-                                 "critical", "-----BEGIN ... PRIVATE KEY-----"))
+                    masked = line_txt.replace(val, _mask_secret(val))[:160]
+                    emit(Finding("SEC001", rel, line_no,
+                                 f"{label} found in git history (commit {sha}); rotate the credential and rewrite history.",
+                                 "critical", masked))
                     info["findings"] += 1
-            for label, rx in PROVIDER_KEYS:
-                m = rx.search(line_txt)
-                if not m:
-                    continue
-                val = m.group(1) if m.lastindex else m.group(0)
-                if H.PLACEHOLDER.search(line_txt) or H.PLACEHOLDER.search(val) or re.search(r"(?i)example|xxxx", val):
-                    continue
-                if "secret_access_key" in label.lower() and not H.looks_random(val):
-                    continue
-                digest = hashlib.sha256(val.encode("utf-8", "replace")).hexdigest()[:16]
-                key_id = (rel, "SEC001", digest)
-                if key_id in seen:
-                    continue
-                seen.add(key_id)
-                masked = line_txt.replace(val, _mask_secret(val))[:160]
-                emit(Finding("SEC001", rel, line_no,
-                             f"{label} found in git history (commit {sha}); rotate the credential and rewrite history.",
-                             "critical", masked))
-                info["findings"] += 1
+    finally:
+        timer.cancel()
+        if proc.stdout is not None:
+            try:
+                proc.stdout.close()
+            except OSError:
+                pass
+        if proc.stderr is not None:
+            try:
+                proc.stderr.close()
+            except OSError:
+                pass
+        if proc.poll() is None:
+            try:
+                proc.terminate()
+                proc.wait(timeout=2)
+            except (OSError, subprocess.TimeoutExpired):
+                try:
+                    proc.kill()
+                    proc.wait(timeout=2)
+                except (OSError, subprocess.TimeoutExpired):
+                    pass
+        else:
+            try:
+                proc.wait(timeout=2)
+            except (OSError, subprocess.TimeoutExpired):
+                pass
+
+    if status is None:
+        if timed_out.is_set():
+            status = "timeout"
+        elif proc.returncode not in (0, None):
+            status = "git_error"
+        else:
+            status = "complete"
+    info["status"] = status
+    info["truncated"] = status in ("truncated_commits", "truncated_size", "timeout")
     return info
 
 
