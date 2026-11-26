@@ -158,6 +158,7 @@
   "AUTH015": {"owasp": ["A07:2021"], "owasp-llm": [], "eu-ai-act": [], "soc2": ["CC6.1"], "hipaa": ["164.312(d)"], "gdpr": ["Art. 32"]},
   "AUTH016": {"owasp": ["A01:2021"], "owasp-llm": [], "eu-ai-act": [], "soc2": ["CC6.1", "CC6.3", "C1.1"], "hipaa": ["164.312(a)(1)"], "gdpr": ["Art. 32", "Art. 25", "Art. 5(1)(f)"]},
   "AUTH017": {"owasp": ["A01:2021"], "owasp-llm": [], "eu-ai-act": [], "soc2": ["CC6.3"], "hipaa": ["164.312(a)(1)"], "gdpr": ["Art. 32", "Art. 25"]},
+  "AUTH018": {"owasp": ["A01:2021"], "owasp-llm": [], "eu-ai-act": [], "soc2": ["CC6.1", "CC6.3"], "hipaa": ["164.312(a)(1)", "164.312(d)"], "gdpr": ["Art. 32", "Art. 25"]},
   "JAVA001": {"owasp": ["A01:2021"], "owasp-llm": [], "eu-ai-act": [], "soc2": ["CC6.1"], "hipaa": ["164.312(a)(1)", "164.312(d)"], "gdpr": ["Art. 32", "Art. 25"]},
   "JAVA002": {"owasp": ["A05:2021"], "owasp-llm": [], "eu-ai-act": [], "soc2": ["CC6.1", "CC7.1"], "hipaa": ["164.312(a)(1)"], "gdpr": ["Art. 32"]},
   "JAVA003": {"owasp": ["A01:2021"], "owasp-llm": [], "eu-ai-act": [], "soc2": ["CC6.1"], "hipaa": ["164.312(a)(1)", "164.312(d)"], "gdpr": ["Art. 32"]},

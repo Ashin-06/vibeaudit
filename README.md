@@ -1,7 +1,7 @@
 # vibeaudit
 
 [![CI](https://github.com/Ashin-06/vibeaudit/actions/workflows/ci.yml/badge.svg)](https://github.com/Ashin-06/vibeaudit/actions/workflows/ci.yml)
-![Python 3.9 to 3.13](https://img.shields.io/badge/python-3.9%20to%203.13-blue)
+![Python 3.9 to 3.14](https://img.shields.io/badge/python-3.9%20to%203.14-blue)
 ![License: MIT](https://img.shields.io/badge/license-MIT-green)
 
 **A security and quality audit for apps built with AI coding assistants, and for apps that use LLMs.**
@@ -25,8 +25,8 @@ nothing, inaccessible forms and frontend calls to API routes that do not exist.
 - Pure Python, no dependencies on 3.11+ (`tomli` on 3.9 and 3.10). Linux, macOS and Windows.
   Optional `pip install vibeaudit[parse]` adds a tree-sitter function index for Go, Rust and Java
   (`vibeaudit doctor` shows which is active; `VIBEAUDIT_PARSER=regex` turns it off).
-- 179 rules: 178 rules in 12 categories plus the optional LLM review, mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
-- Terminal output plus JSON, SARIF 2.1.0 (GitHub code scanning), Markdown, HTML, an SVG badge and a fix
+- 96 stable rules (93.6% held-out precision) plus 84 preview rules (179 rules in 12 categories plus the optional LLM review), mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
+- Terminal output plus JSON, SARIF 2.1.0 (GitHub code scanning), Markdown, HTML, an SVG badge, CycloneDX 1.6 AI-BOM (`-r aibom`), and a fix
   brief you can paste into an AI assistant.
 - Fits into CI (GitHub Action, `--diff`), pre-commit (`--staged`) and coding agents (an MCP server).
 
@@ -110,7 +110,7 @@ That project is one of the deliberately vulnerable sample apps in `tests/fixture
 | Frontend-backend contracts (API) | frontend calls to API paths no route handles, and calls with a method the route does not accept |
 | Go, Java/Kotlin and C# (GO, JAVA, CSHARP), all in preview | goroutines started by a handler that never stop (GO001), response bodies never closed (GO002), maps written concurrently without a lock (GO003), SQL built with formatting (GO004); Spring controllers with no security configuration (JAVA001), exposed Actuator endpoints (JAVA002), a security chain that permits every request (JAVA003), polymorphic deserialization without an allow-list (JAVA004); ASP.NET Core with no authorization anywhere (CSHARP001), deserialization that lets the payload pick the type (CSHARP002), the developer error page outside Development (CSHARP003) |
 
-83 of 179 rules are preview; `vibeaudit rules` lists them. Preview findings are reported but do not
+84 of 180 rules are preview; `vibeaudit rules` lists them. Preview findings are reported but do not
 fail a build, with one exception: the severe classes (command injection, code execution, unsafe
 deserialization, open redirects and XSS) still gate while in preview, so a high-impact bug is never let through
 because its rule is new. Findings of any rule in Go, Java/Kotlin, C#, Rust and PHP code are preview; there, SQL
@@ -150,7 +150,7 @@ or, to keep it in its own environment:
 pipx install vibeaudit
 ```
 
-To install from this repository instead: `pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.16.2"`.
+To install from this repository instead: `pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.17.0"`.
 
 Optional: if [gitleaks](https://github.com/gitleaks/gitleaks), [bandit](https://github.com/PyCQA/bandit),
 [osv-scanner](https://github.com/google/osv-scanner) or [semgrep](https://github.com/semgrep/semgrep) are on
@@ -183,7 +183,7 @@ Every command has `--help`.
 
 | Option | Meaning |
 | --- | --- |
-| `-r`, `--report FORMAT[:PATH]` | Also write a report: `json`, `sarif`, `md`, `html`, `prompt` (a fix brief for AI assistants), `badge` (SVG), `junit` (test report XML for GitLab, CircleCI, Jenkins), `codeclimate` (GitLab Code Quality) or `compliance:FRAMEWORK` (see [Compliance mapping](#compliance-mapping)). Repeatable; `-` as the path writes to stdout, as in `-r json:-`. Default path `vibeaudit-report.<ext>` (`vibeaudit-compliance-FRAMEWORK.html`). |
+| `-r`, `--report FORMAT[:PATH]` | Also write a report: `json`, `sarif`, `md`, `html`, `prompt` (a fix brief for AI assistants), `badge` (SVG), `junit` (test report XML for GitLab, CircleCI, Jenkins), `codeclimate` (GitLab Code Quality), `aibom` (CycloneDX 1.6 AI-BOM JSON) or `compliance:FRAMEWORK` (see [Compliance mapping](#compliance-mapping)). Repeatable; `-` as the path writes to stdout, as in `-r json:-`. Default path `vibeaudit-report.<ext>` (`vibeaudit-compliance-FRAMEWORK.html`). |
 | `--fail-on SEVERITY` | Exit 1 when a finding is at least `critical`, `high` (default), `medium` or `low`; `none` never fails. |
 | `--min-severity SEVERITY` | Hide findings below this severity (default `low`). |
 | `--monorepo` | Scan every package as a project of its own, against its own manifest, with a score per package (see [Monorepos](#monorepos)). |
@@ -204,6 +204,7 @@ Every command has `--help`.
 | `--llm gemini\|openai\|openrouter\|anthropic` | Ask an LLM to triage findings (see [LLM-assisted checks](#llm-assisted-checks-optional)). |
 | `--llm-model NAME`, `--llm-review`, `--llm-max-requests N` | Model name; also review the riskiest files for missed issues; hard cap on requests (default 10). |
 | `--privacy-report` | Print the redacted file slices, line ranges and byte counts `--llm` / `--llm-review` would send, without sending data or needing an API key. |
+| `--history` / `--history-commits N` | Also scan added lines across recent git commit history (default 200 commits) for high-confidence provider keys and private keys. |
 | `--max-file-size BYTES` | Skip larger files (default 1,000,000). |
 | `--file-timeout SECONDS` | Time each analysis step may spend on one file before it is stopped (default 30). |
 | `--no-cache` | Do not read or write cached registry, vulnerability and LLM answers for this scan. |
@@ -236,7 +237,8 @@ GEMINI_API_KEY=... vibeaudit scan . --llm gemini --llm-review --llm-max-requests
   Secrets are redacted before anything is sent.
 - **Review** adds issues the rules did not cover as `AI001`, labelled model-generated and unverified.
 - Providers: `gemini` (`GEMINI_API_KEY` or `GOOGLE_API_KEY`), `openai` (`OPENAI_API_KEY`; `OPENAI_BASE_URL`
-  for any compatible server such as Ollama), `openrouter` (`OPENROUTER_API_KEY`, default `qwen/qwen4-max`)
+  for any compatible server such as Ollama), `openrouter` (`OPENROUTER_API_KEY`, default `qwen/qwen-2.5-72b-instruct`
+  from `data/llm_models.json`)
   and `anthropic` (`ANTHROPIC_API_KEY`). Verdicts are cached, so
   an unchanged finding costs no request the next time.
 - Model: `--llm-model` (or `llm_model` in the configuration) picks the model; otherwise the
@@ -402,7 +404,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0                  # needed for --diff
-      - uses: Ashin-06/vibeaudit@v0.16.2
+      - uses: Ashin-06/vibeaudit@v0.17.0
         with:
           fail-on: high
           args: --diff origin/main        # optional: only changed lines
@@ -437,7 +439,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - uses: Ashin-06/vibeaudit@v0.16.2
+      - uses: Ashin-06/vibeaudit@v0.17.0
         with:
           review: "true"
           args: --diff origin/${{ github.base_ref }} --baseline .vibeaudit-baseline.json --fail-on-regression 5
@@ -454,7 +456,7 @@ findings show in the merge request's Code Quality widget and in the pipeline's T
 
 ```yaml
 include:
-  - remote: https://raw.githubusercontent.com/Ashin-06/vibeaudit/v0.16.2/ci/gitlab-ci.yml
+  - remote: https://raw.githubusercontent.com/Ashin-06/vibeaudit/v0.17.0/ci/gitlab-ci.yml
 ```
 
 **CircleCI**: copy [ci/circleci.yml](ci/circleci.yml) into `.circleci/config.yml` (or merge its job into
@@ -470,7 +472,7 @@ for a test report) and keep the exit code.
 # .pre-commit-config.yaml
 repos:
   - repo: https://github.com/Ashin-06/vibeaudit
-    rev: v0.16.2
+    rev: v0.17.0
     hooks:
       - id: vibeaudit
 ```
@@ -597,7 +599,9 @@ speak to.
 ## Scoring
 
 Each finding has a severity. The overall score is 100 minus 25 per critical, 10 per high, 3 per medium and
-1 per low finding, floored at 0. The grade is F if there is any critical finding, otherwise A (90 and up),
+1 per low finding, floored at 0. For large repositories where linear subtraction floors at 0, JSON reports also
+include `summary.normalized_score` (exponentially scaled by files scanned), `summary.raw_penalty` and
+`summary.density_per_100_files`. The grade is F if there is any critical finding, otherwise A (90 and up),
 B (75), C (60), D (40) or F.
 
 The same formula gives a score per domain, so you can see where the problems are:
@@ -809,14 +813,14 @@ CycloneDX SBOM (`vibeaudit-VERSION.cdx.json`), built by the release workflow fro
 build provenance is signed with GitHub artifact attestations (Sigstore). With the GitHub CLI:
 
 ```bash
-gh attestation verify vibeaudit-0.16.2-py3-none-any.whl --repo Ashin-06/vibeaudit
+gh attestation verify vibeaudit-0.17.0-py3-none-any.whl --repo Ashin-06/vibeaudit
 ```
 
 Run the same for the `.tar.gz` and the `.cdx.json` file. The check passes only if the file was built by
 this repository's release workflow; `--format json` shows the commit and workflow it came from. The SBOM
 lists what the wheel installs (vibeaudit has no runtime dependencies on Python 3.11 and later, and
 `tomli` before that). PyPI receives these same attested files through trusted publishing; to install a wheel you verified
-yourself, run `pip install vibeaudit-0.16.2-py3-none-any.whl`.
+yourself, run `pip install vibeaudit-0.17.0-py3-none-any.whl`.
 
 ## Contributing, security and license
 

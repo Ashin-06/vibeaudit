@@ -434,6 +434,11 @@ _R = [
          "it. (Endpoints with no authentication at all are AUTH001.)",
          "Check an admin role or permission in the handler or in middleware on the admin routes.", "CWE-285",
          "A01:2021", preview=True, preview_reason=NEW_IN_087),
+    Rule("AUTH018", "Next.js middleware matcher skips API routes", "auth", "high",
+         "Middleware enforces authentication, but `config.matcher` excludes `/api` (or only matches non-API pages) while "
+         "API routes without inline auth checks exist.",
+         "Remove the `api` exclusion from `config.matcher` or enforce authentication inside every API route handler.",
+         "CWE-863", "A01:2021", preview=True, preview_reason="New in 0.17.0: waiting for held-out benchmark validation."),
     Rule("JAVA001", "Spring controllers with no security configuration", "auth", "high",
          "The project has no Spring Security filter chain, so every controller endpoint without @PreAuthorize, "
          "@Secured or @RolesAllowed answers anyone. (A single endpoint left open by an existing configuration is "

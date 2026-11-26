@@ -1,27 +1,27 @@
-# vibeaudit -- Complete Project & Architecture Reference (`v0.16.2`)
+# vibeaudit -- Complete Project & Architecture Reference (`v0.17.0`)
 
 **vibeaudit** is a zero-runtime-dependency (on Python 3.11+; `tomli` only on 3.9--3.10) security, AI-agent safety, and production-readiness platform written in pure Python. It audits full repositories -- backend APIs, frontend bundles, database migrations and SQL/NoSQL queries, infrastructure manifests, CI workflows, dependency trees, LLM prompts, and MCP tool definitions -- without executing scanned code.
 
-This document summarizes everything implemented across the entire repository as of **`v0.16.2`**.
+This document summarizes everything implemented across the entire repository as of **`v0.17.0`**.
 
 ---
 
 ## 1. Project Snapshot & Metrics
 
-| Dimension | Verified Count / Details (`v0.16.2`) |
+| Dimension | Verified Count / Details (`v0.17.0`) |
 | --- | --- |
-| Package version | `0.16.2` (`src/vibeaudit/__init__.py`) |
-| Core Python codebase | `75` modules in `src/vibeaudit/`, `24,984` lines total |
+| Package version | `0.17.0` (`src/vibeaudit/__init__.py`) |
+| Core Python codebase | `76` modules in `src/vibeaudit/`, `25,290` lines total |
 | Runtime dependencies | None on Python 3.11+ (`tomli` on 3.9--3.10); optional `vibeaudit[parse]` for tree-sitter |
-| Security & quality rules | `179` rules (`96` stable, `83` preview, `7` severe-gating preview) across `12` static categories + `AI001` LLM review |
+| Security & quality rules | `180` rules (`96` stable, `84` preview, `7` severe-gating preview) across `12` static categories + `AI001` LLM review |
 | Compliance frameworks | `6`: `owasp`, `owasp-llm`, `eu-ai-act`, `soc2`, `hipaa`, `gdpr` (`data/compliance_map.json`) |
 | Language & stack coverage | Python, JavaScript/TypeScript (React, Next.js, Vue, Svelte, Astro), Go, Java/Kotlin, C#/.NET, Rust, PHP, Ruby/Rails, Dart/Flutter, Swift/iOS/Vapor, Elixir/Phoenix |
 | RPC & IaC coverage | tRPC, GraphQL, gRPC; Dockerfile, Docker Compose, Kubernetes, GitHub Actions, Terraform (AWS, GCP, Azure), AWS CloudFormation, Firebase/Supabase rules |
 | Package ecosystems | `9`: `PyPI`, `npm`, `Go`, `Maven`, `crates.io`, `NuGet`, `Packagist`, `Pub`, `RubyGems` |
 | CLI subcommands | `16`: `scan`, `routes`, `watch`, `review`, `fix`, `mcp`, `lsp`, `studio`, `explain`, `test-exploit`, `probe`, `rules`, `doctor`, `init`, `update`, `feedback` |
 | Deterministic codemods | `12` auto-fix rules (`AUTH011`, `BE011`, `BE012`, `BE013`, `BE016`, `CSHARP003`, `DATA004`, `DATA013`, `GO002`, `LLM003`, `LLM011`, `REL001`) + `--verify` rollback |
-| Report & IDE outputs | `15` renderer keys across `14` formats (`json`, `sarif`, `md`/`markdown`, `html`, `prompt`, `badge`, `junit`, `codeclimate`, `compliance:*`), LSP + VS Code/Cursor extension, Studio local web UI, `10` MCP tools |
-| Test & benchmark suite | `92` test files (`tests/test_*.py`), `15` utility scripts (`tools/*.py`), `6` GitHub Actions workflows, `142`-repo precision benchmark + `255` GHSA advisories + `17` pinned advisory locations |
+| Report & IDE outputs | `16` renderer keys across `15` formats (`json`, `sarif`, `md`/`markdown`, `html`, `prompt`, `badge`, `junit`, `codeclimate`, `aibom`, `compliance:*`), LSP + VS Code/Cursor extension, Studio local web UI, `10` MCP tools |
+| Test & benchmark suite | `93` test files (`tests/test_*.py`), `15` utility scripts (`tools/*.py`), `6` GitHub Actions workflows, `142`-repo precision benchmark + `255` GHSA advisories + `17` pinned advisory locations |
 
 ---
 
@@ -60,13 +60,13 @@ flowchart TD
 
 ---
 
-## 3. Complete Module Inventory (`src/vibeaudit/` -- 75 Modules)
+## 3. Complete Module Inventory (`src/vibeaudit/` -- 76 Modules)
 
 ### A. Core Engine, Filesystem & Helpers (`15` modules)
 
 | Module | Lines | Purpose |
 | --- | --- | --- |
-| `__init__.py` | 45 | Public package API (`scan`, `Options`, `project_options`, `Result`, `Finding`, `Route`, plugin decorators, `FastAPIMiddleware`) and `__version__` (`0.16.2`). |
+| `__init__.py` | 45 | Public package API (`scan`, `Options`, `project_options`, `Result`, `Finding`, `Route`, plugin decorators, `FastAPIMiddleware`) and `__version__` (`0.17.0`). |
 | `__main__.py` | 5 | Entry point for `python -m vibeaudit`. |
 | `model.py` | 124 | Core dataclasses `Finding`, `Route` (including `auth_evidence` extraction in `to_dict()`), severity ranking, inline suppression regex, and path joining. |
 | `files.py` | 543 | Git-aware workspace enumeration, symlink escape prevention, language/kind classification, test/example/vendored heuristics, `SourceFile` line caches, and `StepMemo` read/value tracking. |
@@ -76,7 +76,7 @@ flowchart TD
 | `lexer.py` | 309 | Offset-preserving comment/string blanking views (`Views`), JS/TS template/comment lexer, Python lexer view, bracket matching (`match_close`), argument splitting, and `ident_re`. |
 | `parse.py` | 79 | Optional `vibeaudit[parse]` tree-sitter function indexer for Go, Rust, and Java (fallback cleanly to regex if unavailable or `VIBEAUDIT_PARSER=regex`). |
 | `calls.py` | 146 | Generic cross-file call-graph / brace-language flow helper used to follow tainted request data across helper calls into file/URL/redirect sinks. |
-| `scanner.py` | 412 | Top-level scan orchestrator (`scan`, `_scan_project`, `finalize`, `_stack` detection, baseline loading, domain scoring inputs). |
+| `scanner.py` | 421 | Top-level scan orchestrator (`scan`, `_scan_project`, `finalize`, `_stack` detection, `--history` git-log scan, `ai_inventory` collection, baseline loading). |
 | `monorepo.py` | 153 | Per-package workspace splitting (`--monorepo`) scanning each sub-package against its own manifest while sharing repo-wide checks (`QA002`, `DATA007`, lockfiles). |
 | `gitdiff.py` | 89 | Computes changed/staged file lines via `git diff` (`--diff REV`, `--staged`) so whole-project context runs while reporting only changed lines. |
 | `store.py` | 131 | Platform cache directory helpers, atomic file writes (`write_atomic`), `TimedCache`, and safe JSON parsing. |
@@ -86,7 +86,7 @@ flowchart TD
 
 | Module | Lines | Purpose |
 | --- | --- | --- |
-| `pyscan.py` | 1,628 | Real Python AST + 3-hop cross-file taint engine (`user`, `llm`, `tool` taint); context-sensitive & AugAssign-safe sanitizers (`html`, `shell`, `path`, `url`, `redirect`, `sql`, `code`, `nosql`), strict boolean/resolved path guards (`_path_guarded` requiring `.resolve()`/`realpath()` for `is_relative_to`); Flask/FastAPI/Django/DRF route & prefix resolution; SQL (`BE001`), PyMongo/Motor & `$where` (`BE010`), Cypher & KQL (`BE022`), shell, eval/sympy, path, SSRF, SSTI, redirect, deser, JWT, logging, stubs, agent loops & MCP tools. |
+| `pyscan.py` | 1,639 | Real Python AST + 3-hop cross-file taint engine (`user`, `llm`, `tool` taint); context-sensitive & AugAssign-safe sanitizers (`html`, `shell`, `path`, `url`, `redirect`, `sql`, `code`, `nosql`), strict boolean/resolved path guards (`_path_guarded`), `getattr()`/`globals()` dynamic dispatch sinks (`BE003`); Flask/FastAPI/Django/DRF route & prefix resolution; SQL (`BE001`), PyMongo/Motor & `$where` (`BE010`), Cypher & KQL (`BE022`), shell, eval/sympy, path, SSRF, SSTI, redirect, deser, JWT, logging, stubs, agent loops & MCP tools. |
 | `jsscan.py` | 1,392 | Offset-preserving JS/TS/JSX/TSX/Vue/Svelte/HTML scanner; scoped fixpoint + 3-round cross-file call taint; span-scoped context-sensitive sanitization (`_strip_sanitizer_calls`, restricting `nosql` to scalar `String`/`z.string`/refinements and `{ $eq }`); Express/Next.js App & Pages/SvelteKit/Supabase Edge/Firebase (`onRequest`, `onCall`) routes; SQL, Cypher/KQL (`BE022`), NoSQL & `$where` (`BE010`), mass assignment, shell, eval, SSRF, path, redirect, HTML/DOM sinks, CORS, JWT, LLM checks. |
 | `goscan.py` | 788 | Lexer/parser-backed Go scanner (`net/http`, Gin, Echo, Fiber, Chi, GORM); tracks nested `.Group()` / `.Route()` / local variable `.Mount()` middleware propagation; checks Go-specific `GO001`--`GO004` + injection, auth, TLS, timeouts, and concurrent map writes. |
 | `jvm.py` | 517 | Java & Kotlin scanner (Spring Boot, Spring Security filter chains, JAX-RS/Quarkus, Hibernate/JDBC); extracts annotated controllers and tracks data flow into sinks (`JAVA001`--`JAVA004`, auth, SQL/cmd injection). |
@@ -108,8 +108,8 @@ flowchart TD
 
 | Module | Lines | Purpose |
 | --- | --- | --- |
-| `secretscan.py` | 357 | Provider API keys, private keys, default signing secrets, DB URLs with passwords, committed/un-ignored `.env`, browser `NEXT_PUBLIC_`/`VITE_` secrets, Supabase `service_role`, entropy/password literals. |
-| `projectscan.py` | 495 | Project-wide checks: auth/role/IDOR/webhook/rate-limit rules across canonical routes (`AUTH001`--`AUTH004`, `AUTH010`, `BE018`), Supabase SQL RLS, Firebase rules, MCP JSON configs, Docker/Compose/Workflows, missing tests/CI, Express `helmet()`. |
+| `secretscan.py` | 431 | Provider API keys, private keys, default signing secrets, DB URLs with passwords, committed/un-ignored `.env`, browser `NEXT_PUBLIC_`/`VITE_` secrets, entropy/password literals, plus opt-in `--history` git-commit secret scanning (`scan_git_history`). |
+| `projectscan.py` | 523 | Project-wide checks: auth/role/IDOR/webhook/rate-limit rules across canonical routes (`AUTH001`--`AUTH004`, `AUTH010`, `AUTH018` Next.js middleware matcher gaps, `BE018`), Supabase SQL RLS, Firebase rules, MCP JSON configs, Docker/Compose/Workflows, missing tests/CI, Express `helmet()`. |
 | `iacscan.py` | 266 | Infrastructure-as-Code scanner: Kubernetes (privileged pods, `hostPath`, missing limits), AWS CloudFormation, and Terraform across **AWS** (`CFG014`--`CFG016`), **GCP**, and **Azure** (`CFG020`). |
 | `datascan.py` | 466 | Data & database scanner: Python/JS/SQL N+1 loops, over-fetched user objects (`DATA002`), destructive migrations (`DATA003`), float money columns (`DATA004`), Postgres naive timestamps (`DATA006`), undocumented env vars (`DATA007`), per-request Prisma clients (`DATA008`), serverless SQLite (`DATA009`), multi-write routes without transactions (`DATA010`), migration index locking (`DATA011`), FK indexing (`DATA012`), Redis TTL (`DATA013`), Docker build secrets (`CFG017`). |
 | `storagescan.py` | 193 | Cloud/framework object storage and bucket ACL/presigned upload checks (`DATA014`--`DATA016` / public storage patterns). |
@@ -136,7 +136,7 @@ flowchart TD
 | `correlate.py` | 85 | Correlates individual findings/routes into high-severity multi-step `attack_paths` (`unauthenticated-exploit-chain`, `agentic-prompt-to-action`, `client-to-backend-privilege`) and computes `ai_risk_profile` counts. |
 | `fix.py` | 1,022 | Deterministic AST/lexer codemods (`Plan`, `plan_findings`, `FIXERS` for `12` rules), parse/balance guards, line-ending/BOM preservation, `--verify` re-scan with automatic rollback (`verify_plan`), and optional `--llm` `.patch` export. |
 | `explain.py` | 352 | Data-flow path explainer (`vibeaudit explain FILE:LINE`) tracing how tainted input entered and reached a sink across calls. |
-| `llm.py` | 279 | Optional stdlib-HTTP LLM triage/review (`gemini`, `openai`, `openrouter`, `anthropic`) with aggressive `redact()` secret masking, verdict caching, untrusted-code prompt hardening, and zero-network `--privacy-report` (`privacy_report`). |
+| `llm.py` | 300 | Optional stdlib-HTTP LLM triage/review (`gemini`, `openai`, `openrouter`, `anthropic`) with defaults loaded from `data/llm_models.json`, aggressive `redact()` secret masking, verdict caching, untrusted-code prompt hardening, and zero-network `--privacy-report`. |
 | `feedback.py` | 206 | Per-repo feedback store (`.vibeaudit/feedback.json`): records confirmed/false-positive verdicts, hides reviewed false positives, auto-demotes noisy rules (`>30%` FP over `>=3` verdicts), exports pytest regression suites (`feedback export`), and proposes `.vibeaudit.toml` `auth-helpers` diffs (`feedback suggest-helpers`). |
 
 ### E. Dynamic Probing & Staging Runtime (`3` modules)
@@ -155,14 +155,15 @@ flowchart TD
 | `updater.py` | 144 | `vibeaudit update` client fetching `pypi_top.txt.gz`, `npm_top.txt.gz`, `retired_models.txt`, signed `threat_feed.json`, and cache invalidation. |
 | `bundle.py` | 310 | Air-gapped `--export` / `--import` zip bundles carrying data lists, signed feed (checked via `feed.validate_install`), and compact per-ecosystem OSV JSON indices with SHA-256 manifest verification. |
 
-### G. Rules, Compliance, Reporting & User Interfaces (`12` modules)
+### G. Rules, Compliance, Reporting & User Interfaces (`13` modules)
 
 | Module | Lines | Purpose |
 | --- | --- | --- |
-| `rules.py` | 1,032 | Master catalog of all `179` rules (`Rule` dataclass, `CATEGORIES`, `PREVIEW`, `gates_in_preview`, `SECURITY_SEVERITY`). |
+| `rules.py` | 1,037 | Master catalog of all `180` rules (`Rule` dataclass, `CATEGORIES`, `PREVIEW`, `gates_in_preview`, `SECURITY_SEVERITY`). |
 | `compliance.py` | 136 | Maps findings against `owasp`, `owasp-llm`, `eu-ai-act`, `soc2`, `hipaa`, and `gdpr` (`data/compliance_map.json`) and generates compliance HTML aids. |
-| `report.py` | 428 | Domain scoring (`0`--`100`, Grade `A`--`F`), summary-first terminal rendering (`Top 5 findings`, `attack_paths`), and `15` renderer keys (`json`, `sarif`, `md`/`markdown`, `html`, `prompt`, `badge`, `junit`, `codeclimate`, `compliance:*`). |
-| `cli.py` | 876 | Complete `argparse` CLI handling all `16` subcommands, stream encoding safety, exit codes, and report routing. |
+| `aibom.py` | 124 | Collects AI SDKs, model IDs (with retirement status), MCP servers, and agent prompt files and renders CycloneDX 1.6 AI-BOM JSON (`-r aibom`). |
+| `report.py` | 457 | Domain & size-normalized scoring (`score`, `normalized_score`, `raw_penalty`, `density_per_100_files`), summary-first terminal rendering, and `16` renderer keys (`json`, `sarif`, `md`/`markdown`, `html`, `prompt`, `badge`, `junit`, `codeclimate`, `aibom`, `compliance:*`). |
+| `cli.py` | 881 | Complete `argparse` CLI handling all `16` subcommands (including `--history` / `--history-commits`), stream encoding safety, exit codes, and report routing. |
 | `init.py` | 116 | `vibeaudit init`: interactive/non-interactive project onboarding generating `.vibeaudit.toml`, `.pre-commit-config.yaml`, and GitHub/GitLab/CircleCI workflow templates plus initial offline scan. |
 | `doctor.py` | 135 | `vibeaudit doctor`: environment health check reporting Python version, rule counts, supported ecosystems, threat-feed status, tree-sitter parser mode per language, install mismatch warnings (`install_fix`), and external scanner availability. |
 | `watch.py` | 91 | Incremental `--interval` file-watcher printing `+` / `-` findings live using `Project.refresh()` and `StepMemo`. |
@@ -234,7 +235,7 @@ Rather than treating every finding in isolation, `correlate.py` deterministicall
 
 ## 7. Testing, Benchmarking & Release Engineering
 
-- **Test Suite (`92` test files in `tests/`)**: Unit tests across all scanners, fixture exact-match tests, property-based mutation tests (`tests/test_properties.py`), taint/sanitizer & parser/transport hardening tests (`tests/test_v0161_hardening.py`), hostile-input & memory/depth fuzzing, `12`-language recall floor (`tests/test_recall_by_language.py`), documentation-code sync verification (`tests/test_docs.py`), compliance completeness (`tests/test_compliance.py`), and module-wide ReDoS fuzzing against 40KB pathological inputs (`tests/test_redos.py`).
+- **Test Suite (`93` test files in `tests/`)**: Unit tests across all scanners, fixture exact-match tests, property-based mutation tests (`tests/test_properties.py`), taint/sanitizer & parser/transport hardening tests (`tests/test_v0161_hardening.py`, `tests/test_v017_features.py`), hostile-input & memory/depth fuzzing, `12`-language recall floor (`tests/test_recall_by_language.py`), documentation-code sync verification (`tests/test_docs.py`), compliance completeness (`tests/test_compliance.py`), and module-wide ReDoS fuzzing against 40KB pathological inputs (`tests/test_redos.py`) tagged with `pytest.mark.slow`.
 - **Real-World Benchmark (`benchmark/`, `tools/benchmark.py`, `tools/advisories.py`)**:
   - `benchmark/corpus.json` + `benchmark/labels/`: `142` pinned public repositories (`4,250` labelled findings; tuned + held-out splits) gating every PR so stable rules maintain precision and zero labelled TPs drop silently.
   - `benchmark/advisories.json` + `benchmark/recall.json`: `255` pinned GHSA advisories and `17` exact vulnerable locations measuring real-world recall and comparing against Semgrep and Bandit (`tools/compare.py`).

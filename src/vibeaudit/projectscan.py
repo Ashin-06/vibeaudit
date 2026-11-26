@@ -415,6 +415,36 @@ class ProjectScanner:
         if not any(CI_FILES.match(f.rel) for f in self.p.files):
             self.add(anchor, 1, "QA002", "No CI configuration found.")
 
+    def _nextjs_middleware_matcher(self) -> None:
+        unauth_api = [r for r in self.routes if r.path.startswith("/api") and not r.has_auth and not H.PUBLIC_PATH.search(r.path)]
+        if not unauth_api:
+            return
+        mw_auth = re.compile(
+            r"\b(?:clerkMiddleware|authMiddleware|withAuth|getToken|getSession|getUser|createMiddlewareClient)\b"
+            r"|export\s+\{[^}]*\bauth\b|\bauth\s+as\s+middleware\b|\bexport\s+default\s+auth\s*\("
+        )
+        for f in self.p.files:
+            if f.kind != "js" or f.is_test or f.text is None:
+                continue
+            if not re.search(r"(?:^|/)(?:src/)?middleware\.[jt]sx?$", f.rel):
+                continue
+            code = self._piece(f)
+            if not (H.AUTH_EVIDENCE.search(code) or mw_auth.search(code)):
+                continue
+            mm = re.search(r"\bmatcher\s*:\s*(\[[^\]\n]{1,300}\]|['\"`][^'\"`\n]{1,200}['\"`])", code)
+            if not mm:
+                continue
+            spec = mm.group(1)
+            excludes_api = bool(re.search(r"\(\?!api\b|\(\?!\.\*api\b|\(\?![^)\n]*\|api\b", spec))
+            if not excludes_api:
+                strings = re.findall(r"""['"`]([^'"`\n]+)['"`]""", spec)
+                if strings and all(not s.startswith("/api") and "(?!" not in s and ".*" not in s for s in strings):
+                    excludes_api = True
+            if excludes_api:
+                sample = unauth_api[0].path
+                self.add(f, f.line_at(mm.start()), "AUTH018",
+                         f"Next.js middleware enforces auth, but matcher excludes API routes while `{sample}` has no inline auth.")
+
     def express_headers(self) -> None:
         deps = self.p.all_js_deps()
         if "express" not in deps or "helmet" in deps or "lusca" in deps:  # lusca sets the same headers (xframe, hsts, ...)
@@ -483,6 +513,7 @@ class ProjectScanner:
                 self.add(r.file, r.line, "AUTH010", f"{path} has no rate limiting.")
             if r.reads_body and r.lang in ("py", "js") and reads_body is None:
                 reads_body = r
+        self._nextjs_middleware_matcher()
         if reads_body is not None:
             from .files import has
 

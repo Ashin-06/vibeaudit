@@ -143,14 +143,23 @@ def test_provider_requires_key(monkeypatch):
         llm.Provider("nope")
 
 
-def test_openrouter_provider_defaults_to_qwen4_max(monkeypatch):
+def test_openrouter_provider_defaults_from_data_file(monkeypatch):
+    from importlib import resources
+    from vibeaudit import feed
+
     fake_or_key = "sk-or-v1-" + "0" * 64
     monkeypatch.delenv("OPENAI_BASE_URL", raising=False)
     monkeypatch.delenv("VIBEAUDIT_LLM_MODEL", raising=False)
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     monkeypatch.setenv("OPENROUTER_API_KEY", fake_or_key)
     p = llm.Provider("openrouter")
-    assert p.model == "qwen/qwen4-max"
+    defaults = llm.default_models()
+    assert p.model == defaults["openrouter"]
+    retired = {ln.strip() for ln in resources.files("vibeaudit").joinpath("data", "retired_models.txt").read_text(encoding="utf-8").splitlines()
+               if ln.strip() and not ln.strip().startswith("#")}
+    retired |= set(feed.sunsets().keys())
+    for mid in defaults.values():
+        assert mid not in retired
     assert p.base_url == "https://openrouter.ai/api/v1"
     monkeypatch.setenv("OPENAI_BASE_URL", "https://attacker.example/v1")
     assert llm.Provider("openrouter").base_url == "https://openrouter.ai/api/v1"  # OPENAI_BASE_URL is for openai only

@@ -79,3 +79,12 @@ def test_domain_scores_in_reports():
     assert "Domains: Security 75  AI 100  Quality 97" in render_text(res, color=False)
     assert "| Quality | 97/100 |" in render_markdown(res)
     assert ">Quality</span><b>97</b>" in render_html(res)
+
+
+def test_api_prefix_mismatch_vs_unowned_external_api(tmp_path):
+    write(tmp_path, "app.py", "from flask import Flask\napp = Flask(__name__)\n\n@app.get('/users')\ndef users():\n    return '[]'\n")
+    write(tmp_path, "web/client.js", 'fetch("/api/users");\nfetch("/api/missing");\n')
+    assert _rules(tmp_path) == [("web/client.js", 1, "API001")]
+
+    write(tmp_path, "app.py", "from flask import Flask\napp = Flask(__name__)\n\n@app.get('/api/users')\ndef users():\n    return '[]'\n")
+    assert _rules(tmp_path) == [("web/client.js", 2, "API001")]

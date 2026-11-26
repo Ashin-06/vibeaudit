@@ -3,9 +3,9 @@
 Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do not edit by hand.
 `vibeaudit rules` prints the same list, and `vibeaudit rules --format json` includes every field.
 
-179 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
+180 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-83 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+84 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -673,6 +673,7 @@ References: CWE-200, A02:2021
 | [AUTH015](#auth015) | medium | preview | Password change keeps old sessions valid |
 | [AUTH016](#auth016) | high | preview | Query not scoped to the current tenant |
 | [AUTH017](#auth017) | high | preview | Admin or feature-flag endpoint without a role check |
+| [AUTH018](#auth018) | high | preview | Next.js middleware matcher skips API routes |
 | [CSHARP001](#csharp001) | high | preview | ASP.NET Core endpoints with no authorization |
 | [JAVA001](#java001) | high | preview | Spring controllers with no security configuration |
 | [JAVA003](#java003) | high | preview | Security chain permits every request |
@@ -862,6 +863,18 @@ Why it matters: An admin, feature-flag or maintenance endpoint changes state for
 How to fix: Check an admin role or permission in the handler or in middleware on the admin routes.
 
 References: CWE-285, A01:2021
+
+### AUTH018
+
+**Next.js middleware matcher skips API routes** (high, preview)
+
+Preview: New in 0.17.0: waiting for held-out benchmark validation.
+
+Why it matters: Middleware enforces authentication, but `config.matcher` excludes `/api` (or only matches non-API pages) while API routes without inline auth checks exist.
+
+How to fix: Remove the `api` exclusion from `config.matcher` or enforce authentication inside every API route handler.
+
+References: CWE-863, A01:2021
 
 ### CSHARP001
 

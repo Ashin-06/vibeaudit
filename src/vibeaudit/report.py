@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import html
 import json
+import math
 import os
 import sys
 from collections import Counter
@@ -49,8 +50,26 @@ class Result:
         return {s: c.get(s, 0) for s in SEVERITIES}
 
     @property
+    def raw_penalty(self) -> int:
+        return sum(WEIGHTS[f.severity] for f in self.gating)
+
+    @property
+    def density_per_100_files(self) -> float:
+        files = max(1, int(self.meta.get("files_scanned") or 1))
+        return round(self.raw_penalty * 100.0 / files, 2)
+
+    @property
+    def normalized_score(self) -> int:
+        """Size-normalized health score (0-100) using diminishing exponential decay so large repos do not collapse to 0."""
+        pen = self.raw_penalty
+        if pen <= 0:
+            return 100
+        scale = max(1.0, float(self.meta.get("files_scanned") or 25) / 25.0) * 100.0
+        return max(1, round(100.0 * math.exp(-pen / scale)))
+
+    @property
     def score(self) -> int:
-        return max(0, 100 - sum(WEIGHTS[f.severity] for f in self.gating))
+        return max(0, 100 - self.raw_penalty)
 
     @property
     def domain_scores(self) -> Dict[str, int]:
@@ -110,7 +129,9 @@ def render_text(res: Result, color: bool, verbose: bool = True) -> str:
     by_cat = Counter(f.category for f in res.findings)
     for cat, n in by_cat.most_common():
         out.append(f"  {_cat(cat)}: {n}")
-    out.append(f"  Score: {res.score}/100  Grade: {res.grade}")
+    norm_note = f"  (size-normalized: {res.normalized_score}/100, raw penalty: {res.raw_penalty})" if (
+        res.score == 0 and (res.meta.get("files_scanned") or 0) > 25) else ""
+    out.append(f"  Score: {res.score}/100  Grade: {res.grade}{norm_note}")
     out.append("  Domains: " + "  ".join(f"{k} {v}" for k, v in res.domain_scores.items()))
     if res.findings:
         from . import fix
@@ -145,8 +166,10 @@ def render_text(res: Result, color: bool, verbose: bool = True) -> str:
 def render_json(res: Result) -> str:
     return json.dumps({
         "tool": "vibeaudit", "version": __version__, "root": res.root,
-        "summary": {"counts": res.counts, "total": len(res.findings), "score": res.score, "grade": res.grade,
-                    "domains": res.domain_scores},
+        "summary": {"counts": res.counts, "total": len(res.findings), "score": res.score,
+                    "normalized_score": res.normalized_score, "raw_penalty": res.raw_penalty,
+                    "density_per_100_files": res.density_per_100_files,
+                    "grade": res.grade, "domains": res.domain_scores},
         "meta": res.meta, "findings": [f.to_dict() for f in res.findings],
         "routes": [r.to_dict() for r in sorted(res.routes, key=lambda r: (r.file, r.line))],
     }, indent=2) + "\n"
@@ -203,7 +226,7 @@ def render_markdown(res: Result) -> str:
     out = [f"# vibeaudit report", "", f"Scanned `{res.root}` ({res.meta.get('files_scanned', 0)} files) with vibeaudit {__version__}.", ""]
     if res.meta.get("stack"):
         out += [f"Stack: {', '.join(res.meta['stack'])}", ""]
-    out += [f"**Score: {res.score}/100 (grade {res.grade})**", "", "| Severity | Count |", "| --- | --- |"]
+    out += [f"**Score: {res.score}/100 (grade {res.grade}; size-normalized: {res.normalized_score}/100, raw penalty: {res.raw_penalty})**", "", "| Severity | Count |", "| --- | --- |"]
     out += [f"| {s} | {c[s]} |" for s in SEVERITIES if s != "info"]
     out += ["", "| Domain | Score |", "| --- | --- |"] + [f"| {k} | {v}/100 |" for k, v in res.domain_scores.items()]
     if res.meta.get("packages"):
@@ -407,11 +430,17 @@ def render_junit(res: Result) -> str:
     return '<?xml version="1.0" encoding="UTF-8"?>\n' + ET.tostring(root, encoding="unicode") + "\n"
 
 
+def render_aibom(res: Result) -> str:
+    from . import aibom
+
+    return aibom.render(res)
+
+
 RENDERERS = {"json": render_json, "sarif": render_sarif, "md": render_markdown, "markdown": render_markdown,
              "html": render_html, "prompt": render_prompt, "badge": render_badge, "codeclimate": render_codeclimate,
-             "junit": render_junit}
+             "junit": render_junit, "aibom": render_aibom}
 EXTENSIONS = {"json": "json", "sarif": "sarif", "md": "md", "markdown": "md", "html": "html", "prompt": "txt", "badge": "svg",
-              "codeclimate": "json", "junit": "xml"}
+              "codeclimate": "json", "junit": "xml", "aibom": "cdx.json"}
 for _fw in compliance.FRAMEWORKS:  # --report compliance:soc2 and so on
     RENDERERS[f"compliance:{_fw}"] = lambda res, _fw=_fw: compliance.render(res, _fw)
     EXTENSIONS[f"compliance:{_fw}"] = "html"

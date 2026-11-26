@@ -4,6 +4,34 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.17.0] - 2026-11-26
+
+### Added
+
+- **User-controlled dynamic dispatch taint sink (`pyscan.py`)**: flags `getattr(obj, tainted)(...)` (both
+  inline and assigned `fn = getattr(...)`) as well as `globals()[tainted]()`, `locals()[tainted]()`, and
+  `vars(...)[tainted]()` as `BE003`.
+- **Built-in git history secret scanning (`secretscan.py`, `scanner.py`, `cli.py`)**: `--history` (with
+  `--history-commits N`) scans added lines across recent commits for high-confidence provider keys and
+  private keys while masking secrets in snippets.
+- **CycloneDX 1.6 AI-BOM export (`aibom.py`, `report.py`, `cli.py`)**: `vibeaudit scan . -r aibom` emits
+  a CycloneDX 1.6 JSON inventory of detected AI SDKs, model IDs (with retirement status), MCP servers, and
+  agent instruction files.
+- **Next.js middleware auth matcher gap check (`AUTH018`, preview, `projectscan.py`, `rules.py`)**: detects
+  Next.js `middleware.{js,ts}` files enforcing auth whose `config.matcher` excludes `/api` when API routes
+  lack inline authentication.
+- **Size-normalized repository score (`report.py`)**: adds `normalized_score`, `raw_penalty`, and
+  `density_per_100_files` alongside `score` in JSON, Markdown, and large-repo terminal output so large
+  codebases do not collapse to an undifferentiated `0/100`.
+- **Python 3.14 & `slow` pytest marker (`pyproject.toml`, `.github/workflows/ci.yml`)**: adds Python 3.14
+  to classifiers and the CI matrix, and marks heavy fuzz/performance/ReDoS suites with `pytest.mark.slow`.
+
+### Changed
+
+- **Data-driven LLM provider defaults (`data/llm_models.json`, `llm.py`)**: moved provider default model IDs
+  out of code into `data/llm_models.json` with verified non-retired defaults (`gemini-2.5-flash`,
+  `gpt-4.1-mini`, `qwen/qwen-2.5-72b-instruct`, `claude-sonnet-5-5`).
+
 ## [0.16.2] - 2026-11-26
 
 ### Fixed

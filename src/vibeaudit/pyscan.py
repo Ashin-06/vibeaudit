@@ -1301,8 +1301,19 @@ class PyScanner:
                         self.check_model_argument(call, arg0.elts, ctx)
                 elif t_sh:
                     self.sink(call, t_sh, "BE002", "a subprocess command", "high", True)
+        # user-controlled dynamic function dispatch: getattr(obj, tainted)(...) or globals()[tainted](...)
+        dispatch = self.resolve(call.func, ctx) if isinstance(call.func, ast.Name) else call.func
+        if isinstance(dispatch, ast.Call) and isinstance(dispatch.func, ast.Name) and dispatch.func.id == "getattr" and len(dispatch.args) >= 2:
+            t_disp = self.taint(dispatch.args[1], ctx, sink="code")
+            if t_disp:
+                self.sink(call, t_disp, "BE003", "getattr() dynamic call dispatch", "critical", True)
+        elif isinstance(dispatch, ast.Subscript) and isinstance(dispatch.value, ast.Call) \
+                and isinstance(dispatch.value.func, ast.Name) and dispatch.value.func.id in ("globals", "locals", "vars"):
+            t_disp = self.taint(dispatch.slice, ctx, sink="code")
+            if t_disp:
+                self.sink(call, t_disp, "BE003", f"{dispatch.value.func.id}() dynamic call dispatch", "critical", True)
         # dynamic code
-        elif isinstance(call.func, ast.Name) and name in ("eval", "exec", "compile") and arg0 is not None and const_str(arg0) is None \
+        if isinstance(call.func, ast.Name) and name in ("eval", "exec", "compile") and arg0 is not None and const_str(arg0) is None \
                 and name not in self._own_functions():  # not the module's own eval()
             t_code = self.taint(arg0, ctx, sink="code")
             if not self.sink(call, t_code, "BE003", f"{name}()", "critical", True):
