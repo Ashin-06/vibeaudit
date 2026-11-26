@@ -79,10 +79,8 @@ def loads_json(text: Any) -> Any:
 
 def loads_toml(text: str) -> Any:
     """tomllib.loads with the same guarantee as loads_json (TOMLDecodeError is a ValueError too)."""
-    try:
-        import tomllib  # type: ignore[import-not-found]
-    except ImportError:  # pragma: no cover - exercised on 3.9 / 3.10
-        import tomli as tomllib  # type: ignore[no-redef]
+    import tomllib
+
     try:
         return tomllib.loads(text)
     except RecursionError:

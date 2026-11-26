@@ -1,18 +1,18 @@
-# vibeaudit -- Complete Project & Architecture Reference (`v0.17.0`)
+# vibeaudit -- Complete Project & Architecture Reference (`v0.18.0`)
 
-**vibeaudit** is a zero-runtime-dependency (on Python 3.11+; `tomli` only on 3.9--3.10) security, AI-agent safety, and production-readiness platform written in pure Python. It audits full repositories -- backend APIs, frontend bundles, database migrations and SQL/NoSQL queries, infrastructure manifests, CI workflows, dependency trees, LLM prompts, and MCP tool definitions -- without executing scanned code.
+**vibeaudit** is a zero-runtime-dependency (Python 3.11+) security, AI-agent safety, and production-readiness platform written in pure Python. It audits full repositories -- backend APIs, frontend bundles, database migrations and SQL/NoSQL queries, infrastructure manifests, CI workflows, dependency trees, LLM prompts, and MCP tool definitions -- without executing scanned code.
 
-This document summarizes everything implemented across the entire repository as of **`v0.17.0`**.
+This document summarizes everything implemented across the entire repository as of **`v0.18.0`**.
 
 ---
 
 ## 1. Project Snapshot & Metrics
 
-| Dimension | Verified Count / Details (`v0.17.0`) |
+| Dimension | Verified Count / Details (`v0.18.0`) |
 | --- | --- |
-| Package version | `0.17.0` (`src/vibeaudit/__init__.py`) |
+| Package version | `0.18.0` (`src/vibeaudit/__init__.py`) |
 | Core Python codebase | `76` modules in `src/vibeaudit/`, `25,290` lines total |
-| Runtime dependencies | None on Python 3.11+ (`tomli` on 3.9--3.10); optional `vibeaudit[parse]` for tree-sitter |
+| Runtime dependencies | None (Python 3.11+); optional `vibeaudit[parse]` for tree-sitter (Go, Rust, Java, JS/TS) |
 | Security & quality rules | `180` rules (`96` stable, `84` preview, `7` severe-gating preview) across `12` static categories + `AI001` LLM review |
 | Compliance frameworks | `6`: `owasp`, `owasp-llm`, `eu-ai-act`, `soc2`, `hipaa`, `gdpr` (`data/compliance_map.json`) |
 | Language & stack coverage | Python, JavaScript/TypeScript (React, Next.js, Vue, Svelte, Astro), Go, Java/Kotlin, C#/.NET, Rust, PHP, Ruby/Rails, Dart/Flutter, Swift/iOS/Vapor, Elixir/Phoenix |

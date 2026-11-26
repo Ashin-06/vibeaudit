@@ -20,12 +20,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
-        exclude:
-          # setup-python ships no 3.9 build for the current Ubuntu image (3.9 is end-of-life);
-          # 3.9 is still tested on Windows and macOS.
-          - os: ubuntu-latest
-            python: "3.9"
+        python: ["3.11", "3.12", "3.13", "3.14"]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
@@ -53,7 +48,7 @@ jobs:
           python-version: "3.12"
       - name: Install with the parse extra
         run: python -m pip install -e ".[dev,parse]"
-      - name: Parser is active for Go, Rust and Java
+      - name: Parser is active for Go, Rust, Java, JS and TS
         run: python -c "from vibeaudit.parse import mode; m = mode(); assert set(m.values()) == {'tree-sitter'}, m"
       - name: Unit and fixture tests
         run: python -m pytest -q

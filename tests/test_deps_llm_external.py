@@ -159,7 +159,8 @@ def test_openrouter_provider_defaults_from_data_file(monkeypatch):
                if ln.strip() and not ln.strip().startswith("#")}
     retired |= set(feed.sunsets().keys())
     for mid in defaults.values():
-        assert mid not in retired
+        assert isinstance(mid, str) and mid
+        assert not any(mid.startswith(pat[:-1]) if pat.endswith("*") else mid == pat for pat in retired)
     assert p.base_url == "https://openrouter.ai/api/v1"
     monkeypatch.setenv("OPENAI_BASE_URL", "https://attacker.example/v1")
     assert llm.Provider("openrouter").base_url == "https://openrouter.ai/api/v1"  # OPENAI_BASE_URL is for openai only

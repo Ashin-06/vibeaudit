@@ -1,7 +1,10 @@
 # vibeaudit
 
 [![CI](https://github.com/Ashin-06/vibeaudit/actions/workflows/ci.yml/badge.svg)](https://github.com/Ashin-06/vibeaudit/actions/workflows/ci.yml)
-![Python 3.9 to 3.14](https://img.shields.io/badge/python-3.9%20to%203.14-blue)
+[![PyPI](https://img.shields.io/pypi/v/vibeaudit)](https://pypi.org/project/vibeaudit/)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/vibeaudit)](https://pypi.org/project/vibeaudit/)
+[![GitHub Release](https://img.shields.io/github/v/release/Ashin-06/vibeaudit)](https://github.com/Ashin-06/vibeaudit/releases)
+![Python 3.11 to 3.14](https://img.shields.io/badge/python-3.11%20to%203.14-blue)
 ![License: MIT](https://img.shields.io/badge/license-MIT-green)
 
 **A security and quality audit for apps built with AI coding assistants, and for apps that use LLMs.**
@@ -22,10 +25,10 @@ nothing, inaccessible forms and frontend calls to API routes that do not exist.
 
 - Works offline with no API key. The network is used only for package-registry and vulnerability
   lookups (`--offline` turns that off); an LLM is used only if you ask for it.
-- Pure Python, no dependencies on 3.11+ (`tomli` on 3.9 and 3.10). Linux, macOS and Windows.
-  Optional `pip install vibeaudit[parse]` adds a tree-sitter function index for Go, Rust and Java
+- Pure Python, zero runtime dependencies (Python 3.11+). Linux, macOS and Windows.
+  Optional `pip install vibeaudit[parse]` adds a tree-sitter function index for Go, Rust, Java, JavaScript and TypeScript
   (`vibeaudit doctor` shows which is active; `VIBEAUDIT_PARSER=regex` turns it off).
-- 96 stable rules (93.6% held-out precision) plus 84 preview rules (179 rules in 12 categories plus the optional LLM review), mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
+- 96 stable rules (93.6% held-out precision) plus 84 preview rules (179 rules in 12 categories plus 1 optional LLM review), mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
 - Terminal output plus JSON, SARIF 2.1.0 (GitHub code scanning), Markdown, HTML, an SVG badge, CycloneDX 1.6 AI-BOM (`-r aibom`), and a fix
   brief you can paste into an AI assistant.
 - Fits into CI (GitHub Action, `--diff`), pre-commit (`--staged`) and coding agents (an MCP server).
@@ -41,7 +44,7 @@ Contents: [Quickstart](#quickstart) - [Architecture](#architecture) - [Example o
 flowchart LR
     Repo["Target Repository (Frontend, Backend, DB Rules, CI, AI/MCP)"] --> Discovery["Stack & Route Discovery (Flask, FastAPI, Next.js, Express, Supabase)"]
     Discovery --> PyAST["Python AST & Taint Engine"]
-    Discovery --> JSLex["Offset-Preserving JS/TS Lexer"]
+    Discovery --> JSLex["JS/TS Lexer + Optional Tree-sitter AST"]
     Discovery --> CfgScan["Config, RLS, Supply-Chain & OSV Scanner"]
     Discovery --> ExtTools["Optional Tool Merger (gitleaks, bandit, semgrep, osv-scanner)"]
     PyAST & JSLex & CfgScan & ExtTools --> Rules["179 Rules Across 12 Domains (CWE & OWASP LLM Mapped)"]
@@ -122,8 +125,7 @@ Every rule, with its severity, why it matters and how to fix it, is in the
 Routes are found for Flask, FastAPI, Django REST framework, Express, Fastify, Hono, Next.js (app and pages
 routers, server actions), SvelteKit, Supabase edge functions and Firebase functions. Python is analysed on
 its syntax tree with taint tracking (request data, model output and agent-tool arguments are followed into
-SQL, shell, `eval`, file paths, URLs, templates, redirects and HTML); JavaScript and TypeScript get the same
-checks on a lexer that keeps exact offsets.
+SQL, shell, `eval`, file paths, URLs, templates, redirects and HTML); JavaScript and TypeScript use a lexer that keeps exact offsets (or tree-sitter function indexing with `vibeaudit[parse]`).
 
 ### Why another scanner
 
@@ -138,7 +140,7 @@ Good tools exist, and vibeaudit runs them when they are installed instead of rep
 
 ## Install
 
-vibeaudit is on [PyPI](https://pypi.org/project/vibeaudit/). Python 3.9 or newer:
+vibeaudit is on [PyPI](https://pypi.org/project/vibeaudit/). Python 3.11 or newer:
 
 ```bash
 pip install vibeaudit
@@ -150,7 +152,7 @@ or, to keep it in its own environment:
 pipx install vibeaudit
 ```
 
-To install from this repository instead: `pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.17.0"`.
+To install from this repository instead: `pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.18.0"`.
 
 Optional: if [gitleaks](https://github.com/gitleaks/gitleaks), [bandit](https://github.com/PyCQA/bandit),
 [osv-scanner](https://github.com/google/osv-scanner) or [semgrep](https://github.com/semgrep/semgrep) are on
@@ -404,7 +406,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0                  # needed for --diff
-      - uses: Ashin-06/vibeaudit@v0.17.0
+      - uses: Ashin-06/vibeaudit@v0.18.0
         with:
           fail-on: high
           args: --diff origin/main        # optional: only changed lines
@@ -439,7 +441,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - uses: Ashin-06/vibeaudit@v0.17.0
+      - uses: Ashin-06/vibeaudit@v0.18.0
         with:
           review: "true"
           args: --diff origin/${{ github.base_ref }} --baseline .vibeaudit-baseline.json --fail-on-regression 5
@@ -456,7 +458,7 @@ findings show in the merge request's Code Quality widget and in the pipeline's T
 
 ```yaml
 include:
-  - remote: https://raw.githubusercontent.com/Ashin-06/vibeaudit/v0.17.0/ci/gitlab-ci.yml
+  - remote: https://raw.githubusercontent.com/Ashin-06/vibeaudit/v0.18.0/ci/gitlab-ci.yml
 ```
 
 **CircleCI**: copy [ci/circleci.yml](ci/circleci.yml) into `.circleci/config.yml` (or merge its job into
@@ -472,7 +474,7 @@ for a test report) and keep the exit code.
 # .pre-commit-config.yaml
 repos:
   - repo: https://github.com/Ashin-06/vibeaudit
-    rev: v0.17.0
+    rev: v0.18.0
     hooks:
       - id: vibeaudit
 ```
@@ -598,11 +600,7 @@ speak to.
 
 ## Scoring
 
-Each finding has a severity. The overall score is 100 minus 25 per critical, 10 per high, 3 per medium and
-1 per low finding, floored at 0. For large repositories where linear subtraction floors at 0, JSON reports also
-include `summary.normalized_score` (exponentially scaled by files scanned), `summary.raw_penalty` and
-`summary.density_per_100_files`. The grade is F if there is any critical finding, otherwise A (90 and up),
-B (75), C (60), D (40) or F.
+Each finding has a severity (penalty weight: critical 25, high 10, medium 3, low 1). The overall and per-domain scores use a size-normalized diminishing formula, `round(100 * exp(-raw_penalty / (100 * sqrt(max(1, files / 25)))))` (100 when clean, floored at 1 when findings exist), so large repositories retain meaningful resolution instead of collapsing to 0. JSON reports also include `summary.linear_score` (`max(0, 100 - raw_penalty)`), `summary.raw_penalty` and `summary.density_per_100_files`. The grade is F if there is any critical finding, otherwise A (90 and up), B (75), C (60), D (40) or F.
 
 The same formula gives a score per domain, so you can see where the problems are:
 
@@ -802,9 +800,8 @@ A sample report for a deliberately vulnerable app (HTML and the six compliance r
   unauthenticated route in a popular chat UI that loads any user's API key by id with the service-role key.
 - **Four external audits.** Each finding was reproduced with a failing test before it was fixed; see the
   [CHANGELOG](CHANGELOG.md).
-- **Packaging.** The built wheel was installed in fresh environments on Python 3.9, 3.11, 3.12 and 3.13 and
-  every command was run; CI runs the tests on 3.10 to 3.13 on Linux, macOS and Windows and on 3.9 on macOS and
-  Windows (the current Ubuntu runner has no 3.9), and also from a plain checkout without installing.
+- **Packaging.** The built wheel was installed in fresh environments on Python 3.11, 3.12, 3.13 and 3.14 and
+  every command was run; CI runs the tests across Python 3.11 to 3.14 on Linux, macOS and Windows, and also from a plain checkout without installing.
 
 ## Verifying a release
 
@@ -813,14 +810,13 @@ CycloneDX SBOM (`vibeaudit-VERSION.cdx.json`), built by the release workflow fro
 build provenance is signed with GitHub artifact attestations (Sigstore). With the GitHub CLI:
 
 ```bash
-gh attestation verify vibeaudit-0.17.0-py3-none-any.whl --repo Ashin-06/vibeaudit
+gh attestation verify vibeaudit-0.18.0-py3-none-any.whl --repo Ashin-06/vibeaudit
 ```
 
 Run the same for the `.tar.gz` and the `.cdx.json` file. The check passes only if the file was built by
 this repository's release workflow; `--format json` shows the commit and workflow it came from. The SBOM
-lists what the wheel installs (vibeaudit has no runtime dependencies on Python 3.11 and later, and
-`tomli` before that). PyPI receives these same attested files through trusted publishing; to install a wheel you verified
-yourself, run `pip install vibeaudit-0.17.0-py3-none-any.whl`.
+lists what the wheel installs (vibeaudit has zero runtime dependencies). PyPI receives these same attested files through trusted publishing; to install a wheel you verified
+yourself, run `pip install vibeaudit-0.18.0-py3-none-any.whl`.
 
 ## Contributing, security and license
 

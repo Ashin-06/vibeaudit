@@ -27,6 +27,14 @@ DOMAINS = {
 }
 
 
+def _diminishing_score(penalty: int, files: int) -> int:
+    """Diminishing exponential health score (0-100) scaled by repository size so large repos keep resolution."""
+    if penalty <= 0:
+        return 100
+    scale = 100.0 * math.sqrt(max(1.0, float(files) / 25.0))
+    return max(1, round(100.0 * math.exp(-penalty / scale)))
+
+
 class Result:
     def __init__(self, root: str, findings: List[Finding], meta: Dict, routes: Optional[list] = None):
         self.root = root
@@ -59,23 +67,25 @@ class Result:
         return round(self.raw_penalty * 100.0 / files, 2)
 
     @property
-    def normalized_score(self) -> int:
-        """Size-normalized health score (0-100) using diminishing exponential decay so large repos do not collapse to 0."""
-        pen = self.raw_penalty
-        if pen <= 0:
-            return 100
-        scale = max(1.0, float(self.meta.get("files_scanned") or 25) / 25.0) * 100.0
-        return max(1, round(100.0 * math.exp(-pen / scale)))
+    def linear_score(self) -> int:
+        return max(0, 100 - self.raw_penalty)
 
     @property
     def score(self) -> int:
-        return max(0, 100 - self.raw_penalty)
+        files = max(1, int(self.meta.get("files_scanned") or 1))
+        return _diminishing_score(self.raw_penalty, files)
+
+    @property
+    def normalized_score(self) -> int:
+        """Size-normalized health score (0-100); alias for `score` kept for report compatibility."""
+        return self.score
 
     @property
     def domain_scores(self) -> Dict[str, int]:
         """The same score, computed separately for each domain (security, AI, quality, ...)."""
         gating = self.gating
-        return {name: max(0, 100 - sum(WEIGHTS[f.severity] for f in gating if f.category in cats))
+        files = max(1, int(self.meta.get("files_scanned") or 1))
+        return {name: _diminishing_score(sum(WEIGHTS[f.severity] for f in gating if f.category in cats), files)
                 for name, cats in DOMAINS.items()}
 
     @property
@@ -129,9 +139,8 @@ def render_text(res: Result, color: bool, verbose: bool = True) -> str:
     by_cat = Counter(f.category for f in res.findings)
     for cat, n in by_cat.most_common():
         out.append(f"  {_cat(cat)}: {n}")
-    norm_note = f"  (size-normalized: {res.normalized_score}/100, raw penalty: {res.raw_penalty})" if (
-        res.score == 0 and (res.meta.get("files_scanned") or 0) > 25) else ""
-    out.append(f"  Score: {res.score}/100  Grade: {res.grade}{norm_note}")
+    pen_note = f"  (raw penalty: {res.raw_penalty})" if res.raw_penalty else ""
+    out.append(f"  Score: {res.score}/100  Grade: {res.grade}{pen_note}")
     out.append("  Domains: " + "  ".join(f"{k} {v}" for k, v in res.domain_scores.items()))
     if res.findings:
         from . import fix
@@ -167,8 +176,8 @@ def render_json(res: Result) -> str:
     return json.dumps({
         "tool": "vibeaudit", "version": __version__, "root": res.root,
         "summary": {"counts": res.counts, "total": len(res.findings), "score": res.score,
-                    "normalized_score": res.normalized_score, "raw_penalty": res.raw_penalty,
-                    "density_per_100_files": res.density_per_100_files,
+                    "normalized_score": res.normalized_score, "linear_score": res.linear_score,
+                    "raw_penalty": res.raw_penalty, "density_per_100_files": res.density_per_100_files,
                     "grade": res.grade, "domains": res.domain_scores},
         "meta": res.meta, "findings": [f.to_dict() for f in res.findings],
         "routes": [r.to_dict() for r in sorted(res.routes, key=lambda r: (r.file, r.line))],
@@ -226,7 +235,7 @@ def render_markdown(res: Result) -> str:
     out = [f"# vibeaudit report", "", f"Scanned `{res.root}` ({res.meta.get('files_scanned', 0)} files) with vibeaudit {__version__}.", ""]
     if res.meta.get("stack"):
         out += [f"Stack: {', '.join(res.meta['stack'])}", ""]
-    out += [f"**Score: {res.score}/100 (grade {res.grade}; size-normalized: {res.normalized_score}/100, raw penalty: {res.raw_penalty})**", "", "| Severity | Count |", "| --- | --- |"]
+    out += [f"**Score: {res.score}/100 (grade {res.grade}, raw penalty: {res.raw_penalty})**", "", "| Severity | Count |", "| --- | --- |"]
     out += [f"| {s} | {c[s]} |" for s in SEVERITIES if s != "info"]
     out += ["", "| Domain | Score |", "| --- | --- |"] + [f"| {k} | {v}/100 |" for k, v in res.domain_scores.items()]
     if res.meta.get("packages"):
