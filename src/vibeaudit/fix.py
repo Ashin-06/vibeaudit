@@ -926,7 +926,47 @@ def plan(root: str, rules: Sequence[str] = (), opts=None) -> Plan:
     wanted = {r.upper() for r in rules}
     findings = [f for f in res.findings if not wanted or f.rule_id in wanted]
     findings.sort(key=lambda f: (SEVERITY_RANK.get(f.severity, 9), f.file, f.line))
-    return plan_findings(Path(root), findings, Project(Path(root), opts.excludes, opts.max_file_bytes))
+    out = plan_findings(Path(root), findings, Project(Path(root), opts.excludes, opts.max_file_bytes))
+    out._pre_scan_fps = {f.fingerprint for f in res.findings}  # type: ignore[attr-defined]
+    return out
+
+
+def verify_plan(root: Path, applied_plan: Plan, opts, scan_fn=None) -> dict:
+    """Re-scan after `applied_plan.apply()` to verify fixed findings cleared and no new findings appeared;
+    rolls back modified files automatically when verification fails."""
+    if scan_fn is None:
+        from .scanner import scan as scan_fn
+
+    after = scan_fn(str(root), opts)
+    touched = {c.file for c in applied_plan.changes}
+    after_fps = {f.fingerprint for f in after.findings}
+    remaining = [
+        {"rule_id": f.rule_id, "file": f.file, "line": f.line}
+        for f in applied_plan.fixed if f.fingerprint in after_fps
+    ]
+    pre_res = getattr(applied_plan, "_pre_scan_fps", None)
+    if pre_res is None:
+        introduced = []
+    else:
+        before_all = set(pre_res)
+        introduced = [
+            {"rule_id": f.rule_id, "file": f.file, "line": f.line}
+            for f in after.findings if f.file in touched and f.fingerprint not in before_all
+        ]
+    ok = not remaining and not introduced
+    if not ok:
+        for c in applied_plan.changes:
+            try:
+                c.path.write_bytes(c.original)
+            except OSError:
+                pass
+    return {
+        "ok": ok,
+        "rolled_back": not ok,
+        "resolved": len(applied_plan.fixed) - len(remaining),
+        "remaining": remaining,
+        "introduced": introduced,
+    }
 
 
 # ------------------------------------------------------------ LLM patches

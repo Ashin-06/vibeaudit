@@ -132,6 +132,7 @@
   "BE019": {"owasp": ["A04:2021"], "owasp-llm": [], "eu-ai-act": [], "soc2": ["PI1.3"], "hipaa": [], "gdpr": []},
   "BE020": {"owasp": ["A03:2021"], "owasp-llm": [], "eu-ai-act": [], "soc2": ["CC6.6"], "hipaa": [], "gdpr": ["Art. 32"]},
   "BE021": {"owasp": ["A05:2021"], "owasp-llm": [], "eu-ai-act": [], "soc2": ["CC6.6"], "hipaa": ["164.312(c)(1)"], "gdpr": ["Art. 32"]},
+  "BE022": {"owasp": ["A03:2021"], "owasp-llm": [], "eu-ai-act": [], "soc2": ["CC6.6"], "hipaa": ["164.312(c)(1)"], "gdpr": ["Art. 32"]},
   "FE001": {"owasp": ["A03:2021"], "owasp-llm": [], "eu-ai-act": [], "soc2": ["CC6.6"], "hipaa": ["164.312(c)(1)"], "gdpr": ["Art. 32"]},
   "FE002": {"owasp": [], "owasp-llm": ["LLM02:2025"], "eu-ai-act": ["Art. 15"], "soc2": ["CC6.1", "C1.1"], "hipaa": ["164.312(a)(1)"], "gdpr": ["Art. 32"]},
   "FE003": {"owasp": ["A01:2021"], "owasp-llm": [], "eu-ai-act": [], "soc2": ["CC6.3"], "hipaa": ["164.312(a)(1)"], "gdpr": ["Art. 32", "Art. 25"]},

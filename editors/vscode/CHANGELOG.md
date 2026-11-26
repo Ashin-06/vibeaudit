@@ -4,6 +4,10 @@ The extension's version matches the vibeaudit release it is built with. What cha
 language server is in the project changelog:
 https://github.com/Ashin-06/vibeaudit/blob/main/CHANGELOG.md
 
+## 0.16.0
+
+- Built with vibeaudit 0.16.0: context-sensitive taint sanitization in JS/TS & Python, Python MongoDB (`BE010`) and Cypher/KQL (`BE022`) injection checks, `vibeaudit fix --verify`, `vibeaudit scan --privacy-report`, and attack-path correlation.
+
 ## 0.15.0
 
 - Built with vibeaudit 0.15.0: adds Swift (iOS & Vapor) and Elixir (Phoenix) activation, XXE detection (`BE021`), multi-cloud GCP/Azure Terraform checks (`CFG020`), and `BE013`/`BE011` quick-fix codemods.

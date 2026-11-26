@@ -40,11 +40,65 @@ USER_ATTRS = {
     # the URL and Host header are attacker-chosen too (`'%s' % request.url` in an error page is a classic SSTI)
     "url", "base_url", "url_root", "host_url", "host", "full_path", "path", "referrer",
 }
-SANITIZERS = {
-    "int", "float", "bool", "len", "abs", "round", "secure_filename", "escape", "quote", "basename",
-    "clean", "literal_eval", "UUID", "uuid4", "hexdigest", "digest", "sha256", "md5", "urlencode", "quote_plus",
-    "isdigit", "isalnum", "count", "startswith", "endswith", "type", "isinstance", "hash", "id",
+UNIVERSAL_SANITIZERS = {
+    "int", "float", "bool", "len", "abs", "round", "literal_eval", "UUID", "uuid4",
+    "hexdigest", "digest", "sha256", "md5", "isdigit", "isalnum", "count",
+    "startswith", "endswith", "type", "isinstance", "hash", "id",
 }
+SANITIZERS = UNIVERSAL_SANITIZERS | {"secure_filename", "escape", "quote", "basename", "clean", "urlencode", "quote_plus"}
+_SINK_CONTEXTS = ("html", "shell", "path", "url", "redirect", "sql", "code", "deser", "nosql", "prompt")
+MONGO_METHODS = {
+    "find", "find_one", "find_one_and_update", "find_one_and_delete", "find_one_and_replace",
+    "update_one", "update_many", "delete_one", "delete_many", "count_documents", "aggregate",
+}
+MONGO_MARKERS = ("pymongo", "motor", "mongoengine", "beanie", "MongoClient", "AsyncIOMotorClient")
+CYPHER_KW = re.compile(r"(?i)\b(?:OPTIONAL\s+)?MATCH\s*\([^)\n]{0,120}\)|\bDETACH\s+DELETE\b|\bMERGE\s*\([^)\n]{0,120}\)")
+KQL_KW = re.compile(r"(?i)\|\s*(?:where|project|summarize|take|limit|extend|join|order\s+by|sort\s+by|count)\b")
+
+
+def _sanitizer_contexts(call: ast.Call, mod_imports: Dict[str, Tuple[str, Optional[str], int]]) -> Set[str]:
+    d = dotted(call.func)
+    name = last_name(call.func) or ""
+    if name in UNIVERSAL_SANITIZERS or name in H.CUSTOM.sanitizers or re.match(r"(?i)^validate", name):
+        return {"*"}
+    ctxs: Set[str] = set()
+    low_full = f"{d}.{name}".lower()
+    if name in ("secure_filename", "basename") or re.match(r"(?i)^(?:sanitize_?(?:file|path)|clean_?path)", name):
+        ctxs.add("path")
+    q_mod = mod_imports.get("quote", ("",))[0] if d == "quote" else ""
+    if d.endswith(("shlex.quote", "pipes.quote")) or q_mod in ("shlex", "pipes") \
+            or re.match(r"(?i)^(?:shell_?escape|escape_?shell|quote_?shell)", name):
+        ctxs.add("shell")
+    if name in ("urlencode", "quote_plus") or d.endswith(("urllib.parse.quote", "parse.quote")) \
+            or "urllib" in q_mod:
+        ctxs.add("url")
+    if name in ("urlencode", "quote_plus"):
+        ctxs.add("redirect")
+    if name in ("escape_string", "sql_escape", "escape_identifier", "Identifier", "Literal") \
+            or d.endswith(("sql.Identifier", "sql.Literal", "pymysql.converters.escape_string")) \
+            or re.match(r"(?i)^(?:sql_?escape|escape_?sql)", name):
+        ctxs.add("sql")
+    if name in ("escape", "escape_html", "html_escape", "bleach_clean", "clean") or (
+            re.match(r"(?i)^(?:sanitize|escape|clean)", name)
+            and not any(k in low_full for k in ("sql", "shell", "cmd", "path", "file", "url", "cypher"))):
+        ctxs.add("html")
+    return ctxs
+
+
+def _safe_mongo_filter(node: ast.AST) -> bool:
+    if not isinstance(node, ast.Dict):
+        return False
+    if not node.values:
+        return True
+    for v in node.values:
+        if isinstance(v, ast.Dict) and len(v.keys) == 1 and const_str(v.keys[0]) == "$eq":
+            continue
+        if isinstance(v, ast.Call) and last_name(v.func) in ("str", "int", "float", "bool", "ObjectId"):
+            continue
+        if isinstance(v, ast.Constant):
+            continue
+        return False
+    return True
 ROUTE_ATTRS = {"route", "get", "post", "put", "patch", "delete", "api_route", "websocket", "head", "options"}
 LLM_SUFFIXES = (
     "chat.completions.create", "chat.completions.parse", "completions.create", "responses.create", "responses.parse",
@@ -360,6 +414,7 @@ class Ctx:
     def __init__(self, kind: str, params: Set[str]):
         self.kind = kind  # module | route | tool | plain
         self.env: Dict[str, Taint] = {}
+        self.sanitized: Dict[str, Set[str]] = {}
         self.assigned: Dict[str, ast.AST] = {}
         self.params = params
         self.except_names: Set[str] = set()
@@ -645,26 +700,35 @@ class PyScanner:
         else:
             return
         args = {}
+        san_args = {}
         for i, a in enumerate(call.args):
             if isinstance(a, ast.Starred):
                 break
             t = self.taint(a, ctx)
             if t:
                 args[i] = t
+                sc = self._safe_contexts(a, t, ctx)
+                if sc:
+                    san_args[i] = sc
         for k in call.keywords:
             if k.arg:
                 t = self.taint(k.value, ctx)
                 if t:
                     args[k.arg] = t
+                    sc = self._safe_contexts(k.value, t, ctx)
+                    if sc:
+                        san_args[k.arg] = sc
         if args:
             via = self.via or f"{self.sf.rel}:{call.lineno}"
-            GUARD.publish("py calls", self.calls, (self.sf.rel, spec, args, ctx.depth + 1, via))
+            GUARD.publish("py calls", self.calls, (self.sf.rel, spec, args, ctx.depth + 1, via, san_args))
 
     def follow_calls(self) -> None:
         seen: Set[tuple] = set()
         i = 0
         while i < len(self.calls):  # following a call can record further calls
-            caller, spec, args, depth, via = self.calls[i]
+            entry = self.calls[i]
+            caller, spec, args, depth, via = entry[:5]
+            san_args = entry[5] if len(entry) > 5 else {}
             i += 1
             GUARD.tick()
             got = self._callee(caller, spec)
@@ -675,11 +739,16 @@ class PyScanner:
             if method and params and params[0] in ("self", "cls"):
                 params = params[1:]
             env: Dict[str, Taint] = {}
+            san_env: Dict[str, Set[str]] = {}
+            kwonly = [a.arg for a in fn.args.kwonlyargs]  # type: ignore[attr-defined]
             for key, t in args.items():
                 name = params[key] if isinstance(key, int) and key < len(params) else key if isinstance(key, str) else None
-                if name in params or (isinstance(key, str) and name in [a.arg for a in fn.args.kwonlyargs]):  # type: ignore[attr-defined]
+                if name in params or (isinstance(key, str) and name in kwonly):
                     env[name] = merge(env.get(name, {}), t)  # type: ignore[index]
-            key = (rel, fn.lineno, tuple(sorted((k, tuple(sorted(v))) for k, v in env.items())))  # type: ignore[attr-defined]
+                    if key in san_args:
+                        san_env[name] = san_env.get(name, set()) | san_args[key]  # type: ignore[index]
+            key = (rel, fn.lineno, tuple(sorted((k, tuple(sorted(v))) for k, v in env.items())),
+                   tuple(sorted((k, tuple(sorted(v))) for k, v in san_env.items())))  # type: ignore[attr-defined]
             if not env or key in seen or self._is_source(fn):
                 continue
             seen.add(key)
@@ -688,6 +757,7 @@ class PyScanner:
                 continue
             ctx = Ctx("plain", set(params))
             ctx.env.update(env)
+            ctx.sanitized.update(san_env)
             ctx.depth = depth
             self.sf, self.via = sf, via
             try:
@@ -832,62 +902,77 @@ class PyScanner:
             return any(a <= node.lineno <= b and n == node.id for a, b, n in local)
         return False
 
-    def taint(self, node: Optional[ast.AST], ctx: Ctx) -> Taint:
+    def taint(self, node: Optional[ast.AST], ctx: Ctx, sink: str = "") -> Taint:
         if node is None or isinstance(node, ast.Constant):
             return {}
         if isinstance(node, ast.Name):
+            if sink and sink in ctx.sanitized.get(node.id, ()):
+                return {}
             return dict(ctx.env.get(node.id, {}))
         if isinstance(node, ast.Attribute):
             if isinstance(node.value, ast.Name) and node.value.id in ("request", "req") and node.attr in USER_ATTRS:
                 return {"user": node.lineno}
-            return self.taint(node.value, ctx)
+            return self.taint(node.value, ctx, sink=sink)
         if isinstance(node, ast.Subscript):
             key = _subscript_key(node)
             if key is not None and key in ctx.env:
+                if sink and sink in ctx.sanitized.get(key, ()):
+                    return {}
                 return dict(ctx.env[key])
-            return self.taint(node.value, ctx)
+            return self.taint(node.value, ctx, sink=sink)
         if isinstance(node, ast.Call):
             if is_llm_call(node, self.llm_funcs):
                 return {"llm": node.lineno}
             name = last_name(node.func)
             if name in DB_READS and isinstance(node.func, ast.Attribute):
                 return {}
-            if name in SANITIZERS or name in H.CUSTOM.sanitizers or re.match(r"(?i)(sanitize|validate|escape|clean)", name or ""):
+            ctxs = _sanitizer_contexts(node, self.imports.get(self.sf.rel, {}) if self.sf else {})
+            if "*" in ctxs or (sink and sink in ctxs):
                 return {}
             if name == "get" and isinstance(node.func, ast.Attribute) and node.args:
                 # mapping.get(key[, default]): the key only selects a value; the result comes from the
                 # mapping or the default, so a user-chosen key into a server-side dict is not tainted
-                return merge(self.taint(node.func.value, ctx), *[self.taint(a, ctx) for a in node.args[1:]],
-                             *[self.taint(k.value, ctx) for k in node.keywords])
-            parts = [self.taint(a, ctx) for a in node.args] + [self.taint(k.value, ctx) for k in node.keywords]
+                return merge(self.taint(node.func.value, ctx, sink=sink), *[self.taint(a, ctx, sink=sink) for a in node.args[1:]],
+                             *[self.taint(k.value, ctx, sink=sink) for k in node.keywords])
+            parts = [self.taint(a, ctx, sink=sink) for a in node.args] + [self.taint(k.value, ctx, sink=sink) for k in node.keywords]
             if isinstance(node.func, ast.Attribute):
-                parts.append(self.taint(node.func, ctx))
+                parts.append(self.taint(node.func, ctx, sink=sink))
             return merge(*parts)
         if isinstance(node, ast.JoinedStr):
-            return merge(*[self.taint(v, ctx) for v in node.values])
+            return merge(*[self.taint(v, ctx, sink=sink) for v in node.values])
         if isinstance(node, ast.FormattedValue):
-            return self.taint(node.value, ctx)
+            return self.taint(node.value, ctx, sink=sink)
         if isinstance(node, ast.BinOp):
-            return merge(self.taint(node.left, ctx), self.taint(node.right, ctx))
+            return merge(self.taint(node.left, ctx, sink=sink), self.taint(node.right, ctx, sink=sink))
         if isinstance(node, ast.BoolOp):
-            return merge(*[self.taint(v, ctx) for v in node.values])
+            return merge(*[self.taint(v, ctx, sink=sink) for v in node.values])
         if isinstance(node, ast.IfExp):
-            return merge(self.taint(node.body, ctx), self.taint(node.orelse, ctx))
+            return merge(self.taint(node.body, ctx, sink=sink), self.taint(node.orelse, ctx, sink=sink))
         if isinstance(node, (ast.List, ast.Tuple, ast.Set)):
-            return merge(*[self.taint(e, ctx) for e in node.elts])
+            return merge(*[self.taint(e, ctx, sink=sink) for e in node.elts])
         if isinstance(node, ast.Dict):
-            return merge(*[self.taint(v, ctx) for v in node.values])
+            return merge(*[self.taint(v, ctx, sink=sink) for v in node.values])
         if isinstance(node, (ast.Await, ast.Starred, ast.NamedExpr)):
-            return self.taint(node.value, ctx)
+            return self.taint(node.value, ctx, sink=sink)
         if isinstance(node, (ast.ListComp, ast.SetComp, ast.GeneratorExp)):
-            return merge(self.taint(node.elt, ctx), *[self.taint(g.iter, ctx) for g in node.generators])
+            return merge(self.taint(node.elt, ctx, sink=sink), *[self.taint(g.iter, ctx, sink=sink) for g in node.generators])
         if isinstance(node, ast.DictComp):
-            return merge(self.taint(node.value, ctx), *[self.taint(g.iter, ctx) for g in node.generators])
+            return merge(self.taint(node.value, ctx, sink=sink), *[self.taint(g.iter, ctx, sink=sink) for g in node.generators])
         return {}
 
-    def assign(self, target: ast.AST, t: Taint, ctx: Ctx, value: Optional[ast.AST] = None) -> None:
+    def _safe_contexts(self, value: Optional[ast.AST], raw_taint: Taint, ctx: Ctx) -> Set[str]:
+        if not raw_taint or value is None:
+            return set()
+        return {c for c in _SINK_CONTEXTS if not self.taint(value, ctx, sink=c)}
+
+    def assign(self, target: ast.AST, t: Taint, ctx: Ctx, value: Optional[ast.AST] = None,
+               safe_ctxs: Optional[Set[str]] = None) -> None:
         if isinstance(target, ast.Name):
             ctx.env[target.id] = t
+            if safe_ctxs:
+                ctx.sanitized[target.id] = set(safe_ctxs)
+            else:
+                ctx.sanitized.pop(target.id, None)
             if value is not None:
                 ctx.assigned[target.id] = value
         elif isinstance(target, (ast.Tuple, ast.List)):
@@ -895,15 +980,21 @@ class PyScanner:
                     and not any(isinstance(e, ast.Starred) for e in (*target.elts, *value.elts)):
                 # `sql, args["r"] = sql + " WHERE r = :r", risk`: each target gets its own element's taint
                 taints = [self.taint(v, ctx) for v in value.elts]  # the right side is evaluated before any binding
-                for e, v, et in zip(target.elts, value.elts, taints):
-                    self.assign(e, et, ctx, v)
+                safes = [self._safe_contexts(v, et, ctx) for v, et in zip(value.elts, taints)]
+                for e, v, et, sc in zip(target.elts, value.elts, taints, safes):
+                    self.assign(e, et, ctx, v, sc)
                 return
             for e in target.elts:
-                self.assign(e, t, ctx)
+                self.assign(e, t, ctx, None, safe_ctxs)
         elif isinstance(target, ast.Starred):
-            self.assign(target.value, t, ctx)
+            self.assign(target.value, t, ctx, value, safe_ctxs)
         elif isinstance(target, ast.Subscript) and _subscript_key(target) is not None:
-            ctx.env[_subscript_key(target)] = t  # type: ignore[index]  # d["k"] = constant: that key is clean
+            k = _subscript_key(target)
+            ctx.env[k] = t  # type: ignore[index]  # d["k"] = constant: that key is clean
+            if safe_ctxs:
+                ctx.sanitized[k] = set(safe_ctxs)  # type: ignore[index]
+            else:
+                ctx.sanitized.pop(k, None)  # type: ignore[arg-type]
         elif isinstance(target, (ast.Attribute, ast.Subscript)) and t:
             if isinstance(target, ast.Subscript) and _subscript_key(target) is not None:
                 ctx.env[_subscript_key(target)] = t  # type: ignore[index]
@@ -926,11 +1017,13 @@ class PyScanner:
                         self.check_compare(n)
             if isinstance(st, ast.Assign):
                 t = self.taint(st.value, ctx)
+                sc = self._safe_contexts(st.value, t, ctx)
                 for tg in st.targets:
-                    self.assign(tg, t, ctx, st.value)
+                    self.assign(tg, t, ctx, st.value, sc)
                 self.check_assign_random(st)
             elif isinstance(st, ast.AnnAssign) and st.value is not None:
-                self.assign(st.target, self.taint(st.value, ctx), ctx, st.value)
+                t = self.taint(st.value, ctx)
+                self.assign(st.target, t, ctx, st.value, self._safe_contexts(st.value, t, ctx))
             elif isinstance(st, ast.AugAssign):
                 base = root_name(st.target)
                 if base:
@@ -1037,16 +1130,50 @@ class PyScanner:
         t0 = self.taint(arg0, ctx) if arg0 is not None else {}
         is_attr = isinstance(call.func, ast.Attribute)
 
+        # Cypher / KQL queries (BE022)
+        if is_attr and name in ("run", "execute_query", "query", "ro_query"):
+            qnode = kws.get("query") or arg0
+            if qnode is not None:
+                qsrc = self.resolve(qnode, ctx)
+                if is_formatted(qsrc) and CYPHER_KW.search(string_parts(qsrc)) \
+                        and not all(fragment_safe(p, ctx.assigned) or self._checked_ident(p) for p in interpolated(qsrc)):
+                    tc = self.taint(qnode, ctx, sink="sql")
+                    if tc:
+                        self.sink(call, tc, "BE022", "a Cypher query", "high", True)
+                    elif not self.sf.is_one_off:
+                        self.add("BE022", call, "Cypher query built with string formatting; use `$param` parameters.", "medium")
+        if is_attr and name in ("execute", "execute_query", "execute_mgmt", "execute_streaming_query"):
+            file_txt = self.sf.text or ""
+            if "kusto" in file_txt.lower():
+                q_cands = [kws.get("query"), call.args[1] if len(call.args) > 1 else None, arg0]
+                for qc in q_cands:
+                    if qc is None:
+                        continue
+                    qsrc = self.resolve(qc, ctx)
+                    if is_formatted(qsrc) and KQL_KW.search(string_parts(qsrc)):
+                        tkq = self.taint(qc, ctx, sink="sql")
+                        if tkq:
+                            self.sink(call, tkq, "BE022", "a KQL query", "high", True)
+                        elif not self.sf.is_one_off:
+                            self.add("BE022", call, "KQL query built with string formatting; use query parameters.", "medium")
+                        break
+        # MongoDB / NoSQL filters (BE010)
+        if is_attr and name in MONGO_METHODS and arg0 is not None and any(m in (self.sf.text or "") for m in MONGO_MARKERS):
+            msrc = self.resolve(arg0, ctx)
+            t_mongo = self.taint(arg0, ctx, sink="nosql")
+            if "user" in t_mongo and not _safe_mongo_filter(msrc):
+                self.sink(call, {"user": t_mongo["user"]}, "BE010", "a MongoDB query filter without type checks", "high", False)
         # SQL
         if is_attr and name in ("execute", "executemany", "executescript", "raw", "read_sql", "read_sql_query") or d in ("text", "sqlalchemy.text", "sa.text"):
             if arg0 is not None:
                 src = self.resolve(arg0, ctx)
+                t_sql = self.taint(arg0, ctx, sink="sql")
                 formatted = is_formatted(src) and re.search(r"(?i)\b(select|insert|update|delete|drop|create|alter|where)\b", string_parts(src))
                 if formatted and all(fragment_safe(p, ctx.assigned) or self._checked_ident(p) for p in interpolated(src)):
                     pass  # only bind markers are formatted in; the values are passed as parameters
-                elif t0 and (formatted or ctx.kind == "tool" or not isinstance(src, (ast.Constant, ast.JoinedStr, ast.BinOp))) \
+                elif t_sql and (formatted or ctx.kind == "tool" or not isinstance(src, (ast.Constant, ast.JoinedStr, ast.BinOp))) \
                         and not (isinstance(src, ast.Call) and last_name(src.func) in ORM_BUILDERS):
-                    self.sink(call, t0, "BE001", "a SQL query", "high", True)
+                    self.sink(call, t_sql, "BE001", "a SQL query", "high", True)
                 elif formatted and all(self._literal_loop_name(p, call) for p in interpolated(src)):
                     pass  # for table in ['alerts', 'users']: execute('DROP TABLE %s' % table): fixed names
                 elif formatted and not self.sf.is_one_off:  # a migration formats in its own constant identifiers
@@ -1054,42 +1181,49 @@ class PyScanner:
         # shell
         elif d in ("os.system", "os.popen", "subprocess.getoutput", "subprocess.getstatusoutput", "commands.getoutput") or d.endswith("create_subprocess_shell"):
             if arg0 is not None and const_str(arg0) is None:
-                if not self.sink(call, t0, "BE002", "a shell command", "critical", True):
-                    self.add("BE002", call, "Shell command built from a variable; if any part comes from users or a model this is command injection.", "medium")
+                t_sh = self.taint(arg0, ctx, sink="shell")
+                if not self.sink(call, t_sh, "BE002", "a shell command", "critical", True):
+                    if not (self.taint(arg0, ctx, sink="") and not t_sh):
+                        self.add("BE002", call, "Shell command built from a variable; if any part comes from users or a model this is command injection.", "medium")
         elif d.startswith("subprocess.") and name in ("run", "call", "check_call", "check_output", "Popen"):
             shell = kws.get("shell")
             shell_on = isinstance(shell, ast.Constant) and shell.value is True
             if arg0 is not None:
+                t_sh = self.taint(arg0, ctx, sink="shell")
                 if shell_on and const_str(arg0) is None:
-                    if not self.sink(call, t0, "BE002", "a shell command", "critical", True):
-                        self.add("BE002", call, "subprocess with shell=True and a dynamic command.", "medium")
+                    if not self.sink(call, t_sh, "BE002", "a shell command", "critical", True):
+                        if not (self.taint(arg0, ctx, sink="") and not t_sh):
+                            self.add("BE002", call, "subprocess with shell=True and a dynamic command.", "medium")
                 elif isinstance(arg0, (ast.List, ast.Tuple)) and arg0.elts:
-                    program = self.taint(arg0.elts[0], ctx)
+                    program = self.taint(arg0.elts[0], ctx, sink="shell")
                     if program:
                         self.sink(call, program, "BE002", "the program a subprocess runs", "high", True)
                     else:
                         self.check_model_argument(call, arg0.elts, ctx)
-                elif t0:
-                    self.sink(call, t0, "BE002", "a subprocess command", "high", True)
+                elif t_sh:
+                    self.sink(call, t_sh, "BE002", "a subprocess command", "high", True)
         # dynamic code
         elif isinstance(call.func, ast.Name) and name in ("eval", "exec", "compile") and arg0 is not None and const_str(arg0) is None \
                 and name not in self._own_functions():  # not the module's own eval()
-            if not self.sink(call, t0, "BE003", f"{name}()", "critical", True):
+            t_code = self.taint(arg0, ctx, sink="code")
+            if not self.sink(call, t_code, "BE003", f"{name}()", "critical", True):
                 self.add("BE003", call, f"{name}() on a dynamic string.", "medium")
         # SymPy parses with eval: sympify() / parse_expr() on request data runs code
-        elif name in ("sympify", "parse_expr") and arg0 is not None and t0:
-            self.sink(call, t0, "BE003", f"{name}() (it evaluates the string)", "critical", True)
+        elif name in ("sympify", "parse_expr") and arg0 is not None:
+            t_code = self.taint(arg0, ctx, sink="code")
+            if t_code:
+                self.sink(call, t_code, "BE003", f"{name}() (it evaluates the string)", "critical", True)
         # files
         elif (isinstance(call.func, ast.Name) and name == "open") or d in ("os.remove", "os.unlink", "shutil.rmtree", "os.rmdir") or name in ("send_file", "FileResponse"):
             if arg0 is not None:
-                self.sink(call, t0, "BE006", "a file system path", "high", False)
+                self.sink(call, self.taint(arg0, ctx, sink="path"), "BE006", "a file system path", "high", False)
         # outbound HTTP
         elif (root_name(call.func) in ("requests", "httpx", "urllib3", "aiohttp") and name in ("get", "post", "put", "patch", "delete", "head", "request", "urlopen", "stream")) or d.endswith("urlopen"):
             target = call.args[1] if name == "request" and len(call.args) > 1 else arg0
             if target is None:
                 target = kws.get("url")
             if target is not None:
-                tt = self.taint(target, ctx)
+                tt = self.taint(target, ctx, sink="url")
                 fixed_host = self._fixed_host(self.resolve(target, ctx))
                 if tt and not fixed_host:
                     self.sink(call, tt, "BE005", "an outbound HTTP request URL", "high", False)
@@ -1097,11 +1231,12 @@ class PyScanner:
                 self.add("BE013", call, "TLS certificate verification disabled (verify=False).")
         # templates / html / redirects
         elif name == "render_template_string" and arg0 is not None:
-            if not self.sink(call, t0, "BE007", "render_template_string()", "high", False) and is_formatted(arg0):
+            t_html = self.taint(arg0, ctx, sink="html")
+            if not self.sink(call, t_html, "BE007", "render_template_string()", "high", False) and is_formatted(arg0):
                 self.add("BE007", call, "Template string built with formatting; user data in it becomes template code.", "medium")
         elif name in ("Markup", "mark_safe", "HTMLResponse") and (arg0 is not None or "content" in kws):
             value = arg0 if arg0 is not None else kws.get("content")
-            tt = {} if self._rendered(value, ctx) else (t0 or self.taint(kws.get("content"), ctx))
+            tt = {} if self._rendered(value, ctx) else self.taint(value, ctx, sink="html")
             if not self.sink(call, tt, "FE001", f"{name}() (raw HTML)", "high", False) and arg0 is not None and is_formatted(arg0):
                 self.add("FE001", call, f"{name}() marks a formatted string as safe HTML.", "medium")
         elif name in ("redirect", "RedirectResponse", "HttpResponseRedirect") and arg0 is not None:
@@ -1114,7 +1249,7 @@ class PyScanner:
                 "url_for", "reverse", "reverse_lazy", "resolve_url", "url_path_for", "first", "get_object_or_404"))
             if not same_site and not (isinstance(arg0, ast.JoinedStr) and arg0.values and isinstance(arg0.values[0], ast.Constant)
                                       and str(arg0.values[0].value).startswith("/")):
-                self.sink(call, t0, "BE008", "a redirect target", "medium", False)
+                self.sink(call, self.taint(arg0, ctx, sink="redirect"), "BE008", "a redirect target", "medium", False)
         # deserialization and model loading
         elif d in ("pickle.loads", "pickle.load", "cPickle.loads", "cPickle.load", "dill.loads", "dill.load", "marshal.loads", "marshal.load", "jsonpickle.decode", "shelve.open", "yaml.unsafe_load"):
             if not self.sink(call, t0, "BE004", d + "()", "high", True):
@@ -1346,7 +1481,7 @@ class PyScanner:
         for e in argv[1:]:
             if isinstance(e, ast.Constant) and e.value == "--":
                 return  # everything after `--` is an operand, never an option
-            te = self.taint(e, ctx)
+            te = self.taint(e, ctx, sink="shell")
             if te and "llm" in te and "tool" not in te:
                 self.add("LLM019", call, f"Model output (from the call on line {te['llm']}) is passed as an argument to "
                                          f"`{prog}`; a value such as `--upload-pack=...` becomes an option.", "high")

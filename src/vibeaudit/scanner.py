@@ -10,7 +10,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable, List, Optional, Set
 
-from . import external, plugins, rpcscan
+from . import correlate, external, plugins, rpcscan
 from .deps import DepScanner
 from . import heuristics as H
 from .files import Project
@@ -310,6 +310,8 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
         "skipped": list(GUARD.skipped), "internal_errors": list(GUARD.internal_errors),
         "feedback_hidden": hidden, "feedback_demoted": demoted, "include_preview": opts.include_preview,
         "gate_severe_preview": opts.gate_severe_preview, "disabled": sorted(opts.disabled),
+        "attack_paths": correlate.attack_paths(findings, all_routes),
+        "ai_risk_profile": correlate.ai_risk_profile(findings),
     }
     if opts.changes is not None:
         meta["changed_files"] = len(opts.changes)

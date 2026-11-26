@@ -41,6 +41,7 @@ class Rule:
     gates_in_preview: bool = False
 
 
+NEW_IN_0160 = "New in 0.16.0: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_0150 = "New in 0.15.0: not yet measured on enough held-out findings in the benchmark."
 NEW_JVM = "New with Java and Kotlin support: not yet measured on enough held-out findings in the benchmark."
 NEW_IN_089 = "New in 0.8.9: not yet measured on enough held-out findings in the benchmark."
@@ -293,6 +294,13 @@ _R = [
          "disallow-doctype-decl in Java/Kotlin, DtdProcessing.Prohibit in C#, avoid LIBXML_NOENT in PHP "
          "and noent: true in libxmljs).",
          "CWE-611", "A05:2021", preview=True, preview_reason=NEW_IN_0150),
+    Rule("BE022", "Graph or analytics query injection (Cypher / KQL)", "backend", "high",
+         "Building a Cypher (Neo4j/FalkorDB/Memgraph) or KQL (Azure Data Explorer) query with string "
+         "formatting or concatenation lets an attacker or prompt-injected agent alter the query and "
+         "read or modify unauthorized data.",
+         "Pass dynamic values as query parameters (Cypher `$param` maps or KQL `ClientRequestProperties` "
+         "parameters) rather than interpolating them into the query string.",
+         "CWE-943", "A03:2021", preview=True, preview_reason=NEW_IN_0160),
     # --------------------------------------------------------------- frontend
     Rule("FE001", "Cross-site scripting through a raw HTML sink", "frontend", "high",
          "Inserting unsanitized data as HTML (innerHTML, dangerouslySetInnerHTML, v-html, {@html}, |safe) "

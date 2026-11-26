@@ -58,6 +58,8 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--llm-model", help="model name for the LLM provider")
     s.add_argument("--llm-review", action="store_true", help="also ask the LLM to review the riskiest files for missed issues")
     s.add_argument("--llm-max-requests", type=int, default=None, help="hard cap on LLM requests per scan (default: 10)")
+    s.add_argument("--privacy-report", action="store_true",
+                   help="print what redacted files, line ranges and byte counts --llm / --llm-review would transmit, without sending data or needing an API key")
     s.add_argument("--plugin", action="append", default=[], metavar="FILE_OR_MODULE",
                    help="load custom rules from a Python file or module (repeatable; runs that code)")
     s.add_argument("--staged", action="store_true", help="report only findings on lines staged for commit (pre-commit hooks)")
@@ -113,6 +115,8 @@ def build_parser() -> argparse.ArgumentParser:
                                    "findings without a codemod get a model-written patch in a .patch file, never applied.")
     x.add_argument("path", nargs="?", default=".", help="project directory (default: current directory)")
     x.add_argument("--apply", action="store_true", help="write the fixes to the files instead of printing the diff")
+    x.add_argument("--verify", action="store_true",
+                   help="with --apply, re-scan modified files to confirm fixed findings cleared and no new findings appeared; rolls back on failure")
     x.add_argument("--rule", action="append", default=[], metavar="RULE",
                    help="fix only these rules (repeatable, comma lists allowed)")
     x.add_argument("--exclude", action="append", default=[], metavar="GLOB", help="skip paths matching GLOB (repeatable)")
@@ -584,6 +588,9 @@ def cmd_fix(a: argparse.Namespace) -> int:
     except ConfigError as e:
         print(f"vibeaudit: {e}", file=sys.stderr)
         return 2
+    if getattr(a, "verify", False) and not a.apply:
+        print("vibeaudit: --verify requires --apply", file=sys.stderr)
+        return 2
     opts.excludes += a.exclude
     plan = fix.plan(a.path, rules, opts)
     if a.apply:
@@ -599,6 +606,14 @@ def cmd_fix(a: argparse.Namespace) -> int:
     verb = "applied" if a.apply else "proposed"
     print(f"vibeaudit: {len(plan.fixed)} fixes {verb} in {len(plan.changes)} files; {len(fixable)} findings of fixable "
           f"rules could not be rewritten; {len(plan.skipped) - len(fixable)} findings have no codemod.", file=sys.stderr)
+    if a.apply and getattr(a, "verify", False) and plan.changes:
+        ver = fix.verify_plan(Path(a.path), plan, opts)
+        if ver["ok"]:
+            print(f"vibeaudit: verify passed ({ver['resolved']} resolved, 0 introduced).", file=sys.stderr)
+        else:
+            print(f"vibeaudit: verify failed ({len(ver['remaining'])} remaining, {len(ver['introduced'])} introduced); rolled back {len(plan.changes)} files.",
+                  file=sys.stderr)
+            return 1
     if a.llm:
         from .llm import LLMError, Provider
 
@@ -712,6 +727,8 @@ def cmd_scan(a: argparse.Namespace) -> int:
         # the score is the whole project's: scan without hiding anything, then hide for the report
         regression = (got[0], got[1], opts.changes)
         opts.baseline, opts.changes = None, None
+    if getattr(a, "privacy_report", False):
+        opts.llm = None
     try:
         if pick(a.monorepo, "monorepo", False):
             from . import monorepo
@@ -721,6 +738,24 @@ def cmd_scan(a: argparse.Namespace) -> int:
             res = scan(a.path, opts)
     except KeyboardInterrupt:
         return 130
+    if getattr(a, "privacy_report", False):
+        from . import llm
+        from .files import Project
+        from .scanner import _risky_files
+
+        proj = Project(Path(a.path), opts.excludes, opts.max_file_bytes)
+        pr = llm.privacy_report(proj, res.findings, _risky_files(proj, res.findings, res.routes),
+                                opts.llm_max_requests, include_review=bool(a.llm_review))
+        lines = [
+            f"vibeaudit privacy-report: {len(pr['triage'])} finding snippets + {len(pr['review'])} full files "
+            f"({pr['total_bytes']} bytes, {pr['redactions']} redacted secrets; nothing sent)"
+        ]
+        for item in pr["triage"]:
+            lines.append(f"  triage {item['rule']} {item['file']}:{item['lines']} ({item['bytes']} bytes)")
+        for item in pr["review"]:
+            lines.append(f"  review {item['file']}:{item['lines']} ({item['bytes']} bytes)")
+        sys.stdout.write("\n".join(lines) + "\n")
+        return 0
     if regression is not None:
         from .gitdiff import keep
 

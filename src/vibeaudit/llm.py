@@ -145,6 +145,44 @@ def _context(project: Project, f: Finding, radius: int = 12) -> str:
     return "\n".join(f"{i:5d}| {sf.line(i)}" for i in range(lo, hi + 1))
 
 
+def privacy_report(project: Project, findings: List[Finding], risky_files: List[str],
+                   max_requests: int = 10, include_review: bool = False) -> dict:
+    """Preview what redacted code slices would be sent if `--llm` / `--llm-review` ran, with no network call."""
+    candidates = [f for f in findings if f.severity in ("critical", "high", "medium") and f.line
+                  and f.source == "vibeaudit" and f.category != "secrets"]
+    max_triage = max(0, max_requests) * 6
+    selected = candidates[:max_triage]
+    triage_items = []
+    redactions = 0
+    total_bytes = 0
+    for f in selected:
+        sf = project.get(f.file)
+        if not sf:
+            continue
+        lo, hi = max(1, f.line - 12), min(len(sf.lines), f.line + 12)
+        red = redact(_context(project, f))
+        redactions += len(re.findall(r"<REDACTED(?:_[A-Z_]+)?>", red))
+        total_bytes += len(red.encode("utf-8"))
+        triage_items.append({"rule": f.rule_id, "file": f.file, "lines": f"{lo}-{hi}", "bytes": len(red.encode("utf-8"))})
+    review_items = []
+    if include_review:
+        for rel in risky_files:
+            sf = project.get(rel)
+            if not sf or not sf.text:
+                continue
+            numbered = "\n".join(f"{i:5d}| {ln}" for i, ln in enumerate(sf.lines[:600], 1))
+            red = redact(numbered)
+            redactions += len(re.findall(r"<REDACTED(?:_[A-Z_]+)?>", red))
+            total_bytes += len(red.encode("utf-8"))
+            review_items.append({"file": rel, "lines": f"1-{min(len(sf.lines), 600)}", "bytes": len(red.encode("utf-8"))})
+    return {
+        "triage": triage_items,
+        "review": review_items,
+        "total_bytes": total_bytes,
+        "redactions": redactions,
+    }
+
+
 def triage(project: Project, findings: List[Finding], provider: Provider, max_requests: int,
            log: Callable[[str], None]) -> None:
     # Secrets are redacted before anything is sent, so the model cannot judge them; skip that category.

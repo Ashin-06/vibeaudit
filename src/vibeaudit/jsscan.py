@@ -40,10 +40,59 @@ LLM_SRC = re.compile(
     r"|\.\s*(?:chat\s*\.\s*completions|responses|messages)\s*\.\s*create\s*\(|\.\s*generateContent\s*\("
     r"|\b(?:llm|chain|agent|chatModel|model)\w*\s*\.\s*invoke\s*\("
 )
-SANITIZER = re.compile(
-    r"(?i)\b(?:DOMPurify|purify|sanitize\w*|xss|escape\w*|esc|escHtml|htmlEsc\w*|encodeURIComponent|encodeURI|he\s*\.\s*encode|insane"
-    r"|parseInt|parseFloat|Number|Boolean|validator\s*\.\s*\w+|\w+Schema\s*\.\s*(?:safe)?[pP]arse|z\s*\.\s*\w+)\s*\("
+UNIVERSAL_SANITIZER = re.compile(
+    r"\b(?:parseInt|parseFloat|Number|Boolean|validator\s*\.\s*is\w+|\w+Schema\s*\.\s*(?:safe)?[pP]arse|z\s*\.\s*\w+)\s*\(",
+    re.I,
 )
+SINK_SANITIZERS: Dict[str, re.Pattern] = {
+    "html": re.compile(
+        r"\b(?:DOMPurify(?:\s*\.\s*sanitize)?|purify|sanitize\w*|xss|escapeHtml|escHtml|htmlEsc\w*|escape\w*|esc|he\s*\.\s*encode|insane)\s*\(",
+        re.I,
+    ),
+    "url": re.compile(r"\b(?:encodeURIComponent|encodeURI)\s*\(", re.I),
+    "redirect": re.compile(r"\bencodeURIComponent\s*\(", re.I),
+    "path": re.compile(r"\b(?:(?:path\s*\.\s*)?basename|sanitizeFilename|sanitizePath)\s*\(", re.I),
+    "sql": re.compile(r"\b(?:escapeLiteral|escapeIdentifier|escapeId|sqlEscape|escapeSql|mysql\s*\.\s*escape)\s*\(", re.I),
+    "shell": re.compile(r"\b(?:shellEscape|shellQuote|escapeShellArg)\s*\(", re.I),
+}
+SANITIZER = re.compile(
+    "|".join(p.pattern for p in (UNIVERSAL_SANITIZER, *SINK_SANITIZERS.values())),
+    re.I,
+)
+CYPHER_KW = re.compile(r"(?i)\b(?:OPTIONAL\s+)?MATCH\s*\([^)\n]{0,120}\)|\bDETACH\s+DELETE\b|\bMERGE\s*\([^)\n]{0,120}\)")
+KQL_KW = re.compile(r"(?i)\|\s*(?:where|project|summarize|take|limit|extend|join|order\s+by|sort\s+by|count)\b")
+
+
+def _blank_calls(code: str, bare: str, rx: Optional[re.Pattern]) -> Tuple[str, str]:
+    if rx is None or not code:
+        return code, bare
+    spans: List[Tuple[int, int]] = []
+    use_bare = len(bare) == len(code)
+    scan_src = bare if use_bare else code
+    for m in finditer(rx, code):
+        open_p = m.end() - 1
+        close = match_close(scan_src, open_p)
+        if close > open_p:
+            spans.append((m.start(), close + 1))
+    if not spans:
+        return code, bare
+    c_buf, b_buf = list(code), list(bare)
+    for a, b in spans:
+        for i in range(a, b):
+            if c_buf[i] != "\n":
+                c_buf[i] = " "
+            if i < len(b_buf) and b_buf[i] != "\n":
+                b_buf[i] = " "
+    return "".join(c_buf), "".join(b_buf)
+
+
+def _strip_sanitizer_calls(code: str, bare: str, sink: str) -> Tuple[str, str]:
+    c, b = _blank_calls(code, bare, UNIVERSAL_SANITIZER)
+    if H.CUSTOM.sanitizer_rx:
+        c, b = _blank_calls(c, b, H.CUSTOM.sanitizer_rx)
+    if sink and sink in SINK_SANITIZERS:
+        c, b = _blank_calls(c, b, SINK_SANITIZERS[sink])
+    return c, b
 WHOLE_BODY = re.compile(
     r"^\s*(?:await\s+)?(?:(?:req|request|c\s*\.\s*req|ctx\s*\.\s*request)\s*\.\s*(?:body|json\s*\(\s*\))"
     r"|JSON\s*\.\s*parse\s*\(\s*(?:event|req)\s*\.\s*body\s*\))\s*(?:as\s+[\w<>\[\]]+)?\s*$"
@@ -145,6 +194,7 @@ class FileState:
         # same file. Scopes are function spans; (0, 10 ** 12) is top-level code, visible everywhere.
         self.scopes: List[Tuple[int, int]] = []
         self.taint: Dict[str, Dict[Tuple[int, int], Set[str]]] = {}
+        self.sanitized: Dict[str, Dict[Tuple[int, int], Set[str]]] = {}
         self.whole_body: Dict[str, Set[Tuple[int, int]]] = {}
         self.sql_names: Dict[str, Set[Tuple[int, int]]] = {}
         self.decl_rhs: Dict[str, str] = {}
@@ -184,16 +234,24 @@ class FileState:
         current |= kinds
         return True
 
-    def kinds(self, code: str, bare: str, at: Optional[int] = None) -> Set[str]:
-        if SANITIZER.search(code) or H.CUSTOM.is_sanitizer(code):
-            return set()
+    def sanitized_at(self, name: str, at: Optional[int]) -> Set[str]:
+        out: Set[str] = set()
+        for (a, b), ctxs in self.sanitized.get(name, {}).items():
+            if at is None or a <= at < b:
+                out |= ctxs
+        return out
+
+    def kinds(self, code: str, bare: str, at: Optional[int] = None, sink: str = "") -> Set[str]:
+        c_clean, b_clean = _strip_sanitizer_calls(code, bare, sink)
         k: Set[str] = set()
-        if USER_SRC.search(code):
+        if USER_SRC.search(c_clean):
             k.add("user")
-        if LLM_SRC.search(code):
+        if LLM_SRC.search(c_clean):
             k.add("llm")
         for name, kinds in self.taint_at(at).items():
-            if kinds - k and ident_re(name).search(bare):
+            if sink and sink in self.sanitized_at(name, at):
+                continue
+            if kinds - k and ident_re(name).search(b_clean):
                 k |= kinds
         return k
 
@@ -539,6 +597,27 @@ class JsScanner:
                     changed |= fs.add_taint(n, scope, k)
             if not changed:
                 break
+        fs.sanitized.clear()
+        candidates: Dict[Tuple[str, Tuple[int, int]], Set[str]] = {}
+        dirty: Dict[Tuple[str, Tuple[int, int]], Set[str]] = {}
+        for _ in range(3):
+            for names, a, b, _plain, scope in fs.scoped:
+                GUARD.tick()
+                rhs_c, rhs_b = code[a:b], bare[a:b]
+                k_univ = fs.kinds(rhs_c, rhs_b, a, sink="")
+                if not k_univ:
+                    continue
+                for s in SINK_SANITIZERS:
+                    if fs.kinds(rhs_c, rhs_b, a, sink=s):
+                        for n in names:
+                            dirty.setdefault((n, scope), set()).add(s)
+                    else:
+                        for n in names:
+                            candidates.setdefault((n, scope), set()).add(s)
+            for (n, scope), ctxs in candidates.items():
+                safe = ctxs - dirty.get((n, scope), set())
+                if safe:
+                    fs.sanitized.setdefault(n, {})[scope] = safe
 
     # ------------------------------------------------- cross-function taint
     def follow_calls(self) -> None:
@@ -724,7 +803,7 @@ class JsScanner:
             for m in finditer(r"(?<![\w$.])(?:exec|execSync)\s*\(|\b(?:child_process|cp|childProcess)\s*\.\s*(?:exec|execSync)\s*\(", bare):
                 args = self.call_args(fs, m.end() - 1)
                 if args and not is_static_string(args[0][0]):
-                    report("BE002", m.start(), fs.kinds(args[0][0], args[0][1], m.start()), "a shell command", "critical",
+                    report("BE002", m.start(), fs.kinds(args[0][0], args[0][1], m.start(), sink="shell"), "a shell command", "critical",
                            "Shell command built from a variable; if any part comes from users or a model this is command injection.",
                            "medium")
             for m in finditer(r"(?<![\w$])(?:spawn|spawnSync|execFile|execFileSync)\s*\(", bare):
@@ -733,14 +812,14 @@ class JsScanner:
                     continue
                 joined = " ".join(a[0] for a in args)
                 if re.search(r"\bshell\s*:\s*true", joined):
-                    k = fs.kinds(joined, " ".join(a[1] for a in args), m.start())
+                    k = fs.kinds(joined, " ".join(a[1] for a in args), m.start(), sink="shell")
                     report("BE002", m.start(), k, "a spawned process", "high",
                            "Process spawned with shell: true and a dynamic command.", "medium")
                 else:
-                    k = fs.kinds(args[0][0], args[0][1], m.start())  # without a shell only the program name is dangerous
+                    k = fs.kinds(args[0][0], args[0][1], m.start(), sink="shell")  # without a shell only the program name is dangerous
                     if k & {"user", "llm"}:
                         report("BE002", m.start(), k, "the program a process runs", "high")
-                    elif len(args) > 1 and args[1][1].lstrip().startswith("[") and "'--'" not in args[1][0]                             and '"--"' not in args[1][0] and "llm" in fs.kinds(args[1][0], args[1][1], m.start()):
+                    elif len(args) > 1 and args[1][1].lstrip().startswith("[") and "'--'" not in args[1][0]                             and '"--"' not in args[1][0] and "llm" in fs.kinds(args[1][0], args[1][1], m.start(), sink="shell"):
                         self.add(fs, "LLM019", m.start(), "Model output is passed as an argument of a spawned process; "
                                                           "a value such as `--upload-pack=...` becomes an option.", "high")
         # dynamic code
@@ -748,8 +827,21 @@ class JsScanner:
             args = self.call_args(fs, m.end() - 1)
             if args and not all(is_static_string(a[0]) for a in args):
                 joined = " ".join(a[0] for a in args)
-                report("BE003", m.start(), fs.kinds(joined, " ".join(a[1] for a in args), m.start()), "eval / new Function",
+                report("BE003", m.start(), fs.kinds(joined, " ".join(a[1] for a in args), m.start(), sink="code"), "eval / new Function",
                        "critical", "Code is evaluated from a dynamic string.", "medium")
+        # Cypher / KQL graph & analytics queries (BE022)
+        for m in finditer(r"\.\s*(?:run|executeQuery|execute|executeMgmt)\s*\(", bare):
+            args = self.call_args(fs, m.end() - 1)
+            if not args:
+                continue
+            q_arg = args[1] if (m.group(0).lstrip(". ").startswith(("execute", "executeMgmt")) and len(args) > 1 and KQL_KW.search(args[1][0])) else args[0]
+            q_code, q_bare, _ = q_arg
+            is_dyn = "${" in q_code or bool(re.search(r"['\"`]\s*\+|\+\s*['\"`]", q_code))
+            if is_dyn and (CYPHER_KW.search(q_code) or KQL_KW.search(q_code)):
+                kind_label = "KQL" if KQL_KW.search(q_code) else "Cypher"
+                report("BE022", m.start(), fs.kinds(q_code, q_bare, m.start(), sink="sql"),
+                       f"a {kind_label} query built with string interpolation", "high",
+                       f"{kind_label} query built with string formatting; use query parameters.", "medium")
         # SQL
         for m in finditer(r"\.\s*(?:query|execute|raw|\$queryRawUnsafe|\$executeRawUnsafe|unsafe|exec|run|all|get|prepare)\s*\(", bare):
             args = self.call_args(fs, m.end() - 1)
@@ -767,7 +859,7 @@ class JsScanner:
                 dynamic = True
                 a_code = fs.decl_rhs.get(name, a_code)
             if dynamic:
-                report("BE001", m.start(), fs.kinds(a_code, a_code, m.start()), "a SQL query built with string formatting", "high",
+                report("BE001", m.start(), fs.kinds(a_code, a_code, m.start(), sink="sql"), "a SQL query built with string formatting", "high",
                        "SQL query built with string interpolation; use parameters even for values you think are safe.",
                        "medium")
         # NoSQL
@@ -812,7 +904,7 @@ class JsScanner:
             a_code = code[arg[0]:arg[1]].strip()
             if re.match(r"""['"`](?:https?://[^'"`$/]+/|/(?!/))""", a_code):
                 continue  # fixed host or relative path
-            k = fs.kinds(a_code, bare[arg[0]:arg[1]], m.start())
+            k = fs.kinds(a_code, bare[arg[0]:arg[1]], m.start(), sink="url")
             if k & {"user", "llm"}:
                 report("BE005", m.start(), k, "an outbound HTTP request URL", "high")
         # path traversal
@@ -820,8 +912,8 @@ class JsScanner:
         for m in finditer(r"\b(?:res|reply|response)\s*\.\s*(?:sendFile|download)\s*\(|\bfs(?:\s*\.\s*promises)?\s*\.\s*(?:readFile|readFileSync|writeFile|writeFileSync|createReadStream|createWriteStream|unlink|unlinkSync|rm|rmSync|appendFile|appendFileSync)\s*\(" + (r"|(?<![\w$.])(?:readFile|writeFile|unlink|rm|appendFile)\s*\(" if fs_import else ""), bare):
             arg = first_arg(bare, m.end() - 1)
             if arg:
-                k = fs.kinds(code[arg[0]:arg[1]], bare[arg[0]:arg[1]], m.start())
-                if k & {"user", "llm"} and "basename" not in code[arg[0]:arg[1]]:
+                k = fs.kinds(code[arg[0]:arg[1]], bare[arg[0]:arg[1]], m.start(), sink="path")
+                if k & {"user", "llm"}:
                     report("BE006", m.start(), k, "a file system path", "high")
         # open redirect
         for m in finditer(r"\b(?:res|reply)\s*\.\s*redirect\s*\(|(?<![\w$.])redirect\s*\(|\b(?:NextResponse|Response)\s*\.\s*redirect\s*\(", bare):
@@ -834,7 +926,7 @@ class JsScanner:
                 continue
             if re.match(r"(?:[\w$.]+\s*\(\s*)?`\$\{\s*[\w$.]*\borigin\s*\}/", t_code):
                 continue  # `${url.origin}/signin`: the app's own origin and a fixed path
-            k = fs.kinds(t_code, target[1], m.start())
+            k = fs.kinds(t_code, target[1], m.start(), sink="redirect")
             if k & {"user", "llm"} and not self._api_result(fs, t_code, m.start()):
                 report("BE008", m.start(), k, "a redirect target", "medium")
 
@@ -854,10 +946,20 @@ class JsScanner:
         code, bare = fs.v.code, fs.v.bare
 
         def judge(off: int, expr_code: str, expr_bare: str, where: str) -> None:
-            if off in fs.handled or is_static_string(expr_code) or SANITIZER.search(expr_code) or H.CUSTOM.is_sanitizer(expr_code):
+            if off in fs.handled or is_static_string(expr_code):
                 return
+            k = fs.kinds(expr_code, expr_bare, off, sink="html")
+            if not k:
+                if SANITIZER.search(expr_code) or H.CUSTOM.is_sanitizer(expr_code):
+                    return
+                _sc, stripped_b = _strip_sanitizer_calls(expr_code, expr_bare, "html")
+                rem = stripped_b
+                for n, ctxs in fs.sanitized.items():
+                    if fs.visible(ctxs, off) and "html" in fs.sanitized_at(n, off):
+                        rem = ident_re(n).sub("", rem)
+                if not re.sub(r"[\s`$'\"+;(){}\[\]]+", "", rem):
+                    return
             fs.handled.add(off)
-            k = fs.kinds(expr_code, expr_bare, off)
             if "llm" in k:
                 self.add(fs, "LLM002", off, f"Model output is rendered as raw HTML ({where}); prompt injection becomes XSS.", "high")
             elif "user" in k:
@@ -889,7 +991,7 @@ class JsScanner:
             for m in finditer(r"\b(?:res|reply)\s*\.\s*send\s*\(", bare):
                 arg = first_arg(bare, m.end() - 1)
                 if arg and re.search(r"<\w", code[arg[0]:arg[1]]):
-                    k = fs.kinds(code[arg[0]:arg[1]], bare[arg[0]:arg[1]], m.start())
+                    k = fs.kinds(code[arg[0]:arg[1]], bare[arg[0]:arg[1]], m.start(), sink="html")
                     if k & {"user", "llm"}:
                         judge(m.start(), code[arg[0]:arg[1]], bare[arg[0]:arg[1]], "HTML response")
         if fs.sf.kind == "html":
@@ -1041,7 +1143,7 @@ class JsScanner:
         if not parts:
             return
         joined = " ".join(parts)
-        k = fs.kinds(joined, joined, off)
+        k = fs.kinds(joined, joined, off, sink="prompt")
         if "user" in k:
             self.add(fs, "LLM001", off, "Request data is interpolated into the system prompt.", "high")
             return
