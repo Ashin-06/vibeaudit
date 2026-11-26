@@ -13,6 +13,8 @@ from pathlib import Path
 
 import pytest
 
+pytestmark = pytest.mark.slow
+
 from helpers import FIXTURES, fake_values
 from vibeaudit.report import render_html, render_json, render_markdown, render_sarif, render_text
 from vibeaudit.scanner import Options, scan

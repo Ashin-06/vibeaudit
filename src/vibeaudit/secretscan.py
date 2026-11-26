@@ -347,6 +347,80 @@ class SecretScanner:
         return code
 
 
+def _mask_secret(token: str) -> str:
+    if len(token) <= 10:
+        return token[:2] + "***"
+    return token[:6] + "..." + token[-4:]
+
+
+def scan_git_history(root, emit: Emit, max_commits: int = 200) -> Dict[str, int]:
+    """Scan added lines across recent git commits for high-confidence provider keys and private keys."""
+    import hashlib
+    import subprocess
+    from pathlib import Path
+
+    repo = Path(root)
+    info = {"commits_scanned": 0, "findings": 0}
+    if not (repo / ".git").exists():
+        return info
+    try:
+        log = subprocess.run(
+            ["git", "-C", str(repo), "log", f"-n{max(1, int(max_commits))}", "-p", "--no-color", "--unified=0", "--diff-filter=AM"],
+            capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=30,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return info
+    if log.returncode != 0 or not log.stdout:
+        return info
+    text = log.stdout[:20_000_000]
+    sha, rel, cur_line = "", "", 0
+    seen = set()
+    for raw in text.splitlines():
+        if raw.startswith("commit "):
+            sha = raw[7:].split()[0][:12]
+            info["commits_scanned"] += 1
+            rel, cur_line = "", 0
+        elif raw.startswith("+++ b/"):
+            rel = raw[6:]
+        elif raw.startswith("@@ "):
+            m_ln = re.search(r"\+(\d+)", raw)
+            cur_line = int(m_ln.group(1)) if m_ln else 1
+        elif raw.startswith("+") and not raw.startswith("+++") and rel:
+            line_txt = raw[1:]
+            line_no = max(1, cur_line)
+            cur_line += 1
+            if re.search(r"(?:^|/)(?:tests?|fixtures?|testdata|__mocks__)/", rel):
+                continue
+            if PRIVATE_KEY.search(line_txt) and not H.PLACEHOLDER.search(line_txt):
+                key_id = (rel, "SEC002", "private_key")
+                if key_id not in seen:
+                    seen.add(key_id)
+                    emit(Finding("SEC002", rel, line_no,
+                                 f"Private key found in git history (commit {sha}); rotate the key and rewrite history.",
+                                 "critical", "-----BEGIN ... PRIVATE KEY-----"))
+                    info["findings"] += 1
+            for label, rx in PROVIDER_KEYS:
+                m = rx.search(line_txt)
+                if not m:
+                    continue
+                val = m.group(1) if m.lastindex else m.group(0)
+                if H.PLACEHOLDER.search(line_txt) or H.PLACEHOLDER.search(val) or re.search(r"(?i)example|xxxx", val):
+                    continue
+                if "secret_access_key" in label.lower() and not H.looks_random(val):
+                    continue
+                digest = hashlib.sha256(val.encode("utf-8", "replace")).hexdigest()[:16]
+                key_id = (rel, "SEC001", digest)
+                if key_id in seen:
+                    continue
+                seen.add(key_id)
+                masked = line_txt.replace(val, _mask_secret(val))[:160]
+                emit(Finding("SEC001", rel, line_no,
+                             f"{label} found in git history (commit {sha}); rotate the credential and rewrite history.",
+                             "critical", masked))
+                info["findings"] += 1
+    return info
+
+
 PUBLIC_ENV = re.compile(
     r"\b(?:NEXT_PUBLIC_|VITE_|REACT_APP_|EXPO_PUBLIC_|NUXT_PUBLIC_|GATSBY_|PUBLIC_)"
     r"[A-Z0-9_]*?(?:SECRET|PRIVATE_KEY|SERVICE_ROLE|SERVICE_KEY|PASSWORD|PASSWD|DATABASE_URL|DB_URL|DB_PASS"

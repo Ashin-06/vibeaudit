@@ -17,6 +17,7 @@ import os
 import re
 import urllib.error
 import urllib.request
+from importlib import resources
 from typing import Callable, Dict, List, Optional
 
 from .files import Project
@@ -25,11 +26,31 @@ from .store import TimedCache, loads_json
 from .secretscan import (DB_URL, GENERIC_ASSIGN, JWT, PASSWORD_ASSIGN, PRIVATE_KEY, PROVIDER_KEYS, SIGNING_FALLBACK,
                          SIGNING_LITERAL)
 
+_FALLBACK_MODELS = {
+    "gemini": "gemini-2.5-flash",
+    "openai": "gpt-4.1-mini",
+    "openrouter": "qwen/qwen-2.5-72b-instruct",
+    "anthropic": "claude-sonnet-5-5",
+}
+
+
+def default_models() -> Dict[str, str]:
+    try:
+        raw = resources.files("vibeaudit").joinpath("data", "llm_models.json").read_text(encoding="utf-8")
+        loaded = json.loads(raw)
+        if isinstance(loaded, dict):
+            return {k: str(loaded.get(k) or v) for k, v in _FALLBACK_MODELS.items()}
+    except (OSError, ValueError):
+        pass
+    return dict(_FALLBACK_MODELS)
+
+
+_DEFAULTS = default_models()
 PROVIDERS = {
-    "gemini": {"env": ("GEMINI_API_KEY", "GOOGLE_API_KEY"), "model": "gemini-3.5-flash"},
-    "openai": {"env": ("OPENAI_API_KEY",), "model": "gpt-5-mini"},
-    "openrouter": {"env": ("OPENROUTER_API_KEY",), "model": "qwen/qwen4-max"},
-    "anthropic": {"env": ("ANTHROPIC_API_KEY",), "model": "claude-sonnet-5-5"},
+    "gemini": {"env": ("GEMINI_API_KEY", "GOOGLE_API_KEY"), "model": _DEFAULTS["gemini"]},
+    "openai": {"env": ("OPENAI_API_KEY",), "model": _DEFAULTS["openai"]},
+    "openrouter": {"env": ("OPENROUTER_API_KEY",), "model": _DEFAULTS["openrouter"]},
+    "anthropic": {"env": ("ANTHROPIC_API_KEY",), "model": _DEFAULTS["anthropic"]},
 }
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 TIMEOUT = 120

@@ -7,7 +7,11 @@ import random
 import time
 import tracemalloc
 
+import pytest
+
 from vibeaudit.scanner import Options, scan
+
+pytestmark = pytest.mark.slow
 
 FILES = int(os.environ.get("VIBEAUDIT_PERF_FILES", "2000"))
 SECONDS_PER_1000_FILES = 30.0  # generous: slow CI runners, Windows file system

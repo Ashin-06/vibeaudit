@@ -38,7 +38,7 @@ from .uiscan import UiScanner
 from .contracts import ContractScanner
 from .report import Result
 from .rules import RULES
-from .secretscan import SecretScanner
+from .secretscan import SecretScanner, scan_git_history
 from .store import loads_json
 
 FOLLOWED = "(passed in through the call at "
@@ -78,6 +78,8 @@ class Options:
     cache: bool = True  # read and write the user cache (registry, OSV, LLM verdicts) during this scan
     include_preview: bool = False  # count findings of preview rules toward --fail-on and the score
     gate_severe_preview: bool = True  # count severe preview rules (injection, XSS) even without include_preview
+    history: bool = False  # scan recent git history commits for high-confidence leaked credentials
+    history_commits: int = 200
     log: Callable[[str], None] = lambda s: None
 
 
@@ -220,6 +222,9 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
     poly_routes = PolyScanner(project, emit).run()  # for Go, Java, Rust, C# and PHP only the checks they lack
     all_routes = js_routes + py_routes + go_routes + poly_routes + rpcscan.routes(project)  # tRPC, GraphQL, gRPC
     SecretScanner(project, emit).run()
+    history_info = None
+    if opts.history:
+        history_info = GUARD.run("<project>", "git history secrets", scan_git_history, project.root, emit, opts.history_commits)
     ProjectScanner(project, emit, all_routes).run()
     QualityScanner(project, emit).run()
     DataScanner(project, emit, all_routes).run()
@@ -303,9 +308,10 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
         except llm.LLMError as e:
             notes.append(f"LLM checks skipped: {e}")
 
+    stack = _stack(project)
     meta = {
         "files_scanned": len(project.files), "duration_seconds": round(time.time() - start, 2),
-        "stack": _stack(project), "external_tools": ran, "offline": opts.offline, "notes": notes,
+        "stack": stack, "external_tools": ran, "offline": opts.offline, "notes": notes,
         "routes_found": len(all_routes), "git": project.is_git,
         "skipped": list(GUARD.skipped), "internal_errors": list(GUARD.internal_errors),
         "feedback_hidden": hidden, "feedback_demoted": demoted, "include_preview": opts.include_preview,
@@ -313,6 +319,8 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
         "attack_paths": correlate.attack_paths(findings, all_routes),
         "ai_risk_profile": correlate.ai_risk_profile(findings),
     }
+    if history_info is not None:
+        meta["history_commits_scanned"] = history_info.get("commits_scanned", 0)
     if opts.changes is not None:
         meta["changed_files"] = len(opts.changes)
     return Result(str(project.root), findings, meta, all_routes)

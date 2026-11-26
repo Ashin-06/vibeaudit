@@ -26,9 +26,51 @@ def cache_dir() -> Path:
     return Path(os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache") / "vibeaudit"
 
 
+MAX_JSON_DEPTH = 500
+
+
+def _json_too_deep(text: Any, limit: int = MAX_JSON_DEPTH) -> bool:
+    if isinstance(text, str):
+        if text.count("{") + text.count("[") <= limit:
+            return False
+        s = text
+    elif isinstance(text, (bytes, bytearray)):
+        if text.count(b"{") + text.count(b"[") <= limit:
+            return False
+        try:
+            s = bytes(text).decode("utf-8")
+        except UnicodeDecodeError:
+            return False
+    else:
+        return False
+    depth = 0
+    in_str = False
+    esc = False
+    for ch in s:
+        if in_str:
+            if esc:
+                esc = False
+            elif ch == "\\":
+                esc = True
+            elif ch == '"':
+                in_str = False
+        elif ch == '"':
+            in_str = True
+        elif ch in "{[":
+            depth += 1
+            if depth > limit:
+                return True
+        elif ch in "}]":
+            if depth > 0:
+                depth -= 1
+    return False
+
+
 def loads_json(text: Any) -> Any:
     """json.loads for untrusted text: nesting too deep for the parser (a RecursionError) is reported as the
     ValueError every caller already handles, instead of crashing the scan, the LSP or the MCP server."""
+    if _json_too_deep(text):
+        raise ValueError("JSON nested too deeply")
     try:
         return json.loads(text)
     except RecursionError:

@@ -35,7 +35,7 @@ def build_parser() -> argparse.ArgumentParser:
     s = sub.add_parser("scan", help="scan a project directory")
     s.add_argument("path", nargs="?", default=".", help="project directory (default: current directory)")
     s.add_argument("-r", "--report", action="append", default=[], metavar="FORMAT[:PATH]",
-                   help="write a report: json, sarif, md, html, prompt (a fix brief for AI assistants), badge (SVG), junit (test report XML), codeclimate (GitLab Code Quality) or compliance:FRAMEWORK (an HTML compliance aid for owasp, owasp-llm, eu-ai-act, soc2, hipaa or gdpr; not a certification), optionally with a path ('-' for stdout). Repeatable.")
+                   help="write a report: json, sarif, md, html, prompt (a fix brief for AI assistants), badge (SVG), junit (test report XML), codeclimate (GitLab Code Quality), aibom (CycloneDX 1.6 AI-BOM JSON) or compliance:FRAMEWORK (an HTML compliance aid for owasp, owasp-llm, eu-ai-act, soc2, hipaa or gdpr; not a certification), optionally with a path ('-' for stdout). Repeatable.")
     s.add_argument("--fail-on", default=None, choices=SEVERITIES[:4] + ["none"],
                    help="exit with code 1 if any finding is at least this severe (default: high)")
     s.add_argument("--min-severity", default=None, choices=SEVERITIES, help="hide findings below this severity (default: low)")
@@ -76,6 +76,10 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--no-gate-severe-preview", action="store_true", default=None,
                    help="do not count severe preview rules (injection, eval, deserialization, open redirect, XSS) "
                         "toward --fail-on and the score; by default they count")
+    s.add_argument("--history", action="store_true", default=False,
+                   help="also scan recent git commit history for high-confidence leaked provider keys and private keys")
+    s.add_argument("--history-commits", type=int, default=200, metavar="N",
+                   help="maximum commits to inspect when --history is set (default: 200)")
     s.add_argument("-q", "--quiet", action="store_true", help="print only the summary")
     s.add_argument("--no-color", action="store_true", help="disable colored output")
 
@@ -683,7 +687,7 @@ def cmd_scan(a: argparse.Namespace) -> int:
                 print(f"vibeaudit: unknown compliance framework {framework!r} (use {', '.join(compliance.FRAMEWORKS)})", file=sys.stderr)
                 return 2
         if fmt not in RENDERERS:
-            print(f"vibeaudit: unknown report format {fmt!r} (use json, sarif, md, html, prompt, badge, junit, codeclimate, compliance:FRAMEWORK)", file=sys.stderr)
+            print(f"vibeaudit: unknown report format {fmt!r} (use json, sarif, md, html, prompt, badge, junit, codeclimate, aibom, compliance:FRAMEWORK)", file=sys.stderr)
             return 2
         reports.append((fmt, path or default))
     disabled = {x.strip() for d in list(a.disable) + list(cfg.get("disable", [])) for x in d.split(",") if x.strip()}
@@ -712,7 +716,8 @@ def cmd_scan(a: argparse.Namespace) -> int:
                    public_paths=list(cfg.get("public_paths", [])), changes=changes, log=log,
                    feedback=not a.no_config,  # the feedback file lives in the repository, like the config
                    cache=not a.no_cache, include_preview=bool(pick(a.include_preview, "include_preview", False)),
-                   gate_severe_preview=False if a.no_gate_severe_preview else bool(cfg.get("gate_severe_preview", True)))
+                   gate_severe_preview=False if a.no_gate_severe_preview else bool(cfg.get("gate_severe_preview", True)),
+                   history=bool(a.history), history_commits=max(1, int(a.history_commits)))
     if cfg_path:
         log(f"using settings from {cfg_path}")
     regression = None

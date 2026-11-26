@@ -1,0 +1,6 @@
+{
+  "gemini": "gemini-2.5-flash",
+  "openai": "gpt-4.1-mini",
+  "openrouter": "qwen/qwen-2.5-72b-instruct",
+  "anthropic": "claude-sonnet-5-5"
+}
