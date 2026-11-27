@@ -124,6 +124,10 @@ def write_atomic(path: Path, data: bytes) -> bool:
         try:
             with os.fdopen(fd, "wb") as fh:
                 fh.write(data)
+            try:
+                os.chmod(tmp, os.stat(path).st_mode)  # mkstemp makes 0600: keep the replaced file's permissions
+            except OSError:
+                pass
             os.replace(tmp, path)
         finally:
             if os.path.exists(tmp):

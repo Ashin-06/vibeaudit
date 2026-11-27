@@ -810,6 +810,7 @@ class Plan:
     root: Path
     changes: List[Change] = field(default_factory=list)
     skipped: List[Tuple[Finding, str]] = field(default_factory=list)
+    written: List[Change] = field(default_factory=list)  # changes `apply()` actually wrote
 
     def diff(self) -> str:
         return "".join(c.diff() for c in self.changes)
@@ -819,17 +820,20 @@ class Plan:
         return [f for c in self.changes for f in c.fixed]
 
     def apply(self) -> List[str]:
-        """Write every change; a file that changed on disk since it was read is left alone. Returns the files written."""
-        written = []
+        """Write every change atomically; a file that changed on disk since it was read is left alone.
+        Returns the files written."""
+        from .store import write_atomic
+
+        self.written = []
         for c in self.changes:
             try:
                 if c.path.read_bytes() != c.original:
                     continue
-                c.path.write_bytes(c.encoded())
             except OSError:
                 continue
-            written.append(c.file)
-        return written
+            if write_atomic(c.path, c.encoded()):
+                self.written.append(c)
+        return [c.file for c in self.written]
 
 
 def read_text(path: Path) -> Union[Tuple[str, str, bool], str]:
@@ -935,16 +939,20 @@ def plan(root: str, rules: Sequence[str] = (), opts=None, max_tokens: int = MAX_
 
 def verify_plan(root: Path, applied_plan: Plan, opts, scan_fn=None) -> dict:
     """Re-scan after `applied_plan.apply()` to verify fixed findings cleared and no new findings appeared;
-    rolls back modified files automatically when verification fails."""
+    rolls back the files it wrote when verification fails, unless they were edited again since."""
+    from .store import write_atomic
+
     if scan_fn is None:
         from .scanner import scan as scan_fn
 
     after = scan_fn(str(root), opts)
-    touched = {c.file for c in applied_plan.changes}
+    written = applied_plan.written  # skipped files were never changed, so they are neither checked nor restored
+    fixed = [f for c in written for f in c.fixed]
+    touched = {c.file for c in written}
     after_fps = {f.fingerprint for f in after.findings}
     remaining = [
         {"rule_id": f.rule_id, "file": f.file, "line": f.line}
-        for f in applied_plan.fixed if f.fingerprint in after_fps
+        for f in fixed if f.fingerprint in after_fps
     ]
     pre_res = getattr(applied_plan, "_pre_scan_fps", None)
     if pre_res is None:
@@ -956,16 +964,21 @@ def verify_plan(root: Path, applied_plan: Plan, opts, scan_fn=None) -> dict:
             for f in after.findings if f.file in touched and f.fingerprint not in before_all
         ]
     ok = not remaining and not introduced
+    rolled_back = []
     if not ok:
-        for c in applied_plan.changes:
+        for c in written:
             try:
-                c.path.write_bytes(c.original)
+                if c.path.read_bytes() != c.encoded():
+                    continue  # edited after the fix was written: keep the user's version
             except OSError:
-                pass
+                continue
+            if write_atomic(c.path, c.original):
+                rolled_back.append(c.file)
     return {
         "ok": ok,
         "rolled_back": not ok,
-        "resolved": len(applied_plan.fixed) - len(remaining),
+        "rolled_back_files": rolled_back,
+        "resolved": len(fixed) - len(remaining),
         "remaining": remaining,
         "introduced": introduced,
     }
