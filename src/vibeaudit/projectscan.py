@@ -1,7 +1,10 @@
 """Project-wide checks: config files, deployment, database rules, routes/auth and missing tests or CI."""
 from __future__ import annotations
 
+import os
 import re
+import subprocess
+from pathlib import Path
 from typing import Callable, Dict, List, Optional
 
 from . import heuristics as H
@@ -43,6 +46,73 @@ UNTRUSTED_EXPR = re.compile(
 
 
 TEST_SOURCE_EXTS = (".cs", ".java", ".kt", ".go", ".rs", ".php", ".rb")
+REPO_TEST_DIRS = ("tests", "test", "__tests__", "spec", "specs", "e2e", "src/test")
+REPO_SKIP_DIRS = {".git", ".venv", "venv", "node_modules", "dist", "build", "fixtures", "fixture", "mocks", "mock", "__mocks__", "testdata"}
+REPO_TEST_EXTS = (".py", ".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs", *TEST_SOURCE_EXTS)
+ROOT_TEST_FILE = re.compile(r"^(?:test_[^/]+\.py|[^/]+_test\.(?:py|go)|[^/]+\.(?:test|spec)\.[cm]?[jt]sx?)$", re.I)
+
+
+def _git_root(root: Path) -> Optional[Path]:
+    """Enclosing git top-level directory when `root` is a subfolder inside a repository."""
+    try:
+        out = subprocess.run(["git", "-C", str(root), "rev-parse", "--show-toplevel"],  # noqa: S603, S607 - fixed git invocation
+                             capture_output=True, stdin=subprocess.DEVNULL, timeout=5, check=False)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    if out.returncode != 0:
+        return None
+    raw = out.stdout.decode("utf-8", "replace").strip()
+    if not raw:
+        return None
+    try:
+        top = Path(raw).resolve()
+        cur = root.resolve()
+    except OSError:
+        return None
+    if top == cur or not cur.is_relative_to(top):
+        return None
+    return top
+
+
+def _repo_has_ci(git_root: Path) -> bool:
+    for wf in (git_root / ".github" / "workflows").glob("*") if (git_root / ".github" / "workflows").is_dir() else ():
+        if wf.is_file() and wf.suffix.lower() in (".yml", ".yaml"):
+            return True
+    bk = git_root / ".buildkite"
+    if bk.is_dir() and any(p.is_file() for p in bk.iterdir()):
+        return True
+    candidates = (
+        ".gitlab-ci.yml", ".gitlab-ci.yaml", ".circleci/config.yml", ".circleci/config.yaml",
+        "azure-pipelines.yml", "azure-pipelines.yaml", "Jenkinsfile",
+        "bitbucket-pipelines.yml", "bitbucket-pipelines.yaml", ".travis.yml", ".travis.yaml",
+        ".drone.yml", ".drone.yaml", "cloudbuild.yml", "cloudbuild.yaml",
+        ".woodpecker.yml", ".woodpecker.yaml",
+    )
+    return any((git_root / rel).is_file() for rel in candidates)
+
+
+def _repo_has_tests(git_root: Path) -> bool:
+    try:
+        entries = list(git_root.iterdir())
+    except OSError:
+        return False
+    for entry in entries:
+        if entry.is_file() and (TEST_CONFIG.search(entry.name) or ROOT_TEST_FILE.match(entry.name)):
+            return True
+    seen = 0
+    for rel_dir in REPO_TEST_DIRS:
+        base = git_root / rel_dir
+        if not base.is_dir():
+            continue
+        for _dirpath, dirnames, filenames in os.walk(base):
+            dirnames[:] = [d for d in dirnames if d not in REPO_SKIP_DIRS]
+            for fn in filenames:
+                seen += 1
+                if fn.lower().endswith(REPO_TEST_EXTS):
+                    return True
+                if seen >= 200:
+                    return False
+    return False
 
 
 class ProjectScanner:
@@ -408,10 +478,18 @@ class ProjectScanner:
         # tests in any language count: Go `_test.go`, Java/Kotlin under src/test, Rust, C#, PHP (conveyor, piggymetrics)
         has_tests = any(f.is_test and (f.kind in ("py", "js") or f.rel.endswith(TEST_SOURCE_EXTS)) and not re.search(r"(?:^|/)(?:fixtures?|mocks?|__mocks__|testdata)/", f.rel) for f in self.p.files) \
             or any(TEST_CONFIG.search(f.rel) for f in self.p.files)
+        has_ci = any(CI_FILES.match(f.rel) for f in self.p.files)
+        if not has_tests or not has_ci:
+            git_root = _git_root(self.p.root)
+            if git_root is not None:
+                if not has_tests:
+                    has_tests = _repo_has_tests(git_root)
+                if not has_ci:
+                    has_ci = _repo_has_ci(git_root)
         anchor = self.p.anchor()
         if not has_tests:
             self.add(anchor, 1, "QA001", f"No test files found for {len(sources)} source files.")
-        if not any(CI_FILES.match(f.rel) for f in self.p.files):
+        if not has_ci:
             self.add(anchor, 1, "QA002", "No CI configuration found.")
 
     def _nextjs_middleware_matcher(self) -> None:

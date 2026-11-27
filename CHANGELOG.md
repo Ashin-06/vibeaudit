@@ -4,6 +4,31 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- **Subfolder `QA001`/`QA002` false positives (`projectscan.py`)**: scanning a subdirectory such as
+  `vibeaudit scan src` inside a git repository now checks the enclosing git root (`git rev-parse --show-toplevel`)
+  for `tests/` and CI configurations before reporting `QA001` ("No test files found") or `QA002` ("No CI configuration found").
+- **Atomic `vibeaudit fix --apply` & safe rollback (`fix.py`, `store.py`, `cli.py`, #94)**: rewrites modified files
+  atomically via `write_atomic()` preserving file mode, and `--verify` rollback only reverts files actually written
+  that have not been edited afterward.
+- **MacOS history-timeout test stability & clean test output (`test_adversarial_security.py`, `test_v019_audit_fixes.py`)**:
+  silenced intentional duplicate-entry `UserWarning` in the zip-bomb test and widened the simulated pipe timeout margin.
+
+### Hardened
+
+- **MCP server folder allowlist (`mcp_server.py`, `SECURITY.md`, `docs/PRIVACY.md`)**: added optional
+  `VIBEAUDIT_MCP_ROOTS` (system path separator delimited) enforced across all path-accepting MCP tools
+  (`scan_project`, `scan_file`, `audit_current_file`, `list_routes`, `auto_repair`, `verify_package`, `simulate_migration`).
+- **Symlink guard in `vibeaudit fix` (`fix.py`)**: `plan_findings()`, `Plan.apply()`, and `verify_plan()` now skip
+  symlinks so automatic fixes and rollbacks cannot overwrite symlink targets or replace symlinks with regular files.
+- **Supply-chain & CI security (`Dockerfile`, `dependabot.yml`, `codeql.yml`, `scorecard.yml`, `nightly.yml`, `ci.yml`)**:
+  pinned `python:3.12-slim` base image by SHA-256 digest with weekly Docker Dependabot updates, added GitHub CodeQL
+  and OpenSSF Scorecard workflows, split fast PR CI (`-m "not slow and not network"`) from nightly slow/fuzz runs,
+  and updated `CONTRIBUTING.md` with dev lint/typecheck commands.
+
 ## [0.22.0] - 2026-11-27
 
 ### Scoring & Breaking-Behavior Notes

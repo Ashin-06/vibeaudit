@@ -827,7 +827,7 @@ class Plan:
         self.written = []
         for c in self.changes:
             try:
-                if c.path.read_bytes() != c.original:
+                if c.path.is_symlink() or c.path.read_bytes() != c.original:
                     continue
             except OSError:
                 continue
@@ -875,6 +875,8 @@ def plan_findings(root: Path, findings: Sequence[Finding], project=None, texts: 
             inside = False
         if not inside:
             got: Union[Tuple[str, str, bool], str] = "the file is outside the project"
+        elif path.is_symlink():
+            got = "the file is a symlink"
         elif texts is not None and rel in texts:
             buf = texts[rel]
             got = (buf.replace("\r\n", "\n"), "\r\n" if "\r\n" in buf else "\n", False)
@@ -968,8 +970,8 @@ def verify_plan(root: Path, applied_plan: Plan, opts, scan_fn=None) -> dict:
     if not ok:
         for c in written:
             try:
-                if c.path.read_bytes() != c.encoded():
-                    continue  # edited after the fix was written: keep the user's version
+                if c.path.is_symlink() or c.path.read_bytes() != c.encoded():
+                    continue  # edited after the fix was written or turned into a symlink: keep untouched
             except OSError:
                 continue
             if write_atomic(c.path, c.original):

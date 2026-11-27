@@ -22,24 +22,20 @@ cd vibeaudit
 python -m pip install -e ".[dev]"
 ```
 
-The package has no runtime dependencies on Python 3.11 and newer (`tomli` on 3.9 and 3.10), and the tests
-need only pytest. They also run from a plain checkout without installing (`python -m pytest`).
+The package has no runtime dependencies on Python 3.11 and newer. Installing `.[dev]` installs
+`pytest`, `pyyaml`, `ruff`, and `mypy`; unit tests also run from a plain checkout without installing
+(`python -m pytest`).
 
 ## Checks to run before a pull request
 
 ```bash
-python -m pytest -q
-```
-
-```bash
+python -m pip install -e ".[dev]"
+python -m ruff check src tests
+python -m mypy src/vibeaudit
+python -m pytest -q -m "not slow and not network"
 python tools/check_ascii.py
-```
-
-```bash
+python tools/check_yaml.py
 python tools/gen_rules_doc.py --check
-```
-
-```bash
 vibeaudit scan . --external none --fail-on low
 ```
 

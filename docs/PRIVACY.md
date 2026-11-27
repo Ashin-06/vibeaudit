@@ -61,5 +61,5 @@ When scanning without `--offline`:
 ## 9. Local UI, LSP, MCP, and Dynamic Probing
 
 - `vibeaudit studio`: binds `127.0.0.1` only, uses zero external assets, validates `Host` headers against DNS rebinding, requires a per-session fragment token, and enforces a strict Content-Security-Policy.
-- `vibeaudit mcp` / `vibeaudit lsp`: communicate over `stdio` only; restrict file reads to workspace-contained files.
+- `vibeaudit mcp` / `vibeaudit lsp`: communicate over `stdio` only; restrict file reads to workspace-contained files. Set `VIBEAUDIT_MCP_ROOTS` (system path separator delimited) when running `vibeaudit mcp` to hard-confine all file/directory MCP tools to explicit root directories.
 - `vibeaudit probe` / `vibeaudit test-exploit`: restricted to loopback targets (`127.0.0.1`, `::1`, `localhost`) by default and require explicit opt-in (`--i-own-this-target`) for non-local hosts; warn loudly when TLS verification is disabled.

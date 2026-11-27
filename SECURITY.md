@@ -45,6 +45,8 @@ Only the latest release receives security fixes.
 | Hostile URLs (`file://`, `ftp://`, SSRF schemes) | `validate_http_url()` enforces `https://` (`http://` allowed only for loopback LLM endpoints) before every `urlopen`. |
 | Untrusted LLM responses | Strict JSON parsing, line-bounds verification, parse validation, and rejection of patches containing `REDACTED`. |
 | Malicious archive / zip-bomb bundles | `bundle.import_bundle()` enforces member count, manifest size, per-entry size, total uncompressed size, compression ratio (`200:1`), SHA-256 integrity, and RSA-verified threat feed anti-rollback. |
+| Symlink overwrite via autofix | `fix.plan_findings()`, `Plan.apply()`, and `verify_plan()` skip symlinks so `--apply` and `--verify` rollback never replace symlinks or overwrite symlink targets outside the repo. |
+| Prompt-injected MCP path traversal | Set `VIBEAUDIT_MCP_ROOTS` (separated by `os.pathsep`, e.g. `:` or `;`) to restrict `vibeaudit mcp` tools (`scan_project`, `scan_file`, `audit_current_file`, `list_routes`, `auto_repair`, `simulate_migration`) strictly to resolved subpaths of allowed root directories. |
 
 ## Threat feed cryptography
 

@@ -1,6 +1,7 @@
 # vibeaudit
 
 [![CI](https://github.com/Ashin-06/vibeaudit/actions/workflows/ci.yml/badge.svg)](https://github.com/Ashin-06/vibeaudit/actions/workflows/ci.yml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Ashin-06/vibeaudit/badge)](https://scorecard.dev/viewer/?uri=github.com/Ashin-06/vibeaudit)
 [![PyPI](https://img.shields.io/pypi/v/vibeaudit)](https://pypi.org/project/vibeaudit/)
 [![PyPI Downloads](https://img.shields.io/pypi/dm/vibeaudit)](https://pypi.org/project/vibeaudit/)
 [![GitHub Release](https://img.shields.io/github/v/release/Ashin-06/vibeaudit)](https://github.com/Ashin-06/vibeaudit/releases)
@@ -541,6 +542,8 @@ read-only:
 ```bash
 claude mcp add vibeaudit -- vibeaudit mcp
 ```
+
+To confine `vibeaudit mcp` file and directory tools to specific workspaces (preventing prompt-injected reads outside them), set `VIBEAUDIT_MCP_ROOTS` using your OS path separator (for example `VIBEAUDIT_MCP_ROOTS=/home/user/work`).
 
 ## Custom rules and the Python API
 
