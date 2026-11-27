@@ -124,13 +124,10 @@ def test_git_history_streaming_reports_complete_size_commit_and_timeout_statuses
             return self.returncode
 
     class _SlowStdout:
-        def __iter__(self):
-            return self
-
-        def __next__(self):
+        def read(self, _n=-1):
             import time
             time.sleep(0.15)
-            raise StopIteration
+            return b""
 
         def close(self):
             pass

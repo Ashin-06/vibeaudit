@@ -4,6 +4,38 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.20.0] - 2026-11-27
+
+### Added
+
+- **Formal machine-readable scan coverage matrix (`coverage.py`, `files.py`, `report.py`, `mcp_server.py`)**:
+  records `overall_status` (`complete` vs `partial`), `config_mode` (`project` vs `ignored (--no-config)`),
+  skipped-file counts by reason (`size_limit`, `timeout/recursion`, `symlink_escape`, `read_error`),
+  `incomplete_reasons`, and per-scanner status (`complete`, `partial`, `skipped`, `failed`, `not_applicable`)
+  across JSON (`coverage`), SARIF (`runs[0].properties.coverage` + `invocations`), terminal text (`Coverage: partial`),
+  and MCP `scan_project`.
+- **Git history secret exposure timeline (`secretscan.py`, `scanner.py`)**: `meta.history.timeline` tracks
+  each discovered leaked credential's `first_commit`, `last_commit`, `historical_exposure`, `current_exposure`,
+  and recommended rotation action without printing raw secrets.
+- **Compound attack-path correlation (`correlate.py`)**: detects `agentic-unbounded-privilege` and
+  `payment-compound-risk` multi-finding chains alongside unauthenticated exploit and client-secret chains.
+
+### Fixed
+
+- **True chunk-bounded memory streaming for Git history (`secretscan.py`)**: replaced line-buffered iteration
+  over `proc.stdout` with fixed-size `64 KB` chunk reads (`HISTORY_CHUNK_BYTES`) and an incremental bounded
+  line parser (`HISTORY_MAX_LINE_BYTES`) so single multi-megabyte diff lines cannot bypass the byte cap.
+- **`SEC006` example/test env filtering (`files.py`)**: extended `ENV_EXAMPLE_RE` to recognize `.env.example.*`,
+  `.env.test*`, `.env.testing*`, `.env.unit-tests*`, `.env.local.demo`, and `.env.ci` fixtures.
+- **CommonJS `module.exports` tree-sitter indexing (`parse.py`)**: extended `js_functions()` to index
+  `module.exports.<fn> = ...` assignments in addition to `exports.<fn> = ...`.
+
+### Documentation
+
+- Updated [README.md](README.md) and [docs/PROJECT_OVERVIEW.md](docs/PROJECT_OVERVIEW.md) to remove remaining
+  `Go, Rust and Java`-only parser wording, clarify held-out precision across both stable (`93.6%`) and all rules
+  (`68.0%`), and document `coverage.py`.
+
 ## [0.19.0] - 2026-11-27
 
 ### Fixed

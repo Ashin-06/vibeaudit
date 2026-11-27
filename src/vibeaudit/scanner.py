@@ -10,7 +10,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable, List, Optional, Set
 
-from . import correlate, external, plugins, rpcscan
+from . import correlate, coverage, external, parse, plugins, rpcscan
 from .deps import DepScanner
 from . import heuristics as H
 from .files import Project
@@ -80,6 +80,7 @@ class Options:
     gate_severe_preview: bool = True  # count severe preview rules (injection, XSS) even without include_preview
     history: bool = False  # scan recent git history commits for high-confidence leaked credentials
     history_commits: int = 200
+    no_config: bool = False
     log: Callable[[str], None] = lambda s: None
 
 
@@ -309,6 +310,12 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
             notes.append(f"LLM checks skipped: {e}")
 
     stack = _stack(project)
+    if history_info and history_info.get("timeline"):
+        current_pairs = {(f.file, f.rule_id) for f in findings if "git history" not in f.message}
+        for entry in history_info["timeline"]:
+            if (entry["file"], entry["rule_id"]) in current_pairs:
+                entry["current_exposure"] = True
+    cov = coverage.build(project, opts, GUARD.skipped, GUARD.internal_errors, parse.mode(), history_info)
     meta = {
         "files_scanned": len(project.files), "duration_seconds": round(time.time() - start, 2),
         "stack": stack, "external_tools": ran, "offline": opts.offline, "notes": notes,
@@ -318,6 +325,7 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
         "gate_severe_preview": opts.gate_severe_preview, "disabled": sorted(opts.disabled),
         "attack_paths": correlate.attack_paths(findings, all_routes),
         "ai_risk_profile": correlate.ai_risk_profile(findings),
+        "coverage": cov,
     }
     if history_info is not None:
         meta["history"] = history_info

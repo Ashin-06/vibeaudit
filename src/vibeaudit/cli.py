@@ -717,7 +717,8 @@ def cmd_scan(a: argparse.Namespace) -> int:
                    feedback=not a.no_config,  # the feedback file lives in the repository, like the config
                    cache=not a.no_cache, include_preview=bool(pick(a.include_preview, "include_preview", False)),
                    gate_severe_preview=False if a.no_gate_severe_preview else bool(cfg.get("gate_severe_preview", True)),
-                   history=bool(a.history), history_commits=max(1, int(a.history_commits)))
+                   history=bool(a.history), history_commits=max(1, int(a.history_commits)),
+                   no_config=bool(a.no_config))
     if cfg_path:
         log(f"using settings from {cfg_path}")
     regression = None

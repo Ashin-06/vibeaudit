@@ -63,7 +63,10 @@ VENDORED_NAME_RE = re.compile(
 # a vendored copy of a built library kept readable: "// Original source: .../dist/x-min.js"
 VENDORED_HEADER_RE = re.compile(r"(?im)^[ \t]*(?://|/\*|\*)[^\n]*(?:original source:|\bdist/[\w.-]+\.js\b|\w[.-]min\.js\b)")
 ENV_FILE_RE = re.compile(r"(^|/)\.env(\.[\w.-]+)?$")
-ENV_EXAMPLE_RE = re.compile(r"\.(example|sample|template|dist|defaults?|tmpl|tpl)$", re.I)
+ENV_EXAMPLE_RE = re.compile(
+    r"\.(?:example|sample|template|dist|defaults?|tmpl|tpl|demo|tests?|testing|unit-tests?|e2e|ci)(?:[._-][\w.-]+)?$",
+    re.I,
+)
 
 
 def kind_of(rel: str) -> str:
@@ -222,6 +225,7 @@ class SourceFile:
         self.is_vendored = bool(VENDORED_NAME_RE.search(rel))
         self.is_lockfile = rel.rsplit("/", 1)[-1] in LOCKFILES
         self.max_bytes = max_bytes
+        self.skip_reason: Optional[str] = None
         self._text: Optional[str] = None
         self._raw: Optional[str] = None  # content of a generated bundle: secrets are checked, code rules are not
         self.secrets_only = False  # committed build output (dist/, build/, out/)
@@ -250,25 +254,31 @@ class SourceFile:
                 if self.overlay is not None:
                     data = self.overlay
                 elif self.path.stat().st_size > self.max_bytes:
+                    self.skip_reason = "size_limit"
                     return None
                 else:
                     data = self.path.read_bytes()
             except OSError:
+                self.skip_reason = "read_error"
                 return None
             if len(data) > self.max_bytes:
+                self.skip_reason = "size_limit"
                 return None
             if data[:2] in (b"\xff\xfe", b"\xfe\xff"):
                 try:
                     data = data.decode("utf-16").encode("utf-8")
                 except UnicodeDecodeError:
+                    self.skip_reason = "binary"
                     return None
             if b"\x00" in data[:8192]:
+                self.skip_reason = "binary"
                 return None
             text = data.decode("utf-8-sig", errors="replace").replace("\r\n", "\n").replace("\r", "\n")
             # Minified bundles and committed build output are generated code: code findings there are noise,
             # but a key baked into a bundle is still a leak, so the text stays available as `raw_text`.
             if self.secrets_only or (self.kind in ("js", "html") and len(text) > 5000 and (self.is_vendored or _generated(text, self.kind))):
                 self._raw = text
+                self.skip_reason = "generated_bundle"
                 return None
             self._text = text
         return self._text
@@ -372,6 +382,7 @@ class Project:
         self.untracked: Set[str] = set()
         self.files: List[SourceFile] = []
         self._by_rel: Dict[str, SourceFile] = {}
+        self.skipped_files: List[Dict[str, str]] = []
         self.step_memo = None  # a guard.StepMemo when a long-lived caller (vibeaudit watch) wants steps replayed
         self.overlays: Dict[str, bytes] = {}  # rel -> unsaved editor content, applied on the next refresh()
         self._pkg_cache: Dict[str, Optional[dict]] = {}
@@ -398,6 +409,7 @@ class Project:
         self.excludes = self._base_excludes + read_ignore_file(self.root / ".vibeauditignore") + ["vibeaudit-report*"]
         self.tracked, self.untracked, self.binary = set(), set(), set()
         self.files, self._by_rel = [], {}
+        self.skipped_files = []
         self._pkg_cache, self._venv_cache = {}, {}
         self.is_git = False
         rels: List[str] = []
@@ -438,6 +450,7 @@ class Project:
                 st = os.lstat(path)  # one system call per file; a second one only for links
                 if stat.S_ISLNK(st.st_mode):
                     if not _inside(path, self.root):
+                        self.skipped_files.append({"file": rel, "reason": "symlink_escape"})
                         continue  # a link out of the repository (for example to ~/.ssh) is not part of the project
                     st = os.stat(path)
             except OSError:

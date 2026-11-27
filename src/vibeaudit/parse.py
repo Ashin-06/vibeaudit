@@ -156,7 +156,7 @@ def js_functions(lang: str, text: str) -> Optional[List[JsFunc]]:
             prop = left.child_by_field_name("property")
             if obj is None or prop is None:
                 continue
-            if text[at(obj.start_byte):at(obj.end_byte)] != "exports":
+            if text[at(obj.start_byte):at(obj.end_byte)] not in ("exports", "module.exports"):
                 continue
             pspan = _param_span(right)
             if pspan is None:
