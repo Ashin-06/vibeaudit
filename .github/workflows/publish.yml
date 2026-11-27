@@ -41,6 +41,8 @@ jobs:
         run: |
           for f in dist/*; do gh attestation verify "$f" --repo "$GITHUB_REPOSITORY"; done
       - uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086  # v1.14.3
+        with:
+          skip-existing: true
 
   verify-pypi:
     needs: publish
@@ -96,7 +98,7 @@ jobs:
           /tmp/pypi-smoke/bin/vibeaudit doctor --format json | python -c "import json, sys; d = json.load(sys.stdin); assert d['status'] == 'ok', d"
           /tmp/pypi-smoke/bin/vibeaudit rules --json | python -c "import json, sys; r = json.load(sys.stdin); assert len(r) >= 179"
           mkdir -p /tmp/smoke-app
-          printf "def f(x):\n    return eval(x)\n" > /tmp/smoke-app/app.py
+          printf "from flask import Flask, request\napp = Flask(__name__)\n@app.get('/r')\ndef f():\n    return str(eval(request.args['x']))\n" > /tmp/smoke-app/app.py
           set +e
           /tmp/pypi-smoke/bin/vibeaudit scan /tmp/smoke-app --offline --external none --fail-on high -r sarif:/tmp/smoke.sarif -q
           RC=$?
