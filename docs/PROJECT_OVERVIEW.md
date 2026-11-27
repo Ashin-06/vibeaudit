@@ -1,17 +1,17 @@
-# vibeaudit -- Complete Project & Architecture Reference (`v0.19.0`)
+# vibeaudit -- Complete Project & Architecture Reference (`v0.20.0`)
 
 **vibeaudit** is a zero-runtime-dependency (Python 3.11+) security, AI-agent safety, and production-readiness platform written in pure Python. It audits full repositories -- backend APIs, frontend bundles, database migrations and SQL/NoSQL queries, infrastructure manifests, CI workflows, dependency trees, LLM prompts, and MCP tool definitions -- without executing scanned code.
 
-This document summarizes everything implemented across the entire repository as of **`v0.19.0`**.
+This document summarizes everything implemented across the entire repository as of **`v0.20.0`**.
 
 ---
 
 ## 1. Project Snapshot & Metrics
 
-| Dimension | Verified Count / Details (`v0.19.0`) |
+| Dimension | Verified Count / Details (`v0.20.0`) |
 | --- | --- |
-| Package version | `0.19.0` (`src/vibeaudit/__init__.py`) |
-| Core Python codebase | `76` modules in `src/vibeaudit/`, `25,500+` lines total |
+| Package version | `0.20.0` (`src/vibeaudit/__init__.py`) |
+| Core Python codebase | `77` modules in `src/vibeaudit/`, `25,700+` lines total |
 | Runtime dependencies | None (Python 3.11+); optional `vibeaudit[parse]` for tree-sitter (Go, Rust, Java, JS/TS) |
 | Security & quality rules | `180` rules (`95` stable static, `84` preview, `7` severe-gating preview) across `12` static categories + `1` LLM review (`AI001`) |
 | Compliance frameworks | `6`: `owasp`, `owasp-llm`, `eu-ai-act`, `soc2`, `hipaa`, `gdpr` (`data/compliance_map.json`) |
@@ -62,11 +62,11 @@ flowchart TD
 
 ## 3. Complete Module Inventory (`src/vibeaudit/` -- 76 Modules)
 
-### A. Core Engine, Filesystem & Helpers (`15` modules)
+### A. Core Engine, Filesystem & Helpers (`16` modules)
 
 | Module | Lines | Purpose |
 | --- | --- | --- |
-| `__init__.py` | 45 | Public package API (`scan`, `Options`, `project_options`, `Result`, `Finding`, `Route`, plugin decorators, `FastAPIMiddleware`) and `__version__` (`0.19.0`). |
+| `__init__.py` | 45 | Public package API (`scan`, `Options`, `project_options`, `Result`, `Finding`, `Route`, plugin decorators, `FastAPIMiddleware`) and `__version__` (`0.20.0`). |
 | `__main__.py` | 5 | Entry point for `python -m vibeaudit`. |
 | `model.py` | 124 | Core dataclasses `Finding`, `Route` (including `auth_evidence` extraction in `to_dict()`), severity ranking, inline suppression regex, and path joining. |
 | `files.py` | 543 | Git-aware workspace enumeration, symlink escape prevention, language/kind classification, test/example/vendored heuristics, `SourceFile` line caches, and `StepMemo` read/value tracking. |
@@ -76,7 +76,8 @@ flowchart TD
 | `lexer.py` | 309 | Offset-preserving comment/string blanking views (`Views`), JS/TS template/comment lexer, Python lexer view, bracket matching (`match_close`), argument splitting, and `ident_re`. |
 | `parse.py` | 187 | Optional `vibeaudit[parse]` tree-sitter function and parameter indexer for Go, Rust, Java, JS, TS, and TSX (falls back cleanly to regex if unavailable or `VIBEAUDIT_PARSER=regex`). |
 | `calls.py` | 146 | Generic cross-file call-graph / brace-language flow helper used to follow tainted request data across helper calls into file/URL/redirect sinks. |
-| `scanner.py` | 430 | Top-level scan orchestrator (`scan`, `_scan_project`, `finalize`, `_stack` detection, bounded `--history` git-log status reporting, baseline loading). |
+| `scanner.py` | 440 | Top-level scan orchestrator (`scan`, `_scan_project`, `finalize`, `_stack` detection, bounded `--history` git-log status + timeline, formal `coverage` matrix, baseline loading). |
+| `coverage.py` | 145 | Machine-readable analyzer coverage matrix (`complete` / `partial` / `skipped` / `failed` / `not_applicable`), skipped-file reasons, and incomplete scan diagnostics (`meta.coverage`). |
 | `monorepo.py` | 153 | Per-package workspace splitting (`--monorepo`) scanning each sub-package against its own manifest while sharing repo-wide checks (`QA002`, `DATA007`, lockfiles). |
 | `gitdiff.py` | 89 | Computes changed/staged file lines via `git diff` (`--diff REV`, `--staged`) so whole-project context runs while reporting only changed lines. |
 | `store.py` | 131 | Platform cache directory helpers, atomic file writes (`write_atomic`), `TimedCache`, and safe JSON parsing. |
@@ -180,7 +181,7 @@ flowchart TD
 ### 4.1 Static Analysis & Context-Sensitive Taint Engine
 - **Python (`pyscan.py`)**: Uses Python's real `ast` module. Identifies sources (`request.args`/`json`/headers/params -> `user`; OpenAI/Anthropic/Gemini/LangChain/LiteLLM calls -> `llm`; `@tool`/`@mcp.tool`/agent Tool parameters -> `tool`), walks control-flow blocks, handles tuple unpacking, dict subscripts, allow-list guards (`if x not in ALLOWED: raise`), and path-traversal guards. Follows calls up to `CALL_DEPTH = 3` hops across same-file functions, `self`/`cls` methods, and imported project modules. Sanitizers are modeled per sink context (`html`, `shell` via `shlex.quote`, `path` via `secure_filename`/`basename`, `url`, `redirect`, `sql`, `nosql`, plus universal numeric/boolean/UUID casts) so escaping HTML never clears SQL, shell, path, or redirect sinks.
 - **JavaScript / TypeScript (`jsscan.py`)**: Data-flow analysis relies on `lexer.py`'s offset-preserving `code` (comments stripped) and `bare` (string contents blanked) views plus brace/paren matching (`match_close`). Optional `vibeaudit[parse]` improves function and parameter indexing (including complex TypeScript generics), while taint propagation remains lexer/heuristic-based. Computes scoped fixpoint taint + `3`-round cross-file imported/local call propagation and Server Action parameter tainting, with span-scoped `_strip_sanitizer_calls`.
-- **Systems & Enterprise Languages (`goscan`, `jvm`, `csharp`, `rustscan`, `phpscan`, `rubyscan`, `swiftscan`, `elixirscan`, `dartscan`)**: Combine comment-aware lexers (plus optional `vibeaudit[parse]` tree-sitter function indexing for Go, Rust, and Java) with framework-specific route/middleware/annotation models (chi `.Group`/`.Route`/`.Mount` inheritance, Spring Security chains & custom annotations, ASP.NET Core controller/service ownership, Phoenix `scope`/`pipe_through`, Vapor `.grouped` middleware, Rails `before_action` chains). Non-Python/JS findings stay in preview until measured at >=90% precision on >=5 held-out benchmark findings (`POLY_STABLE` currently promotes PHP SQLi `BE001`).
+- **Systems & Enterprise Languages (`goscan`, `jvm`, `csharp`, `rustscan`, `phpscan`, `rubyscan`, `swiftscan`, `elixirscan`, `dartscan`)**: Combine comment-aware lexers (plus optional `vibeaudit[parse]` tree-sitter function indexing for Go, Rust, Java, JavaScript, and TypeScript) with framework-specific route/middleware/annotation models (chi `.Group`/`.Route`/`.Mount` inheritance, Spring Security chains & custom annotations, ASP.NET Core controller/service ownership, Phoenix `scope`/`pipe_through`, Vapor `.grouped` middleware, Rails `before_action` chains). Non-Python/JS findings stay in preview until measured at >=90% precision on >=5 held-out benchmark findings (`POLY_STABLE` currently promotes PHP SQLi `BE001`).
 
 ### 4.2 Attack-Path Correlation & AI Risk Signals (`correlate.py`)
 Rather than treating every finding in isolation, `correlate.py` deterministically identifies dangerous multi-step exploit chains (`meta.attack_paths`) and summarizes observable AI-generated code anti-patterns (`meta.ai_risk_profile`):

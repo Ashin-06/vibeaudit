@@ -162,7 +162,7 @@ def _dir(path: Any) -> str:
 def _summary(res, findings) -> Dict[str, Any]:
     return {
         "root": res.root, "files_scanned": res.meta.get("files_scanned"), "score": res.score, "grade": res.grade,
-        "counts": res.counts, "notes": res.meta.get("notes", []),
+        "counts": res.counts, "notes": res.meta.get("notes", []), "coverage": res.meta.get("coverage"),
         "findings": [{k: f.to_dict()[k] for k in ("rule_id", "severity", "title", "file", "line", "message", "snippet", "why", "fix")}
                      for f in findings[:MAX_FINDINGS]],
         "truncated": len(findings) > MAX_FINDINGS,

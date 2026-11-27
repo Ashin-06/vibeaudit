@@ -358,6 +358,8 @@ def _mask_secret(token: str) -> str:
 
 HISTORY_MAX_BYTES = 20_000_000
 HISTORY_TIMEOUT = 30.0
+HISTORY_CHUNK_BYTES = 65_536
+HISTORY_MAX_LINE_BYTES = 65_536
 
 
 def scan_git_history(
@@ -367,7 +369,7 @@ def scan_git_history(
     max_bytes: Optional[int] = None,
     timeout: Optional[float] = None,
 ) -> Dict[str, Any]:
-    """Stream recent git commits incrementally up to bounded commit, byte, and time limits."""
+    """Stream recent git commits incrementally in fixed chunks under bounded byte, commit, line, and time limits."""
     import hashlib
     import subprocess
     import threading
@@ -385,6 +387,7 @@ def scan_git_history(
         "max_bytes": byte_cap,
         "findings": 0,
         "truncated": False,
+        "timeline": [],
     }
     if not (repo / ".git").exists():
         info["status"] = "not_git"
@@ -412,61 +415,137 @@ def scan_git_history(
     timer.start()
 
     sha, rel, cur_line = "", "", 0
-    seen = set()
+    seen_findings = set()
+    timeline_by_key: Dict[tuple, Dict[str, Any]] = {}
     status: Optional[str] = None
-    try:
-        assert proc.stdout is not None
-        for raw_bytes in proc.stdout:
-            info["bytes_scanned"] += len(raw_bytes)
-            if info["bytes_scanned"] > byte_cap:
-                status = "truncated_size"
-                break
-            raw = raw_bytes.decode("utf-8", errors="replace").rstrip("\r\n")
-            if raw.startswith("commit "):
-                if info["commits_scanned"] >= limit:
-                    status = "truncated_commits"
-                    break
-                sha = raw[7:].split()[0][:12]
-                info["commits_scanned"] += 1
-                rel, cur_line = "", 0
-            elif raw.startswith("+++ b/"):
-                rel = raw[6:]
-            elif raw.startswith("@@ "):
-                m_ln = re.search(r"\+(\d+)", raw)
-                cur_line = int(m_ln.group(1)) if m_ln else 1
-            elif raw.startswith("+") and not raw.startswith("+++") and rel:
-                line_txt = raw[1:]
-                line_no = max(1, cur_line)
-                cur_line += 1
-                if re.search(r"(?:^|/)(?:tests?|fixtures?|testdata|__mocks__)/", rel):
+    stop_stream = False
+
+    def _process_line(raw_bytes: bytes) -> None:
+        nonlocal sha, rel, cur_line, status, stop_stream
+        raw = raw_bytes.decode("utf-8", errors="replace").rstrip("\r\n")
+        if raw.startswith("commit "):
+            if info["commits_scanned"] >= limit:
+                status = "truncated_commits"
+                stop_stream = True
+                return
+            sha = raw[7:].split()[0][:12]
+            info["commits_scanned"] += 1
+            rel, cur_line = "", 0
+        elif raw.startswith("+++ b/"):
+            rel = raw[6:]
+        elif raw.startswith("@@ "):
+            m_ln = re.search(r"\+(\d+)", raw)
+            cur_line = int(m_ln.group(1)) if m_ln else 1
+        elif raw.startswith("+") and not raw.startswith("+++") and rel:
+            line_txt = raw[1:]
+            line_no = max(1, cur_line)
+            cur_line += 1
+            if re.search(r"(?:^|/)(?:tests?|fixtures?|testdata|__mocks__)/", rel):
+                return
+            if PRIVATE_KEY.search(line_txt) and not H.PLACEHOLDER.search(line_txt):
+                key_id = (rel, "SEC002", "private_key")
+                if key_id not in seen_findings:
+                    seen_findings.add(key_id)
+                    emit(Finding("SEC002", rel, line_no,
+                                 f"Private key found in git history (commit {sha}); rotate the key and rewrite history.",
+                                 "critical", "-----BEGIN ... PRIVATE KEY-----"))
+                    info["findings"] += 1
+                    timeline_by_key[key_id] = {
+                        "type": "Private key",
+                        "rule_id": "SEC002",
+                        "file": rel,
+                        "first_commit": sha,
+                        "last_commit": sha,
+                        "current_exposure": False,
+                        "historical_exposure": True,
+                        "recommended_action": "Revoke and rotate",
+                    }
+                elif sha:
+                    timeline_by_key[key_id]["first_commit"] = sha
+            for label, rx in PROVIDER_KEYS:
+                m = rx.search(line_txt)
+                if not m:
                     continue
-                if PRIVATE_KEY.search(line_txt) and not H.PLACEHOLDER.search(line_txt):
-                    key_id = (rel, "SEC002", "private_key")
-                    if key_id not in seen:
-                        seen.add(key_id)
-                        emit(Finding("SEC002", rel, line_no,
-                                     f"Private key found in git history (commit {sha}); rotate the key and rewrite history.",
-                                     "critical", "-----BEGIN ... PRIVATE KEY-----"))
-                        info["findings"] += 1
-                for label, rx in PROVIDER_KEYS:
-                    m = rx.search(line_txt)
-                    if not m:
-                        continue
-                    val = m.group(1) if m.lastindex else m.group(0)
-                    if H.PLACEHOLDER.search(line_txt) or H.PLACEHOLDER.search(val) or re.search(r"(?i)example|xxxx", val):
-                        continue
-                    if "secret_access_key" in label.lower() and not H.looks_random(val):
-                        continue
-                    digest = hashlib.sha256(val.encode("utf-8", "replace")).hexdigest()[:16]
-                    key_id = (rel, "SEC001", digest)
-                    if key_id in seen:
-                        continue
-                    seen.add(key_id)
+                val = m.group(1) if m.lastindex else m.group(0)
+                if H.PLACEHOLDER.search(line_txt) or H.PLACEHOLDER.search(val) or re.search(r"(?i)example|xxxx", val):
+                    continue
+                if "secret_access_key" in label.lower() and not H.looks_random(val):
+                    continue
+                digest = hashlib.sha256(val.encode("utf-8", "replace")).hexdigest()[:16]
+                key_id = (rel, "SEC001", digest)
+                if key_id not in seen_findings:
+                    seen_findings.add(key_id)
                     masked = line_txt.replace(val, _mask_secret(val))[:160]
                     emit(Finding("SEC001", rel, line_no,
                                  f"{label} found in git history (commit {sha}); rotate the credential and rewrite history.",
                                  "critical", masked))
                     info["findings"] += 1
+                    timeline_by_key[key_id] = {
+                        "type": label,
+                        "rule_id": "SEC001",
+                        "file": rel,
+                        "first_commit": sha,
+                        "last_commit": sha,
+                        "current_exposure": False,
+                        "historical_exposure": True,
+                        "recommended_action": "Revoke and rotate",
+                    }
+                elif sha:
+                    timeline_by_key[key_id]["first_commit"] = sha
+
+    buf = bytearray()
+    dropping_long_line = False
+    try:
+        assert proc.stdout is not None
+        while not stop_stream:
+            remaining = byte_cap - info["bytes_scanned"]
+            if remaining <= 0:
+                status = "truncated_size"
+                break
+            read_sz = min(HISTORY_CHUNK_BYTES, remaining + 1)
+            chunk = proc.stdout.read(read_sz)
+            if not chunk:
+                break
+            if info["bytes_scanned"] + len(chunk) > byte_cap:
+                info["bytes_scanned"] = byte_cap + 1
+                status = "truncated_size"
+                break
+            info["bytes_scanned"] += len(chunk)
+            start = 0
+            while start < len(chunk) and not stop_stream:
+                nl = chunk.find(b"\n", start)
+                if dropping_long_line:
+                    if nl < 0:
+                        start = len(chunk)
+                        break
+                    dropping_long_line = False
+                    start = nl + 1
+                    continue
+                if nl < 0:
+                    take = min(len(chunk) - start, HISTORY_MAX_LINE_BYTES - len(buf))
+                    if take > 0:
+                        buf.extend(chunk[start:start + take])
+                    if len(buf) >= HISTORY_MAX_LINE_BYTES:
+                        _process_line(bytes(buf))
+                        buf.clear()
+                        dropping_long_line = True
+                    break
+                piece = chunk[start:nl]
+                if len(buf) + len(piece) > HISTORY_MAX_LINE_BYTES:
+                    room = max(0, HISTORY_MAX_LINE_BYTES - len(buf))
+                    if room:
+                        buf.extend(piece[:room])
+                    _process_line(bytes(buf))
+                    buf.clear()
+                elif buf:
+                    buf.extend(piece)
+                    _process_line(bytes(buf))
+                    buf.clear()
+                else:
+                    _process_line(piece)
+                start = nl + 1
+        if buf and not stop_stream and status is None:
+            _process_line(bytes(buf))
     finally:
         timer.cancel()
         if proc.stdout is not None:
@@ -504,6 +583,7 @@ def scan_git_history(
             status = "complete"
     info["status"] = status
     info["truncated"] = status in ("truncated_commits", "truncated_size", "timeout")
+    info["timeline"] = list(timeline_by_key.values())
     return info
 
 

@@ -101,6 +101,8 @@ def test_action_inputs_hook_and_versions_match():
     overview = (ROOT / "docs" / "PROJECT_OVERVIEW.md").read_text(encoding="utf-8")
     assert f"v{vibeaudit.__version__}" in overview
     assert "tomli" not in overview
+    for stale in ("Go, Rust and Java", "Go, Rust, and Java"):
+        assert stale not in README and stale not in action and stale not in overview
 
 
 def test_docs_are_plain_ascii():

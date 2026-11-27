@@ -145,6 +145,10 @@ def render_text(res: Result, color: bool, verbose: bool = True) -> str:
     pen_note = f"  (raw penalty: {res.raw_penalty})" if res.raw_penalty else ""
     out.append(f"  Score: {res.score}/100  Grade: {res.grade}{pen_note}")
     out.append("  Domains: " + "  ".join(f"{k} {v}" for k, v in res.domain_scores.items()))
+    cov = res.meta.get("coverage")
+    if isinstance(cov, dict) and cov.get("overall_status") == "partial":
+        reasons = "; ".join(cov.get("incomplete_reasons") or ["incomplete checks"])
+        out.append(f"  Coverage: partial ({reasons})")
     if res.findings:
         from . import fix
 
@@ -182,7 +186,8 @@ def render_json(res: Result) -> str:
                     "normalized_score": res.normalized_score, "linear_score": res.linear_score,
                     "raw_penalty": res.raw_penalty, "density_per_100_files": res.density_per_100_files,
                     "grade": res.grade, "domains": res.domain_scores},
-        "meta": res.meta, "findings": [f.to_dict() for f in res.findings],
+        "meta": res.meta, "coverage": res.meta.get("coverage"),
+        "findings": [f.to_dict() for f in res.findings],
         "routes": [r.to_dict() for r in sorted(res.routes, key=lambda r: (r.file, r.line))],
     }, indent=2) + "\n"
 
@@ -219,11 +224,24 @@ def render_sarif(res: Result) -> str:
                            "category": f.category, "source": f.source,
                            **({"confirmed": f.confirmed} if f.confirmed else {})},
         })
+    run_obj: Dict = {
+        "tool": {"driver": {"name": "vibeaudit", "version": __version__, "informationUri": TOOL_URL, "rules": rules}},
+        "automationDetails": {"id": "vibeaudit/"},
+        "results": results,
+    }
+    cov = res.meta.get("coverage")
+    if isinstance(cov, dict):
+        run_obj["properties"] = {"coverage": cov}
+        run_obj["invocations"] = [{
+            "executionSuccessful": cov.get("overall_status") == "complete",
+            "toolExecutionNotifications": [
+                {"level": "warning", "message": {"text": str(msg)}}
+                for msg in (cov.get("incomplete_reasons") or [])
+            ],
+        }]
     doc = {
         "$schema": "https://json.schemastore.org/sarif-2.1.0.json", "version": "2.1.0",
-        "runs": [{"tool": {"driver": {"name": "vibeaudit", "version": __version__, "informationUri": TOOL_URL,
-                                      "rules": rules}},
-                  "automationDetails": {"id": "vibeaudit/"}, "results": results}],
+        "runs": [run_obj],
     }
     return json.dumps(doc, indent=2) + "\n"
 
