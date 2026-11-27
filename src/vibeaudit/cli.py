@@ -639,12 +639,12 @@ def cmd_fix(a: argparse.Namespace) -> int:
     if any(f.rule_id == "LLM011" for f in plan.fixed):
         print("vibeaudit: note: LLM011 fixes fall back to None/null on invalid JSON; review callers to handle the fallback.",
               file=sys.stderr)
-    if a.apply and getattr(a, "verify", False) and plan.changes:
+    if a.apply and getattr(a, "verify", False) and plan.written:
         ver = fix.verify_plan(Path(a.path), plan, opts)
         if ver["ok"]:
             print(f"vibeaudit: verify passed ({ver['resolved']} resolved, 0 introduced).", file=sys.stderr)
         else:
-            print(f"vibeaudit: verify failed ({len(ver['remaining'])} remaining, {len(ver['introduced'])} introduced); rolled back {len(plan.changes)} files.",
+            print(f"vibeaudit: verify failed ({len(ver['remaining'])} remaining, {len(ver['introduced'])} introduced); rolled back {len(ver['rolled_back_files'])} files.",
                   file=sys.stderr)
             return 1
     if a.llm:

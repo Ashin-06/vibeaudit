@@ -492,3 +492,26 @@ def test_csharp_developer_page_guard(tmp_path):
     out = roundtrip(tmp_path / "s", {"Startup.cs": startup, "App.csproj": "<Project Sdk=\"Microsoft.NET.Sdk.Web\"></Project>\n"},
                     "CSHARP003")["Startup.cs"]
     assert "        if (env.IsDevelopment())\n        {\n            app.UseDeveloperExceptionPage();\n        }\n" in out
+
+
+def test_verify_rollback_never_overwrites_files_edited_by_the_user(tmp_path):
+    from vibeaudit.fix import Change, Plan, verify_plan
+    from vibeaudit.model import Finding
+
+    f = Finding("BE013", "a.py", 1, "t", "high", "m", fingerprint="fp")
+    skipped, edited_later = tmp_path / "a.py", tmp_path / "b.py"
+    skipped.write_bytes(b"old\n")
+    edited_later.write_bytes(b"old\n")
+    plan = Plan(tmp_path, [Change("a.py", skipped, b"old\n", "old\n", "new\n", "\n", False, [f]),
+                           Change("b.py", edited_later, b"old\n", "old\n", "new\n", "\n", False, [f])])
+    skipped.write_bytes(b"user edit before apply\n")  # changed after planning: apply must skip it
+    assert plan.apply() == ["b.py"]
+    edited_later.write_bytes(b"user edit after apply\n")  # changed after the fix: rollback must keep it
+
+    class Res:
+        findings = [f]  # the fix did not clear the finding, so verification fails
+
+    ver = verify_plan(tmp_path, plan, None, scan_fn=lambda *_: Res())
+    assert ver["rolled_back"] and ver["rolled_back_files"] == []
+    assert skipped.read_bytes() == b"user edit before apply\n"
+    assert edited_later.read_bytes() == b"user edit after apply\n"
