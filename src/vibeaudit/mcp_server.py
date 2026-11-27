@@ -150,13 +150,44 @@ class ToolError(Exception):
 
 
 
+def _allowed_roots() -> Optional[List[Path]]:
+    """Optional allowlist of directories from VIBEAUDIT_MCP_ROOTS (separated by os.pathsep)."""
+    raw = os.environ.get("VIBEAUDIT_MCP_ROOTS", "").strip()
+    if not raw:
+        return None
+    roots: List[Path] = []
+    for item in raw.split(os.pathsep):
+        part = item.strip()
+        if not part:
+            continue
+        try:
+            roots.append(Path(part).expanduser().resolve())
+        except OSError:
+            continue
+    if not roots:
+        raise ToolError("VIBEAUDIT_MCP_ROOTS contains no valid directory paths")
+    return roots
+
+
+def _check_allowed(target: Path) -> Path:
+    """Resolve `target` and verify it sits inside one of VIBEAUDIT_MCP_ROOTS when configured."""
+    try:
+        resolved = target.expanduser().resolve()
+    except OSError as e:
+        raise ToolError(f"invalid path: {e}") from None
+    roots = _allowed_roots()
+    if roots is not None and not any(resolved.is_relative_to(r) for r in roots):
+        raise ToolError("path is outside allowed roots (VIBEAUDIT_MCP_ROOTS)")
+    return resolved
+
+
 def _dir(path: Any) -> str:
     if not isinstance(path, str) or not path:
         raise ToolError("path must be a non-empty string")
-    p = Path(path).expanduser()
-    if not p.is_dir():
+    resolved = _check_allowed(Path(path))
+    if not resolved.is_dir():
         raise ToolError(f"not a directory: {path}")
-    return str(p)
+    return str(resolved)
 
 
 def _summary(res, findings) -> Dict[str, Any]:
@@ -213,10 +244,12 @@ def tool_scan_file(args: Dict[str, Any]) -> Dict[str, Any]:
     from .scanner import scan
 
     file = args.get("file")
-    if not isinstance(file, str) or not Path(file).is_file():
+    if not isinstance(file, str) or not file:
         raise ToolError(f"not a file: {file}")
-    target = Path(file).resolve()
-    root = _root_for(target, args.get("project"))
+    target = _check_allowed(Path(file))
+    if not target.is_file():
+        raise ToolError(f"not a file: {file}")
+    root = _check_allowed(_root_for(target, args.get("project")))
     try:
         rel = target.relative_to(root).as_posix()
     except ValueError:
@@ -332,12 +365,14 @@ def tool_audit_current_file(args: Dict[str, Any]) -> Dict[str, Any]:
     file, content = args.get("file"), args.get("content")
     if content is not None and (not isinstance(content, str) or len(content) > MAX_CONTENT):
         raise ToolError(f"content must be a string of at most {MAX_CONTENT} characters")
-    if not isinstance(file, str) or not file or (content is None and not Path(file).is_file()):
+    if not isinstance(file, str) or not file:
         raise ToolError(f"not a file: {file}")
-    target = Path(file).resolve()
+    target = _check_allowed(Path(file))
+    if content is None and not target.is_file():
+        raise ToolError(f"not a file: {file}")
     if target.exists() and not target.is_file():
         raise ToolError(f"not a file: {file}")
-    root = _root_for(target, args.get("project"))
+    root = _check_allowed(_root_for(target, args.get("project")))
     try:
         rel = target.relative_to(root).as_posix()
     except ValueError:
@@ -422,11 +457,14 @@ def tool_simulate_migration(args: Dict[str, Any]) -> Dict[str, Any]:
     if (path is None) == (sql is None):
         raise ToolError("give either path (a .sql file) or sql")
     if path is not None:
-        if not isinstance(path, str) or not path.lower().endswith(".sql") or not Path(path).is_file():
+        if not isinstance(path, str) or not path.lower().endswith(".sql"):
             raise ToolError("path must be an existing .sql file")
-        if Path(path).stat().st_size > migrations.MAX_SQL:
+        checked = _check_allowed(Path(path))
+        if not checked.is_file():
+            raise ToolError("path must be an existing .sql file")
+        if checked.stat().st_size > migrations.MAX_SQL:
             raise ToolError(f"the migration is larger than {migrations.MAX_SQL} bytes")
-        sql = Path(path).read_text(encoding="utf-8", errors="replace")
+        sql = checked.read_text(encoding="utf-8", errors="replace")
     if not isinstance(sql, str):
         raise ToolError("sql must be a string")
     try:

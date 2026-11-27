@@ -126,7 +126,7 @@ def test_git_history_streaming_reports_complete_size_commit_and_timeout_statuses
     class _SlowStdout:
         def read(self, _n=-1):
             import time
-            time.sleep(0.15)
+            time.sleep(0.35)
             return b""
 
         def close(self):
@@ -134,7 +134,7 @@ def test_git_history_streaming_reports_complete_size_commit_and_timeout_statuses
 
     real_popen = subprocess.Popen
     monkeypatch.setattr(secretscan, "HISTORY_MAX_BYTES", 20_000_000)
-    monkeypatch.setattr(secretscan, "HISTORY_TIMEOUT", 0.02)
+    monkeypatch.setattr(secretscan, "HISTORY_TIMEOUT", 0.05)
 
     def _fake_popen(*a, **kw):
         cmd = a[0] if a else ()

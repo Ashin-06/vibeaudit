@@ -159,6 +159,7 @@ def test_threat_10_untrusted_llm_responses_never_corrupt_or_leak(tmp_path):
 
 
 # 11. Malicious zip-bomb / path-traversal / bloated archive bundles
+@pytest.mark.filterwarnings("ignore:Duplicate name")
 def test_threat_11_malicious_archive_and_zip_bomb_rejected(tmp_path, monkeypatch):
     monkeypatch.setattr(bundle, "cache_dir", lambda: tmp_path / "cache")
 
