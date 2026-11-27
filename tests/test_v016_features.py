@@ -4,6 +4,7 @@ Python MongoDB BE010, Cypher/KQL BE022, fix --verify + rollback, --privacy-repor
 import datetime as dt
 import hashlib
 import json
+import sys
 import zipfile
 from pathlib import Path
 
@@ -16,6 +17,11 @@ from vibeaudit.cli import main as cli_main
 from vibeaudit.correlate import ai_risk_profile, attack_paths
 from vibeaudit.model import Finding
 from vibeaudit.scanner import Options
+
+ROOT = Path(__file__).resolve().parent.parent
+if str(ROOT / "tools") not in sys.path:
+    sys.path.insert(0, str(ROOT / "tools"))
+from _feed_signer import build as feed_build, generate_key as feed_generate_key  # noqa: E402
 
 
 def _rules(res):
@@ -123,14 +129,14 @@ def test_bundle_import_rejects_expired_and_rollback_feeds(tmp_path: Path, monkey
     from vibeaudit import updater
 
     monkeypatch.setattr(updater, "cache_dir", lambda: tmp_path / "cache")
-    key = feed.generate_key(bits=1024)
+    key = feed_generate_key(bits=1024)
     pub = {"n": key["n"], "e": key["e"]}
     monkeypatch.setattr(feed, "public_key", lambda: pub)
 
     now = dt.datetime.now(dt.timezone.utc)
-    newer = feed.build({"slopsquatted": [], "model_sunsets": [], "prompt_injection": []}, key, now=now)
-    older = feed.build({"slopsquatted": [], "model_sunsets": [], "prompt_injection": []}, key, now=now - dt.timedelta(days=2))
-    expired = feed.build({"slopsquatted": [], "model_sunsets": [], "prompt_injection": []}, key, now=now - dt.timedelta(days=45))
+    newer = feed_build({"slopsquatted": [], "model_sunsets": [], "prompt_injection": []}, key, now=now)
+    older = feed_build({"slopsquatted": [], "model_sunsets": [], "prompt_injection": []}, key, now=now - dt.timedelta(days=2))
+    expired = feed_build({"slopsquatted": [], "model_sunsets": [], "prompt_injection": []}, key, now=now - dt.timedelta(days=45))
 
     cache_feed = tmp_path / "cache" / "data" / feed.FEED
     cache_feed.parent.mkdir(parents=True, exist_ok=True)

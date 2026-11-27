@@ -59,6 +59,10 @@ def build_parser() -> argparse.ArgumentParser:
                    help="overall wall-clock cap in seconds for analyzer stages (default: unlimited)")
     s.add_argument("--fail-on-partial", action="store_true", default=None,
                    help="exit with code 1 when any file, history commit or analyzer stage was skipped or timed out (partial coverage)")
+    s.add_argument("--allow-empty", action="store_true", default=None,
+                   help="exit 0 even when 0 files are scanned instead of failing with an empty-scan error")
+    s.add_argument("--score-model", default=None, choices=["diminishing-v2", "linear-v1"],
+                   help="scoring formula: diminishing-v2 (default, size-normalized) or linear-v1 (legacy 100 - penalty)")
     s.add_argument("--llm", choices=["gemini", "openai", "openrouter", "anthropic"],
                    help="use an LLM to triage findings (needs GEMINI_API_KEY / OPENAI_API_KEY / OPENROUTER_API_KEY / ANTHROPIC_API_KEY)")
     s.add_argument("--llm-model", help="model name for the LLM provider")
@@ -129,6 +133,8 @@ def build_parser() -> argparse.ArgumentParser:
                    help="with --apply, re-scan modified files to confirm fixed findings cleared and no new findings appeared; rolls back on failure")
     x.add_argument("--rule", action="append", default=[], metavar="RULE",
                    help="fix only these rules (repeatable, comma lists allowed)")
+    x.add_argument("--max-tokens", type=int, default=None, metavar="N",
+                   help="output token limit inserted by the LLM003 codemod (default: 4096)")
     x.add_argument("--exclude", action="append", default=[], metavar="GLOB", help="skip paths matching GLOB (repeatable)")
     x.add_argument("--config", metavar="FILE", help="read settings from this TOML file, as for scan")
     x.add_argument("--llm", choices=["gemini", "openai", "openrouter", "anthropic"],
@@ -200,6 +206,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     r = sub.add_parser("rules", help="list every rule")
     r.add_argument("--format", choices=["text", "json", "md"], default="text")
+    r.add_argument("--json", action="store_true", help="shorthand for --format json")
 
     dr = sub.add_parser("doctor", help="show vibeaudit health: version, rules, signed threat feed, offline OSV indexes and external scanners")
     dr.add_argument("--format", choices=["text", "json"], default="text")
@@ -608,8 +615,14 @@ def cmd_fix(a: argparse.Namespace) -> int:
     if getattr(a, "verify", False) and not a.apply:
         print("vibeaudit: --verify requires --apply", file=sys.stderr)
         return 2
+    max_tokens = fix.MAX_OUTPUT_TOKENS
+    if getattr(a, "max_tokens", None) is not None:
+        if a.max_tokens <= 0:
+            print("vibeaudit: --max-tokens must be a positive integer", file=sys.stderr)
+            return 2
+        max_tokens = a.max_tokens
     opts.excludes += a.exclude
-    plan = fix.plan(a.path, rules, opts)
+    plan = fix.plan(a.path, rules, opts, max_tokens=max_tokens)
     if a.apply:
         written = plan.apply()
         for rel in written:
@@ -623,6 +636,9 @@ def cmd_fix(a: argparse.Namespace) -> int:
     verb = "applied" if a.apply else "proposed"
     print(f"vibeaudit: {len(plan.fixed)} fixes {verb} in {len(plan.changes)} files; {len(fixable)} findings of fixable "
           f"rules could not be rewritten; {len(plan.skipped) - len(fixable)} findings have no codemod.", file=sys.stderr)
+    if any(f.rule_id == "LLM011" for f in plan.fixed):
+        print("vibeaudit: note: LLM011 fixes fall back to None/null on invalid JSON; review callers to handle the fallback.",
+              file=sys.stderr)
     if a.apply and getattr(a, "verify", False) and plan.changes:
         ver = fix.verify_plan(Path(a.path), plan, opts)
         if ver["ok"]:
@@ -725,6 +741,7 @@ def cmd_scan(a: argparse.Namespace) -> int:
             print("vibeaudit: --scan-timeout must be a positive number of seconds", file=sys.stderr)
             return 2
         scan_timeout = float(scan_timeout_raw)
+    cfg_disabled = sorted({x.strip() for d in cfg.get("disable", []) for x in str(d).split(",") if x.strip()}) if cfg_path else []
     opts = Options(offline=bool(pick(a.offline, "offline", False)), excludes=list(a.exclude) + list(cfg.get("exclude", [])),
                    disabled=disabled, min_severity=pick(a.min_severity, "min_severity", "low"),
                    external=pick(a.external, "external", "auto"), baseline=baseline,
@@ -739,9 +756,15 @@ def cmd_scan(a: argparse.Namespace) -> int:
                    cache=not a.no_cache, include_preview=bool(pick(a.include_preview, "include_preview", False)),
                    gate_severe_preview=False if a.no_gate_severe_preview else bool(cfg.get("gate_severe_preview", True)),
                    history=bool(a.history), history_commits=max(1, int(a.history_commits)),
-                   no_config=bool(a.no_config))
+                   no_config=bool(a.no_config),
+                   score_model=str(pick(a.score_model, "score_model", "diminishing-v2")),
+                   config_path=cfg_path,
+                   config_disabled=cfg_disabled)
     if cfg_path:
         log(f"using settings from {cfg_path}")
+    if cfg_disabled:
+        print(f"vibeaudit: warning: project config {cfg_path} disables {', '.join(cfg_disabled)} "
+              "(use --no-config to audit untrusted code)", file=sys.stderr)
     regression = None
     if a.fail_on_regression is not None:
         from .scanner import read_baseline
@@ -788,6 +811,9 @@ def cmd_scan(a: argparse.Namespace) -> int:
 
         known, base_score, only = regression
         full_score = res.score
+        if full_score is None:
+            print("vibeaudit: --fail-on-regression cannot compare an empty scan (0 files scanned)", file=sys.stderr)
+            return 1
         res.findings = [f for f in res.findings if f.fingerprint not in known and (only is None or keep(only, f.file, f.line))]
         res.meta["score_whole_project"], res.meta["baseline_score"] = full_score, base_score
         if only is not None:
@@ -819,6 +845,9 @@ def cmd_scan(a: argparse.Namespace) -> int:
         reasons = res.meta["coverage"].get("incomplete_reasons") or ["incomplete scan coverage"]
         print(f"vibeaudit: failing because coverage is partial (--fail-on-partial): {'; '.join(reasons)}", file=sys.stderr)
         return 1
+    if res.meta.get("files_scanned", 0) == 0 and not pick(a.allow_empty, "allow_empty", False):
+        print("vibeaudit: failing because 0 files were scanned (check path/--exclude, or pass --allow-empty)", file=sys.stderr)
+        return 1
     return 0
 
 
@@ -827,7 +856,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser = build_parser()
     a = parser.parse_args(argv)
     if a.command == "rules":
-        return cmd_rules(a.format)
+        return cmd_rules("json" if getattr(a, "json", False) else a.format)
     if a.command == "explain":
         return cmd_explain(a)
     if a.command == "probe":

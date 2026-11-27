@@ -5,11 +5,18 @@ import base64
 import io
 import json
 import ssl
+import sys
+from pathlib import Path
 
 import pytest
 
 from vibeaudit import feed, mcp_server, probe
 from vibeaudit.scanner import Options, scan
+
+ROOT = Path(__file__).resolve().parent.parent
+if str(ROOT / "tools") not in sys.path:
+    sys.path.insert(0, str(ROOT / "tools"))
+from _feed_signer import generate_key as feed_generate_key, sign as feed_sign  # noqa: E402
 
 
 def _scan(path, **kw):
@@ -189,7 +196,7 @@ def test_mongodb_where_and_js_schema_nosql_scoping(tmp_path):
 
 
 def test_feed_size_and_bool_version_rejection():
-    key = feed.generate_key(1024)
+    key = feed_generate_key(1024)
     pub = {"n": key["n"], "e": key["e"]}
     oversized = b"x" * (feed.MAX_FEED_BYTES + 1)
     with pytest.raises(feed.FeedError, match="too large"):
@@ -197,7 +204,7 @@ def test_feed_size_and_bool_version_rejection():
 
     payload = json.dumps({"format": feed.FORMAT, "version": True, "created": "2026-01-01T00:00:00+00:00",
                           "expires": "2099-01-01T00:00:00+00:00", "data": {}})
-    sig = base64.b64encode(feed.sign(payload.encode("utf-8"), key)).decode("ascii")
+    sig = base64.b64encode(feed_sign(payload.encode("utf-8"), key)).decode("ascii")
     raw = json.dumps({"payload": payload, "signature": sig}).encode("utf-8")
     with pytest.raises(feed.FeedError):
         feed.open_feed(raw, pub)

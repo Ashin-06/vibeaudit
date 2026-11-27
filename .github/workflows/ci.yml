@@ -132,6 +132,11 @@ jobs:
           /tmp/clean/bin/vibeaudit rules | wc -l
           cd /tmp && /tmp/clean/bin/vibeaudit scan "$GITHUB_WORKSPACE/src" --offline --external none -q --fail-on none --report sarif:/tmp/out.sarif
           python -c "import json; json.load(open('/tmp/out.sarif'))"
+      - name: Build container image and run non-root read-only smoke test
+        run: |
+          docker build -t vibeaudit:ci .
+          docker run --rm --read-only --cap-drop ALL -v "$GITHUB_WORKSPACE/tests/fixtures/vuln_flask_llm:/workspace:ro" vibeaudit:ci --version
+          docker run --rm --read-only --cap-drop ALL -v "$GITHUB_WORKSPACE/tests/fixtures/clean_app:/workspace:ro" vibeaudit:ci scan /workspace --offline --external none --no-cache -q --fail-on high
 
   stress:
     runs-on: ubuntu-latest
