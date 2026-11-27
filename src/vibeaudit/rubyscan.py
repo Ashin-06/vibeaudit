@@ -110,7 +110,7 @@ class RubyScanner:
         self.included: Dict[str, str] = {}
         self.macros: Dict[str, Tuple[List[str], str, List[str]]] = {}
         for f in rb:
-            code = f.cache["ruby_code"] = ruby_code(f.text)
+            code = f.cache["ruby_code"] = ruby_code(f.text or "")
             if "ActiveSupport::Concern" in code:
                 self._concern(code)
             if "/controllers/" in "/" + f.rel:
@@ -130,7 +130,7 @@ class RubyScanner:
     @staticmethod
     def _raises_on_open_redirects(rb: List[SourceFile]) -> bool:
         """Rails 7 apps (load_defaults 7.0 or later) raise on a redirect to another host unless it is allowed."""
-        text = "\n".join(f.text for f in rb if f.rel.startswith("config/"))
+        text = "\n".join(f.text or "" for f in rb if f.rel.startswith("config/"))
         if re.search(r"raise_on_open_redirects\s*=\s*false", text):
             return False
         m = re.search(r"\bload_defaults\s+['\"]?(\d+)(?:\.(\d+))?", text)
@@ -295,7 +295,9 @@ class RubyScanner:
             out = [ln.replace("**" + var, m.group(2).strip()) for ln in lines]
             for c in calls if depth < 3 else []:
                 if c in self.macros:
-                    out.append(macro(re.match(r"(\w+[?!]?)(.*)", c + " " + m.group(2)), depth + 1))
+                    mc = re.match(r"(\w+[?!]?)(.*)", c + " " + m.group(2))
+                    if mc:
+                        out.append(macro(mc, depth + 1))
             return "\n".join(out)
 
         # a list may continue on the next lines after a trailing comma: `include A, B,\n  C`
@@ -374,7 +376,7 @@ class RubyScanner:
 
     # ----------------------------------------------------------------- views
     def _views(self, sf: SourceFile) -> None:
-        text = sf.text
+        text = sf.text or ""
         for m in finditer(ERB_RAW, text):
             expr = next(g for g in m.groups() if g is not None)
             if ERB_SAFE.match(expr) or re.search(r"\bsanitize\b|\bstrip_tags\b|\bh\s*\(|\bjson_escape\b|\.to_json\b", expr):

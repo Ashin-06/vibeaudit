@@ -33,7 +33,7 @@ def _rel(root: Path, path: str) -> str:
 
 def _run(cmd: List[str]) -> Optional[str]:
     try:
-        out = subprocess.run(cmd, capture_output=True, stdin=subprocess.DEVNULL, timeout=TIMEOUT, check=False)
+        out = subprocess.run(cmd, capture_output=True, stdin=subprocess.DEVNULL, timeout=TIMEOUT, check=False)  # noqa: S603 - fixed binary + arguments in caller
     except (OSError, subprocess.SubprocessError):
         return None
     return out.stdout.decode("utf-8", "replace")

@@ -5,9 +5,9 @@ from __future__ import annotations
 
 import ast
 import re
-from typing import Callable, Dict, List, Optional, Set
+from typing import Callable, Dict, List, Set
 
-from .files import ENV_EXAMPLE_RE, Project, SourceFile
+from .files import Project, SourceFile
 from .guard import GUARD, finditer
 from .lexer import match_close
 from .model import Finding, Route
@@ -217,7 +217,7 @@ class DataScanner:
         v = sf.cache.get("views")
         if v is None:
             return
-        code, bare = v.code, v.bare  # type: ignore[attr-defined]
+        code, bare = v.code, v.bare
         reported: Set[int] = set()
         for m in finditer(JS_LOOP, bare):
             open_paren = bare.find("(", m.start())
@@ -343,8 +343,8 @@ class DataScanner:
             if sf.kind not in ("py", "js") or sf.is_test or sf.text is None:
                 continue
             v = sf.cache.get("views")
-            code = v.code if v is not None else sf.text  # type: ignore[attr-defined]
-            bare = v.bare if v is not None else code  # type: ignore[attr-defined]
+            code = v.code if v is not None else (sf.text or "")
+            bare = v.bare if v is not None else code
             reads = [(m, next(g for g in m.groups() if g)) for m in finditer(pattern, code)]
             reads = [(m, name) for m, name in reads if not self._in_plain_string(bare, m.start(), sf.kind == "py")]
             # one guarded read makes the variable optional in this file: `process.env.X ? { url: process.env.X } : {}`

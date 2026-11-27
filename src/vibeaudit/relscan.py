@@ -95,7 +95,7 @@ class ReliabilityScanner:
         v = sf.cache.get("views")
         if v is None:
             return
-        code, bare = v.code, v.bare  # type: ignore[attr-defined]
+        code, bare = v.code, v.bare
         for m in finditer(r"\bmulter\s*\(", bare):
             args = code[m.end():self._close(bare, m.end() - 1)]
             if "limits" not in args:

@@ -101,7 +101,7 @@ class ContractScanner:
         v = sf.cache.get("views")
         if v is None:
             return
-        code, bare = v.code, v.bare  # type: ignore[attr-defined]
+        code, bare = v.code, v.bare
         for m in finditer(CALL, code):
             path = m.group("s1") or m.group("t1") or m.group("s2") or m.group("t2")
             call = segments(path)

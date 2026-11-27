@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import ast
 import re
-from typing import Callable, List, Optional
+from typing import Callable, Optional
 
 from .files import Project, SourceFile
 from .guard import GUARD, finditer
@@ -64,7 +64,7 @@ def run(project: Project, add: Add) -> None:
 
 
 def _vector_pii(sf: SourceFile, v, add: Add) -> None:
-    code = v.code  # type: ignore[attr-defined]
+    code = v.code
     if not VECTOR_HINT.search(code):
         return
     for m in finditer(METADATA, code):
@@ -76,7 +76,7 @@ def _vector_pii(sf: SourceFile, v, add: Add) -> None:
 
 
 def _stampede(sf: SourceFile, v, add: Add) -> None:
-    code, bare = v.code, v.bare  # type: ignore[attr-defined]
+    code, bare = v.code, v.bare
     if STAMPEDE_GUARD.search(code):
         return
     from .storagescan import REDIS_CLIENT
@@ -96,7 +96,7 @@ def _stampede(sf: SourceFile, v, add: Add) -> None:
 
 
 def _jobs(sf: SourceFile, v, add: Add) -> None:
-    code, bare = v.code, v.bare  # type: ignore[attr-defined]
+    code, bare = v.code, v.bare
     if sf.kind == "py":
         for body, line in _py_tasks(sf):
             _job_body(sf, body, line, add)
@@ -114,7 +114,7 @@ def _jobs(sf: SourceFile, v, add: Add) -> None:
 def _py_tasks(sf: SourceFile):
     if not PY_TASK.search(sf.text or ""):
         return
-    tree: Optional[ast.Module] = sf.cache.get("ast")  # type: ignore[assignment]
+    tree: Optional[ast.Module] = sf.cache.get("ast")
     if tree is None:
         try:
             tree = ast.parse(sf.text or "")

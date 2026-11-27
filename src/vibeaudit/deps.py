@@ -18,7 +18,7 @@ from typing import Callable, Dict, List, Optional, Set, Tuple
 
 from .files import Project, SourceFile
 from .model import Finding
-from .store import TimedCache, loads_json, loads_toml
+from .store import TimedCache, loads_json, loads_toml, validate_http_url
 
 Emit = Callable[[Finding], None]
 USER_AGENT = "vibeaudit (+https://github.com/Ashin-06/vibeaudit)"
@@ -170,13 +170,13 @@ def _collect(project: Project) -> List[Dep]:
             continue
         if name == "pubspec.yaml" and f.text is not None and not f.is_test:
             locked = pubspec_locked(project, f.rel)
-            for pkg, version, line in pubspec_dependencies(f.text):
-                deps.append(Dep(pkg, "Pub", f.rel, line, version or locked.get(pkg)))
+            for pkg, pub_ver, line in pubspec_dependencies(f.text):
+                deps.append(Dep(pkg, "Pub", f.rel, line, pub_ver or locked.get(pkg)))
             continue
         if name == "Gemfile" and f.text is not None and not f.is_test:
             locked = gemfile_locked(project, f.rel)
-            for gem, version, line in gemfile_dependencies(f.text):
-                deps.append(Dep(gem, "RubyGems", f.rel, line, version or locked.get(gem.lower())))
+            for gem, gem_ver, line in gemfile_dependencies(f.text):
+                deps.append(Dep(gem, "RubyGems", f.rel, line, gem_ver or locked.get(gem.lower())))
             continue
         requirements = bool(re.fullmatch(r"requirements[\w.-]*\.(?:txt|in)", name) or re.search(r"(?:^|/)requirements/[^/]+\.txt$", f.rel))
         # the name first: only manifests are read, so a long-lived Project keeps the result while code changes
@@ -184,8 +184,8 @@ def _collect(project: Project) -> List[Dep]:
             continue
         if requirements:
             private = bool(re.search(r"^\s*(?:--index-url\b|-i\s)", f.text, re.M))  # PyPI replaced by another index
-            for i, line in enumerate(f.lines, 1):
-                parsed = parse_requirement(line)
+            for i, line_txt in enumerate(f.lines, 1):
+                parsed = parse_requirement(line_txt)
                 if parsed:
                     deps.append(Dep(parsed[0], "PyPI", f.rel, i, parsed[1], not private))
         elif name == "pyproject.toml":
@@ -289,19 +289,19 @@ def _locked_version(lock: str, text: str, d: Dep) -> Optional[str]:
         return None
     name = re.escape(d.name)
     if lock in ("poetry.lock", "uv.lock", "pdm.lock"):
-        data = _parsed_toml(text)
-        if data is None:
+        toml_data = _parsed_toml(text)
+        if toml_data is None:
             return None
-        for pkg in data.get("package", []) if isinstance(data.get("package"), list) else []:
+        for pkg in toml_data.get("package", []) if isinstance(toml_data.get("package"), list) else []:
             if isinstance(pkg, dict) and pep503(str(pkg.get("name", ""))) == pep503(d.name) and isinstance(pkg.get("version"), str):
                 return pkg["version"]
         return None
     if lock == "Pipfile.lock":
-        data = _parsed_json(text)
-        if data is None:
+        json_data = _parsed_json(text)
+        if json_data is None:
             return None
         for section in ("default", "develop"):
-            for pkg, info in _dict(_dict(data).get(section)).items():
+            for pkg, info in _dict(_dict(json_data).get(section)).items():
                 if pep503(pkg) == pep503(d.name) and isinstance(_dict(info).get("version"), str):
                     return info["version"].lstrip("=")
         return None
@@ -388,14 +388,17 @@ def _get_json(url: str, data: Optional[bytes] = None) -> Tuple[int, Optional[dic
     (timeout, DNS, connection reset, rate limited after retries, invalid JSON). The document is None
     unless a JSON object came back with status 200. Only a definite 404/410 means "does not exist".
     """
+    validate_http_url(url)
     host = urllib.parse.urlsplit(url).netloc
     if BREAKER.open(host):
         return 0, None
-    req = urllib.request.Request(url, data=data, headers={"User-Agent": USER_AGENT, "Accept": "application/json",
-                                                          **({"Content-Type": "application/json"} if data else {})})
+    req = urllib.request.Request(  # noqa: S310 - scheme validated above
+        url, data=data, headers={"User-Agent": USER_AGENT, "Accept": "application/json",
+                                 **({"Content-Type": "application/json"} if data else {})},
+    )
     for attempt in range(MAX_ATTEMPTS):
         try:
-            with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:  # noqa: S310 - fixed https hosts
+            with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:  # noqa: S310 - scheme validated above
                 status = getattr(resp, "status", 200)
                 doc = loads_json(resp.read().decode("utf-8"))
             BREAKER.record(host, True)
@@ -504,7 +507,7 @@ OSV_SEV = {"CRITICAL": "critical", "HIGH": "high", "MODERATE": "medium", "MEDIUM
 
 def osv_lookup(deps: List[Dep]) -> Dict[Tuple[str, str, str], List[dict]]:
     pinned = [d for d in deps if d.version and d.checkable]
-    uniq = sorted({(d.ecosystem, d.name, d.version) for d in pinned})  # type: ignore[misc]
+    uniq: List[Tuple[str, str, str]] = sorted({(d.ecosystem, d.name, d.version) for d in pinned if d.version})
     out: Dict[Tuple[str, str, str], List[dict]] = {}
     if not uniq:
         return out
@@ -516,23 +519,23 @@ def osv_lookup(deps: List[Dep]) -> Dict[Tuple[str, str, str], List[dict]]:
         results = data.get("results") if data else None
         if not isinstance(results, list) or len(results) != len(chunk):
             raise ConnectionError("OSV query failed")
-        for key, res in zip(chunk, results):
+        for key, res in zip(chunk, results, strict=True):
             vulns = _dict(res).get("vulns")
             ids = [str(v["id"]) for v in vulns if isinstance(v, dict) and "id" in v] if isinstance(vulns, list) else []
             if ids:
                 ids_for[key] = ids
     all_ids = sorted({i for ids in ids_for.values() for i in ids})[:200]
-    details = {i: OSV_CACHE.get(i) for i in all_ids}
+    details: Dict[str, object] = {i: OSV_CACHE.get(i) for i in all_ids}
     todo = [i for i, d in details.items() if not isinstance(d, dict)]
     with ThreadPoolExecutor(8) as ex:
-        fetched = dict(zip(todo, ex.map(lambda i: _get_json(f"https://api.osv.dev/v1/vulns/{urllib.parse.quote(i)}")[1], todo)))
-    for i, doc in fetched.items():
-        details[i] = doc
+        fetched = dict(zip(todo, ex.map(lambda i: _get_json(f"https://api.osv.dev/v1/vulns/{urllib.parse.quote(i)}")[1], todo), strict=True))
+    for vid, doc in fetched.items():
+        details[vid] = doc
         if isinstance(doc, dict):
             # only what the report uses: an advisory body can be tens of kilobytes
-            OSV_CACHE.put(i, {k: doc[k] for k in ("id", "summary", "affected", "database_specific", "severity") if k in doc})
+            OSV_CACHE.put(vid, {k: doc[k] for k in ("id", "summary", "affected", "database_specific", "severity") if k in doc})
     for key, ids in ids_for.items():
-        out[key] = [details.get(i) or {"id": i} for i in ids]
+        out[key] = [d if isinstance(d, dict) else {"id": vid} for vid in ids for d in (details.get(vid),)]
     return out
 
 
@@ -613,7 +616,7 @@ class DepScanner:
         by_key = {(d.ecosystem, d.name): d for d in deps}
         BREAKER.reset()
         with ThreadPoolExecutor(8) as ex:
-            infos = dict(zip(to_check, ex.map(lambda k: registry_info(by_key[k]), to_check)))
+            infos = dict(zip(to_check, ex.map(lambda k: registry_info(by_key[k]), to_check), strict=True))
         errors = sum(1 for s, _t, _n in infos.values() if s == "error")
         if errors:
             self.notes.append(f"{errors} registry lookups failed (network); those packages were not verified.")
@@ -739,7 +742,7 @@ def cargo_dependencies(text: str) -> List[Tuple[str, int]]:
     git dependencies, which are not on crates.io; a `package = "..."` rename uses the real crate name)."""
     out: List[Tuple[str, int]] = []
     sections = list(CARGO_SECTION.finditer(text))
-    for i, s in enumerate(sections):
+    for s in sections:
         if s.group(1) in ("dev-dependencies", "build-dependencies"):
             continue
         end = text.find("\n[", s.end())

@@ -122,12 +122,12 @@ def _module_names(tree: ast.Module) -> Optional[Set[str]]:
                 if not block(st.body):
                     return False
             elif isinstance(st, ast.Try) or type(st).__name__ == "TryStar":
-                for h in st.handlers:  # type: ignore[attr-defined]
+                for h in st.handlers:
                     if h.name:
                         names.add(h.name)
                     if not block(h.body):
                         return False
-                if not (block(st.body) and block(st.orelse) and block(st.finalbody)):  # type: ignore[attr-defined]
+                if not (block(st.body) and block(st.orelse) and block(st.finalbody)):
                     return False
             elif isinstance(st, ast.Expr):
                 for n in ast.walk(st):
@@ -180,10 +180,10 @@ class QualityScanner:
                 GUARD.run(sf.rel, "JavaScript completeness checks", self._javascript, sf)
         for package_dir, pkg, rel, line in self.missing_js:
             reported = self.reported_js.setdefault(package_dir, set())
-            sf = self.p.get(rel)
-            if pkg not in reported and sf is not None:
+            sf_opt = self.p.get(rel)
+            if pkg not in reported and sf_opt is not None:
                 reported.add(pkg)
-                self.add(sf, "QA007", line, f"`{pkg}` is imported but not listed in package.json.")
+                self.add(sf_opt, "QA007", line, f"`{pkg}` is imported but not listed in package.json.")
 
     # ----------------------------------------------------------- declared
     def _load_declared(self) -> None:
@@ -237,6 +237,8 @@ class QualityScanner:
             except (SyntaxError, ValueError, RecursionError):
                 return
             sf.cache["ast"] = tree
+        if not isinstance(tree, ast.Module):
+            return
         guarded = self._optional_import_nodes(tree)
         reported = self.reported_py  # one finding per undeclared package per project, not one per file
         for node in ast.walk(tree):
@@ -337,6 +339,8 @@ class QualityScanner:
             except (SyntaxError, ValueError, RecursionError):
                 return None
             sf.cache["ast"] = tree
+        if not isinstance(tree, ast.Module):
+            return None
         names = _module_names(tree)
         if names is None or "__getattr__" in names or re.search(r"globals\(\)\s*\[", sf.text or ""):
             return None
@@ -352,7 +356,7 @@ class QualityScanner:
                 tree = f.cache.get("ast")
                 if tree is None:
                     continue  # not parsed (syntax error): no base classes to learn from it
-                for node in ast.walk(tree):  # type: ignore[arg-type]
+                for node in ast.walk(tree):
                     if isinstance(node, ast.ClassDef):
                         self._bases.update(ast.unparse(b).split(".")[-1].split("[")[0] for b in node.bases)
         return self._bases
@@ -454,7 +458,7 @@ class QualityScanner:
 
     def _javascript(self, sf: SourceFile) -> None:
         v = sf.cache.get("views")
-        code = v.code if v is not None else (sf.text or "")  # type: ignore[attr-defined]
+        code = v.code if v is not None else (sf.text or "")
         rel = sf.rel
         if rel.endswith(".d.ts"):
             return
@@ -561,13 +565,13 @@ class QualityScanner:
         """Every name a module exports, or None when it re-exports or uses CommonJS. Computed once per file
         (and kept across `vibeaudit watch` re-scans): one module is often imported by many files."""
         if "js_exports" in tf.cache:
-            return tf.cache["js_exports"]  # type: ignore[return-value]
+            return tf.cache["js_exports"]
         views = tf.cache.get("views")
         if views is None:
             from .lexer import js_views
 
             views = js_views(tf.text or "")
-        text = views.code  # type: ignore[attr-defined]  # comments blanked: a commented-out export is not an export
+        text = views.code  # comments blanked: a commented-out export is not an export
         names: Optional[Set[str]] = None
         if not re.search(r"\bexport\s*\*\s*from|module\.exports|\bexports\.\w+\s*=", text):
             # `export { a as b, c }` exports b and c (not a); `export { x as default }` exports only default

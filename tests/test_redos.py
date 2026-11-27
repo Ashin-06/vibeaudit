@@ -11,9 +11,9 @@ import time
 
 import pytest
 
-pytestmark = pytest.mark.slow
-
 import vibeaudit
+
+pytestmark = pytest.mark.slow
 
 LIMIT_SECONDS = 1.5
 SIZE = 40000

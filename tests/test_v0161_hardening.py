@@ -216,7 +216,7 @@ def test_mcp_hardening_rejects_bad_params_empty_and_large_batches():
     inp = io.StringIO("[]\n" + big_batch + "\n" + ("a" * (mcp_server.MAX_LINE_BYTES + 1)) + "\n")
     assert mcp_server.serve(inp, out) == 0
     lines = [json.loads(line) for line in out.getvalue().splitlines()]
-    assert [l["error"]["code"] for l in lines] == [-32600, -32600, -32600]
+    assert [item["error"]["code"] for item in lines] == [-32600, -32600, -32600]
 
 
 def test_probe_verifies_tls_on_remote_targets_by_default():

@@ -58,7 +58,7 @@ def m_shift(root):
     for p in files(root):
         prefix = COMMENT.get(p.suffix)
         if prefix and p.name not in ("Dockerfile", "requirements.txt", "docker-compose.yml"):
-            rewrite(p, lambda t: f"{prefix}generated header\n{prefix}another line\n\n" + t)
+            rewrite(p, lambda t, px=prefix: f"{px}generated header\n{px}another line\n\n" + t)
 
 
 def m_crlf(root):

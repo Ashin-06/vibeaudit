@@ -51,7 +51,7 @@ def run(project: Project, routes: List[Route], csrf: bool, add: Add) -> None:
         v = sf.cache.get("views")
         if v is None or sf.is_test or sf.kind not in ("py", "js"):
             continue
-        GUARD.run(sf.rel, "API file checks", _file, sf, v.code, v.bare, csrf, add)  # type: ignore[attr-defined]
+        GUARD.run(sf.rel, "API file checks", _file, sf, v.code, v.bare, csrf, add)
     for r in routes:
         _route(r, add)
 
@@ -74,9 +74,9 @@ def _file(sf: SourceFile, code: str, bare: str, csrf: bool, add: Add) -> None:
                     "The session cookie is set with SameSite=None and the project has no CSRF protection." if none else
                     "The session cookie sets no SameSite attribute and the project has no CSRF protection.")
     if H.RATE_LIMIT_EVIDENCE.search(code) and not LAST_HOP.search(code):
-        m = FORWARDED_FOR.search(code)
-        if m:
-            add(sf, sf.line_at(m.start()), "AUTH014", "The rate limit key comes from X-Forwarded-For, which the client can set.")
+        m_ff = FORWARDED_FOR.search(code)
+        if m_ff:
+            add(sf, sf.line_at(m_ff.start()), "AUTH014", "The rate limit key comes from X-Forwarded-For, which the client can set.")
     if RAW_MAIL.search(code):
         for m in finditer(RAW_MAIL_HEADER, code):
             add(sf, sf.line_at(m.start()), "BE020", "An email header is built by formatting a value into the header line.")

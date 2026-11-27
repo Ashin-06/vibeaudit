@@ -32,7 +32,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=7", "pyyaml>=6"]
+dev = ["pytest>=7", "pyyaml>=6", "ruff>=0.9", "mypy>=1.14"]
 # optional real parser for Go, Rust, Java, JavaScript and TypeScript function indexing; without it the regex index is used
 parse = [
     "tree-sitter>=0.23",
@@ -62,7 +62,26 @@ version = { attr = "vibeaudit.__version__" }
 where = ["src"]
 
 [tool.setuptools.package-data]
-vibeaudit = ["data/*.gz", "data/*.txt", "data/*.json", "studio_assets/*"]
+vibeaudit = ["py.typed", "data/*.gz", "data/*.txt", "data/*.json", "studio_assets/*"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+src = ["src", "tests"]
+extend-exclude = ["tests/fixtures"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B", "S"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S105", "S106", "S107", "S108", "S310", "S311", "S314", "S318", "S603", "S607", "S608"]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+warn_redundant_casts = true
+warn_unused_ignores = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

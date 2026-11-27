@@ -123,7 +123,8 @@ def jvm_params(params: str) -> List[str]:
         p = re.sub(r"@\w+(?:\([^)]*\))?\s*", "", p)
         kotlin = re.match(r"(?:va[lr]\s+)?(\w+)\s*:", p)
         java = re.search(r"(\w+)\s*$", p)
-        out.append((kotlin or java).group(1) if (kotlin or java) else "")
+        hit = kotlin or java
+        out.append(hit.group(1) if hit else "")
     return out
 
 

@@ -36,8 +36,8 @@ class HookError(Exception):
 def staged(root: Path) -> Staged:
     """Every added, copied, modified or renamed file in the index: its staged text and the added lines."""
     try:
-        out = subprocess.run(
-            ["git", "-c", "core.quotePath=false", "-C", str(root), "diff", "--cached", "--no-color", "--no-ext-diff",
+        out = subprocess.run(  # noqa: S603 - fixed git diff invocation
+            ["git", "-c", "core.quotePath=false", "-C", str(root), "diff", "--cached", "--no-color", "--no-ext-diff",  # noqa: S607
              "--no-prefix", "--relative", "--diff-filter=ACMR", "-U2147483647"],
             capture_output=True, stdin=subprocess.DEVNULL, timeout=120, check=False)
     except (OSError, subprocess.SubprocessError) as e:
@@ -123,7 +123,7 @@ def check(root: Path, changes: Staged, cfg: dict) -> List[Finding]:
     project = StagedProject(root, sfs)
     raw: List[Finding] = []
     scanner = SecretScanner(project, raw.append)  # type: ignore[arg-type]
-    GUARD.reset(float(cfg.get("file_timeout", 30.0)))  # type: ignore[arg-type]
+    GUARD.reset(float(cfg.get("file_timeout", 30.0)))
     for sf in sfs:
         if sf.rel.endswith((".map", ".svg")):
             continue
@@ -135,17 +135,17 @@ def check(root: Path, changes: Staged, cfg: dict) -> List[Finding]:
     out, seen = [], set()
     for f in raw:
         rule = RULES.get(f.rule_id)
-        sf = project.get(f.file)
-        if rule is None or sf is None or f.file not in changes or f.line not in changes[f.file][1]:
+        sf_opt = project.get(f.file)
+        if rule is None or sf_opt is None or f.file not in changes or f.line not in changes[f.file][1]:
             continue
         f.severity = f.severity or rule.severity
         f.title, f.category, f.preview = rule.title, rule.category, rule.preview
         f.gates_in_preview = rule.preview and rule.gates_in_preview
         if f.rule_id in disabled or rule.category in disabled or not at_least(f.severity, min_sev):
             continue
-        if (sf.is_test or sf.is_example) and f.rule_id not in TEST_FILE_RULES:
+        if (sf_opt.is_test or sf_opt.is_example) and f.rule_id not in TEST_FILE_RULES:
             continue
-        if _suppressed(sf, f) or (f.rule_id, f.file, f.line, f.message) in seen:
+        if _suppressed(sf_opt, f) or (f.rule_id, f.file, f.line, f.message) in seen:
             continue
         seen.add((f.rule_id, f.file, f.line, f.message))
         f.compute_fingerprint()
@@ -193,7 +193,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     except (ConfigError, HookError) as e:
         print(f"vibeaudit: {e}", file=sys.stderr)
         return 2
-    findings = check(root, changes, cfg)  # type: ignore[arg-type]
+    findings = check(root, changes, cfg)
     fail_on = a.fail_on or str(cfg.get("fail_on", "high"))
     for f in findings:
         print(f"{f.file}:{f.line}: {f.severity} {f.rule_id} {f.title}: {f.message}")

@@ -8,7 +8,7 @@ import re
 import stat
 import subprocess
 from pathlib import Path
-from typing import Callable, Dict, Iterable, List, Optional, Set, Tuple
+from typing import Any, Callable, Dict, Iterable, List, Optional, Set, Tuple
 from .store import loads_json
 
 SKIP_DIRS = {
@@ -102,7 +102,7 @@ def kind_of(rel: str) -> str:
 
 # While a replayable scan step runs (guard.StepMemo), every file it reads is recorded here, so the step can be
 # skipped on the next scan of the same Project when none of those files changed.
-READS: Optional[Dict[str, "SourceFile"]] = None
+READS: Optional[Dict[Any, Any]] = None
 
 
 def _read(sf: "SourceFile") -> None:
@@ -128,7 +128,7 @@ def untracked(fn: Callable[..., object], *args: object) -> object:
 
 def depend(key: tuple, value: object) -> None:
     if READS is not None:
-        READS[key] = value  # type: ignore[index]
+        READS[key] = value
 
 
 def _disk(path: Path, what: str) -> bool:
@@ -169,9 +169,9 @@ def _signature_of(path: Path) -> Optional[Tuple[int, int]]:
     return (st.st_mtime_ns, st.st_size) if stat.S_ISREG(st.st_mode) else None
 
 
-def still_valid(project: "Project", reads: Dict[object, object]) -> bool:
+def still_valid(project: "Project", reads: Dict[Any, Any]) -> bool:
     """Every file (or value) a cached result was computed from is unchanged."""
-    return all(VALUES[k[0]](project, *k[1:]) == v if isinstance(k, tuple) else project._by_rel.get(k) is v  # type: ignore[index]
+    return all(VALUES[k[0]](project, *k[1:]) == v if isinstance(k, tuple) else project._by_rel.get(k) is v
                for k, v in reads.items())
 
 
@@ -183,7 +183,7 @@ def has(sf: "SourceFile", rx: "re.Pattern[str]", text: Optional[str] = None) -> 
     _read(sf)
     if hit is None:
         hit = sf.cache[key] = bool(rx.search(sf.text or "" if text is None else text))
-    return hit  # type: ignore[return-value]
+    return bool(hit)
 
 
 DEV_SETTINGS_RE = re.compile(r"(?:^|/)(?:settings/(?:dev|development|local|test|testing)|settings_(?:dev|local|test))\.py$")
@@ -233,7 +233,7 @@ class SourceFile:
         self._line_starts: Optional[List[int]] = None
         self._lines: Optional[List[str]] = None
         self.is_client = False  # set by the JS scanner
-        self.cache: Dict[str, object] = {}  # per-file scratch space for scanners
+        self.cache: Dict[Any, Any] = {}  # per-file scratch space for scanners
         self.signature: Optional[tuple] = None  # (mtime_ns, size) when discovered; see Project.refresh
         self.overlay: Optional[bytes] = None  # unsaved editor content used instead of the file (language server)
 
@@ -309,8 +309,8 @@ class SourceFile:
 
 def _git(root: Path, *args: str) -> Optional[str]:
     try:
-        out = subprocess.run(
-            ["git", "-C", str(root), *args], capture_output=True, stdin=subprocess.DEVNULL, timeout=60, check=False
+        out = subprocess.run(  # noqa: S603 - fixed git invocation
+            ["git", "-C", str(root), *args], capture_output=True, stdin=subprocess.DEVNULL, timeout=60, check=False  # noqa: S607
         )
     except (OSError, subprocess.SubprocessError):
         return None
@@ -383,7 +383,7 @@ class Project:
         self.files: List[SourceFile] = []
         self._by_rel: Dict[str, SourceFile] = {}
         self.skipped_files: List[Dict[str, str]] = []
-        self.step_memo = None  # a guard.StepMemo when a long-lived caller (vibeaudit watch) wants steps replayed
+        self.step_memo: Any = None  # a guard.StepMemo when a long-lived caller (vibeaudit watch) wants steps replayed
         self.overlays: Dict[str, bytes] = {}  # rel -> unsaved editor content, applied on the next refresh()
         self._pkg_cache: Dict[str, Optional[dict]] = {}
         self._venv_cache: Dict[str, bool] = {}

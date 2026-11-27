@@ -13,6 +13,21 @@ permissions:
   contents: read
 
 jobs:
+  lint-and-typecheck:
+    name: lint and typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[dev]"
+      - name: Ruff lint
+        run: ruff check src tests
+      - name: Mypy typecheck
+        run: mypy src/vibeaudit
+
   test:
     name: test (${{ matrix.os }}, py${{ matrix.python }})
     runs-on: ${{ matrix.os }}
@@ -110,6 +125,7 @@ jobs:
           python -m build
       - name: Install the wheel in a clean venv and run it
         run: |
+          python -c "import glob, zipfile; z = zipfile.ZipFile(glob.glob('dist/*.whl')[0]); assert any(n.endswith('vibeaudit/py.typed') for n in z.namelist()), z.namelist()"
           python -m venv /tmp/clean
           /tmp/clean/bin/pip install dist/*.whl
           /tmp/clean/bin/vibeaudit --version

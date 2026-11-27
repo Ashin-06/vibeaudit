@@ -156,7 +156,7 @@ or, to keep it in its own environment:
 pipx install vibeaudit
 ```
 
-To install from this repository instead: `pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.20.0"`.
+To install from this repository instead: `pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.21.0"`.
 
 Optional: if [gitleaks](https://github.com/gitleaks/gitleaks), [bandit](https://github.com/PyCQA/bandit),
 [osv-scanner](https://github.com/google/osv-scanner) or [semgrep](https://github.com/semgrep/semgrep) are on
@@ -213,6 +213,8 @@ Every command has `--help`.
 | `--history` / `--history-commits N` | Also scan added lines across recent git commit history (default 200 commits) for high-confidence provider keys and private keys. |
 | `--max-file-size BYTES` | Skip larger files (default 1,000,000). |
 | `--file-timeout SECONDS` | Time each analysis step may spend on one file before it is stopped (default 30). |
+| `--scan-timeout SECONDS` | Overall wall-clock cap in seconds for analyzer stages (default: unlimited). |
+| `--fail-on-partial` | Exit 1 when any file, commit or analyzer stage was skipped or timed out (`partial` coverage). |
 | `--no-cache` | Do not read or write cached registry, vulnerability and LLM answers for this scan. |
 | `-q`, `--quiet` / `--no-color` | Print only the summary / plain text. |
 
@@ -384,7 +386,7 @@ sanitizers = ["clean_sql_input"]                               # their output is
 public-paths = ["/api/public/*", "/api/survey-*"]              # intentionally unauthenticated routes
 ```
 
-Other keys: `include-preview`, `gate-severe-preview`, `monorepo`, `llm`, `llm-model`, `llm-max-requests`, `max-file-size`, `file-timeout`. The same settings apply
+Other keys: `include-preview`, `gate-severe-preview`, `monorepo`, `fail-on-partial`, `llm`, `llm-model`, `llm-max-requests`, `max-file-size`, `file-timeout`, `scan-timeout`. The same settings apply
 to `vibeaudit scan`, `vibeaudit routes`, `vibeaudit feedback`, the MCP server and the Python API, except `llm`,
 which only `vibeaudit scan` reads: the LSP server, watch, studio, the MCP server and the API never send code to a
 model provider because a repository's config asks for it. The file is part of the scanned repository and can
@@ -410,7 +412,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0                  # needed for --diff
-      - uses: Ashin-06/vibeaudit@v0.20.0
+      - uses: Ashin-06/vibeaudit@v0.21.0
         with:
           fail-on: high
           args: --diff origin/main        # optional: only changed lines
@@ -445,7 +447,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - uses: Ashin-06/vibeaudit@v0.20.0
+      - uses: Ashin-06/vibeaudit@v0.21.0
         with:
           review: "true"
           args: --diff origin/${{ github.base_ref }} --baseline .vibeaudit-baseline.json --fail-on-regression 5
@@ -462,7 +464,7 @@ findings show in the merge request's Code Quality widget and in the pipeline's T
 
 ```yaml
 include:
-  - remote: https://raw.githubusercontent.com/Ashin-06/vibeaudit/v0.20.0/ci/gitlab-ci.yml
+  - remote: https://raw.githubusercontent.com/Ashin-06/vibeaudit/v0.21.0/ci/gitlab-ci.yml
 ```
 
 **CircleCI**: copy [ci/circleci.yml](ci/circleci.yml) into `.circleci/config.yml` (or merge its job into
@@ -478,7 +480,7 @@ for a test report) and keep the exit code.
 # .pre-commit-config.yaml
 repos:
   - repo: https://github.com/Ashin-06/vibeaudit
-    rev: v0.20.0
+    rev: v0.21.0
     hooks:
       - id: vibeaudit
 ```
@@ -815,13 +817,13 @@ CycloneDX SBOM (`vibeaudit-VERSION.cdx.json`), built by the release workflow fro
 build provenance is signed with GitHub artifact attestations (Sigstore). With the GitHub CLI:
 
 ```bash
-gh attestation verify vibeaudit-0.20.0-py3-none-any.whl --repo Ashin-06/vibeaudit
+gh attestation verify vibeaudit-0.21.0-py3-none-any.whl --repo Ashin-06/vibeaudit
 ```
 
 Run the same for the `.tar.gz` and the `.cdx.json` file. The check passes only if the file was built by
 this repository's release workflow; `--format json` shows the commit and workflow it came from. The SBOM
 lists what the wheel installs (vibeaudit has zero runtime dependencies). PyPI receives these same attested files through trusted publishing; to install a wheel you verified
-yourself, run `pip install vibeaudit-0.20.0-py3-none-any.whl`.
+yourself, run `pip install vibeaudit-0.21.0-py3-none-any.whl`.
 
 ## Contributing, security and license
 

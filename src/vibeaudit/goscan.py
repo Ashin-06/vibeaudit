@@ -143,7 +143,8 @@ class GoScanner:
         from .calls import Follower, go_params
 
         self.follower = Follower(go_params)  # cross-function taint
-        self.depth, self.via = 0, None  # while a followed call is checked: how deep, and the call it came through
+        self.depth: int = 0
+        self.via: Optional[str] = None  # while a followed call is checked: how deep, and the call it came through
 
     def add(self, sf: SourceFile, off: int, rule: str, msg: str, sev: str = "") -> None:
         line = sf.line_at(off)
@@ -202,18 +203,18 @@ class GoScanner:
             return
         spans = _func_spans(v)
         sf.cache["go_funcs"] = spans
-        for name, lst in spans.items():
-            for a, b in lst:
-                self.funcs.setdefault(name, []).append((sf, a, b))
+        for fn_name, fn_spans in spans.items():
+            for a, b in fn_spans:
+                self.funcs.setdefault(fn_name, []).append((sf, a, b))
                 m = FUNC_DECL.match(v.bare, a)
                 close = match_close(v.bare, m.end() - 1) if m else -1
-                if close > 0 and not sf.is_test:
-                    self.follower.define(name, Fn(sf, a, v.code[m.end():close], (a, b)))
+                if m and close > 0 and not sf.is_test:
+                    self.follower.define(fn_name, Fn(sf, a, v.code[m.end():close], (a, b)))
 
     # -------------------------------------------------------------- routes
     def _mounts(self, sf: SourceFile) -> None:
         """Record `r.Mount("/prefix", subRouter())` calls so routes inside `subRouter` inherit prefix, auth and role middleware."""
-        v: Views = sf.cache["views"]  # type: ignore[assignment]
+        v: Views = sf.cache["views"]
         code, bare = v.code, v.bare
         parents = self._parents(sf)
         for m in finditer(MOUNT_CALL, bare):
@@ -250,7 +251,7 @@ class GoScanner:
                 if a <= off < b and (best is None or a > best):
                     best = a
         if best is not None:
-            hdr = sf.cache["views"].bare[best:best + 160]  # type: ignore[attr-defined]
+            hdr = sf.cache["views"].bare[best:best + 160]
             m = re.match(r"func\s*\(([^()]{0,120})\)", hdr)
             if m:
                 tokens |= _ident_tokens(m.group(1))
@@ -282,8 +283,8 @@ class GoScanner:
         """Group var -> (parent var, prefix, the group call names auth middleware), per file."""
         cached = sf.cache.get("go_parents")
         if cached is not None:
-            return cached  # type: ignore[return-value]
-        v: Views = sf.cache["views"]  # type: ignore[assignment]
+            return cached
+        v: Views = sf.cache["views"]
         parents: Dict[str, Tuple[str, str, bool]] = {}
         for m in finditer(GROUP_ASSIGN, v.bare):
             close = match_close(v.bare, m.end() - 1)
@@ -296,8 +297,8 @@ class GoScanner:
     def _param_router(self, sf: SourceFile, root: str, off: int) -> Optional[Tuple[str, int]]:
         """(function name, parameter index) when `root` is a parameter of the function around `off` and the
         router is not created in it: its routes get their auth and prefix from the callers."""
-        v: Views = sf.cache["views"]  # type: ignore[assignment]
-        spans: Dict[str, List[Tuple[int, int]]] = sf.cache["go_funcs"]  # type: ignore[assignment]
+        v: Views = sf.cache["views"]
+        spans: Dict[str, List[Tuple[int, int]]] = sf.cache["go_funcs"]
         best: Optional[Tuple[str, int, int]] = None
         for name, lst in spans.items():
             for a, b in lst:
@@ -324,7 +325,7 @@ class GoScanner:
         for sf in self.files:
             if sf.is_test:
                 continue
-            v: Views = sf.cache["views"]  # type: ignore[assignment]
+            v: Views = sf.cache["views"]
             for m in finditer(call, v.bare):
                 if re.search(r"func\s*(?:\([^()]*\)\s*)?$", v.bare[max(0, m.start() - 60):m.start()]):
                     continue  # the definition
@@ -352,7 +353,7 @@ class GoScanner:
         return out
 
     def _routes(self, sf: SourceFile) -> None:
-        v: Views = sf.cache["views"]  # type: ignore[assignment]
+        v: Views = sf.cache["views"]
         code, bare = v.code, v.bare
         parents = self._parents(sf)
         for m in finditer(ROUTE_CALL, bare):
@@ -421,7 +422,7 @@ class GoScanner:
                 reads_body=bool(re.search(r"\b(?:ShouldBind\w*|Bind\w*|BodyParser|Decode)\s*\(", body)), params=params))
 
     def _enclosing_func_name(self, sf: SourceFile, off: int) -> Optional[str]:
-        spans: Dict[str, List[Tuple[int, int]]] = sf.cache["go_funcs"]  # type: ignore[assignment]
+        spans: Dict[str, List[Tuple[int, int]]] = sf.cache["go_funcs"]
         best: Optional[Tuple[str, int]] = None
         for name, lst in spans.items():
             for a, b in lst:
@@ -458,7 +459,7 @@ class GoScanner:
                 if AUTH_NAME.search(bare[u.end():close]):
                     auth = True
         # chi: routes inside `r.Group(func(r chi.Router) { r.Use(Auth) ... })` or `r.Route("/p", func(r chi.Router) {`
-        for start, end, pre in _closure_blocks(code, bare, off):
+        for start, _end, pre in _closure_blocks(code, bare, off):
             if pre:
                 prefix = pre.rstrip("/") + "/" + prefix.lstrip("/") if prefix else pre
             block = bare[start:off]
@@ -473,7 +474,7 @@ class GoScanner:
 
     def _handler_body(self, sf: SourceFile, code: str, handler: str, off: int) -> Tuple[str, int]:
         if handler.startswith("func"):
-            v: Views = sf.cache["views"]  # type: ignore[assignment]
+            v: Views = sf.cache["views"]
             k = code.find(handler[:20], off)
             brace = v.bare.find("{", k) if k >= 0 else -1
             end = match_close(v.bare, brace) if brace >= 0 else -1
@@ -485,9 +486,9 @@ class GoScanner:
 
     # -------------------------------------------------------------- checks
     def _checks(self, sf: SourceFile) -> None:
-        v: Views = sf.cache["views"]  # type: ignore[assignment]
-        spans: Dict[str, List[Tuple[int, int]]] = sf.cache["go_funcs"]  # type: ignore[assignment]
-        for name, lst in spans.items():
+        v: Views = sf.cache["views"]
+        spans: Dict[str, List[Tuple[int, int]]] = sf.cache["go_funcs"]
+        for _name, lst in spans.items():
             for a, b in lst:
                 GUARD.tick()
                 self._function(sf, v, a, b)
@@ -495,9 +496,10 @@ class GoScanner:
         self._shared_maps(sf, v)
 
     def _follow(self, fn, seed: Set[str], depth: int, via: str) -> None:
-        self.depth, self.via = depth, via
+        self.depth = depth
+        self.via = via
         try:
-            self._function(fn.sf, fn.sf.cache["views"], fn.body[0], fn.body[1], seed)  # type: ignore[arg-type]
+            self._function(fn.sf, fn.sf.cache["views"], fn.body[0], fn.body[1], seed)
         finally:
             self.depth, self.via = 0, None
 
@@ -569,7 +571,6 @@ class GoScanner:
 
     def _goroutines(self, sf: SourceFile, v: Views) -> None:
         code, bare = v.code, v.bare
-        spans: Dict[str, List[Tuple[int, int]]] = sf.cache["go_funcs"]  # type: ignore[assignment]
         for m in finditer(GO_STMT, bare):
             if m.group(1):  # go func(...) { ... }(...)
                 brace = bare.find("{", m.end())
@@ -687,7 +688,7 @@ def _taint(code: str, bare: str, seed: Set[str] = frozenset()) -> Set[str]:  # t
     assigns = [(m.group(1), code[m.start(2):m.end(2)], bare[m.start(2):m.end(2)]) for m in finditer(ASSIGN, bare)]
     for _ in range(4):
         changed = False
-        for names, rhs, rhs_bare in assigns:
+        for names, _rhs, rhs_bare in assigns:
             if SOURCES.search(rhs_bare) or any(re.search(r"\b%s\b" % re.escape(t), rhs_bare) for t in tainted):
                 for n in (x.strip() for x in names.split(",")):
                     if n and n != "_" and n != "err" and n not in tainted:

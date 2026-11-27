@@ -8,7 +8,7 @@ import time
 import warnings
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Callable, List, Optional, Set
+from typing import Callable, Dict, List, Optional, Set
 
 from . import correlate, coverage, external, parse, plugins, rpcscan
 from .deps import DepScanner
@@ -70,6 +70,7 @@ class Options:
     llm_review: bool = False
     llm_max_requests: int = 10
     file_timeout: float = 30.0
+    scan_timeout: Optional[float] = None
     auth_helpers: List[str] = field(default_factory=list)
     sanitizers: List[str] = field(default_factory=list)
     public_paths: List[str] = field(default_factory=list)
@@ -140,7 +141,7 @@ def suppressed(project: Project, f: Finding) -> bool:
     if not sf or not f.line:
         return False
     # parsed once per line: one long line with thousands of findings must not be searched thousands of times
-    memo: dict = sf.cache.setdefault("suppress", {})  # type: ignore[assignment]
+    memo: dict = sf.cache.setdefault("suppress", {})
     for ln in (f.line, f.line - 1):
         if ln not in memo:
             m = SUPPRESS.search(sf.line(ln))
@@ -208,40 +209,72 @@ def _scan(root: str, opts: Options, project: Optional[Project] = None) -> Result
 def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding], emit: Callable[[Finding], None],
                   start: float) -> Result:
     notes: List[str] = []
+    deadline = (time.perf_counter() + opts.scan_timeout) if (opts.scan_timeout and opts.scan_timeout > 0) else None
+    scan_timed_out = False
 
-    js_routes = JsScanner(project, emit).run()
-    py_routes = PyScanner(project, emit).run() + JvmScanner(project, emit).run()  # Python, then Java and Kotlin
-    go_routes = GoScanner(project, emit).run()  # Go: lexer-based; polyscan covers the other new languages
-    go_routes += RustScanner(project, emit).run()  # Rust: Actix and Axum
-    go_routes += CsScanner(project, emit).run()  # C#: ASP.NET Core controllers and minimal APIs
-    go_routes += PhpScanner(project, emit).run()  # PHP: Laravel and Symfony
-    go_routes += RubyScanner(project, emit).run()  # Ruby on Rails
-    go_routes += SwiftScanner(project, emit).run()  # Swift / iOS / Vapor (preview)
-    go_routes += ElixirScanner(project, emit).run()  # Elixir / Phoenix (preview)
-    DartScanner(project, emit).run()  # Flutter and Dart (preview)
-    XxeScanner(project, emit).run()  # XXE across Python, JVM, C#, PHP and JS (preview)
-    poly_routes = PolyScanner(project, emit).run()  # for Go, Java, Rust, C# and PHP only the checks they lack
-    all_routes = js_routes + py_routes + go_routes + poly_routes + rpcscan.routes(project)  # tRPC, GraphQL, gRPC
-    SecretScanner(project, emit).run()
+    def _expired() -> bool:
+        nonlocal scan_timed_out
+        if deadline is not None and time.perf_counter() >= deadline:
+            scan_timed_out = True
+            return True
+        return False
+
+    js_routes: list = []
+    py_routes: list = []
+    go_routes: list = []
+    poly_routes: list = []
+    all_routes: list = []
     history_info = None
-    if opts.history:
-        history_info = GUARD.run("<project>", "git history secrets", scan_git_history, project.root, emit, opts.history_commits)
-    ProjectScanner(project, emit, all_routes).run()
-    QualityScanner(project, emit).run()
-    DataScanner(project, emit, all_routes).run()
-    ReliabilityScanner(project, emit, all_routes).run()
-    AiScanner(project, emit, all_routes).run()
-    UiScanner(project, emit).run()
-    ContractScanner(project, emit, all_routes).run()
-    plugins.run(project, all_routes, emit)
-    deps = DepScanner(project, emit, opts.offline)
-    GUARD.run("<project>", "dependency checks", deps.run)
-    notes += deps.notes
+    ran: List[str] = []
 
-    ran = []
-    if opts.external != "none":
+    stages = [
+        lambda: js_routes.extend(JsScanner(project, emit).run()),
+        lambda: py_routes.extend(PyScanner(project, emit).run() + JvmScanner(project, emit).run()),
+        lambda: go_routes.extend(GoScanner(project, emit).run()),
+        lambda: go_routes.extend(RustScanner(project, emit).run()),
+        lambda: go_routes.extend(CsScanner(project, emit).run()),
+        lambda: go_routes.extend(PhpScanner(project, emit).run()),
+        lambda: go_routes.extend(RubyScanner(project, emit).run()),
+        lambda: go_routes.extend(SwiftScanner(project, emit).run()),
+        lambda: go_routes.extend(ElixirScanner(project, emit).run()),
+        lambda: DartScanner(project, emit).run(),
+        lambda: XxeScanner(project, emit).run(),
+        lambda: poly_routes.extend(PolyScanner(project, emit).run()),
+        lambda: all_routes.extend(js_routes + py_routes + go_routes + poly_routes + rpcscan.routes(project)),
+        lambda: SecretScanner(project, emit).run(),
+    ]
+    for stage in stages:
+        if _expired():
+            break
+        stage()
+    if not all_routes and (js_routes or py_routes or go_routes or poly_routes):
+        all_routes = js_routes + py_routes + go_routes + poly_routes
+    if opts.history and not _expired():
+        history_info = GUARD.run("<project>", "git history secrets", scan_git_history, project.root, emit, opts.history_commits)
+    post_route_stages = [
+        lambda: ProjectScanner(project, emit, all_routes).run(),
+        lambda: QualityScanner(project, emit).run(),
+        lambda: DataScanner(project, emit, all_routes).run(),
+        lambda: ReliabilityScanner(project, emit, all_routes).run(),
+        lambda: AiScanner(project, emit, all_routes).run(),
+        lambda: UiScanner(project, emit).run(),
+        lambda: ContractScanner(project, emit, all_routes).run(),
+        lambda: plugins.run(project, all_routes, emit),
+    ]
+    for stage in post_route_stages:
+        if _expired():
+            break
+        stage()
+    if not _expired():
+        deps = DepScanner(project, emit, opts.offline)
+        GUARD.run("<project>", "dependency checks", deps.run)
+        notes += deps.notes
+
+    if opts.external != "none" and not _expired():
         wanted = external.TOOLS if opts.external == "auto" else [t.strip() for t in opts.external.split(",") if t.strip()]
         for tool in wanted:
+            if _expired():
+                break
             if tool not in external.TOOLS:
                 notes.append(f"Unknown external tool {tool!r} ignored.")
                 continue
@@ -296,12 +329,12 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
     if GUARD.internal_errors:
         notes.append(f"{len(GUARD.internal_errors)} internal errors; results may be incomplete. Please report them.")
 
-    if opts.llm:
+    if opts.llm and not _expired():
         from . import llm
         try:
             provider = llm.Provider(opts.llm, opts.llm_model)
             llm.triage(project, findings, provider, opts.llm_max_requests, notes.append)
-            if opts.llm_review:
+            if opts.llm_review and not _expired():
                 risky = _risky_files(project, findings, all_routes)
                 extra = llm.review(project, findings, risky, provider, opts.llm_max_requests, notes.append)
                 findings = finalize(project, findings + extra, opts, already=True)
@@ -309,13 +342,16 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
         except llm.LLMError as e:
             notes.append(f"LLM checks skipped: {e}")
 
+    if scan_timed_out:
+        notes.append(f"Scan timed out after {opts.scan_timeout}s (--scan-timeout); remaining analyzers were skipped.")
     stack = _stack(project)
     if history_info and history_info.get("timeline"):
         current_pairs = {(f.file, f.rule_id) for f in findings if "git history" not in f.message}
         for entry in history_info["timeline"]:
             if (entry["file"], entry["rule_id"]) in current_pairs:
                 entry["current_exposure"] = True
-    cov = coverage.build(project, opts, GUARD.skipped, GUARD.internal_errors, parse.mode(), history_info)
+    cov = coverage.build(project, opts, GUARD.skipped, GUARD.internal_errors, parse.mode(), history_info,
+                         scan_timed_out=scan_timed_out)
     meta = {
         "files_scanned": len(project.files), "duration_seconds": round(time.time() - start, 2),
         "stack": stack, "external_tools": ran, "offline": opts.offline, "notes": notes,
@@ -347,7 +383,7 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
 
 
 def _risky_files(project: Project, findings: List[Finding], routes) -> List[str]:
-    score = {}
+    score: Dict[str, int] = {}
     for r in routes:
         score[r.file] = score.get(r.file, 0) + 2 + (3 if r.calls_llm else 0)
     for f in findings:

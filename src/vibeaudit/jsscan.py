@@ -428,7 +428,7 @@ class JsScanner:
         GUARD.run("<project>", "JavaScript call graph", self.compute_llm_funcs)
         for fs in self.files:
             GUARD.run(fs.sf.rel, "data flow", self.compute_taint, fs)
-        self.injected = set()
+        self.injected: Set[tuple] = set()
         GUARD.run("<project>", "JavaScript calls", self.follow_calls)
         GUARD.run("<project>", "middleware and router mounts", self.compute_mount_auth)
         if GUARD.memo is not None:  # what the checks read besides their own file (see guard.NEEDS_CONTEXT)
@@ -491,12 +491,12 @@ class JsScanner:
             if r.framework != "express":
                 r.prefix_resolved = True  # type: ignore[attr-defined]  # file-based and other frameworks
                 continue
-            fs = by_rel.get(r.file)
-            line = fs.sf.line(r.line) if fs else ""
-            m = ROUTE_CALL.search(line)
-            obj = m.group(1) if m else None
-            if obj in routers.get(r.file, set()):
-                prefix = full((r.file, obj))  # type: ignore[arg-type]
+            fs_route = by_rel.get(r.file)
+            line = fs_route.sf.line(r.line) if fs_route else ""
+            m_route = ROUTE_CALL.search(line)
+            obj = m_route.group(1) if m_route else None
+            if obj and obj in routers.get(r.file, set()):
+                prefix = full((r.file, obj))
                 if prefix is not None:
                     r.path = join_path(prefix, r.path)
                 r.prefix_resolved = prefix is not None  # type: ignore[attr-defined]
@@ -626,7 +626,8 @@ class JsScanner:
         for name, defs in self.func_index.items():
             if name in generic:
                 continue
-            direct, calls = False, set()
+            direct = False
+            calls: Set[str] = set()
             for fs, a, b in defs:
                 got = fs.facts.get((a, b))
                 if got is None:
@@ -717,7 +718,7 @@ class JsScanner:
         by_rel = {fs.sf.rel: fs for fs in self.files}
         for fs in self.files:  # start from each file's own taint: last scan's injections must not linger
             fs.taint = {n: {sc: set(k) for sc, k in by.items()} for n, by in fs.base_taint.items()}
-        self.injected: Set[tuple] = set()
+        self.injected = set()
         for _ in range(CALL_ROUNDS):
             touched: Set[str] = set()
             for fs in self.files:
@@ -981,8 +982,8 @@ class JsScanner:
                     continue
                 # `{ email: { $eq: req.body.email } }` compares the value as a literal: the usual fix for operator injection
                 clean_code, clean_bare = _strip_sanitizer_calls(raw_code, raw_bare, "nosql")
-                direct = re.fullmatch(r"\s*(?:req|request)\s*\.\s*(?:body|query)(?:\s*\.\s*[\w$]+)?\s*", clean_code) or re.search(
-                    r":\s*(?:req|request)\s*\.\s*(?:body|query|params)\s*\.\s*[\w$]+\s*(?=[,}])", clean_code)
+                direct = bool(re.fullmatch(r"\s*(?:req|request)\s*\.\s*(?:body|query)(?:\s*\.\s*[\w$]+)?\s*", clean_code) or re.search(
+                    r":\s*(?:req|request)\s*\.\s*(?:body|query|params)\s*\.\s*[\w$]+\s*(?=[,}])", clean_code))
                 if not direct and clean_code.strip().startswith("{"):
                     for name, kinds in fs.taint_at(m.start()).items():
                         if "user" in kinds and "nosql" not in fs.sanitized_at(name, m.start()) and not fs.visible(fs.whole_body.get(name), m.start()) and re.search(
@@ -1060,7 +1061,7 @@ class JsScanner:
         if not rhs or USER_SRC.search(rhs):
             return False
         c = re.match(r"\s*(?:await\s+)?([A-Za-z_$][\w$]*)(?:\s*\.\s*[\w$]+)+\s*\(", rhs)
-        return bool(c) and not fs.kinds(c.group(1), c.group(1), at)
+        return c is not None and not fs.kinds(c.group(1), c.group(1), at)
 
     def check_html_sinks(self, fs: FileState) -> None:
         code, bare = fs.v.code, fs.v.bare
@@ -1143,11 +1144,11 @@ class JsScanner:
                     continue  # an example shown in an input (placeholder="e.g. https://api.openai.com/v1"), not a call
                 seen_lines.add(line)
                 self.add(fs, "FE002", m.start(), "AI provider called directly from browser code; the key is exposed to every visitor.")
-            m = re.search(r"\brole\s*:\s*['\"]system['\"]\s*,\s*content\s*:\s*['\"`][^'\"`]{20,}"
-                          r"|\b(?:systemPrompt|SYSTEM_PROMPT|systemMessage|system_prompt|systemInstruction)\s*[:=]\s*['\"`][^'\"`]{40,}"
-                          r"|['\"`]You are (?:a|an|the)\b[^'\"`]{80,}", code)
-            if m and bare[m.start()] == code[m.start()]:
-                self.add(fs, "LLM007", m.start(), "A system prompt is defined in code that ships to the browser.")
+            m_sp = re.search(r"\brole\s*:\s*['\"]system['\"]\s*,\s*content\s*:\s*['\"`][^'\"`]{20,}"
+                             r"|\b(?:systemPrompt|SYSTEM_PROMPT|systemMessage|system_prompt|systemInstruction)\s*[:=]\s*['\"`][^'\"`]{40,}"
+                             r"|['\"`]You are (?:a|an|the)\b[^'\"`]{80,}", code)
+            if m_sp and bare[m_sp.start()] == code[m_sp.start()]:
+                self.add(fs, "LLM007", m_sp.start(), "A system prompt is defined in code that ships to the browser.")
         # untrusted text in the system prompt
         if has_llm:
             for m in finditer(r"\brole\s*:\s*['\"]system['\"]", code):
@@ -1184,10 +1185,10 @@ class JsScanner:
             if not bounded:
                 self.add(fs, "LLM003", m.start(), "Model call has no output token limit.")
         if not MAXTOK.search(code):
-            m = re.search(r"\.\s*generateContent(?:Stream)?\s*\(|\bfetch\s*\(\s*['\"`]" + H.LLM_HOSTS.pattern
-                          + r"[^'\"`]*(?:completions|/messages|generateContent|/responses)", code)
-            if m:
-                self.add(fs, "LLM003", m.start(), "Model call has no output token limit (maxOutputTokens / max_tokens).")
+            m_tok = re.search(r"\.\s*generateContent(?:Stream)?\s*\(|\bfetch\s*\(\s*['\"`]" + H.LLM_HOSTS.pattern
+                              + r"[^'\"`]*(?:completions|/messages|generateContent|/responses)", code)
+            if m_tok:
+                self.add(fs, "LLM003", m_tok.start(), "Model call has no output token limit (maxOutputTokens / max_tokens).")
         # unbounded agent loops
         for m in finditer(r"\bwhile\s*\(\s*true\s*\)|\bfor\s*\(\s*;\s*;\s*\)", bare):
             brace = bare.find("{", m.end())
@@ -1224,7 +1225,7 @@ class JsScanner:
             return False
         obj = fs.v.code[start:match_close(fs.v.bare, start) + 1]
         m = re.search(r"\bbase_?ur[li]\s*:\s*([^,}\n]+)", obj, re.I)
-        return bool(m) and not H.LLM_HOSTS.search(m.group(1))
+        return m is not None and not H.LLM_HOSTS.search(m.group(1))
 
     @staticmethod
     def _inside_try(bare: str, pos: int) -> bool:
@@ -1337,8 +1338,9 @@ class JsScanner:
         for m in finditer(r"\bignoreExpiration\s*:\s*true", code):
             self.add(fs, "BE016", m.start(), "JWT expiry is ignored.", "medium")
         if not sf.is_client and re.search(r"\bjwt\s*\.\s*decode\s*\(", bare) and not re.search(r"\b(?:jwt\s*\.\s*verify|jwtVerify)\s*\(", bare):
-            m = re.search(r"\bjwt\s*\.\s*decode\s*\(", bare)
-            self.add(fs, "BE016", m.start(), "jwt.decode() does not verify the signature, and jwt.verify() is not used in this file.", "medium")
+            m_jwt = re.search(r"\bjwt\s*\.\s*decode\s*\(", bare)
+            if m_jwt:
+                self.add(fs, "BE016", m_jwt.start(), "jwt.decode() does not verify the signature, and jwt.verify() is not used in this file.", "medium")
         for m in finditer(r"\b(?:res|reply)\s*(?:\.\s*status\s*\([^)]*\))?\s*\.\s*(?:json|send)\s*\([^;]*?\b(?:err|error|e|ex)\s*\.\s*stack\b", bare):
             self.add(fs, "BE017", m.start(), "Stack trace returned to the client.")
         # auth stubs
@@ -1346,7 +1348,7 @@ class JsScanner:
             self.add(fs, "AUTH008", m.start(), f"`{m.group(1)}` always returns true.")
         # swallowed errors
         for m in finditer(r"\bcatch\s*(?:\(\s*[\w$]*\s*(?::\s*\w+)?\s*\))?\s*\{\s*\}|\.\s*catch\s*\(\s*(?:\(\s*[\w$]*\s*\)|[\w$]+)\s*=>\s*\{\s*\}\s*\)", code):
-            if re.search(r"//|/\*", sf.text[m.start():m.end()]):
+            if re.search(r"//|/\*", (sf.text or "")[m.start():m.end()]):
                 continue  # an explanatory comment means the empty handler is deliberate
             self.add(fs, "QA003", m.start(), "Error is caught and ignored.")
         # secrets printed to logs
@@ -1360,7 +1362,7 @@ class JsScanner:
 
     def check_comments(self, fs: FileState) -> None:
         for a, b in fs.v.comments:
-            text = fs.sf.text[a:b]
+            text = (fs.sf.text or "")[a:b]
             m = SECURITY_TODO.search(text)
             if m:
                 self.add(fs, "QA004", a + m.start(), f"Comment: {text.strip()[:120]}")
@@ -1410,8 +1412,9 @@ class JsScanner:
                 self._route(fs, m.start(), m.group(4), [m.group(2).upper()], body, "express", middleware, known)
         app_route = re.search(r"(?:^|/)app/(.*?)/?route\.[cm]?[jt]s$", rel)
         kit_route = re.search(r"(?:^|/)src/routes/(.*?)/?\+server\.[jt]s$", rel)
-        if app_route or kit_route:
-            segs = (app_route or kit_route).group(1)
+        route_m = app_route or kit_route
+        if route_m:
+            segs = route_m.group(1)
             path = "/" + "/".join(s for s in segs.split("/") if s and not (s.startswith("(") and s.endswith(")")))
             for m in finditer(r"\bexport\s+(?:async\s+)?function\s+(GET|POST|PUT|PATCH|DELETE)\b|\bexport\s+const\s+(GET|POST|PUT|PATCH|DELETE)\s*(?::[^=]+)?=", bare):
                 method = m.group(1) or m.group(2)
@@ -1429,8 +1432,8 @@ class JsScanner:
         if pages_api:
             path = "/api/" + re.sub(r"(?:^|/)index$", "", pages_api.group(1))
             methods = sorted(set(re.findall(r"\bmethod\s*(?:===?|!==?)\s*['\"](GET|POST|PUT|PATCH|DELETE)['\"]", code))) or ["ALL"]
-            m = re.search(r"\bexport\s+default\b", bare)
-            self._route(fs, m.start() if m else 0, path, methods, code, "next-pages")
+            m_def = re.search(r"\bexport\s+default\b", bare)
+            self._route(fs, m_def.start() if m_def else 0, path, methods, code, "next-pages")
         if re.search(r"^\s*['\"]use server['\"]", code[:600], re.M):
             for m in finditer(r"\bexport\s+(?:async\s+)?function\s+([A-Za-z_$][\w$]*)|\bexport\s+const\s+([A-Za-z_$][\w$]*)\s*=\s*async\b", bare):
                 name = m.group(1) or m.group(2)
@@ -1441,8 +1444,8 @@ class JsScanner:
                     self._route(fs, m.start(), "server action " + name, ["POST"], body + self._local_helpers(fs, body), "next-server-action")
         edge = re.search(r"(?:^|/)supabase/functions/([^/_][^/]*)/index\.[jt]s$", rel)
         if edge:
-            m = re.search(r"\b(?:Deno\s*\.\s*)?serve\s*\(", bare)
-            self._route(fs, m.start() if m else 0, "/functions/v1/" + edge.group(1), ["ALL"], code, "supabase-edge")
+            m_srv = re.search(r"\b(?:Deno\s*\.\s*)?serve\s*\(", bare)
+            self._route(fs, m_srv.start() if m_srv else 0, "/functions/v1/" + edge.group(1), ["ALL"], code, "supabase-edge")
         for m in finditer(r"\bonRequest\s*\(", bare):
             close = match_close(bare, m.end() - 1)
             self._route(fs, m.start(), "firebase function", ["ALL"], code[m.start():close], "firebase-functions")

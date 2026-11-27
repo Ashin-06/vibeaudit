@@ -4,7 +4,7 @@ from __future__ import annotations
 import ast
 import base64
 import re
-from typing import Callable, Dict, List, Optional, Pattern, Tuple
+from typing import Any, Callable, Dict, List, Optional, Pattern, Tuple, cast
 
 from . import heuristics as H
 from .guard import GUARD, finditer
@@ -19,7 +19,7 @@ Emit = Callable[[Finding], None]
 def _blank_docstrings(sf: SourceFile, code: str) -> str:
     """`code` with module, class and function docstrings replaced by spaces (offsets and newlines kept)."""
     tree = sf.cache.get("ast")
-    if tree is None:
+    if not isinstance(tree, ast.AST):
         try:
             tree = ast.parse(sf.text or "")
         except (SyntaxError, ValueError, RecursionError):
@@ -100,7 +100,7 @@ SIGNING_LITERAL = [
     re.compile(r"""\b(?:const|let|var)\s+(?:JWT_SECRET|jwtSecret|SECRET_KEY|secretKey|SESSION_SECRET|sessionSecret)\s*=\s*["'`]([^"'`$]+)["'`]"""),
 ]
 # not a setting about secrets (SECRETS_PROVIDER, SECRET_STORE_PATH, SIGNING_KEY_ID): those defaults are not keys
-_SECRET_SETTING = r"(?<!PROVIDER)(?<!BACKEND)(?<!MANAGER)(?<!STORE)(?<!PATH)(?<!FILE)(?<!DIR)(?<!URL)(?<!NAME)(?<!_ID)(?<!ARN)(?<!REGION)(?<!TYPE)(?<!MODE)"
+_SECRET_SETTING = r"(?<!PROVIDER)(?<!BACKEND)(?<!MANAGER)(?<!STORE)(?<!PATH)(?<!FILE)(?<!DIR)(?<!URL)(?<!NAME)(?<!_ID)(?<!ARN)(?<!REGION)(?<!TYPE)(?<!MODE)"  # noqa: S105 - regex fragment
 SIGNING_FALLBACK = [
     re.compile(r"""(?:getenv|environ\s*\.\s*get)\s*\(\s*["']\w*(?:SECRET|SIGNING)\w*""" + _SECRET_SETTING
                + r"""["']\s*,\s*["']([^"']+)["']"""),
@@ -217,8 +217,8 @@ class SecretScanner:
             if _jwt_role(m.group(1)) == "service_role" and once(m.start()):
                 self.add(sf, "SEC009", m.start(), "Supabase service_role JWT committed in source.", m.group(0))
         for m in finditer(DB_URL, text):
-            user, pw, host = m.group(1), m.group(2), m.group(3)
-            if "." not in host or host.startswith(("127.", "0.0.0.0")) or host == "localhost":
+            pw, host = m.group(2), m.group(3)
+            if "." not in host or host.startswith(("127.", "0.0.0.0")) or host == "localhost":  # noqa: S104 - placeholder loopback check
                 continue
             if H.PLACEHOLDER.search(pw) or pw.lower() in ("password", "pass", "postgres", "secret", "root", "admin", "user", "changeme", "pw"):
                 continue
@@ -335,15 +335,15 @@ class SecretScanner:
 
                 pv = sf.cache.get("php_views") or php_views(text)
                 sf.cache["php_views"] = pv
-                return pv.code  # type: ignore[attr-defined]
+                return pv.code
             elif sf.rel.endswith(".rb"):
                 from .rubyscan import ruby_code  # Ruby: `# config.secret_key = '...'` in a generated initializer
 
-                return sf.cache.get("ruby_code") or ruby_code(text)
+                return cast(str, sf.cache.get("ruby_code") or ruby_code(text))
             else:
                 return text
             sf.cache["views"] = v
-        code = v.code  # type: ignore[attr-defined]
+        code = v.code
         if sf.kind == "py":
             code = _blank_docstrings(sf, code)
             sf.cache["code_no_docstrings"] = code
@@ -393,8 +393,8 @@ def scan_git_history(
         info["status"] = "not_git"
         return info
     try:
-        proc = subprocess.Popen(
-            ["git", "-C", str(repo), "log", f"-n{limit + 1}", "-p", "--no-color", "--unified=0", "--diff-filter=AM"],
+        proc = subprocess.Popen(  # noqa: S603 - fixed git invocation
+            ["git", "-C", str(repo), "log", f"-n{limit + 1}", "-p", "--no-color", "--unified=0", "--diff-filter=AM"],  # noqa: S607
             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
         )
     except OSError:
@@ -496,7 +496,9 @@ def scan_git_history(
     buf = bytearray()
     dropping_long_line = False
     try:
-        assert proc.stdout is not None
+        if proc.stdout is None:
+            info["status"] = "git_error"
+            return info
         while not stop_stream:
             remaining = byte_cap - info["bytes_scanned"]
             if remaining <= 0:

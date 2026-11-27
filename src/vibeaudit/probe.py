@@ -13,6 +13,7 @@ import http.client
 import http.server
 import re
 import ssl
+import sys
 import threading
 import time
 import urllib.parse
@@ -68,11 +69,19 @@ class Target:
         self.timeout = timeout
         self.last = 0.0
         self.sent = 0
+        self.tls_verified = (self.scheme != "https") or (self.own and not self.insecure)
+        self.tls_warning: Optional[str] = None
+        if not self.tls_verified:
+            why = "insecure flag" if self.insecure else "loopback target allows self-signed certs"
+            self.tls_warning = (
+                f"TLS certificate verification is DISABLED for https://{self.host}:{self.port} ({why})."
+            )
+            print(f"vibeaudit WARNING: {self.tls_warning}", file=sys.stderr)
 
     def _ssl_context(self) -> ssl.SSLContext:
         if self.own and not self.insecure:
             return ssl.create_default_context()
-        return ssl._create_unverified_context()
+        return ssl._create_unverified_context()  # noqa: S323 - explicit warning emitted in Target.__init__
 
     def request(self, method: str, path: str, headers: Optional[Dict[str, str]] = None, body: str = "",
                 params: Optional[Dict[str, str]] = None):
@@ -101,11 +110,11 @@ class Target:
             conn.request(method, target or "/", body=body.encode("utf-8") if body else None, headers=hdrs)
             resp = conn.getresponse()
             raw = resp.read(MAX_BODY)
-            hdrs: Dict[str, str] = {}
+            resp_hdrs: Dict[str, str] = {}
             for k, v in resp.getheaders():
                 k = k.lower()
-                hdrs[k] = hdrs[k] + "\n" + v if k == "set-cookie" and k in hdrs else v
-            out = (resp.status, hdrs, raw.decode("utf-8", "replace"))
+                resp_hdrs[k] = resp_hdrs[k] + "\n" + v if k == "set-cookie" and k in resp_hdrs else v
+            out = (resp.status, resp_hdrs, raw.decode("utf-8", "replace"))
         except (OSError, http.client.HTTPException):
             out = (0, {}, "")
         finally:
@@ -165,9 +174,12 @@ class Prober:
         self.auth2 = auth2 or {}
         self.system_prompts = [p for p in (system_prompts or []) if len(p) >= 40]
         self.findings: List[Finding] = []
-        self.seen = set()
+        self.seen: set = set()
         self.json = False
         self.authed = [0, 0]  # signed-in requests sent, and how many were sent back to sign in
+
+    def graphql(self, canary: Canary) -> None:
+        _graphql(self, canary)
 
     def add(self, rule: str, route: Optional[Route], msg: str, evidence: str) -> None:
         key = (rule, route.path if route else "/")
@@ -252,7 +264,10 @@ class Prober:
                 self.inject(r, "POST", path, names, name, b_text, b_time, canary, defaults)
         for p in path_params[:2]:  # path segments: SQL error and traversal only
             for payload in ("1'",) + TRAVERSAL[:1]:
-                got = self.send(method, PARAM_SEG.sub(lambda m: urllib.parse.quote(payload, safe=""), r.path, count=1), {})
+                def _sub_param(_m: re.Match[str], pl: str = payload) -> str:
+                    return urllib.parse.quote(pl, safe="")
+
+                got = self.send(method, PARAM_SEG.sub(_sub_param, r.path, count=1), {})
                 if got and SQL_ERRORS.search(got[2]) and not SQL_ERRORS.search(b_text):
                     self.add("BE001", r, f"a quote in path parameter {p} returns a SQL error.", got[2])
                 if got and TRAVERSAL_PROOF.search(got[2]):
@@ -504,8 +519,6 @@ def _graphql(self, canary: Canary) -> None:
         return
 
 
-Prober.graphql = _graphql
-
 
 def login(target: Target, url_path: str, credentials: str) -> Dict[str, str]:
     """Sign in with JSON credentials and return the headers that carry the session: a bearer token from the JSON
@@ -721,7 +734,7 @@ def _openapi_json_ops(text: str) -> List[Tuple[str, str, int, List[str], bool, b
                     names.append(prm["name"])
             rb = spec.get("requestBody")
             has_body = isinstance(rb, dict)
-            if has_body:
+            if isinstance(rb, dict):
                 content = rb.get("content") or {}
                 if isinstance(content, dict):
                     for media in content.values():

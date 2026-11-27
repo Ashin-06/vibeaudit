@@ -53,32 +53,33 @@ class RpcScanner:
     def run(self) -> List[Route]:
         files = [f for f in self.p.files if f.text and not f.is_test]
         js = [f for f in files if f.kind == "js"]
-        trpc = [f for f in js if re.search(r"(?i)trpc|procedure\b", f.text)]
+        trpc = [f for f in js if re.search(r"(?i)trpc|procedure\b", f.text or "")]
         for f in trpc:  # custom procedures: `export const adminProcedure = protectedProcedure.use(...)`
-            for m in finditer(r"(?:const|let|var)\s+([\w$]*[pP]rocedure)\s*=\s*([^;]{0,2000})", f.text):
+            for m in finditer(r"(?:const|let|var)\s+([\w$]*[pP]rocedure)\s*=\s*([^;]{0,2000})", f.text or ""):
                 self.procedures[m.group(1)] = m.group(2)
-        gql_auth = any(GQL_GLOBAL_AUTH.search(f.text) or GQL_CONTEXT_THROW.search(f.text) for f in files
+        gql_auth = any(GQL_GLOBAL_AUTH.search(f.text or "") or GQL_CONTEXT_THROW.search(f.text or "") for f in files
                        if f.kind in ("js", "py") or f.rel.endswith((".graphql", ".gql")))
         # an auth interceptor covers the handlers of its own language only
-        grpc_auth = {lang: any(INTERCEPTOR.search(f.text) for f in files if f.rel.endswith(exts))
+        grpc_auth = {lang: any(INTERCEPTOR.search(f.text or "") for f in files if f.rel.endswith(exts))
                      for lang, exts in (("go", (".go",)), ("py", (".py",)), ("js", (".js", ".ts", ".mjs", ".cjs")),
                                         ("jvm", (".java", ".kt")))}
         go_services = set()
         for f in files:
             if f.rel.endswith(".go"):
-                go_services.update(re.findall(r"type\s+(\w+)\s+struct\s*\{[^}]{0,2000}?\bUnimplemented\w*Server\b", f.text))
+                go_services.update(re.findall(r"type\s+(\w+)\s+struct\s*\{[^}]{0,2000}?\bUnimplemented\w*Server\b", f.text or ""))
         for f in files:
-            if f in trpc and re.search(r"\.\s*(?:mutation|query)\s*\(", f.text):
+            text = f.text or ""
+            if f in trpc and re.search(r"\.\s*(?:mutation|query)\s*\(", text):
                 GUARD.run(f.rel, "rpc routes", self.trpc, f)
-            if f.kind == "js" and re.search(r"\bMutation\s*:\s*\{", f.text):
+            if f.kind == "js" and re.search(r"\bMutation\s*:\s*\{", text):
                 GUARD.run(f.rel, "rpc routes", self.gql_js, f, gql_auth)
-            if f.kind == "js" and ".addService" in f.text:
+            if f.kind == "js" and ".addService" in text:
                 GUARD.run(f.rel, "rpc routes", self.grpc_node, f, grpc_auth["js"])
-            if f.kind == "py" and re.search(r"strawberry|graphene|Servicer\b", f.text):
+            if f.kind == "py" and re.search(r"strawberry|graphene|Servicer\b", text):
                 GUARD.run(f.rel, "rpc routes", self.python, f, gql_auth, grpc_auth["py"])
             if f.rel.endswith(".go") and go_services:
                 GUARD.run(f.rel, "rpc routes", self.grpc_go, f, go_services, grpc_auth["go"])
-            if f.rel.endswith((".java", ".kt")) and "ImplBase" in f.text:
+            if f.rel.endswith((".java", ".kt")) and "ImplBase" in text:
                 GUARD.run(f.rel, "rpc routes", self.grpc_java, f, grpc_auth["jvm"])
         return self.routes
 
@@ -97,7 +98,7 @@ class RpcScanner:
         return auth, inner + "\n" + text
 
     def trpc(self, sf: SourceFile) -> None:
-        v = js_views(sf.text)
+        v = js_views(sf.text or "")
         code, bare = v.code, v.bare
         for m in finditer(r"(?<![\w$.])([\w$]+)\s*:\s*((?:[\w$]+\s*\.\s*)?[\w$]*[pP]rocedure)\b", code):
             pos, chain, kind, handler = m.end(), "", "", ""
@@ -149,7 +150,7 @@ class RpcScanner:
             i = j + 1
 
     def gql_js(self, sf: SourceFile, global_auth: bool) -> None:
-        v = js_views(sf.text)
+        v = js_views(sf.text or "")
         code, bare = v.code, v.bare
         for m in finditer(r"\b(Mutation|Query)\s*:\s*\{", code):
             for name, start, text in self.object_members(code, bare, m.end() - 1):
@@ -160,11 +161,12 @@ class RpcScanner:
 
     # ---------------------------------------------------------------- Python
     def python(self, sf: SourceFile, gql_auth: bool, grpc_auth: bool) -> None:
+        text = sf.text or ""
         try:
-            tree = ast.parse(sf.text)
+            tree = ast.parse(text)
         except (SyntaxError, ValueError):
             return
-        lines = sf.text.split("\n")
+        lines = text.split("\n")
 
         def source(node) -> str:
             first = min([d.lineno for d in getattr(node, "decorator_list", [])] + [node.lineno])
@@ -197,7 +199,7 @@ class RpcScanner:
     def grpc_go(self, sf: SourceFile, services: set, global_auth: bool) -> None:
         from .goscan import go_views
 
-        v = go_views(sf.text)
+        v = go_views(sf.text or "")
         rx = r"\bfunc\s*\(\s*\w+\s+\*?(\w+)\s*\)\s*([A-Z]\w*)\s*\(\s*\w+\s+context\.Context\s*,[^)]*\)\s*\([^)]*error\s*\)\s*\{"
         for m in finditer(rx, v.code):
             if m.group(1) not in services:
@@ -210,7 +212,7 @@ class RpcScanner:
     def grpc_java(self, sf: SourceFile, global_auth: bool) -> None:
         from .jvm import jvm_views
 
-        v = jvm_views(sf.text)
+        v = jvm_views(sf.text or "")
         for cls in finditer(r"\bclass\s+\w+[^{]*?(?:extends\s+|:\s*)[\w.]*Grpc\w*\s*\.\s*\w+ImplBase\b[^{]*\{", v.code):
             end = match_close(v.bare, cls.end() - 1)
             end = len(v.code) if end < 0 else end
@@ -221,7 +223,7 @@ class RpcScanner:
                 self.add(sf, sf.line_at(m.start()), "/grpc/" + name, verb(name), body, "grpc", "jvm", global_auth)
 
     def grpc_node(self, sf: SourceFile, global_auth: bool) -> None:
-        v = js_views(sf.text)
+        v = js_views(sf.text or "")
         code, bare = v.code, v.bare
         for m in finditer(r"\.\s*addService\s*\(", code):
             close = match_close(bare, m.end() - 1)

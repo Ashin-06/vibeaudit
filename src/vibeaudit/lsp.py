@@ -87,7 +87,7 @@ class Server:
         self.log = log
         self.lock = threading.Lock()
         self.root: Optional[Path] = None
-        self.watcher = None
+        self.watcher: Any = None
         self.docs: Dict[str, str] = {}  # rel -> buffer text of open documents
         self.uris: Dict[str, str] = {}  # rel -> the URI the client used
         self.published: Dict[str, List[dict]] = {}
@@ -196,7 +196,8 @@ class Server:
     # ------------------------------------------------------------ dispatch
     def handle(self, msg: dict) -> None:
         method, mid = msg.get("method"), msg.get("id")
-        params = msg.get("params") if isinstance(msg.get("params"), dict) else {}
+        raw_params = msg.get("params")
+        params: dict = raw_params if isinstance(raw_params, dict) else {}
         if not isinstance(method, str):
             if mid is not None and "result" not in msg and "error" not in msg:
                 self.send({"jsonrpc": "2.0", "id": mid, "error": {"code": -32600, "message": "Invalid Request"}})

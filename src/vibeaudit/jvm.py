@@ -74,7 +74,7 @@ def views_of(sf: SourceFile) -> Views:
     v = sf.cache.get("jvm_views")
     if v is None:
         v = sf.cache["jvm_views"] = jvm_views(sf.text or "")
-    return v  # type: ignore[return-value]
+    return v
 
 
 # ------------------------------------------------------------------ annotations
@@ -124,9 +124,9 @@ class Annotation:
         return "".join(out)
 
 
-def annotations(code: str, bare: str, a: int, b: int) -> List[Annotation]:
+def extract_annotations(code: str, bare: str, a: int, b: int) -> List[Annotation]:
     """Annotations between offsets a and b, with their argument text (from `code`, so strings are kept)."""
-    out = []
+    out: List[Annotation] = []
     i = a
     while True:
         m = ANNOTATION.search(bare, i, b)
@@ -262,7 +262,7 @@ def file_routes(sf: SourceFile, security: "Security") -> List[Route]:
         if close < 0:
             continue
         head_start = _boundary_before(bare, 0, cm.start())
-        cls = annotations(code, bare, head_start, cm.start())
+        cls = extract_annotations(code, bare, head_start, cm.start())
         names = {a.name for a in cls}
         spring = bool(names & {"RestController", "Controller"})
         jaxrs = "Path" in names
@@ -281,7 +281,7 @@ def file_routes(sf: SourceFile, security: "Security") -> List[Route]:
 
 def _member_groups(code: str, bare: str, a: int, b: int) -> List[List[Annotation]]:
     """Runs of annotations at the top level of a class body, one run per member."""
-    anns = annotations(code, bare, a, b)
+    anns = extract_annotations(code, bare, a, b)
     groups: List[List[Annotation]] = []
     for an in anns:
         if groups and not bare[groups[-1][-1].end:an.start].strip():
@@ -309,12 +309,14 @@ def _routes_for(sf: SourceFile, code: str, bare: str, group: List[Annotation], s
         framework = "spring"
     else:
         sub = next((a for a in group if a.name == "Path"), None)
-        subpaths, verbs, framework = ([_paths(sub)[0]] if sub else [""]), [verb.name], "jax-rs"  # type: ignore[union-attr]
+        if verb is None:
+            return []
+        subpaths, verbs, framework = ([_paths(sub)[0]] if sub else [""]), [verb.name], "jax-rs"
     names = {a.name for a in group}
     explicit = class_auth or bool(names & security.auth_annotations) or any(CUSTOM.is_auth("@" + n) for n in names)
     out = []
-    for sub in subpaths:
-        path = _join(base, sub)
+    for sub_path in subpaths:
+        path = _join(base, sub_path)
         params = re.findall(r"\{(\w+)(?::[^}]*)?\}", path)
         params += [p for p in re.findall(r"@\s*(?:PathVariable|PathParam)\b[^,)]*?\b(\w+)\s*(?::|,|\)|$)", params_text) if p not in params]
         has_auth = explicit or security.protects(path, verbs)
@@ -369,7 +371,7 @@ class Security:
             return True  # its paths cannot be read statically, so a route is not guessed to be public
         for rule in self.rules:
             rx, needs = rule[0], rule[1]
-            only = rule[2] if len(rule) > 2 else None  # type: ignore[misc]
+            only = rule[2] if len(rule) > 2 else None
             if only and not ({v.upper() for v in verbs} & only or "ALL" in {v.upper() for v in verbs}):
                 continue  # a matcher scoped to other HTTP methods
             if rx.match(path):
@@ -396,7 +398,7 @@ class Security:
                 for dm in CUSTOM_AUTH_ANN_DEF.finditer(v.bare):
                     ann_name = dm.group(1)
                     head_start = _boundary_before(v.bare, 0, dm.start())
-                    meta = {a.name for a in annotations(v.code, v.bare, head_start, dm.start())}
+                    meta = {a.name for a in extract_annotations(v.code, v.bare, head_start, dm.start())}
                     if (meta & AUTH_ANNOTATIONS) or CUSTOM_AUTH_ANN_NAME.search(ann_name):
                         sec.auth_annotations.add(ann_name)
         return sec
@@ -426,17 +428,19 @@ class Security:
                 continue
             needs = act.group(1) not in OPEN
             self.rules += [(_ant(p), needs, scoped) for p in patterns]  # type: ignore[misc]
-        m = re.search(r"\banyRequest\s*\(\s*\)\s*\.\s*(\w+)", bare)
-        if m:
-            self.default = m.group(1) not in OPEN
-        elif re.search(r"\.\s*anyExchange\s*\(\s*\)\s*\.\s*(\w+)", bare):
-            self.default = re.search(r"\.\s*anyExchange\s*\(\s*\)\s*\.\s*(\w+)", bare).group(1) not in OPEN  # type: ignore[union-attr]
-        for m in DSL_AUTHORIZE.finditer(code):  # Kotlin DSL: authorize("/x/**", permitAll)
-            target, act = m.group(1), m.group(2)
+        ex_m = re.search(r"\banyRequest\s*\(\s*\)\s*\.\s*(\w+)", bare)
+        if ex_m:
+            self.default = ex_m.group(1) not in OPEN
+        else:
+            ex_m2 = re.search(r"\.\s*anyExchange\s*\(\s*\)\s*\.\s*(\w+)", bare)
+            if ex_m2:
+                self.default = ex_m2.group(1) not in OPEN
+        for dm in DSL_AUTHORIZE.finditer(code):  # Kotlin DSL: authorize("/x/**", permitAll)
+            target, act_name = dm.group(1), dm.group(2)
             if target == "anyRequest":
-                self.default = act not in OPEN
+                self.default = act_name not in OPEN
             else:
-                self.rules.append((_ant(target.strip('"')), act not in OPEN))
+                self.rules.append((_ant(target.strip('"')), act_name not in OPEN))
         if self.default is None and re.search(r"\.\s*authenticated\s*\(\s*\)|\bhasRole\s*\(|\bhasAuthority\s*\(", bare) and not self.rules:
             self.default = True
 

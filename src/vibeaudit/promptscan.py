@@ -69,7 +69,7 @@ def run(project: Project, routes: List[Route], add: Add) -> None:
         if sf.text is None or sf.kind not in ("py", "js") or sf.is_test or sf.is_example or sf.is_vendored:
             continue
         v = sf.cache.get("views")
-        if v is None or not _calls_llm(sf, v.code):  # type: ignore[attr-defined]
+        if v is None or not _calls_llm(sf, v.code):
             continue
         llm_files.append(sf)
         GUARD.run(sf.rel, "prompt delimiters", _delimiters, sf, v, add)
@@ -96,7 +96,7 @@ def _strings(sf: SourceFile, code: str, bare: str):
             yield m.end(), code[m.end():end]
     else:
         ticks = [m.start() for m in finditer(JS_TEMPLATE, code) if bare[m.start()] == "`"]
-        for a, b in zip(ticks[::2], ticks[1::2]):
+        for a, b in zip(ticks[::2], ticks[1::2], strict=False):
             if b - a < 6000:
                 yield a + 1, code[a + 1:b]
 
@@ -168,6 +168,6 @@ def _llm_tests(project: Project, routes: List[Route], llm_files: List[SourceFile
             return
     first = sorted(llm_files, key=lambda f: f.rel)[0]
     v = first.cache.get("views")
-    m: Optional[re.Match] = (H.LLM_CALL_JS if first.kind == "js" else PY_LLM).search(v.code if v is not None else first.text or "")  # type: ignore[attr-defined]
+    m: Optional[re.Match] = (H.LLM_CALL_JS if first.kind == "js" else PY_LLM).search(v.code if v is not None else first.text or "")
     add(first, first.line_at(m.start()) if m else 1, "LLM024",
         "The project has tests, but none of them exercises its LLM code: a prompt change can break answers unnoticed.")

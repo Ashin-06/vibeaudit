@@ -22,7 +22,7 @@ class DiffError(Exception):
 
 def _git(root: Path, *args: str) -> str:
     try:
-        out = subprocess.run(["git", "-c", "core.quotePath=false", "-C", str(root), *args],
+        out = subprocess.run(["git", "-c", "core.quotePath=false", "-C", str(root), *args],  # noqa: S603, S607 - fixed git invocation
                              capture_output=True, stdin=subprocess.DEVNULL, timeout=120, check=False)
     except (OSError, subprocess.SubprocessError) as e:
         raise DiffError(f"git is not available: {e}") from None

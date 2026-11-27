@@ -89,6 +89,7 @@ def build(
     guard_errors: list,
     parser_mode: Dict[str, str],
     history_info: Optional[Dict[str, Any]],
+    scan_timed_out: bool = False,
 ) -> Dict[str, Any]:
     """Summarize exact analyzer coverage, skipped inputs, errors, and incomplete reasons."""
     skipped_size = [sf.rel for sf in project.files if sf.skip_reason == "size_limit"]
@@ -175,6 +176,8 @@ def build(
         incomplete_reasons.append(f"{len(guard_errors)} internal analyzer errors")
     if history_info and scanners["git_history"]["status"] in ("partial", "failed"):
         incomplete_reasons.append(f"git history scan {history_info.get('status')}")
+    if scan_timed_out:
+        incomplete_reasons.append(f"scan_timeout ({opts.scan_timeout}s limit reached; remaining stages skipped)")
 
     return {
         "overall_status": "partial" if incomplete_reasons else "complete",
@@ -186,6 +189,7 @@ def build(
         "files_skipped_symlink": len(skipped_symlink),
         "files_read_error": len(skipped_read),
         "internal_errors": len(guard_errors),
+        "scan_timed_out": scan_timed_out,
         "incomplete_reasons": incomplete_reasons,
         "scanners": scanners,
     }

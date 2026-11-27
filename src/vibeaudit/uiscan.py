@@ -138,7 +138,7 @@ class UiScanner:
         v = sf.cache.get("views")
         if v is None:
             return
-        code, bare = v.code, v.bare  # type: ignore[attr-defined]
+        code, bare = v.code, v.bare
         next_image = bool(re.search(r"""from\s+['"]next/image['"]""", code))
         for m in finditer(TAG, bare):
             end = tag_end(bare, m.start())
@@ -163,9 +163,9 @@ class UiScanner:
         for m in finditer(EMPTY_HANDLER, code):
             self.add(sf, "UI004", sf.line_at(m.start()), "This control's click handler does nothing (empty or only logs).")
         if not CONFIRMATION.search(code):
-            m = DESTRUCTIVE.search(code)
-            if m:
-                self.add(sf, "UI006", sf.line_at(m.start()), f"`{m.group(1)}` runs straight from a click, with no confirmation or undo.")
+            m_dest = DESTRUCTIVE.search(code)
+            if m_dest:
+                self.add(sf, "UI006", sf.line_at(m_dest.start()), f"`{m_dest.group(1)}` runs straight from a click, with no confirmation or undo.")
         self._index_keys(sf, code, bare)
         if self.p.js_deps(sf.rel) & {"next", "@remix-run/react", "gatsby"}:
             for m in finditer(CLOCK_IN_JSX, code):
@@ -173,9 +173,9 @@ class UiScanner:
                          f"`{m.group(1)}` in server-rendered markup gives a different value on the client: hydration mismatch.")
         self._effects(sf, code, bare)
         self._lorem(sf, code)
-        m = FIELD_ERROR.search(code)
-        if m and not ERROR_ANNOUNCED.search(code):
-            self.add(sf, "UI015", sf.line_at(m.start()), "The field error is shown but not linked to its input, so screen readers do not announce it.")
+        m_err = FIELD_ERROR.search(code)
+        if m_err and not ERROR_ANNOUNCED.search(code):
+            self.add(sf, "UI015", sf.line_at(m_err.start()), "The field error is shown but not linked to its input, so screen readers do not announce it.")
         self._focus_classes(sf, code)
 
     def _focus_classes(self, sf: SourceFile, code: str) -> None:
@@ -240,7 +240,7 @@ class UiScanner:
             setter = state.get(owner.group(1)) if owner else None
             close = match_close(bare, code.index("(", m.start()))
             body = code[m.end():close if close > 0 else m.end() + 600]
-            if (setter and re.search(r"\bkey\s*=\s*\{\s*" + re.escape(m.group(1)) + r"\s*\}", body)
+            if (owner and setter and re.search(r"\bkey\s*=\s*\{\s*" + re.escape(m.group(1)) + r"\s*\}", body)
                     and re.search(r"<(?:input|textarea|select)\b|defaultValue|defaultChecked|contentEditable", body)
                     and re.search(re.escape(setter) + r"\s*\([^;]{0,200}\.(?:filter|splice|sort|toSorted|reverse|unshift)\s*\(", code)):
                 self.add(sf, "UI005", sf.line_at(m.start()),
@@ -292,9 +292,9 @@ class UiScanner:
         for m in finditer(SFC_EMPTY, text):
             self.add(sf, "UI004", sf.line_at(m.start()), "This control's click handler does nothing (empty or only logs).")
         if not CONFIRMATION.search(text):
-            m = SFC_DESTRUCTIVE.search(text)
-            if m:
-                self.add(sf, "UI006", sf.line_at(m.start()), f"`{m.group(1)}` runs straight from a click, with no confirmation or undo.")
+            m_sfc = SFC_DESTRUCTIVE.search(text)
+            if m_sfc:
+                self.add(sf, "UI006", sf.line_at(m_sfc.start()), f"`{m_sfc.group(1)}` runs straight from a click, with no confirmation or undo.")
         for m in finditer(SFC_INDEX_KEY, text):
             items = m.group(2) or m.group(3)
             body = text[m.end():m.end() + 1500]
@@ -360,7 +360,7 @@ class UiScanner:
             if app is None:
                 continue
             v = f.cache.get("views")
-            code = v.code if v is not None else f.text  # type: ignore[attr-defined]
+            code = v.code if v is not None else (f.text or "")
             for m in finditer(ASSET_REF, code):
                 path = m.group(2)
                 if path in roots[app] or path in served or path.startswith(("/_next/", "/api/", "/static/", "/assets/", "/media/")):
@@ -406,7 +406,7 @@ class UiScanner:
             if f.kind != "js" or SKIP_PATH.search(f.rel):
                 continue
             v = f.cache.get("views")
-            code = v.code if v is not None else (f.text or "")  # type: ignore[attr-defined]
+            code = v.code if v is not None else (f.text or "")
             for m in finditer(HREF, code):
                 path = posixpath.normpath(m.group(2)) if m.group(2) != "/" else "/"
                 if "${" in m.group(0) or path in public or "." in path.rsplit("/", 1)[-1]:
