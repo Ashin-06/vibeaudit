@@ -119,7 +119,9 @@ def scan(root: str, opts) -> Result:
     packages = []
     for unit, m in metas.items():
         mine = [f for f in findings if unit_of(f.file, list(metas)) == unit]
-        part = Result(str(base / unit), mine, {"include_preview": opts.include_preview,
+        part = Result(str(base / unit), mine, {"files_scanned": m.get("files_scanned", 0),
+                                               "score_model": opts.score_model,
+                                               "include_preview": opts.include_preview,
                                                "gate_severe_preview": opts.gate_severe_preview})
         packages.append({"path": unit or ".", "files_scanned": m.get("files_scanned", 0), "findings": len(mine),
                          "score": part.score, "grade": part.grade, "stack": m.get("stack", [])})
@@ -128,6 +130,7 @@ def scan(root: str, opts) -> Result:
     meta = dict(first)
     meta.update({
         "files_scanned": sum(m.get("files_scanned", 0) for m in metas.values()),
+        "score_model": opts.score_model,
         "duration_seconds": round(time.time() - start, 2),
         "stack": sorted({s for m in metas.values() for s in m.get("stack", [])}),
         "routes_found": len(routes), "git": top.is_git, "notes": notes, "feedback_hidden": hidden,

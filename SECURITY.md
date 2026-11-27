@@ -28,13 +28,46 @@ an issue with a minimal example.
 
 Only the latest release receives security fixes.
 
+## Threat model for scanning untrusted repositories
+
+`vibeaudit` is designed to scan untrusted code safely without executing it.
+
+| Threat vector | Mitigation |
+| --- | --- |
+| Malicious symlinks (escape / loops) | Resolved against repository root; escapes and loops skipped and recorded in `meta.coverage`. |
+| Oversized files | Enforced `--max-file-size` cap (default 1 MB) before parsing; skipped files reported in `meta.coverage`. |
+| Deeply nested AST / syntax trees | Explicit stack/recursion guards and per-file timeout (`--file-timeout`); falls back cleanly without crashing. |
+| Hostile `.vibeaudit.toml` / external configs | Strict schema validation (unknown keys exit 2); project `disable` warns loudly on `stderr`; `--no-config` ignores repo config and isolates external scanners. |
+| Malicious git history / huge diffs | `64 KB` chunk-bounded streaming (`--history`) with commit, line-byte, and total patch byte limits. |
+| Pathological regex input (ReDoS) | Linear-time lexers and patterns checked against adversarial payloads in CI (`tests/security/`). |
+| Malicious filenames (HTML/shell injection) | Never passed through shell (`shell=False`); escaped in HTML (`html.escape`) and JSON/SARIF reports. |
+| Untrusted code execution via plugins | `--plugin` is strictly CLI/API opt-in; `.vibeaudit.toml` cannot register or import plugins. |
+| Hostile URLs (`file://`, `ftp://`, SSRF schemes) | `validate_http_url()` enforces `https://` (`http://` allowed only for loopback LLM endpoints) before every `urlopen`. |
+| Untrusted LLM responses | Strict JSON parsing, line-bounds verification, parse validation, and rejection of patches containing `REDACTED`. |
+| Malicious archive / zip-bomb bundles | `bundle.import_bundle()` enforces member count, manifest size, per-entry size, total uncompressed size, compression ratio (`200:1`), SHA-256 integrity, and RSA-verified threat feed anti-rollback. |
+
+## Threat feed cryptography
+
+The shipped `vibeaudit` package (`vibeaudit.feed`) contains PKCS#1 v1.5 RSA SHA-256 signature verification only; key generation and feed signing helpers live exclusively in maintainer scripts under `tools/`. Signatures expire after 30 days and enforce non-decreasing version numbers against the cached feed.
+
+## Release rollback and PyPI yank procedure
+
+If a released package or binary introduces a critical security regression or packaging defect:
+
+1. **Yank the compromised version on PyPI**: do not delete unless legally required; mark the affected version yanked in the PyPI project management UI (`Manage -> Releases -> Options -> Yank`) with a clear explanation pointing to the safe version.
+2. **Mark or update the GitHub Release**: edit the GitHub release title/notes for the affected tag to include a prominent `[YANKED / DO NOT USE]` warning and remediation instructions. Do not rewrite existing signed git tags in place.
+3. **Publish an advisory**: file a GitHub Security Advisory under the **Security** tab documenting affected versions, impact, and patched release.
+4. **Cut a clean patch release**: ship `vX.Y.(Z+1)` through the normal tagged CI + OIDC PyPI + Sigstore attestation pipeline, then verify with `gh attestation verify` and the post-publish `verify-pypi` workflow.
+
 ## What vibeaudit does with your code
+
+See [docs/PRIVACY.md](docs/PRIVACY.md) for the complete privacy and data-handling policy. In summary:
 
 - It reads files; it never runs the code it scans. Plugins (`--plugin`) are your own code and are loaded
   only when you pass them.
-- With network access it sends package names and pinned versions to PyPI, npm and OSV.dev; `--offline`
-  turns that off. `vibeaudit update` downloads data files from this repository.
-- With `--llm` it sends code excerpts around findings to the provider you chose, with secrets redacted.
-  Without `--llm` no code leaves your machine.
+- With network access it sends package names and pinned versions to PyPI, npm, Pub, RubyGems, and OSV.dev;
+  `--offline` turns that off. `vibeaudit update` downloads data files from this repository.
+- With `--llm` it sends redacted code excerpts around findings to the provider you chose, never without
+  explicit invocation. Run `--privacy-report` to preview exact line ranges and redactions first.
 - The configuration and feedback files in a scanned repository can turn rules off. When you audit code you
   do not trust, use `--no-config`.

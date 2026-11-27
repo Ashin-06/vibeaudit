@@ -16,8 +16,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
+sys.path.insert(0, str(ROOT / "tools"))
 
-from vibeaudit.feed import generate_key  # noqa: E402
+from _feed_signer import generate_key  # noqa: E402
 
 PUBLIC = ROOT / "src" / "vibeaudit" / "data" / "feed_key.json"
 

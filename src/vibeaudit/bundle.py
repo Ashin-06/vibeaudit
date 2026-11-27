@@ -41,6 +41,11 @@ def range_types(ecosystem: str) -> tuple:
 MAX_DUMP = 1_500_000_000  # bytes of one OSV all.zip download
 MAX_INDEX = 400_000_000  # bytes of one uncompressed index
 MAX_DATA = 10_000_000
+MAX_MANIFEST_BYTES = 1_000_000
+MAX_BUNDLE_MEMBERS = 64
+MAX_BUNDLE_UNCOMPRESSED = 600_000_000
+MAX_COMPRESSION_RATIO = 200
+RATIO_CHECK_MIN_BYTES = 1_000_000
 FORMAT = 1
 
 
@@ -243,6 +248,26 @@ def export(path: Path, osv: List[str], log: Callable[[str], None], fetch: Option
     log(f"wrote {path} ({len(buf.getvalue())} bytes, {len(members)} files)")
 
 
+def _read_member(z: zipfile.ZipFile, info: zipfile.ZipInfo, cap: int) -> bytes:
+    """Read a zip entry up to `cap` bytes, rejecting oversized headers, forged sizes, and zip bombs."""
+    if info.file_size > cap:
+        raise BundleError(f"{info.filename} is larger than {cap} bytes")
+    try:
+        with z.open(info) as fh:
+            data = fh.read(cap + 1)
+    except (zipfile.BadZipFile, zlib.error, EOFError, NotImplementedError, RuntimeError, OSError) as e:
+        raise BundleError(f"{info.filename} cannot be read: {e}") from None
+    if len(data) > cap:
+        raise BundleError(f"{info.filename} is larger than {cap} bytes")
+    if len(data) >= RATIO_CHECK_MIN_BYTES:
+        compressed = max(1, int(info.compress_size))
+        if (len(data) / compressed) > MAX_COMPRESSION_RATIO:
+            raise BundleError(
+                f"{info.filename} exceeds the maximum compression ratio ({MAX_COMPRESSION_RATIO}:1)"
+            )
+    return data
+
+
 def import_bundle(path: Path, log: Callable[[str], None]) -> None:
     """Validate the whole bundle, then install it into the user cache."""
     from . import feed
@@ -254,28 +279,37 @@ def import_bundle(path: Path, log: Callable[[str], None]) -> None:
     except (OSError, zipfile.BadZipFile) as e:
         raise BundleError(f"not a bundle: {e}") from None
     with z:
+        infos = z.infolist()
+        if len(infos) > MAX_BUNDLE_MEMBERS:
+            raise BundleError(f"the bundle has too many entries ({len(infos)} > {MAX_BUNDLE_MEMBERS})")
+        entry_names = [i.filename for i in infos]
+        if len(entry_names) != len(set(entry_names)):
+            raise BundleError("the bundle contains duplicate member names")
+        declared_total = sum(max(0, int(i.file_size)) for i in infos)
+        if declared_total > MAX_BUNDLE_UNCOMPRESSED:
+            raise BundleError(f"the bundle uncompressed size exceeds {MAX_BUNDLE_UNCOMPRESSED} bytes")
         try:
-            manifest = loads_json(z.read("manifest.json"))
+            manifest_info = z.getinfo("manifest.json")
+            manifest = loads_json(_read_member(z, manifest_info, MAX_MANIFEST_BYTES))
         except (KeyError, ValueError, zipfile.BadZipFile, zlib.error, EOFError, NotImplementedError, RuntimeError, OSError):
             raise BundleError("the bundle has no valid manifest.json") from None
         listed = manifest.get("files") if isinstance(manifest, dict) and manifest.get("format") == FORMAT else None
         if not isinstance(listed, dict):
             raise BundleError("the bundle's manifest has an unknown format")
-        names = {i.filename for i in z.infolist()} - {"manifest.json"}
+        names = set(entry_names) - {"manifest.json"}
         if names != set(listed) or not names <= allowed:
             raise BundleError("the bundle's files do not match its manifest or are not vibeaudit data: "
                               + ", ".join(sorted((names ^ set(listed)) | (names - allowed))))
         contents: Dict[str, bytes] = {}
-        for info in z.infolist():
+        total_actual = manifest_info.file_size
+        for info in infos:
             if info.filename == "manifest.json":
                 continue
             cap = MAX_DATA if info.filename.startswith("data/") else MAX_INDEX
-            if info.file_size > cap:
-                raise BundleError(f"{info.filename} is larger than {cap} bytes")
-            try:
-                data = z.read(info)
-            except (zipfile.BadZipFile, zlib.error, EOFError, NotImplementedError, RuntimeError, OSError) as e:
-                raise BundleError(f"{info.filename} cannot be read: {e}") from None  # a damaged or forged archive
+            data = _read_member(z, info, cap)
+            total_actual += len(data)
+            if total_actual > MAX_BUNDLE_UNCOMPRESSED:
+                raise BundleError(f"the bundle uncompressed size exceeds {MAX_BUNDLE_UNCOMPRESSED} bytes")
             meta = listed[info.filename]
             if not isinstance(meta, dict) or hashlib.sha256(data).hexdigest() != meta.get("sha256"):
                 raise BundleError(f"{info.filename} does not match the SHA-256 in the manifest")

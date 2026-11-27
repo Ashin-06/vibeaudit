@@ -9,7 +9,8 @@ also downloads threat_feed.json, which a scheduled workflow builds from the same
 The payload holds a format, a version (seconds since the epoch, never decreasing), created and expires times
 and the data. A feed is used only when its signature verifies against the public key shipped with the
 package (data/feed_key.json) and it has not expired; otherwise vibeaudit warns and uses the shipped data.
-Verification uses the standard library only. See docs/THREAT_FEED.md.
+The shipped package performs PKCS#1 v1.5 signature verification only using the standard library (key generation
+and signing live in tools/). See docs/THREAT_FEED.md.
 """
 from __future__ import annotations
 
@@ -18,9 +19,7 @@ import datetime as dt
 import hashlib
 import hmac
 import json
-import math
 import re
-import secrets
 import sys
 from importlib import resources
 from typing import Dict, List, Optional, Tuple
@@ -44,7 +43,7 @@ class FeedError(Exception):
     pass
 
 
-# ------------------------------------------------------------------ RSA (stdlib)
+# ------------------------------------------------------------------ RSA verification (stdlib, verify-only)
 def _encoded(message: bytes, k: int) -> bytes:
     t = SHA256_INFO + hashlib.sha256(message).digest()
     if k < len(t) + 11:
@@ -56,57 +55,25 @@ def _size(n: int) -> int:
     return (n.bit_length() + 7) // 8
 
 
-def sign(message: bytes, key: dict) -> bytes:
-    n, d = int(key["n"], 16), int(key["d"], 16)
-    k = _size(n)
-    return pow(int.from_bytes(_encoded(message, k), "big"), d, n).to_bytes(k, "big")
-
-
 def verify(message: bytes, signature: bytes, key: dict) -> bool:
-    """Recompute the whole encoded block and compare it, rather than parsing the decrypted one."""
-    n, e = int(key["n"], 16), int(key["e"])
+    """Verify RSA PKCS#1 v1.5 SHA-256 signature by recomputing the exact EMSA block (RFC 8017)."""
+    try:
+        n, e = int(key["n"], 16), int(key["e"])
+    except (KeyError, ValueError, TypeError):
+        return False
+    if n <= 0 or n.bit_length() < 1024 or e < 3 or e % 2 == 0:
+        return False
     k = _size(n)
     if len(signature) != k:
         return False
     s = int.from_bytes(signature, "big")
-    return s < n and hmac.compare_digest(pow(s, e, n).to_bytes(k, "big"), _encoded(message, k))
-
-
-def _probable_prime(n: int) -> bool:
-    for p in (3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47):
-        if n % p == 0:
-            return n == p
-    d, s = n - 1, 0
-    while d % 2 == 0:
-        d, s = d // 2, s + 1
-    for _ in range(40):  # Miller-Rabin
-        x = pow(secrets.randbelow(n - 3) + 2, d, n)
-        if x in (1, n - 1):
-            continue
-        for _ in range(s - 1):
-            x = pow(x, 2, n)
-            if x == n - 1:
-                break
-        else:
-            return False
-    return True
-
-
-def generate_key(bits: int = 3072) -> dict:
-    """A new RSA key pair as {"n", "e", "d"} (hex strings, e as an int). The public key is {"n", "e"}."""
-    e = 65537
-    while True:
-        p, q = (_prime(bits // 2) for _ in range(2))
-        phi = (p - 1) * (q - 1)
-        if p != q and math.gcd(e, phi) == 1 and (p * q).bit_length() == bits:
-            return {"n": format(p * q, "x"), "e": e, "d": format(pow(e, -1, phi), "x")}
-
-
-def _prime(bits: int) -> int:
-    while True:
-        c = secrets.randbits(bits) | (3 << (bits - 2)) | 1  # top two bits set, so p * q has the full length
-        if _probable_prime(c):
-            return c
+    if not (0 < s < n):
+        return False
+    try:
+        expected = _encoded(message, k)
+    except FeedError:
+        return False
+    return hmac.compare_digest(pow(s, e, n).to_bytes(k, "big"), expected)
 
 
 # ------------------------------------------------------------------ the feed file
@@ -116,18 +83,6 @@ def public_key() -> Optional[dict]:
     except (OSError, ValueError):
         return None  # a build made before the key was set up: only the shipped data is used
     return key if isinstance(key, dict) and isinstance(key.get("n"), str) and isinstance(key.get("e"), int) else None
-
-
-def build(data: dict, key: dict, now: Optional[dt.datetime] = None) -> bytes:
-    """The signed feed for `data` (used by tools/sign_feed.py and the tests)."""
-    now = now or dt.datetime.now(dt.timezone.utc)
-    check_data(data)
-    payload = json.dumps({"format": FORMAT, "version": int(now.timestamp()),
-                          "created": now.isoformat(timespec="seconds"),
-                          "expires": (now + dt.timedelta(days=LIFETIME_DAYS)).isoformat(timespec="seconds"),
-                          "data": data}, sort_keys=True)
-    sig = base64.b64encode(sign(payload.encode("utf-8"), key)).decode("ascii")
-    return (json.dumps({"payload": payload, "signature": sig}) + "\n").encode("utf-8")
 
 
 def open_feed(raw: bytes, key: Optional[dict] = None) -> dict:

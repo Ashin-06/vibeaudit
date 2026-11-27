@@ -4,6 +4,50 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.22.0] - 2026-11-27
+
+### Scoring & Breaking-Behavior Notes
+
+- **Empty scans (`files_scanned == 0`)**: scanning an empty directory or excluding every file now reports
+  `Score: N/A` (`null` in JSON) and `Grade: N/A` instead of `100/100 A`, and `vibeaudit scan` exits `1` by
+  default so misconfigured CI globs fail visibly. Pass `--allow-empty` (or `allow-empty = true`) to exit `0`
+  when scanning empty directories intentionally.
+- **Versioned scoring formula (`--score-model`)**: the default diminishing normalized score formula is now
+  explicitly versioned as `diminishing-v2` in CLI output, JSON (`summary.score_model`), and SARIF
+  (`runs[0].properties.score_model`). Pass `--score-model linear-v1` (or `score-model = "linear-v1"`) for the
+  legacy linear formula.
+- **Verification-only `vibeaudit.feed`**: RSA key generation and feed signing helpers (`generate_key`,
+  `sign`, `build`) were moved out of the shipped package into `tools/_feed_signer.py`; `vibeaudit.feed` now
+  ships PKCS#1 v1.5 verification only.
+
+### Added
+
+- **`--allow-empty`, `--score-model`, `rules --json`, and `fix --max-tokens` (`cli.py`, `config.py`, `fix.py`)**:
+  added CLI flags and config keys (`allow-empty`, `score-model`), shorthand `--json` on `vibeaudit rules`,
+  and configurable token limit (`--max-tokens N`, default `4096`) on the `LLM003` autofix codemod (plus a
+  reviewer note when `LLM011` codemods insert `None`/`null` fallbacks).
+- **Adversarial security test suite (`tests/security/test_adversarial_security.py`) & hardening tests
+  (`tests/test_v022_hardening.py`)**: dedicated regression tests for all 11 untrusted-repository threat vectors,
+  Wycheproof-style PKCS#1 v1.5 rejection vectors, and `openssl dgst` cross-verification in `tests/test_feed.py`.
+- **Privacy policy, threat model & rollback runbook (`docs/PRIVACY.md`, `SECURITY.md`, `docs/THREAT_FEED.md`)**:
+  documented exact data flows, network destinations, secret redaction, threat mitigations, and PyPI yank steps.
+- **Hardened container image (`Dockerfile`, `.dockerignore`) & post-publication PyPI verification (`publish.yml`)**:
+  added non-root read-only container image tested in CI and automated `verify-pypi` job checking live PyPI SHA-256
+  against the Sigstore-attested GitHub Release wheel plus a clean-room scan smoke test.
+
+### Hardened
+
+- **Verification-only threat-feed crypto (`feed.py`, `tools/_feed_signer.py`)**: strengthened `feed.verify()`
+  key/exponent/range validation (`e >= 3`, odd `e`, minimum 1024-bit modulus, `0 < s < n`) and stripped
+  key generation and signing from the shipped wheel.
+- **Archive & zip-bomb caps (`bundle.py`)**: added `MAX_BUNDLE_MEMBERS` (`64`), `MAX_MANIFEST_BYTES` (`1 MB`),
+  `MAX_BUNDLE_UNCOMPRESSED` (`600 MB`), `MAX_COMPRESSION_RATIO` (`200:1` for entries >= 1 MB), forged-header
+  bounded reads, and duplicate entry rejection in `import_bundle()`.
+- **Untrusted external scanner isolation & rule-disable visibility (`external.py`, `scanner.py`, `cli.py`)**:
+  `--no-config` isolates `bandit` (`-c`), `osv-scanner` (`--config`), `semgrep` (`--no-git-ignore`), and
+  `gitleaks` (`--ignore-gitleaks-allow`) from repo-committed ignore/suppression files, while `vibeaudit scan`
+  warns on `stderr` and records `meta.config_disabled` when project configs disable rules.
+
 ## [0.21.0] - 2026-11-27
 
 ### Added

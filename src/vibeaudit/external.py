@@ -136,28 +136,48 @@ def available(name: str) -> bool:
     return shutil.which(name) is not None
 
 
-def run_tool(name: str, root: Path) -> Optional[List[Finding]]:
+def run_tool(name: str, root: Path, no_config: bool = False) -> Optional[List[Finding]]:
+    """Run an external scanner. When `no_config` is True, isolate it from repo-committed ignore/config files."""
     if name == "gitleaks":
         with tempfile.TemporaryDirectory() as tmp:
             report = os.path.join(tmp, "gitleaks.json")
             base = ["--report-format", "json", "--report-path", report, "--exit-code", "0", "--no-banner"]
-            _run(["gitleaks", "dir", str(root)] + base)
+            extra = ["--ignore-gitleaks-allow"] if no_config else []
+            _run(["gitleaks", "dir", str(root)] + extra + base)
             if not os.path.exists(report):
-                _run(["gitleaks", "detect", "--no-git", "--source", str(root)] + base)
+                _run(["gitleaks", "detect", "--no-git", "--source", str(root)] + extra + base)
             try:
                 data = loads_json(Path(report).read_text(encoding="utf-8") or "[]")
             except (OSError, ValueError):
                 return None
         return parse_gitleaks(data, root)
     if name == "bandit":
-        raw = _run(["bandit", "-r", str(root), "-f", "json", "-q", "-x", ",".join(
-            str(root / d) for d in ("node_modules", ".venv", "venv", "tests", "test", "build", "dist"))])
+        excl = ",".join(str(root / d) for d in ("node_modules", ".venv", "venv", "tests", "test", "build", "dist"))
+        if no_config:
+            with tempfile.TemporaryDirectory() as tmp:
+                cfg = Path(tmp) / "bandit.yaml"
+                cfg.write_text("skips: []\n", encoding="utf-8")
+                raw = _run(["bandit", "-c", str(cfg), "-r", str(root), "-f", "json", "-q", "-x", excl])
+        else:
+            raw = _run(["bandit", "-r", str(root), "-f", "json", "-q", "-x", excl])
     elif name == "semgrep":
-        raw = _run(["semgrep", "scan", "--config", "p/default", "--json", "--metrics", "off", "--quiet", str(root)])
+        cmd = ["semgrep", "scan", "--config", "p/default", "--json", "--metrics", "off", "--quiet"]
+        if no_config:
+            cmd.append("--no-git-ignore")
+        cmd.append(str(root))
+        raw = _run(cmd)
     elif name == "osv-scanner":
-        raw = _run(["osv-scanner", "scan", "source", "-r", "--format", "json", str(root)])
-        if not raw or not raw.lstrip().startswith("{"):
-            raw = _run(["osv-scanner", "--format", "json", "-r", str(root)])
+        if no_config:
+            with tempfile.TemporaryDirectory() as tmp:
+                cfg = Path(tmp) / "osv-scanner.toml"
+                cfg.write_text("", encoding="utf-8")
+                raw = _run(["osv-scanner", "scan", "source", "-r", "--config", str(cfg), "--format", "json", str(root)])
+                if not raw or not raw.lstrip().startswith("{"):
+                    raw = _run(["osv-scanner", "--config", str(cfg), "--format", "json", "-r", str(root)])
+        else:
+            raw = _run(["osv-scanner", "scan", "source", "-r", "--format", "json", str(root)])
+            if not raw or not raw.lstrip().startswith("{"):
+                raw = _run(["osv-scanner", "--format", "json", "-r", str(root)])
     else:
         return None
     if not raw:

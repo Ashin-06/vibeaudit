@@ -41,3 +41,65 @@ jobs:
         run: |
           for f in dist/*; do gh attestation verify "$f" --repo "$GITHUB_REPOSITORY"; done
       - uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086  # v1.14.3
+
+  verify-pypi:
+    needs: publish
+    if: vars.PYPI_PUBLISH == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      attestations: read
+    steps:
+      - name: Wait for PyPI release metadata and verify SHA-256 against GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: |
+          VER="${TAG#v}"
+          mkdir -p /tmp/release-dist
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --dir /tmp/release-dist --pattern "*.whl"
+          gh attestation verify /tmp/release-dist/*.whl --repo "$GITHUB_REPOSITORY"
+          LOCAL_SHA=$(sha256sum /tmp/release-dist/*.whl | awk '{print $1}')
+          echo "Local GitHub Release wheel SHA-256: $LOCAL_SHA"
+          VER="$VER" LOCAL_SHA="$LOCAL_SHA" python3 - <<'PY'
+          import json, os, sys, time, urllib.error, urllib.request
+          ver = os.environ["VER"]
+          expected = os.environ["LOCAL_SHA"]
+          url = f"https://pypi.org/pypi/vibeaudit/{ver}/json"
+          for attempt in range(30):
+              try:
+                  with urllib.request.urlopen(url, timeout=15) as r:
+                      data = json.load(r)
+                  wheels = [u for u in data.get("urls", []) if u.get("packagetype") == "bdist_wheel"]
+                  if wheels:
+                      pypi_sha = wheels[0]["digests"]["sha256"]
+                      assert pypi_sha == expected, f"PyPI wheel SHA mismatch: {pypi_sha} != {expected}"
+                      print(f"Verified PyPI vibeaudit=={ver} wheel SHA-256 matches GitHub Release: {pypi_sha}")
+                      sys.exit(0)
+              except (urllib.error.URLError, KeyError, IndexError):
+                  pass
+              time.sleep(10)
+          print(f"Timed out waiting for vibeaudit=={ver} on PyPI", file=sys.stderr)
+          sys.exit(1)
+          PY
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+        with:
+          python-version: "3.12"
+      - name: Install from PyPI and run clean-room smoke test
+        env:
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: |
+          VER="${TAG#v}"
+          python -m venv /tmp/pypi-smoke
+          /tmp/pypi-smoke/bin/pip install --no-cache-dir "vibeaudit==${VER}"
+          /tmp/pypi-smoke/bin/vibeaudit --version | grep -q "vibeaudit ${VER}"
+          /tmp/pypi-smoke/bin/vibeaudit doctor --format json | python -c "import json, sys; d = json.load(sys.stdin); assert d['status'] == 'ok', d"
+          /tmp/pypi-smoke/bin/vibeaudit rules --json | python -c "import json, sys; r = json.load(sys.stdin); assert len(r) >= 179"
+          mkdir -p /tmp/smoke-app
+          printf "def f(x):\n    return eval(x)\n" > /tmp/smoke-app/app.py
+          set +e
+          /tmp/pypi-smoke/bin/vibeaudit scan /tmp/smoke-app --offline --external none --fail-on high -r sarif:/tmp/smoke.sarif -q
+          RC=$?
+          set -e
+          test "$RC" -eq 1
+          python -c "import json; d = json.load(open('/tmp/smoke.sarif')); assert d['version'] == '2.1.0' and any(r['ruleId'] == 'BE003' for r in d['runs'][0]['results'])"

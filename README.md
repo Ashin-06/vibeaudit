@@ -29,8 +29,8 @@ nothing, inaccessible forms and frontend calls to API routes that do not exist.
   Optional `pip install vibeaudit[parse]` adds a tree-sitter function and parameter index for Go, Rust, Java,
   JavaScript and TypeScript (`vibeaudit doctor` shows which is active; `VIBEAUDIT_PARSER=regex` turns it off).
 - 95 stable static rules (93.6% held-out precision on stable rules; 68.0% across all rules including preview)
-  and 84 preview rules (179 rules in 12 categories) plus 1 optional LLM review rule (`AI001`; 180 rules total),
-  mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
+  and 84 preview rules across 179 rules in 12 categories (plus 1 optional LLM review rule `AI001`, 180 rules
+  total), mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
 - Terminal output plus JSON, SARIF 2.1.0 (GitHub code scanning), Markdown, HTML, an SVG badge, CycloneDX 1.6 AI-BOM (`-r aibom`), and a fix
   brief you can paste into an AI assistant.
 - Fits into CI (GitHub Action, `--diff`), pre-commit (`--staged`) and coding agents (an MCP server).
@@ -156,7 +156,7 @@ or, to keep it in its own environment:
 pipx install vibeaudit
 ```
 
-To install from this repository instead: `pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.21.0"`.
+To install from this repository instead: `pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.22.0"`.
 
 Optional: if [gitleaks](https://github.com/gitleaks/gitleaks), [bandit](https://github.com/PyCQA/bandit),
 [osv-scanner](https://github.com/google/osv-scanner) or [semgrep](https://github.com/semgrep/semgrep) are on
@@ -175,7 +175,7 @@ your `PATH`, their findings are merged into the report and de-duplicated.
 | `vibeaudit test-exploit FINDING` | Build a non-destructive proof-of-concept request for one finding; a dry run by default, and `--send` sends it once to localhost only, never following redirects. |
 | `vibeaudit explain FINDING` | Explain one finding (`FILE:LINE`, `FILE:LINE:RULE` or a fingerprint prefix): the rule, the code and the data flow that led to it (`--format json`, `--path DIR` for another project). |
 | `vibeaudit routes [PATH]` | List every HTTP entry point with method, path, location and whether it has a visible auth check, writes data or calls a paid AI API (`--format text\|json\|md`). |
-| `vibeaudit rules` | List every rule (`--format text\|json\|md`; JSON includes the why and fix text). |
+| `vibeaudit rules` | List every rule (`--format text\|json\|md`, or `--json`; JSON includes the why and fix text). |
 | `vibeaudit doctor` | Show vibeaudit version, rule counts, ecosystem coverage, signed threat-feed status, offline OSV indexes and installed external scanners (`--format text\|json`). |
 | `vibeaudit init [PATH]` | Write starter `.vibeaudit.toml`, `.pre-commit-config.yaml` and a CI workflow (`--ci github\|gitlab\|circleci\|none`, `--no-hook`, `--no-scan`, `--force`), then run an initial scan. |
 | `vibeaudit feedback` | Record false-positive/confirmed verdicts, list feedback, `export` pytest regressions or `suggest-helpers` for `.vibeaudit.toml` (see [False positives](#false-positives-and-suppressing-findings)). |
@@ -215,10 +215,12 @@ Every command has `--help`.
 | `--file-timeout SECONDS` | Time each analysis step may spend on one file before it is stopped (default 30). |
 | `--scan-timeout SECONDS` | Overall wall-clock cap in seconds for analyzer stages (default: unlimited). |
 | `--fail-on-partial` | Exit 1 when any file, commit or analyzer stage was skipped or timed out (`partial` coverage). |
+| `--allow-empty` | Exit 0 even when 0 files are scanned instead of failing with an empty-scan error. |
+| `--score-model MODEL` | Scoring formula: `diminishing-v2` (default, size-normalized) or `linear-v1` (legacy `100 - penalty`). |
 | `--no-cache` | Do not read or write cached registry, vulnerability and LLM answers for this scan. |
 | `-q`, `--quiet` / `--no-color` | Print only the summary / plain text. |
 
-Exit codes: `0` nothing at the `--fail-on` level, `1` findings at that level, `2` usage error.
+Exit codes: `0` nothing at the `--fail-on` level (and at least one file scanned, unless `--allow-empty`), `1` findings at that level or zero files scanned, `2` usage error.
 
 What is scanned: in a git checkout, tracked and untracked files that are not git-ignored (a local, ignored
 `.env` is where secrets belong). Dependency and build folders (`node_modules`, `.venv`, `dist`, `build`,
@@ -341,7 +343,7 @@ and rewrites the findings that have one obvious, deterministic repair:
 | REL001 | Adds `timeout=10` to `requests` and `urlopen` calls; Go `http.Get/Post/PostForm` go through `&http.Client{Timeout: 10 * time.Second}` (importing `time`); Java and Kotlin `HttpClient.newHttpClient()` gets a 10-second connect timeout; Rust reqwest `Client::new()` (async or blocking) becomes a builder with a 10-second timeout. |
 | GO002 | Adds `defer resp.Body.Close()` after the `if err != nil` check that follows the request. |
 | CSHARP003 | Wraps `UseDeveloperExceptionPage()` (or the database error page) in `if (app.Environment.IsDevelopment())`, or `env.IsDevelopment()` in a Startup class. |
-| LLM003 | Adds an output token limit of 4096: `max_completion_tokens` (Chat Completions), `max_output_tokens` (Responses, Gemini config, `ChatGoogleGenerativeAI`), `max_tokens` (LangChain and LiteLLM), `maxOutputTokens` or `maxTokens` for the AI SDK by its major version in package.json. |
+| LLM003 | Adds an output token limit (default 4096, configurable with `--max-tokens N`): `max_completion_tokens` (Chat Completions), `max_output_tokens` (Responses, Gemini config, `ChatGoogleGenerativeAI`), `max_tokens` (LangChain and LiteLLM), `maxOutputTokens` or `maxTokens` for the AI SDK by its major version in package.json. |
 | LLM011 | Wraps the assignment or `return` that parses model output in `try`/`except ValueError` (Python) or `try`/`catch` (JavaScript); the fallback value is `None` / `null`, which the caller must handle. |
 | BE016, AUTH011 | Removes `'none'` from an algorithms list, turns `ignoreExpiration: true` off, adds `algorithms=[...]` to PyJWT `jwt.decode()` (the algorithm the file signs with, else HS256), and narrows a mixed HMAC and RSA list to the algorithm the file signs with. |
 | DATA004 | Float money columns become `Numeric(12, 2)` (SQLAlchemy), `DecimalField(max_digits=12, decimal_places=2)` (Django), `Decimal` (Prisma) or `numeric(12, 2)` (SQL). Create a migration afterwards; SQL files in migration folders are never edited. |
@@ -386,11 +388,11 @@ sanitizers = ["clean_sql_input"]                               # their output is
 public-paths = ["/api/public/*", "/api/survey-*"]              # intentionally unauthenticated routes
 ```
 
-Other keys: `include-preview`, `gate-severe-preview`, `monorepo`, `fail-on-partial`, `llm`, `llm-model`, `llm-max-requests`, `max-file-size`, `file-timeout`, `scan-timeout`. The same settings apply
+Other keys: `include-preview`, `gate-severe-preview`, `monorepo`, `fail-on-partial`, `allow-empty`, `score-model`, `llm`, `llm-model`, `llm-max-requests`, `max-file-size`, `file-timeout`, `scan-timeout`. The same settings apply
 to `vibeaudit scan`, `vibeaudit routes`, `vibeaudit feedback`, the MCP server and the Python API, except `llm`,
 which only `vibeaudit scan` reads: the LSP server, watch, studio, the MCP server and the API never send code to a
 model provider because a repository's config asks for it. The file is part of the scanned repository and can
-switch rules off: when you audit code you do not trust, use `--no-config`.
+switch rules off (scans warn when rules are disabled): when you audit code you do not trust, use `--no-config`.
 
 ## CI and pre-commit
 
@@ -412,7 +414,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0                  # needed for --diff
-      - uses: Ashin-06/vibeaudit@v0.21.0
+      - uses: Ashin-06/vibeaudit@v0.22.0
         with:
           fail-on: high
           args: --diff origin/main        # optional: only changed lines
@@ -447,7 +449,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - uses: Ashin-06/vibeaudit@v0.21.0
+      - uses: Ashin-06/vibeaudit@v0.22.0
         with:
           review: "true"
           args: --diff origin/${{ github.base_ref }} --baseline .vibeaudit-baseline.json --fail-on-regression 5
@@ -464,7 +466,7 @@ findings show in the merge request's Code Quality widget and in the pipeline's T
 
 ```yaml
 include:
-  - remote: https://raw.githubusercontent.com/Ashin-06/vibeaudit/v0.21.0/ci/gitlab-ci.yml
+  - remote: https://raw.githubusercontent.com/Ashin-06/vibeaudit/v0.22.0/ci/gitlab-ci.yml
 ```
 
 **CircleCI**: copy [ci/circleci.yml](ci/circleci.yml) into `.circleci/config.yml` (or merge its job into
@@ -480,7 +482,7 @@ for a test report) and keep the exit code.
 # .pre-commit-config.yaml
 repos:
   - repo: https://github.com/Ashin-06/vibeaudit
-    rev: v0.21.0
+    rev: v0.22.0
     hooks:
       - id: vibeaudit
 ```
@@ -606,7 +608,7 @@ speak to.
 
 ## Scoring
 
-Each finding has a severity (penalty weight: critical 25, high 10, medium 3, low 1). The overall and per-domain scores use a size-normalized diminishing formula, `round(100 * exp(-raw_penalty / (100 * sqrt(max(1, files / 25)))))` (100 when clean, floored at 1 when findings exist), so large repositories retain meaningful resolution instead of collapsing to 0. JSON reports also include `summary.linear_score` (`max(0, 100 - raw_penalty)`), `summary.raw_penalty` and `summary.density_per_100_files`. The grade is F if there is any critical finding, otherwise A (90 and up), B (75), C (60), D (40) or F.
+Each finding has a severity (penalty weight: critical 25, high 10, medium 3, low 1). By default (`--score-model diminishing-v2`), the overall and per-domain scores use a size-normalized diminishing formula, `round(100 * exp(-raw_penalty / (100 * sqrt(max(1, files / 25)))))` (100 when clean, floored at 1 when findings exist), so large repositories retain meaningful resolution instead of collapsing to 0. Pass `--score-model linear-v1` for the legacy `max(0, 100 - raw_penalty)` formula. JSON reports include `summary.score_model`, `summary.linear_score`, `summary.raw_penalty` and `summary.density_per_100_files`, and SARIF includes `runs[0].properties.score_model`. When 0 files are scanned, the score is `null` (displayed as `N/A`), the grade is `N/A`, and `scan` exits `1` unless `--allow-empty` is passed. The grade is F if there is any critical finding, otherwise A (90 and up), B (75), C (60), D (40) or F.
 
 The same formula gives a score per domain, so you can see where the problems are:
 
@@ -817,19 +819,20 @@ CycloneDX SBOM (`vibeaudit-VERSION.cdx.json`), built by the release workflow fro
 build provenance is signed with GitHub artifact attestations (Sigstore). With the GitHub CLI:
 
 ```bash
-gh attestation verify vibeaudit-0.21.0-py3-none-any.whl --repo Ashin-06/vibeaudit
+gh attestation verify vibeaudit-0.22.0-py3-none-any.whl --repo Ashin-06/vibeaudit
 ```
 
 Run the same for the `.tar.gz` and the `.cdx.json` file. The check passes only if the file was built by
 this repository's release workflow; `--format json` shows the commit and workflow it came from. The SBOM
 lists what the wheel installs (vibeaudit has zero runtime dependencies). PyPI receives these same attested files through trusted publishing; to install a wheel you verified
-yourself, run `pip install vibeaudit-0.21.0-py3-none-any.whl`.
+yourself, run `pip install vibeaudit-0.22.0-py3-none-any.whl`.
 
 ## Contributing, security and license
 
 - Contributing: see [CONTRIBUTING.md](CONTRIBUTING.md). Bug reports with a minimal example are the most
   useful contribution, especially false positives and missed findings.
-- Security issues in vibeaudit itself: see [SECURITY.md](SECURITY.md); please do not open a public issue.
+- Security issues in vibeaudit itself and our untrusted-repo threat model: see [SECURITY.md](SECURITY.md); please do not open a public issue.
+- Privacy and data-handling policy: see [docs/PRIVACY.md](docs/PRIVACY.md).
 - License: MIT, see [LICENSE](LICENSE). Popular-package lists derive from
   [top-pypi-packages](https://github.com/hugovk/top-pypi-packages) and
   [npm-high-impact](https://github.com/wooorm/npm-high-impact); vulnerability data comes from

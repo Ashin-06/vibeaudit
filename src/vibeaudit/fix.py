@@ -39,10 +39,11 @@ MIGRATION_PATH = re.compile(r"(?i)(?:^|/)(?:migrations?|migrate|db/migrate|alemb
 class FileCtx:
     """One file's text (LF line endings, no BOM) with lazily built views."""
 
-    def __init__(self, rel: str, text: str, project=None):
+    def __init__(self, rel: str, text: str, project=None, max_tokens: int = MAX_OUTPUT_TOKENS):
         self.rel = rel
         self.text = text
         self.project = project
+        self.max_tokens = max_tokens
         ext = rel.rsplit(".", 1)[-1].lower() if "." in rel else ""
         self.kind = {"py": "py", "sql": "sql", "prisma": "prisma"}.get(ext, "js" if rel.lower().endswith(JS_FIX_EXTS) else "")
         self.starts = [0] + [m.end() for m in re.finditer("\n", text)]
@@ -349,9 +350,9 @@ def fix_token_limit(ctx: FileCtx, f: Finding) -> Result:
         if d.endswith(("generate_content", "generate_content_async", "generate_content_stream")):
             cfg = kws.get("config") or kws.get("generation_config")
             if isinstance(cfg, ast.Call):
-                return py_append_arg(ctx, cfg, f"max_output_tokens={MAX_OUTPUT_TOKENS}")
+                return py_append_arg(ctx, cfg, f"max_output_tokens={ctx.max_tokens}")
             if isinstance(cfg, ast.Dict):
-                return py_append_dict(ctx, cfg, f'"max_output_tokens": {MAX_OUTPUT_TOKENS}')
+                return py_append_dict(ctx, cfg, f'"max_output_tokens": {ctx.max_tokens}')
             return "the Gemini call has no inline config to add max_output_tokens to"
         if d.endswith(("responses.create", "responses.parse")):
             key = "max_output_tokens"
@@ -361,7 +362,7 @@ def fix_token_limit(ctx: FileCtx, f: Finding) -> Result:
             key = "max_output_tokens"
         else:
             key = "max_tokens"
-        return py_append_arg(ctx, call, f"{key}={MAX_OUTPUT_TOKENS}")
+        return py_append_arg(ctx, call, f"{key}={ctx.max_tokens}")
     if ctx.kind != "js":
         return "unsupported file type"
     bare, a, b = ctx.views.bare, ctx.line_start(f.line), ctx.line_end(f.line)
@@ -391,7 +392,7 @@ def fix_token_limit(ctx: FileCtx, f: Finding) -> Result:
         key = "max_output_tokens"
     else:
         key = "max_tokens"
-    return append_item(ctx, o, oc, js_last_end(bare, o, oc), f"{key}: {MAX_OUTPUT_TOKENS}")
+    return append_item(ctx, o, oc, js_last_end(bare, o, oc), f"{key}: {ctx.max_tokens}")
 
 
 # --------------------------------------------------------------------- LLM011
@@ -848,7 +849,8 @@ def read_text(path: Path) -> Union[Tuple[str, str, bool], str]:
     return text.replace("\r\n", "\n"), ("\r\n" if crlf else "\n"), bom
 
 
-def plan_findings(root: Path, findings: Sequence[Finding], project=None, texts: Optional[Dict[str, str]] = None) -> Plan:
+def plan_findings(root: Path, findings: Sequence[Finding], project=None, texts: Optional[Dict[str, str]] = None,
+                  max_tokens: int = MAX_OUTPUT_TOKENS) -> Plan:
     """Plan fixes for `findings`. `texts` maps a file to the text to fix instead of its content on disk (an
     editor's unsaved buffer); such changes are for showing, not for `Plan.apply`."""
     plan = Plan(root)
@@ -878,7 +880,7 @@ def plan_findings(root: Path, findings: Sequence[Finding], project=None, texts: 
             plan.skipped += [(f, got) for f in fs]
             continue
         text, eol, bom = got
-        ctx = FileCtx(rel, text, project)
+        ctx = FileCtx(rel, text, project, max_tokens=max_tokens)
         if ctx.kind == "py" and not parses("py", text):
             plan.skipped += [(f, "the file does not parse") for f in fs]
             continue
@@ -915,7 +917,7 @@ def plan_findings(root: Path, findings: Sequence[Finding], project=None, texts: 
     return plan
 
 
-def plan(root: str, rules: Sequence[str] = (), opts=None) -> Plan:
+def plan(root: str, rules: Sequence[str] = (), opts=None, max_tokens: int = MAX_OUTPUT_TOKENS) -> Plan:
     """Scan `root` and plan a fix for every finding a codemod covers (only `rules` when given)."""
     from .config import project_options
     from .files import Project
@@ -926,7 +928,7 @@ def plan(root: str, rules: Sequence[str] = (), opts=None) -> Plan:
     wanted = {r.upper() for r in rules}
     findings = [f for f in res.findings if not wanted or f.rule_id in wanted]
     findings.sort(key=lambda f: (SEVERITY_RANK.get(f.severity, 9), f.file, f.line))
-    out = plan_findings(Path(root), findings, Project(Path(root), opts.excludes, opts.max_file_bytes))
+    out = plan_findings(Path(root), findings, Project(Path(root), opts.excludes, opts.max_file_bytes), max_tokens=max_tokens)
     out._pre_scan_fps = {f.fingerprint for f in res.findings}  # type: ignore[attr-defined]
     return out
 

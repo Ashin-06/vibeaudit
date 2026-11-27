@@ -23,7 +23,7 @@ KEYS: Dict[str, str] = {
     "llm": "string", "llm_model": "string", "offline": "boolean", "max_file_size": "integer",
     "llm_max_requests": "integer", "file_timeout": "number", "scan_timeout": "number",
     "include_preview": "boolean", "gate_severe_preview": "boolean", "monorepo": "boolean",
-    "fail_on_partial": "boolean",
+    "fail_on_partial": "boolean", "allow_empty": "boolean", "score_model": "score model",
 }
 
 
@@ -41,6 +41,7 @@ def _check(key: str, value: object, where: str) -> object:
         "number": isinstance(value, (int, float)) and not isinstance(value, bool) and value > 0,
         "severity": value in SEVERITIES,
         "severity or none": value in SEVERITIES[:4] + ["none"],
+        "score model": value in ("diminishing-v2", "linear-v1"),
     }[kind]
     if not ok:
         raise ConfigError(f"{where}: `{key}` must be a {kind}, got {value!r}")
@@ -119,6 +120,9 @@ def project_options(root: str, config: Optional[str] = None, **overrides):
         "public_paths": list(cfg.get("public_paths", [])),
         "include_preview": bool(cfg.get("include_preview", False)),
         "gate_severe_preview": bool(cfg.get("gate_severe_preview", True)),
+        "score_model": str(cfg.get("score_model", "diminishing-v2")),
+        "config_path": cfg_path,
+        "config_disabled": sorted(disabled) if cfg_path else [],
     }
     values.update(overrides)
     return Options(**values)

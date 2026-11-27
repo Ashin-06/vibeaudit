@@ -1,9 +1,11 @@
 """The signed threat feed: signatures, expiry, update, bundles, offline use, and the checks that use it."""
 import base64
 import datetime as dt
+import hashlib
 import json
 import os
 import re
+import shutil
 import socket
 import subprocess
 import sys
@@ -15,8 +17,12 @@ from vibeaudit import bundle, feed, store, updater
 from vibeaudit.scanner import Options, scan
 
 ROOT = Path(__file__).resolve().parent.parent
-KEY = feed.generate_key(1024)  # small, so the tests stay fast; the real key is 3072 bits
-OTHER = feed.generate_key(1024)
+if str(ROOT / "tools") not in sys.path:
+    sys.path.insert(0, str(ROOT / "tools"))
+from _feed_signer import build as build_feed, generate_key, public_key_to_pem, sign as sign_feed  # noqa: E402
+
+KEY = generate_key(1024)  # small, so the tests stay fast; the real key is 3072 bits
+OTHER = generate_key(1024)
 PUBLIC = {"n": KEY["n"], "e": KEY["e"]}
 NEW = {"slopsquatted": [{"ecosystem": "npm", "name": "react-hallucinated-utils", "note": "made up for this test",
                          "source": "https://example.org"}],
@@ -47,7 +53,7 @@ def ago(days):
 
 # ------------------------------------------------------------------ signatures
 def test_signature_round_trip_and_rejections():
-    raw = feed.build(NEW, KEY)
+    raw = build_feed(NEW, KEY)
     doc = feed.open_feed(raw, PUBLIC)
     assert doc["data"] == NEW and doc["format"] == feed.FORMAT and not feed.expired(doc)
     with pytest.raises(feed.FeedError, match="signature"):
@@ -66,22 +72,22 @@ def test_signature_round_trip_and_rejections():
 
 
 def test_expiry_and_version_are_signed():
-    doc = feed.open_feed(feed.build(NEW, KEY, now=ago(31)), PUBLIC)
+    doc = feed.open_feed(build_feed(NEW, KEY, now=ago(31)), PUBLIC)
     assert feed.expired(doc)
-    later = json.loads(json.loads(feed.build(NEW, KEY))["payload"])
+    later = json.loads(json.loads(build_feed(NEW, KEY))["payload"])
     assert later["version"] > doc["version"]
 
 
 def test_a_feed_without_a_key_is_never_trusted(monkeypatch):
     monkeypatch.setattr(feed, "public_key", lambda: None)
     with pytest.raises(feed.FeedError, match="no feed key"):
-        feed.open_feed(feed.build(NEW, KEY))
+        feed.open_feed(build_feed(NEW, KEY))
 
 
 def test_invalid_data_is_rejected():
     bad = {"prompt_injection": [{"id": "PI9", "pattern": "(", "description": "x", "source": "y"}]}
     with pytest.raises(feed.FeedError, match="does not compile"):
-        feed.build(bad, KEY)
+        build_feed(bad, KEY)
     for broken in ({"slopsquatted": [{"ecosystem": "Maven", "name": "x", "note": "n", "source": "s"}]},
                    {"model_sunsets": [{"id": "m-1", "date": "soon", "source": "s"}]},
                    {"model_sunsets": [{"id": "m-1", "date": "2026-02-30", "source": "s"}]},
@@ -104,16 +110,16 @@ def test_shipped_data_is_valid_and_patterns_do_not_match_our_docs():
 
 # ------------------------------------------------------------------ loading
 def test_valid_feed_adds_to_the_shipped_data(cache):
-    install(cache, feed.build(NEW, KEY))
+    install(cache, build_feed(NEW, KEY))
     assert ("npm", "react-hallucinated-utils") in feed.slopsquatted()
     assert ("PyPI", "huggingface-cli") in feed.slopsquatted()  # shipped entries stay
     assert feed.sunsets()["test-model-1"]["replacement"] == "test-model-2"
 
 
 @pytest.mark.parametrize("make, warning", [
-    (lambda: feed.build(NEW, KEY, now=ago(40)), "expired on"),
-    (lambda: feed.build(NEW, OTHER), "signature does not match"),
-    (lambda: feed.build(NEW, KEY).replace(b"react-", b"reakt-"), "signature does not match"),
+    (lambda: build_feed(NEW, KEY, now=ago(40)), "expired on"),
+    (lambda: build_feed(NEW, OTHER), "signature does not match"),
+    (lambda: build_feed(NEW, KEY).replace(b"react-", b"reakt-"), "signature does not match"),
     (lambda: b"\x00garbage", "not a signed feed"),
 ])
 def test_bad_installed_feed_falls_back_with_a_warning(cache, capsys, make, warning):
@@ -134,13 +140,13 @@ def test_update_installs_only_valid_newer_feeds(cache):
         raise OSError("not served in this test")
 
     logs = []
-    served["feed"] = feed.build(NEW, KEY)
+    served["feed"] = build_feed(NEW, KEY)
     assert updater.update_data(logs.append, fetch=fetch) == len(lists)
     assert cache.read_bytes() == served["feed"] and any("threat_feed.json: updated" in m for m in logs)
     installed = cache.read_bytes()
-    for raw, why in ((feed.build(NEW, KEY, now=ago(1)), "older than the installed feed"),
-                     (feed.build(NEW, KEY, now=ago(31)), "expired on"),
-                     (feed.build(NEW, OTHER), "signature does not match"),
+    for raw, why in ((build_feed(NEW, KEY, now=ago(1)), "older than the installed feed"),
+                     (build_feed(NEW, KEY, now=ago(31)), "expired on"),
+                     (build_feed(NEW, OTHER), "signature does not match"),
                      (b"<html>rate limited</html>", "not a signed feed")):
         served["feed"], logs = raw, []
         assert updater.update_data(logs.append, fetch=fetch) == len(lists) + 1
@@ -160,7 +166,7 @@ def test_update_without_a_key_skips_the_feed(cache, monkeypatch):
 
 
 def test_bundle_carries_the_feed_and_checks_it(cache, tmp_path):
-    install(cache, feed.build(NEW, KEY))
+    install(cache, build_feed(NEW, KEY))
     out = tmp_path / "b.zip"
     bundle.export(out, [], lambda m: None)
     cache.unlink()
@@ -172,7 +178,7 @@ def test_bundle_carries_the_feed_and_checks_it(cache, tmp_path):
     forged = tmp_path / "forged.zip"
     with zipfile.ZipFile(out) as src, zipfile.ZipFile(forged, "w") as dst:
         manifest = json.loads(src.read("manifest.json"))
-        raw = feed.build(NEW, OTHER)
+        raw = build_feed(NEW, OTHER)
         import hashlib
 
         manifest["files"]["data/threat_feed.json"] = {"sha256": hashlib.sha256(raw).hexdigest(), "size": len(raw)}
@@ -186,7 +192,7 @@ def test_bundle_carries_the_feed_and_checks_it(cache, tmp_path):
 
 # ------------------------------------------------------------------ the checks, offline
 def test_checks_use_the_feed_fully_offline(cache, tmp_path, monkeypatch):
-    install(cache, feed.build(NEW, KEY))
+    install(cache, build_feed(NEW, KEY))
 
     def no_network(*a, **k):
         raise AssertionError("an offline scan opened a connection")
@@ -268,3 +274,96 @@ def test_tools_refuse_unsafe_use(tmp_path):
     out = subprocess.run([sys.executable, str(ROOT / "tools" / "gen_feed_key.py"), str(ROOT / "key.json")],
                          capture_output=True, text=True)
     assert out.returncode == 2 and "outside the repository" in out.stderr and not (ROOT / "key.json").exists()
+
+
+def test_shipped_feed_module_is_verification_only():
+    for removed in ("generate_key", "sign", "build", "_prime", "_probable_prime"):
+        assert not hasattr(feed, removed), removed
+
+
+def _raw_sign(encoded_block: bytes, key: dict) -> bytes:
+    n, d = int(key["n"], 16), int(key["d"], 16)
+    k = (n.bit_length() + 7) // 8
+    return pow(int.from_bytes(encoded_block, "big"), d, n).to_bytes(k, "big")
+
+
+def test_pkcs1_v15_malformed_padding_and_digestinfo_vectors():
+    """Wycheproof-style PKCS#1 v1.5 rejection checks against forged signatures made with the real private key."""
+    msg = b'{"format":1,"version":1}'
+    digest = hashlib.sha256(msg).digest()
+    n = int(KEY["n"], 16)
+    k = (n.bit_length() + 7) // 8
+    valid = sign_feed(msg, KEY)
+    assert feed.verify(msg, valid, PUBLIC)
+
+    # 1. Missing NULL parameter inside DigestInfo
+    no_null = bytes.fromhex("302f300b06096086480165030402010420") + digest
+    em_no_null = b"\x00\x01" + b"\xff" * (k - len(no_null) - 3) + b"\x00" + no_null
+    assert not feed.verify(msg, _raw_sign(em_no_null, KEY), PUBLIC)
+
+    # 2. Wrong OID (SHA-1 OID)
+    sha1_oid = bytes.fromhex("3021300906052b0e03021a05000414") + hashlib.sha1(msg).digest()  # noqa: S324 - deliberate weak-OID negative test vector
+    em_sha1 = b"\x00\x01" + b"\xff" * (k - len(sha1_oid) - 3) + b"\x00" + sha1_oid
+    assert not feed.verify(msg, _raw_sign(em_sha1, KEY), PUBLIC)
+
+    # 3. Trailing garbage byte after SHA-256 DigestInfo (shortened 0xff padding)
+    trailing = feed.SHA256_INFO + digest + b"\x00"
+    em_trailing = b"\x00\x01" + b"\xff" * (k - len(trailing) - 3) + b"\x00" + trailing
+    assert not feed.verify(msg, _raw_sign(em_trailing, KEY), PUBLIC)
+
+    # 4. Corrupted padding byte (0xfe instead of 0xff)
+    good_t = feed.SHA256_INFO + digest
+    em_bad_pad = b"\x00\x01\xfe" + b"\xff" * (k - len(good_t) - 4) + b"\x00" + good_t
+    assert not feed.verify(msg, _raw_sign(em_bad_pad, KEY), PUBLIC)
+
+    # 5. Missing 0x00 separator between 0xff padding and DigestInfo
+    em_no_sep = b"\x00\x01" + b"\xff" * (k - len(good_t) - 2) + good_t
+    assert not feed.verify(msg, _raw_sign(em_no_sep, KEY), PUBLIC)
+
+    # 6. Signature range & length bounds + degenerate keys
+    assert not feed.verify(msg, b"\x00" * k, PUBLIC)
+    assert not feed.verify(msg, b"\x00" * (k - 1) + b"\x01", PUBLIC)
+    assert not feed.verify(msg, n.to_bytes(k, "big"), PUBLIC)
+    assert not feed.verify(msg, valid[:-1], PUBLIC)
+    assert not feed.verify(msg, valid, {"n": KEY["n"], "e": 1})
+    assert not feed.verify(msg, valid, {"n": KEY["n"], "e": 2})
+    assert not feed.verify(msg, b"\x01" * 64, {"n": format((1 << 511) | 1, "x"), "e": 65537})
+
+
+@pytest.mark.skipif(shutil.which("openssl") is None, reason="openssl CLI not installed")
+def test_verify_interoperates_with_openssl(tmp_path):
+    """Signatures created by tools/_feed_signer verify under `openssl`, and OpenSSL signatures verify under feed.verify()."""
+    msg = b'{"format": 1, "version": 12345, "data": {}}'
+    msg_file = tmp_path / "msg.bin"
+    sig_file = tmp_path / "sig.bin"
+    pub_file = tmp_path / "pub.pem"
+    msg_file.write_bytes(msg)
+    sig_file.write_bytes(sign_feed(msg, KEY))
+    pub_file.write_bytes(public_key_to_pem(PUBLIC))
+
+    out = subprocess.run(
+        ["openssl", "dgst", "-sha256", "-verify", str(pub_file), "-signature", str(sig_file), str(msg_file)],
+        capture_output=True, text=True,
+    )
+    assert out.returncode == 0, out.stderr
+
+    # Reverse direction: key & signature generated by OpenSSL verify via vibeaudit.feed.verify
+    priv = tmp_path / "ossl_priv.pem"
+    pub = tmp_path / "ossl_pub.pem"
+    osig = tmp_path / "ossl.sig"
+    subprocess.run(["openssl", "genpkey", "-algorithm", "RSA", "-pkeyopt", "rsa_keygen_bits:2048", "-out", str(priv)],
+                   check=True, capture_output=True)
+    subprocess.run(["openssl", "pkey", "-in", str(priv), "-pubout", "-out", str(pub)], check=True, capture_output=True)
+    subprocess.run(["openssl", "dgst", "-sha256", "-sign", str(priv), "-out", str(osig), str(msg_file)],
+                   check=True, capture_output=True)
+    pub_text = subprocess.run(["openssl", "pkey", "-pubin", "-in", str(pub), "-text", "-noout"],
+                              check=True, capture_output=True, text=True).stdout
+    mod_block = pub_text.split("Modulus:")[1].split("Exponent:")[0]
+    n_hex = re.sub(r"[^0-9a-fA-F]", "", mod_block).lstrip("0")
+    e_val = int(re.search(r"Exponent:\s*(\d+)", pub_text).group(1))  # type: ignore[union-attr]
+    ossl_key = {"n": n_hex, "e": e_val}
+    raw_sig = osig.read_bytes()
+    assert feed.verify(msg, raw_sig, ossl_key)
+    bad_sig = bytearray(raw_sig)
+    bad_sig[0] ^= 0x01
+    assert not feed.verify(msg, bytes(bad_sig), ossl_key)

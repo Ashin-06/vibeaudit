@@ -17,6 +17,8 @@ TOOL_URL = "https://github.com/Ashin-06/vibeaudit"
 
 
 WEIGHTS = {"critical": 25, "high": 10, "medium": 3, "low": 1, "info": 0}
+SCORE_MODELS = ("diminishing-v2", "linear-v1")
+DEFAULT_SCORE_MODEL = "diminishing-v2"
 DOMAINS = {
     "Security": ("secrets", "supply-chain", "backend", "frontend", "auth", "config"),
     "AI": ("llm", "llm-review"),
@@ -41,6 +43,15 @@ class Result:
         self.findings = findings
         self.meta = meta
         self.routes = routes or []
+
+    @property
+    def is_empty_scan(self) -> bool:
+        return "files_scanned" in self.meta and int(self.meta.get("files_scanned") or 0) == 0 and not self.findings
+
+    @property
+    def score_model(self) -> str:
+        model = str(self.meta.get("score_model") or DEFAULT_SCORE_MODEL)
+        return model if model in SCORE_MODELS else DEFAULT_SCORE_MODEL
 
     @property
     def gating(self) -> List[Finding]:
@@ -74,28 +85,42 @@ class Result:
         return max(0, 100 - self.raw_penalty)
 
     @property
-    def score(self) -> int:
+    def score(self) -> Optional[int]:
+        if self.is_empty_scan:
+            return None
+        if self.score_model == "linear-v1":
+            return self.linear_score
         files = max(1, int(self.meta.get("files_scanned") or 1))
         return _diminishing_score(self.raw_penalty, files)
 
     @property
-    def normalized_score(self) -> int:
-        """Size-normalized health score (0-100); alias for `score` kept for report compatibility."""
-        return self.score
+    def normalized_score(self) -> Optional[int]:
+        """Size-normalized health score (0-100); None when 0 files were scanned."""
+        if self.is_empty_scan:
+            return None
+        files = max(1, int(self.meta.get("files_scanned") or 1))
+        return _diminishing_score(self.raw_penalty, files)
 
     @property
     def domain_scores(self) -> Dict[str, int]:
         """The same score, computed separately for each domain (security, AI, quality, ...)."""
+        if self.is_empty_scan:
+            return {}
         gating = self.gating
+        if self.score_model == "linear-v1":
+            return {name: max(0, 100 - sum(WEIGHTS[f.severity] for f in gating if f.category in cats))
+                    for name, cats in DOMAINS.items()}
         files = max(1, int(self.meta.get("files_scanned") or 1))
         return {name: _diminishing_score(sum(WEIGHTS[f.severity] for f in gating if f.category in cats), files)
                 for name, cats in DOMAINS.items()}
 
     @property
     def grade(self) -> str:
+        s = self.score
+        if s is None:
+            return "N/A"
         if any(f.severity == "critical" for f in self.gating):
             return "F"
-        s = self.score
         return "A" if s >= 90 else "B" if s >= 75 else "C" if s >= 60 else "D" if s >= 40 else "F"
 
 
@@ -143,8 +168,13 @@ def render_text(res: Result, color: bool, verbose: bool = True) -> str:
     for cat, n in by_cat.most_common():
         out.append(f"  {_cat(cat)}: {n}")
     pen_note = f"  (raw penalty: {res.raw_penalty})" if res.raw_penalty else ""
-    out.append(f"  Score: {res.score}/100  Grade: {res.grade}{pen_note}")
-    out.append("  Domains: " + "  ".join(f"{k} {v}" for k, v in res.domain_scores.items()))
+    if res.is_empty_scan:
+        out.append("  Score: N/A  Grade: N/A  (no files scanned)")
+        out.append("  Domains: N/A")
+    else:
+        model_note = f" [{res.score_model}]" if res.score_model != DEFAULT_SCORE_MODEL else ""
+        out.append(f"  Score: {res.score}/100  Grade: {res.grade}{model_note}{pen_note}")
+        out.append("  Domains: " + "  ".join(f"{k} {v}" for k, v in res.domain_scores.items()))
     cov = res.meta.get("coverage")
     if isinstance(cov, dict) and cov.get("overall_status") == "partial":
         reasons = "; ".join(cov.get("incomplete_reasons") or ["incomplete checks"])
@@ -159,7 +189,8 @@ def render_text(res: Result, color: bool, verbose: bool = True) -> str:
         width = max(len(p["path"]) for p in res.meta["packages"])
         out.append("  Packages (monorepo mode, each scanned against its own manifest):")
         for p in res.meta["packages"]:
-            out.append(f"    {p['path']:{width}}  score {p['score']:3} {p['grade']}  {p['findings']} findings, {p['files_scanned']} files")
+            sc_str = f"{p['score']:3}" if p["score"] is not None else "N/A"
+            out.append(f"    {p['path']:{width}}  score {sc_str} {p['grade']}  {p['findings']} findings, {p['files_scanned']} files")
     previews = len(res.findings) - len(res.gating)
     if previews:
         out.append(f"  {previews} findings come from preview rules and do not count toward --fail-on or the score "
@@ -182,8 +213,9 @@ def render_text(res: Result, color: bool, verbose: bool = True) -> str:
 def render_json(res: Result) -> str:
     return json.dumps({
         "tool": "vibeaudit", "version": __version__, "root": res.root,
-        "summary": {"counts": res.counts, "total": len(res.findings), "score": res.score,
-                    "normalized_score": res.normalized_score, "linear_score": res.linear_score,
+        "summary": {"counts": res.counts, "total": len(res.findings), "score_model": res.score_model,
+                    "score": res.score, "normalized_score": res.normalized_score,
+                    "linear_score": None if res.is_empty_scan else res.linear_score,
                     "raw_penalty": res.raw_penalty, "density_per_100_files": res.density_per_100_files,
                     "grade": res.grade, "domains": res.domain_scores},
         "meta": res.meta, "coverage": res.meta.get("coverage"),
@@ -230,8 +262,9 @@ def render_sarif(res: Result) -> str:
         "results": results,
     }
     cov = res.meta.get("coverage")
+    props: Dict = {"score_model": res.score_model}
     if isinstance(cov, dict):
-        run_obj["properties"] = {"coverage": cov}
+        props["coverage"] = cov
         run_obj["invocations"] = [{
             "executionSuccessful": cov.get("overall_status") == "complete",
             "toolExecutionNotifications": [
@@ -239,6 +272,7 @@ def render_sarif(res: Result) -> str:
                 for msg in (cov.get("incomplete_reasons") or [])
             ],
         }]
+    run_obj["properties"] = props
     doc = {
         "$schema": "https://json.schemastore.org/sarif-2.1.0.json", "version": "2.1.0",
         "runs": [run_obj],
@@ -256,12 +290,19 @@ def render_markdown(res: Result) -> str:
     out = ["# vibeaudit report", "", f"Scanned `{res.root}` ({res.meta.get('files_scanned', 0)} files) with vibeaudit {__version__}.", ""]
     if res.meta.get("stack"):
         out += [f"Stack: {', '.join(res.meta['stack'])}", ""]
-    out += [f"**Score: {res.score}/100 (grade {res.grade}, raw penalty: {res.raw_penalty})**", "", "| Severity | Count |", "| --- | --- |"]
-    out += [f"| {s} | {c[s]} |" for s in SEVERITIES if s != "info"]
-    out += ["", "| Domain | Score |", "| --- | --- |"] + [f"| {k} | {v}/100 |" for k, v in res.domain_scores.items()]
+    if res.is_empty_scan:
+        out += ["**Score: N/A (grade N/A, no files scanned)**", "", "| Severity | Count |", "| --- | --- |"]
+        out += [f"| {s} | {c[s]} |" for s in SEVERITIES if s != "info"]
+    else:
+        out += [f"**Score: {res.score}/100 (grade {res.grade}, model {res.score_model}, raw penalty: {res.raw_penalty})**", "",
+                "| Severity | Count |", "| --- | --- |"]
+        out += [f"| {s} | {c[s]} |" for s in SEVERITIES if s != "info"]
+        out += ["", "| Domain | Score |", "| --- | --- |"] + [f"| {k} | {v}/100 |" for k, v in res.domain_scores.items()]
     if res.meta.get("packages"):
         out += ["", "| Package | Score | Findings | Files |", "| --- | --- | --- | --- |"]
         out += [f"| `{p['path']}` | {p['score']}/100 ({p['grade']}) | {p['findings']} | {p['files_scanned']} |"
+                if p["score"] is not None else
+                f"| `{p['path']}` | N/A ({p['grade']}) | {p['findings']} | {p['files_scanned']} |"
                 for p in res.meta["packages"]]
     out += ["", "| Category | Count |", "| --- | --- |"]
     out += [f"| {_cat(k)} | {v} |" for k, v in Counter(f.category for f in res.findings).most_common()]
@@ -327,12 +368,16 @@ def render_html(res: Result) -> str:
     if res.meta.get("stack"):
         parts.append(f"<div class=\"muted\">Stack: {e(', '.join(res.meta['stack']))}</div>")
     parts.append("<div class=\"tiles\">")
-    parts.append(f"<div class=\"tile\"><span class=\"muted\">Score</span><b>{res.score}/100</b>Grade {e(res.grade)}</div>")
+    if res.is_empty_scan:
+        parts.append("<div class=\"tile\"><span class=\"muted\">Score</span><b>N/A</b>Grade N/A</div>")
+    else:
+        parts.append(f"<div class=\"tile\"><span class=\"muted\">Score</span><b>{res.score}/100</b>Grade {e(res.grade)}</div>")
     for s in SEVERITIES[:4]:
         parts.append(f"<div class=\"tile\"><span class=\"muted\">{s.title()}</span><b>{c[s]}</b></div>")
     parts.append("</div>")
-    parts.append("<div class=\"tiles\">" + "".join(
-        f"<div class=\"tile\"><span class=\"muted\">{e(k)}</span><b>{v}</b>of 100</div>" for k, v in res.domain_scores.items()) + "</div>")
+    if res.domain_scores:
+        parts.append("<div class=\"tiles\">" + "".join(
+            f"<div class=\"tile\"><span class=\"muted\">{e(k)}</span><b>{v}</b>of 100</div>" for k, v in res.domain_scores.items()) + "</div>")
     for note in res.meta.get("notes", []):
         parts.append(f"<p class=\"muted\">Note: {e(note)}</p>")
     parts.append("<div class=\"filters\" role=\"group\" aria-label=\"Filter by severity\">"
@@ -399,14 +444,15 @@ def render_prompt(res: Result) -> str:
 
 
 # ------------------------------------------------------------------ badge
-BADGE_COLORS = {"A": "#2e7d32", "B": "#558b2f", "C": "#f9a825", "D": "#ef6c00", "F": "#c62828"}
+BADGE_COLORS = {"A": "#2e7d32", "B": "#558b2f", "C": "#f9a825", "D": "#ef6c00", "F": "#c62828", "N/A": "#757575"}
 
 
 def render_badge(res: Result) -> str:
     """A flat SVG badge for a README: `vibeaudit | 92 A`."""
-    label, value = "vibeaudit", f"{res.score} {res.grade}"
+    label = "vibeaudit"
+    value = "N/A" if res.is_empty_scan else f"{res.score} {res.grade}"
     lw, vw = 6 * len(label) + 12, 7 * len(value) + 12
-    color = BADGE_COLORS[res.grade]
+    color = BADGE_COLORS.get(res.grade, "#757575")
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{lw + vw}" height="20" role="img" aria-label="{label}: {value}">'
         f'<title>{label}: {value}</title>'

@@ -18,7 +18,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
+sys.path.insert(0, str(ROOT / "tools"))
 
+from _feed_signer import build  # noqa: E402
 from vibeaudit import feed  # noqa: E402
 
 
@@ -40,7 +42,7 @@ def main() -> int:
         print("src/vibeaudit/data/feed_key.json is missing: run tools/gen_feed_key.py first", file=sys.stderr)
         return 1
     try:
-        raw = feed.build(feed.shipped(), key)
+        raw = build(feed.shipped(), key)
         doc = feed.open_feed(raw)
     except (ValueError, KeyError, TypeError):  # their messages can quote part of the key, so say only this
         print("VIBEAUDIT_FEED_KEY is not a key made by tools/gen_feed_key.py", file=sys.stderr)

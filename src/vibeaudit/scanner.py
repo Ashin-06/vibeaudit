@@ -82,6 +82,9 @@ class Options:
     history: bool = False  # scan recent git history commits for high-confidence leaked credentials
     history_commits: int = 200
     no_config: bool = False
+    score_model: str = "diminishing-v2"
+    config_path: Optional[str] = None
+    config_disabled: List[str] = field(default_factory=list)
     log: Callable[[str], None] = lambda s: None
 
 
@@ -285,7 +288,10 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
                     notes.append(f"{tool} is not installed; skipped.")
                 continue
             opts.log(f"running {tool} ...")
-            res = GUARD.run("<project>", tool, external.run_tool, tool, project.root)
+            if opts.no_config:
+                res = GUARD.run("<project>", tool, external.run_tool, tool, project.root, True)
+            else:
+                res = GUARD.run("<project>", tool, external.run_tool, tool, project.root)
             if res is None:
                 notes.append(f"{tool} failed to run or produced no readable output.")
                 continue
@@ -344,6 +350,14 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
 
     if scan_timed_out:
         notes.append(f"Scan timed out after {opts.scan_timeout}s (--scan-timeout); remaining analyzers were skipped.")
+    if len(project.files) == 0:
+        notes.append("No files were scanned (directory is empty or all files were excluded).")
+    if opts.config_disabled:
+        dis_list = sorted(opts.config_disabled)
+        notes.append(
+            f"Project config disables {len(dis_list)} rule(s)/category(ies): {', '.join(dis_list)} "
+            "(use --no-config to audit untrusted code)."
+        )
     stack = _stack(project)
     if history_info and history_info.get("timeline"):
         current_pairs = {(f.file, f.rule_id) for f in findings if "git history" not in f.message}
@@ -354,11 +368,13 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
                          scan_timed_out=scan_timed_out)
     meta = {
         "files_scanned": len(project.files), "duration_seconds": round(time.time() - start, 2),
+        "score_model": opts.score_model,
         "stack": stack, "external_tools": ran, "offline": opts.offline, "notes": notes,
         "routes_found": len(all_routes), "git": project.is_git,
         "skipped": list(GUARD.skipped), "internal_errors": list(GUARD.internal_errors),
         "feedback_hidden": hidden, "feedback_demoted": demoted, "include_preview": opts.include_preview,
         "gate_severe_preview": opts.gate_severe_preview, "disabled": sorted(opts.disabled),
+        "config_disabled": sorted(opts.config_disabled),
         "attack_paths": correlate.attack_paths(findings, all_routes),
         "ai_risk_profile": correlate.ai_risk_profile(findings),
         "coverage": cov,

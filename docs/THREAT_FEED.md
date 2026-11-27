@@ -18,8 +18,10 @@ its entries to the shipped ones.
 The signed file is `{"payload": "<JSON text>", "signature": "<base64>"}`. The payload holds the format, a
 version (the signing time in seconds, which never decreases), the creation and expiry times (30 days after
 signing) and the data. The signature is RSA PKCS#1 v1.5 with SHA-256 over the payload, made with a 3072-bit
-key; vibeaudit verifies it with the standard library against the public key it ships
-(`src/vibeaudit/data/feed_key.json`).
+key; `vibeaudit.feed` ships verification logic only (using the standard library against
+`src/vibeaudit/data/feed_key.json`), while key generation and signing helpers live in maintainer-only scripts
+(`tools/_feed_signer.py`, `tools/gen_feed_key.py`, `tools/sign_feed.py`) and are cross-checked against
+OpenSSL in tests.
 
 - `vibeaudit update` installs a downloaded feed only if the signature verifies, the contents are valid, it has
   not expired and it is not older than the installed one. Otherwise it keeps the current copy and says why.
