@@ -73,20 +73,20 @@ def _app_router(project: Project, sf: SourceFile, add: Add) -> None:
     v = _views(sf)
     if v is None or "next" not in project.js_deps(sf.rel):
         return
-    code, bare = v.code, v.bare  # type: ignore[attr-defined]
+    code, bare = v.code, v.bare
     for m in finditer(PAGES_DATA, bare):
         add(sf, sf.line_at(m.start()), "QA009",
             f"`{m.group(1)}` is a Pages Router function; the App Router never calls it, so this code does not run. "
             "Fetch in the server component (or a route handler) instead.")
-    m = NEXT_ROUTER.search(code)
-    if m:
-        add(sf, sf.line_at(m.start()), "QA009",
+    m_router = NEXT_ROUTER.search(code)
+    if m_router:
+        add(sf, sf.line_at(m_router.start()), "QA009",
             "`next/router` does not work in the App Router (useRouter throws \"NextRouter was not mounted\"); "
             "use `next/navigation`.")
     if USE_CLIENT.search(code):
-        m = METADATA_EXPORT.search(bare)
-        if m:
-            add(sf, sf.line_at(m.start()), "QA009",
+        m_meta = METADATA_EXPORT.search(bare)
+        if m_meta:
+            add(sf, sf.line_at(m_meta.start()), "QA009",
                 "A \"use client\" file exports metadata, which Next.js only reads from server components.")
 
 
@@ -94,7 +94,7 @@ def _js_mock_fallback(sf: SourceFile, add: Add) -> None:
     v = _views(sf)
     if v is None or MOCK_PATH.search(sf.rel):
         return
-    code, bare = v.code, v.bare  # type: ignore[attr-defined]
+    bare = v.bare
     if not re.search(r"(?:[mM]ock|MOCK|[fF]ake|FAKE|[dD]ummy|DUMMY)", bare) or MOCK_SWITCH.search(bare):
         return
     seen: Set[int] = set()
@@ -164,7 +164,7 @@ def _mock_name(node: ast.AST) -> str:
 def _py_tree(sf: SourceFile) -> Optional[ast.Module]:
     tree = sf.cache.get("ast")
     if tree is not None:
-        return tree  # type: ignore[return-value]
+        return tree
     try:
         return ast.parse(sf.text or "")
     except (SyntaxError, ValueError):
@@ -235,7 +235,7 @@ def _functions(sf: SourceFile) -> List[Tuple[str, str, int]]:
     v = _views(sf)
     if v is None:
         return out
-    code, bare = v.code, v.bare  # type: ignore[attr-defined]
+    code, bare = v.code, v.bare
     pairs = _pairs(bare)
     for rx in (JS_FUNC, JS_ARROW):
         for m in finditer(rx, bare):

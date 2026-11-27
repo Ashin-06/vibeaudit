@@ -25,7 +25,7 @@ from pathlib import Path
 from typing import Callable, Dict, List, Optional, Tuple
 
 from .model import SEVERITY_RANK, Finding
-from .store import loads_json
+from .store import loads_json, validate_http_url
 
 MARKER = "<!-- vibeaudit:{} -->"
 MARKER_RX = re.compile(r"<!-- vibeaudit:([0-9a-f]{32}) -->\s*$")  # only at the very end of our own comments
@@ -114,12 +114,18 @@ def build(root: Path, findings: List[Finding], changes, prefix: str = "", max_co
 
 # ------------------------------------------------------------------ GitHub
 def _request(method: str, url: str, token: str, body: Optional[dict] = None) -> Tuple[object, Dict[str, str]]:
-    req = urllib.request.Request(url, method=method, data=json.dumps(body).encode() if body is not None else None,
-                                 headers={"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json",
-                                          "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "vibeaudit-review",
-                                          "Content-Type": "application/json"})
     try:
-        with urllib.request.urlopen(req, timeout=API_TIMEOUT) as resp:  # noqa: S310 - the GitHub API URL
+        validate_http_url(url)
+    except ValueError as e:
+        raise ReviewError(str(e)) from None
+    req = urllib.request.Request(  # noqa: S310 - scheme validated above
+        url, method=method, data=json.dumps(body).encode() if body is not None else None,
+        headers={"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json",
+                 "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "vibeaudit-review",
+                 "Content-Type": "application/json"},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=API_TIMEOUT) as resp:  # noqa: S310 - scheme validated above
             return loads_json(resp.read().decode("utf-8") or "null"), dict(resp.headers)
     except urllib.error.HTTPError as e:
         raise ReviewError(f"GitHub API {method} {url.split('?')[0]}: HTTP {e.code}") from None
@@ -175,7 +181,7 @@ def github_context(env: Dict[str, str]) -> Tuple[str, str, int, str]:
 def repo_prefix(root: Path) -> str:
     """The scanned folder relative to the repository root ("" at the root), for review comment paths."""
     try:
-        out = subprocess.run(["git", "-C", str(root), "rev-parse", "--show-prefix"], capture_output=True,
+        out = subprocess.run(["git", "-C", str(root), "rev-parse", "--show-prefix"], capture_output=True,  # noqa: S603, S607 - fixed git invocation
                              stdin=subprocess.DEVNULL, timeout=30, check=False)
     except (OSError, subprocess.SubprocessError):
         return ""

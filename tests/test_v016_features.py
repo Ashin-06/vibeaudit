@@ -104,7 +104,8 @@ def test_py_context_sensitive_sanitizers_and_cross_call(tmp_path: Path):
     })
     by_line = {f.line: f.rule_id for f in res.findings}
     lines = (tmp_path / "app.py").read_text(encoding="utf-8").splitlines()
-    line_no = lambda sub: next(i + 1 for i, l in enumerate(lines) if sub in l)
+    def line_no(sub: str) -> int:
+        return next(i + 1 for i, ln in enumerate(lines) if sub in ln)
 
     assert by_line.get(line_no("conn.execute")) == "BE001"
     assert by_line.get(line_no('os.system("echo "')) == "BE002"

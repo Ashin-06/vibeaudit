@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import ast
 import re
-from typing import Callable, Dict, Iterator, List, Optional, Set, Tuple
+from typing import AbstractSet, Callable, Dict, Iterator, List, Optional, Set, Tuple
 
 from . import heuristics as H
 from .files import Project, SourceFile, production_overrides
@@ -92,7 +92,7 @@ def _safe_mongo_filter(node: ast.AST) -> bool:
         return False
     if not node.values:
         return True
-    for k, v in zip(node.keys, node.values):
+    for k, v in zip(node.keys, node.values, strict=True):
         key_name = const_str(k) if k is not None else None
         if k is None or key_name is None or key_name == "$where":
             return False
@@ -249,7 +249,7 @@ def _placeholder_str(node: ast.AST) -> bool:
     return s is not None and bool(PLACEHOLDER_RUN.match(s))
 
 
-def placeholder_safe(node: ast.AST, assigned: Dict[str, ast.AST], bound: Set[str] = frozenset(), depth: int = 0) -> bool:
+def placeholder_safe(node: ast.AST, assigned: Dict[str, ast.AST], bound: AbstractSet[str] = frozenset(), depth: int = 0) -> bool:
     """True when `node` can only evaluate to SQL bind markers such as "?, ?, ?" or ":p0, :p1"."""
     if depth > 6:
         return False
@@ -426,14 +426,15 @@ def validated_idents(tree: ast.AST) -> Tuple[Set[str], List[Tuple[int, int, str]
             if not isinstance(node, ast.Assign):
                 continue
             for t in node.targets:
-                pairs = zip(t.elts, node.value.elts) if isinstance(t, (ast.Tuple, ast.List))                     and isinstance(node.value, (ast.Tuple, ast.List)) else [(t, node.value)]
+                pairs = zip(t.elts, node.value.elts, strict=False) if isinstance(t, (ast.Tuple, ast.List)) \
+                    and isinstance(node.value, (ast.Tuple, ast.List)) else [(t, node.value)]
                 for tgt, val in pairs:
                     if isinstance(val, ast.Name) and val.id in checked and isinstance(tgt, ast.Attribute)                             and isinstance(tgt.value, ast.Name) and tgt.value.id == "self":
                         attrs.add(tgt.attr)
     return attrs, local
 
 
-def _sequence_safe(node: ast.AST, assigned: Dict[str, ast.AST], bound: Set[str], depth: int) -> bool:
+def _sequence_safe(node: ast.AST, assigned: Dict[str, ast.AST], bound: AbstractSet[str], depth: int) -> bool:
     """True when every element of the iterable passed to str.join is a bind marker."""
     if isinstance(node, ast.Name) and node.id in assigned and depth <= 6:
         return _sequence_safe(assigned[node.id], assigned, bound, depth + 1)
@@ -612,7 +613,7 @@ class PyScanner:
                     # Flask's before_request, or a FastAPI / Starlette `@app.middleware("http")` that authenticates
                     if any(last_name(d.func if isinstance(d, ast.Call) else d) in ("before_request", "middleware")
                            for d in node.decorator_list):
-                        seg = ast.get_source_segment(sf.text, node) or ""
+                        seg = ast.get_source_segment(sf.text or "", node) or ""
                         if H.AUTH_EVIDENCE.search(seg) or re.search(r"abort\s*\(\s*40[13]|redirect\s*\(", seg):
                             self.global_auth = True
                             self.global_roles = self.global_roles or bool(H.ADMIN_ROLE_EVIDENCE.search(seg))
@@ -645,7 +646,11 @@ class PyScanner:
 
     # -------------------------------------------------- cross-function taint
     def _index_callables(self, sf: SourceFile, tree: ast.Module) -> None:
-        defs, methods, imports, consts, mod_assigns = {}, {}, {}, {}, {}
+        defs: Dict[str, ast.AST] = {}
+        methods: Dict[str, ast.AST] = {}
+        imports: Dict[str, Tuple[str, Optional[str], int]] = {}
+        consts: Dict[str, str] = {}
+        mod_assigns: Dict[str, ast.AST] = {}
         for node in tree.body:
             if isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):
                 mod_assigns[node.targets[0].id] = node.value
@@ -777,7 +782,7 @@ class PyScanner:
                 return None
             module, name, level = imp
             target = self._module_file(caller, module, level)
-            fn = self.defs.get(target or "", {}).get(name)
+            fn = self.defs.get(target or "", {}).get(name) if name is not None else None
             return (target, fn, False) if target and fn is not None else None
         imp = self.imports.get(caller, {}).get(spec[1])  # attr: `module.function(...)`
         if imp is None:
@@ -799,8 +804,8 @@ class PyScanner:
             spec = ("self", f.attr) if f.value.id in ("self", "cls") else ("attr", f.value.id, f.attr)
         else:
             return
-        args = {}
-        san_args = {}
+        args: Dict[object, Taint] = {}
+        san_args: Dict[object, Set[str]] = {}
         for i, a in enumerate(call.args):
             if isinstance(a, ast.Starred):
                 break
@@ -843,15 +848,16 @@ class PyScanner:
             kwonly = [a.arg for a in fn.args.kwonlyargs]  # type: ignore[attr-defined]
             for key, t in args.items():
                 name = params[key] if isinstance(key, int) and key < len(params) else key if isinstance(key, str) else None
-                if name in params or (isinstance(key, str) and name in kwonly):
-                    env[name] = merge(env.get(name, {}), t)  # type: ignore[index]
+                if name is not None and (name in params or (isinstance(key, str) and name in kwonly)):
+                    env[name] = merge(env.get(name, {}), t)
                     if key in san_args:
-                        san_env[name] = san_env.get(name, set()) | san_args[key]  # type: ignore[index]
-            key = (rel, fn.lineno, tuple(sorted((k, tuple(sorted(v))) for k, v in env.items())),
-                   tuple(sorted((k, tuple(sorted(v))) for k, v in san_env.items())))  # type: ignore[attr-defined]
-            if not env or key in seen or self._is_source(fn):
+                        san_env[name] = san_env.get(name, set()) | san_args[key]
+            fn_line = getattr(fn, "lineno", 1)
+            seen_key = (rel, fn_line, tuple(sorted((k, tuple(sorted(v))) for k, v in env.items())),
+                        tuple(sorted((k, tuple(sorted(v))) for k, v in san_env.items())))
+            if not env or seen_key in seen or self._is_source(fn):
                 continue
-            seen.add(key)
+            seen.add(seen_key)
             sf = self.p.get(rel)
             if sf is None:
                 continue
@@ -875,7 +881,7 @@ class PyScanner:
         views = sf.cache.get("py_views") or py_views(sf.text or "")
         sf.cache["views"] = sf.cache["py_views"] = views
         for a, b in views.comments:
-            text = sf.text[a:b]
+            text = (sf.text or "")[a:b]
             m = SECURITY_TODO.search(text)
             if m:
                 line = sf.line_at(a)
@@ -901,7 +907,8 @@ class PyScanner:
         self.check_module_text(tree)
 
     def scan_function(self, fn: ast.AST) -> None:
-        assert isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef))
+        if not isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            return
         route = self.route_info(fn)
         tool = self.is_tool(fn)
         params = [a for a in fn.args.posonlyargs + fn.args.args + fn.args.kwonlyargs]
@@ -911,8 +918,8 @@ class PyScanner:
             params.append(fn.args.kwarg)
         names = {a.arg for a in params}
         ctx = Ctx("route" if route else "tool" if tool else "plain", names)
-        defaults = dict(zip([a.arg for a in fn.args.args][::-1], fn.args.defaults[::-1]))
-        defaults.update({a.arg: d for a, d in zip(fn.args.kwonlyargs, fn.args.kw_defaults) if d is not None})
+        defaults = dict(zip([a.arg for a in fn.args.args][::-1], fn.args.defaults[::-1], strict=False))
+        defaults.update({a.arg: d for a, d in zip(fn.args.kwonlyargs, fn.args.kw_defaults, strict=True) if d is not None})
         for a in params:
             if a.arg in ("self", "cls"):
                 continue
@@ -1080,8 +1087,8 @@ class PyScanner:
                     and not any(isinstance(e, ast.Starred) for e in (*target.elts, *value.elts)):
                 # `sql, args["r"] = sql + " WHERE r = :r", risk`: each target gets its own element's taint
                 taints = [self.taint(v, ctx) for v in value.elts]  # the right side is evaluated before any binding
-                safes = [self._safe_contexts(v, et, ctx) for v, et in zip(value.elts, taints)]
-                for e, v, et, sc in zip(target.elts, value.elts, taints, safes):
+                safes = [self._safe_contexts(v, et, ctx) for v, et in zip(value.elts, taints, strict=True)]
+                for e, v, et, sc in zip(target.elts, value.elts, taints, safes, strict=True):
                     self.assign(e, et, ctx, v, sc)
                 return
             for e in target.elts:
@@ -1128,7 +1135,9 @@ class PyScanner:
                 base = root_name(st.target)
                 if base:
                     if base in ctx.assigned:
-                        ctx.assigned[base] = ast.BinOp(left=ctx.assigned[base], op=st.op, right=st.value)
+                        base_expr = ctx.assigned[base]
+                        if isinstance(base_expr, ast.expr):
+                            ctx.assigned[base] = ast.BinOp(left=base_expr, op=st.op, right=st.value)
                     rhs_t = self.taint(st.value, ctx)
                     if rhs_t:
                         rhs_sc = self._safe_contexts(st.value, rhs_t, ctx)
@@ -1156,12 +1165,12 @@ class PyScanner:
                     self.walk_block(st.body, ctx)
                 self.walk_block(st.orelse, ctx)
                 if checked and isinstance(st.test.ops[0], ast.NotIn) and st.body and isinstance(st.body[-1], (ast.Raise, ast.Return)):  # type: ignore[attr-defined]
-                    for n in checked:
-                        ctx.env.pop(n, None)  # rejected unless it is in the allow-list
+                    for cname in checked:
+                        ctx.env.pop(cname, None)  # rejected unless it is in the allow-list
                 if st.body and isinstance(st.body[-1], (ast.Raise, ast.Return)):
                     mod_a = self.mod_assigned.get(self.sf.rel, {}) if self.sf else {}
-                    for n in _path_guarded(st.test, ctx.assigned, mod_a):
-                        ctx.sanitized.setdefault(n, set()).add("path")  # path guard prevents traversal only
+                    for pname in _path_guarded(st.test, ctx.assigned, mod_a):
+                        ctx.sanitized.setdefault(pname, set()).add("path")  # path guard prevents traversal only
             elif isinstance(st, (ast.With, ast.AsyncWith)):
                 for item in st.items:
                     if item.optional_vars is not None:
@@ -1226,7 +1235,7 @@ class PyScanner:
         names = self.sf.cache.get("own_functions")
         if names is None:
             names = self.sf.cache["own_functions"] = set(re.findall(r"(?m)^[ \t]*(?:async[ \t]+)?def[ \t]+(\w+)", self.sf.text or ""))
-        return names  # type: ignore[return-value]
+        return names
 
     def resolve(self, node: ast.AST, ctx: Ctx) -> ast.AST:
         if isinstance(node, ast.Name) and node.id in ctx.assigned:
@@ -1237,7 +1246,7 @@ class PyScanner:
         self._note_call(call, ctx)
         d = dotted(call.func)
         name = last_name(call.func)
-        kws = {k.arg: k.value for k in call.keywords if k.arg}
+        kws: Dict[str, ast.AST] = {k.arg: k.value for k in call.keywords if k.arg}
         arg0 = call.args[0] if call.args else None
         t0 = self.taint(arg0, ctx) if arg0 is not None else {}
         is_attr = isinstance(call.func, ast.Attribute)
@@ -1274,7 +1283,7 @@ class PyScanner:
             msrc = self.resolve(arg0, ctx)
             where_hit = False
             if isinstance(msrc, ast.Dict):
-                for k, v in zip(msrc.keys, msrc.values):
+                for k, v in zip(msrc.keys, msrc.values, strict=True):
                     if const_str(k) == "$where":
                         tv = self.taint(v, ctx, sink="")
                         if tv or is_formatted(self.resolve(v, ctx)):
@@ -1360,15 +1369,15 @@ class PyScanner:
                 self.sink(call, self.taint(arg0, ctx, sink="path"), "BE006", "a file system path", "high", False)
         # outbound HTTP
         elif (root_name(call.func) in ("requests", "httpx", "urllib3", "aiohttp") and name in ("get", "post", "put", "patch", "delete", "head", "request", "urlopen", "stream")) or d.endswith("urlopen"):
-            target = call.args[1] if name == "request" and len(call.args) > 1 else arg0
-            if target is None:
-                target = kws.get("url")
-            if target is not None:
-                tt = self.taint(target, ctx, sink="url")
-                fixed_host = self._fixed_host(self.resolve(target, ctx))
+            req_target: Optional[ast.AST] = call.args[1] if name == "request" and len(call.args) > 1 else arg0
+            if req_target is None:
+                req_target = kws.get("url")
+            if req_target is not None:
+                tt = self.taint(req_target, ctx, sink="url")
+                fixed_host = self._fixed_host(self.resolve(req_target, ctx))
                 if tt and not fixed_host:
                     self.sink(call, tt, "BE005", "an outbound HTTP request URL", "high", False)
-            if isinstance(kws.get("verify"), ast.Constant) and kws["verify"].value is False:
+            if isinstance(kw_v := kws.get("verify"), ast.Constant) and kw_v.value is False:
                 self.add("BE013", call, "TLS certificate verification disabled (verify=False).")
         # templates / html / redirects
         elif name == "render_template_string" and arg0 is not None:
@@ -1382,13 +1391,13 @@ class PyScanner:
                 self.add("FE001", call, f"{name}() marks a formatted string as safe HTML.", "medium")
         elif name in ("redirect", "RedirectResponse", "HttpResponseRedirect") and arg0 is not None:
             # redirecting to the request's own URL (http -> https, trailing slash) goes back to the same site
-            target = self.resolve(arg0, ctx)
-            while isinstance(target, ast.BinOp) and isinstance(target.op, ast.Add) and _leading_query_or_fragment(target.right):
-                target = target.left
+            r_target = self.resolve(arg0, ctx)
+            while isinstance(r_target, ast.BinOp) and isinstance(r_target.op, ast.Add) and _leading_query_or_fragment(r_target.right):
+                r_target = r_target.left
             same_site = bool(re.fullmatch(r"request\.(?:url|base_url|url_root|host_url|full_path|path)(?:\.\w+\(.*\)|\[[^\]]*\])?",
-                                          ast.unparse(target), re.S))
+                                          ast.unparse(r_target), re.S))
             # url_for() / reverse() build a path of this app; redirect(obj) uses the model's get_absolute_url()
-            same_site = same_site or (isinstance(target, ast.Call) and last_name(target.func) in (
+            same_site = same_site or (isinstance(r_target, ast.Call) and last_name(r_target.func) in (
                 "url_for", "reverse", "reverse_lazy", "resolve_url", "url_path_for", "first", "get_object_or_404"))
             if not same_site and not (isinstance(arg0, ast.JoinedStr) and arg0.values and isinstance(arg0.values[0], ast.Constant)
                                       and str(arg0.values[0].value).startswith("/")):
@@ -1408,43 +1417,43 @@ class PyScanner:
             wo = kws.get("weights_only")
             if not (isinstance(wo, ast.Constant) and wo.value is True):
                 self.add("LLM008", call, "torch.load without weights_only=True unpickles arbitrary code.", "high" if t0 else "medium")
-        elif name == "load_model" and isinstance(kws.get("safe_mode"), ast.Constant) and kws["safe_mode"].value is False:
+        elif name == "load_model" and isinstance(kw_sm := kws.get("safe_mode"), ast.Constant) and kw_sm.value is False:
             self.add("LLM008", call, "Keras load_model with safe_mode=False can run code from the model file.")
         # JWT
         elif d.endswith("jwt.decode") or (name == "decode" and root_name(call.func) == "jwt"):
             opts = ast.unparse(kws["options"]) if "options" in kws else ""
             algs = ast.unparse(kws["algorithms"]) if "algorithms" in kws else ""
-            if (isinstance(kws.get("verify"), ast.Constant) and kws["verify"].value is False) or re.search(r"verify_signature['\"]\s*:\s*False", opts) or re.search(r"(?i)['\"]none['\"]", algs):
+            if (isinstance(kw_ver := kws.get("verify"), ast.Constant) and kw_ver.value is False) or re.search(r"verify_signature['\"]\s*:\s*False", opts) or re.search(r"(?i)['\"]none['\"]", algs):
                 self.add("BE016", call, "JWT decoded without verifying the signature.")
         # weak password hashing
         elif d.startswith("hashlib.") and name in ("md5", "sha1", "sha256", "sha512", "sha224", "sha384", "new") and arg0 is not None:
             if re.search(r"(?i)pass|pwd", ast.unparse(arg0)):
                 self.add("BE014", call, f"Password hashed with {name}; use bcrypt/argon2.")
         # debug
-        elif name == "run" and is_attr and isinstance(kws.get("debug"), ast.Constant) and kws["debug"].value is True and root_name(call.func) not in ("subprocess", "asyncio", "uvicorn"):
+        elif name == "run" and is_attr and isinstance(kw_dbg := kws.get("debug"), ast.Constant) and kw_dbg.value is True and root_name(call.func) not in ("subprocess", "asyncio", "uvicorn"):
             self.add("BE011", call, "App started with debug=True.")
         # CORS
         elif name == "CORS":
             self.check_cors_flask(call, kws)
         elif name == "add_middleware" and call.args and last_name(call.args[0]) == "CORSMiddleware":
             origins = ast.unparse(kws.get("allow_origins", ast.Constant(""))) + ast.unparse(kws.get("allow_origin_regex", ast.Constant("")))
-            creds = isinstance(kws.get("allow_credentials"), ast.Constant) and kws["allow_credentials"].value is True
+            creds = isinstance(kw_ac := kws.get("allow_credentials"), ast.Constant) and kw_ac.value is True
             if creds and re.search(r"['\"]\*['\"]|['\"]\.\*['\"]", origins):  # without credentials no cookies are sent
                 self.add("BE012", call, "CORS allows any origin together with credentials.", "high")
         # CSRF
         # trust_remote_code
-        if isinstance(kws.get("trust_remote_code"), ast.Constant) and kws["trust_remote_code"].value is True:
+        if isinstance(kw_trc := kws.get("trust_remote_code"), ast.Constant) and kw_trc.value is True:
             self.add("LLM008", call, "trust_remote_code=True runs Python code from the model repository.")
         # mass assignment
-        for k in call.keywords:
-            if k.arg is None and not (isinstance(k.value, ast.Call) and last_name(k.value.func) in ("dict", "model_dump", "dump", "validated_data")):
-                tk = self.taint(k.value, ctx)
+        for kw in call.keywords:
+            if kw.arg is None and not (isinstance(kw.value, ast.Call) and last_name(kw.value.func) in ("dict", "model_dump", "dump", "validated_data")):
+                tk = self.taint(kw.value, ctx)
                 if ("user" in tk or "llm" in tk) and not is_llm_call(call, self.llm_funcs) and (
                         name[:1].isupper() or name in ("create", "update", "insert", "update_or_create", "get_or_create", "filter_by")):
                     self.add("BE009", call, "The whole request body is unpacked into a model write.")
         if name == "setattr" and len(call.args) >= 2 and "user" in self.taint(call.args[1], ctx):
             self.add("BE009", call, "setattr() with a request-controlled attribute name.")
-        if name == "update" and is_attr and isinstance(call.func.value, ast.Attribute) and call.func.value.attr == "__dict__" and arg0 is not None and self.taint(arg0, ctx):
+        if name == "update" and is_attr and isinstance(call.func, ast.Attribute) and isinstance(call.func.value, ast.Attribute) and call.func.value.attr == "__dict__" and arg0 is not None and self.taint(arg0, ctx):
             self.add("BE009", call, "Object __dict__ updated from request data.")
         # agent tools defined inline: Tool(name=..., func=lambda cmd: ...)
         if name in ("Tool", "StructuredTool", "DynamicTool", "FunctionTool", "from_function"):
@@ -1481,7 +1490,7 @@ class PyScanner:
 
     def check_cors_flask(self, call: ast.Call, kws: Dict[str, ast.AST]) -> None:
         origins = kws.get("origins") or kws.get("resources")
-        creds = isinstance(kws.get("supports_credentials"), ast.Constant) and kws["supports_credentials"].value is True
+        creds = isinstance(kw_sc := kws.get("supports_credentials"), ast.Constant) and kw_sc.value is True
         wildcard = origins is None or re.search(r"['\"]\*['\"]", ast.unparse(origins))
         if wildcard and creds:  # without credentials no cookies are sent
             self.add("BE012", call, "Flask-CORS allows any origin together with credentials.", "high")
@@ -1516,7 +1525,7 @@ class PyScanner:
         return "max_output_tokens" in src
 
     def check_system_dict(self, node: ast.Dict, ctx: Ctx) -> None:
-        kv = {const_str(k): v for k, v in zip(node.keys, node.values) if k is not None}
+        kv = {const_str(k): v for k, v in zip(node.keys, node.values, strict=True) if k is not None}
         if const_str(kv.get("role")) == "system" and "content" in kv:
             self.check_system_value(kv["content"], node, ctx)
 
@@ -1554,7 +1563,7 @@ class PyScanner:
                 if isinstance(n, ast.Call) and dotted(n.func) in ("os.getenv", "os.environ.get", "getenv") and n.args and re.search(r"KEY|SECRET|TOKEN|PASSWORD|PASS", const_str(n.args[0]) or ""):
                     self.add("SEC010", call, "An environment secret is written to the logs.")
                     return
-                if isinstance(n, ast.Subscript) and dotted(n.value) == "os.environ" and re.search(r"KEY|SECRET|TOKEN|PASSWORD|PASS", const_str(n.slice) or ""):  # type: ignore[arg-type]
+                if isinstance(n, ast.Subscript) and dotted(n.value) == "os.environ" and re.search(r"KEY|SECRET|TOKEN|PASSWORD|PASS", const_str(n.slice) or ""):
                     self.add("SEC010", call, "An environment secret is written to the logs.")
                     return
 
@@ -1567,7 +1576,7 @@ class PyScanner:
             if isinstance(n, ast.Call):
                 return False
             if isinstance(n, ast.Subscript):
-                return bool(re.search(r"(?i)passw", const_str(n.slice) or ""))  # type: ignore[arg-type]
+                return bool(re.search(r"(?i)passw", const_str(n.slice) or ""))
             return bool(re.search(r"(?i)^(?:password|passwd|pwd)$|password$", last_name(n)))
 
         same_source = root_name(sides[0]) and root_name(sides[0]) == root_name(sides[1])

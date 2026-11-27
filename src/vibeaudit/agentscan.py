@@ -91,8 +91,8 @@ def _file(sf: SourceFile, add: Add) -> None:
         _mcp_tool_poisoning(sf, add)
     v = sf.cache.get("views")
     if v is not None and sf.kind in ("py", "js"):
-        _logged_llm_text(sf, v.code, v.bare, add)  # type: ignore[attr-defined]
-        _dynamic_tool_dispatch(sf, v.code, add)  # type: ignore[attr-defined]
+        _logged_llm_text(sf, v.code, v.bare, add)
+        _dynamic_tool_dispatch(sf, v.code, add)
 
 
 def _mcp_tool_poisoning(sf: SourceFile, add: Add) -> None:
@@ -159,7 +159,8 @@ def _agent_settings(sf: SourceFile, add: Add) -> None:
     def line_of(needle: str) -> int:
         return next((i for i, ln in enumerate(sf.lines, 1) if needle in ln), 1)
 
-    perms = data.get("permissions") if isinstance(data.get("permissions"), dict) else {}
+    raw_perms = data.get("permissions")
+    perms: dict = raw_perms if isinstance(raw_perms, dict) else {}
     if perms.get("defaultMode") == "bypassPermissions":
         add(sf, line_of("bypassPermissions"), "LLM016", "The agent's permission mode is bypassPermissions: it never asks before acting.")
     for tool in _strings(perms.get("allow")):

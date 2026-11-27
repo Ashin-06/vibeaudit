@@ -9,7 +9,7 @@ disable rules or exclude paths. Use `--no-config` when the repository itself is 
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Dict, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 import tomllib  # noqa: F401 - exposed for tests and callers
 
@@ -21,8 +21,9 @@ KEYS: Dict[str, str] = {
     "exclude": LIST, "disable": LIST, "auth_helpers": LIST, "sanitizers": LIST, "public_paths": LIST,
     "fail_on": "severity or none", "min_severity": "severity", "external": "string", "baseline": "string",
     "llm": "string", "llm_model": "string", "offline": "boolean", "max_file_size": "integer",
-    "llm_max_requests": "integer", "file_timeout": "number", "include_preview": "boolean",
-    "gate_severe_preview": "boolean", "monorepo": "boolean",
+    "llm_max_requests": "integer", "file_timeout": "number", "scan_timeout": "number",
+    "include_preview": "boolean", "gate_severe_preview": "boolean", "monorepo": "boolean",
+    "fail_on_partial": "boolean",
 }
 
 
@@ -48,10 +49,10 @@ def _check(key: str, value: object, where: str) -> object:
     return value
 
 
-def parse(table: dict, where: str) -> Dict[str, object]:
+def parse(table: dict, where: str) -> Dict[str, Any]:
     if not isinstance(table, dict):
         raise ConfigError(f"{where}: the vibeaudit settings must be a table")
-    out: Dict[str, object] = {}
+    out: Dict[str, Any] = {}
     for raw_key, value in table.items():
         key = str(raw_key).replace("-", "_")
         if key not in KEYS:
@@ -60,7 +61,7 @@ def parse(table: dict, where: str) -> Dict[str, object]:
     return out
 
 
-def load(root: Path, explicit: Optional[str] = None) -> Tuple[Dict[str, object], Optional[str]]:
+def load(root: Path, explicit: Optional[str] = None) -> Tuple[Dict[str, Any], Optional[str]]:
     """Return (settings, path of the file they came from)."""
     if explicit:
         path = Path(explicit)
@@ -105,16 +106,17 @@ def project_options(root: str, config: Optional[str] = None, **overrides):
     baseline = cfg.get("baseline")
     if baseline and cfg_path:
         baseline = str(Path(cfg_path).parent / str(baseline))
-    disabled = {x.strip() for d in cfg.get("disable", []) for x in str(d).split(",") if x.strip()}  # type: ignore[attr-defined]
+    disabled = {x.strip() for d in cfg.get("disable", []) for x in str(d).split(",") if x.strip()}
     values = {
-        "offline": bool(cfg.get("offline", False)), "excludes": list(cfg.get("exclude", [])),  # type: ignore[call-overload]
+        "offline": bool(cfg.get("offline", False)), "excludes": list(cfg.get("exclude", [])),
         "disabled": disabled, "min_severity": cfg.get("min_severity", "low"),  # as the CLI
         "external": cfg.get("external", "auto"),
         "baseline": baseline, "max_file_bytes": cfg.get("max_file_size", 1_000_000), "llm": None,
         "llm_model": cfg.get("llm_model"), "llm_max_requests": cfg.get("llm_max_requests", 10),
-        "file_timeout": float(cfg.get("file_timeout", 30.0)),  # type: ignore[arg-type]
-        "auth_helpers": list(cfg.get("auth_helpers", [])), "sanitizers": list(cfg.get("sanitizers", [])),  # type: ignore[call-overload]
-        "public_paths": list(cfg.get("public_paths", [])),  # type: ignore[call-overload]
+        "file_timeout": float(cfg.get("file_timeout", 30.0)),
+        "scan_timeout": float(cfg["scan_timeout"]) if cfg.get("scan_timeout") is not None else None,
+        "auth_helpers": list(cfg.get("auth_helpers", [])), "sanitizers": list(cfg.get("sanitizers", [])),
+        "public_paths": list(cfg.get("public_paths", [])),
         "include_preview": bool(cfg.get("include_preview", False)),
         "gate_severe_preview": bool(cfg.get("gate_severe_preview", True)),
     }

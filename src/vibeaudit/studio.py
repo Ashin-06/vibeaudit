@@ -105,7 +105,7 @@ def build(res, project) -> Dict[str, Any]:
         d["findings"] = [f["fingerprint"] for f in by_file.get(r.file, []) if f["line"] >= r.line
                          and f["line"] <= r.line + r.body.count("\n") + 1]
         routes.append(d)
-    flows = []
+    flows: List[dict] = []
     for f in res.findings:
         if f.rule_id not in FLOW_RULES or not f.line or len(flows) >= MAX_FLOWS:
             continue
@@ -122,7 +122,7 @@ def build(res, project) -> Dict[str, Any]:
     gating = res.gating
     for name, cats in DOMAINS.items():
         mine = [f for f in gating if f.category in cats]
-        categories = {}
+        categories: Dict[str, Dict[str, Any]] = {}
         for f in mine:
             c = categories.setdefault(f.category, {"category": f.category, "points": 0, "rules": {}})
             c["points"] += WEIGHTS[f.severity]
@@ -231,7 +231,7 @@ class ExclusiveServer(ThreadingHTTPServer):
 
 def make_server(studio: Studio, port: int = 0, token: Optional[str] = None) -> ThreadingHTTPServer:
     """A server bound to 127.0.0.1 (port 0: any free port). The token is attached to the handler class."""
-    handler = type("StudioHandler", (Handler,), {"studio": studio, "token": token or secrets.token_urlsafe(24)})
+    handler: Any = type("StudioHandler", (Handler,), {"studio": studio, "token": token or secrets.token_urlsafe(24)})
     server = ExclusiveServer((HOST, port), handler)
     handler.port = server.server_address[1]
     return server

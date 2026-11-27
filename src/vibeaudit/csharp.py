@@ -94,7 +94,7 @@ def views_of(sf: SourceFile) -> Views:
     v = sf.cache.get("cs_views")
     if v is None:
         v = sf.cache["cs_views"] = cs_views(sf.text or "")
-    return v  # type: ignore[return-value]
+    return v
 
 
 # ------------------------------------------------------------------ routes and authorization

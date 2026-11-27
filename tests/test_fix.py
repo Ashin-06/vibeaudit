@@ -475,7 +475,7 @@ def test_java_and_kotlin_timeout(tmp_path):
 
 def test_rust_reqwest_timeout(tmp_path):
     src = ("use reqwest::Client;\n\npub fn client() -> Client {\n    Client::new()\n}\n\n"
-	       "pub fn blocking() -> reqwest::blocking::Client {\n    reqwest::blocking::Client::new()\n}\n")
+           "pub fn blocking() -> reqwest::blocking::Client {\n    reqwest::blocking::Client::new()\n}\n")
     out = roundtrip(tmp_path, {"src/http.rs": src}, "REL001")["src/http.rs"]
     assert out.count('.timeout(std::time::Duration::from_secs(10)).build().expect("HTTP client")') == 2
     assert "reqwest::blocking::Client::builder()" in out
@@ -485,10 +485,10 @@ def test_csharp_developer_page_guard(tmp_path):
     src = ("var builder = WebApplication.CreateBuilder(args);\nvar app = builder.Build();\n\n"
            "app.UseDeveloperExceptionPage();\napp.MapGet(\"/\", () => \"ok\");\napp.Run();\n")
     out = roundtrip(tmp_path, {"Program.cs": src, "App.csproj": "<Project Sdk=\"Microsoft.NET.Sdk.Web\"></Project>\n"},
-	                "CSHARP003")["Program.cs"]
+                    "CSHARP003")["Program.cs"]
     assert "if (app.Environment.IsDevelopment())\n{\n    app.UseDeveloperExceptionPage();\n}\n" in out
     startup = ("public class Startup\n{\n    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)\n    {\n"
-	           "        app.UseDeveloperExceptionPage();\n    }\n}\n")
+               "        app.UseDeveloperExceptionPage();\n    }\n}\n")
     out = roundtrip(tmp_path / "s", {"Startup.cs": startup, "App.csproj": "<Project Sdk=\"Microsoft.NET.Sdk.Web\"></Project>\n"},
-	                "CSHARP003")["Startup.cs"]
+                    "CSHARP003")["Startup.cs"]
     assert "        if (env.IsDevelopment())\n        {\n            app.UseDeveloperExceptionPage();\n        }\n" in out

@@ -67,11 +67,13 @@ def _code(sf: SourceFile, add: Add) -> None:
         add(sf, "JAVA003", sf.line_at(m.start()),
             "The security chain permits every request, so no endpoint needs a login unless it checks one itself.")
     if DEFAULT_TYPING.search(text) and not SAFE_TYPING.search(text):
-        m = DEFAULT_TYPING.search(text)
-        add(sf, "JAVA004", sf.line_at(m.start()),  # type: ignore[union-attr]
-            "Jackson reads class names from the JSON (default typing or class-based type ids) with no allow-list of "
-            "subtypes: a gadget class in the classpath gives remote code execution.")
+        m1 = DEFAULT_TYPING.search(text)
+        if m1:
+            add(sf, "JAVA004", sf.line_at(m1.start()),
+                "Jackson reads class names from the JSON (default typing or class-based type ids) with no allow-list of "
+                "subtypes: a gadget class in the classpath gives remote code execution.")
     if XSTREAM.search(text) and not XSTREAM_SAFE.search(text):
-        m = XSTREAM.search(text)
-        add(sf, "JAVA004", sf.line_at(m.start()),  # type: ignore[union-attr]
-            "XStream deserializes any type here (no allowTypes or setupDefaultSecurity): untrusted XML gives remote code execution.")
+        m2 = XSTREAM.search(text)
+        if m2:
+            add(sf, "JAVA004", sf.line_at(m2.start()),
+                "XStream deserializes any type here (no allowTypes or setupDefaultSecurity): untrusted XML gives remote code execution.")

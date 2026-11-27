@@ -87,6 +87,28 @@ def loads_toml(text: str) -> Any:
         raise ValueError("TOML nested too deeply") from None
 
 
+LOCAL_HOSTS = ("localhost", "127.0.0.1", "::1")
+
+
+def validate_http_url(url: str, *, allow_local_http: bool = False) -> str:
+    """Require an https:// URL (or http:// on loopback only when allow_local_http=True)."""
+    import urllib.parse
+
+    if not isinstance(url, str) or not url.strip():
+        raise ValueError("URL must be a non-empty string")
+    parts = urllib.parse.urlsplit(url.strip())
+    scheme = parts.scheme.lower()
+    host = (parts.hostname or "").lower()
+    if not host:
+        raise ValueError(f"URL {url!r} has no host")
+    if scheme == "https":
+        return url
+    if allow_local_http and scheme == "http" and host in LOCAL_HOSTS:
+        return url
+    allowed = "https:// (or http:// on localhost)" if allow_local_http else "https://"
+    raise ValueError(f"unsafe URL scheme {parts.scheme!r}; only {allowed} is allowed")
+
+
 def read_json(path: Path) -> Any:
     try:
         return loads_json(path.read_text(encoding="utf-8"))

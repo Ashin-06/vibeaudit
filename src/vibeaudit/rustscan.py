@@ -117,7 +117,8 @@ class RustScanner:
         self.extractors: Dict[str, str] = {}  # type -> body of its FromRequest(Parts) impl
         self.auth_extractors: Set[str] = set()  # those that reject unauthenticated requests
         self.follower = Follower(rust_params)  # cross-function taint
-        self.depth, self.via = 0, None  # while a followed call is checked: how deep, and the call it came through
+        self.depth: int = 0
+        self.via: Optional[str] = None  # while a followed call is checked: how deep, and the call it came through
         self.reported: Set[Tuple[str, int, str, bool]] = set()
 
     def add(self, sf: SourceFile, off: int, rule: str, msg: str, sev: str = "") -> None:
@@ -152,7 +153,7 @@ class RustScanner:
         v = fn.sf.cache["rust_views"]
         self.depth, self.via = depth, via
         try:
-            self._function(fn.sf, v.code, v.bare, fn.start, fn.body[0], fn.body[1], set(seed))  # type: ignore[attr-defined]
+            self._function(fn.sf, v.code, v.bare, fn.start, fn.body[0], fn.body[1], set(seed))
         finally:
             self.depth, self.via = 0, None
 
@@ -195,7 +196,7 @@ class RustScanner:
             # calls only: not the `fn from_request_parts(` declaration itself, nor another extractor's method
             for name in set(re.findall(r"(?<![.:\w])(?<!fn )([a-z_]\w{0,60})\s*\(", body)) - {"from_request_parts", "from_request"}:
                 for f, _a, _po, pc, b in self.funcs.get(name, [])[:3]:
-                    inner = f.cache["rust_views"].code[pc:b]  # type: ignore[attr-defined]
+                    inner = f.cache["rust_views"].code[pc:b]
                     if REJECTS.search(inner) or (depth < 1 and helper_rejects(inner, depth + 1)):
                         return True
             return False
@@ -215,8 +216,8 @@ class RustScanner:
         helper's code (empty if none), so the route checks also see its scoping (`WHERE tenant_id = $1`)."""
         for name in list(dict.fromkeys(re.findall(r"(?<![.:\w])([a-z_]\w*)\s*\(", body)))[:20]:
             for f, a, _po, pc, b in self.funcs.get(name, []):
-                if f is sf and H.AUTH_EVIDENCE.search(f.cache["rust_views"].code[pc:b]):  # type: ignore[attr-defined]
-                    return f.cache["rust_views"].code[a:b]  # type: ignore[attr-defined]
+                if f is sf and H.AUTH_EVIDENCE.search(f.cache["rust_views"].code[pc:b]):
+                    return f.cache["rust_views"].code[a:b]
         return ""
 
     def _fn(self, name: str, sf: SourceFile) -> Optional[Tuple[SourceFile, int, int, int, int]]:
@@ -243,7 +244,7 @@ class RustScanner:
     def _prefixes(self, sf: SourceFile) -> None:
         """`web::scope("/api").service(handler)` and Axum `.nest("/api", router_fn())`: the prefix each function gets."""
         v = sf.cache["rust_views"]
-        code, bare = v.code, v.bare  # type: ignore[attr-defined]
+        code, bare = v.code, v.bare
         for rx in (SCOPE, NEST):
             for m in finditer(rx, bare):
                 q = m.end() - 1
@@ -284,7 +285,7 @@ class RustScanner:
     def _routes(self, sf: SourceFile) -> None:
         v = sf.cache["rust_views"]
         # routers built inside `#[cfg(test)]` modules are test fixtures, not the app's routes
-        code, bare = without_test_modules(v.code, v.bare), without_test_modules(v.bare, v.bare)  # type: ignore[attr-defined]
+        code, bare = without_test_modules(v.code, v.bare), without_test_modules(v.bare, v.bare)
         if not re.search(r"\bactix_web\b|\baxum\b|#\[\s*(?:get|post|put|patch|delete)\s*\(", code):
             return
         actix = "actix_web" in code or "actix-web" in code
@@ -357,7 +358,7 @@ class RustScanner:
     def _route(self, sf: SourceFile, off: int, path: str, verbs: List[str], fn, framework: str, attrs: str,
                layered: bool = False) -> None:
         fsf, a, po, pc, b = fn
-        code = fsf.cache["rust_views"].code  # type: ignore[attr-defined]
+        code = fsf.cache["rust_views"].code
         params = code[po + 1:pc]
         body = attrs + code[a:b]
         types = re.sub(r"\b\w+\s*:", " ", params)
@@ -384,8 +385,8 @@ class RustScanner:
     # ------------------------------------------------------------------ data flow
     def _checks(self, sf: SourceFile) -> None:
         v = sf.cache["rust_views"]
-        code, bare = v.code, v.bare  # type: ignore[attr-defined]
-        for name, lst in self.funcs.items():
+        code, bare = v.code, v.bare
+        for _name, lst in self.funcs.items():
             for f, a, po, pc, b in lst:
                 if f is not sf:
                     continue
@@ -427,8 +428,8 @@ class RustScanner:
                 pick = argv[:1] if rule != "BE008" or "Location" not in body_c[m.start():close] else argv
                 if rule == "BE002":
                     pick = argv[:1]
-                names = path_tainted if rule in ("BE006", "BE008") else tainted
-                hit = next((x for x in pick if _mentions(x, names) or _direct_source(x)), None)
+                tainted_names = path_tainted if rule in ("BE006", "BE008") else tainted
+                hit = next((x for x in pick if _mentions(x, tainted_names) or _direct_source(x)), None)
                 if hit is not None and not (rule == "BE005" and _fixed_host(hit, assigned)):
                     self.add(sf, pc + m.start(), rule, f"Request data flows into {what}.", sev)
                 elif rule == "BE001" and pick and _formatted(pick[0], assigned):

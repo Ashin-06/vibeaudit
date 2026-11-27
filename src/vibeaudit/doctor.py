@@ -109,7 +109,7 @@ def render_text(info: Dict[str, Any]) -> str:
         f"{r['llm_review']} LLM review; {r['severe_preview']} severe-gating preview)",
         f"  Ecosystems: {', '.join(info['ecosystems']['all'])}",
         f"    Registry: {', '.join(info['ecosystems']['registry'])}",
-        f"  Threat feed:",
+        "  Threat feed:",
         f"    Public key: {'present' if f['public_key'] else 'missing'}",
         f"    Active:     {f['source']} (slopsquatted={f['entries']['slopsquatted']}, "
         f"sunsets={f['entries']['model_sunsets']}, injection={f['entries']['prompt_injection']})",

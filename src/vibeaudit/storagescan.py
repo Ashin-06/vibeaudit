@@ -121,7 +121,7 @@ def _redis_ttl(sf: SourceFile, add: Add) -> None:
     v = sf.cache.get("views")
     if v is None:
         return
-    code, bare = v.code, v.bare  # type: ignore[attr-defined]
+    code, bare = v.code, v.bare
     if not re.search(r"\bredis\b|ioredis|@upstash/redis|aioredis", code, re.I):
         return
     clients = {m.group(1) for m in REDIS_CLIENT.finditer(code)}
@@ -188,6 +188,6 @@ def _docker_secrets(sf: SourceFile, add: Add) -> None:
             add(sf, line, "CFG017", f"Build argument `{name}` holds a secret; build arguments are kept in the image history.")
     by_name = {s["name"]: s for s in stages if s["name"]}
     for stage_name, sources, line in final["copies_from"]:
-        src = by_name.get(stage_name)
-        if src and src["secrets"] and any(s in ("/", ".", "/app", "/app/", "./") or s.endswith("/") for s in sources):
+        src_stage = by_name.get(stage_name)
+        if src_stage and src_stage["secrets"] and any(s in ("/", ".", "/app", "/app/", "./") or s.endswith("/") for s in sources):
             add(sf, line, "CFG017", f"The final image copies a whole folder from stage `{stage_name}`, which had a secret file copied into it.")

@@ -4,7 +4,7 @@ from __future__ import annotations
 import json
 import subprocess
 
-from vibeaudit import aibom, cli, report
+from vibeaudit import cli, report
 from vibeaudit.model import Finding
 from vibeaudit.scanner import Options, scan
 
@@ -93,7 +93,7 @@ def test_aibom_report_emits_valid_cyclonedx_16(tmp_path):
     (tmp_path / ".mcp.json").write_text(json.dumps({"mcpServers": {"docs": {"command": "npx", "args": ["docs@1.0.0"]}}}))
     (tmp_path / "CLAUDE.md").write_text("# Instructions\nBe safe.\n")
 
-    res = _scan(tmp_path)
+    _scan(tmp_path)
     out = tmp_path / "ai-bom.cdx.json"
     assert cli.main(["scan", str(tmp_path), "--offline", "--external", "none", "--fail-on", "none", "-r", f"aibom:{out}"]) == 0
     doc = json.loads(out.read_text(encoding="utf-8"))

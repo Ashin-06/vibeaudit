@@ -135,7 +135,7 @@ def export_tests(root: Path) -> str:
         if verdict == "confirmed":
             lines.append('    opts = project_options(str(ROOT), offline=True, external="none", feedback=False, include_preview=True)')
             lines.append("    res = scan(str(ROOT), opts)")
-            lines.append(f'    hits = [(f.rule_id, f.file) for f in res.findings]')
+            lines.append("    hits = [(f.rule_id, f.file) for f in res.findings]")
             lines.append(f'    assert ({rule!r}, {file_rel!r}) in hits')
         else:
             lines.append("    # Keeps this false positive suppressed via .vibeaudit/feedback.json until the rule handles the pattern.")

@@ -13,7 +13,7 @@ import re
 import threading
 import time
 from pathlib import Path
-from typing import Callable, List
+from typing import List
 
 PUBLIC_HINTS = re.compile(r"(?i)(?:^|/)(?:login|signin|signup|register|health|healthz|ready|live|ping|metrics|docs|openapi)")
 CONTROL_CHARS = re.compile(r"[\x00-\x1f\x7f]")

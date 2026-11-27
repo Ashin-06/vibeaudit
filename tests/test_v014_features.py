@@ -3,7 +3,6 @@ doctor install_fix, LSP route hover + Studio auth_evidence, PHP caching, Ruby in
 """
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
 from vibeaudit import __version__, cli, deps, doctor, feedback, init, lsp, phpscan, studio

@@ -13,7 +13,7 @@ import urllib.request
 from importlib import resources
 from typing import Callable, Dict, List, Optional
 
-from .store import cache_dir, write_atomic
+from .store import cache_dir, validate_http_url, write_atomic
 
 DATA_URL = os.environ.get("VIBEAUDIT_DATA_URL", "https://raw.githubusercontent.com/Ashin-06/vibeaudit/main/src/vibeaudit/data/")
 FEED_URL = os.environ.get("VIBEAUDIT_FEED_URL", "https://raw.githubusercontent.com/Ashin-06/vibeaudit/threat-feed/threat_feed.json")
@@ -70,7 +70,11 @@ def _download(url: str) -> bytes:
     token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
     if token and url.startswith("https://raw.githubusercontent.com/"):
         headers["Authorization"] = f"token {token}"  # needed while the repository is private
-    with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=30) as resp:  # noqa: S310 - fixed https URL
+    try:
+        validate_http_url(url)
+    except ValueError as e:
+        raise ValueError(str(e)) from None
+    with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=30) as resp:  # noqa: S310 - scheme validated above
         data = resp.read(MAX_BYTES + 1)
     if len(data) > MAX_BYTES:
         raise ValueError("file is too large")

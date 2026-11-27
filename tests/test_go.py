@@ -182,8 +182,6 @@ def test_routes_with_groups_middleware_and_chi(tmp_path):
     write(tmp_path, "go.mod", "module example.com/app\n\ngo 1.22\n")
     write(tmp_path, "main.go", GIN)
     write(tmp_path, "routes.go", CHI)
-    routes = {(r.path, tuple(r.methods)): r.has_auth for r in scan_all(tmp_path).meta.get("routes_list", [])} \
-        if "routes_list" in scan_all(tmp_path).meta else None
     from vibeaudit.files import Project
     from vibeaudit.goscan import GoScanner
     got = {(r.path, tuple(r.methods)): r.has_auth for r in GoScanner(Project(tmp_path), lambda f: None).run()}

@@ -4,10 +4,10 @@ import http.server
 import json
 import sqlite3
 import threading
-import urllib.parse
 
 import pytest
 
+from vibeaudit.exploit import ExploitError
 from vibeaudit.probe import Prober, Target, login
 from vibeaudit.scanner import Options, scan
 
@@ -86,7 +86,7 @@ def test_login_for_a_token(json_app):
     _root, url = json_app
     t = Target(url, False, 200, 50)
     assert login(t, "/api/login", '{"username": "alice", "password": "s3cret"}') == {"Authorization": "Bearer tok-alice"}
-    with pytest.raises(Exception):
+    with pytest.raises(ExploitError):
         login(t, "/api/login", '{"username": "alice", "password": "wrong"}')
 
 

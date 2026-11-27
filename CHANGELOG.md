@@ -4,6 +4,33 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.21.0] - 2026-11-27
+
+### Added
+
+- **PEP 561 `py.typed` marker (`src/vibeaudit/py.typed`, `pyproject.toml`)**: ships type information inside the
+  installed wheel for downstream library consumers (`package` CI verifies `vibeaudit/py.typed` is packaged).
+- **CI lint (`ruff`) and static type-checking (`mypy`) gate (`pyproject.toml`, `.github/workflows/ci.yml`)**:
+  added `[tool.ruff]` (`E`, `F`, `W`, `B`, `S`), `[tool.mypy]`, and a blocking `lint-and-typecheck` CI job;
+  resolved all 220 type issues and lint findings across 77 source modules and test files (including catching
+  a missing `Dict` import in `scanner.py`, missing `Any` in `secretscan.py`, and a closure binding bug in `probe.py`).
+- **`--fail-on-partial` and `--scan-timeout` (`cli.py`, `config.py`, `scanner.py`, `coverage.py`)**:
+  lets CI fail fast (`exit 1`) whenever files, commits, or analyzer stages were skipped/timed out (`partial` coverage),
+  and enforces an overall wall-clock scan timeout using high-resolution `time.perf_counter()`.
+- **Config parser fuzzing (`tests/test_fuzz.py`, `tests/test_v021_hardening.py`)**: adversarial TOML syntax,
+  deeply nested tables/arrays, wrong-typed settings, and unknown keys against `store.loads_toml()`, `config.parse()`,
+  and `config.load()`.
+
+### Hardened
+
+- **Explicit URL scheme validation (`B310`) before every `urlopen` (`store.py`, `bundle.py`, `updater.py`,
+  `deps.py`, `review.py`, `llm.py`)**: added `validate_http_url()` requiring `https://` across all remote network
+  paths (`http://` allowed only for loopback endpoints in `llm._post`), rejecting `file://`, `ftp://`, `data://`,
+  and schemeless URLs.
+- **Explicit TLS verification-disabled warnings (`probe.py`, `exploit.py`, `cli.py`)**: emits an unmistakable
+  `WARNING:` on `stderr` and records `tls_verified` / `tls_warning` in probe and PoC output whenever TLS verification
+  is off (loopback HTTPS or `--i-own-this-target --insecure`).
+
 ## [0.20.0] - 2026-11-27
 
 ### Added

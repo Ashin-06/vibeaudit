@@ -253,7 +253,7 @@ def _md(s: str) -> str:
 
 def render_markdown(res: Result) -> str:
     c = res.counts
-    out = [f"# vibeaudit report", "", f"Scanned `{res.root}` ({res.meta.get('files_scanned', 0)} files) with vibeaudit {__version__}.", ""]
+    out = ["# vibeaudit report", "", f"Scanned `{res.root}` ({res.meta.get('files_scanned', 0)} files) with vibeaudit {__version__}.", ""]
     if res.meta.get("stack"):
         out += [f"Stack: {', '.join(res.meta['stack'])}", ""]
     out += [f"**Score: {res.score}/100 (grade {res.grade}, raw penalty: {res.raw_penalty})**", "", "| Severity | Count |", "| --- | --- |"]
@@ -472,7 +472,10 @@ RENDERERS = {"json": render_json, "sarif": render_sarif, "md": render_markdown, 
 EXTENSIONS = {"json": "json", "sarif": "sarif", "md": "md", "markdown": "md", "html": "html", "prompt": "txt", "badge": "svg",
               "codeclimate": "json", "junit": "xml", "aibom": "cdx.json"}
 for _fw in compliance.FRAMEWORKS:  # --report compliance:soc2 and so on
-    RENDERERS[f"compliance:{_fw}"] = lambda res, _fw=_fw: compliance.render(res, _fw)
+    def _render_compliance(res, _fw: str = _fw):
+        return compliance.render(res, _fw)
+
+    RENDERERS[f"compliance:{_fw}"] = _render_compliance
     EXTENSIONS[f"compliance:{_fw}"] = "html"
 
 

@@ -86,9 +86,9 @@ def php_views(src: str) -> Views:
             ident = m.group(2)
             body_start = src.find("\n", m.end())
             body_start = n if body_start < 0 else body_start + 1
-            close = re.compile(r"(?m)^[ \t]*" + re.escape(ident) + r"\b").search(src, body_start)
-            b = close.end() if close else n
-            body_end = close.start() if close else n
+            close_m = re.compile(r"(?m)^[ \t]*" + re.escape(ident) + r"\b").search(src, body_start)
+            b = close_m.end() if close_m else n
+            body_end = close_m.start() if close_m else n
             code.append(src[a:b])
             bare.append(src[a:body_start] + _NOT_NL.sub(" ", src[body_start:body_end]) + src[body_end:b])
             pos = b
@@ -238,7 +238,8 @@ class PhpScanner:
         self.access: List[Tuple[str, bool]] = []  # Symfony access_control: (path regex, requires a user)
         self.mw_groups: Dict[str, str] = {}  # Laravel middleware group -> its members (Kernel.php, bootstrap/app.php)
         self.follower = Follower(php_params)  # cross-function taint
-        self.depth, self.via = 0, None  # while a followed call is checked: how deep, and the call it came through
+        self.depth: int = 0
+        self.via: Optional[str] = None  # while a followed call is checked: how deep, and the call it came through
         self.reported: Set[Tuple[str, int, str, bool]] = set()
         self.included: Dict[str, Tuple[str, str]] = {}  # route file -> (prefix, middleware) of the group that requires it
         self.safe_methods: Set[str] = set()  # PHP methods/functions that escape or render fixed views before returning HTML
@@ -322,7 +323,7 @@ class PhpScanner:
         if c is None:
             return False
         sf, a, b = c
-        code = sf.cache["php_views"].code  # type: ignore[attr-defined]
+        code = sf.cache["php_views"].code
         head = code[max(0, a - 400):a]
         attrs = re.search(r"(?:#\[[^\]]{0,300}\]\s*)+(?:final\s+|abstract\s+|readonly\s+)*\Z", head)
         if attrs and (re.search(r"#\[\s*IsGranted", attrs.group(0)) or AUTH_MW.search(" ".join(_strings(attrs.group(0))))):
@@ -377,7 +378,7 @@ class PhpScanner:
     # ------------------------------------------------------------------ routes
     def _routes(self, sf: SourceFile) -> None:
         v = sf.cache["php_views"]
-        code, bare = v.code, v.bare  # type: ignore[attr-defined]
+        code, bare = v.code, v.bare
         if "Route" in code:
             self._laravel(sf, code, bare)
         if re.search(r"#\[\s*(?:\\?[\w\\]*\\)?Route\s*\(", code) or "@Route" in (sf.text or ""):
@@ -386,7 +387,7 @@ class PhpScanner:
     def _middleware_groups(self, sf: SourceFile) -> None:
         """`protected $middlewareGroups = ['api' => [...]]` (Kernel.php) and `$middleware->group('api', [...])`,
         `$middleware->api(append: [...])` (bootstrap/app.php, Laravel 11)."""
-        code = sf.cache["php_views"].code  # type: ignore[attr-defined]
+        code = sf.cache["php_views"].code
         if "middleware" not in code.lower():
             return
         m = re.search(r"\$middlewareGroups\s*=\s*\[", code)
@@ -410,7 +411,7 @@ class PhpScanner:
         """Route files required inside a group (`Route::middleware('web')->group(function () { require
         base_path('routes/web/hardware.php'); })`) take that group's prefix and middleware."""
         v = sf.cache["php_views"]
-        code, bare = v.code, v.bare  # type: ignore[attr-defined]
+        code, bare = v.code, v.bare
         for a, b, prefix, mw in self._groups(code, bare):
             for m in INCLUDE.finditer(code, a, b):
                 path = m.group(1).lstrip("/")
@@ -560,7 +561,7 @@ class PhpScanner:
             close = match_close(bare, m.end() - 1)
             if close > 0:
                 hits.append((m.start(), code[m.end():close]))
-        for a, b in sf.cache["php_views"].comments:  # type: ignore[attr-defined]
+        for a, b in sf.cache["php_views"].comments:
             for m in SYMFONY_ANNOTATION.finditer(raw, a, b):
                 close = raw.find(")", m.end(), b)
                 if close > 0:
@@ -601,7 +602,7 @@ class PhpScanner:
         if fn is None:
             return
         fsf, a, po, pc, b = fn
-        code = fsf.cache["php_views"].code  # type: ignore[attr-defined]
+        code = fsf.cache["php_views"].code
         body = attrs + "\n" + code[a:b]
         # checks every action of the controller makes: `$this->middleware(function (...) { $this->checkPermission(...) })`
         # in the constructor, or Laravel 11's `public static function middleware()`
@@ -623,7 +624,7 @@ class PhpScanner:
     # ------------------------------------------------------------------ data flow
     def _checks(self, sf: SourceFile) -> None:
         v = sf.cache["php_views"]
-        code, bare = v.code, v.bare  # type: ignore[attr-defined]
+        code, bare = v.code, v.bare
         spans = []
         for lst in self.funcs.values():
             for f, a, po, pc, b in lst:
@@ -653,7 +654,7 @@ class PhpScanner:
         v = fn.sf.cache["php_views"]
         self.depth, self.via = depth, via
         try:
-            self._function(fn.sf, v.code, v.bare, fn.body[0], fn.body[1], set(seed))  # type: ignore[attr-defined]
+            self._function(fn.sf, v.code, v.bare, fn.body[0], fn.body[1], set(seed))
         finally:
             self.depth, self.via = 0, None
 
@@ -749,7 +750,7 @@ class PhpScanner:
         """Record PHP methods/functions whose bodies escape output or render views, so Blade `{!! $m->fn() !!}` is not flagged."""
         for name, lst in self.funcs.items():
             for sf, _a, _po, pc, b in lst:
-                body = sf.cache["php_views"].code[pc:b]  # type: ignore[attr-defined]
+                body = sf.cache["php_views"].code[pc:b]
                 if self._ESCAPED_PHP.search(body):
                     self.safe_methods.add(name.lower())
                     break

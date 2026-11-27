@@ -22,7 +22,7 @@ from typing import Callable, Dict, List, Optional
 
 from .files import Project
 from .model import Finding
-from .store import TimedCache, loads_json
+from .store import TimedCache, loads_json, validate_http_url
 from .secretscan import (DB_URL, GENERIC_ASSIGN, JWT, PASSWORD_ASSIGN, PRIVATE_KEY, PROVIDER_KEYS, SIGNING_FALLBACK,
                          SIGNING_LITERAL)
 
@@ -76,14 +76,23 @@ def redact(text: str) -> str:
     text = re.sub(r"(?im)^(\s*(?:export\s+)?[A-Z0-9_]*(?:KEY|SECRET|TOKEN|PASSWORD)[A-Z0-9_]*\s*=\s*).+$", r"\1<REDACTED>", text)
     # values captured by the secret rules: generic assignments, passwords, signing secrets and fallbacks
     for rx, group in [(GENERIC_ASSIGN, 2), (PASSWORD_ASSIGN, 2)] + [(r, 1) for r in SIGNING_LITERAL + SIGNING_FALLBACK]:
-        text = rx.sub(lambda m, g=group: m.group(0).replace(m.group(g), "<REDACTED>") if m.group(g) else m.group(0), text)
+        def _redact_match(m: re.Match[str], g: int = group) -> str:
+            return m.group(0).replace(m.group(g), "<REDACTED>") if m.group(g) else m.group(0)
+
+        text = rx.sub(_redact_match, text)
     return text
 
 
 def _post(url: str, headers: Dict[str, str], body: dict) -> dict:
-    req = urllib.request.Request(url, data=json.dumps(body).encode(), headers={"Content-Type": "application/json", **headers})
     try:
-        with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:  # noqa: S310 - fixed provider hosts
+        validate_http_url(url, allow_local_http=True)
+    except ValueError as e:
+        raise LLMError(str(e)) from None
+    req = urllib.request.Request(  # noqa: S310 - scheme validated above
+        url, data=json.dumps(body).encode(), headers={"Content-Type": "application/json", **headers},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:  # noqa: S310 - scheme validated above
             return loads_json(resp.read().decode("utf-8"))
     except urllib.error.HTTPError as e:
         detail = e.read().decode("utf-8", "replace")[:300]
@@ -210,7 +219,7 @@ def triage(project: Project, findings: List[Finding], provider: Provider, max_re
     candidates = [f for f in findings if f.severity in ("critical", "high", "medium") and f.line
                   and f.source == "vibeaudit" and f.category != "secrets"]
     # Verdicts are cached per (model, finding, surrounding code): an unchanged finding costs no request next time.
-    keys = {id(f): hashlib.sha256("\0".join([provider.name, provider.model, f.rule_id, f.message,
+    keys = {id(f): hashlib.sha256("\0".join([str(provider.name), str(provider.model), f.rule_id, f.message,
                                                redact(_context(project, f))]).encode("utf-8", "replace")).hexdigest()
             for f in candidates}
     todo = []

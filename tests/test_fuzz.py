@@ -9,15 +9,14 @@ import random
 import string
 import sys
 import time
-from pathlib import Path
 
 import pytest
-
-pytestmark = pytest.mark.slow
 
 from helpers import FIXTURES, fake_values
 from vibeaudit.report import render_html, render_json, render_markdown, render_sarif, render_text
 from vibeaudit.scanner import Options, scan
+
+pytestmark = pytest.mark.slow
 
 ROUNDS = int(os.environ.get("VIBEAUDIT_FUZZ_ROUNDS", "6"))
 
@@ -229,3 +228,56 @@ def test_symlink_loops_unreadable_files_and_escapes(tmp_path):
     finally:
         locked.chmod(0o644)
     assert not [f for f in res.findings if f.file == "escape.py"], "followed a symlink out of the project"
+
+
+def test_config_parser_fuzz(tmp_path):
+    from vibeaudit import config
+    from vibeaudit.store import loads_toml
+
+    rng = random.Random(42)
+    keys = list(config.KEYS)
+    bad_vals = [True, False, -1, 0, 1.5, float("nan"), float("inf"), "bad", "", [], [1, 2], {"a": "b"}]
+    samples = [
+        "",
+        "[",
+        "exclude = [",
+        "a = 'unterminated",
+        "fail-on = 123",
+        "fail-on = 'unknown'",
+        "offline = 'yes'",
+        "max-file-size = true",
+        "max-file-size = -5",
+        "file-timeout = 0",
+        "scan-timeout = -1.0",
+        "llm = 'local-model'",
+        "unknown-setting = 1",
+        "a = " + "[" * 400 + "1" + "]" * 400,
+        "t = " + "{ a = " * 300 + "1" + " }" * 300,
+        'k = "' + ("x" * 20000) + '"',
+        "a = nan\nb = inf\n",
+        "\x00\x01\x02",
+    ]
+    for i, text in enumerate(samples):
+        for name in (".vibeaudit.toml", "pyproject.toml"):
+            p = tmp_path / f"case_{i}" / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            body = text if name == ".vibeaudit.toml" else f"[tool.vibeaudit]\n{text}\n"
+            p.write_bytes(body.encode("utf-8", "replace"))
+            try:
+                config.load(p.parent)
+            except (config.ConfigError, ValueError):
+                pass
+    for idx in range(max(20, ROUNDS)):
+        d = {rng.choice(keys): rng.choice(bad_vals) for _ in range(rng.randint(1, 5))}
+        d["exclude"] = ["a", 123] if idx % 2 == 0 else "not-a-list"
+        try:
+            config.parse(d, "fuzz")
+        except (config.ConfigError, ValueError):
+            pass
+        val_expr = rng.choice(["true", "1", "-5", "0.0", '"x"', "[1]", "{}"])
+        key_name = rng.choice(keys).replace("_", "-")
+        raw = f"{key_name} = {val_expr}\n"
+        try:
+            loads_toml(raw)
+        except ValueError:
+            pass

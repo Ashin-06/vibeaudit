@@ -99,7 +99,7 @@ class AiScanner:
 
     def _file(self, sf: SourceFile) -> None:
         v = sf.cache.get("views")
-        code = v.code if v is not None else (sf.text or "")  # type: ignore[attr-defined]
+        code = v.code if v is not None else (sf.text or "")
         for m in finditer(retired_models(), code):
             if m.group(1) not in self.retired_seen:  # model lists repeat ids across files; once per project is enough
                 self.retired_seen.add(m.group(1))

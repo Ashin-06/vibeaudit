@@ -199,7 +199,7 @@ def py_ensure_module(ctx: FileCtx, module: str) -> List[Edit]:
 
 
 def multiline_string(node: ast.AST) -> bool:
-    return any(isinstance(n, (ast.Constant, ast.JoinedStr)) and n.lineno != n.end_lineno  # type: ignore[attr-defined]
+    return any(isinstance(n, (ast.Constant, ast.JoinedStr)) and n.lineno != n.end_lineno
                for n in ast.walk(node) if isinstance(n, (ast.Constant, ast.JoinedStr)))
 
 

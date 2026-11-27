@@ -183,7 +183,6 @@ class Leaky(http.server.BaseHTTPRequestHandler):
 
 
 def test_idor_between_two_users_and_prompt_leak(tmp_path):
-    from vibeaudit.files import Project
     from vibeaudit.probe import system_prompts
 
     (tmp_path / "app.py").write_text(IDOR_SOURCE)

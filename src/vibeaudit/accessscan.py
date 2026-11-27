@@ -63,7 +63,7 @@ def run(project: Project, routes: List[Route], add: Add) -> None:
     GUARD.run("<project>", "password changes", _password_changes, project, routes, add)
     GUARD.run("<project>", "tenant scoping", _tenant_scoping, project, files, routes, add)
     # no roles anywhere in the code: every signed-in user is the admin, so there is no role to check
-    roles = any(H.ANY_ROLE.search(f.text) for f in files if f.kind in ("py", "js", "html") or f.rel.endswith(CODE_EXTS))
+    roles = any(H.ANY_ROLE.search(f.text or "") for f in files if f.kind in ("py", "js", "html") or f.rel.endswith(CODE_EXTS))
     for r in routes:
         admin = ADMIN_ROUTE.search(r.path)
         if admin and "toggle" in admin.group(0).lower() and not re.search(r"(?i)feature", admin.group(0)) and OWN_TOGGLE.search(r.path):
@@ -130,7 +130,7 @@ def _server_actions(sf: SourceFile, add: Add) -> None:
     v = sf.cache.get("views")
     if v is None or "use server" not in (sf.text or ""):
         return
-    code = v.code  # type: ignore[attr-defined]
+    code = v.code
     if USE_SERVER_FILE.search(sf.text or ""):
         for m in finditer(RETURN_SECRET, code):
             add(sf, sf.line_at(m.start()), "FE008", f"A server action returns `{m.group(1)}`; every client that calls it "

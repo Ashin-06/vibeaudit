@@ -2,13 +2,12 @@
 from __future__ import annotations
 
 import re
-from pathlib import Path
 from typing import Callable, Dict, List, Optional
 
 from . import heuristics as H
 from . import accessscan, agentscan, apiscan, iacscan as iac, opsscan, promptscan, slopscan, storagescan
 from .guard import GUARD, finditer
-from .files import ENV_EXAMPLE_RE, ENV_FILE_RE, TEST_PATH_RE, Project, SourceFile, read_ignore_file, _matches
+from .files import ENV_EXAMPLE_RE, ENV_FILE_RE, Project, SourceFile, read_ignore_file, _matches
 from .lexer import py_views
 from .phpscan import php_views
 from .rustscan import rust_views
@@ -67,7 +66,7 @@ class ProjectScanner:
         elif f.rel.endswith(".php") and f.text is not None:  # PHP code only: no comments, no inline HTML
             views = f.cache.get("php_views") or php_views(f.text)
             f.cache["php_views"] = views
-        return views.code if views is not None else (f.text or "")  # type: ignore[attr-defined]
+        return views.code if views is not None else (f.text or "")
 
     def any_code(self, rx: "re.Pattern[str]") -> bool:
         from .files import has
@@ -82,7 +81,7 @@ class ProjectScanner:
             hit = f.cache.get(key)
             if hit is None:
                 hit = f.cache[key] = [m.group(1) for m in finditer(rx, self._piece(f))]
-            out += hit  # type: ignore[arg-type]
+            out += hit
         return out
 
     def add(self, sf_or_rel, line: int, rule: str, msg: str, sev: str = "") -> None:
@@ -124,9 +123,9 @@ class ProjectScanner:
         if k in ("yaml", "json", "other"):
             iac.scan(sf, self.add)
         if k == "py" and not sf.is_test:
-            code = sf.cache.get("views") or py_views(sf.text)
-            for m in finditer(H.DANGEROUS_AGENT_OPTIONS, code.code):  # type: ignore[attr-defined]
-                if code.bare[m.start()] != code.code[m.start()]:  # type: ignore[attr-defined]
+            code = sf.cache.get("views") or py_views(sf.text or "")
+            for m in finditer(H.DANGEROUS_AGENT_OPTIONS, code.code):
+                if code.bare[m.start()] != code.code[m.start()]:
                     continue  # inside a string literal
                 self.add(sf, sf.line_at(m.start()), "LLM006", f"Dangerous agent option: {m.group(0).strip()[:60]}")
 
@@ -450,10 +449,11 @@ class ProjectScanner:
         if "express" not in deps or "helmet" in deps or "lusca" in deps:  # lusca sets the same headers (xframe, hsts, ...)
             return
         for f in self.p.files:
-            if f.kind == "js" and not f.is_test and f.text and re.search(r"\bexpress\s*\(\s*\)", f.text):
+            if f.kind == "js" and not f.is_test and f.text:
                 m = re.search(r"\bexpress\s*\(\s*\)", f.text)
-                self.add(f, f.line_at(m.start()), "CFG008", "Express app created without helmet().")
-                return
+                if m:
+                    self.add(f, f.line_at(m.start()), "CFG008", "Express app created without helmet().")
+                    return
 
     # -------------------------------------------------------------- routes
     def api_checks(self) -> None:

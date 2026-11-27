@@ -28,7 +28,7 @@ from pathlib import Path
 from typing import Callable, Dict, List, Optional, Tuple
 
 from . import __version__
-from .store import cache_dir, loads_json, write_atomic
+from .store import cache_dir, loads_json, validate_http_url, write_atomic
 
 OSV_DUMP = "https://osv-vulnerabilities.storage.googleapis.com/{}/all.zip"
 ECOSYSTEMS = ("PyPI", "npm", "Go", "Maven", "crates.io", "NuGet", "Packagist", "Pub", "RubyGems")
@@ -303,7 +303,11 @@ def import_bundle(path: Path, log: Callable[[str], None]) -> None:
 def _download(url: str) -> bytes:
     import urllib.request
 
-    with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "vibeaudit-update"}), timeout=300) as resp:  # noqa: S310
+    try:
+        validate_http_url(url)
+    except ValueError as e:
+        raise BundleError(str(e)) from None
+    with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "vibeaudit-update"}), timeout=300) as resp:  # noqa: S310 - scheme validated above
         data = resp.read(MAX_DUMP + 1)
     if len(data) > MAX_DUMP:
         raise BundleError("the OSV dump is larger than expected")

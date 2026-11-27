@@ -1,7 +1,6 @@
 """Stage 3: the user cache (registry, OSV, LLM verdicts), `vibeaudit update` and the feedback store."""
 import gzip
 import json
-import time
 
 from helpers import materialize
 

@@ -14,7 +14,7 @@ from __future__ import annotations
 import ast
 import re
 from dataclasses import dataclass
-from typing import List, Optional, Set
+from typing import Dict, List, Optional, Set
 
 from .model import Finding
 
@@ -143,12 +143,13 @@ def _python(text: str, line: int) -> List[Step]:
                 seen.add(name)
                 earlier = [a for a in assigns if a[1] == name and a[0] < before]
                 if not earlier:
-                    if name in params and route:
-                        found.append(Step(scope.lineno, code(scope.lineno), "source",
-                                          f"`{name}` is a route parameter (from the URL)", before))
-                    elif name in params and name not in ("self", "cls"):
-                        found.append(Step(scope.lineno, code(scope.lineno), "parameter",
-                                          f"`{name}` is a parameter of `{scope.name}`; its callers are not followed", before))
+                    if isinstance(scope, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                        if name in params and route:
+                            found.append(Step(scope.lineno, code(scope.lineno), "source",
+                                              f"`{name}` is a route parameter (from the URL)", before))
+                        elif name in params and name not in ("self", "cls"):
+                            found.append(Step(scope.lineno, code(scope.lineno), "parameter",
+                                              f"`{name}` is a parameter of `{scope.name}`; its callers are not followed", before))
                     continue
                 at, _n, value = max(earlier, key=lambda a: a[0])
                 kind = _py_source(value)
@@ -168,14 +169,15 @@ def _python(text: str, line: int) -> List[Step]:
 def _ordered(found: List[Step], sink: Step) -> List[Step]:
     """Only the steps on a path from a source to the sink (`used_by` links each step to the line that used
     its value), in line order."""
-    at = {}
+    at: Dict[int, Step] = {}
     for s in found:
         at.setdefault(s.line, s)
-    keep = {}
+    keep: Dict[int, Step] = {}
     for s in found:
         if s.role not in ORIGINS:
             continue
-        cur, hops = s, 0
+        cur: Optional[Step] = s
+        hops = 0
         while cur is not None and cur.line != sink.line and hops <= MAX_DEPTH:
             if cur.line not in keep or cur.role in ORIGINS:
                 keep[cur.line] = cur
@@ -312,10 +314,9 @@ def _polyglot(text: str, line: int, source: "re.Pattern[str]") -> List[Step]:
                     continue
                 # a handler parameter bound from the request: `@RequestParam String name`, `[FromQuery] string name`,
                 # `Query(params): Query<T>`
-                pm = None
-                for pm in re.finditer(r"(?:" + source.pattern + r")[^;{}]{0,120}?(?<![\w$])" + re.escape(name) + r"\b",
-                                      code[:before]):
-                    pass
+                pm_matches = list(re.finditer(r"(?:" + source.pattern + r")[^;{}]{0,120}?(?<![\w$])" + re.escape(name) + r"\b",
+                                              code[:before]))
+                pm = pm_matches[-1] if pm_matches else None
                 if pm:
                     at = line_of(pm.start())
                     found.append(Step(at, lines[at - 1].strip(), "source", f"`{name}` comes from user input", user))

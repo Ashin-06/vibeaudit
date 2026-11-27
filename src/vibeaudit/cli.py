@@ -19,10 +19,12 @@ from .rules import CATEGORIES, RULES
 
 def _reconfigure_streams() -> None:
     for stream in (sys.stdout, sys.stderr):
-        try:
-            stream.reconfigure(errors="replace")  # type: ignore[attr-defined]
-        except (AttributeError, ValueError):
-            pass  # a replaced or non-text stream cannot be reconfigured; keep its defaults
+        reconf = getattr(stream, "reconfigure", None)
+        if reconf is not None:
+            try:
+                reconf(errors="replace")
+            except (AttributeError, ValueError):
+                pass  # a replaced or non-text stream cannot be reconfigured; keep its defaults
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -53,6 +55,10 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--max-file-size", type=int, default=None, help="skip files larger than this many bytes (default: 1000000)")
     s.add_argument("--file-timeout", type=float, default=None,
                    help="seconds each analysis step may spend on one file before it is stopped (default: 30)")
+    s.add_argument("--scan-timeout", type=float, default=None, metavar="SECONDS",
+                   help="overall wall-clock cap in seconds for analyzer stages (default: unlimited)")
+    s.add_argument("--fail-on-partial", action="store_true", default=None,
+                   help="exit with code 1 when any file, history commit or analyzer stage was skipped or timed out (partial coverage)")
     s.add_argument("--llm", choices=["gemini", "openai", "openrouter", "anthropic"],
                    help="use an LLM to triage findings (needs GEMINI_API_KEY / OPENAI_API_KEY / OPENROUTER_API_KEY / ANTHROPIC_API_KEY)")
     s.add_argument("--llm-model", help="model name for the LLM provider")
@@ -500,7 +506,10 @@ def cmd_probe(a: argparse.Namespace) -> int:
         f.compute_fingerprint()
     confirmed = probe.merge(res.findings, found)
     shown = [f for f in confirmed if f.confirmed]
-    info = {"url": a.url, "requests": target.sent, "routes": len(routes), "confirmed": len(shown)}
+    info = {"url": a.url, "requests": target.sent, "routes": len(routes), "confirmed": len(shown),
+            "tls_verified": target.tls_verified}
+    if target.tls_warning:
+        info["tls_warning"] = target.tls_warning
     if auth:
         info["auth"] = "did not take effect" if prober.auth_failed else "took effect"
     if prober.auth_failed:  # a silent failure would read as a clean, signed-in run
@@ -508,9 +517,13 @@ def cmd_probe(a: argparse.Namespace) -> int:
               "signed-in requests were sent back to sign in (302 to a login page, 401 or 403). Check --auth / --login.",
               file=sys.stderr)
     meta = dict(res.meta, probe=info)
+    if target.tls_warning:
+        meta["notes"] = list(meta.get("notes", [])) + [target.tls_warning]
     out = Result(res.root, shown, meta, routes)
     if a.format == "text":
         lines = [f"vibeaudit probe: {target.sent} requests to {a.url}, {len(routes)} routes, {len(shown)} confirmed"]
+        if target.tls_warning:
+            lines.append(f"  WARNING: {target.tls_warning}")
         if prober.auth_failed:
             lines.append("  WARNING: authentication did not take effect; signed-in checks did not run as signed in")
         lines += [f"  {f.rule_id} {f.file}:{f.line}  {f.confirmed}" for f in shown]
@@ -705,6 +718,13 @@ def cmd_scan(a: argparse.Namespace) -> int:
     baseline = a.baseline
     if baseline is None and cfg.get("baseline"):
         baseline = str(Path(cfg_path).parent / str(cfg["baseline"])) if cfg_path else str(cfg["baseline"])
+    scan_timeout_raw = pick(a.scan_timeout, "scan_timeout", None)
+    scan_timeout: Optional[float] = None
+    if scan_timeout_raw is not None:
+        if isinstance(scan_timeout_raw, bool) or not isinstance(scan_timeout_raw, (int, float)) or float(scan_timeout_raw) <= 0:
+            print("vibeaudit: --scan-timeout must be a positive number of seconds", file=sys.stderr)
+            return 2
+        scan_timeout = float(scan_timeout_raw)
     opts = Options(offline=bool(pick(a.offline, "offline", False)), excludes=list(a.exclude) + list(cfg.get("exclude", [])),
                    disabled=disabled, min_severity=pick(a.min_severity, "min_severity", "low"),
                    external=pick(a.external, "external", "auto"), baseline=baseline,
@@ -712,6 +732,7 @@ def cmd_scan(a: argparse.Namespace) -> int:
                    llm_model=pick(a.llm_model, "llm_model", None), llm_review=a.llm_review,
                    llm_max_requests=max(0, pick(a.llm_max_requests, "llm_max_requests", 10)),
                    file_timeout=max(0.1, float(pick(a.file_timeout, "file_timeout", 30.0))),
+                   scan_timeout=scan_timeout,
                    auth_helpers=list(cfg.get("auth_helpers", [])), sanitizers=list(cfg.get("sanitizers", [])),
                    public_paths=list(cfg.get("public_paths", [])), changes=changes, log=log,
                    feedback=not a.no_config,  # the feedback file lives in the repository, like the config
@@ -793,6 +814,10 @@ def cmd_scan(a: argparse.Namespace) -> int:
     if fail_on != "none" and any(at_least(f.severity, fail_on) for f in res.gating):  # preview rules excluded
         return 1
     if regression is not None and res.meta["baseline_score"] - res.meta["score_whole_project"] > a.fail_on_regression:
+        return 1
+    if pick(a.fail_on_partial, "fail_on_partial", False) and res.meta.get("coverage", {}).get("overall_status") == "partial":
+        reasons = res.meta["coverage"].get("incomplete_reasons") or ["incomplete scan coverage"]
+        print(f"vibeaudit: failing because coverage is partial (--fail-on-partial): {'; '.join(reasons)}", file=sys.stderr)
         return 1
     return 0
 
