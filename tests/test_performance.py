@@ -85,3 +85,11 @@ def test_large_repository_scans_in_bounded_time_and_memory(tmp_path):
     assert ("pkg0/vuln.py", 6, "BE002") in {(f.file, f.line, f.rule_id) for f in res.findings}
     assert elapsed < SECONDS_PER_1000_FILES * FILES / 1000 + 10
     assert peak_mb < PEAK_MB_PER_1000_FILES * FILES / 1000 + 50
+
+    # Warm scan cache on an unchanged repo must hit cleanly and stay well within budget
+    warm_start = time.perf_counter()
+    warm = scan(str(tmp_path), Options(offline=True, external="none"))
+    warm_elapsed = time.perf_counter() - warm_start
+    assert warm.meta["scan_cache"]["hit"] is True
+    assert len(warm.findings) == len(res.findings) and warm.score == res.score
+    assert warm_elapsed < elapsed + 1.0

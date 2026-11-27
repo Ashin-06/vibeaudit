@@ -6,6 +6,22 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Parallel multi-core scanning (`-j`, `--jobs N`, `parallel.py`)**: runs Wave 1 (language/secret discovery)
+  and Wave 2 (cross-cutting/quality/data analyzers) in a `ProcessPoolExecutor` for repositories with 64+ files
+  (`--jobs 0` auto-selects up to 4 cores) with exact parity against single-process scans.
+- **Persistent content-hash scan cache (`scancache.py`, `secretscan.py`)**: caches raw built-in findings and
+  routes keyed by file SHA-256 hashes, parser mode, configuration, and active threat-feed version, plus a bounded
+  per-file `SecretScanner` cache (`--no-cache` disables all caching).
+- **JSON report schema (`src/vibeaudit/data/report.schema.json`) & explicit v1.0 criteria (`STABILITY.md`)**:
+  ships a formal Draft 2020-12 JSON Schema with the wheel and documents the frozen interface contract and
+  independent validation criteria required before `1.0.0`.
+- **External scanner repo-config warnings & gitleaks isolation (`external.py`, `scanner.py`)**: detects
+  repo-local `.gitleaks.toml`, `.gitleaksignore`, `.bandit`, `pyproject.toml [tool.bandit]`, `.semgrepignore`,
+  and `osv-scanner.toml`, warns in reports (`meta.external_configs_detected`), and isolates `gitleaks` via a
+  temporary default config and empty ignore file under `--no-config`.
+
 ### Fixed
 
 - **Subfolder `QA001`/`QA002` false positives (`projectscan.py`)**: scanning a subdirectory such as

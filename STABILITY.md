@@ -113,3 +113,18 @@ CI runs `python tools/benchmark.py check` on every push. It fails when, compared
 
 A deliberate change (a fixed false positive, a new true positive) is accepted by labelling the new findings
 and recording a new baseline with `python tools/benchmark.py baseline`, in the same pull request.
+
+## v1.0 readiness criteria and compatibility contract
+
+vibeaudit remains in `0.x` until every item below holds simultaneously:
+
+1. **Frozen stable interfaces**:
+   - **CLI & exit codes**: documented subcommands, scan/fix/mcp flags, and exit codes (`0` clean, `1` gating findings or empty non-opt-out scan, `2` usage/config error).
+   - **Report schema**: the JSON report conforms to `src/vibeaudit/data/report.schema.json` and SARIF output conforms to OASIS SARIF 2.1.0.
+   - **Configuration & scoring**: `.vibeaudit.toml` keys in `config.KEYS`, existing rule IDs, and the default `diminishing-v2` score model (`linear-v1` preserved via `--score-model`).
+2. **Quality & validation bar**:
+   - Zero known unhandled crashes or hangs across the benchmark corpus, fuzzing, and adversarial security suite.
+   - Every stable rule meets `>= 90%` held-out precision, independently validated by at least 2 external labellers (published with Cohen's kappa).
+3. **Release & upgrade policy**:
+   - Releases that modify scoring formulas, exit codes, or compatibility contracts go through at least one release candidate (`vX.Y.0rc1`) and list any behavior change at the top of `CHANGELOG.md`.
+   - From `1.0.0` onward, any breaking change to a frozen interface requires at least one minor release carrying deprecation warnings followed by a major version bump.

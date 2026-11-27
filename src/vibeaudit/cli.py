@@ -63,6 +63,8 @@ def build_parser() -> argparse.ArgumentParser:
                    help="exit 0 even when 0 files are scanned instead of failing with an empty-scan error")
     s.add_argument("--score-model", default=None, choices=["diminishing-v2", "linear-v1"],
                    help="scoring formula: diminishing-v2 (default, size-normalized) or linear-v1 (legacy 100 - penalty)")
+    s.add_argument("-j", "--jobs", type=int, default=None, metavar="N",
+                   help="parallel worker processes for large repos (default: 1; 0 = auto up to 4 cores)")
     s.add_argument("--llm", choices=["gemini", "openai", "openrouter", "anthropic"],
                    help="use an LLM to triage findings (needs GEMINI_API_KEY / OPENAI_API_KEY / OPENROUTER_API_KEY / ANTHROPIC_API_KEY)")
     s.add_argument("--llm-model", help="model name for the LLM provider")
@@ -741,6 +743,10 @@ def cmd_scan(a: argparse.Namespace) -> int:
             print("vibeaudit: --scan-timeout must be a positive number of seconds", file=sys.stderr)
             return 2
         scan_timeout = float(scan_timeout_raw)
+    jobs_raw = pick(a.jobs, "jobs", 1)
+    if isinstance(jobs_raw, bool) or not isinstance(jobs_raw, int) or jobs_raw < 0:
+        print("vibeaudit: --jobs must be a non-negative integer", file=sys.stderr)
+        return 2
     cfg_disabled = sorted({x.strip() for d in cfg.get("disable", []) for x in str(d).split(",") if x.strip()}) if cfg_path else []
     opts = Options(offline=bool(pick(a.offline, "offline", False)), excludes=list(a.exclude) + list(cfg.get("exclude", [])),
                    disabled=disabled, min_severity=pick(a.min_severity, "min_severity", "low"),
@@ -758,6 +764,7 @@ def cmd_scan(a: argparse.Namespace) -> int:
                    history=bool(a.history), history_commits=max(1, int(a.history_commits)),
                    no_config=bool(a.no_config),
                    score_model=str(pick(a.score_model, "score_model", "diminishing-v2")),
+                   jobs=jobs_raw,
                    config_path=cfg_path,
                    config_disabled=cfg_disabled)
     if cfg_path:

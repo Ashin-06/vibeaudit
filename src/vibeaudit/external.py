@@ -136,13 +136,49 @@ def available(name: str) -> bool:
     return shutil.which(name) is not None
 
 
+def detect_repo_configs(root: Path) -> Dict[str, List[str]]:
+    """Detect repo-local configuration or ignore files that external scanners may honor."""
+    found: Dict[str, List[str]] = {}
+
+    def _add(tool: str, rel: str) -> None:
+        found.setdefault(tool, []).append(rel)
+
+    for rel in (".gitleaks.toml", "gitleaks.toml", ".gitleaksignore"):
+        if (root / rel).exists():
+            _add("gitleaks", rel)
+    for rel in (".bandit", "bandit.yaml", "bandit.yml"):
+        if (root / rel).exists():
+            _add("bandit", rel)
+    pyp = root / "pyproject.toml"
+    if pyp.is_file():
+        try:
+            text = pyp.read_text(encoding="utf-8", errors="ignore")
+            if "[tool.bandit]" in text:
+                _add("bandit", "pyproject.toml [tool.bandit]")
+        except OSError:
+            pass
+    for rel in (".semgrepignore", ".semgrep.yml", ".semgrep.yaml", ".semgrep"):
+        if (root / rel).exists():
+            _add("semgrep", rel)
+    if (root / "osv-scanner.toml").exists():
+        _add("osv-scanner", "osv-scanner.toml")
+    return found
+
+
 def run_tool(name: str, root: Path, no_config: bool = False) -> Optional[List[Finding]]:
     """Run an external scanner. When `no_config` is True, isolate it from repo-committed ignore/config files."""
     if name == "gitleaks":
         with tempfile.TemporaryDirectory() as tmp:
             report = os.path.join(tmp, "gitleaks.json")
             base = ["--report-format", "json", "--report-path", report, "--exit-code", "0", "--no-banner"]
-            extra = ["--ignore-gitleaks-allow"] if no_config else []
+            if no_config:
+                gl_cfg = Path(tmp) / "gitleaks.toml"
+                gl_cfg.write_text("[extend]\nuseDefault = true\n", encoding="utf-8")
+                gl_ignore = Path(tmp) / ".gitleaksignore"
+                gl_ignore.write_text("", encoding="utf-8")
+                extra = ["--config", str(gl_cfg), "--gitleaks-ignore-path", str(gl_ignore), "--ignore-gitleaks-allow"]
+            else:
+                extra = []
             _run(["gitleaks", "dir", str(root)] + extra + base)
             if not os.path.exists(report):
                 _run(["gitleaks", "detect", "--no-git", "--source", str(root)] + extra + base)

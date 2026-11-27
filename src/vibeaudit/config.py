@@ -24,6 +24,7 @@ KEYS: Dict[str, str] = {
     "llm_max_requests": "integer", "file_timeout": "number", "scan_timeout": "number",
     "include_preview": "boolean", "gate_severe_preview": "boolean", "monorepo": "boolean",
     "fail_on_partial": "boolean", "allow_empty": "boolean", "score_model": "score model",
+    "jobs": "integer",
 }
 
 
@@ -121,6 +122,7 @@ def project_options(root: str, config: Optional[str] = None, **overrides):
         "include_preview": bool(cfg.get("include_preview", False)),
         "gate_severe_preview": bool(cfg.get("gate_severe_preview", True)),
         "score_model": str(cfg.get("score_model", "diminishing-v2")),
+        "jobs": int(cfg.get("jobs", 1)),
         "config_path": cfg_path,
         "config_disabled": sorted(disabled) if cfg_path else [],
     }

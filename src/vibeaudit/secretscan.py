@@ -165,6 +165,11 @@ class SecretScanner:
         self.emit(Finding(rule, sf.rel, line, msg, sev, snippet[:200]))
 
     def run(self) -> None:
+        from . import scancache, store
+
+        use_cache = store.ENABLED and GUARD.memo is None
+        cache = scancache.load_secret_cache() if use_cache else {}
+        dirty = False
         for sf in self.p.files:
             text = sf.raw_text
             if text is None or sf.is_lockfile or sf.rel.endswith((".map", ".svg")):
@@ -172,7 +177,32 @@ class SecretScanner:
             # minified or committed bundles: only the precise checks (provider keys, private keys, service-role
             # JWTs, passwords in database URLs); the heuristic ones would be noise in generated code
             bundle = sf.text is None or sf.rel.endswith(".min.js")
-            GUARD.run(sf.rel, "secret scan", self.scan_file, sf, text, bundle)
+            # Files containing SECRET_KEY in Python may inspect cross-file production_overrides(); run directly.
+            cacheable = use_cache and not (sf.kind == "py" and "SECRET_KEY" in text)
+            if cacheable:
+                key = scancache.secret_file_key(sf, text, bundle, self.bare_public)
+                cached_items = cache.get(key)
+                if cached_items is not None:
+                    for item in cached_items:
+                        self.emit(scancache._finding_from_cache(item))
+                    continue
+                captured: List[Finding] = []
+                orig_emit = self.emit
+                self.emit = captured.append
+                before_problems = len(GUARD.skipped) + len(GUARD.internal_errors)
+                try:
+                    GUARD.run(sf.rel, "secret scan", self.scan_file, sf, text, bundle)
+                finally:
+                    self.emit = orig_emit
+                for finding in captured:
+                    self.emit(finding)
+                if len(GUARD.skipped) + len(GUARD.internal_errors) == before_problems:
+                    cache[key] = [scancache._finding_to_cache(item) for item in captured]
+                    dirty = True
+            else:
+                GUARD.run(sf.rel, "secret scan", self.scan_file, sf, text, bundle)
+        if dirty:
+            scancache.save_secret_cache(cache)
 
     def scan_file(self, sf: SourceFile, text: str, bundle: bool = False) -> None:
         seen_lines = set()

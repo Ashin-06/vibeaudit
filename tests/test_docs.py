@@ -52,11 +52,18 @@ def test_every_scan_flag_is_documented():
 
 
 def test_rule_counts_and_catalogue_are_current():
+    import json
+
+    cli_proc = subprocess.run([sys.executable, "-m", "vibeaudit", "rules", "--format", "json"],
+                              capture_output=True, text=True, check=True)
+    cli_rules = json.loads(cli_proc.stdout)
+    assert len(cli_rules) == len(RULES)
     static = [r for r in RULES.values() if r.category != "llm-review"]
     stable_static = [r for r in static if not r.preview]
     categories = {r.category for r in static}
     assert f"{len(static)} rules in {len(categories)} categories" in README
     assert f"{len(stable_static)} stable static rules" in README
+    assert f"{sum(not r['preview'] and r['category'] != 'llm-review' for r in cli_rules)} stable static rules" in README
     out = subprocess.run([sys.executable, str(ROOT / "tools" / "gen_rules_doc.py"), "--check"], capture_output=True, text=True)
     assert out.returncode == 0, out.stderr
     catalogue = (ROOT / "docs" / "RULES.md").read_text(encoding="utf-8")
