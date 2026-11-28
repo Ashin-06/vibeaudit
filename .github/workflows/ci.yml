@@ -121,17 +121,17 @@ jobs:
           python tools/check_yaml.py
       - name: Build wheel and sdist
         run: |
-          python -m pip install build
+          python -m pip install build jsonschema
           python -m build
       - name: Install the wheel in a clean venv and run it
         run: |
-          python -c "import glob, zipfile; z = zipfile.ZipFile(glob.glob('dist/*.whl')[0]); assert any(n.endswith('vibeaudit/py.typed') for n in z.namelist()), z.namelist()"
+          python -c "import glob, zipfile; from pathlib import Path; z = zipfile.ZipFile(glob.glob('dist/*.whl')[0]); assert any(n.endswith('vibeaudit/py.typed') for n in z.namelist()), z.namelist(); assert z.read('vibeaudit/data/report.schema.json') == Path('src/vibeaudit/data/report.schema.json').read_bytes()"
           python -m venv /tmp/clean
           /tmp/clean/bin/pip install dist/*.whl
           /tmp/clean/bin/vibeaudit --version
           /tmp/clean/bin/vibeaudit rules | wc -l
-          cd /tmp && /tmp/clean/bin/vibeaudit scan "$GITHUB_WORKSPACE/src" --offline --external none -q --fail-on none --report sarif:/tmp/out.sarif
-          python -c "import json; json.load(open('/tmp/out.sarif'))"
+          cd /tmp && /tmp/clean/bin/vibeaudit scan "$GITHUB_WORKSPACE/src" --offline --external none -q --fail-on none --report sarif:/tmp/out.sarif --report json:/tmp/out.json
+          python -c "import json, jsonschema; s = json.load(open('$GITHUB_WORKSPACE/src/vibeaudit/data/report.schema.json')); d = json.load(open('/tmp/out.json')); jsonschema.validate(d, s); json.load(open('/tmp/out.sarif'))"
       - name: Build container image and run non-root read-only smoke test
         run: |
           docker build -t vibeaudit:ci .

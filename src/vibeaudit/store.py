@@ -27,6 +27,7 @@ def cache_dir() -> Path:
 
 
 MAX_JSON_DEPTH = 500
+MAX_JSON_FILE_BYTES = 20 * 1024 * 1024
 
 
 def _json_too_deep(text: Any, limit: int = MAX_JSON_DEPTH) -> bool:
@@ -109,9 +110,18 @@ def validate_http_url(url: str, *, allow_local_http: bool = False) -> str:
     raise ValueError(f"unsafe URL scheme {parts.scheme!r}; only {allowed} is allowed")
 
 
-def read_json(path: Path) -> Any:
+def read_json(path: Path, max_bytes: Optional[int] = MAX_JSON_FILE_BYTES) -> Any:
     try:
-        return loads_json(path.read_text(encoding="utf-8"))
+        with open(path, "rb") as fh:
+            if max_bytes is not None:
+                if os.fstat(fh.fileno()).st_size > max_bytes:
+                    return None
+                raw = fh.read(max_bytes + 1)
+                if len(raw) > max_bytes:
+                    return None
+            else:
+                raw = fh.read()
+        return loads_json(raw.decode("utf-8"))
     except (OSError, ValueError):
         return None
 
@@ -128,7 +138,14 @@ def write_atomic(path: Path, data: bytes) -> bool:
                 os.chmod(tmp, os.stat(path).st_mode)  # mkstemp makes 0600: keep the replaced file's permissions
             except OSError:
                 pass
-            os.replace(tmp, path)
+            for attempt in range(3):
+                try:
+                    os.replace(tmp, path)
+                    break
+                except PermissionError:
+                    if attempt == 2:
+                        raise
+                    time.sleep(0.01 * (attempt + 1))
         finally:
             if os.path.exists(tmp):
                 os.unlink(tmp)

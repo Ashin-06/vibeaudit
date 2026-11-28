@@ -90,6 +90,7 @@ def build(
     parser_mode: Dict[str, str],
     history_info: Optional[Dict[str, Any]],
     scan_timed_out: bool = False,
+    external_status: Optional[Dict[str, Dict[str, str]]] = None,
 ) -> Dict[str, Any]:
     """Summarize exact analyzer coverage, skipped inputs, errors, and incomplete reasons."""
     skipped_size = [sf.rel for sf in project.files if sf.skip_reason == "size_limit"]
@@ -178,6 +179,11 @@ def build(
         incomplete_reasons.append(f"git history scan {history_info.get('status')}")
     if scan_timed_out:
         incomplete_reasons.append(f"scan_timeout ({opts.scan_timeout}s limit reached; remaining stages skipped)")
+    ext_map = dict(external_status or {})
+    for tool_name, info in sorted(ext_map.items()):
+        if info.get("isolation") == "partial":
+            detail = info.get("detail") or "repo ignore files may apply"
+            incomplete_reasons.append(f"{tool_name} partially isolated under --no-config ({detail})")
 
     return {
         "overall_status": "partial" if incomplete_reasons else "complete",
@@ -192,4 +198,5 @@ def build(
         "scan_timed_out": scan_timed_out,
         "incomplete_reasons": incomplete_reasons,
         "scanners": scanners,
+        "external": ext_map,
     }

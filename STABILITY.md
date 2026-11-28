@@ -124,6 +124,17 @@ vibeaudit remains in `0.x` until every item below holds simultaneously:
    - **Configuration & scoring**: `.vibeaudit.toml` keys in `config.KEYS`, existing rule IDs, and the default `diminishing-v2` score model (`linear-v1` preserved via `--score-model`).
 2. **Quality & validation bar**:
    - Zero known unhandled crashes or hangs across the benchmark corpus, fuzzing, and adversarial security suite.
+   - Parallel execution (`--jobs`) must never silently produce incomplete results or crash when sequential fallback is possible: worker failures log diagnostics, discard partial parallel results, and fall back to sequential execution.
+   - Persistent cache hits must produce equivalent findings, routes, score, grade, and coverage to uncached scans, with size-bounded cache reads and corruption resilience.
+   - `--no-config` must have a documented, tested isolation guarantee for every supported external scanner and report `partial` coverage whenever full isolation cannot be guaranteed:
+
+     | Scanner | `--no-config` isolation mechanism | Partial fallback behavior |
+     | --- | --- | --- |
+     | `gitleaks` | Temporary default config (`useDefault = true`), empty `--gitleaks-ignore-path`, `--ignore-gitleaks-allow` | Marks `failed` if output unreadable |
+     | `bandit` | Temporary empty `skips: []` config passed via `-c` | Marks `failed` if output unreadable |
+     | `semgrep` | `--no-git-ignore` with isolated working directory; stages a clean shadow tree omitting `.semgrepignore`/`.semgrep*` when repo ignore files exist (up to staging budget) | Marks `coverage.external.semgrep.isolation = "partial"` and `coverage.overall_status = "partial"` if staging limit exceeded or staging fails |
+     | `osv-scanner` | Temporary empty `osv-scanner.toml` passed via `--config` | Marks `failed` if output unreadable |
+
    - Every stable rule meets `>= 90%` held-out precision, independently validated by at least 2 external labellers (published with Cohen's kappa).
 3. **Release & upgrade policy**:
    - Releases that modify scoring formulas, exit codes, or compatibility contracts go through at least one release candidate (`vX.Y.0rc1`) and list any behavior change at the top of `CHANGELOG.md`.
