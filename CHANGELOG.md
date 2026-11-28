@@ -6,8 +6,15 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.23.0] - 2026-11-28
+
 ### Added
 
+- **Single-file scan (`vibeaudit scan app.py` and `scan("app.py")`)**: accepts a regular file directly without
+  requiring a folder path, skips project-wide absence noise (`QA001`, `QA002`, `REL006`, `DEP005`), and sets
+  `meta.single_file`.
+- **MCP setup guide (`docs/MCP.md`) & README head-to-head comparison**: adds copy-paste configuration and agent
+  prompts for Claude Code, Cursor, and VS Code Copilot, plus the Semgrep and Bandit benchmark comparison table.
 - **GitHub Action job summary and pull request comment**: the Markdown report is written to the job summary
   (`summary`, on by default, no permissions needed); `comment: "true"` keeps one pull request comment with the
   findings on the changed lines, updated in place on every push (needs `pull-requests: write`; skipped with a

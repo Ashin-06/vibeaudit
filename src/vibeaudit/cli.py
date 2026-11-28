@@ -671,11 +671,20 @@ def cmd_fix(a: argparse.Namespace) -> int:
 def cmd_scan(a: argparse.Namespace) -> int:
     from .scanner import Options, scan
 
-    if not os.path.isdir(a.path):
-        print(f"vibeaudit: not a directory: {a.path}", file=sys.stderr)
+    target = Path(a.path)
+    if not target.exists():
+        print(f"vibeaudit: path not found: {a.path}", file=sys.stderr)
         return 2
+    is_single_file = target.is_file()
+    if not target.is_dir() and not is_single_file:
+        print(f"vibeaudit: not a file or directory: {a.path}", file=sys.stderr)
+        return 2
+    if is_single_file and a.monorepo:
+        print("vibeaudit: --monorepo requires a directory", file=sys.stderr)
+        return 2
+    cfg_dir = target.resolve().parent if is_single_file else target
     try:
-        cfg, cfg_path = ({}, None) if a.no_config else load_config(Path(a.path), a.config)
+        cfg, cfg_path = ({}, None) if a.no_config else load_config(cfg_dir, a.config)
     except ConfigError as e:
         print(f"vibeaudit: {e}", file=sys.stderr)
         return 2
@@ -700,7 +709,7 @@ def cmd_scan(a: argparse.Namespace) -> int:
         from .gitdiff import DiffError, changed
 
         try:
-            changes = changed(Path(a.path), staged=a.staged, base=a.diff)
+            changes = changed(cfg_dir, staged=a.staged, base=a.diff)
         except DiffError as e:
             print(f"vibeaudit: cannot compute changes: {e}", file=sys.stderr)
             return 2
@@ -787,7 +796,7 @@ def cmd_scan(a: argparse.Namespace) -> int:
     if getattr(a, "privacy_report", False):
         opts.llm = None
     try:
-        if pick(a.monorepo, "monorepo", False):
+        if not is_single_file and pick(a.monorepo, "monorepo", False):
             from . import monorepo
 
             res: Result = monorepo.scan(a.path, opts)
@@ -800,7 +809,8 @@ def cmd_scan(a: argparse.Namespace) -> int:
         from .files import Project
         from .scanner import _risky_files
 
-        proj = Project(Path(a.path), opts.excludes, opts.max_file_bytes)
+        proj = Project(cfg_dir.resolve(), opts.excludes, opts.max_file_bytes,
+                       single_file=target.resolve() if is_single_file else None)
         pr = llm.privacy_report(proj, res.findings, _risky_files(proj, res.findings, res.routes),
                                 opts.llm_max_requests, include_review=bool(a.llm_review))
         lines = [

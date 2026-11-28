@@ -160,38 +160,48 @@ _SCAN_LOCK = threading.RLock()
 
 
 def scan(root: str, opts: Optional[Options] = None, project: Optional[Project] = None) -> Result:
-    """Scan `root`. Without `opts`, the project's own .vibeaudit.toml / [tool.vibeaudit] settings apply.
+    """Scan `root` (a project directory or a single file). Without `opts`, the project's own .vibeaudit.toml /
+    [tool.vibeaudit] settings apply.
 
     Safe to call from several threads: scans run one at a time, because the time budget, the custom auth
     helpers and the cache switch are process-wide (scans are CPU-bound, so threads would not speed them up).
 
     `project` lets a long-lived caller (`vibeaudit watch`, the language server) reuse files it already read and
     parsed: pass the same Project again after `Project.refresh()`."""
+    single_target: Optional[Path] = None
+    if project is None:
+        cand = Path(root)
+        if cand.is_file():
+            single_target = cand.resolve()
     if opts is None:
         from .config import project_options
 
-        opts = project_options(root)
+        opts = project_options(str(single_target.parent) if single_target is not None else root)
     with _SCAN_LOCK, warnings.catch_warnings():
         # ast.parse() warns about the scanned code (invalid escape sequences); that is not vibeaudit's output
         warnings.simplefilter("ignore", SyntaxWarning)
         warnings.filterwarnings("ignore", "invalid escape sequence", DeprecationWarning)  # the same before 3.12
         if opts.cache:
-            return _scan(root, opts, project)
+            return _scan(root, opts, project, single_target=single_target)
         from . import store
 
         previous, store.ENABLED = store.ENABLED, False
         try:  # only this scan skips the cache; a long-lived caller keeps its own setting
-            return _scan(root, opts, project)
+            return _scan(root, opts, project, single_target=single_target)
         finally:
             store.ENABLED = previous
 
 
-def _scan(root: str, opts: Options, project: Optional[Project] = None) -> Result:
+def _scan(root: str, opts: Options, project: Optional[Project] = None,
+          single_target: Optional[Path] = None) -> Result:
     start = time.time()
     GUARD.reset(opts.file_timeout)
     H.CUSTOM.reset(opts.auth_helpers, opts.sanitizers, opts.public_paths)
     if project is None:
-        project = Project(Path(root), opts.excludes, opts.max_file_bytes)
+        if single_target is not None:
+            project = Project(single_target.parent, opts.excludes, opts.max_file_bytes, single_file=single_target)
+        else:
+            project = Project(Path(root), opts.excludes, opts.max_file_bytes)
     raw: List[Finding] = []
     memo = project.step_memo
     if memo is None:
@@ -233,7 +243,8 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
     parser_modes = parse.mode()
     effective_jobs = parallel.resolve_jobs(opts.jobs)
     has_overlays = bool(getattr(project, "overlays", None))
-    can_cache = opts.cache and store.ENABLED and project.step_memo is None and deadline is None and not has_overlays
+    single_rel = getattr(project, "single_file", None)
+    can_cache = opts.cache and store.ENABLED and project.step_memo is None and deadline is None and not has_overlays and single_rel is None
     snap_fp = scancache.project_fingerprint(project, opts, parser_modes) if can_cache else ""
     cached_hit = False
     parallel_used = False
@@ -373,6 +384,8 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
         from .gitdiff import keep
 
         findings = [f for f in findings if keep(opts.changes, f.file, f.line)]
+    if single_rel is not None:
+        findings = [f for f in findings if f.file == single_rel]
     hidden = 0
     demoted: Dict[str, Dict[str, object]] = {}
     if opts.feedback:
@@ -450,6 +463,7 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
         scan_cache_meta["parallel_fallback"] = parallel_fallback
     meta = {
         "files_scanned": len(project.files), "duration_seconds": round(time.time() - start, 2),
+        **({"single_file": single_rel} if single_rel is not None else {}),
         "score_model": opts.score_model,
         "scan_cache": scan_cache_meta,
         "stack": stack, "external_tools": ran, "offline": opts.offline, "notes": notes,

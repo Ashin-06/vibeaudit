@@ -45,7 +45,7 @@ pip install vibeaudit
 ```
 
 ```bash
-vibeaudit scan path/to/your/project
+vibeaudit scan path/to/your/project      # or a single file: vibeaudit scan app.py
 ```
 
 ```bash
@@ -145,7 +145,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - uses: Ashin-06/vibeaudit@v0.22.0
+      - uses: Ashin-06/vibeaudit@v0.23.0
         with:
           fail-on: high
           comment: "true"
@@ -160,13 +160,13 @@ jobs:
 ```yaml
 repos:
   - repo: https://github.com/Ashin-06/vibeaudit
-    rev: v0.22.0
+    rev: v0.23.0
     hooks:
       - id: vibeaudit
 ```
 
-GitLab CI, Docker, editors (VS Code, Cursor, any LSP client) and coding agents (MCP server): see the
-[usage guide](docs/USAGE.md#ci-and-pre-commit).
+GitLab CI, Docker, editors (VS Code, Cursor, any LSP client) and coding agents ([MCP setup guide](docs/MCP.md)):
+see the [usage guide](docs/USAGE.md#ci-and-pre-commit).
 
 ## Documentation
 
@@ -177,6 +177,7 @@ GitLab CI, Docker, editors (VS Code, Cursor, any LSP client) and coding agents (
   [scoring](docs/USAGE.md#scoring), [false positives](docs/USAGE.md#false-positives-and-suppressing-findings),
   [offline use](docs/USAGE.md#offline-and-air-gapped-use), [limits](docs/USAGE.md#limits-and-what-is-not-covered),
   [verifying a release](docs/USAGE.md#verifying-a-release)
+- **[MCP setup guide](docs/MCP.md)**: copy-paste setup and agent prompt for Claude Code, Cursor, and Copilot
 - **[Rule catalogue](docs/RULES.md)**: every rule with why it matters and how to fix it
 - **[Benchmark results](benchmark/RESULTS.md)** and [how the corpus is labelled](docs/LABELLING.md)
 - [Stability policy](STABILITY.md), [roadmap](ROADMAP.md), [changelog](CHANGELOG.md), [privacy](docs/PRIVACY.md)
@@ -193,6 +194,20 @@ Every rule is measured on a labelled benchmark: 142 public repositories pinned t
 
 Preview rules are reported but do not gate, and most false positives are theirs. Recall, F1 and the misses: [docs/BENCHMARK.md](docs/BENCHMARK.md).
 <!-- accuracy:end -->
+
+### Compared with Semgrep and Bandit
+
+Each tool scanned the same pinned benchmark corpus (community `p/default` rules for Semgrep; Python-only for Bandit)
+evaluated with vibeaudit's rubric ([benchmark/compare.json](benchmark/compare.json), [labels](benchmark/compare_labels.json)):
+
+| Tool | Advisory recall | Corpus findings | Measured precision |
+| --- | --- | --- | --- |
+| vibeaudit | 6/17 | 1,592 | 75% overall (3,203/4,250 labelled; 93.6% on held-out stable rules) |
+| Semgrep (community) | 6/17 | 1,615 | ~22% (11/50 random sample) |
+| Bandit (Python) | 6/17 | 875 | ~34% (17/50 random sample) |
+
+Methodology, confidence intervals (+-14 pts on 50-finding samples), and shared misses:
+[docs/BENCHMARK.md](docs/BENCHMARK.md#compared-with-semgrep-and-bandit).
 
 Precision per rule
 on both splits, seeded recall and the status of every rule are in

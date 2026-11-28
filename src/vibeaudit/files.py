@@ -369,12 +369,14 @@ def gitignore_covers(root: Path, rel: str) -> bool:
 
 class Project:
     def __init__(self, root: Path, excludes: Iterable[str] = (), max_bytes: int = DEFAULT_MAX_BYTES,
-                 outer: Optional[Tuple[str, List[str]]] = None):
+                 outer: Optional[Tuple[str, List[str]]] = None, single_file: Optional[Path] = None):
         """`outer`: (this folder's path in an enclosing repository + "/", that repository's exclude patterns),
-        for one package of a monorepo scanned on its own (see monorepo.py)."""
+        for one package of a monorepo scanned on its own (see monorepo.py).
+        `single_file`: when set, discover only that regular file inside `root`."""
         self.root = root.resolve()
         self._base_excludes = list(excludes)
         self._outer = outer
+        self.single_file: Optional[str] = single_file.name if single_file is not None else None
         self.max_bytes = max_bytes
         self.is_git = False
         self.tracked: Set[str] = set()
@@ -412,6 +414,33 @@ class Project:
         self.skipped_files = []
         self._pkg_cache, self._venv_cache = {}, {}
         self.is_git = False
+        if self.single_file is not None:
+            rel = self.single_file
+            path = self.root / rel
+            try:
+                st = os.lstat(path)
+                if stat.S_ISLNK(st.st_mode):
+                    if not _inside(path, self.root):
+                        self.skipped_files.append({"file": rel, "reason": "symlink_escape"})
+                        return
+                    st = os.stat(path)
+            except OSError:
+                return
+            if not stat.S_ISREG(st.st_mode):
+                return
+            if os.path.splitext(rel)[1].lower() in BINARY_EXTS:
+                self.binary.add(rel)
+                return
+            overlay = self.overlays.get(rel)
+            sig = (st.st_mtime_ns, st.st_size) if overlay is None else ("overlay", len(overlay), hash(overlay))
+            sf = previous.get(rel) if previous else None
+            if sf is None or sf.signature != sig:
+                sf = SourceFile(self.root, rel, self.max_bytes)
+                sf.signature = sig
+                sf.overlay = overlay
+            self.files.append(sf)
+            self._by_rel[rel] = sf
+            return
         rels: List[str] = []
         # one git call (a re-scan in `vibeaudit watch` pays for every process): -t tags untracked files "?";
         # outside a repository it fails and the folder is walked instead

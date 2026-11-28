@@ -114,7 +114,7 @@ def test_action_inputs_hook_and_versions_match():
 
 
 def test_docs_are_plain_ascii():
-    for doc in ("README.md", "docs/USAGE.md", "CONTRIBUTING.md", "SECURITY.md", "CHANGELOG.md", "docs/RULES.md"):
+    for doc in ("README.md", "docs/USAGE.md", "docs/MCP.md", "CONTRIBUTING.md", "SECURITY.md", "CHANGELOG.md", "docs/RULES.md"):
         data = (ROOT / doc).read_bytes()
         assert all(b < 127 for b in data), doc
 
