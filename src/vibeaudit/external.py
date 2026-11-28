@@ -19,6 +19,13 @@ from .store import loads_json
 TOOLS = ("gitleaks", "osv-scanner", "bandit", "semgrep")
 NEEDS_NETWORK = {"osv-scanner", "semgrep"}
 TIMEOUT = 600
+MAX_ISOLATION_STAGE_FILES = 5_000
+MAX_ISOLATION_STAGE_BYTES = 50 * 1024 * 1024
+_STAGE_SKIP_DIRS = {
+    ".git", ".hg", ".svn", "node_modules", ".venv", "venv", "build", "dist", "__pycache__", ".semgrep",
+}
+_SEMGREP_IGNORE_NAMES = {".semgrepignore", ".gitignore", ".semgrep.yml", ".semgrep.yaml"}
+LAST_ISOLATION: Dict[str, Dict[str, str]] = {}
 
 
 def _rel(root: Path, path: str) -> str:
@@ -26,17 +33,26 @@ def _rel(root: Path, path: str) -> str:
     if not p.is_absolute():
         p = root / p
     try:
-        return p.resolve().relative_to(root).as_posix()
+        return p.resolve().relative_to(root.resolve()).as_posix()
     except (ValueError, OSError):
         return Path(path).as_posix()
 
 
-def _run(cmd: List[str]) -> Optional[str]:
+def _default_run(cmd: List[str], cwd: Optional[str] = None) -> Optional[str]:
     try:
-        out = subprocess.run(cmd, capture_output=True, stdin=subprocess.DEVNULL, timeout=TIMEOUT, check=False)  # noqa: S603 - fixed binary + arguments in caller
+        out = subprocess.run(cmd, capture_output=True, stdin=subprocess.DEVNULL, cwd=cwd, timeout=TIMEOUT, check=False)  # noqa: S603 - fixed binary + arguments in caller
     except (OSError, subprocess.SubprocessError):
         return None
     return out.stdout.decode("utf-8", "replace")
+
+
+_run = _default_run
+
+
+def _invoke_run(cmd: List[str], cwd: Optional[Path] = None) -> Optional[str]:
+    if cwd is not None and _run is _default_run:
+        return _default_run(cmd, cwd=str(cwd))
+    return _run(cmd)
 
 
 # ---------------------------------------------------------------- parsers
@@ -141,7 +157,9 @@ def detect_repo_configs(root: Path) -> Dict[str, List[str]]:
     found: Dict[str, List[str]] = {}
 
     def _add(tool: str, rel: str) -> None:
-        found.setdefault(tool, []).append(rel)
+        bucket = found.setdefault(tool, [])
+        if rel not in bucket:
+            bucket.append(rel)
 
     for rel in (".gitleaks.toml", "gitleaks.toml", ".gitleaksignore"):
         if (root / rel).exists():
@@ -160,14 +178,61 @@ def detect_repo_configs(root: Path) -> Dict[str, List[str]]:
     for rel in (".semgrepignore", ".semgrep.yml", ".semgrep.yaml", ".semgrep"):
         if (root / rel).exists():
             _add("semgrep", rel)
+    try:
+        for dirpath, dirnames, filenames in os.walk(root, topdown=True, followlinks=False):
+            dirnames[:] = sorted(
+                d for d in dirnames
+                if d not in _STAGE_SKIP_DIRS and not os.path.islink(os.path.join(dirpath, d))
+            )
+            if ".semgrepignore" in filenames:
+                rel_path = Path(dirpath).relative_to(root) / ".semgrepignore"
+                _add("semgrep", rel_path.as_posix())
+    except OSError:
+        pass
     if (root / "osv-scanner.toml").exists():
         _add("osv-scanner", "osv-scanner.toml")
     return found
 
 
+def _stage_semgrep_tree(root: Path, dest: Path) -> Optional[str]:
+    """Stage regular repository files into `dest` omitting repo-controlled Semgrep config/ignore files."""
+    file_count = 0
+    total_bytes = 0
+    try:
+        dest.mkdir(parents=True, exist_ok=True)
+        for dirpath, dirnames, filenames in os.walk(root, topdown=True, followlinks=False):
+            dirnames[:] = sorted(
+                d for d in dirnames
+                if d not in _STAGE_SKIP_DIRS and not os.path.islink(os.path.join(dirpath, d))
+            )
+            rel_dir = os.path.relpath(dirpath, root)
+            for fname in sorted(filenames):
+                if fname in _SEMGREP_IGNORE_NAMES:
+                    continue
+                src = Path(dirpath) / fname
+                if src.is_symlink() or not src.is_file():
+                    continue
+                st = src.stat()
+                file_count += 1
+                total_bytes += st.st_size
+                if file_count > MAX_ISOLATION_STAGE_FILES or total_bytes > MAX_ISOLATION_STAGE_BYTES:
+                    return "repository exceeded staging limit"
+                out_dir = dest if rel_dir == "." else dest / rel_dir
+                out_dir.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(src, out_dir / fname)
+        (dest / ".semgrepignore").write_text("", encoding="utf-8")
+    except OSError as exc:
+        return f"staging failed ({exc})"
+    return None
+
+
 def run_tool(name: str, root: Path, no_config: bool = False) -> Optional[List[Finding]]:
     """Run an external scanner. When `no_config` is True, isolate it from repo-committed ignore/config files."""
     if name == "gitleaks":
+        LAST_ISOLATION["gitleaks"] = {
+            "isolation": "full" if no_config else "none",
+            "detail": "default config, empty ignore file, --ignore-gitleaks-allow" if no_config else "project config enabled",
+        }
         with tempfile.TemporaryDirectory() as tmp:
             report = os.path.join(tmp, "gitleaks.json")
             base = ["--report-format", "json", "--report-path", report, "--exit-code", "0", "--no-banner"]
@@ -179,41 +244,75 @@ def run_tool(name: str, root: Path, no_config: bool = False) -> Optional[List[Fi
                 extra = ["--config", str(gl_cfg), "--gitleaks-ignore-path", str(gl_ignore), "--ignore-gitleaks-allow"]
             else:
                 extra = []
-            _run(["gitleaks", "dir", str(root)] + extra + base)
+            _invoke_run(["gitleaks", "dir", str(root)] + extra + base)
             if not os.path.exists(report):
-                _run(["gitleaks", "detect", "--no-git", "--source", str(root)] + extra + base)
+                _invoke_run(["gitleaks", "detect", "--no-git", "--source", str(root)] + extra + base)
             try:
                 data = loads_json(Path(report).read_text(encoding="utf-8") or "[]")
             except (OSError, ValueError):
                 return None
         return parse_gitleaks(data, root)
+    parse_root = root
     if name == "bandit":
+        LAST_ISOLATION["bandit"] = {
+            "isolation": "full" if no_config else "none",
+            "detail": "temporary empty skips config" if no_config else "project config enabled",
+        }
         excl = ",".join(str(root / d) for d in ("node_modules", ".venv", "venv", "tests", "test", "build", "dist"))
         if no_config:
             with tempfile.TemporaryDirectory() as tmp:
                 cfg = Path(tmp) / "bandit.yaml"
                 cfg.write_text("skips: []\n", encoding="utf-8")
-                raw = _run(["bandit", "-c", str(cfg), "-r", str(root), "-f", "json", "-q", "-x", excl])
+                raw = _invoke_run(["bandit", "-c", str(cfg), "-r", str(root), "-f", "json", "-q", "-x", excl])
         else:
-            raw = _run(["bandit", "-r", str(root), "-f", "json", "-q", "-x", excl])
+            raw = _invoke_run(["bandit", "-r", str(root), "-f", "json", "-q", "-x", excl])
     elif name == "semgrep":
-        cmd = ["semgrep", "scan", "--config", "p/default", "--json", "--metrics", "off", "--quiet"]
+        base_cmd = ["semgrep", "scan", "--config", "p/default", "--json", "--metrics", "off", "--quiet"]
         if no_config:
-            cmd.append("--no-git-ignore")
-        cmd.append(str(root))
-        raw = _run(cmd)
+            semgrep_cfgs = detect_repo_configs(root).get("semgrep", [])
+            with tempfile.TemporaryDirectory() as tmp:
+                tmp_path = Path(tmp)
+                if semgrep_cfgs:
+                    stage_dir = tmp_path / "repo"
+                    stage_err = _stage_semgrep_tree(root, stage_dir)
+                    if stage_err is None:
+                        LAST_ISOLATION["semgrep"] = {
+                            "isolation": "full",
+                            "detail": "staged shadow tree omitting repo .semgrepignore/.semgrep configs",
+                        }
+                        parse_root = stage_dir.resolve()
+                        raw = _invoke_run(base_cmd + ["--no-git-ignore", str(stage_dir)], cwd=stage_dir)
+                    else:
+                        LAST_ISOLATION["semgrep"] = {
+                            "isolation": "partial",
+                            "detail": f"repo contains .semgrepignore and {stage_err}",
+                        }
+                        raw = _invoke_run(base_cmd + ["--no-git-ignore", str(root)], cwd=tmp_path)
+                else:
+                    LAST_ISOLATION["semgrep"] = {
+                        "isolation": "full",
+                        "detail": "--no-git-ignore with isolated working directory (no repo .semgrepignore)",
+                    }
+                    raw = _invoke_run(base_cmd + ["--no-git-ignore", str(root)], cwd=tmp_path)
+        else:
+            LAST_ISOLATION["semgrep"] = {"isolation": "none", "detail": "project config enabled"}
+            raw = _invoke_run(base_cmd + [str(root)])
     elif name == "osv-scanner":
+        LAST_ISOLATION["osv-scanner"] = {
+            "isolation": "full" if no_config else "none",
+            "detail": "temporary empty osv-scanner.toml" if no_config else "project config enabled",
+        }
         if no_config:
             with tempfile.TemporaryDirectory() as tmp:
                 cfg = Path(tmp) / "osv-scanner.toml"
                 cfg.write_text("", encoding="utf-8")
-                raw = _run(["osv-scanner", "scan", "source", "-r", "--config", str(cfg), "--format", "json", str(root)])
+                raw = _invoke_run(["osv-scanner", "scan", "source", "-r", "--config", str(cfg), "--format", "json", str(root)])
                 if not raw or not raw.lstrip().startswith("{"):
-                    raw = _run(["osv-scanner", "--config", str(cfg), "--format", "json", "-r", str(root)])
+                    raw = _invoke_run(["osv-scanner", "--config", str(cfg), "--format", "json", "-r", str(root)])
         else:
-            raw = _run(["osv-scanner", "scan", "source", "-r", "--format", "json", str(root)])
+            raw = _invoke_run(["osv-scanner", "scan", "source", "-r", "--format", "json", str(root)])
             if not raw or not raw.lstrip().startswith("{"):
-                raw = _run(["osv-scanner", "--format", "json", "-r", str(root)])
+                raw = _invoke_run(["osv-scanner", "--format", "json", "-r", str(root)])
     else:
         return None
     if not raw:
@@ -222,4 +321,4 @@ def run_tool(name: str, root: Path, no_config: bool = False) -> Optional[List[Fi
         data = loads_json(raw[raw.index("{"):])
     except ValueError:
         return None
-    return PARSERS[name](data, root)
+    return PARSERS[name](data, parse_root)

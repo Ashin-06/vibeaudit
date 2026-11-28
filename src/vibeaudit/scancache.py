@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import hashlib
+import json
+import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -12,6 +14,8 @@ from .model import Finding, Route
 CACHE_FORMAT = 1
 MAX_SECRET_CACHE_ENTRIES = 10_000
 MAX_SNAPSHOT_FINDINGS = 50_000
+MAX_SNAPSHOT_BYTES = 20 * 1024 * 1024
+MAX_SECRET_CACHE_BYTES = 10 * 1024 * 1024
 
 
 def _finding_to_cache(f: Finding) -> Dict[str, Any]:
@@ -106,29 +110,73 @@ def _snapshot_path(root: Path) -> Path:
     return store.cache_dir() / "scans" / f"{key}.json"
 
 
-def load_snapshot(root: Path, fingerprint: str) -> Optional[Tuple[List[Finding], List[Route]]]:
-    """Load cached built-in findings and routes for `root` if `fingerprint` matches."""
+def load_snapshot_info(root: Path, fingerprint: str) -> Tuple[Optional[Tuple[List[Finding], List[Route]]], Dict[str, Any]]:
+    """Load cached built-in findings and routes for `root` with bounded read and telemetry."""
+    info: Dict[str, Any] = {"hit": False, "reason": "miss", "read_ms": 0.0, "snapshot_bytes": 0, "cached_findings": 0}
     if not store.ENABLED:
-        return None
-    doc = store.read_json(_snapshot_path(root))
-    if not isinstance(doc, dict) or doc.get("format") != CACHE_FORMAT or doc.get("fingerprint") != fingerprint:
-        return None
+        info["reason"] = "disabled"
+        return None, info
+    t0 = time.perf_counter()
+    path = _snapshot_path(root)
+    try:
+        st_size = path.stat().st_size
+    except OSError:
+        info["read_ms"] = round((time.perf_counter() - t0) * 1000.0, 2)
+        return None, info
+    info["snapshot_bytes"] = st_size
+    if st_size > MAX_SNAPSHOT_BYTES:
+        info["reason"] = "oversized"
+        info["read_ms"] = round((time.perf_counter() - t0) * 1000.0, 2)
+        return None, info
+    doc = store.read_json(path, max_bytes=MAX_SNAPSHOT_BYTES)
+    if not isinstance(doc, dict):
+        info["reason"] = "corrupt"
+        info["read_ms"] = round((time.perf_counter() - t0) * 1000.0, 2)
+        return None, info
+    if doc.get("format") != CACHE_FORMAT:
+        info["reason"] = "format_mismatch"
+        info["read_ms"] = round((time.perf_counter() - t0) * 1000.0, 2)
+        return None, info
+    if doc.get("version") != __version__:
+        info["reason"] = "version_mismatch"
+        info["read_ms"] = round((time.perf_counter() - t0) * 1000.0, 2)
+        return None, info
+    if doc.get("fingerprint") != fingerprint:
+        info["reason"] = "fingerprint_mismatch"
+        info["read_ms"] = round((time.perf_counter() - t0) * 1000.0, 2)
+        return None, info
     raw_findings = doc.get("findings")
     raw_routes = doc.get("routes")
-    if not isinstance(raw_findings, list) or not isinstance(raw_routes, list):
-        return None
+    if not isinstance(raw_findings, list) or not isinstance(raw_routes, list) or len(raw_findings) > MAX_SNAPSHOT_FINDINGS:
+        info["reason"] = "corrupt"
+        info["read_ms"] = round((time.perf_counter() - t0) * 1000.0, 2)
+        return None, info
     try:
         findings = [_finding_from_cache(item) for item in raw_findings]
         routes = [_route_from_cache(item) for item in raw_routes]
-    except (KeyError, TypeError, ValueError):
-        return None
-    return findings, routes
+    except (KeyError, TypeError, ValueError, AttributeError):
+        info["reason"] = "corrupt"
+        info["read_ms"] = round((time.perf_counter() - t0) * 1000.0, 2)
+        return None, info
+    info["hit"] = True
+    info["reason"] = "hit"
+    info["cached_findings"] = len(findings)
+    info["read_ms"] = round((time.perf_counter() - t0) * 1000.0, 2)
+    return (findings, routes), info
 
 
-def save_snapshot(root: Path, fingerprint: str, findings: List[Finding], routes: List[Route]) -> None:
-    """Persist built-in findings and routes for `root` atomically."""
+def load_snapshot(root: Path, fingerprint: str) -> Optional[Tuple[List[Finding], List[Route]]]:
+    """Load cached built-in findings and routes for `root` if `fingerprint` matches."""
+    loaded, _info = load_snapshot_info(root, fingerprint)
+    return loaded
+
+
+def save_snapshot_info(root: Path, fingerprint: str, findings: List[Finding], routes: List[Route]) -> Dict[str, Any]:
+    """Persist built-in findings and routes for `root` atomically and return write telemetry."""
+    out: Dict[str, Any] = {"written": False, "write_ms": 0.0, "snapshot_bytes": 0, "cached_findings": 0}
     if not store.ENABLED or len(findings) > MAX_SNAPSHOT_FINDINGS:
-        return
+        return out
+    t0 = time.perf_counter()
     doc = {
         "format": CACHE_FORMAT,
         "version": __version__,
@@ -136,7 +184,22 @@ def save_snapshot(root: Path, fingerprint: str, findings: List[Finding], routes:
         "findings": [_finding_to_cache(f) for f in findings],
         "routes": [_route_to_cache(r) for r in routes],
     }
-    store.write_json(_snapshot_path(root), doc)
+    payload = json.dumps(doc, indent=1, sort_keys=True).encode("utf-8")
+    if len(payload) > MAX_SNAPSHOT_BYTES:
+        out["write_ms"] = round((time.perf_counter() - t0) * 1000.0, 2)
+        return out
+    ok = store.write_atomic(_snapshot_path(root), payload)
+    out["written"] = ok
+    out["write_ms"] = round((time.perf_counter() - t0) * 1000.0, 2)
+    if ok:
+        out["snapshot_bytes"] = len(payload)
+        out["cached_findings"] = len(findings)
+    return out
+
+
+def save_snapshot(root: Path, fingerprint: str, findings: List[Finding], routes: List[Route]) -> None:
+    """Persist built-in findings and routes for `root` atomically."""
+    save_snapshot_info(root, fingerprint, findings, routes)
 
 
 def _secret_cache_path() -> Path:
@@ -156,13 +219,15 @@ def secret_file_key(sf: SourceFile, text: str, bundle: bool, bare_public: bool) 
 def load_secret_cache() -> Dict[str, List[Dict[str, Any]]]:
     if not store.ENABLED:
         return {}
-    doc = store.read_json(_secret_cache_path())
+    doc = store.read_json(_secret_cache_path(), max_bytes=MAX_SECRET_CACHE_BYTES)
     if not isinstance(doc, dict) or doc.get("format") != CACHE_FORMAT or not isinstance(doc.get("entries"), dict):
         return {}
     out: Dict[str, List[Dict[str, Any]]] = {}
     for k, v in doc["entries"].items():
         if isinstance(k, str) and isinstance(v, list):
             out[k] = [item for item in v if isinstance(item, dict)]
+            if len(out) >= MAX_SECRET_CACHE_ENTRIES:
+                break
     return out
 
 

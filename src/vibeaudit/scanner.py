@@ -8,7 +8,7 @@ import time
 import warnings
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Callable, Dict, List, Optional, Set
+from typing import Any, Callable, Dict, List, Optional, Set
 
 from . import correlate, coverage, external, parallel, parse, plugins, rpcscan, scancache, store
 from .deps import DepScanner
@@ -236,23 +236,38 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
     can_cache = opts.cache and store.ENABLED and project.step_memo is None and deadline is None and not has_overlays
     snap_fp = scancache.project_fingerprint(project, opts, parser_modes) if can_cache else ""
     cached_hit = False
-    loaded = scancache.load_snapshot(project.root, snap_fp) if can_cache else None
+    parallel_used = False
+    parallel_fallback: Optional[Dict[str, Any]] = None
+    save_info: Dict[str, Any] = {"written": False, "write_ms": 0.0, "snapshot_bytes": 0, "cached_findings": 0}
+    if can_cache:
+        loaded, cache_info = scancache.load_snapshot_info(project.root, snap_fp)
+    else:
+        loaded, cache_info = None, {
+            "hit": False, "reason": "disabled", "read_ms": 0.0, "snapshot_bytes": 0, "cached_findings": 0,
+        }
     if loaded is not None:
         cached_hit = True
         c_raw, c_routes = loaded
         raw.extend(c_raw)
         all_routes.extend(c_routes)
     else:
-        par_res = None
         if effective_jobs > 1 and len(project.files) >= parallel.PARALLEL_MIN_FILES and project.step_memo is None and deadline is None and not has_overlays:
-            par_res = parallel.run_parallel(project, opts, effective_jobs)
-        if par_res is not None:
-            p_raw, p_routes, p_skip, p_err = par_res
-            raw.extend(p_raw)
-            all_routes.extend(p_routes)
-            GUARD.skipped.extend(p_skip)
-            GUARD.internal_errors.extend(p_err)
-        else:
+            par_out = parallel.run_parallel(project, opts, effective_jobs)
+            if par_out.ok:
+                raw.extend(par_out.findings)
+                all_routes.extend(par_out.routes)
+                GUARD.skipped.extend(par_out.skipped)
+                GUARD.internal_errors.extend(par_out.internal_errors)
+                parallel_used = True
+            elif par_out.error:
+                opts.log(f"warning: {par_out.error}")
+                notes.append(par_out.error)
+                parallel_fallback = {
+                    "reason": par_out.fallback_reason,
+                    "task": par_out.failed_task,
+                    "error": par_out.error,
+                }
+        if not parallel_used:
             stages = [
                 lambda: js_routes.extend(JsScanner(project, emit).run()),
                 lambda: py_routes.extend(PyScanner(project, emit).run() + JvmScanner(project, emit).run()),
@@ -289,7 +304,7 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
                     break
                 stage()
         if can_cache and not scan_timed_out and not GUARD.skipped and not GUARD.internal_errors:
-            scancache.save_snapshot(project.root, snap_fp, list(raw), list(all_routes))
+            save_info = scancache.save_snapshot_info(project.root, snap_fp, list(raw), list(all_routes))
     if opts.history and not _expired():
         history_info = GUARD.run("<project>", "git history secrets", scan_git_history, project.root, emit, opts.history_commits)
     if not _expired():
@@ -300,18 +315,16 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
         notes += deps.notes
 
     ext_configs: Dict[str, List[str]] = {}
+    ext_coverage: Dict[str, Dict[str, str]] = {}
     if opts.external != "none" and not _expired():
         wanted = external.TOOLS if opts.external == "auto" else [t.strip() for t in opts.external.split(",") if t.strip()]
         detected = external.detect_repo_configs(project.root)
         ext_configs = {t: detected[t] for t in wanted if t in detected}
-        if ext_configs:
+        if ext_configs and not opts.no_config:
             desc = ", ".join(f"{t}: {', '.join(paths)}" for t, paths in sorted(ext_configs.items()))
-            if not opts.no_config:
-                msg = f"Repo-local external scanner config(s) detected ({desc}); they may suppress external findings (use --no-config to isolate untrusted repos)."
-                notes.append(msg)
-                opts.log(f"warning: {msg}")
-            elif ".semgrepignore" in ext_configs.get("semgrep", ()):
-                notes.append("Note: repository contains .semgrepignore, which Semgrep may still read unless removed.")
+            msg = f"Repo-local external scanner config(s) detected ({desc}); they may suppress external findings (use --no-config to isolate untrusted repos)."
+            notes.append(msg)
+            opts.log(f"warning: {msg}")
         for tool in wanted:
             if _expired():
                 break
@@ -325,13 +338,33 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
                     notes.append(f"{tool} is not installed; skipped.")
                 continue
             opts.log(f"running {tool} ...")
+            external.LAST_ISOLATION.pop(tool, None)
             if opts.no_config:
                 res = GUARD.run("<project>", tool, external.run_tool, tool, project.root, True)
             else:
                 res = GUARD.run("<project>", tool, external.run_tool, tool, project.root)
             if res is None:
                 notes.append(f"{tool} failed to run or produced no readable output.")
+                ext_coverage[tool] = {
+                    "status": "failed",
+                    "isolation": "none",
+                    "detail": "failed to run or produced no readable output",
+                }
                 continue
+            iso = external.LAST_ISOLATION.get(tool) or {
+                "isolation": "full" if opts.no_config else "none",
+                "detail": "",
+            }
+            tool_status = "partial" if iso["isolation"] == "partial" else "complete"
+            ext_coverage[tool] = {
+                "status": tool_status,
+                "isolation": iso["isolation"],
+                "detail": iso.get("detail", ""),
+            }
+            if iso["isolation"] == "partial":
+                msg = f"{tool} isolation under --no-config is partial ({iso.get('detail') or 'repo ignore files may apply'})."
+                notes.append(msg)
+                opts.log(f"warning: {msg}")
             ran.append(tool)
             raw.extend(res)
 
@@ -402,11 +435,23 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
             if (entry["file"], entry["rule_id"]) in current_pairs:
                 entry["current_exposure"] = True
     cov = coverage.build(project, opts, GUARD.skipped, GUARD.internal_errors, parser_modes, history_info,
-                         scan_timed_out=scan_timed_out)
+                         scan_timed_out=scan_timed_out, external_status=ext_coverage)
+    scan_cache_meta: Dict[str, Any] = {
+        "hit": cached_hit,
+        "reason": cache_info["reason"],
+        "jobs": effective_jobs,
+        "parallel_used": parallel_used,
+        "read_ms": cache_info["read_ms"],
+        "write_ms": save_info["write_ms"],
+        "snapshot_bytes": cache_info["snapshot_bytes"] if cached_hit else save_info["snapshot_bytes"],
+        "cached_findings": cache_info["cached_findings"] if cached_hit else save_info["cached_findings"],
+    }
+    if parallel_fallback is not None:
+        scan_cache_meta["parallel_fallback"] = parallel_fallback
     meta = {
         "files_scanned": len(project.files), "duration_seconds": round(time.time() - start, 2),
         "score_model": opts.score_model,
-        "scan_cache": {"hit": cached_hit, "jobs": effective_jobs},
+        "scan_cache": scan_cache_meta,
         "stack": stack, "external_tools": ran, "offline": opts.offline, "notes": notes,
         "routes_found": len(all_routes), "git": project.is_git,
         "skipped": list(GUARD.skipped), "internal_errors": list(GUARD.internal_errors),

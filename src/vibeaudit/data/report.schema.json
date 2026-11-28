@@ -64,7 +64,21 @@
           "required": ["hit", "jobs"],
           "properties": {
             "hit": { "type": "boolean" },
-            "jobs": { "type": "integer", "minimum": 1 }
+            "reason": { "type": "string" },
+            "jobs": { "type": "integer", "minimum": 1 },
+            "parallel_used": { "type": "boolean" },
+            "read_ms": { "type": "number", "minimum": 0 },
+            "write_ms": { "type": "number", "minimum": 0 },
+            "snapshot_bytes": { "type": "integer", "minimum": 0 },
+            "cached_findings": { "type": "integer", "minimum": 0 },
+            "parallel_fallback": {
+              "type": ["object", "null"],
+              "properties": {
+                "reason": { "type": ["string", "null"] },
+                "task": { "type": ["string", "null"] },
+                "error": { "type": ["string", "null"] }
+              }
+            }
           }
         },
         "notes": { "type": "array", "items": { "type": "string" } }
@@ -76,7 +90,19 @@
         "overall_status": { "type": "string", "enum": ["complete", "partial"] },
         "config_mode": { "type": "string" },
         "files_discovered": { "type": "integer", "minimum": 0 },
-        "files_analyzed": { "type": "integer", "minimum": 0 }
+        "files_analyzed": { "type": "integer", "minimum": 0 },
+        "external": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": ["status", "isolation"],
+            "properties": {
+              "status": { "type": "string", "enum": ["complete", "partial", "failed"] },
+              "isolation": { "type": "string", "enum": ["full", "partial", "none"] },
+              "detail": { "type": "string" }
+            }
+          }
+        }
       }
     },
     "findings": {

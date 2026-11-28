@@ -35,6 +35,20 @@ All notable changes to this project are documented here. The format follows
 
 ### Hardened
 
+- **Parallel worker fallback diagnostics (`parallel.py`, `scanner.py`)**: `run_parallel()` now catches any
+  per-task or pool exception in Wave 1/Wave 2, cancels sibling futures, discards partial results, logs
+  diagnostics (`meta.scan_cache.parallel_fallback` + `meta.notes`), and falls back cleanly to sequential mode.
+- **Size-bounded cache loading & richer telemetry (`store.py`, `scancache.py`, `scanner.py`)**: `store.read_json()`
+  and `scancache` enforce explicit byte caps (`20 MiB` snapshots, `10 MiB` secret cache) before decoding JSON,
+  surface cache hit/miss reasons, timing, and snapshot sizes under `meta.scan_cache`, and retry transient
+  atomic-replace contention across concurrent processes.
+- **Complete Semgrep `--no-config` isolation & coverage reporting (`external.py`, `coverage.py`, `scanner.py`)**:
+  detects root and nested `.semgrepignore`/`.semgrep*` files and stages a bounded clean shadow directory when
+  needed; reports explicit `full`/`partial`/`none` isolation status under `coverage.external` and marks scans
+  `partial` whenever full isolation cannot be guaranteed.
+- **CI JSON Schema verification & parallel benchmark (`ci.yml`, `report.schema.json`, `STABILITY.md`, `tools/bench_parallel.py`)**:
+  verifies the wheel ships the exact `report.schema.json` and validates generated JSON reports with `jsonschema`
+  in CI; extends `STABILITY.md` with parallel, cache, and `--no-config` v1.0 readiness guarantees.
 - **MCP server folder allowlist (`mcp_server.py`, `SECURITY.md`, `docs/PRIVACY.md`)**: added optional
   `VIBEAUDIT_MCP_ROOTS` (system path separator delimited) enforced across all path-accepting MCP tools
   (`scan_project`, `scan_file`, `audit_current_file`, `list_routes`, `auto_repair`, `verify_package`, `simulate_migration`).
