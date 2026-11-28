@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Ashin-06/vibeaudit/blob/main/src/vibeaudit/data/report.schema.json",
+  "title": "vibeaudit JSON Scan Report",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "tool",
+    "version",
+    "root",
+    "summary",
+    "meta",
+    "coverage",
+    "findings",
+    "routes"
+  ],
+  "properties": {
+    "tool": { "const": "vibeaudit" },
+    "version": { "type": "string", "minLength": 1 },
+    "root": { "type": "string" },
+    "summary": {
+      "type": "object",
+      "required": [
+        "counts",
+        "total",
+        "score_model",
+        "score",
+        "normalized_score",
+        "linear_score",
+        "raw_penalty",
+        "density_per_100_files",
+        "grade",
+        "domains"
+      ],
+      "properties": {
+        "counts": {
+          "type": "object",
+          "required": ["critical", "high", "medium", "low", "info"],
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        },
+        "total": { "type": "integer", "minimum": 0 },
+        "score_model": { "type": "string", "enum": ["diminishing-v2", "linear-v1"] },
+        "score": { "type": ["integer", "null"], "minimum": 0, "maximum": 100 },
+        "normalized_score": { "type": ["integer", "null"], "minimum": 0, "maximum": 100 },
+        "linear_score": { "type": ["integer", "null"], "minimum": 0, "maximum": 100 },
+        "raw_penalty": { "type": "integer", "minimum": 0 },
+        "density_per_100_files": { "type": "number", "minimum": 0 },
+        "grade": { "type": "string", "enum": ["A", "B", "C", "D", "F", "N/A"] },
+        "domains": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0, "maximum": 100 }
+        }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "required": ["files_scanned", "score_model", "coverage"],
+      "properties": {
+        "files_scanned": { "type": "integer", "minimum": 0 },
+        "duration_seconds": { "type": "number", "minimum": 0 },
+        "score_model": { "type": "string", "enum": ["diminishing-v2", "linear-v1"] },
+        "scan_cache": {
+          "type": "object",
+          "required": ["hit", "jobs"],
+          "properties": {
+            "hit": { "type": "boolean" },
+            "jobs": { "type": "integer", "minimum": 1 }
+          }
+        },
+        "notes": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "coverage": {
+      "type": ["object", "null"],
+      "properties": {
+        "overall_status": { "type": "string", "enum": ["complete", "partial"] },
+        "config_mode": { "type": "string" },
+        "files_discovered": { "type": "integer", "minimum": 0 },
+        "files_analyzed": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "rule_id",
+          "title",
+          "severity",
+          "category",
+          "file",
+          "line",
+          "message",
+          "snippet",
+          "why",
+          "fix",
+          "cwe",
+          "owasp",
+          "source",
+          "fingerprint"
+        ],
+        "properties": {
+          "rule_id": { "type": "string", "minLength": 1 },
+          "severity": { "type": "string", "enum": ["critical", "high", "medium", "low", "info"] },
+          "line": { "type": "integer", "minimum": 0 },
+          "fingerprint": { "type": "string" },
+          "preview": { "type": "boolean" },
+          "gates_in_preview": { "type": "boolean" }
+        }
+      }
+    },
+    "routes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["methods", "path", "file", "line", "framework", "authenticated"],
+        "properties": {
+          "methods": { "type": "array", "items": { "type": "string" } },
+          "path": { "type": "string" },
+          "file": { "type": "string" },
+          "line": { "type": "integer", "minimum": 0 },
+          "authenticated": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}

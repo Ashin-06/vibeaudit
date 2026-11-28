@@ -9,6 +9,7 @@ import tracemalloc
 
 import pytest
 
+from vibeaudit import store
 from vibeaudit.scanner import Options, scan
 
 pytestmark = pytest.mark.slow
@@ -70,11 +71,13 @@ def _build(root, n):
     (root / "pkg0" / "vuln.py").write_text("import os\nfrom flask import request\n\n@app.post('/x')\ndef x():\n    os.system('ls ' + request.args['p'])\n")
 
 
-def test_large_repository_scans_in_bounded_time_and_memory(tmp_path):
-    _build(tmp_path, FILES)
+def test_large_repository_scans_in_bounded_time_and_memory(tmp_path, monkeypatch):
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    _build(repo, FILES)
     tracemalloc.start()
     start = time.perf_counter()
-    res = scan(str(tmp_path), Options(offline=True, external="none"))
+    res = scan(str(repo), Options(offline=True, external="none"))
     elapsed = time.perf_counter() - start
     _current, peak = tracemalloc.get_traced_memory()
     tracemalloc.stop()
@@ -85,3 +88,15 @@ def test_large_repository_scans_in_bounded_time_and_memory(tmp_path):
     assert ("pkg0/vuln.py", 6, "BE002") in {(f.file, f.line, f.rule_id) for f in res.findings}
     assert elapsed < SECONDS_PER_1000_FILES * FILES / 1000 + 10
     assert peak_mb < PEAK_MB_PER_1000_FILES * FILES / 1000 + 50
+
+    # Warm scan cache on an unchanged repo must hit cleanly and stay well within budget
+    monkeypatch.setenv("VIBEAUDIT_CACHE_DIR", str(tmp_path / "cache"))
+    monkeypatch.setattr(store, "ENABLED", True)
+    cold = scan(str(repo), Options(offline=True, external="none"))
+    assert cold.meta["scan_cache"]["hit"] is False
+    warm_start = time.perf_counter()
+    warm = scan(str(repo), Options(offline=True, external="none"))
+    warm_elapsed = time.perf_counter() - warm_start
+    assert warm.meta["scan_cache"]["hit"] is True
+    assert len(warm.findings) == len(res.findings) and warm.score == res.score
+    assert warm_elapsed < elapsed + 1.0

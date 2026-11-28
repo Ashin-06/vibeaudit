@@ -10,7 +10,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable, Dict, List, Optional, Set
 
-from . import correlate, coverage, external, parse, plugins, rpcscan
+from . import correlate, coverage, external, parallel, parse, plugins, rpcscan, scancache, store
 from .deps import DepScanner
 from . import heuristics as H
 from .files import Project
@@ -83,6 +83,7 @@ class Options:
     history_commits: int = 200
     no_config: bool = False
     score_model: str = "diminishing-v2"
+    jobs: int = 1
     config_path: Optional[str] = None
     config_disabled: List[str] = field(default_factory=list)
     log: Callable[[str], None] = lambda s: None
@@ -229,52 +230,88 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
     all_routes: list = []
     history_info = None
     ran: List[str] = []
-
-    stages = [
-        lambda: js_routes.extend(JsScanner(project, emit).run()),
-        lambda: py_routes.extend(PyScanner(project, emit).run() + JvmScanner(project, emit).run()),
-        lambda: go_routes.extend(GoScanner(project, emit).run()),
-        lambda: go_routes.extend(RustScanner(project, emit).run()),
-        lambda: go_routes.extend(CsScanner(project, emit).run()),
-        lambda: go_routes.extend(PhpScanner(project, emit).run()),
-        lambda: go_routes.extend(RubyScanner(project, emit).run()),
-        lambda: go_routes.extend(SwiftScanner(project, emit).run()),
-        lambda: go_routes.extend(ElixirScanner(project, emit).run()),
-        lambda: DartScanner(project, emit).run(),
-        lambda: XxeScanner(project, emit).run(),
-        lambda: poly_routes.extend(PolyScanner(project, emit).run()),
-        lambda: all_routes.extend(js_routes + py_routes + go_routes + poly_routes + rpcscan.routes(project)),
-        lambda: SecretScanner(project, emit).run(),
-    ]
-    for stage in stages:
-        if _expired():
-            break
-        stage()
-    if not all_routes and (js_routes or py_routes or go_routes or poly_routes):
-        all_routes = js_routes + py_routes + go_routes + poly_routes
+    parser_modes = parse.mode()
+    effective_jobs = parallel.resolve_jobs(opts.jobs)
+    has_overlays = bool(getattr(project, "overlays", None))
+    can_cache = opts.cache and store.ENABLED and project.step_memo is None and deadline is None and not has_overlays
+    snap_fp = scancache.project_fingerprint(project, opts, parser_modes) if can_cache else ""
+    cached_hit = False
+    loaded = scancache.load_snapshot(project.root, snap_fp) if can_cache else None
+    if loaded is not None:
+        cached_hit = True
+        c_raw, c_routes = loaded
+        raw.extend(c_raw)
+        all_routes.extend(c_routes)
+    else:
+        par_res = None
+        if effective_jobs > 1 and len(project.files) >= parallel.PARALLEL_MIN_FILES and project.step_memo is None and deadline is None and not has_overlays:
+            par_res = parallel.run_parallel(project, opts, effective_jobs)
+        if par_res is not None:
+            p_raw, p_routes, p_skip, p_err = par_res
+            raw.extend(p_raw)
+            all_routes.extend(p_routes)
+            GUARD.skipped.extend(p_skip)
+            GUARD.internal_errors.extend(p_err)
+        else:
+            stages = [
+                lambda: js_routes.extend(JsScanner(project, emit).run()),
+                lambda: py_routes.extend(PyScanner(project, emit).run() + JvmScanner(project, emit).run()),
+                lambda: go_routes.extend(GoScanner(project, emit).run()),
+                lambda: go_routes.extend(RustScanner(project, emit).run()),
+                lambda: go_routes.extend(CsScanner(project, emit).run()),
+                lambda: go_routes.extend(PhpScanner(project, emit).run()),
+                lambda: go_routes.extend(RubyScanner(project, emit).run()),
+                lambda: go_routes.extend(SwiftScanner(project, emit).run()),
+                lambda: go_routes.extend(ElixirScanner(project, emit).run()),
+                lambda: DartScanner(project, emit).run(),
+                lambda: XxeScanner(project, emit).run(),
+                lambda: poly_routes.extend(PolyScanner(project, emit).run()),
+                lambda: all_routes.extend(js_routes + py_routes + go_routes + poly_routes + rpcscan.routes(project)),
+                lambda: SecretScanner(project, emit).run(),
+            ]
+            for stage in stages:
+                if _expired():
+                    break
+                stage()
+            if not all_routes and (js_routes or py_routes or go_routes or poly_routes):
+                all_routes = js_routes + py_routes + go_routes + poly_routes
+            post_route_builtin = [
+                lambda: ProjectScanner(project, emit, all_routes).run(),
+                lambda: QualityScanner(project, emit).run(),
+                lambda: DataScanner(project, emit, all_routes).run(),
+                lambda: ReliabilityScanner(project, emit, all_routes).run(),
+                lambda: AiScanner(project, emit, all_routes).run(),
+                lambda: UiScanner(project, emit).run(),
+                lambda: ContractScanner(project, emit, all_routes).run(),
+            ]
+            for stage in post_route_builtin:
+                if _expired():
+                    break
+                stage()
+        if can_cache and not scan_timed_out and not GUARD.skipped and not GUARD.internal_errors:
+            scancache.save_snapshot(project.root, snap_fp, list(raw), list(all_routes))
     if opts.history and not _expired():
         history_info = GUARD.run("<project>", "git history secrets", scan_git_history, project.root, emit, opts.history_commits)
-    post_route_stages = [
-        lambda: ProjectScanner(project, emit, all_routes).run(),
-        lambda: QualityScanner(project, emit).run(),
-        lambda: DataScanner(project, emit, all_routes).run(),
-        lambda: ReliabilityScanner(project, emit, all_routes).run(),
-        lambda: AiScanner(project, emit, all_routes).run(),
-        lambda: UiScanner(project, emit).run(),
-        lambda: ContractScanner(project, emit, all_routes).run(),
-        lambda: plugins.run(project, all_routes, emit),
-    ]
-    for stage in post_route_stages:
-        if _expired():
-            break
-        stage()
+    if not _expired():
+        plugins.run(project, all_routes, emit)
     if not _expired():
         deps = DepScanner(project, emit, opts.offline)
         GUARD.run("<project>", "dependency checks", deps.run)
         notes += deps.notes
 
+    ext_configs: Dict[str, List[str]] = {}
     if opts.external != "none" and not _expired():
         wanted = external.TOOLS if opts.external == "auto" else [t.strip() for t in opts.external.split(",") if t.strip()]
+        detected = external.detect_repo_configs(project.root)
+        ext_configs = {t: detected[t] for t in wanted if t in detected}
+        if ext_configs:
+            desc = ", ".join(f"{t}: {', '.join(paths)}" for t, paths in sorted(ext_configs.items()))
+            if not opts.no_config:
+                msg = f"Repo-local external scanner config(s) detected ({desc}); they may suppress external findings (use --no-config to isolate untrusted repos)."
+                notes.append(msg)
+                opts.log(f"warning: {msg}")
+            elif ".semgrepignore" in ext_configs.get("semgrep", ()):
+                notes.append("Note: repository contains .semgrepignore, which Semgrep may still read unless removed.")
         for tool in wanted:
             if _expired():
                 break
@@ -364,17 +401,19 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
         for entry in history_info["timeline"]:
             if (entry["file"], entry["rule_id"]) in current_pairs:
                 entry["current_exposure"] = True
-    cov = coverage.build(project, opts, GUARD.skipped, GUARD.internal_errors, parse.mode(), history_info,
+    cov = coverage.build(project, opts, GUARD.skipped, GUARD.internal_errors, parser_modes, history_info,
                          scan_timed_out=scan_timed_out)
     meta = {
         "files_scanned": len(project.files), "duration_seconds": round(time.time() - start, 2),
         "score_model": opts.score_model,
+        "scan_cache": {"hit": cached_hit, "jobs": effective_jobs},
         "stack": stack, "external_tools": ran, "offline": opts.offline, "notes": notes,
         "routes_found": len(all_routes), "git": project.is_git,
         "skipped": list(GUARD.skipped), "internal_errors": list(GUARD.internal_errors),
         "feedback_hidden": hidden, "feedback_demoted": demoted, "include_preview": opts.include_preview,
         "gate_severe_preview": opts.gate_severe_preview, "disabled": sorted(opts.disabled),
         "config_disabled": sorted(opts.config_disabled),
+        **({"external_configs_detected": ext_configs} if ext_configs else {}),
         "attack_paths": correlate.attack_paths(findings, all_routes),
         "ai_risk_profile": correlate.ai_risk_profile(findings),
         "coverage": cov,

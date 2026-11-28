@@ -29,9 +29,9 @@ nothing, inaccessible forms and frontend calls to API routes that do not exist.
 - Pure Python, zero runtime dependencies (Python 3.11+). Linux, macOS and Windows.
   Optional `pip install vibeaudit[parse]` adds a tree-sitter function and parameter index for Go, Rust, Java,
   JavaScript and TypeScript (`vibeaudit doctor` shows which is active; `VIBEAUDIT_PARSER=regex` turns it off).
-- 95 stable static rules (93.6% held-out precision on stable rules; 68.0% across all rules including preview)
-  and 84 preview rules across 179 rules in 12 categories (plus 1 optional LLM review rule `AI001`, 180 rules
-  total), mapped to CWE, the OWASP Top 10 and the OWASP Top 10 for LLM Applications.
+- **95 stable static rules** (93.6% held-out precision on stable rules; 68.0% across all rules including preview)
+  and 84 preview rules across 179 rules in 12 categories + 1 optional LLM check (`AI001`), mapped to CWE,
+  the OWASP Top 10 and the OWASP Top 10 for LLM Applications (`vibeaudit rules --format json` prints the full catalogue).
 - Terminal output plus JSON, SARIF 2.1.0 (GitHub code scanning), Markdown, HTML, an SVG badge, CycloneDX 1.6 AI-BOM (`-r aibom`), and a fix
   brief you can paste into an AI assistant.
 - Fits into CI (GitHub Action, `--diff`), pre-commit (`--staged`) and coding agents (an MCP server).
@@ -218,7 +218,8 @@ Every command has `--help`.
 | `--fail-on-partial` | Exit 1 when any file, commit or analyzer stage was skipped or timed out (`partial` coverage). |
 | `--allow-empty` | Exit 0 even when 0 files are scanned instead of failing with an empty-scan error. |
 | `--score-model MODEL` | Scoring formula: `diminishing-v2` (default, size-normalized) or `linear-v1` (legacy `100 - penalty`). |
-| `--no-cache` | Do not read or write cached registry, vulnerability and LLM answers for this scan. |
+| `-j`, `--jobs N` | Parallel worker processes for large repos (default: `1`; `0` auto-selects up to 4 cores). |
+| `--no-cache` | Do not read or write cached scan results, registry, vulnerability and LLM answers for this scan. |
 | `-q`, `--quiet` / `--no-color` | Print only the summary / plain text. |
 
 Exit codes: `0` nothing at the `--fail-on` level (and at least one file scanned, unless `--allow-empty`), `1` findings at that level or zero files scanned, `2` usage error.
@@ -389,7 +390,7 @@ sanitizers = ["clean_sql_input"]                               # their output is
 public-paths = ["/api/public/*", "/api/survey-*"]              # intentionally unauthenticated routes
 ```
 
-Other keys: `include-preview`, `gate-severe-preview`, `monorepo`, `fail-on-partial`, `allow-empty`, `score-model`, `llm`, `llm-model`, `llm-max-requests`, `max-file-size`, `file-timeout`, `scan-timeout`. The same settings apply
+Other keys: `include-preview`, `gate-severe-preview`, `monorepo`, `fail-on-partial`, `allow-empty`, `score-model`, `jobs`, `llm`, `llm-model`, `llm-max-requests`, `max-file-size`, `file-timeout`, `scan-timeout`. The same settings apply
 to `vibeaudit scan`, `vibeaudit routes`, `vibeaudit feedback`, the MCP server and the Python API, except `llm`,
 which only `vibeaudit scan` reads: the LSP server, watch, studio, the MCP server and the API never send code to a
 model provider because a repository's config asks for it. The file is part of the scanned repository and can
@@ -685,10 +686,11 @@ validates their contents before it writes anything.
 
 ## Caching and updates
 
-Registry answers and vulnerability advisories are cached for a day ("package does not exist" for an hour,
-because a name can be registered at any time); failed lookups are never cached. The cache is in
+Scan results (keyed by SHA-256 content hashes, parser mode, configuration, and threat-feed version),
+registry answers, and vulnerability advisories are cached under
 `%LOCALAPPDATA%\vibeaudit`, `~/Library/Caches/vibeaudit` or `~/.cache/vibeaudit` (`VIBEAUDIT_CACHE_DIR`
-overrides it). `--no-cache` or `VIBEAUDIT_NO_CACHE=1` turns it off.
+overrides it). Registry/OSV answers expire after a day ("package does not exist" after an hour; failed lookups
+are never cached). `--no-cache` or `VIBEAUDIT_NO_CACHE=1` turns all caching off.
 
 `vibeaudit update` downloads the latest popular-package lists (used for typosquat checks) and retired-model
 list (LLM012) from this repository; a file is used only if it passes validation. Set `GITHUB_TOKEN` if you
