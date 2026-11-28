@@ -1,0 +1,6 @@
+name: "CodeQL config"
+
+# Sample apps under tests/fixtures and benchmark/seeded are intentionally vulnerable.
+paths-ignore:
+  - 'benchmark/seeded/**'
+  - 'tests/fixtures/**'
