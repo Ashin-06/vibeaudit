@@ -58,6 +58,9 @@
       "properties": {
         "files_scanned": { "type": "integer", "minimum": 0 },
         "single_file": { "type": "string" },
+        "profile": { "type": ["string", "null"] },
+        "baseline_score": { "type": ["integer", "null"], "minimum": 0, "maximum": 100 },
+        "score_delta": { "type": ["integer", "null"], "minimum": -100, "maximum": 100 },
         "duration_seconds": { "type": "number", "minimum": 0 },
         "score_model": { "type": "string", "enum": ["diminishing-v2", "linear-v1"] },
         "scan_cache": {

@@ -82,6 +82,18 @@ def resolve_jobs(jobs: int) -> int:
     return max(1, jobs)
 
 
+def _export_discovered(project: Project) -> Dict[str, Any]:
+    """Serialize discovered file metadata so worker processes skip redundant `git ls-files` / `os.walk` calls."""
+    return {
+        "is_git": project.is_git,
+        "tracked": sorted(project.tracked),
+        "untracked": sorted(project.untracked),
+        "binary": sorted(project.binary),
+        "skipped_files": list(project.skipped_files),
+        "files": [(sf.rel, sf.secrets_only, sf.signature) for sf in project.files],
+    }
+
+
 def _run_wave_task(
     task_name: str,
     root_str: str,
@@ -102,6 +114,7 @@ def _run_wave_task(
             Path(root_str),
             list(worker_opts["excludes"]),
             int(worker_opts["max_file_bytes"]),
+            prediscovered=worker_opts.get("prediscovered"),
         )
         raw: List[Finding] = []
         emit = raw.append
@@ -163,6 +176,7 @@ def run_parallel(
         "sanitizers": list(opts.sanitizers),
         "public_paths": list(opts.public_paths),
         "cache": bool(opts.cache and store.ENABLED),
+        "prediscovered": _export_discovered(project),
     }
     root_str = str(project.root)
     workers = min(max(1, jobs), MAX_WORKERS)

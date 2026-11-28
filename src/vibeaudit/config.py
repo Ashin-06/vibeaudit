@@ -16,6 +16,15 @@ import tomllib  # noqa: F401 - exposed for tests and callers
 from .model import SEVERITIES
 from .store import loads_toml
 
+PROFILES: Dict[str, Dict[str, Any]] = {
+    "vibe-web": {"fail_on": "high", "min_severity": "low", "disable": []},
+    "ai-agent": {"fail_on": "high", "min_severity": "low", "disable": ["ui", "quality"]},
+    "strict-ci": {
+        "fail_on": "medium", "min_severity": "low",
+        "include_preview": True, "fail_on_partial": True, "disable": [],
+    },
+}
+
 LIST = "list of strings"
 KEYS: Dict[str, str] = {
     "exclude": LIST, "disable": LIST, "auth_helpers": LIST, "sanitizers": LIST, "public_paths": LIST,
@@ -24,7 +33,7 @@ KEYS: Dict[str, str] = {
     "llm_max_requests": "integer", "file_timeout": "number", "scan_timeout": "number",
     "include_preview": "boolean", "gate_severe_preview": "boolean", "monorepo": "boolean",
     "fail_on_partial": "boolean", "allow_empty": "boolean", "score_model": "score model",
-    "jobs": "integer",
+    "jobs": "integer", "profile": "profile",
 }
 
 
@@ -43,6 +52,7 @@ def _check(key: str, value: object, where: str) -> object:
         "severity": value in SEVERITIES,
         "severity or none": value in SEVERITIES[:4] + ["none"],
         "score model": value in ("diminishing-v2", "linear-v1"),
+        "profile": isinstance(value, str) and value in PROFILES,
     }[kind]
     if not ok:
         raise ConfigError(f"{where}: `{key}` must be a {kind}, got {value!r}")
@@ -105,13 +115,16 @@ def project_options(root: str, config: Optional[str] = None, **overrides):
     from .scanner import Options
 
     cfg, cfg_path = load(Path(root), config)
+    prof_name = overrides.get("profile") or cfg.get("profile")
+    prof = PROFILES.get(str(prof_name), {}) if prof_name else {}
     baseline = cfg.get("baseline")
     if baseline and cfg_path:
         baseline = str(Path(cfg_path).parent / str(baseline))
-    disabled = {x.strip() for d in cfg.get("disable", []) for x in str(d).split(",") if x.strip()}
+    disabled = {x.strip() for d in list(prof.get("disable", ())) + list(cfg.get("disable", []))
+                for x in str(d).split(",") if x.strip()}
     values = {
         "offline": bool(cfg.get("offline", False)), "excludes": list(cfg.get("exclude", [])),
-        "disabled": disabled, "min_severity": cfg.get("min_severity", "low"),  # as the CLI
+        "disabled": disabled, "min_severity": cfg.get("min_severity", prof.get("min_severity", "low")),
         "external": cfg.get("external", "auto"),
         "baseline": baseline, "max_file_bytes": cfg.get("max_file_size", 1_000_000), "llm": None,
         "llm_model": cfg.get("llm_model"), "llm_max_requests": cfg.get("llm_max_requests", 10),
@@ -119,10 +132,11 @@ def project_options(root: str, config: Optional[str] = None, **overrides):
         "scan_timeout": float(cfg["scan_timeout"]) if cfg.get("scan_timeout") is not None else None,
         "auth_helpers": list(cfg.get("auth_helpers", [])), "sanitizers": list(cfg.get("sanitizers", [])),
         "public_paths": list(cfg.get("public_paths", [])),
-        "include_preview": bool(cfg.get("include_preview", False)),
+        "include_preview": bool(cfg.get("include_preview", prof.get("include_preview", False))),
         "gate_severe_preview": bool(cfg.get("gate_severe_preview", True)),
         "score_model": str(cfg.get("score_model", "diminishing-v2")),
         "jobs": int(cfg.get("jobs", 1)),
+        "profile": prof_name,
         "config_path": cfg_path,
         "config_disabled": sorted(disabled) if cfg_path else [],
     }

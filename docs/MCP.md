@@ -10,6 +10,15 @@ Install `vibeaudit` first:
 pip install vibeaudit
 ```
 
+Or generate starter configs in one command with `vibeaudit init`:
+
+```bash
+vibeaudit init --mcp --agent-hooks
+```
+
+That writes `.mcp.json` (plus `.cursor/mcp.json` / `.vscode/mcp.json` if those folders exist) and a starter
+`.claude/settings.json` `PostToolUse` hook that audits written or edited files automatically.
+
 ## Client setup
 
 ### Claude Code
@@ -78,11 +87,13 @@ checks its own changes automatically before finishing:
   `audit_current_file` (or `scan_project` with `changes: "staged"`) and fix any critical/high findings.
 ```
 
-## Confining workspace access
+## Confining workspace access and auditing tool calls
 
-To restrict file and directory tools (`scan_project`, `scan_file`, `audit_current_file`, `list_routes`,
-`auto_repair`, `verify_package`, `simulate_migration`) to specific directories, set `VIBEAUDIT_MCP_ROOTS` using
-your OS path separator (`:` on Linux/macOS, `;` on Windows):
+When a client sends `rootUri`, `workspaceFolders`, or `roots` during `initialize`, `vibeaudit mcp`
+automatically confines file and directory tools (`scan_project`, `scan_file`, `audit_current_file`,
+`list_routes`, `auto_repair`, `verify_package`, `simulate_migration`) to those resolved workspace directories.
+Set `VIBEAUDIT_MCP_ROOTS` using your OS path separator (`:` on Linux/macOS, `;` on Windows) to enforce an
+explicit override, and set `VIBEAUDIT_MCP_AUDIT=1` to log tool-call telemetry JSON lines to `stderr`:
 
 ```json
 {
@@ -91,11 +102,23 @@ your OS path separator (`:` on Linux/macOS, `;` on Windows):
       "command": "vibeaudit",
       "args": ["mcp"],
       "env": {
-        "VIBEAUDIT_MCP_ROOTS": "/path/to/workspace"
+        "VIBEAUDIT_MCP_ROOTS": "/path/to/workspace",
+        "VIBEAUDIT_MCP_AUDIT": "1"
       }
     }
   }
 }
+```
+
+## Checking third-party MCP servers before trusting them
+
+Before enabling an external stdio MCP server in your editor, inspect its live `tools/list` output (read-only,
+never invoking any tool) for hidden prompt-injection instructions, stealth Unicode, exfiltration parameters,
+unconstrained shell tools, or definition changes (rug-pull drift):
+
+```bash
+vibeaudit probe --mcp-cmd "npx -y @example/mcp-server" --format json
+vibeaudit probe --mcp-cmd "python server.py" --pin-hash <manifest_sha256>
 ```
 
 ## Available read-only tools

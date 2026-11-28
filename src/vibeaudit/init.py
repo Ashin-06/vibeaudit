@@ -1,6 +1,7 @@
 """`vibeaudit init`: create starter configuration, pre-commit hook and CI workflow in one step."""
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -83,8 +84,36 @@ def _circleci_config(version: str) -> str:
     )
 
 
-def run(root: Path, ci: str = "github", hook: bool = True, force: bool = False) -> Dict[str, Any]:
-    """Write starter `.vibeaudit.toml`, pre-commit hook and CI template without overwriting unless `force=True`."""
+def _mcp_json() -> str:
+    return json.dumps({"mcpServers": {"vibeaudit": {"command": "vibeaudit", "args": ["mcp"]}}}, indent=2) + "\n"
+
+
+def _vscode_mcp_json() -> str:
+    return json.dumps({"servers": {"vibeaudit": {"type": "stdio", "command": "vibeaudit", "args": ["mcp"]}}}, indent=2) + "\n"
+
+
+def _claude_hooks_json() -> str:
+    # Check each written/edited file automatically without suppressing permissions or using broad grants.
+    cmd = (
+        'python -c "import json,subprocess,sys; d=json.load(sys.stdin); '
+        'p=(d.get(\'tool_input\') or {}).get(\'file_path\'); '
+        'sys.exit(subprocess.call([\'vibeaudit\',\'scan\',p,\'--offline\',\'--external\',\'none\',\'--fail-on\',\'high\',\'-q\']) if p else 0)"'
+    )
+    return json.dumps({
+        "hooks": {
+            "PostToolUse": [
+                {
+                    "matcher": "Write|Edit",
+                    "hooks": [{"type": "command", "command": cmd}],
+                }
+            ]
+        }
+    }, indent=2) + "\n"
+
+
+def run(root: Path, ci: str = "github", hook: bool = True, force: bool = False,
+        mcp: bool = False, agent_hooks: bool = False) -> Dict[str, Any]:
+    """Write starter `.vibeaudit.toml`, pre-commit hook, CI template, and optional MCP/agent configs."""
     project = Project(root)
     stack = _stack(project)
     targets: List[tuple] = [(".vibeaudit.toml", STARTER_CONFIG)]
@@ -96,6 +125,14 @@ def run(root: Path, ci: str = "github", hook: bool = True, force: bool = False) 
         targets.append((".gitlab-ci.yml", _gitlab_ci(__version__)))
     elif ci == "circleci":
         targets.append((".circleci/config.yml", _circleci_config(__version__)))
+    if mcp:
+        targets.append((".mcp.json", _mcp_json()))
+        if (root / ".cursor").is_dir():
+            targets.append((".cursor/mcp.json", _mcp_json()))
+        if (root / ".vscode").is_dir():
+            targets.append((".vscode/mcp.json", _vscode_mcp_json()))
+    if agent_hooks:
+        targets.append((".claude/settings.json", _claude_hooks_json()))
 
     created: List[str] = []
     skipped: List[Dict[str, str]] = []

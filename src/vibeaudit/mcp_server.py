@@ -10,7 +10,10 @@ from __future__ import annotations
 import json
 import os
 import sys
+import time
 import traceback
+import urllib.parse
+import urllib.request
 from pathlib import Path
 from typing import IO, Any, Callable, Dict, List, Optional
 
@@ -149,12 +152,59 @@ class ToolError(Exception):
     pass
 
 
+_SESSION_ROOTS: Optional[List[Path]] = None
+
+
+def reset_session() -> None:
+    """Clear session-derived workspace roots (for clean test isolation and server teardown)."""
+    global _SESSION_ROOTS
+    _SESSION_ROOTS = None
+
+
+def _uri_to_path(raw: Any) -> Optional[Path]:
+    if not isinstance(raw, str) or not raw.strip():
+        return None
+    text = raw.strip()
+    if text.startswith("file://"):
+        parts = urllib.parse.urlsplit(text)
+        # Convert file:///C:/... or file:///home/... across platforms cleanly
+        path_str = urllib.request.url2pathname(urllib.parse.unquote(parts.path))
+        if parts.netloc and parts.netloc.lower() not in ("", "localhost"):
+            path_str = f"//{parts.netloc}{path_str}"
+        candidate = Path(path_str)
+    else:
+        candidate = Path(text)
+    try:
+        resolved = candidate.expanduser().resolve()
+        return resolved if resolved.is_dir() else None
+    except OSError:
+        return None
+
+
+def _extract_init_roots(params: Dict[str, Any]) -> List[Path]:
+    out: List[Path] = []
+    candidates: List[Any] = [params.get("rootUri"), params.get("rootPath")]
+    for key in ("workspaceFolders", "roots"):
+        items = params.get(key)
+        if isinstance(items, list):
+            for entry in items:
+                if isinstance(entry, dict):
+                    candidates.append(entry.get("uri") or entry.get("path"))
+                elif isinstance(entry, str):
+                    candidates.append(entry)
+    for item in candidates:
+        resolved = _uri_to_path(item)
+        if resolved is not None and resolved not in out:
+            out.append(resolved)
+    return out
+
 
 def _allowed_roots() -> Optional[List[Path]]:
-    """Optional allowlist of directories from VIBEAUDIT_MCP_ROOTS (separated by os.pathsep)."""
+    """Optional allowlist of directories from VIBEAUDIT_MCP_ROOTS (separated by os.pathsep), falling back
+    to workspace roots supplied by the client during MCP `initialize`."""
     raw = os.environ.get("VIBEAUDIT_MCP_ROOTS", "").strip()
     if not raw:
-        return None
+        return _SESSION_ROOTS
     roots: List[Path] = []
     for item in raw.split(os.pathsep):
         part = item.strip()
@@ -507,6 +557,10 @@ def handle(msg: Any) -> Optional[Dict[str, Any]]:
         return {"jsonrpc": "2.0", "id": mid, "result": result}
 
     if method == "initialize":
+        global _SESSION_ROOTS
+        init_roots = _extract_init_roots(params)
+        if init_roots:
+            _SESSION_ROOTS = init_roots
         wanted = params.get("protocolVersion")
         return ok({
             "protocolVersion": wanted if wanted in SUPPORTED_PROTOCOLS else SUPPORTED_PROTOCOLS[0],
@@ -528,46 +582,69 @@ def handle(msg: Any) -> Optional[Dict[str, Any]]:
         if raw_args is not None and not isinstance(raw_args, dict):
             return {"jsonrpc": "2.0", "id": mid, "error": {"code": -32602, "message": "Invalid params: arguments must be an object"}}
         args = raw_args or {}
+        t0 = time.perf_counter()
+        audit_enabled = os.environ.get("VIBEAUDIT_MCP_AUDIT", "") in ("1", "true", "yes")
         try:
             data = handler(args)
+            if audit_enabled:
+                sys.stderr.write(json.dumps({
+                    "event": "mcp_tool_call", "tool": name, "status": "ok",
+                    "duration_ms": round((time.perf_counter() - t0) * 1000.0, 2),
+                }) + "\n")
+                sys.stderr.flush()
             return ok({"content": [{"type": "text", "text": json.dumps(data, indent=2)}], "structuredContent": data, "isError": False})
         except ToolError as e:
+            if audit_enabled:
+                sys.stderr.write(json.dumps({
+                    "event": "mcp_tool_call", "tool": name, "status": "tool_error",
+                    "duration_ms": round((time.perf_counter() - t0) * 1000.0, 2),
+                }) + "\n")
+                sys.stderr.flush()
             return ok({"content": [{"type": "text", "text": str(e)}], "isError": True})
         except Exception as e:  # noqa: BLE001 - report tool failures to the client instead of dying
+            if audit_enabled:
+                sys.stderr.write(json.dumps({
+                    "event": "mcp_tool_call", "tool": name, "status": "internal_error",
+                    "duration_ms": round((time.perf_counter() - t0) * 1000.0, 2),
+                }) + "\n")
+                sys.stderr.flush()
             traceback.print_exc(file=sys.stderr)
             return ok({"content": [{"type": "text", "text": f"internal error: {type(e).__name__}: {e}"}], "isError": True})
     return {"jsonrpc": "2.0", "id": mid, "error": {"code": -32601, "message": f"Method not found: {method}"}}
 
 
 def serve(stdin: IO[str], stdout: IO[str]) -> int:
-    for line in stdin:
-        line = line.strip()
-        if not line:
-            continue
-        if len(line.encode("utf-8")) > MAX_LINE_BYTES:
-            response: Optional[Dict[str, Any]] = {"jsonrpc": "2.0", "id": None, "error": {"code": -32600, "message": "Request too large"}}
-            stdout.write(json.dumps(response) + "\n")
-            stdout.flush()
-            continue
-        try:
-            msg = loads_json(line)
-        except ValueError:
-            response = {"jsonrpc": "2.0", "id": None, "error": {"code": -32700, "message": "Parse error"}}
-        else:
-            if isinstance(msg, list):  # batches (older protocol versions)
-                if not msg:
-                    response = {"jsonrpc": "2.0", "id": None, "error": {"code": -32600, "message": "Invalid Request"}}
-                elif len(msg) > MAX_BATCH:
-                    response = {"jsonrpc": "2.0", "id": None, "error": {"code": -32600, "message": "Batch too large"}}
-                else:
-                    responses = [r for r in (handle(m) for m in msg) if r is not None]
-                    response = responses or None  # type: ignore[assignment]
+    try:
+        for line in stdin:
+            line = line.strip()
+            if not line:
+                continue
+            if len(line.encode("utf-8")) > MAX_LINE_BYTES:
+                response: Optional[Dict[str, Any]] = {"jsonrpc": "2.0", "id": None, "error": {"code": -32600, "message": "Request too large"}}
+                stdout.write(json.dumps(response) + "\n")
+                stdout.flush()
+                continue
+            try:
+                msg = loads_json(line)
+            except ValueError:
+                response = {"jsonrpc": "2.0", "id": None, "error": {"code": -32700, "message": "Parse error"}}
             else:
-                response = handle(msg)
-        if response is not None:
-            stdout.write(json.dumps(response) + "\n")
-            stdout.flush()
-    return 0
+                if isinstance(msg, list):  # batches (older protocol versions)
+                    if not msg:
+                        response = {"jsonrpc": "2.0", "id": None, "error": {"code": -32600, "message": "Invalid Request"}}
+                    elif len(msg) > MAX_BATCH:
+                        response = {"jsonrpc": "2.0", "id": None, "error": {"code": -32600, "message": "Batch too large"}}
+                    else:
+                        responses = [r for r in (handle(m) for m in msg) if r is not None]
+                        response = responses or None  # type: ignore[assignment]
+                else:
+                    response = handle(msg)
+            if response is not None:
+                stdout.write(json.dumps(response) + "\n")
+                stdout.flush()
+        return 0
+    finally:
+        reset_session()
 
 
 def main() -> int:
