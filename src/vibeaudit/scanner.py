@@ -84,6 +84,7 @@ class Options:
     no_config: bool = False
     score_model: str = "diminishing-v2"
     jobs: int = 1
+    profile: Optional[str] = None
     config_path: Optional[str] = None
     config_disabled: List[str] = field(default_factory=list)
     log: Callable[[str], None] = lambda s: None
@@ -464,6 +465,7 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
     meta = {
         "files_scanned": len(project.files), "duration_seconds": round(time.time() - start, 2),
         **({"single_file": single_rel} if single_rel is not None else {}),
+        **({"profile": opts.profile} if opts.profile else {}),
         "score_model": opts.score_model,
         "scan_cache": scan_cache_meta,
         "stack": stack, "external_tools": ran, "offline": opts.offline, "notes": notes,
@@ -493,7 +495,14 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
             notes.append("Git history scan skipped: target directory has no .git repository.")
     if opts.changes is not None:
         meta["changed_files"] = len(opts.changes)
-    return Result(str(project.root), findings, meta, all_routes)
+    res = Result(str(project.root), findings, meta, all_routes)
+    if opts.baseline:
+        base_info = read_baseline(opts.baseline)
+        if base_info is not None and base_info[1] is not None:
+            meta["baseline_score"] = base_info[1]
+            if res.score is not None:
+                meta["score_delta"] = res.score - base_info[1]
+    return res
 
 
 def _risky_files(project: Project, findings: List[Finding], routes) -> List[str]:

@@ -45,13 +45,13 @@ your `PATH`, their findings are merged into the report and de-duplicated.
 | `vibeaudit review [PATH] --diff REV` | Pull request review comments, with suggested fixes, for the findings on changed lines; `--post` sends them to GitHub, `--max-comments N` caps them (see [Pull request review](#pull-request-review)). |
 | `vibeaudit fix [PATH]` | Print a diff that fixes the findings with one obvious repair; `--apply` writes it (see [Automatic fixes](#automatic-fixes-vibeaudit-fix)). |
 | `vibeaudit studio [PATH]` | A local web UI: routes with auth and write badges, data flows, and the score by domain, category and rule (see [Studio](#studio)). |
-| `vibeaudit probe --url http://127.0.0.1:3000` | Probe the running app on every route the source declares: auth bypass and IDOR (with `--auth` / `--auth2`, or `--login /api/login --login-json '{...}'` to sign in for a token or cookie, or `--login-form /login.php --login-field user=... --login-field password=...` for an HTML form with a CSRF token; a warning says when the credentials did not take effect), JSON or form bodies as each handler reads them, GraphQL queries found by introspection, plain PHP pages with their `$_GET`/`$_POST` parameters and form fields, SQL injection (error and time-based), path traversal, reflected XSS, SSRF to a local canary, open redirect, CORS, login rate limits and stack traces. Static findings it proves are marked confirmed. Localhost only unless `--i-own-this-target`; GET/POST only, rate-limited, no redirects followed, no destructive payloads. Measured on five vulnerable apps in [docs/PROBE_EVAL.md](PROBE_EVAL.md). |
+| `vibeaudit probe --url http://127.0.0.1:3000` | Probe a running web app (auth bypass, IDOR, injection, SSRF, XSS, CORS) or inspect a live local stdio MCP server (`--mcp-cmd CMD`, `--pin-hash SHA256`) for tool poisoning and rug-pull drift without calling tools. Measured on five vulnerable apps in [docs/PROBE_EVAL.md](PROBE_EVAL.md). |
 | `vibeaudit test-exploit FINDING` | Build a non-destructive proof-of-concept request for one finding; a dry run by default, and `--send` sends it once to localhost only, never following redirects. |
 | `vibeaudit explain FINDING` | Explain one finding (`FILE:LINE`, `FILE:LINE:RULE` or a fingerprint prefix): the rule, the code and the data flow that led to it (`--format json`, `--path DIR` for another project). |
 | `vibeaudit routes [PATH]` | List every HTTP entry point with method, path, location and whether it has a visible auth check, writes data or calls a paid AI API (`--format text\|json\|md`). |
 | `vibeaudit rules` | List every rule (`--format text\|json\|md`, or `--json`; JSON includes the why and fix text). |
 | `vibeaudit doctor` | Show vibeaudit version, rule counts, ecosystem coverage, signed threat-feed status, offline OSV indexes and installed external scanners (`--format text\|json`). |
-| `vibeaudit init [PATH]` | Write starter `.vibeaudit.toml`, `.pre-commit-config.yaml` and a CI workflow (`--ci github\|gitlab\|circleci\|none`, `--no-hook`, `--no-scan`, `--force`), then run an initial scan. |
+| `vibeaudit init [PATH]` | Write starter `.vibeaudit.toml`, `.pre-commit-config.yaml` and a CI workflow (`--ci github\|gitlab\|circleci\|none`, `--no-hook`, `--mcp`, `--agent-hooks`, `--no-scan`, `--force`), then run an initial scan. |
 | `vibeaudit feedback` | Record false-positive/confirmed verdicts, list feedback, `export` pytest regressions or `suggest-helpers` for `.vibeaudit.toml` (see [False positives](#false-positives-and-suppressing-findings)). |
 | `vibeaudit update` | Refresh the popular-package lists, the retired-model list and the signed threat feed (see [Caching and updates](#caching-and-updates)); `--self` upgrades vibeaudit with pip; `--export FILE [--osv PyPI,npm]` and `--import FILE` carry the data to a machine without network (see [Offline and air-gapped use](#offline-and-air-gapped-use)). |
 | `vibeaudit lsp` | Run the language server for editors: diagnostics and fix code actions (see [Editors](#editors-vs-code-cursor-and-other-lsp-clients)). |
@@ -91,6 +91,7 @@ Every command has `--help`.
 | `--fail-on-partial` | Exit 1 when any file, commit or analyzer stage was skipped or timed out (`partial` coverage). |
 | `--allow-empty` | Exit 0 even when 0 files are scanned instead of failing with an empty-scan error. |
 | `--score-model MODEL` | Scoring formula: `diminishing-v2` (default, size-normalized) or `linear-v1` (legacy `100 - penalty`). |
+| `--profile NAME` | Preset profile: `vibe-web` (default web/app balance), `ai-agent` (focuses on security/AI/backend, disables `ui`/`quality`), or `strict-ci` (fails on `medium`, includes preview rules, fails on partial coverage). |
 | `-j`, `--jobs N` | Parallel worker processes for large repos (default: `1`; `0` auto-selects up to 4 cores). |
 | `--no-cache` | Do not read or write cached scan results, registry, vulnerability and LLM answers for this scan. |
 | `-q`, `--quiet` / `--no-color` | Print only the summary / plain text. |
@@ -263,7 +264,7 @@ sanitizers = ["clean_sql_input"]                               # their output is
 public-paths = ["/api/public/*", "/api/survey-*"]              # intentionally unauthenticated routes
 ```
 
-Other keys: `include-preview`, `gate-severe-preview`, `monorepo`, `fail-on-partial`, `allow-empty`, `score-model`, `jobs`, `llm`, `llm-model`, `llm-max-requests`, `max-file-size`, `file-timeout`, `scan-timeout`. The same settings apply
+Other keys: `include-preview`, `gate-severe-preview`, `monorepo`, `fail-on-partial`, `allow-empty`, `score-model`, `profile`, `jobs`, `llm`, `llm-model`, `llm-max-requests`, `max-file-size`, `file-timeout`, `scan-timeout`. The same settings apply
 to `vibeaudit scan`, `vibeaudit routes`, `vibeaudit feedback`, the MCP server and the Python API, except `llm`,
 which only `vibeaudit scan` reads: the LSP server, watch, studio, the MCP server and the API never send code to a
 model provider because a repository's config asks for it. The file is part of the scanned repository and can
@@ -420,7 +421,10 @@ read-only:
 claude mcp add vibeaudit -- vibeaudit mcp
 ```
 
-To confine `vibeaudit mcp` file and directory tools to specific workspaces (preventing prompt-injected reads outside them), set `VIBEAUDIT_MCP_ROOTS` using your OS path separator (for example `VIBEAUDIT_MCP_ROOTS=/home/user/work`).
+By default, `vibeaudit mcp` automatically confines file and directory tools to workspace roots provided by the
+client during `initialize` (`rootUri`, `workspaceFolders`, `roots`). Set `VIBEAUDIT_MCP_ROOTS` using your OS
+path separator (for example `VIBEAUDIT_MCP_ROOTS=/home/user/work`) to override or enforce explicit roots even
+before `initialize`. Set `VIBEAUDIT_MCP_AUDIT=1` to emit structured JSON tool-call audit records to `stderr`.
 
 ## Custom rules and the Python API
 

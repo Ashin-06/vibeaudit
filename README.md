@@ -46,6 +46,8 @@ pip install vibeaudit
 
 ```bash
 vibeaudit scan path/to/your/project      # or a single file: vibeaudit scan app.py
+vibeaudit init --mcp --agent-hooks       # starter config, CI workflow, MCP & Claude Code hook
+vibeaudit probe --mcp-cmd "python s.py"  # inspect a live MCP server for tool poisoning / rug-pulls
 ```
 
 ```bash

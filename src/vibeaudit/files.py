@@ -369,14 +369,17 @@ def gitignore_covers(root: Path, rel: str) -> bool:
 
 class Project:
     def __init__(self, root: Path, excludes: Iterable[str] = (), max_bytes: int = DEFAULT_MAX_BYTES,
-                 outer: Optional[Tuple[str, List[str]]] = None, single_file: Optional[Path] = None):
+                 outer: Optional[Tuple[str, List[str]]] = None, single_file: Optional[Path] = None,
+                 prediscovered: Optional[Dict[str, Any]] = None):
         """`outer`: (this folder's path in an enclosing repository + "/", that repository's exclude patterns),
         for one package of a monorepo scanned on its own (see monorepo.py).
-        `single_file`: when set, discover only that regular file inside `root`."""
+        `single_file`: when set, discover only that regular file inside `root`.
+        `prediscovered`: pre-computed discovery snapshot reused by parallel worker processes."""
         self.root = root.resolve()
         self._base_excludes = list(excludes)
         self._outer = outer
         self.single_file: Optional[str] = single_file.name if single_file is not None else None
+        self._prediscovered = prediscovered
         self.max_bytes = max_bytes
         self.is_git = False
         self.tracked: Set[str] = set()
@@ -414,6 +417,20 @@ class Project:
         self.skipped_files = []
         self._pkg_cache, self._venv_cache = {}, {}
         self.is_git = False
+        if self._prediscovered is not None:
+            pre = self._prediscovered
+            self.is_git = bool(pre.get("is_git", False))
+            self.tracked = set(pre.get("tracked", ()))
+            self.untracked = set(pre.get("untracked", ()))
+            self.binary = set(pre.get("binary", ()))
+            self.skipped_files = list(pre.get("skipped_files", ()))
+            for rel, bundle, sig in pre.get("files", ()):
+                pre_sf = SourceFile(self.root, rel, self.max_bytes)
+                pre_sf.signature = sig
+                pre_sf.secrets_only = bundle
+                self.files.append(pre_sf)
+                self._by_rel[rel] = pre_sf
+            return
         if self.single_file is not None:
             rel = self.single_file
             path = self.root / rel

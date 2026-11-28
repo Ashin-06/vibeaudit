@@ -6,6 +6,29 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Live MCP server security probe (`vibeaudit probe --mcp-cmd`, `--pin-hash`, `mcp_probe.py`)**: inspects
+  local stdio MCP servers read-only via `initialize` + `tools/list` without invoking tools, detecting covert
+  prompt-injection markers, hidden Unicode/bidi/tag characters, exfiltration parameter names (`LLM027`),
+  unconstrained dangerous capabilities (`LLM005`), and tool manifest hash drift (rug-pull protection).
+- **MCP starter & agent hook scaffolding (`vibeaudit init --mcp --agent-hooks`)**: writes `.mcp.json` (plus
+  Cursor/VS Code MCP configs when their directories exist) and `.claude/settings.json` `PostToolUse` hooks
+  running single-file scans on edited files.
+- **Preset scan profiles (`--profile vibe-web | ai-agent | strict-ci`, `profile` config key)** and
+  **baseline score delta trend (`meta.baseline_score`, `meta.score_delta`)** in text, Markdown, and JSON reports.
+
+### Hardened
+
+- **Zero-trust MCP session defaults (`mcp_server.py`)**: confines MCP file/directory tools to resolved
+  client `initialize` workspace roots (`rootUri`, `workspaceFolders`, `roots`) when `VIBEAUDIT_MCP_ROOTS` is
+  not explicitly set, and supports structured JSON stderr audit logging via `VIBEAUDIT_MCP_AUDIT=1`.
+- **Shared parallel file discovery (`files.py`, `parallel.py`)**: exports pre-discovered `Project` file
+  metadata to `--jobs` worker processes, eliminating redundant `os.walk` and `git ls-files` scans per worker.
+- **Multi-arch GHCR Docker builds (`release.yml`) & Dependabot hygiene (`dependabot.yml`)**: builds and
+  attests `linux/amd64` + `linux/arm64` container images on releases and ignores pre-release Python base image
+  bumps while keeping `python:3.12-slim` digest updates active.
+
 ## [0.23.0] - 2026-11-28
 
 ### Added

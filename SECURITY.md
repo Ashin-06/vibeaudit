@@ -46,7 +46,8 @@ Only the latest release receives security fixes.
 | Untrusted LLM responses | Strict JSON parsing, line-bounds verification, parse validation, and rejection of patches containing `REDACTED`. |
 | Malicious archive / zip-bomb bundles | `bundle.import_bundle()` enforces member count, manifest size, per-entry size, total uncompressed size, compression ratio (`200:1`), SHA-256 integrity, and RSA-verified threat feed anti-rollback. |
 | Symlink overwrite via autofix | `fix.plan_findings()`, `Plan.apply()`, and `verify_plan()` skip symlinks so `--apply` and `--verify` rollback never replace symlinks or overwrite symlink targets outside the repo. |
-| Prompt-injected MCP path traversal | Set `VIBEAUDIT_MCP_ROOTS` (separated by `os.pathsep`, e.g. `:` or `;`) to restrict `vibeaudit mcp` tools (`scan_project`, `scan_file`, `audit_current_file`, `list_routes`, `auto_repair`, `simulate_migration`) strictly to resolved subpaths of allowed root directories. |
+| Prompt-injected MCP path traversal | Defaults workspace confinement to client `initialize` `rootUri` / `workspaceFolders` / `roots`, overridable via `VIBEAUDIT_MCP_ROOTS` (separated by `os.pathsep`), restricting file/directory tools strictly to resolved subpaths of allowed root directories. |
+| Poisoned / rug-pull external MCP servers | `vibeaudit probe --mcp-cmd` inspects live `tools/list` definitions read-only without calling tools, checking for prompt-injection markers, stealth Unicode, exfiltration parameters, dangerous unconstrained tools, and pinned `manifest_hash` drift (`--pin-hash`). |
 
 ## Threat feed cryptography
 

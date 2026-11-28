@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shlex
 import sys
 from typing import List, Optional
 
@@ -63,6 +64,8 @@ def build_parser() -> argparse.ArgumentParser:
                    help="exit 0 even when 0 files are scanned instead of failing with an empty-scan error")
     s.add_argument("--score-model", default=None, choices=["diminishing-v2", "linear-v1"],
                    help="scoring formula: diminishing-v2 (default, size-normalized) or linear-v1 (legacy 100 - penalty)")
+    s.add_argument("--profile", default=None, choices=["vibe-web", "ai-agent", "strict-ci"],
+                   help="preset rule and threshold profile (vibe-web, ai-agent, strict-ci)")
     s.add_argument("-j", "--jobs", type=int, default=None, metavar="N",
                    help="parallel worker processes for large repos (default: 1; 0 = auto up to 4 cores)")
     s.add_argument("--llm", choices=["gemini", "openai", "openrouter", "anthropic"],
@@ -184,7 +187,12 @@ def build_parser() -> argparse.ArgumentParser:
                                     "reflected XSS, SSRF (local canary), open redirect, CORS, login rate limits and stack "
                                     "traces. Targets localhost / 127.0.0.1 / ::1 only unless --i-own-this-target is given; "
                                     "never follows redirects and sends no destructive payloads.")
-    pr.add_argument("--url", required=True, help="base URL of the running app, e.g. http://127.0.0.1:3000")
+    pr.add_argument("--url", default=None, help="base URL of the running app, e.g. http://127.0.0.1:3000")
+    pr.add_argument("--mcp-cmd", metavar="CMD",
+                    help="inspect a local stdio MCP server's tools/list (read-only) for tool poisoning, "
+                         "dangerous capabilities, and rug-pull drift")
+    pr.add_argument("--pin-hash", metavar="SHA256",
+                    help="with --mcp-cmd: expected MCP tools/list manifest SHA-256 hash; fails on mismatch")
     pr.add_argument("--path", default=".", help="project directory whose routes to probe (default: current directory)")
     pr.add_argument("--auth", action="append", default=[], metavar="'HEADER: VALUE'",
                     help="credentials of a signed-in user (e.g. 'Cookie: session=...'); repeat for several headers")
@@ -218,6 +226,10 @@ def build_parser() -> argparse.ArgumentParser:
     ini.add_argument("--ci", choices=["github", "gitlab", "circleci", "none"], default="github",
                      help="CI workflow template to create (default: github)")
     ini.add_argument("--no-hook", action="store_true", help="do not create .pre-commit-config.yaml")
+    ini.add_argument("--mcp", action="store_true",
+                     help="also create .mcp.json (and Cursor/VS Code MCP config files if those folders exist)")
+    ini.add_argument("--agent-hooks", action="store_true",
+                     help="also create .claude/settings.json with a PostToolUse vibeaudit hook on edited files")
     ini.add_argument("--no-scan", action="store_true", help="only write starter files without running an initial scan")
     ini.add_argument("--force", action="store_true", help="overwrite existing configuration or workflow files")
 
@@ -423,7 +435,7 @@ def cmd_init(a: argparse.Namespace) -> int:
     if not root.is_dir():
         print(f"vibeaudit: not a directory: {a.path}", file=sys.stderr)
         return 2
-    out = init.run(root, ci=a.ci, hook=not a.no_hook, force=a.force)
+    out = init.run(root, ci=a.ci, hook=not a.no_hook, force=a.force, mcp=a.mcp, agent_hooks=a.agent_hooks)
     if out["stack"]:
         print(f"vibeaudit init: stack {', '.join(out['stack'])}")
     for rel in out["created"]:
@@ -468,12 +480,58 @@ def _merge_auth(dst: dict, src: dict) -> None:
 
 
 def cmd_probe(a: argparse.Namespace) -> int:
-    from . import probe, report
+    from . import mcp_probe, probe, report
     from .config import project_options
     from .exploit import ExploitError
     from .report import Result
     from .rules import RULES
     from .scanner import scan
+
+    if bool(a.url) == bool(a.mcp_cmd):
+        print("vibeaudit: pass either --url or --mcp-cmd (not both)", file=sys.stderr)
+        return 2
+    if a.mcp_cmd:
+        tokens = shlex.split(a.mcp_cmd, posix=(os.name != "nt"))
+        if os.name == "nt":
+            tokens = [t[1:-1] if len(t) >= 2 and t[0] == t[-1] and t[0] in ('"', "'") else t for t in tokens]
+        try:
+            info = mcp_probe.probe_stdio(tokens, pin_hash=a.pin_hash)
+        except mcp_probe.McpProbeError as e:
+            print(f"vibeaudit: {e}", file=sys.stderr)
+            return 2
+        found = list(info["findings"])
+        for f in found:
+            rule = RULES.get(f.rule_id)
+            if rule is not None:
+                f.title, f.category, f.severity = rule.title, rule.category, f.severity or rule.severity
+                f.why, f.fix, f.cwe, f.owasp, f.preview = rule.why, rule.fix, rule.cwe, rule.owasp, rule.preview
+            f.compute_fingerprint()
+        mcp_meta = {
+            "files_scanned": max(1, int(info["tools_count"])),
+            "notes": [],
+            "probe": {
+                "mode": "mcp",
+                "server": info["server"],
+                "tools_count": info["tools_count"],
+                "manifest_hash": info["manifest_hash"],
+                "tools": info["tools"],
+            },
+        }
+        out = Result(info["server"], found, mcp_meta, [])
+        if a.format == "text":
+            lines = [
+                f"vibeaudit probe (mcp): {info['tools_count']} tools, {len(found)} findings, manifest_hash {info['manifest_hash']}"
+            ]
+            lines += [f"  [{f.severity.upper()}] {f.rule_id} {f.file} - {f.message}" for f in found]
+            text = "\n".join(lines) + "\n"
+            if a.output == "-":
+                sys.stdout.write(text)
+            else:
+                with open(a.output, "w", encoding="utf-8", newline="\n") as fh:
+                    fh.write(text)
+        else:
+            report.write_report(out, a.format, a.output)
+        return 1 if found else 0
 
     if not os.path.isdir(a.path):
         print(f"vibeaudit: not a directory: {a.path}", file=sys.stderr)
@@ -669,6 +727,7 @@ def cmd_fix(a: argparse.Namespace) -> int:
 
 
 def cmd_scan(a: argparse.Namespace) -> int:
+    from .config import PROFILES
     from .scanner import Options, scan
 
     target = Path(a.path)
@@ -692,7 +751,19 @@ def cmd_scan(a: argparse.Namespace) -> int:
     def pick(flag, key, default):
         return flag if flag is not None else cfg.get(key, default)
 
-    fail_on = pick(a.fail_on, "fail_on", "high")
+    prof_name = pick(a.profile, "profile", None)
+    prof = PROFILES.get(str(prof_name), {}) if prof_name else {}
+
+    def pick_prof(flag, key, default):
+        if flag is not None:
+            return flag
+        if key in cfg:
+            return cfg[key]
+        if key in prof:
+            return prof[key]
+        return default
+
+    fail_on = pick_prof(a.fail_on, "fail_on", "high")
     from . import plugins
 
     for spec in a.plugin:
@@ -730,7 +801,11 @@ def cmd_scan(a: argparse.Namespace) -> int:
             print(f"vibeaudit: unknown report format {fmt!r} (use json, sarif, md, html, prompt, badge, junit, codeclimate, aibom, compliance:FRAMEWORK)", file=sys.stderr)
             return 2
         reports.append((fmt, path or default))
-    disabled = {x.strip() for d in list(a.disable) + list(cfg.get("disable", [])) for x in d.split(",") if x.strip()}
+    disabled = {
+        x.strip()
+        for d in list(a.disable) + list(cfg.get("disable", [])) + list(prof.get("disable", ()))
+        for x in d.split(",") if x.strip()
+    }
     unknown = [d for d in disabled if d not in RULES and d not in CATEGORIES and ":" not in d]
     if unknown:
         print(f"vibeaudit: unknown rule or category: {', '.join(sorted(unknown))}", file=sys.stderr)
@@ -758,7 +833,7 @@ def cmd_scan(a: argparse.Namespace) -> int:
         return 2
     cfg_disabled = sorted({x.strip() for d in cfg.get("disable", []) for x in str(d).split(",") if x.strip()}) if cfg_path else []
     opts = Options(offline=bool(pick(a.offline, "offline", False)), excludes=list(a.exclude) + list(cfg.get("exclude", [])),
-                   disabled=disabled, min_severity=pick(a.min_severity, "min_severity", "low"),
+                   disabled=disabled, min_severity=pick_prof(a.min_severity, "min_severity", "low"),
                    external=pick(a.external, "external", "auto"), baseline=baseline,
                    max_file_bytes=pick(a.max_file_size, "max_file_size", 1_000_000), llm=pick(a.llm, "llm", None),
                    llm_model=pick(a.llm_model, "llm_model", None), llm_review=a.llm_review,
@@ -768,12 +843,13 @@ def cmd_scan(a: argparse.Namespace) -> int:
                    auth_helpers=list(cfg.get("auth_helpers", [])), sanitizers=list(cfg.get("sanitizers", [])),
                    public_paths=list(cfg.get("public_paths", [])), changes=changes, log=log,
                    feedback=not a.no_config,  # the feedback file lives in the repository, like the config
-                   cache=not a.no_cache, include_preview=bool(pick(a.include_preview, "include_preview", False)),
+                   cache=not a.no_cache, include_preview=bool(pick_prof(a.include_preview, "include_preview", False)),
                    gate_severe_preview=False if a.no_gate_severe_preview else bool(cfg.get("gate_severe_preview", True)),
                    history=bool(a.history), history_commits=max(1, int(a.history_commits)),
                    no_config=bool(a.no_config),
                    score_model=str(pick(a.score_model, "score_model", "diminishing-v2")),
                    jobs=jobs_raw,
+                   profile=prof_name,
                    config_path=cfg_path,
                    config_disabled=cfg_disabled)
     if cfg_path:
@@ -833,6 +909,7 @@ def cmd_scan(a: argparse.Namespace) -> int:
             return 1
         res.findings = [f for f in res.findings if f.fingerprint not in known and (only is None or keep(only, f.file, f.line))]
         res.meta["score_whole_project"], res.meta["baseline_score"] = full_score, base_score
+        res.meta["score_delta"] = full_score - base_score
         if only is not None:
             res.meta["changed_files"] = len(only)
         drop = base_score - full_score
@@ -858,7 +935,7 @@ def cmd_scan(a: argparse.Namespace) -> int:
         return 1
     if regression is not None and res.meta["baseline_score"] - res.meta["score_whole_project"] > a.fail_on_regression:
         return 1
-    if pick(a.fail_on_partial, "fail_on_partial", False) and res.meta.get("coverage", {}).get("overall_status") == "partial":
+    if pick_prof(a.fail_on_partial, "fail_on_partial", False) and res.meta.get("coverage", {}).get("overall_status") == "partial":
         reasons = res.meta["coverage"].get("incomplete_reasons") or ["incomplete scan coverage"]
         print(f"vibeaudit: failing because coverage is partial (--fail-on-partial): {'; '.join(reasons)}", file=sys.stderr)
         return 1

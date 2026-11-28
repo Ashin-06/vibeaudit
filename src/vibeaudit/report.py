@@ -128,6 +128,19 @@ def _cat(c: str) -> str:
     return CATEGORIES.get(c, c)
 
 
+def _baseline_trend(res: Result) -> str:
+    base = res.meta.get("baseline_score")
+    cur = res.meta.get("score_whole_project", res.score)
+    if not isinstance(base, int) or isinstance(base, bool) or cur is None:
+        return ""
+    delta = int(cur) - base
+    if delta > 0:
+        return f"vs baseline {base}: +{delta}"
+    if delta < 0:
+        return f"vs baseline {base}: {delta}"
+    return f"vs baseline {base}: unchanged"
+
+
 # ------------------------------------------------------------------- text
 def render_text(res: Result, color: bool, verbose: bool = True) -> str:
     def paint(s: str, code: str) -> str:
@@ -173,7 +186,9 @@ def render_text(res: Result, color: bool, verbose: bool = True) -> str:
         out.append("  Domains: N/A")
     else:
         model_note = f" [{res.score_model}]" if res.score_model != DEFAULT_SCORE_MODEL else ""
-        out.append(f"  Score: {res.score}/100  Grade: {res.grade}{model_note}{pen_note}")
+        trend = _baseline_trend(res)
+        trend_note = f"  ({trend})" if trend else ""
+        out.append(f"  Score: {res.score}/100  Grade: {res.grade}{model_note}{trend_note}{pen_note}")
         out.append("  Domains: " + "  ".join(f"{k} {v}" for k, v in res.domain_scores.items()))
     cov = res.meta.get("coverage")
     if isinstance(cov, dict) and cov.get("overall_status") == "partial":
@@ -296,7 +311,9 @@ def render_markdown(res: Result) -> str:
         out += ["**Score: N/A (grade N/A, no files scanned)**", "", "| Severity | Count |", "| --- | --- |"]
         out += [f"| {s} | {c[s]} |" for s in SEVERITIES if s != "info"]
     else:
-        out += [f"**Score: {res.score}/100 (grade {res.grade}, model {res.score_model}, raw penalty: {res.raw_penalty})**", "",
+        trend = _baseline_trend(res)
+        trend_md = f", {trend}" if trend else ""
+        out += [f"**Score: {res.score}/100 (grade {res.grade}, model {res.score_model}, raw penalty: {res.raw_penalty}{trend_md})**", "",
                 "| Severity | Count |", "| --- | --- |"]
         out += [f"| {s} | {c[s]} |" for s in SEVERITIES if s != "info"]
         out += ["", "| Domain | Score |", "| --- | --- |"] + [f"| {k} | {v}/100 |" for k, v in res.domain_scores.items()]
