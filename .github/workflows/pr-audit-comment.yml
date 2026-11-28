@@ -1,0 +1,26 @@
+name: PR Audit Comment
+
+# Exercises action.yml's sticky PR summary comment live on pull requests in this repo using a clean fixture
+# and strictly scoped read + pull-requests: write permissions (fork PRs warn cleanly without failing).
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  pr-comment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: ./
+        with:
+          path: tests/fixtures/clean_app
+          args: --offline --external none --exclude legacy/*
+          fail-on: high
+          comment: "true"
+          summary: "true"
+          parse: "false"

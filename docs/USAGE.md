@@ -30,7 +30,7 @@ or, to keep it in its own environment:
 pipx install vibeaudit
 ```
 
-To install from this repository instead: `pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.22.0"`.
+To install from this repository instead: `pip install "vibeaudit @ git+https://github.com/Ashin-06/vibeaudit.git@v0.23.0"`.
 
 Optional: if [gitleaks](https://github.com/gitleaks/gitleaks), [bandit](https://github.com/PyCQA/bandit),
 [osv-scanner](https://github.com/google/osv-scanner) or [semgrep](https://github.com/semgrep/semgrep) are on
@@ -40,7 +40,7 @@ your `PATH`, their findings are merged into the report and de-duplicated.
 
 | Command | What it does |
 | --- | --- |
-| `vibeaudit scan [PATH]` | Audit a project (default: the current directory). |
+| `vibeaudit scan [PATH]` | Audit a project directory or single file (default: the current directory). |
 | `vibeaudit watch [PATH]` | Scan, then re-scan after every change and print the findings that appeared (`+`) or were fixed (`-`); see [Watch mode](#watch-mode). |
 | `vibeaudit review [PATH] --diff REV` | Pull request review comments, with suggested fixes, for the findings on changed lines; `--post` sends them to GitHub, `--max-comments N` caps them (see [Pull request review](#pull-request-review)). |
 | `vibeaudit fix [PATH]` | Print a diff that fixes the findings with one obvious repair; `--apply` writes it (see [Automatic fixes](#automatic-fixes-vibeaudit-fix)). |
@@ -289,7 +289,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0                  # needed for --diff
-      - uses: Ashin-06/vibeaudit@v0.22.0
+      - uses: Ashin-06/vibeaudit@v0.23.0
         with:
           fail-on: high
           args: --diff origin/main        # optional: only changed lines
@@ -326,7 +326,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - uses: Ashin-06/vibeaudit@v0.22.0
+      - uses: Ashin-06/vibeaudit@v0.23.0
         with:
           review: "true"
           args: --diff origin/${{ github.base_ref }} --baseline .vibeaudit-baseline.json --fail-on-regression 5
@@ -343,7 +343,7 @@ findings show in the merge request's Code Quality widget and in the pipeline's T
 
 ```yaml
 include:
-  - remote: https://raw.githubusercontent.com/Ashin-06/vibeaudit/v0.22.0/ci/gitlab-ci.yml
+  - remote: https://raw.githubusercontent.com/Ashin-06/vibeaudit/v0.23.0/ci/gitlab-ci.yml
 ```
 
 **CircleCI**: copy [ci/circleci.yml](../ci/circleci.yml) into `.circleci/config.yml` (or merge its job into
@@ -359,7 +359,7 @@ for a test report) and keep the exit code.
 # .pre-commit-config.yaml
 repos:
   - repo: https://github.com/Ashin-06/vibeaudit
-    rev: v0.22.0
+    rev: v0.23.0
     hooks:
       - id: vibeaudit
 ```
@@ -396,7 +396,8 @@ vim.lsp.start({ name = "vibeaudit", cmd = { "vibeaudit", "lsp" }, root_dir = vim
 ## MCP server for coding agents
 
 `vibeaudit mcp` runs a [Model Context Protocol](https://modelcontextprotocol.io) server on stdio, so Claude
-Code, Cursor and other agents can audit their own changes before handing them back. All tools are
+Code, Cursor and other agents can audit their own changes before handing them back (see the step-by-step
+[MCP setup guide](MCP.md) for Claude Code, Cursor, VS Code Copilot, and agent prompts). All tools are
 read-only:
 
 | Tool | What it does |
@@ -663,10 +664,10 @@ CycloneDX SBOM (`vibeaudit-VERSION.cdx.json`), built by the release workflow fro
 build provenance is signed with GitHub artifact attestations (Sigstore). With the GitHub CLI:
 
 ```bash
-gh attestation verify vibeaudit-0.22.0-py3-none-any.whl --repo Ashin-06/vibeaudit
+gh attestation verify vibeaudit-0.23.0-py3-none-any.whl --repo Ashin-06/vibeaudit
 ```
 
 Run the same for the `.tar.gz` and the `.cdx.json` file. The check passes only if the file was built by
 this repository's release workflow; `--format json` shows the commit and workflow it came from. The SBOM
 lists what the wheel installs (vibeaudit has zero runtime dependencies). PyPI receives these same attested files through trusted publishing; to install a wheel you verified
-yourself, run `pip install vibeaudit-0.22.0-py3-none-any.whl`.
+yourself, run `pip install vibeaudit-0.23.0-py3-none-any.whl`.
