@@ -133,6 +133,8 @@
           "rule_id": { "type": "string", "minLength": 1 },
           "severity": { "type": "string", "enum": ["critical", "high", "medium", "low", "info"] },
           "line": { "type": "integer", "minimum": 0 },
+          "source": { "type": "string" },
+          "confidence": { "type": "string", "enum": ["high", "medium", "low"] },
           "fingerprint": { "type": "string" },
           "preview": { "type": "boolean" },
           "gates_in_preview": { "type": "boolean" }

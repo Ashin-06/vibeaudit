@@ -18,7 +18,7 @@ from .guard import GUARD
 from .jsscan import JsScanner
 from .csharp import CsScanner
 from .jvm import JvmScanner
-from .model import SEVERITY_RANK, SUPPRESS, TEST_FILE_RULES, Finding, at_least
+from .model import SEVERITY_RANK, TEST_FILE_RULES, Finding, at_least, parse_suppression
 from .projectscan import ProjectScanner
 from .goscan import GoScanner
 from .dartscan import DartScanner
@@ -87,6 +87,7 @@ class Options:
     profile: Optional[str] = None
     config_path: Optional[str] = None
     config_disabled: List[str] = field(default_factory=list)
+    require_ignore_reason: bool = False
     log: Callable[[str], None] = lambda s: None
 
 
@@ -141,7 +142,31 @@ def _stack(project: Project) -> List[str]:
     return found
 
 
-def suppressed(project: Project, f: Finding) -> bool:
+def _languages(project: Project) -> Dict[str, str]:
+    """Languages seen in the project with their analyzer maturity tier."""
+    tiers = (
+        ("Python", lambda r, k: k == "py", "stable"),
+        ("JavaScript/TypeScript", lambda r, k: k == "js", "stable"),
+        ("PHP", lambda r, k: r.endswith((".php", ".blade.php")), "preview (SQLi stable)"),
+        ("Go", lambda r, k: r.endswith(".go"), "preview"),
+        ("Java/Kotlin", lambda r, k: r.endswith((".java", ".kt")), "preview"),
+        ("C#", lambda r, k: r.endswith((".cs", ".cshtml")), "preview"),
+        ("Rust", lambda r, k: r.endswith(".rs"), "preview"),
+        ("Ruby", lambda r, k: r.endswith((".rb", ".erb")), "preview"),
+        ("Dart", lambda r, k: r.endswith(".dart"), "preview"),
+        ("Swift", lambda r, k: r.endswith(".swift"), "preview"),
+        ("Elixir", lambda r, k: r.endswith((".ex", ".exs", ".heex")), "preview"),
+    )
+    out: Dict[str, str] = {}
+    for label, pred, status in tiers:
+        if any(pred(sf.rel.lower(), sf.kind) for sf in project.files):
+            out[label] = status
+    return out
+
+
+def suppressed(project: Project, f: Finding, require_reason: bool = False,
+               log_list: Optional[List[Dict[str, object]]] = None,
+               missing_reason: Optional[List[Dict[str, object]]] = None) -> bool:
     sf = project.get(f.file)
     if not sf or not f.line:
         return False
@@ -149,10 +174,18 @@ def suppressed(project: Project, f: Finding) -> bool:
     memo: dict = sf.cache.setdefault("suppress", {})
     for ln in (f.line, f.line - 1):
         if ln not in memo:
-            m = SUPPRESS.search(sf.line(ln))
-            memo[ln] = None if m is None else ("*" if not m.group(1) else {x.strip().upper() for x in m.group(1).split(",")})
-        rules = memo[ln]
+            memo[ln] = parse_suppression(sf.line(ln))
+        parsed = memo[ln]
+        if parsed is None:
+            continue
+        rules, reason = parsed
         if rules == "*" or (rules and f.rule_id.upper() in rules):
+            if require_reason and len(reason) < 4:
+                if missing_reason is not None:
+                    missing_reason.append({"file": f.file, "line": f.line, "rule_id": f.rule_id})
+                return False
+            if log_list is not None:
+                log_list.append({"file": f.file, "line": f.line, "rule_id": f.rule_id, "reason": reason})
             return True
     return False
 
@@ -380,7 +413,14 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
             ran.append(tool)
             raw.extend(res)
 
-    findings = finalize(project, raw, opts)
+    suppression_log: List[Dict[str, object]] = []
+    missing_reason_log: List[Dict[str, object]] = []
+    findings = finalize(project, raw, opts, suppression_log=suppression_log, missing_reason_log=missing_reason_log)
+    if missing_reason_log:
+        notes.append(
+            f"{len(missing_reason_log)} inline ignore comment(s) without a reason were not applied "
+            "(--require-ignore-reason: add `-- reason`)."
+        )
     if opts.changes is not None:
         from .gitdiff import keep
 
@@ -468,10 +508,12 @@ def _scan_project(root: str, opts: Options, project: Project, raw: List[Finding]
         **({"profile": opts.profile} if opts.profile else {}),
         "score_model": opts.score_model,
         "scan_cache": scan_cache_meta,
-        "stack": stack, "external_tools": ran, "offline": opts.offline, "notes": notes,
+        "stack": stack, "languages": _languages(project), "external_tools": ran, "offline": opts.offline, "notes": notes,
         "routes_found": len(all_routes), "git": project.is_git,
         "skipped": list(GUARD.skipped), "internal_errors": list(GUARD.internal_errors),
-        "feedback_hidden": hidden, "feedback_demoted": demoted, "include_preview": opts.include_preview,
+        "feedback_hidden": hidden, "feedback_demoted": demoted,
+        **({"suppressions": suppression_log} if suppression_log else {}),
+        "include_preview": opts.include_preview,
         "gate_severe_preview": opts.gate_severe_preview, "disabled": sorted(opts.disabled),
         "config_disabled": sorted(opts.config_disabled),
         **({"external_configs_detected": ext_configs} if ext_configs else {}),
@@ -526,7 +568,9 @@ def read_baseline(path: str) -> "Optional[tuple[Set[str], Optional[int]]]":
     return fingerprints, (score if isinstance(score, int) and not isinstance(score, bool) else None)
 
 
-def finalize(project: Project, raw: List[Finding], opts: Options, already: bool = False) -> List[Finding]:
+def finalize(project: Project, raw: List[Finding], opts: Options, already: bool = False,
+             suppression_log: Optional[List[Dict[str, object]]] = None,
+             missing_reason_log: Optional[List[Dict[str, object]]] = None) -> List[Finding]:
     out: List[Finding] = []
     occurrences: dict = {}
     seen = set()
@@ -570,7 +614,17 @@ def finalize(project: Project, raw: List[Finding], opts: Options, already: bool 
         if sf is not None and (sf.is_test or sf.is_example) and f.rule_id not in TEST_FILE_RULES \
                 and f.source == "vibeaudit":
             continue
-        if not at_least(f.severity, opts.min_severity) or suppressed(project, f):
+        if sf is not None and sf.is_non_prod and f.rule_id not in TEST_FILE_RULES and f.source == "vibeaudit":
+            f.confidence = "low"
+            if f.severity in ("critical", "high", "medium"):
+                f.severity = "low"
+        elif f.rule_id == "BE003" and ("executed from a dynamic string" in f.message or "evaluated from a dynamic string" in f.message):
+            f.confidence = "low"
+        elif f.preview and not f.gates_in_preview and f.confidence == "high":
+            f.confidence = "medium"
+        if not at_least(f.severity, opts.min_severity) or suppressed(
+                project, f, require_reason=opts.require_ignore_reason,
+                log_list=suppression_log, missing_reason=missing_reason_log):
             continue
         key = (f.rule_id, f.file, f.line, f.message)
         if key in seen:

@@ -141,6 +141,43 @@ def _baseline_trend(res: Result) -> str:
     return f"vs baseline {base}: unchanged"
 
 
+def ai_fix_prompt(f: Finding) -> str:
+    """Short copy-paste prompt for an AI coding assistant to fix a single finding in place."""
+    loc = f"{f.file}:{f.line}" if f.line else f.file
+    parts = [f"Fix {f.rule_id} ({f.title or f.rule_id}) at {loc}.", f"Issue: {f.message}"]
+    if f.snippet:
+        parts.append(f"Code: {f.snippet.strip()[:160]}")
+    if f.fix:
+        parts.append(f"Guidance: {f.fix}")
+    parts.append("Keep behaviour unchanged; do not add ignore comments.")
+    return " ".join(parts)
+
+
+def _group_findings(findings: List[Finding], min_group: int = 4) -> List[List[Finding]]:
+    """Collapse repetitive findings sharing (rule_id, severity, title) when there are >= min_group of them."""
+    counts = Counter((f.rule_id, f.severity, f.title) for f in findings)
+    grouped: List[List[Finding]] = []
+    buckets: Dict[tuple, List[Finding]] = {}
+    for f in findings:
+        key = (f.rule_id, f.severity, f.title)
+        if counts[key] >= min_group:
+            if key not in buckets:
+                buckets[key] = [f]
+                grouped.append(buckets[key])
+            else:
+                buckets[key].append(f)
+        else:
+            grouped.append([f])
+    return grouped
+
+
+def _languages_line(res: Result) -> str:
+    langs = res.meta.get("languages")
+    if not isinstance(langs, dict) or not langs:
+        return ""
+    return ", ".join(f"{k} ({v})" for k, v in langs.items())
+
+
 # ------------------------------------------------------------------- text
 def render_text(res: Result, color: bool, verbose: bool = True) -> str:
     def paint(s: str, code: str) -> str:
@@ -152,26 +189,45 @@ def render_text(res: Result, color: bool, verbose: bool = True) -> str:
     stack = res.meta.get("stack") or []
     if stack:
         out.append("Stack: " + ", ".join(stack))
+    lang_line = _languages_line(res)
+    if lang_line:
+        out.append("Languages: " + lang_line)
     out.append("")
+    groups = _group_findings(res.findings)
     if verbose and len(res.findings) > 5:
-        out.append(paint("Top 5 findings", "1"))
-        for f in res.findings[:5]:
+        out.append(paint("Top 5 findings (fix these first)", "1"))
+        top_items = groups[:5] if len(groups) >= 5 else [[f] for f in res.findings[:5]]
+        for grp in top_items:
+            f = grp[0]
             loc = f"{f.file}:{f.line}" if f.line else f.file
-            out.append(f"  [{f.severity.upper()}] {f.rule_id} {loc} - {f.title}")
+            cnt = f" (x{len(grp)})" if len(grp) > 1 else ""
+            conf = f" [{f.confidence}]" if getattr(f, "confidence", "high") != "high" else ""
+            out.append(f"  [{f.severity.upper()}]{conf} {f.rule_id} {loc} - {f.title}{cnt}")
         out.append("")
-    for f in res.findings:
+    for grp in groups:
+        f = grp[0]
         tag = paint(f"[{f.severity.upper()}]", colors[f.severity])
-        loc = f"{f.file}:{f.line}" if f.line else f.file
-        out.append(f"{tag} {f.rule_id} {f.title}" + (" (preview)" if f.preview else ""))
-        out.append(f"  {loc}  {f.message}")
+        conf_note = f" [confidence: {f.confidence}]" if getattr(f, "confidence", "high") != "high" else ""
+        if len(grp) > 1:
+            n_files = len({item.file for item in grp})
+            locs = ", ".join(f"{item.file}:{item.line}" if item.line else item.file for item in grp[:3])
+            more = f" (+{len(grp) - 3} more)" if len(grp) > 3 else ""
+            out.append(f"{tag} {f.rule_id} {f.title} (x{len(grp)} across {n_files} files){conf_note}"
+                       + (" (preview)" if f.preview else ""))
+            out.append(f"  Locations: {locs}{more}")
+            out.append(f"  {f.message}")
+        else:
+            loc = f"{f.file}:{f.line}" if f.line else f.file
+            out.append(f"{tag} {f.rule_id} {f.title}{conf_note}" + (" (preview)" if f.preview else ""))
+            out.append(f"  {loc}  {f.message}")
         if verbose:
-            if f.snippet:
+            if len(grp) == 1 and f.snippet:
                 out.append(f"    > {f.snippet[:160]}")
             if f.why:
                 out.append(f"  Why: {f.why}")
             if f.fix:
                 out.append(f"  Fix: {f.fix}")
-            if f.llm_verdict:
+            if len(grp) == 1 and f.llm_verdict:
                 out.append(f"  LLM triage: {f.llm_verdict} - {f.llm_reason}")
         out.append("")
     c = res.counts
@@ -269,7 +325,8 @@ def render_sarif(res: Result) -> str:
                 "artifactLocation": {"uri": f.file, "uriBaseId": "%SRCROOT%"},
                 "region": {"startLine": max(1, f.line)}}}],
             "partialFingerprints": {"vibeaudit/v1": f.fingerprint},
-            "properties": {"severity": f.severity, "security-severity": SECURITY_SEVERITY[f.severity],
+            "properties": {"severity": f.severity, "confidence": f.confidence or "high",
+                           "security-severity": SECURITY_SEVERITY[f.severity],
                            "category": f.category, "source": f.source,
                            **({"confirmed": f.confirmed} if f.confirmed else {})},
         })
@@ -307,6 +364,9 @@ def render_markdown(res: Result) -> str:
     out = ["# vibeaudit report", "", f"Scanned `{res.root}` ({res.meta.get('files_scanned', 0)} files) with vibeaudit {__version__}.", ""]
     if res.meta.get("stack"):
         out += [f"Stack: {', '.join(res.meta['stack'])}", ""]
+    lang_line = _languages_line(res)
+    if lang_line:
+        out += [f"Languages: {lang_line}", ""]
     if res.is_empty_scan:
         out += ["**Score: N/A (grade N/A, no files scanned)**", "", "| Severity | Count |", "| --- | --- |"]
         out += [f"| {s} | {c[s]} |" for s in SEVERITIES if s != "info"]
@@ -330,16 +390,35 @@ def render_markdown(res: Result) -> str:
     out += ["", "## Findings", ""]
     if not res.findings:
         out.append("No findings.")
-    for f in res.findings:
-        loc = f"{f.file}:{f.line}" if f.line else f.file
-        out += [f"### [{f.severity.upper()}] {f.rule_id} {_md(f.title)}", "", f"`{loc}` - {_md(f.message)}", ""]
-        if f.snippet:
-            out += ["```", f.snippet.replace("```", "'''"), "```", ""]
-        out += [f"- **Why it matters:** {_md(f.why)}", f"- **Fix:** {_md(f.fix)}"]
+    for grp in _group_findings(res.findings):
+        f = grp[0]
+        if len(grp) > 1:
+            n_files = len({item.file for item in grp})
+            locs = ", ".join(f"`{item.file}:{item.line}`" if item.line else f"`{item.file}`" for item in grp[:5])
+            more = f" (+{len(grp) - 5} more)" if len(grp) > 5 else ""
+            out += [
+                f"### [{f.severity.upper()}] {f.rule_id} {_md(f.title)} (x{len(grp)} across {n_files} files)",
+                "",
+                f"Locations: {locs}{more} - {_md(f.message)}",
+                "",
+                f"- **Confidence:** {f.confidence or 'high'}",
+                f"- **Why it matters:** {_md(f.why)}",
+                f"- **Fix:** {_md(f.fix)}",
+            ]
+        else:
+            loc = f"{f.file}:{f.line}" if f.line else f.file
+            out += [f"### [{f.severity.upper()}] {f.rule_id} {_md(f.title)}", "", f"`{loc}` - {_md(f.message)}", ""]
+            if f.snippet:
+                out += ["```", f.snippet.replace("```", "'''"), "```", ""]
+            out += [
+                f"- **Confidence:** {f.confidence or 'high'}",
+                f"- **Why it matters:** {_md(f.why)}",
+                f"- **Fix:** {_md(f.fix)}",
+            ]
         refs = ", ".join(x for x in (f.cwe, f.owasp) if x)
         if refs:
             out.append(f"- **References:** {refs}")
-        if f.llm_verdict:
+        if len(grp) == 1 and f.llm_verdict:
             out.append(f"- **LLM triage:** {f.llm_verdict} - {_md(f.llm_reason or '')}")
         out.append("")
     return "\n".join(out) + "\n"
@@ -386,6 +465,9 @@ def render_html(res: Result) -> str:
     ]
     if res.meta.get("stack"):
         parts.append(f"<div class=\"muted\">Stack: {e(', '.join(res.meta['stack']))}</div>")
+    lang_line = _languages_line(res)
+    if lang_line:
+        parts.append(f"<div class=\"muted\">Languages: {e(lang_line)}</div>")
     parts.append("<div class=\"tiles\">")
     if res.is_empty_scan:
         parts.append("<div class=\"tile\"><span class=\"muted\">Score</span><b>N/A</b>Grade N/A</div>")
@@ -408,11 +490,12 @@ def render_html(res: Result) -> str:
     for f in res.findings:
         loc = f"{f.file}:{f.line}" if f.line else f.file
         parts.append(f"<section class=\"f {e(f.severity)}\"><div><span class=\"sev\">{e(f.severity)}</span> "
-                     f"<b>{e(f.rule_id)}</b> {e(f.title)} <span class=\"muted\">({e(_cat(f.category))})</span></div>")
+                     f"<b>{e(f.rule_id)}</b> {e(f.title)} <span class=\"muted\">({e(_cat(f.category))}, confidence: {e(f.confidence or 'high')})</span></div>")
         parts.append(f"<div class=\"loc\">{e(loc)}</div><div>{e(f.message)}</div>")
         if f.snippet:
             parts.append(f"<pre>{e(f.snippet)}</pre>")
         parts.append(f"<dl><dt>Why it matters</dt><dd>{e(f.why)}</dd><dt>Fix</dt><dd>{e(f.fix)}</dd>")
+        parts.append(f"<dt>AI assistant fix prompt</dt><dd><details><summary>Copy prompt</summary><pre>{e(ai_fix_prompt(f))}</pre></details></dd>")
         refs = ", ".join(x for x in (f.cwe, f.owasp) if x)
         if refs:
             parts.append(f"<dt>References</dt><dd>{e(refs)}</dd>")

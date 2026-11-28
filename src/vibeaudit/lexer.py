@@ -301,6 +301,71 @@ def stmt_end(bare: str, i: int, templates: bool = True) -> int:
     return n
 
 
+def blank_html_code_blocks(src: str) -> str:
+    """Replace static HTML <pre>...</pre> and <code>...</code> content with spaces, preserving newlines,
+    character offsets, `<script>` tags, and Django/Jinja template expressions (`{{...}}` / `{%...%}`)."""
+    low = src.lower()
+    if "<pre" not in low and "<code" not in low:
+        return src
+    buf = list(src)
+    n = len(src)
+    stack: List[Tuple[str, int]] = []
+    i = 0
+    while i < n:
+        pos = low.find("<", i)
+        if pos < 0:
+            break
+        # Never touch `<script>...</script>` (JS template literals often build `<pre>${data}</pre>`)
+        if not stack and low.startswith("<script", pos) and pos + 7 < n and low[pos + 7] in " \t\r\n>":
+            end_script = low.find("</script", pos + 7)
+            if end_script < 0:
+                break
+            close_gt = low.find(">", end_script + 8)
+            i = n if close_gt < 0 else close_gt + 1
+            continue
+        if low.startswith("</", pos):
+            tag_start = pos + 2
+            tag = "pre" if low.startswith("pre", tag_start) else "code" if low.startswith("code", tag_start) else ""
+            if tag and tag_start + len(tag) < n and low[tag_start + len(tag)] in " \t\r\n>":
+                end = low.find(">", tag_start + len(tag))
+                if end < 0:
+                    break
+                for idx in range(len(stack) - 1, -1, -1):
+                    if stack[idx][0] == tag:
+                        _, open_end = stack[idx]
+                        del stack[idx:]
+                        if not stack:
+                            seg_start, seg_end = open_end + 1, pos
+                            # Preserve `{{...}}` / `{%...%}` template expressions inside `<pre>`/`<code>`
+                            k = seg_start
+                            while k < seg_end:
+                                if src[k] == "{" and k + 1 < seg_end and src[k + 1] in ("{", "%"):
+                                    closer = "}}" if src[k + 1] == "{" else "%}"
+                                    end_tpl = src.find(closer, k + 2, seg_end)
+                                    if end_tpl >= 0:
+                                        k = end_tpl + 2
+                                        continue
+                                if buf[k] != "\n":
+                                    buf[k] = " "
+                                k += 1
+                        break
+                i = end + 1
+                continue
+        else:
+            tag_start = pos + 1
+            tag = "pre" if low.startswith("pre", tag_start) else "code" if low.startswith("code", tag_start) else ""
+            if tag and tag_start + len(tag) < n and low[tag_start + len(tag)] in " \t\r\n>":
+                end = low.find(">", tag_start + len(tag))
+                if end < 0:
+                    break
+                if not low[tag_start:end].rstrip().endswith("/"):
+                    stack.append((tag, end))
+                i = end + 1
+                continue
+        i = pos + 1
+    return "".join(buf)
+
+
 def first_arg(bare: str, open_paren: int) -> Optional[Tuple[int, int]]:
     close = match_close(bare, open_paren)
     if close < 0:

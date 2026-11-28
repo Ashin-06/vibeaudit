@@ -76,8 +76,10 @@ def parse_gitleaks(data: list, root: Path) -> List[Finding]:
 BANDIT_COVERED = {
     "B101",  # assert: not a security issue in application code
     "B102", "B307",  # exec / eval -> BE003, LLM002
+    "B108",  # hardcoded /tmp paths: high noise in fixtures and helpers
     "B201",  # flask debug=True -> BE011
     "B301", "B506",  # pickle / yaml.load -> BE004
+    "B303",  # legacy MD5/SHA1 alias: covered with password context by BE014
     "B501",  # requests verify=False -> BE013
     "B602", "B605",  # shell=True / os.system -> BE002
     "B608",  # SQL built from strings -> BE001 (knows placeholder-only formatting is safe)
@@ -88,7 +90,11 @@ def parse_bandit(data: dict, root: Path) -> List[Finding]:
     out = []
     sev_map = {"HIGH": "high", "MEDIUM": "medium", "LOW": "low"}
     for r in (data or {}).get("results", []):
-        if r.get("test_id") in BANDIT_COVERED or r.get("issue_confidence") == "LOW" or r.get("issue_severity") == "LOW":
+        tid = r.get("test_id")
+        if tid in BANDIT_COVERED or r.get("issue_confidence") == "LOW" or r.get("issue_severity") == "LOW":
+            continue
+        # B324 on hashlib.sha1 (often intentional HMAC/compatibility digests) is noisy; keep MD5/other B324 alerts
+        if tid == "B324" and "sha1" in str(r.get("code", "")).lower():
             continue
         cwe = (r.get("issue_cwe") or {}).get("id")
         out.append(Finding(

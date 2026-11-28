@@ -303,6 +303,13 @@ _R = [
          "Pass dynamic values as query parameters (Cypher `$param` maps or KQL `ClientRequestProperties` "
          "parameters) rather than interpolating them into the query string.",
          "CWE-943", "A03:2021", preview=True, preview_reason=NEW_IN_0160),
+    Rule("BE023", "Regular expression vulnerable to ReDoS", "backend", "medium",
+         "A nested quantifier inside a regular expression can cause catastrophic backtracking on crafted "
+         "input, freezing the server event loop or worker thread (denial of service).",
+         "Remove nested quantifiers (such as `([0-9]+)+`), anchor or flatten the pattern, or use linear-time "
+         "matching or validation helpers.",
+         "CWE-1333", "A06:2021", preview=True,
+         preview_reason="New rule: not yet measured on enough held-out findings in the benchmark."),
     # --------------------------------------------------------------- frontend
     Rule("FE001", "Cross-site scripting through a raw HTML sink", "frontend", "high",
          "Inserting unsanitized data as HTML (innerHTML, dangerouslySetInnerHTML, v-html, {@html}, |safe) "

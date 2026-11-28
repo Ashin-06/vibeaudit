@@ -1,0 +1,114 @@
+{
+  "repos": [
+    {
+      "name": "DVWA",
+      "kind": "training",
+      "url": "https://github.com/digininja/DVWA",
+      "commit": "a1978a2fed195acd093010af6395f86a281537ca",
+      "must_detect": [
+        {"rule": "BE006", "file": "vulnerabilities/fi/index.php", "line": 36},
+        {"rule": "FE001", "file": "vulnerabilities/xss_r/source/low.php", "line": 8},
+        {"rule": "FE001", "file": "vulnerabilities/xss_d/index.php", "line": 53},
+        {"rule": "BE015", "file": "vulnerabilities/weak_id/source/high.php", "line": 11}
+      ],
+      "must_not_flag": []
+    },
+    {
+      "name": "dvna",
+      "kind": "training",
+      "url": "https://github.com/appsecco/dvna",
+      "commit": "9ba473add536f66ac9007966acb2a775dd31277a",
+      "must_detect": [
+        {"rule": "BE001", "file": "core/appHandler.js", "line": 11},
+        {"rule": "BE002", "file": "core/appHandler.js", "line": 39},
+        {"rule": "BE008", "file": "core/appHandler.js", "line": 188},
+        {"rule": "BE003", "file": "core/appHandler.js", "line": 197},
+        {"rule": "BE004", "file": "core/appHandler.js", "line": 218},
+        {"rule": "BE021", "file": "core/appHandler.js", "line": 235}
+      ],
+      "must_not_flag": [
+        {"rule": "DEP002", "file": "package.json"}
+      ]
+    },
+    {
+      "name": "nodegoat",
+      "kind": "training",
+      "url": "https://github.com/OWASP/NodeGoat",
+      "commit": "c5cb68a7084e4ae7dcc60e6a98768720a81841e8",
+      "must_detect": [
+        {"rule": "BE003", "file": "app/routes/contributions.js", "line": 32},
+        {"rule": "BE005", "file": "app/routes/research.js", "line": 16},
+        {"rule": "BE008", "file": "app/routes/index.js", "line": 72},
+        {"rule": "BE010", "file": "app/data/allocations-dao.js", "line": 78},
+        {"rule": "BE023", "file": "app/routes/profile.js", "line": 59},
+        {"rule": "SEC002", "file": "artifacts/cert/server.key", "line": 1}
+      ],
+      "must_not_flag": [
+        {"rule": "BE003", "file": "app/views/tutorial/a1.html"},
+        {"rule": "SEC004", "file": "app/views/tutorial/a2.html"},
+        {"rule": "SEC004", "file": "app/views/tutorial/a3.html"}
+      ]
+    },
+    {
+      "name": "Vulnerable-Flask-App",
+      "kind": "known-vulnerable",
+      "url": "https://github.com/we45/Vulnerable-Flask-App",
+      "commit": "b6a4f97afd466e83e1f60781494252dec1c37039",
+      "must_detect": [
+        {"rule": "BE001", "file": "app/app.py", "line": 265},
+        {"rule": "BE004", "file": "app/app.py", "line": 329},
+        {"rule": "BE007", "file": "app/app.py", "line": 114},
+        {"rule": "BE014", "file": "app/app.py", "line": 141},
+        {"rule": "BE016", "file": "app/app.py", "line": 97}
+      ],
+      "must_not_flag": []
+    },
+    {
+      "name": "vulpy",
+      "kind": "training",
+      "url": "https://github.com/fportantier/vulpy",
+      "commit": "5249cc8b05a1c37f6b2f757b1cf16a509c327122",
+      "must_detect": [],
+      "must_not_flag": []
+    },
+    {
+      "name": "starlette",
+      "kind": "well-maintained",
+      "url": "https://github.com/encode/starlette",
+      "commit": "271c277da0ff64e2048a4d46ecc812b9d61db5f6",
+      "must_detect": [],
+      "must_not_flag": [
+        {"rule": "AUTH008", "file": "starlette/authentication.py"},
+        {"rule": "QA006", "file_prefix": "starlette/"}
+      ],
+      "max_high_or_critical": 0
+    },
+    {
+      "name": "express",
+      "kind": "well-maintained",
+      "url": "https://github.com/expressjs/express",
+      "commit": "43fca52d28a422c8be48fd489cbd4f2d6152bab6",
+      "must_detect": [],
+      "must_not_flag": [],
+      "max_high_or_critical": 0
+    },
+    {
+      "name": "flask",
+      "kind": "well-maintained",
+      "url": "https://github.com/pallets/flask",
+      "commit": "49943b5a94413a530761350f04e896f76e8d620e",
+      "must_detect": [],
+      "must_not_flag": [],
+      "max_high_or_critical": 0
+    },
+    {
+      "name": "full-stack-fastapi-template",
+      "kind": "well-maintained",
+      "url": "https://github.com/fastapi/full-stack-fastapi-template",
+      "commit": "aabb90126964a164e02aff39e7c385bb0598236d",
+      "must_detect": [],
+      "must_not_flag": [],
+      "max_high_or_critical": 0
+    }
+  ]
+}

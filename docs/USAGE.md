@@ -47,7 +47,7 @@ your `PATH`, their findings are merged into the report and de-duplicated.
 | `vibeaudit studio [PATH]` | A local web UI: routes with auth and write badges, data flows, and the score by domain, category and rule (see [Studio](#studio)). |
 | `vibeaudit probe --url http://127.0.0.1:3000` | Probe a running web app (auth bypass, IDOR, injection, SSRF, XSS, CORS) or inspect a live local stdio MCP server (`--mcp-cmd CMD`, `--pin-hash SHA256`) for tool poisoning and rug-pull drift without calling tools. Measured on five vulnerable apps in [docs/PROBE_EVAL.md](PROBE_EVAL.md). |
 | `vibeaudit test-exploit FINDING` | Build a non-destructive proof-of-concept request for one finding; a dry run by default, and `--send` sends it once to localhost only, never following redirects. |
-| `vibeaudit explain FINDING` | Explain one finding (`FILE:LINE`, `FILE:LINE:RULE` or a fingerprint prefix): the rule, the code and the data flow that led to it (`--format json`, `--path DIR` for another project). |
+| `vibeaudit explain TARGET` | Explain a rule (`BE001`) with unsafe/safe examples, or one finding (`FILE:LINE`, `FILE:LINE:RULE` or a fingerprint prefix) with its data flow (`--format json`, `--path DIR` for another project). |
 | `vibeaudit routes [PATH]` | List every HTTP entry point with method, path, location and whether it has a visible auth check, writes data or calls a paid AI API (`--format text\|json\|md`). |
 | `vibeaudit rules` | List every rule (`--format text\|json\|md`, or `--json`; JSON includes the why and fix text). |
 | `vibeaudit doctor` | Show vibeaudit version, rule counts, ecosystem coverage, signed threat-feed status, offline OSV indexes and installed external scanners (`--format text\|json`). |
@@ -85,6 +85,7 @@ Every command has `--help`.
 | `--llm-model NAME`, `--llm-review`, `--llm-max-requests N` | Model name; also review the riskiest files for missed issues; hard cap on requests (default 10). |
 | `--privacy-report` | Print the redacted file slices, line ranges and byte counts `--llm` / `--llm-review` would send, without sending data or needing an API key. |
 | `--history` / `--history-commits N` | Also scan added lines across recent git commit history (default 200 commits) for high-confidence provider keys and private keys. |
+| `--require-ignore-reason` | Ignore inline `vibeaudit: ignore` comments unless they include an explanation after `--` or `reason:`. |
 | `--max-file-size BYTES` | Skip larger files (default 1,000,000). |
 | `--file-timeout SECONDS` | Time each analysis step may spend on one file before it is stopped (default 30). |
 | `--scan-timeout SECONDS` | Overall wall-clock cap in seconds for analyzer stages (default: unlimited). |
@@ -166,6 +167,7 @@ HTML. It reads the project and never writes to it.
 ### Explaining a finding
 
 ```bash
+vibeaudit explain BE001                # rule rationale with unsafe and safe code examples
 vibeaudit explain app.py:19            # or app.py:19:LLM002, or a fingerprint prefix from a JSON report
 ```
 
@@ -264,7 +266,7 @@ sanitizers = ["clean_sql_input"]                               # their output is
 public-paths = ["/api/public/*", "/api/survey-*"]              # intentionally unauthenticated routes
 ```
 
-Other keys: `include-preview`, `gate-severe-preview`, `monorepo`, `fail-on-partial`, `allow-empty`, `score-model`, `profile`, `jobs`, `llm`, `llm-model`, `llm-max-requests`, `max-file-size`, `file-timeout`, `scan-timeout`. The same settings apply
+Other keys: `include-preview`, `gate-severe-preview`, `monorepo`, `fail-on-partial`, `allow-empty`, `require-ignore-reason`, `score-model`, `profile`, `jobs`, `llm`, `llm-model`, `llm-max-requests`, `max-file-size`, `file-timeout`, `scan-timeout`. The same settings apply
 to `vibeaudit scan`, `vibeaudit routes`, `vibeaudit feedback`, the MCP server and the Python API, except `llm`,
 which only `vibeaudit scan` reads: the LSP server, watch, studio, the MCP server and the API never send code to a
 model provider because a repository's config asks for it. The file is part of the scanned repository and can
@@ -535,8 +537,7 @@ Static analysis guesses, and some findings will be wrong for your project. In or
   the repo, and track entries across line moves. Use `vibeaudit feedback export` to turn verdicts into
   pytest regressions or `vibeaudit feedback suggest-helpers` to propose `auth-helpers` updates. Absolute paths
   and paths copied from an editor work; `--config` and `--plugin` work as for `scan`.
-- **Inline**: `# vibeaudit: ignore[AUTH001]` (or `// vibeaudit: ignore[AUTH001]`, or without the bracket
-  for every rule) on the line or the line above.
+- **Inline**: `# vibeaudit: ignore[AUTH001] -- public webhook verified via HMAC` (or `// vibeaudit: ignore[AUTH001]`, or without the bracket for every rule) on the line or the line above. Pass `--require-ignore-reason` in CI to require an explanation after `--` (or `reason:`).
 - **Paths, rules, existing debt**: `--exclude` or `.vibeauditignore`, `--disable`, and `--baseline` to see
   only new findings.
 

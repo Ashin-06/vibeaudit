@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import math
 import re
+from typing import List, Tuple
 
 # Anything that suggests the handler checks who the caller is.
 AUTH_EVIDENCE = re.compile(
@@ -247,3 +248,110 @@ class Custom:
 
 
 CUSTOM = Custom()
+
+
+def _skip_quantifier(pattern: str, pos: int) -> Tuple[bool, bool, int]:
+    """If pattern[pos:] opens a quantifier, return (has_quantifier, allows_multiple, end_pos)."""
+    n = len(pattern)
+    if pos >= n:
+        return False, False, pos
+    ch = pattern[pos]
+    if ch in ("+", "*"):
+        nxt = pos + 1
+        if nxt < n and pattern[nxt] in ("?", "+"):
+            nxt += 1
+        return True, True, nxt
+    if ch == "?":
+        nxt = pos + 1
+        if nxt < n and pattern[nxt] in ("?", "+"):
+            nxt += 1
+        return True, False, nxt
+    if ch == "{":
+        close = pattern.find("}", pos + 1)
+        if close > pos + 1 and pattern[pos + 1:close].replace(",", "").strip().isdigit():
+            body = pattern[pos + 1:close]
+            mult = False
+            if "," in body:
+                lo, hi = body.split(",", 1)
+                mult = not hi.strip() or (hi.strip().isdigit() and int(hi.strip()) > max(1, int(lo.strip() or "0")))
+            elif body.strip().isdigit() and int(body.strip()) > 1:
+                mult = True
+            nxt = close + 1
+            if nxt < n and pattern[nxt] in ("?", "+"):
+                nxt += 1
+            return True, mult, nxt
+    return False, False, pos
+
+
+def has_nested_quantifier(pattern: str) -> bool:
+    """Linear-time O(n) check for catastrophic-backtracking nested quantifiers such as `([0-9]+)+` or `(\\w+)*`."""
+    if not pattern or len(pattern) > 2000:
+        return False
+    n = len(pattern)
+    # Each stack frame: [branch_has_quant, branch_has_mandatory_atom, any_ambiguous_branch_seen]
+    stack: List[List[bool]] = [[False, False, False]]
+    i = 0
+    while i < n:
+        ch = pattern[i]
+        if ch == "(":
+            stack.append([False, False, False])
+            if i + 1 < n and pattern[i + 1] == "?":
+                if pattern[i + 1:i + 3] in ("?:", "?=", "?!"):
+                    i += 3
+                    continue
+                if pattern[i + 1:i + 4] in ("?<=", "?<!"):
+                    i += 4
+                    continue
+            i += 1
+            continue
+        if ch == "|":
+            cur = stack[-1]
+            if cur[0] and not cur[1]:
+                cur[2] = True
+            cur[0] = False
+            cur[1] = False
+            i += 1
+            continue
+        if ch == ")":
+            if len(stack) > 1:
+                cur = stack.pop()
+                ambiguous = cur[2] or (cur[0] and not cur[1])
+                has_any_quant = ambiguous or cur[0]
+                has_q, mult, end_q = _skip_quantifier(pattern, i + 1)
+                if mult and ambiguous:
+                    return True
+                if has_any_quant or mult:
+                    stack[-1][0] = True
+                if not has_q:
+                    stack[-1][1] = True
+                i = end_q if has_q else i + 1
+                continue
+            i += 1
+            continue
+        if ch in ("^", "$"):
+            i += 1
+            continue
+        if ch == "\\":
+            atom_end = min(n, i + 2)
+        elif ch == "[":
+            j = i + 1
+            while j < n:
+                if pattern[j] == "\\":
+                    j += 2
+                    continue
+                if pattern[j] == "]" and j > i + 1:
+                    j += 1
+                    break
+                j += 1
+            atom_end = j
+        else:
+            atom_end = i + 1
+        has_q, mult, end_q = _skip_quantifier(pattern, atom_end)
+        if has_q:
+            if mult:
+                stack[-1][0] = True
+            i = end_q
+        else:
+            stack[-1][1] = True
+            i = atom_end
+    return False

@@ -77,6 +77,53 @@ def edit_distance_one(a: str, b: str) -> bool:
     return a[i:] == b[i + 1:]
 
 
+def _adjacent_swap_or_repeat(a: str, b: str) -> bool:
+    """True when `a` and `b` differ only by an adjacent swap, or `a` adds/drops one repeated character."""
+    if len(a) == len(b):
+        diff = [i for i in range(len(a)) if a[i] != b[i]]
+        return len(diff) == 2 and diff[1] == diff[0] + 1 and a[diff[0]] == b[diff[1]] and a[diff[1]] == b[diff[0]]
+    short, long = (a, b) if len(a) < len(b) else (b, a)
+    if len(long) - len(short) != 1:
+        return False
+    i = 0
+    while i < len(short) and short[i] == long[i]:
+        i += 1
+    if not (short[i:] == long[i + 1:]):
+        return False
+    # Only flag single-char insertion/deletion when it duplicates an adjacent letter (expresss/express)
+    # or is 6+ chars long; stops unrelated 5-char English words from colliding (flash/slash, chart/chat).
+    return (i > 0 and long[i] == long[i - 1]) or (i + 1 < len(long) and long[i] == long[i + 1])
+
+
+KNOWN_TYPOSQUATS: Dict[str, Dict[str, str]] = {
+    "PyPI": {
+        "reqeusts": "requests",
+        "rquests": "requests",
+        "requets": "requests",
+        "urllib": "urllib3",
+        "colourama": "colorama",
+        "python-dateutils": "python-dateutil",
+        "beautifulsoup": "beautifulsoup4",
+        "scikitlearn": "scikit-learn",
+        "dajngo": "django",
+        "flaks": "flask",
+        "fatsapi": "fastapi",
+    },
+    "npm": {
+        "expresss": "express",
+        "exprss": "express",
+        "crossenv": "cross-env",
+        "loadsh": "lodash",
+        "lodahs": "lodash",
+        "axois": "axios",
+        "axioz": "axios",
+        "babelcli": "babel-cli",
+        "mongose": "mongoose",
+        "reactt": "react",
+    },
+}
+
+
 def typosquat_target(name: str, ecosystem: str) -> Optional[str]:
     if ecosystem not in ("PyPI", "npm"):
         return None
@@ -84,13 +131,28 @@ def typosquat_target(name: str, ecosystem: str) -> Optional[str]:
     key = pep503(name) if ecosystem == "PyPI" else name.lower()
     if key in known or len(key) < 5:
         return None
+    curated = KNOWN_TYPOSQUATS.get(ecosystem, {}).get(key)
+    if curated:
+        return curated
     scoped = key.startswith("@")
     squashed = re.sub(r"[-_.]", "", key)
-    for t in targets:
+    # Use top 1000 packages for heuristic matching to avoid unrelated real words in the long tail (e.g. phpass)
+    for t in targets[:1000]:
         if t.startswith("@") != scoped or len(t) < 5:
             continue
-        if edit_distance_one(key, t) or (squashed == re.sub(r"[-_.]", "", t) and key != t):
+        if squashed == re.sub(r"[-_.]", "", t) and key != t:
             return t
+        if len(key) < 6:
+            if _adjacent_swap_or_repeat(key, t):
+                return t
+        elif len(key) >= 6:
+            # For 6-char names, also avoid unrelated 1-char substitutions unless adjacent swap / insert / delete / 7+
+            if len(key) != len(t) and _adjacent_swap_or_repeat(key, t):
+                return t
+            if len(key) >= 7 and edit_distance_one(key, t):
+                return t
+            if len(key) == 6 and _adjacent_swap_or_repeat(key, t):
+                return t
     return None
 
 
@@ -560,9 +622,10 @@ class DepScanner:
         self.offline = offline
         self.notes: List[str] = []
 
-    def add(self, dep: Dep, rule: str, msg: str, sev: str = "") -> None:
+    def add(self, dep: Dep, rule: str, msg: str, sev: str = "", confidence: str = "") -> None:
         sf = self.p.get(dep.file)
-        self.emit(Finding(rule, dep.file, dep.line, msg, sev, sf.line(dep.line).strip() if sf else ""))
+        self.emit(Finding(rule, dep.file, dep.line, msg, sev, sf.line(dep.line).strip() if sf else "",
+                          confidence=confidence or "high"))
 
     def run(self) -> None:
         try:
@@ -593,7 +656,10 @@ class DepScanner:
         if self.offline:
             for d in deps:
                 if (d.ecosystem, d.name) in squats:
-                    self.add(d, "DEP002", f"`{d.name}` is one character away from the popular package `{squats[(d.ecosystem, d.name)]}`.")
+                    k_norm = pep503(d.name) if d.ecosystem == "PyPI" else d.name.lower()
+                    curated = k_norm in KNOWN_TYPOSQUATS.get(d.ecosystem, {})
+                    self.add(d, "DEP002", f"`{d.name}` is one character away from the popular package `{squats[(d.ecosystem, d.name)]}`.",
+                             sev="medium" if curated else "low", confidence="medium" if curated else "low")
             from . import bundle
 
             trans = locked_packages(self.p, deps)
@@ -635,7 +701,7 @@ class DepScanner:
             if key in squats:
                 old = first is not None and (now - first).days > 2 * 365
                 self.add(d, "DEP002", f"`{d.name}` is one character away from the popular package `{squats[key]}`.",
-                         "low" if old else "")
+                         "low" if old else "", confidence="low" if old else "high")
             if first is not None and (now - first).days < NEW_PACKAGE_DAYS:
                 self.add(d, "DEP003", f"`{d.name}` was first published {max(0, (now - first).days)} days ago.")
         try:

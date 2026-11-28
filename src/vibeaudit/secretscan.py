@@ -9,7 +9,7 @@ from typing import Any, Callable, Dict, List, Optional, Pattern, Tuple, cast
 from . import heuristics as H
 from .guard import GUARD, finditer
 from .files import ENV_EXAMPLE_RE, Project, SourceFile, production_overrides
-from .lexer import js_views, py_views
+from .lexer import blank_html_code_blocks, js_views, py_views
 from .model import Finding
 from .store import loads_json
 
@@ -358,8 +358,10 @@ class SecretScanner:
         if v is None:
             if sf.kind == "py":
                 v = py_views(text)
-            elif sf.kind in ("js", "html"):
+            elif sf.kind == "js":
                 v = js_views(text)
+            elif sf.kind == "html":
+                v = js_views(blank_html_code_blocks(text))
             elif sf.rel.endswith(".php") and not sf.rel.endswith(".blade.php"):
                 from .phpscan import php_views  # PHP: no comments (docblock examples), no inline HTML
 
