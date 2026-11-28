@@ -8,6 +8,17 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- **GitHub Action job summary and pull request comment**: the Markdown report is written to the job summary
+  (`summary`, on by default, no permissions needed); `comment: "true"` keeps one pull request comment with the
+  findings on the changed lines, updated in place on every push (needs `pull-requests: write`; skipped with a
+  warning when the token cannot write, as on pull requests from forks).
+- **SARIF `helpUri`**: each built-in rule links to its section of `docs/RULES.md` for the release, so a
+  code scanning alert opens the rule's explanation and fix.
+- **Docker image on GitHub Container Registry**: each release pushes `ghcr.io/ashin-06/vibeaudit:<version>`
+  (and `:latest` for a final release), smoke-tested before the push, with signed build provenance.
+- **Shorter README**: the landing page keeps the pitch, quickstart, checks, CI setup and accuracy; the full
+  reference (commands, configuration, CI, editors, MCP, scoring, suppressions, limits) moved to `docs/USAGE.md`.
+
 - **Parallel multi-core scanning (`-j`, `--jobs N`, `parallel.py`)**: runs Wave 1 (language/secret discovery)
   and Wave 2 (cross-cutting/quality/data analyzers) in a `ProcessPoolExecutor` for repositories with 64+ files
   (`--jobs 0` auto-selects up to 4 cores) with exact parity against single-process scans.

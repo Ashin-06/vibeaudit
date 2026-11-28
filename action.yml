@@ -25,8 +25,14 @@ inputs:
   review:
     description: 'On pull requests, post review comments with suggested fixes on changed lines ("true" or "false"). Needs `permissions: pull-requests: write`.'
     default: "false"
+  summary:
+    description: 'Write the Markdown report to the job summary page ("true" or "false"). Needs no permissions.'
+    default: "true"
+  comment:
+    description: 'On pull requests, keep one summary comment of the findings on changed lines, updated on every push ("true" or "false"). Needs `permissions: pull-requests: write`; skipped with a warning when the token cannot write (pull requests from forks).'
+    default: "false"
   github-token:
-    description: Token used to post the review.
+    description: Token used to post the review and the summary comment.
     default: ${{ github.token }}
   parse:
     description: 'Install optional tree-sitter parsers for Go, Rust, Java, JavaScript and TypeScript function indexing ("true" or "false").'
@@ -64,7 +70,48 @@ runs:
       # on whitespace (set -f stops `--exclude legacy/*` from being expanded by the shell before vibeaudit sees it).
       run: |
         set -f
-        vibeaudit scan "$VIBEAUDIT_PATH" --fail-on "$VIBEAUDIT_FAIL_ON" --report "sarif:$VIBEAUDIT_SARIF" $VIBEAUDIT_ARGS
+        vibeaudit scan "$VIBEAUDIT_PATH" --fail-on "$VIBEAUDIT_FAIL_ON" --report "sarif:$VIBEAUDIT_SARIF" \
+          --report "md:$RUNNER_TEMP/vibeaudit.md" $VIBEAUDIT_ARGS
+    - name: Write the job summary
+      if: always() && inputs.summary == 'true'
+      shell: bash
+      run: |
+        # the job summary holds up to 1 MiB per step
+        if [ -f "$RUNNER_TEMP/vibeaudit.md" ]; then head -c 900000 "$RUNNER_TEMP/vibeaudit.md" >> "$GITHUB_STEP_SUMMARY"; fi
+    - name: Update the pull request summary comment
+      if: always() && inputs.comment == 'true' && github.event_name == 'pull_request'
+      shell: bash
+      env:
+        VIBEAUDIT_PATH: ${{ inputs.path }}
+        VIBEAUDIT_ARGS: ${{ inputs.args }}
+        VIBEAUDIT_BASE: ${{ github.base_ref }}
+        VIBEAUDIT_PR: ${{ github.event.pull_request.number }}
+        GH_TOKEN: ${{ inputs.github-token }}
+      run: |
+        set -f
+        if [ "$(git rev-parse --is-shallow-repository)" = "true" ]; then git fetch --no-tags --quiet --unshallow origin; fi
+        git fetch --no-tags --quiet origin "+refs/heads/$VIBEAUDIT_BASE:refs/remotes/origin/$VIBEAUDIT_BASE"
+        md="$RUNNER_TEMP/vibeaudit-pr.md"
+        # only what this pull request changed; the scan cache makes this second pass fast
+        vibeaudit scan "$VIBEAUDIT_PATH" $VIBEAUDIT_ARGS --diff "origin/$VIBEAUDIT_BASE" --fail-on none --report "md:$md" > /dev/null || true
+        run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+        body="$RUNNER_TEMP/vibeaudit-comment.md"
+        {
+          echo "<!-- vibeaudit-summary -->"
+          echo "### vibeaudit: findings on lines this pull request changes"
+          echo
+          head -c 60000 "$md" 2>/dev/null || echo "No report was written."  # a comment holds 65536 characters
+          echo
+          echo "[Full report and SARIF]($run_url)"
+        } > "$body"
+        id="$(gh api "repos/$GITHUB_REPOSITORY/issues/$VIBEAUDIT_PR/comments" --paginate \
+          --jq '.[] | select(.body | startswith("<!-- vibeaudit-summary -->")) | .id' | head -n 1)" || id=""
+        warn="::warning::vibeaudit could not write its pull request comment (does the token have pull-requests: write?)"
+        if [ -n "$id" ]; then
+          gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$id" -F "body=@$body" > /dev/null || echo "$warn"
+        else
+          gh api "repos/$GITHUB_REPOSITORY/issues/$VIBEAUDIT_PR/comments" -F "body=@$body" > /dev/null || echo "$warn"
+        fi
     - name: Post review comments
       # runs even when the scan step failed the build, so the author sees where; only for pull requests
       if: always() && inputs.review == 'true' && github.event_name == 'pull_request'

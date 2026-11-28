@@ -1,5 +1,6 @@
 """Report formats and the command line interface."""
 import json
+from pathlib import Path
 
 from helpers import materialize
 from vibeaudit import __version__
@@ -33,6 +34,9 @@ def test_sarif_structure():
     assert res["locations"][0]["physicalLocation"]["region"]["startLine"] == 3
     assert res["partialFingerprints"]["vibeaudit/v1"]
     assert float(run["tool"]["driver"]["rules"][0]["properties"]["security-severity"]) > 7
+    help_uri = run["tool"]["driver"]["rules"][0]["helpUri"]
+    assert help_uri.endswith("/docs/RULES.md#fe001")
+    assert "### FE001" in (Path(__file__).parents[1] / "docs" / "RULES.md").read_text(encoding="utf-8")
 
 
 def test_sarif_line_zero_becomes_one():

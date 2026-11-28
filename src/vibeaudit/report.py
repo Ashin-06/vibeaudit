@@ -240,6 +240,8 @@ def render_sarif(res: Result) -> str:
             "shortDescription": {"text": sample.title or rid},
             "fullDescription": {"text": sample.why or sample.title or rid},
             "help": {"text": sample.fix or "", "markdown": f"**Why:** {sample.why}\n\n**Fix:** {sample.fix}"},
+            # code scanning links the alert to the rule's section of the catalogue for this release
+            **({"helpUri": f"{TOOL_URL}/blob/v{__version__}/docs/RULES.md#{rid.lower()}"} if meta else {}),
             "defaultConfiguration": {"level": level[sev]},
             "properties": {"tags": tags, "security-severity": SECURITY_SEVERITY[sev], "precision": "medium"},
         })

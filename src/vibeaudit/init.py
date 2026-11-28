@@ -8,7 +8,7 @@ from . import __version__
 from .files import Project
 from .scanner import _stack
 
-STARTER_CONFIG = """# vibeaudit configuration (see README.md#configuration)
+STARTER_CONFIG = """# vibeaudit configuration (see docs/USAGE.md#configuration)
 fail-on = "high"
 min-severity = "low"
 exclude = ["dist/**", "build/**", "vendor/**"]
