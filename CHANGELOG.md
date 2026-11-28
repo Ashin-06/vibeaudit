@@ -24,6 +24,13 @@ All notable changes to this project are documented here. The format follows
 
 ### Fixed
 
+- **`--jobs` now gives the same findings as a single-process scan**: wave-2 workers rebuilt the project without the
+  comment/string-blanked file views and the JS client flag, so view-based checks lost findings (QA011, UI016) or
+  matched comments and strings (QA007, DATA007). Workers now rebuild that state before running.
+- **Scan cache invalidates when the enclosing repository gains or loses tests or CI**: a subfolder scan kept
+  reporting QA001/QA002 from the cache after `tests/` or a CI workflow was added at the git root.
+- **Per-language coverage numbers add up**: `files_matched` = `files_analyzed` + `skipped_files`; binary files and
+  generated bundles are no longer counted as unexplained gaps, and the new `files_skipped_binary` reports them.
 - **Subfolder `QA001`/`QA002` false positives (`projectscan.py`)**: scanning a subdirectory such as
   `vibeaudit scan src` inside a git repository now checks the enclosing git root (`git rev-parse --show-toplevel`)
   for `tests/` and CI configurations before reporting `QA001` ("No test files found") or `QA002` ("No CI configuration found").

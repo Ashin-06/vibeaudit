@@ -10,6 +10,7 @@ from typing import Any, Dict, List, Optional, Tuple
 from . import __version__, feed, store
 from .files import Project, SourceFile
 from .model import Finding, Route
+from .projectscan import outer_repo_state
 
 CACHE_FORMAT = 1
 MAX_SECRET_CACHE_ENTRIES = 10_000
@@ -85,6 +86,7 @@ def project_fingerprint(project: Project, opts: Any, parser_mode: Dict[str, str]
         repr(list(opts.public_paths)),
         repr(sorted(opts.excludes)),
         feed_ver,
+        outer_repo_state(project.root),
         repr(sorted(
             (str(item.get("file", "")), str(item.get("reason", "")))
             for item in getattr(project, "skipped_files", ())

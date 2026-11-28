@@ -74,6 +74,12 @@ def _git_root(root: Path) -> Optional[Path]:
     return top
 
 
+def outer_repo_state(root: Path) -> str:
+    """What QA001/QA002 read outside a subfolder scan (tests and CI at the enclosing git root), for cache keys."""
+    top = _git_root(root)
+    return "" if top is None else f"{top}|{int(_repo_has_tests(top))}|{int(_repo_has_ci(top))}"
+
+
 def _repo_has_ci(git_root: Path) -> bool:
     for wf in (git_root / ".github" / "workflows").glob("*") if (git_root / ".github" / "workflows").is_dir() else ():
         if wf.is_file() and wf.suffix.lower() in (".yml", ".yaml"):

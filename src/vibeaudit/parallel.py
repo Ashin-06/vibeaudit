@@ -34,11 +34,31 @@ from .secretscan import SecretScanner
 from .swiftscan import SwiftScanner
 from .uiscan import UiScanner
 from .xxescan import XxeScanner
+from .goscan import go_views
+from .lexer import js_views, py_views
 
 PARALLEL_MIN_FILES = 64
 MAX_WORKERS = 4
 WAVE1_TASKS = ("js", "py_jvm", "other_langs", "secrets")
 WAVE2_TASKS = ("project", "quality_ui", "data_rel_ai_contracts")
+
+
+def _prime_file_state(project: Project) -> None:
+    """Rebuild the per-file state wave-1 scanners leave on each SourceFile (comment/string-blanked views and the
+    JS client flag). Wave-2 checks read it; a sequential scan shares one Project so it is always there, but a
+    worker builds a fresh Project and would otherwise fall back to raw text or skip the file."""
+    js = JsScanner(project, lambda _f: None)
+    for sf in project.files:
+        text = sf.text
+        if text is None:
+            continue
+        if sf.kind in ("js", "html"):
+            sf.cache["views"] = sf.cache["js_views"] = v = js_views(text)
+            sf.is_client = js.is_client(sf, v)
+        elif sf.kind == "py":
+            sf.cache["views"] = sf.cache["py_views"] = py_views(text)
+        elif sf.kind == "go":
+            sf.cache["views"] = sf.cache["go_views"] = go_views(text)
 
 
 @dataclass
@@ -86,6 +106,8 @@ def _run_wave_task(
         raw: List[Finding] = []
         emit = raw.append
         found_routes: List[Route] = []
+        if task_name in WAVE2_TASKS:
+            GUARD.run("<project>", "file views", _prime_file_state, project)
         if task_name == "js":
             found_routes.extend(JsScanner(project, emit).run())
         elif task_name == "py_jvm":
