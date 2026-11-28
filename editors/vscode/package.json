@@ -111,7 +111,7 @@
     "package": "vsce package --out vibeaudit.vsix"
   },
   "dependencies": {
-    "vscode-languageclient": "11.0.0"
+    "vscode-languageclient": "11.0.1"
   },
   "devDependencies": {
     "@vscode/vsce": "4.1.1",
