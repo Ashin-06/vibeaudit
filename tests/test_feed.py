@@ -102,7 +102,7 @@ def test_shipped_data_is_valid_and_patterns_do_not_match_our_docs():
     assert data["slopsquatted"] and data["model_sunsets"] and data["prompt_injection"]
     assert all(e["source"].startswith("https://") for name in data for e in data[name])
     # (docs/RULES.md quotes attack text on purpose, while explaining rules)
-    docs = [ROOT / "README.md", ROOT / "CONTRIBUTING.md", ROOT / "docs" / "THREAT_FEED.md"]
+    docs = [ROOT / "README.md", ROOT / "docs" / "USAGE.md", ROOT / "CONTRIBUTING.md", ROOT / "docs" / "THREAT_FEED.md"]
     for e in data["prompt_injection"]:
         for doc in docs:
             assert not re.search(e["pattern"], doc.read_text(encoding="utf-8")), (e["id"], doc.name)

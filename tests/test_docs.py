@@ -12,7 +12,8 @@ from vibeaudit.cli import build_parser
 from vibeaudit.rules import RULES
 
 ROOT = Path(__file__).parent.parent
-README = (ROOT / "README.md").read_text(encoding="utf-8")
+# the README is the landing page; the reference moved to docs/USAGE.md, so checks read both
+README = "\n\n".join((ROOT / doc).read_text(encoding="utf-8") for doc in ("README.md", "docs/USAGE.md"))
 
 
 def _blocks(lang):
@@ -33,7 +34,7 @@ def _all_flags():
 
 def test_every_flag_in_the_docs_exists():
     known = _all_flags()
-    for doc in ("README.md", "CONTRIBUTING.md"):
+    for doc in ("README.md", "docs/USAGE.md", "CONTRIBUTING.md"):
         text = (ROOT / doc).read_text(encoding="utf-8")
         # flags written as `--flag` in prose and tables, or inside vibeaudit command lines
         mentioned = set(re.findall(r"`(--[a-z][a-z-]+)", text))
@@ -113,7 +114,7 @@ def test_action_inputs_hook_and_versions_match():
 
 
 def test_docs_are_plain_ascii():
-    for doc in ("README.md", "CONTRIBUTING.md", "SECURITY.md", "CHANGELOG.md", "docs/RULES.md"):
+    for doc in ("README.md", "docs/USAGE.md", "CONTRIBUTING.md", "SECURITY.md", "CHANGELOG.md", "docs/RULES.md"):
         data = (ROOT / doc).read_bytes()
         assert all(b < 127 for b in data), doc
 
