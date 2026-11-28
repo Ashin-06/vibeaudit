@@ -330,15 +330,64 @@ def _polyglot(text: str, line: int, source: "re.Pattern[str]") -> List[Step]:
 
 # ------------------------------------------------------------------ the explanation
 def explain(f: Finding, text: str) -> dict:
+    from .report import ai_fix_prompt
+
     steps = trace(f.file, text, f.line) if f.line else []
-    return {"rule_id": f.rule_id, "title": f.title, "severity": f.severity, "file": f.file, "line": f.line,
-            "message": f.message, "why": f.why, "fix": f.fix, "fingerprint": f.fingerprint, "preview": f.preview,
+    return {"rule_id": f.rule_id, "title": f.title, "severity": f.severity,
+            "confidence": getattr(f, "confidence", "high"), "file": f.file, "line": f.line,
+            "message": f.message, "why": f.why, "fix": f.fix, "ai_prompt": ai_fix_prompt(f),
+            "fingerprint": f.fingerprint, "preview": f.preview,
             "code": context(text, f.line) if f.line else [], "flow": [s.to_dict() for s in steps]}
 
 
+def explain_rule(rule_id: str) -> Optional[dict]:
+    """Return rule metadata with unsafe and safe code examples for `vibeaudit explain RULE`."""
+    from .rule_examples import get_example
+    from .rules import CATEGORIES, RULES
+
+    rule = RULES.get(rule_id.strip().upper())
+    if rule is None:
+        return None
+    ex = get_example(rule.id)
+    return {
+        "rule_id": rule.id,
+        "title": rule.title,
+        "severity": rule.severity,
+        "category": CATEGORIES.get(rule.category, rule.category),
+        "cwe": rule.cwe,
+        "owasp": rule.owasp,
+        "preview": rule.preview,
+        "gates_in_preview": rule.gates_in_preview,
+        "why": rule.why,
+        "fix": rule.fix,
+        "example": ex,
+    }
+
+
+def render_rule(info: dict) -> str:
+    status = " (preview, gates)" if info["preview"] and info["gates_in_preview"] else " (preview)" if info["preview"] else ""
+    refs = ", ".join(x for x in (info.get("cwe"), info.get("owasp")) if x)
+    ex = info.get("example") or {}
+    out = [
+        f"{info['rule_id']} [{info['severity']}]  {info['title']}{status}",
+        f"Category: {info['category']}" + (f"  References: {refs}" if refs else ""),
+        "",
+        f"Why: {info['why']}",
+        f"Fix: {info['fix']}",
+    ]
+    if ex.get("unsafe"):
+        out += ["", f"Unsafe example ({ex.get('lang', 'code')}):"] + [f"  {ln}" for ln in ex["unsafe"].splitlines()]
+    if ex.get("safe"):
+        out += ["", f"Safe example ({ex.get('lang', 'code')}):"] + [f"  {ln}" for ln in ex["safe"].splitlines()]
+    return "\n".join(out)
+
+
 def render(e: dict) -> str:
-    out = [f"{e['rule_id']} {e['severity']}  {e['file']}:{e['line']}  {e['title']}" + (" (preview)" if e["preview"] else ""),
+    conf = f" [{e['confidence']}]" if e.get("confidence", "high") != "high" else ""
+    out = [f"{e['rule_id']} {e['severity']}{conf}  {e['file']}:{e['line']}  {e['title']}" + (" (preview)" if e["preview"] else ""),
            f"  {e['message']}", "", f"Why: {e['why']}", f"Fix: {e['fix']}"]
+    if e.get("ai_prompt"):
+        out += [f"AI assistant prompt: {e['ai_prompt']}"]
     if e["code"]:
         width = len(str(e["code"][-1]["line"]))
         out += ["", "Code:"] + [f" {'>' if c['current'] else ' '} {c['line']:>{width}} | {c['code']}" for c in e["code"]]

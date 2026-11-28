@@ -274,6 +274,8 @@ class PhpScanner:
         for sf in self.files:
             GUARD.run(sf.rel, "PHP checks", self._checks, sf)
         GUARD.run("<project>", "PHP calls", self.follower.follow, self._follow)
+        for sf in self.files:
+            GUARD.run(sf.rel, "PHP inline scripts", self._dom_xss, sf)
         for sf in self.p.files:
             if sf.rel.endswith(".blade.php") and sf.text and not sf.is_test:
                 GUARD.run(sf.rel, "Blade output", self._blade, sf)
@@ -647,8 +649,82 @@ class PhpScanner:
                     top_c[k] = " "
                     top_b[k] = " "
         tc, tb = "".join(top_c), "".join(top_b)
-        if SOURCE.search(tc):
-            self._function(sf, tc, tb, 0, len(tc), set())
+        seeded = self._included_top_taint(sf, tb)
+        if seeded or SOURCE.search(tc):
+            self._function(sf, tc, tb, 0, len(tc), set(seeded) if SOURCE.search(tc) else set(), include_only=seeded if not SOURCE.search(tc) else set())
+        elif re.search(r"\b(?:setcookie|md5|sha1)\s*\(", tb):
+            self._weak_crypto_and_cookies(sf, tc, tb, 0)
+
+    def _included_top_taint(self, sf: SourceFile, top_bare: str) -> Set[str]:
+        """Propagate top-level variables tainted by superglobals in included sibling scripts
+        (such as DVWA's `require_once .../source/{$file}.php` -> `include($file)`)."""
+        if not re.search(r"\b(?:require|include)(?:_once)?\b", top_bare):
+            return set()
+        folder = sf.rel.rsplit("/", 1)[0] if "/" in sf.rel else ""
+        if not folder:
+            return set()
+        tainted: Set[str] = set()
+        prefix = folder + "/"
+        for other in self.files:
+            if other is sf or not other.rel.startswith(prefix):
+                continue
+            ov = other.cache.get("php_views")
+            if ov is None or not SOURCE.search(ov.code):
+                continue
+            for m in finditer(ASSIGN, ov.bare):
+                end = ov.bare.find(";", m.end())
+                rhs = ov.code[m.end():end if end > 0 else len(ov.code)]
+                if SOURCE.search(rhs) and not _clean(rhs):
+                    tainted.add(m.group(1))
+        return tainted
+
+    _DOM_SOURCE = re.compile(r"\b(?:window\s*\.\s*)?location\s*\.\s*(?:href|search|hash|pathname)|document\s*\.\s*(?:URL|documentURI|referrer)\b")
+    _DOM_SINK = re.compile(r"document\s*\.\s*(?:write|writeln)\s*\(|\.\s*(?:innerHTML|outerHTML)\s*\+?=(?!=)")
+    _DOM_SAFE = re.compile(r"(?i)\b(?:escapeHtml|DOMPurify|sanitize|encodeURI|encodeURIComponent|textContent)\b")
+
+    def _dom_xss(self, sf: SourceFile) -> None:
+        text = sf.text or ""
+        if "<script" not in text.lower():
+            return
+        for m in re.finditer(r"(?is)<script\b[^>]*>([\s\S]{1,8000}?)</script>", text):
+            blk = m.group(1)
+            if not self._DOM_SOURCE.search(blk):
+                continue
+            for sm in finditer(self._DOM_SINK, blk):
+                ln_start = blk.rfind("\n", 0, sm.start()) + 1
+                ln_end = blk.find("\n", sm.end())
+                line_text = blk[ln_start:len(blk) if ln_end < 0 else ln_end]
+                if not self._DOM_SAFE.search(line_text):
+                    self.add(sf, m.start(1) + sm.start(), "FE001",
+                             "Client-side DOM sink in PHP script reads location/URL without escaping (DOM XSS).", "high")
+                    break
+
+    def _weak_crypto_and_cookies(self, sf: SourceFile, body_c: str, body_b: str, pc: int,
+                                 assigned: Optional[Dict[str, List[str]]] = None) -> None:
+        if assigned is None:
+            assigned = {}
+            for m in finditer(ASSIGN, body_b):
+                end = body_b.find(";", m.end())
+                assigned.setdefault(m.group(1), []).append(body_c[m.end():end if end > 0 else len(body_c)])
+        for m in finditer(r"\b(?:md5|sha1)\s*\(", body_b):
+            close = match_close(body_b, m.end() - 1)
+            if close > m.end() and re.search(r"\$\w*(?:pass|pwd|passwd|password)\w*\b", body_c[m.end():close], re.I):
+                self.add(sf, pc + m.start(), "BE014", "Password hashed with a fast hash (md5/sha1) instead of password_hash().")
+        for m in finditer(r"\bsetcookie\s*\(", body_b):
+            close = match_close(body_b, m.end() - 1)
+            if close <= m.end():
+                continue
+            argv_c = _split_top(body_c[m.end():close])
+            if len(argv_c) >= 2 and re.search(r"(?i)session|token|auth|sid|jwt|remember", argv_c[0]):
+                val = argv_c[1].strip()
+                rhss = assigned.get(val, []) if re.fullmatch(r"\$\w+", val) else [val]
+                ctx_slice = body_c[:m.start()]
+                has_strong = bool(re.search(r"\b(?:random_bytes|random_int|openssl_random_pseudo_bytes|bin2hex)\s*\(", ctx_slice))
+                weak_gen = any(re.search(r"\b(?:rand|mt_rand|time|uniqid|lcg_value|md5|sha1)\s*\(", r) for r in rhss + [val])
+                incr_id = bool(re.search(r"\$\w*(?:session|id|count|seq)\w*\s*(?:\[[^\]]*\])?\s*\+\+", ctx_slice, re.I))
+                if not has_strong and (weak_gen or incr_id):
+                    self.add(sf, pc + m.start(), "BE015",
+                             "Session cookie value generated predictably (counter/time/rand/md5); use random_bytes().")
 
     def _follow(self, fn: Fn, seed: Set[str], depth: int, via: str) -> None:
         v = fn.sf.cache["php_views"]
@@ -658,7 +734,8 @@ class PhpScanner:
         finally:
             self.depth, self.via = 0, None
 
-    def _function(self, sf: SourceFile, code: str, bare: str, pc: int, b: int, tainted: Set[str]) -> None:
+    def _function(self, sf: SourceFile, code: str, bare: str, pc: int, b: int, tainted: Set[str],
+                  include_only: Optional[Set[str]] = None) -> None:
         body_c, body_b = code[pc:b], bare[pc:b]
         assigned: Dict[str, List[str]] = {}
         for m in finditer(ASSIGN, body_b):
@@ -678,6 +755,21 @@ class PhpScanner:
                 break
         # a name passed through a sanitizer in place (`$id = intval($id);`) is clean from then on
         cleaned = {n for n, rhss in assigned.items() if any(_clean(r) for r in rhss)}
+        live_early = tainted - cleaned
+        if self.via is None:
+            for m in finditer(ASSIGN, body_b):
+                if m.group(1).lower() == "$page":
+                    continue  # outer multi-section layout wrappers (`$page['body'] .= ...`)
+                if re.match(r"^\$(?:html|out(?:put)?|body|content|msg|markup)$", m.group(1), re.I) \
+                        and "[" not in m.group(0):
+                    end = body_b.find(";", m.end())
+                    rhs = body_c[m.end():end if end > 0 else m.end() + 300]
+                    if len(rhs) <= 300 and re.search(r"<[a-z][a-z0-9]*[\s>]", rhs, re.I) \
+                            and (_mentions(rhs, live_early) or SOURCE.search(rhs)) \
+                            and not SANITIZERS.search(rhs) and not re.search(r"\b(?:Str::markdown|Markdown)\b", rhs, re.I):
+                        self.add(sf, pc + m.start(), "FE001",
+                                 "Request data is interpolated into an HTML output buffer without escaping (XSS).", "high")
+        self._weak_crypto_and_cookies(sf, body_c, body_b, pc, assigned)
         for rx, rule, what, sev, argi in SINKS:
             for m in finditer(rx, body_b):
                 if rule == "FE001":
@@ -703,6 +795,8 @@ class PhpScanner:
                 if rule == "BE001" and "->" in m.group(0) and not re.search(r"['\"]|\$", arg):
                     continue
                 live = tainted - cleaned
+                if rule == "BE006" and include_only:
+                    live = live | include_only
                 if rule in ("BE006", "BE008"):
                     # `redirect($book->getUrl())`: a model built from the request, but the URL or path the server derives
                     # from it is not request data

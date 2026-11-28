@@ -95,6 +95,8 @@ def build_parser() -> argparse.ArgumentParser:
                    help="also scan recent git commit history for high-confidence leaked provider keys and private keys")
     s.add_argument("--history-commits", type=int, default=200, metavar="N",
                    help="maximum commits to inspect when --history is set (default: 200)")
+    s.add_argument("--require-ignore-reason", action="store_true", default=None,
+                   help="require an explanation (`-- reason`) on inline `vibeaudit: ignore` comments")
     s.add_argument("-q", "--quiet", action="store_true", help="print only the summary")
     s.add_argument("--no-color", action="store_true", help="disable colored output")
 
@@ -162,10 +164,11 @@ def build_parser() -> argparse.ArgumentParser:
     st.add_argument("--no-browser", action="store_true", help="print the link instead of opening a browser")
     st.add_argument("--config", metavar="FILE", help="read settings from this TOML file, as for scan")
 
-    e = sub.add_parser("explain", help="explain one finding: the rule, the code and the data flow that led to it",
-                       description="Scan the project and explain the findings that match FINDING: FILE:LINE, "
-                                   "FILE:LINE:RULE or a fingerprint prefix (from a JSON or SARIF report).")
-    e.add_argument("finding", help="FILE:LINE, FILE:LINE:RULE or a fingerprint prefix")
+    e = sub.add_parser("explain", help="explain a rule (BE001) with unsafe/safe examples, or a finding's data flow",
+                       description="Pass a rule ID (for example `BE001`) to view why it matters, how to fix it and "
+                                   "unsafe/safe code examples; or pass FINDING (`FILE:LINE`, `FILE:LINE:RULE` or a "
+                                   "fingerprint prefix) to trace the finding in your project.")
+    e.add_argument("finding", help="RULE ID (e.g. BE001) or FINDING (FILE:LINE, FILE:LINE:RULE, fingerprint prefix)")
     e.add_argument("--path", default=".", help="project directory (default: current directory)")
     e.add_argument("--format", choices=["text", "json"], default="text")
     e.add_argument("--config", metavar="FILE", help="read settings from this TOML file, as for scan")
@@ -347,10 +350,21 @@ def cmd_feedback(a: argparse.Namespace) -> int:
 
 
 def cmd_explain(a: argparse.Namespace) -> int:
+    import re
     from . import explain
     from .config import project_options
     from .scanner import scan
 
+    candidate = a.finding.strip().upper()
+    if re.fullmatch(r"[A-Z]+\d+", candidate) and candidate in RULES:
+        info = explain.explain_rule(candidate)
+        if info is None:
+            return 1
+        if a.format == "json":
+            print(json.dumps(info, indent=2))
+        else:
+            print(explain.render_rule(info))
+        return 0
     if not os.path.isdir(a.path):
         print(f"vibeaudit: not a directory: {a.path}", file=sys.stderr)
         return 2
@@ -851,7 +865,8 @@ def cmd_scan(a: argparse.Namespace) -> int:
                    jobs=jobs_raw,
                    profile=prof_name,
                    config_path=cfg_path,
-                   config_disabled=cfg_disabled)
+                   config_disabled=cfg_disabled,
+                   require_ignore_reason=bool(pick(a.require_ignore_reason, "require_ignore_reason", False)))
     if cfg_path:
         log(f"using settings from {cfg_path}")
     if cfg_disabled:

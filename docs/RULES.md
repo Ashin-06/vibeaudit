@@ -3,9 +3,9 @@
 Generated from `src/vibeaudit/rules.py` by `python tools/gen_rules_doc.py`; do not edit by hand.
 `vibeaudit rules` prints the same list, and `vibeaudit rules --format json` includes every field.
 
-180 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
+181 rules. Severity is the default; a finding can be reported lower (for example a pattern without user input reaching it) or higher (model output instead of user input).
 
-84 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
+85 rules are in preview: they are reported but do not count toward `--fail-on` or the score unless you pass `--include-preview`, except the severe ones marked `preview, gates` (injection-class bugs), which count unless you pass `--no-gate-severe-preview`. See [STABILITY.md](../STABILITY.md) for the policy and [benchmark/RESULTS.md](../benchmark/RESULTS.md) for the measured precision of every rule.
 
 ## Secrets
 
@@ -275,6 +275,7 @@ References: CWE-1395, A06:2021
 | [BE020](#be020) | medium | preview | Email header injection |
 | [BE021](#be021) | high | preview | XML external entity (XXE) processing enabled |
 | [BE022](#be022) | high | preview | Graph or analytics query injection (Cypher / KQL) |
+| [BE023](#be023) | medium | preview | Regular expression vulnerable to ReDoS |
 | [CSHARP002](#csharp002) | critical | preview | Deserialization that lets the payload pick the type |
 | [GO004](#go004) | medium | preview | SQL built with string formatting (Go) |
 | [JAVA004](#java004) | critical | preview | Polymorphic deserialization without an allow-list |
@@ -516,6 +517,18 @@ Why it matters: Building a Cypher (Neo4j/FalkorDB/Memgraph) or KQL (Azure Data E
 How to fix: Pass dynamic values as query parameters (Cypher `$param` maps or KQL `ClientRequestProperties` parameters) rather than interpolating them into the query string.
 
 References: CWE-943, A03:2021
+
+### BE023
+
+**Regular expression vulnerable to ReDoS** (medium, preview)
+
+Preview: New rule: not yet measured on enough held-out findings in the benchmark.
+
+Why it matters: A nested quantifier inside a regular expression can cause catastrophic backtracking on crafted input, freezing the server event loop or worker thread (denial of service).
+
+How to fix: Remove nested quantifiers (such as `([0-9]+)+`), anchor or flatten the pattern, or use linear-time matching or validation helpers.
+
+References: CWE-1333, A06:2021
 
 ### CSHARP002
 

@@ -48,6 +48,8 @@ TEST_PATH_RE = re.compile(
 # demo code shipped beside a library (flask/examples, express/examples): not the deployed application
 # not a Java package: Spring Initializr puts every new app in com.example.demo
 EXAMPLE_PATH_RE = re.compile(r"(^|(?<!com)(?<!org)(?<!net)(?<!io)/)examples?/", re.I)
+# documentation, tutorials, benchmarks and sample folders: context where findings warrant lower severity/confidence
+NON_PROD_PATH_RE = re.compile(r"(^|/)(?:docs?|tutorials?|benchmarks?|samples?|demos?)/", re.I)
 # one-off jobs run by a developer (migrations, management commands, seed and setup scripts): a query per loop
 # iteration or an f-string of constant identifiers there is not a request-time N+1 or an injection
 ONE_OFF_PATH_RE = re.compile(
@@ -221,6 +223,7 @@ class SourceFile:
         self.kind = kind_of(rel)
         self.is_test = bool(TEST_PATH_RE.search(rel))
         self.is_example = bool(EXAMPLE_PATH_RE.search(rel))
+        self.is_non_prod = bool(NON_PROD_PATH_RE.search(rel))
         self.is_one_off = bool(ONE_OFF_PATH_RE.search(rel))
         self.is_vendored = bool(VENDORED_NAME_RE.search(rel))
         self.is_lockfile = rel.rsplit("/", 1)[-1] in LOCKFILES

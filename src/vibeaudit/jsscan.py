@@ -17,7 +17,7 @@ from typing import Callable, Dict, List, Optional, Set, Tuple
 from . import heuristics as H, parse
 from .guard import GUARD, finditer
 from .files import Project, SourceFile
-from .lexer import Views, first_arg, js_views, match_close, split_args, stmt_end
+from .lexer import Views, blank_html_code_blocks, first_arg, js_views, match_close, split_args, stmt_end
 from .model import Finding, Route, join_path
 
 Emit = Callable[[Finding], None]
@@ -504,7 +504,10 @@ class JsScanner:
                 r.prefix_resolved = True  # type: ignore[attr-defined]  # on the app itself
 
     def _load(self, sf: SourceFile) -> None:
-        v = sf.cache.get("js_views") or js_views(sf.text or "")
+        v = sf.cache.get("js_views")
+        if v is None:
+            src = sf.text or ""
+            v = js_views(blank_html_code_blocks(src) if sf.kind == "html" else src)
         sf.cache["views"] = sf.cache["js_views"] = v
         sf.is_client = self.is_client(sf, v)
         cached = sf.cache.get("js_state")
@@ -925,12 +928,36 @@ class JsScanner:
                         self.add(fs, "LLM019", m.start(), "Model output is passed as an argument of a spawned process; "
                                                           "a value such as `--upload-pack=...` becomes an option.", "high")
         # dynamic code
-        for m in finditer(r"(?<![\w$.])eval\s*\(|\bnew\s+Function\s*\(|\bvm\s*\.\s*(?:runInNewContext|runInThisContext|runInContext|compileFunction)\s*\(", bare):
+        has_mathjs = bool(re.search(r"""['"]mathjs['"]""", code))
+        math_alias = ""
+        if has_mathjs:
+            mm = re.search(
+                r"""\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*require\s*\(\s*['"]mathjs['"]\s*\)"""
+                r"""|\bimport\s+(?:\*\s+as\s+)?([A-Za-z_$][\w$]*)\s+from\s+['"]mathjs['"]""",
+                code,
+            )
+            if mm:
+                math_alias = mm.group(1) or mm.group(2) or ""
+        dyn_rx = r"(?<![\w$.])eval\s*\(|\bnew\s+Function\s*\(|\bvm\s*\.\s*(?:runInNewContext|runInThisContext|runInContext|compileFunction)\s*\("
+        if math_alias:
+            dyn_rx += rf"|\b{re.escape(math_alias)}\s*\.\s*(?:eval|evaluate)\s*\("
+        elif has_mathjs:
+            dyn_rx += r"|\bmath(?:js)?\s*\.\s*(?:eval|evaluate)\s*\("
+        for m in finditer(dyn_rx, bare):
             args = self.call_args(fs, m.end() - 1)
             if args and not all(is_static_string(a[0]) for a in args):
                 joined = " ".join(a[0] for a in args)
                 report("BE003", m.start(), fs.kinds(joined, " ".join(a[1] for a in args), m.start(), sink="code"), "eval / new Function",
                        "critical", "Code is evaluated from a dynamic string.", "medium")
+        # unsafe deserialization (node-serialize)
+        if re.search(r"""['"]node-serialize['"]""", code):
+            for m in finditer(r"(?:\b[A-Za-z_$][\w$]*\s*\.\s*)?\bunserialize\s*\(", bare):
+                args = self.call_args(fs, m.end() - 1)
+                if args and not is_static_string(args[0][0]):
+                    joined = " ".join(a[0] for a in args)
+                    report("BE004", m.start(), fs.kinds(joined, " ".join(a[1] for a in args), m.start()),
+                           "node-serialize unserialize()", "high",
+                           "node-serialize unserialize() executes arbitrary code on untrusted data.", "high")
         # Cypher / KQL graph & analytics queries (BE022)
         for m in finditer(r"\.\s*(?:run|executeQuery|execute|executeMgmt)\s*\(", bare):
             args = self.call_args(fs, m.end() - 1)
@@ -1002,6 +1029,27 @@ class JsScanner:
                         direct = True
                 if direct:
                     report("BE010", m.start(), {"user"}, "a MongoDB query filter without type checks", "high")
+            # Standalone $where object literals constructed in DAOs/helpers (e.g. `return { $where: \`...\` }`)
+            for m in finditer(r"""['"]?\$where['"]?\s*:\s*""", code):
+                rhs_start = m.end()
+                rhs_end = stmt_end(bare, rhs_start)
+                rhs_code = code[rhs_start:rhs_end].strip()
+                rhs_bare = bare[rhs_start:rhs_end]
+                if not rhs_code or is_static_string(rhs_code):
+                    continue
+                is_dyn = "${" in rhs_code or bool(re.search(r"['\"`]\s*\+|\+\s*['\"`]", rhs_code))
+                k_where = fs.kinds(rhs_code, rhs_bare, m.start()) & {"user", "llm"}
+                if not is_dyn and not k_where:
+                    continue
+                line_at_m = fs.sf.line_at(m.start())
+                if any(fs.sf.line_at(o) == line_at_m for o in fs.handled):
+                    continue
+                if k_where:
+                    report("BE010", m.start(), k_where, "a MongoDB $where JavaScript expression", "high")
+                else:
+                    report("BE010", m.start(), set(), "", "medium",
+                           "MongoDB $where clause built dynamically with string interpolation; use query operators instead.",
+                           "medium")
         # mass assignment
         for m in finditer(r"\.\s*(?:create|insert|insertOne|insertMany|update|updateOne|updateMany|upsert|findByIdAndUpdate|findOneAndUpdate|build|bulkCreate)\s*\(|\bnew\s+[A-Z][\w$]*\s*\(|\bObject\s*\.\s*assign\s*\(", bare):
             args = self.call_args(fs, m.end() - 1)
@@ -1018,7 +1066,12 @@ class JsScanner:
         if not server:
             return
         # SSRF
-        for m in finditer(r"(?<![\w$.])fetch\s*\(|\baxios(?:\s*\.\s*(?:get|post|put|delete|patch|request|head))?\s*\(|(?<![\w$.])got(?:\s*\.\s*(?:get|post))?\s*\(|\bhttps?\s*\.\s*(?:get|request)\s*\(", bare):
+        ssrf_pat = r"(?<![\w$.])fetch\s*\(|\baxios(?:\s*\.\s*(?:get|post|put|delete|patch|request|head))?\s*\(|(?<![\w$.])got(?:\s*\.\s*(?:get|post))?\s*\(|\bhttps?\s*\.\s*(?:get|request)\s*\("
+        if re.search(r"""['"]needle['"]""", code):
+            ssrf_pat += r"|\bneedle\s*\.\s*(?:get|post|put|delete|patch|head|request)\s*\("
+        if re.search(r"""['"]superagent['"]""", code):
+            ssrf_pat += r"|\bsuperagent\s*\.\s*(?:get|post|put|delete|patch|head)\s*\("
+        for m in finditer(ssrf_pat, bare):
             arg = first_arg(bare, m.end() - 1)
             if not arg:
                 continue
@@ -1345,7 +1398,50 @@ class JsScanner:
             self.add(fs, "BE017", m.start(), "Stack trace returned to the client.")
         # auth stubs
         for m in finditer(AUTH_STUB, code):
-            self.add(fs, "AUTH008", m.start(), f"`{m.group(1)}` always returns true.")
+            stub_name = m.group(1)
+            if stub_name.lower() in ("isauthenticated", "isanonymous", "isactive", "requireauthentication"):
+                continue
+            if re.search(r"\(\s*\)\s*(?::|\{|=>)", m.group(0)):
+                continue  # zero-arg getter/property stub (e.g. User.isAuthenticated())
+            self.add(fs, "AUTH008", m.start(), f"`{stub_name}` always returns true.")
+        # ReDoS nested quantifiers in regex literals or new RegExp("...")
+        if not fs.sf.is_vendored and not fs.sf.secrets_only and fs.sf.kind == "js":
+            for m in finditer(r"\bnew\s+RegExp\s*\(\s*(['\"])((?:\\.|[^'\"\\]){4,300})\1", code):
+                if H.has_nested_quantifier(m.group(2)):
+                    self.add(fs, "BE023", m.start(), "Regular expression contains a nested quantifier (ReDoS risk).")
+            # Regex literals have their body blanked in `bare` (`/` ... `/`); recover original pattern from `code`
+            if "/" in code:
+                pos = 0
+                n_code = len(code)
+                while pos < n_code:
+                    sl = code.find("/", pos)
+                    if sl < 0:
+                        break
+                    if bare[sl] == "/" and sl + 1 < n_code and bare[sl + 1] != "/":
+                        # Check if bare blanked the interior (confirming lexer treated it as a regex literal)
+                        end_sl = code.find("\n", sl + 1)
+                        limit = n_code if end_sl < 0 else end_sl
+                        j = sl + 1
+                        in_cls = False
+                        while j < limit:
+                            ch = code[j]
+                            if ch == "\\":
+                                j += 2
+                                continue
+                            if ch == "[":
+                                in_cls = True
+                            elif ch == "]":
+                                in_cls = False
+                            elif ch == "/" and not in_cls:
+                                break
+                            j += 1
+                        if j < limit and code[j] == "/" and bare[j] == "/" and j - sl > 2 and bare[sl + 1:j].strip() == "":
+                            pat = code[sl + 1:j]
+                            if H.has_nested_quantifier(pat):
+                                self.add(fs, "BE023", sl, "Regular expression contains a nested quantifier (ReDoS risk).")
+                            pos = j + 1
+                            continue
+                    pos = sl + 1
         # swallowed errors
         for m in finditer(r"\bcatch\s*(?:\(\s*[\w$]*\s*(?::\s*\w+)?\s*\))?\s*\{\s*\}|\.\s*catch\s*\(\s*(?:\(\s*[\w$]*\s*\)|[\w$]+)\s*=>\s*\{\s*\}\s*\)", code):
             if re.search(r"//|/\*", (sf.text or "")[m.start():m.end()]):

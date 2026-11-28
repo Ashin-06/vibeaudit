@@ -4,12 +4,25 @@ from __future__ import annotations
 import hashlib
 import re
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 SEVERITIES = ["critical", "high", "medium", "low", "info"]
-SUPPRESS = re.compile(r"vibeaudit\s*:\s*ignore(?:\[([A-Za-z0-9_:,\s-]+)\])?", re.I)
+SUPPRESS = re.compile(
+    r"vibeaudit\s*:\s*ignore(?:\[([A-Za-z0-9_:,\s-]+)\])?(?:\s*(?:--\s*|reason\s*[:=]\s*)?([^\n*]+?))?(?:\s*\*/|\s*-->)?\s*$",
+    re.I,
+)
 TEST_FILE_RULES = {"SEC001", "SEC002", "SEC009"}  # real credentials matter even in tests and examples
 SEVERITY_RANK = {s: i for i, s in enumerate(SEVERITIES)}  # lower is worse
+
+
+def parse_suppression(line_text: str) -> Optional[Tuple[object, str]]:
+    """Return (rules_or_star, reason) if `line_text` has an inline suppression comment, else None."""
+    m = SUPPRESS.search(line_text)
+    if m is None:
+        return None
+    rules = "*" if not m.group(1) else {x.strip().upper() for x in m.group(1).split(",") if x.strip()}
+    reason = (m.group(2) or "").strip()
+    return rules, reason
 
 
 def worse(a: str, b: str) -> str:
@@ -43,6 +56,7 @@ class Finding:
     llm_verdict: Optional[str] = None
     llm_reason: Optional[str] = None
     confirmed: Optional[str] = None  # what `vibeaudit probe` observed when a running app proved the finding
+    confidence: str = "high"  # high | medium | low
 
     def compute_fingerprint(self) -> str:
         # Line numbers move when code is edited, so the fingerprint uses the
@@ -67,6 +81,7 @@ class Finding:
             "cwe": self.cwe,
             "owasp": self.owasp,
             "source": self.source,
+            "confidence": self.confidence or "high",
             "fingerprint": self.fingerprint,
         }
         if self.confirmed:

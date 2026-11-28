@@ -153,6 +153,30 @@
    "fingerprint": "d04d683a7b87a27c020c9504d75f6777",
    "verdict": "tp",
    "reason": "User names and emails from the API are written with innerHTML."
+  },
+  {
+   "rule": "BE003",
+   "file": "core/appHandler.js",
+   "line": 197,
+   "fingerprint": "d3f2a9d6677a161ba054d2a5f6fe9938",
+   "verdict": "tp",
+   "reason": "mathjs.eval(req.body.eqn) evaluates untrusted request input."
+  },
+  {
+   "rule": "BE004",
+   "file": "core/appHandler.js",
+   "line": 218,
+   "fingerprint": "826380bddb3e8c7fbace45d362796bd9",
+   "verdict": "tp",
+   "reason": "node-serialize unserialize() runs on uploaded file contents."
+  },
+  {
+   "rule": "BE021",
+   "file": "core/appHandler.js",
+   "line": 235,
+   "fingerprint": "e097677a3747e061b022aaa7e12c21d8",
+   "verdict": "tp",
+   "reason": "libxmljs parses uploaded XML with noent: true (XXE)."
   }
  ]
 }

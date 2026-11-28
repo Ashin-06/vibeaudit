@@ -153,6 +153,30 @@
    "fingerprint": "d9469d063002dd4d2f09a8f80d74412f",
    "verdict": "tp",
    "reason": "A real-looking API key is committed in the config."
+  },
+  {
+   "rule": "BE010",
+   "file": "app/data/allocations-dao.js",
+   "line": 78,
+   "fingerprint": "e841446f7b763501a32ad081e493956d",
+   "verdict": "tp",
+   "reason": "NoSQL $where filter built by interpolating threshold into JS string."
+  },
+  {
+   "rule": "BE023",
+   "file": "app/routes/profile.js",
+   "line": 59,
+   "fingerprint": "108e3248b15b0019491154c4fde3431e",
+   "verdict": "tp",
+   "reason": "Deliberately vulnerable ReDoS pattern /([0-9]+)+#/."
+  },
+  {
+   "rule": "BE005",
+   "file": "app/routes/research.js",
+   "line": 16,
+   "fingerprint": "ccc8031bd36a0560f2c251877e613e17",
+   "verdict": "tp",
+   "reason": "SSRF via needle.get(url) where url comes from query parameters."
   }
  ]
 }

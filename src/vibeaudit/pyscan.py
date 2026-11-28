@@ -1602,12 +1602,25 @@ class PyScanner:
                 return
 
     # --------------------------------------------------------- structural
+    _AUTH_STATUS_NAMES = frozenset({
+        "is_authenticated", "is_anonymous", "is_active", "is_staff", "is_superuser", "require_authentication",
+    })
+
     def check_stub(self, fn: ast.AST) -> None:
-        if not STUB_NAME.match(fn.name):  # type: ignore[attr-defined]
+        name = getattr(fn, "name", "")
+        if not STUB_NAME.match(name) or name.lower() in self._AUTH_STATUS_NAMES:
             return
+        for dec in getattr(fn, "decorator_list", ()):
+            if last_name(dec.func if isinstance(dec, ast.Call) else dec) in ("property", "cached_property"):
+                return
+        args = getattr(fn, "args", None)
+        if args is not None:
+            non_self = [a for a in (*args.posonlyargs, *args.args, *args.kwonlyargs) if a.arg not in ("self", "cls")]
+            if not non_self and args.vararg is None and args.kwarg is None:
+                return
         body = [s for s in fn.body if not (isinstance(s, ast.Expr) and isinstance(s.value, ast.Constant)) and not isinstance(s, ast.Pass)]  # type: ignore[attr-defined]
         if len(body) == 1 and isinstance(body[0], ast.Return) and isinstance(body[0].value, ast.Constant) and body[0].value.value is True:
-            self.add("AUTH008", fn, f"`{fn.name}()` always returns True.")  # type: ignore[attr-defined]
+            self.add("AUTH008", fn, f"`{name}()` always returns True.")
 
     def check_except(self, h: ast.ExceptHandler, owner: Optional[ast.AST] = None) -> None:
         if not all(isinstance(s, ast.Pass) or (isinstance(s, ast.Expr) and isinstance(s.value, ast.Constant)) for s in h.body):
@@ -1677,3 +1690,9 @@ class PyScanner:
                         self.add("BE011", node, "DEBUG is hard-coded to True.")
                 if tgt == "ALLOWED_HOSTS" and "'*'" in ast.unparse(val).replace('"', "'") and not production_overrides(self.p, sf.rel, tgt):
                     self.add("CFG006", node, "ALLOWED_HOSTS accepts any host.")
+            elif isinstance(node, ast.Call):
+                fn_d = dotted(node.func)
+                if fn_d in ("re.compile", "re.match", "re.search", "re.fullmatch", "re.findall", "re.finditer", "re.sub", "re.split") and node.args:
+                    pat = const_str(node.args[0])
+                    if pat and H.has_nested_quantifier(pat):
+                        self.add("BE023", node, f"`{fn_d}()` compiles a regex with nested quantifiers (ReDoS risk).")

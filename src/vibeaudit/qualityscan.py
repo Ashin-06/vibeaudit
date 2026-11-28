@@ -13,7 +13,7 @@ from .files import VALUES, Project, SourceFile, depend, probe, untracked
 from .guard import GUARD, finditer
 from .model import Finding
 from .stdlib import NODE_BUILTINS, PYTHON_STDLIB
-from .store import loads_json
+from .store import loads_json, loads_toml
 
 Emit = Callable[[Finding], None]
 
@@ -156,6 +156,8 @@ class QualityScanner:
         self.emit = emit
         self.declared_py: Set[str] = set()
         self.py_manifest = False
+        self.dynamic_version = False
+        self.generated_py_files: Set[str] = set()
         self.reported_py: Set[str] = set()
         self.reported_js: Dict[str, Set[str]] = {}
         self._bases: Optional[Set[str]] = None
@@ -204,6 +206,64 @@ class QualityScanner:
                         self.declared_py.add(pep503(m.group(1)))
                     if name == "setup.py" and "install_requires" not in f.text:
                         self.py_manifest = False  # dependencies are computed elsewhere; do not guess
+                if name == "pyproject.toml" and f.text:
+                    self._check_dynamic_version(f.text)
+                elif name == "setup.cfg" and f.text and re.search(r"setuptools[_-]scm|versioneer", f.text, re.I):
+                    self.dynamic_version = True
+
+    def _check_dynamic_version(self, toml_text: str) -> None:
+        """Detect dynamic/VCS version generators (hatch-vcs, setuptools-scm, versioningit, pdm) so
+        build-time version modules like `_version.py` are not flagged as missing by QA006."""
+        try:
+            data = loads_toml(toml_text)
+        except ValueError:
+            return
+        if not isinstance(data, dict):
+            return
+        proj = data.get("project")
+        if isinstance(proj, dict):
+            dyn = proj.get("dynamic")
+            if isinstance(dyn, list) and "version" in dyn:
+                self.dynamic_version = True
+        bs = data.get("build-system")
+        if isinstance(bs, dict):
+            reqs = bs.get("requires")
+            if isinstance(reqs, list) and any(
+                re.search(r"(?i)hatch-vcs|setuptools[-_]scm|versioningit|pdm-backend|poetry-dynamic-versioning|dunamai", str(r))
+                for r in reqs
+            ):
+                self.dynamic_version = True
+        tool = data.get("tool")
+        if isinstance(tool, dict):
+            for key in ("setuptools_scm", "setuptools-scm", "versioningit", "poetry-dynamic-versioning", "versioneer"):
+                if key in tool:
+                    self.dynamic_version = True
+            for cfg_key in ("setuptools_scm", "setuptools-scm"):
+                sub = tool.get(cfg_key)
+                if isinstance(sub, dict):
+                    for field in ("write_to", "version_file"):
+                        if isinstance(sub.get(field), str):
+                            self.generated_py_files.add(sub[field].lstrip("./"))
+            hatch = tool.get("hatch")
+            if isinstance(hatch, dict):
+                ver = hatch.get("version")
+                if isinstance(ver, dict) and ver.get("source") == "vcs":
+                    self.dynamic_version = True
+                hooks = hatch.get("build", {}).get("hooks", {}) if isinstance(hatch.get("build"), dict) else {}
+                vcs_hook = hooks.get("vcs") if isinstance(hooks, dict) else None
+                if isinstance(vcs_hook, dict):
+                    self.dynamic_version = True
+                    vf = vcs_hook.get("version-file") or vcs_hook.get("version_file")
+                    if isinstance(vf, str):
+                        self.generated_py_files.add(vf.lstrip("./"))
+            ver_it = tool.get("versioningit")
+            if isinstance(ver_it, dict) and isinstance(ver_it.get("write"), dict):
+                vf = ver_it["write"].get("file")
+                if isinstance(vf, str):
+                    self.generated_py_files.add(vf.lstrip("./"))
+            pdm = tool.get("pdm")
+            if isinstance(pdm, dict) and isinstance(pdm.get("version"), dict) and pdm["version"].get("source") == "scm":
+                self.dynamic_version = True
 
     def _local_python_names(self) -> Set[str]:
         names: Set[str] = set()
@@ -313,6 +373,11 @@ class QualityScanner:
         file, exists = self._module_file(base, module)
         label = "." * node.level + module
         if not exists:
+            leaf = module.rsplit(".", 1)[-1]
+            cand_py = posixpath.normpath(posixpath.join(base, *module.split("."))).lstrip("./") + ".py"
+            if (self.dynamic_version and leaf in ("_version", "__version__", "version", "_scm_version")) \
+                    or cand_py in self.generated_py_files:
+                return
             self.add(sf, "QA006", node.lineno, f"`from {label} import ...`: module `{label}` does not exist in the project.")
             return
         if file is None:

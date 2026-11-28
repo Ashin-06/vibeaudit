@@ -657,6 +657,374 @@
    "fingerprint": "a03bd49b8de27f3415389ae857ec3b9a",
    "verdict": "tp",
    "reason": "Deliberately vulnerable: request values are interpolated into the SQL string."
+  },
+  {
+   "rule": "FE001",
+   "file": "dvwa/includes/dvwaPage.inc.php",
+   "line": 460,
+   "fingerprint": "4797e17e09e15b0aa66f81895e671db2",
+   "verdict": "fp",
+   "reason": "Help page renders fixed local documentation HTML files."
+  },
+  {
+   "rule": "BE014",
+   "file": "login.php",
+   "line": 27,
+   "fingerprint": "dbeba4254f4cf4e9b0272645c7923fc2",
+   "verdict": "tp",
+   "reason": "Password is hashed with unsalted md5() instead of password_hash()."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/bac/source/low.php",
+   "line": 90,
+   "fingerprint": "365380b49b1dc20065ae2ef43e8c4172",
+   "verdict": "tp",
+   "reason": "Unescaped request-derived value written to HTML or DOM sink (XSS)."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/bac/source/medium.php",
+   "line": 43,
+   "fingerprint": "04b9bb5fce7166dbe0a768c9351f632a",
+   "verdict": "tp",
+   "reason": "Unescaped request-derived value written to HTML or DOM sink (XSS)."
+  },
+  {
+   "rule": "BE014",
+   "file": "vulnerabilities/brute/source/high.php",
+   "line": 16,
+   "fingerprint": "ed3d28fdd1b4d913b8c05d72b78ca10e",
+   "verdict": "tp",
+   "reason": "Password is hashed with unsalted md5() instead of password_hash()."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/brute/source/high.php",
+   "line": 28,
+   "fingerprint": "736ff402ceba4f2c51d2a571aa288fd7",
+   "verdict": "tp",
+   "reason": "Unescaped request-derived value written to HTML or DOM sink (XSS)."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/brute/source/high.php",
+   "line": 29,
+   "fingerprint": "a048e86ee5579ebcb5792d39ab395086",
+   "verdict": "fp",
+   "reason": "Avatar URL comes from the database row rather than request input."
+  },
+  {
+   "rule": "BE014",
+   "file": "vulnerabilities/brute/source/impossible.php",
+   "line": 16,
+   "fingerprint": "dea332dad70bf86ed69e0b92aad4b6c3",
+   "verdict": "tp",
+   "reason": "Password is hashed with unsalted md5() instead of password_hash()."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/brute/source/impossible.php",
+   "line": 67,
+   "fingerprint": "c67b3718424992697d39109e7854fa3a",
+   "verdict": "tp",
+   "reason": "Unescaped request-derived value written to HTML or DOM sink (XSS)."
+  },
+  {
+   "rule": "BE014",
+   "file": "vulnerabilities/brute/source/low.php",
+   "line": 9,
+   "fingerprint": "d079eb5fdc5a79ecd13d86c20b14025b",
+   "verdict": "tp",
+   "reason": "Password is hashed with unsalted md5() instead of password_hash()."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/brute/source/low.php",
+   "line": 21,
+   "fingerprint": "00fb77eb5de2ab251d4396764d15b32b",
+   "verdict": "tp",
+   "reason": "Unescaped request-derived value written to HTML or DOM sink (XSS)."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/brute/source/low.php",
+   "line": 22,
+   "fingerprint": "068ff4fa7f575754dfdd343df7dfe607",
+   "verdict": "fp",
+   "reason": "Avatar URL comes from the database row rather than request input."
+  },
+  {
+   "rule": "BE014",
+   "file": "vulnerabilities/brute/source/medium.php",
+   "line": 11,
+   "fingerprint": "1b60ba1cad846fc51d6dceddf3c4053c",
+   "verdict": "tp",
+   "reason": "Password is hashed with unsalted md5() instead of password_hash()."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/brute/source/medium.php",
+   "line": 23,
+   "fingerprint": "1c4fef344fdad795a50af60222f122a9",
+   "verdict": "tp",
+   "reason": "Unescaped request-derived value written to HTML or DOM sink (XSS)."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/brute/source/medium.php",
+   "line": 24,
+   "fingerprint": "cae7d505b68967e20d638ced13f18e0b",
+   "verdict": "fp",
+   "reason": "Avatar URL comes from the database row rather than request input."
+  },
+  {
+   "rule": "BE014",
+   "file": "vulnerabilities/captcha/source/high.php",
+   "line": 27,
+   "fingerprint": "85d5b6bcac705a023d89e7448170552e",
+   "verdict": "tp",
+   "reason": "Password is hashed with unsalted md5() instead of password_hash()."
+  },
+  {
+   "rule": "BE014",
+   "file": "vulnerabilities/captcha/source/impossible.php",
+   "line": 14,
+   "fingerprint": "2baf463d07c5dddc0c30ddf657d563df",
+   "verdict": "tp",
+   "reason": "Password is hashed with unsalted md5() instead of password_hash()."
+  },
+  {
+   "rule": "BE014",
+   "file": "vulnerabilities/captcha/source/impossible.php",
+   "line": 19,
+   "fingerprint": "810d8ea810b963c4bee3c57e2daf9b21",
+   "verdict": "tp",
+   "reason": "Password is hashed with unsalted md5() instead of password_hash()."
+  },
+  {
+   "rule": "BE014",
+   "file": "vulnerabilities/captcha/source/impossible.php",
+   "line": 24,
+   "fingerprint": "dc50a687bf197ed6e668cc1ef1ab8eae",
+   "verdict": "tp",
+   "reason": "Password is hashed with unsalted md5() instead of password_hash()."
+  },
+  {
+   "rule": "BE014",
+   "file": "vulnerabilities/captcha/source/low.php",
+   "line": 57,
+   "fingerprint": "a38f3773e0793470ff13c7e95bee5945",
+   "verdict": "tp",
+   "reason": "Password is hashed with unsalted md5() instead of password_hash()."
+  },
+  {
+   "rule": "BE014",
+   "file": "vulnerabilities/captcha/source/medium.php",
+   "line": 65,
+   "fingerprint": "12e785100f75d8133fd3a45fd0bb2eae",
+   "verdict": "tp",
+   "reason": "Password is hashed with unsalted md5() instead of password_hash()."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/cryptography/source/low.php",
+   "line": 101,
+   "fingerprint": "9bc41eae759e390f6ffe8454c876ebec",
+   "verdict": "tp",
+   "reason": "Unescaped request-derived value written to HTML or DOM sink (XSS)."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/cryptography/source/medium.php",
+   "line": 99,
+   "fingerprint": "95e17da69929195d236bf6b2cae8af3a",
+   "verdict": "tp",
+   "reason": "Unescaped request-derived value written to HTML or DOM sink (XSS)."
+  },
+  {
+   "rule": "BE014",
+   "file": "vulnerabilities/csrf/source/high.php",
+   "line": 39,
+   "fingerprint": "952f758efa932ddd0f9c1a4f398a0c83",
+   "verdict": "tp",
+   "reason": "Password is hashed with unsalted md5() instead of password_hash()."
+  },
+  {
+   "rule": "BE014",
+   "file": "vulnerabilities/csrf/source/impossible.php",
+   "line": 15,
+   "fingerprint": "d62781b09ccb8179aac5635985636b34",
+   "verdict": "tp",
+   "reason": "Password is hashed with unsalted md5() instead of password_hash()."
+  },
+  {
+   "rule": "BE014",
+   "file": "vulnerabilities/csrf/source/impossible.php",
+   "line": 29,
+   "fingerprint": "a6a4786c71195d374586ce0386cae540",
+   "verdict": "tp",
+   "reason": "Password is hashed with unsalted md5() instead of password_hash()."
+  },
+  {
+   "rule": "BE014",
+   "file": "vulnerabilities/csrf/source/low.php",
+   "line": 12,
+   "fingerprint": "0b6fb0b564b3ade01618d293ad5c6825",
+   "verdict": "tp",
+   "reason": "Password is hashed with unsalted md5() instead of password_hash()."
+  },
+  {
+   "rule": "BE014",
+   "file": "vulnerabilities/csrf/source/medium.php",
+   "line": 14,
+   "fingerprint": "d921c100a4ace307f9c72396727d7fe0",
+   "verdict": "tp",
+   "reason": "Password is hashed with unsalted md5() instead of password_hash()."
+  },
+  {
+   "rule": "BE014",
+   "file": "vulnerabilities/csrf/test_credentials.php",
+   "line": 19,
+   "fingerprint": "4b4a70521f218a1a3298647d290a094c",
+   "verdict": "tp",
+   "reason": "Password is hashed with unsalted md5() instead of password_hash()."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/exec/source/high.php",
+   "line": 34,
+   "fingerprint": "c78612003ab9a7ab3e519aa0e288e3e8",
+   "verdict": "tp",
+   "reason": "Unescaped request-derived value written to HTML or DOM sink (XSS)."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/exec/source/impossible.php",
+   "line": 30,
+   "fingerprint": "ac598ae528e911bd7360cafdfc02aaaf",
+   "verdict": "fp",
+   "reason": "IP target octets are validated as numeric integers before execution."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/exec/source/low.php",
+   "line": 18,
+   "fingerprint": "42ee5ac0f5f0c4cea61593016e2d07c5",
+   "verdict": "tp",
+   "reason": "Unescaped request-derived value written to HTML or DOM sink (XSS)."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/exec/source/medium.php",
+   "line": 27,
+   "fingerprint": "5c37996aff3d58c547e1a55b25f45d85",
+   "verdict": "tp",
+   "reason": "Unescaped request-derived value written to HTML or DOM sink (XSS)."
+  },
+  {
+   "rule": "BE006",
+   "file": "vulnerabilities/fi/index.php",
+   "line": 36,
+   "fingerprint": "5322e57c85d22af74c403be4edec01d6",
+   "verdict": "tp",
+   "reason": "Includes $file directly from $_GET['page'] set in the sourced level script."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/sqli/source/low.php",
+   "line": 20,
+   "fingerprint": "fe63e3102ca676f6366244d9bfa2e5c3",
+   "verdict": "tp",
+   "reason": "Unescaped request-derived value written to HTML or DOM sink (XSS)."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/sqli/source/low.php",
+   "line": 47,
+   "fingerprint": "6329fa908cc62d97c7bc315aea90aded",
+   "verdict": "tp",
+   "reason": "Unescaped request-derived value written to HTML or DOM sink (XSS)."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/sqli/source/medium.php",
+   "line": 21,
+   "fingerprint": "ab78559914f7d461b14c6d1df50b54bc",
+   "verdict": "tp",
+   "reason": "Unescaped request-derived value written to HTML or DOM sink (XSS)."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/sqli/source/medium.php",
+   "line": 43,
+   "fingerprint": "ef57d416b55b275f29c9235ede87b6af",
+   "verdict": "tp",
+   "reason": "Unescaped request-derived value written to HTML or DOM sink (XSS)."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/upload/source/impossible.php",
+   "line": 45,
+   "fingerprint": "4ee6ad30f1bba398355c0dac57e58063",
+   "verdict": "fp",
+   "reason": "Target filename uses md5(uniqid()) with a fixed image extension."
+  },
+  {
+   "rule": "BE015",
+   "file": "vulnerabilities/weak_id/source/high.php",
+   "line": 11,
+   "fingerprint": "8767607b200b4f573d2b403907319c58",
+   "verdict": "tp",
+   "reason": "Session cookie uses a predictable counter, time(), or md5(counter)."
+  },
+  {
+   "rule": "BE015",
+   "file": "vulnerabilities/weak_id/source/low.php",
+   "line": 11,
+   "fingerprint": "523a84f9e86471cfeb792f990c8ed9f6",
+   "verdict": "tp",
+   "reason": "Session cookie uses a predictable counter, time(), or md5(counter)."
+  },
+  {
+   "rule": "BE015",
+   "file": "vulnerabilities/weak_id/source/medium.php",
+   "line": 7,
+   "fingerprint": "e9eaec202be7ae12f37778da23092e23",
+   "verdict": "tp",
+   "reason": "Session cookie uses a predictable counter, time(), or md5(counter)."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/xss_d/index.php",
+   "line": 53,
+   "fingerprint": "cdd9af97b19c532bcd0e901889feaece",
+   "verdict": "tp",
+   "reason": "Unescaped request-derived value written to HTML or DOM sink (XSS)."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/xss_r/source/high.php",
+   "line": 11,
+   "fingerprint": "76476ba264b0f986604a5aee36fb6ca0",
+   "verdict": "tp",
+   "reason": "Unescaped request-derived value written to HTML or DOM sink (XSS)."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/xss_r/source/low.php",
+   "line": 8,
+   "fingerprint": "9a2e3b1689b8883b7ca3daa52cee370c",
+   "verdict": "tp",
+   "reason": "Unescaped request-derived value written to HTML or DOM sink (XSS)."
+  },
+  {
+   "rule": "FE001",
+   "file": "vulnerabilities/xss_r/source/medium.php",
+   "line": 11,
+   "fingerprint": "e32487849b2be368f7a08168e0ef3121",
+   "verdict": "tp",
+   "reason": "Unescaped request-derived value written to HTML or DOM sink (XSS)."
   }
  ]
 }

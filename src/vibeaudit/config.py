@@ -32,8 +32,8 @@ KEYS: Dict[str, str] = {
     "llm": "string", "llm_model": "string", "offline": "boolean", "max_file_size": "integer",
     "llm_max_requests": "integer", "file_timeout": "number", "scan_timeout": "number",
     "include_preview": "boolean", "gate_severe_preview": "boolean", "monorepo": "boolean",
-    "fail_on_partial": "boolean", "allow_empty": "boolean", "score_model": "score model",
-    "jobs": "integer", "profile": "profile",
+    "fail_on_partial": "boolean", "allow_empty": "boolean", "require_ignore_reason": "boolean",
+    "score_model": "score model", "jobs": "integer", "profile": "profile",
 }
 
 

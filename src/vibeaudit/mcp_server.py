@@ -355,13 +355,14 @@ def _package_report(args: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def tool_explain_rule(args: Dict[str, Any]) -> Dict[str, Any]:
+    from .rule_examples import get_example
     from .rules import CATEGORIES, RULES
 
     rule = RULES.get(str(args.get("rule_id", "")).upper())
     if rule is None:
         raise ToolError(f"unknown rule: {args.get('rule_id')}")
     return {"id": rule.id, "title": rule.title, "category": CATEGORIES[rule.category], "severity": rule.severity,
-            "why": rule.why, "fix": rule.fix, "cwe": rule.cwe, "owasp": rule.owasp}
+            "why": rule.why, "fix": rule.fix, "cwe": rule.cwe, "owasp": rule.owasp, "example": get_example(rule.id)}
 
 
 def tool_auto_repair(args: Dict[str, Any]) -> Dict[str, Any]:
