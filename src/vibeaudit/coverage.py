@@ -69,6 +69,9 @@ def _bucket_matches(sf: SourceFile, exts: Tuple[str, ...]) -> bool:
     return _ext(sf.rel) in exts
 
 
+NOT_SOURCE = ("binary", "generated_bundle")
+
+
 def _parse_guard(entry: Any) -> Tuple[str, str]:
     if isinstance(entry, dict):
         return str(entry.get("file", "")), str(entry.get("step", ""))
@@ -112,11 +115,13 @@ def build(
 
     scanners: Dict[str, Dict[str, Any]] = {}
     for bucket, exts in LANG_EXTS.items():
-        matched = [sf for sf in project.files if _bucket_matches(sf, exts)]
+        # binary files and generated bundles are not source code for this language: not matched, not a gap
+        matched = [sf for sf in project.files if _bucket_matches(sf, exts) and sf.skip_reason not in NOT_SOURCE]
         analyzed = [sf for sf in matched if sf.text is not None]
         g_skips = sorted(set(guard_skip_by_bucket.get(bucket, [])))
         g_errs = sorted(set(guard_err_by_bucket.get(bucket, [])))
-        size_or_io_skips = [sf.rel for sf in matched if sf.skip_reason in ("size_limit", "read_error")]
+        # any other file that could not be read is a gap, whatever the reason, so matched = analyzed + skipped
+        size_or_io_skips = [sf.rel for sf in matched if sf.text is None]
         if not matched:
             status = "not_applicable"
         elif g_errs and not analyzed:
@@ -194,6 +199,7 @@ def build(
         "files_skipped_timeout": len(guard_skipped),
         "files_skipped_symlink": len(skipped_symlink),
         "files_read_error": len(skipped_read),
+        "files_skipped_binary": len(skipped_binary),
         "internal_errors": len(guard_errors),
         "scan_timed_out": scan_timed_out,
         "incomplete_reasons": incomplete_reasons,

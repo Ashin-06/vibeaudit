@@ -447,3 +447,58 @@ def test_cli_jobs_flag_validation(tmp_path):
     (tmp_path / "a.py").write_text("x = 1\n")
     assert cli.main(["scan", str(tmp_path), "--offline", "--external", "none", "--jobs", "-1", "-q"]) == 2
     assert cli.main(["scan", str(tmp_path), "--offline", "--external", "none", "--no-cache", "--jobs", "0", "-q"]) == 0
+
+
+def test_parallel_wave2_checks_see_file_views_like_sequential(tmp_path):
+    """Wave-2 workers build a fresh Project; checks that read the lexed views (QA011 duplicate functions, comment-aware
+    QA007) silently lost findings or reported comments as code until the views were rebuilt in the worker."""
+    _make_poly_repo(tmp_path, count_per_kind=25)
+    body = "export function useIsMobile(query) {\n  const a = query + 1;\n  const b = a * 2;\n  const c = b - 3;\n  return c;\n}\n"
+    (tmp_path / "web").mkdir()
+    (tmp_path / "web" / "package.json").write_text('{"name": "web", "dependencies": {"postcss": "8.4.0"}}\n')
+    (tmp_path / "web" / "a.js").write_text(body)
+    (tmp_path / "web" / "b.js").write_text(body)
+    (tmp_path / "web" / "postcss.config.mjs").write_text(
+        "/** @type {import('postcss-load-config').Config} */\nconst config = { plugins: {} };\nexport default config;\n")
+    seq = scan(str(tmp_path), Options(offline=True, external="none", cache=False, jobs=1))
+    par = scan(str(tmp_path), Options(offline=True, external="none", cache=False, jobs=2))
+    assert par.meta["scan_cache"]["parallel_used"] is True
+
+    def sig(res):
+        return sorted((f.rule_id, f.file, f.line) for f in res.findings)
+
+    assert ("QA011", "web/b.js", 1) in sig(seq)
+    assert not any(r == "QA007" and f == "web/postcss.config.mjs" for r, f, _ in sig(seq))
+    assert sig(par) == sig(seq)
+
+
+def test_scan_cache_invalidates_when_enclosing_repo_gains_tests_and_ci(tmp_path, monkeypatch):
+    monkeypatch.setenv("VIBEAUDIT_CACHE_DIR", str(tmp_path / "cache"))
+    monkeypatch.setattr(store, "ENABLED", True)
+    repo = tmp_path / "repo"
+    (repo / "src").mkdir(parents=True)
+    if subprocess.run(["git", "init", "-q", str(repo)], check=False).returncode != 0:
+        pytest.skip("git not available")
+    for i in range(4):
+        (repo / "src" / f"m{i}.py").write_text(f"def f{i}(x):\n    return x + {i}\n")
+
+    def qa(res):
+        return sorted({f.rule_id for f in res.findings if f.rule_id in ("QA001", "QA002")})
+
+    assert qa(scan(str(repo / "src"), Options(offline=True, external="none"))) == ["QA001", "QA002"]
+    (repo / "tests").mkdir()
+    (repo / "tests" / "test_m.py").write_text("def test_m():\n    assert True\n")
+    (repo / ".github" / "workflows").mkdir(parents=True)
+    (repo / ".github" / "workflows" / "ci.yml").write_text("on: push\n")
+    warm = scan(str(repo / "src"), Options(offline=True, external="none"))
+    assert warm.meta["scan_cache"]["hit"] is False
+    assert qa(warm) == []
+
+
+def test_coverage_counts_add_up_and_binary_files_are_not_gaps(tmp_path):
+    (tmp_path / "ok.py").write_text("x = 1\n")
+    (tmp_path / "blob.py").write_bytes(b"\x00\x01binary" * 50)
+    cov = scan(str(tmp_path), Options(offline=True, external="none", cache=False)).meta["coverage"]
+    py = cov["scanners"]["python"]
+    assert py["files_matched"] == py["files_analyzed"] + len(py["skipped_files"]) == 1
+    assert py["status"] == "complete" and cov["files_skipped_binary"] == 1
